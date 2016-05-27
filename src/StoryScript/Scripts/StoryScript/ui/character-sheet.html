@@ -1,0 +1,92 @@
+﻿<fieldset>
+    <legend>{{ controller.game.character.name }}</legend>
+    <ul>
+        <li>Kracht {{ controller.game.character.kracht }}</li>
+        <li>Vlugheid {{ controller.game.character.vlugheid }}</li>
+        <li>Oplettendheid {{ controller.game.character.oplettendheid }}</li>
+        <li>Gezondheid {{ controller.game.character.currentHitpoints }} / {{ controller.game.character.hitpoints }}</li>
+    </ul>
+</fieldset>
+<fieldset id="equipment">
+    <legend>Uitrusting</legend>
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    Hoofd
+                </div>
+                <div class="item-box">
+                    {{ controller.game.character.equipment.head.name }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    Amulet
+                </div>
+                <div class="item-box">
+                    {{ controller.game.character.equipment.amulet.name }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                Rechterhand
+            </div>
+            <div class="col-md-6">
+                Lichaam
+            </div>
+            <div class="col-md-3">
+                Linkerhand
+            </div>
+            <div class="col-md-3">
+                <div class="item-box">{{ controller.game.character.equipment.hands.name }}</div>
+                <div class="item-box side-borders">{{ controller.game.character.equipment.rightHand.name }}</div>
+                <div class="item-box">{{ controller.game.character.equipment.rightRing.name }}</div>
+            </div>
+            <div class="col-md-6">
+                <div class="item-box no-border"></div>
+                <div class="item-box">{{ controller.game.character.equipment.body.name }}</div>
+            </div>
+            <div class="col-md-3">
+                <div class="item-box">{{ controller.game.character.equipment.hands.name }}</div>
+                <div class="item-box side-borders">{{ controller.game.character.equipment.leftHand.name }}</div>
+                <div class="item-box">{{ controller.game.character.equipment.leftRing.name }}</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    Benen
+                </div>
+                <div class="item-box">
+                    {{ controller.game.character.equipment.legs.name }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    Voeten
+                </div>
+                <div class="item-box">
+                    {{ controller.game.character.equipment.feet.name }}
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Rugzak</legend>
+    <ul>
+        <li ng-repeat="item in controller.game.character.items">
+            <div>
+                <span>{{ item.name }}</span>
+                <button type="button" ng-if="item.equipmentType" class="btn btn-info" ng-click="controller.executeAction(equip, item)">Equip</button>
+                <button type="button" ng-if="item.use" class="btn btn-info" ng-click="controller.executeAction(item.use, item)">Use</button>
+                <button type="button" class="btn btn-info" ng-click="controller.drop(item)">Drop</button>
+            </div>
+        </li>
+    </ul>
+</fieldset>

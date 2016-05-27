@@ -1,0 +1,11 @@
+﻿<h1>Verloren...</h1>
+<div><span>Helaas, je bent dood!</span></div>
+<div><span>Je score: {{ game.character.score }}</span></div>
+<button type="button" class="btn btn-primary" ng-click="restart()">Nog een keer proberen</button>
+<h3>High Scores</h3>
+<table>
+    <tr ng-repeat="score in game.highScores track by $index">
+        <td>{{ score.name }}</td>
+        <td>{{ score.score }}</td>
+    </tr>
+</table>

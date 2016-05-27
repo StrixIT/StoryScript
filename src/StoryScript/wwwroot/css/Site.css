@@ -1,0 +1,101 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #483D8B;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+h2 {
+    font-family: 'Trebuchet MS';
+    color: #483D8B;
+}
+
+legend {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: Andalus;
+    color: #8FBC8F;
+    background-color: #FFFACD;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+button,
+textarea {
+    max-width: 280px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.name-input {
+    margin: 0 20px;
+}
+
+#action-log, #location-log, .button-row {
+    list-style: none;
+    margin: 10px 0;
+    padding: 0;
+}
+
+    .button-row li {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+.inline {
+    display: inline-block;
+}
+
+.action-select {
+    display: block;
+}
+
+fieldset {
+    padding-left: 15px;
+}
+
+    fieldset table {
+        margin-bottom: 15px;
+    }
+
+table tr {
+}
+
+table td {
+    padding: 10px;
+}
+
+#equipment {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+    #equipment legend {
+        margin-bottom: 0;
+    }
+
+    #equipment .row {
+        margin: 5px 0;
+    }
+
+    #equipment .item-box {
+        border: 1px solid black;
+        height: 25px;
+        line-height: 25px;
+    }
+
+        #equipment .item-box.no-border {
+            border: none;
+        }
+
+        #equipment .item-box.side-borders {
+            border-top: none;
+            border-bottom: 0;
+        }
