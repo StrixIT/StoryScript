@@ -1,5 +1,5 @@
 ﻿module StoryScript.Locations {
-    export function CentreRoom(): Interfaces.ILocation {
+    export function CentreRoom(): ILocation {
         return {
             name: 'Een opslagkamer',
             destinations: [

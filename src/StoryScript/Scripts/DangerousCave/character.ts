@@ -1,34 +1,29 @@
 ﻿module DangerousCave {
-    export class Character extends StoryScript.CharacterBase {
-        kracht: number;
-        vlugheid: number;
-        oplettendheid: number;
-        defense: number;
+    export class Character implements StoryScript.ICharacter {
+        name: string;
+        hitpoints: number = 20;
+        currentHitpoints: number = 20;
+        score: number;
+        scoreToNextLevel: number;
+        level: number = 1;
 
-        constructor() {
-            super();
-            var self = this;
-            self.kracht = 1;
-            self.vlugheid = 1;
-            self.oplettendheid = 1;
-            self.hitpoints = 20;
-            self.currentHitpoints = 20;
-            self.level = 1;
-            self.items = [
-            ];
-            self.equipment = {
-                head: null,
-                amulet: null,
-                body: null,
-                hands: null,
-                leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
-                feet: null
-            };
-            self.defense = self.vlugheid;
-        }
+        kracht: number = 1;
+        vlugheid: number = 1;
+        oplettendheid: number = 1;
+        defense: number = 1;
+
+        items: StoryScript.ICollection<StoryScript.IItem>;
+        equipment: {
+            head: StoryScript.IItem,
+            amulet: StoryScript.IItem,
+            body: StoryScript.IItem,
+            hands: StoryScript.IItem,
+            leftHand: StoryScript.IItem,
+            leftRing: StoryScript.IItem,
+            rightHand: StoryScript.IItem,
+            rightRing: StoryScript.IItem,
+            legs: StoryScript.IItem,
+            feet: StoryScript.IItem
+        };
     }
 }

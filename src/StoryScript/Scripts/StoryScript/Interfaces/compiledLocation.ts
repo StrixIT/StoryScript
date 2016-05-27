@@ -1,17 +1,15 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface ICompiledLocation {
         id?: string;
-        //log(message: string): void;
         name: string;
         fileLocation?: string;
         enemies?: ICollection<IEnemy>;
         items?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
-        events?: [(game: Game) => void];
+        events?: [(game: IGame) => void];
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
         descriptionSelector?: () => string;
-
         text: string;
         hasVisited: boolean;
         descriptions: any;

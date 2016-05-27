@@ -1,4 +1,4 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface IDataService {
         getDescription(descriptionName: string);
         save<T>(key: string, value: T): void;
@@ -7,7 +7,7 @@
 }
 
 module StoryScript {
-    export class DataService implements ng.IServiceProvider, Interfaces.IDataService {
+    export class DataService implements ng.IServiceProvider, IDataService {
         private $q: ng.IQService;
         private $http: ng.IHttpService;
         private $localStorage: any; // Todo: type;
@@ -20,7 +20,7 @@ module StoryScript {
             self.$localStorage = $localStorage;
         }
 
-        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any): Interfaces.IDataService {
+        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any): IDataService {
             var self = this;
             self.$http = $http;
             self.$q = $q;

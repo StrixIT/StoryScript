@@ -1,5 +1,5 @@
 ﻿module StoryScript.Items {
-    export function Dagger(): Interfaces.IItem {
+    export function Dagger(): IItem {
         return {
             name: 'Dolk',
             damage: '1',

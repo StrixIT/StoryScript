@@ -1,17 +1,18 @@
 ﻿module DangerousCave {
-    export class RuleService implements ng.IServiceProvider, StoryScript.Interfaces.IRuleService {
-        private game: StoryScript.Game;
+    export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
+        private game: Game;
 
-        constructor(game: StoryScript.Game) {
+        constructor(game: Game) {
             var self = this;
             self.game = game;
         }
 
-        public $get(game: StoryScript.Game): StoryScript.Interfaces.IRuleService {
+        public $get(game: Game): StoryScript.IRuleService {
             var self = this;
             self.game = game;
 
             return {
+                getGame: self.getGame,
                 getCharacterForm: self.getCharacterForm,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
@@ -19,6 +20,10 @@
                 enterLocation: self.enterLocation,
                 initCombat: self.initCombat
             };
+        }
+
+        getGame = (): StoryScript.IGame => {
+            return new Game();
         }
 
         public getCharacterForm() {
@@ -45,7 +50,7 @@
             };
         }
 
-        public createCharacter(characterData: any): StoryScript.Interfaces.ICharacter {
+        public createCharacter(characterData: any): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
             character.name = characterData.name;
@@ -71,12 +76,12 @@
             self.game.changeLocation(self.game.locations.first(StoryScript.Locations.Start));
         }
 
-        public addEnemyToLocation(location: StoryScript.Interfaces.ICompiledLocation, enemy: StoryScript.Interfaces.IEnemy) {
+        public addEnemyToLocation(location: StoryScript.ICompiledLocation, enemy: StoryScript.IEnemy) {
             var self = this;
             self.addFleeAction(location);
         }
 
-        public enterLocation(location: StoryScript.Interfaces.ICompiledLocation): void {
+        public enterLocation(location: StoryScript.ICompiledLocation): void {
             var self = this;
 
             self.game.logToActionLog('Je komt aan in ' + location.name);
@@ -86,7 +91,7 @@
             }
         }
 
-        public initCombat(location: StoryScript.Interfaces.ICompiledLocation) {
+        public initCombat(location: StoryScript.ICompiledLocation) {
             var self = this;
 
             // Log the presense of enemies to the action log.
@@ -97,7 +102,7 @@
             self.addFleeAction(location);
         }
 
-        private addFleeAction(location: StoryScript.Interfaces.ICompiledLocation): void {
+        private addFleeAction(location: StoryScript.ICompiledLocation): void {
             var self = this;
             var numberOfEnemies = location.enemies.length;
             var fleeAction = location.combatActions.first(StoryScript.Actions.Flee);

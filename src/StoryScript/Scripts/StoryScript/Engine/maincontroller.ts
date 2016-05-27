@@ -2,17 +2,17 @@
     export class MainController {
         private $scope: ng.IScope;
         private $window: ng.IWindowService;
-        private locationService: Interfaces.ILocationService;
-        private ruleService: Interfaces.IRuleService;
-        private gameService: Interfaces.IGameService;
-        private game: Game;
+        private locationService: ILocationService;
+        private ruleService: IRuleService;
+        private gameService: IGameService;
+        private game: IGame;
 
         public createCharacterForm: any;
 
         // Todo: can this be done differently?
         public reset(): void { };
 
-        constructor($scope: ng.IScope, $window: ng.IWindowService, locationService: Interfaces.ILocationService, ruleService: Interfaces.IRuleService, gameService: Interfaces.IGameService, game: Game) {
+        constructor($scope: ng.IScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame) {
             var self = this;
             self.$scope = $scope;
             self.$window = $window;

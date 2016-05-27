@@ -1,7 +1,7 @@
 ﻿module DangerousCave {
-    export class TextService implements ng.IServiceProvider, StoryScript.Interfaces.ITextService {
+    export class TextService implements ng.IServiceProvider, StoryScript.ITextService {
 
-        public $get(): StoryScript.Interfaces.ITextService {
+        public $get(): StoryScript.ITextService {
             var self = this;
 
             return {
@@ -9,7 +9,7 @@
             };
         }
 
-        public createCharacter(): StoryScript.Interfaces.ICharacter {
+        public createCharacter(): StoryScript.ICharacter {
             return null;
         }
     }

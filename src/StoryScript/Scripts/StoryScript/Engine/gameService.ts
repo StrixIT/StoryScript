@@ -1,4 +1,4 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface IGameService {
         init(): void;
         startNewGame(characterData: any): void;
@@ -10,14 +10,14 @@
 }
 
 module StoryScript {
-    export class GameService implements ng.IServiceProvider, Interfaces.IGameService {
-        private dataService: Interfaces.IDataService;
-        private locationService: Interfaces.ILocationService;
-        private characterService: Interfaces.ICharacterService;
-        private ruleService: Interfaces.IRuleService;
-        private game: Game;
+    export class GameService implements ng.IServiceProvider, IGameService {
+        private dataService: IDataService;
+        private locationService: ILocationService;
+        private characterService: ICharacterService;
+        private ruleService: IRuleService;
+        private game: IGame;
 
-        constructor(dataService: Interfaces.IDataService, locationService: Interfaces.ILocationService, characterService: Interfaces.ICharacterService, ruleService: Interfaces.IRuleService, game: Game) {
+        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame) {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
@@ -26,7 +26,7 @@ module StoryScript {
             self.game = game;
         }
 
-        public $get(dataService: Interfaces.IDataService, locationService: Interfaces.ILocationService, characterService: Interfaces.ICharacterService, ruleService: Interfaces.IRuleService, game: Game): Interfaces.IGameService {
+        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame): IGameService {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
@@ -46,9 +46,16 @@ module StoryScript {
 
         init = (): void => {
             var self = this;
+
+            var constructedGame = self.ruleService.getGame();
+
+            for (var n in constructedGame) {
+                self.game[n] = constructedGame[n];
+            }
+
             self.locationService.init(self.game);
             self.game.highScores = self.dataService.load<string[]>(StoryScript.DataKeys.HIGHSCORES);
-            self.game.character = self.dataService.load<CharacterBase>(StoryScript.DataKeys.CHARACTER);
+            self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
 
             var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
 

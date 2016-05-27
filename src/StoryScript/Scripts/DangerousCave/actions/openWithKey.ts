@@ -1,6 +1,6 @@
 ﻿module StoryScript.Actions {
-    export function OpenWithKey(callBack: (game: Game, destination: Interfaces.IDestination) => void) {
-        return function (game: Game, destination: Interfaces.IDestination) {
+    export function OpenWithKey(callBack: (game: DangerousCave.Game, destination: IDestination) => void) {
+        return function (game: DangerousCave.Game, destination: IDestination) {
             // Todo: remove the key used from the character's inventory.
 
             delete destination.barrier;

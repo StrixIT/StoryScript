@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var StoryScript;
 (function (StoryScript) {
     var DataService = (function () {
@@ -432,15 +427,6 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
-    var CharacterBase = (function () {
-        function CharacterBase() {
-        }
-        return CharacterBase;
-    }());
-    StoryScript.CharacterBase = CharacterBase;
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
     var CharacterService = (function () {
         function CharacterService(dataService, ruleService) {
             var self = this;
@@ -473,35 +459,15 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
-    var Game = (function () {
-        function Game() {
-            var _this = this;
-            this.logToLocationLog = function (message) {
-                var self = _this;
-                self.currentLocation.log = self.currentLocation.log || [];
-                self.currentLocation.log.push(message);
-            };
-            this.logToActionLog = function (message) {
-                var self = _this;
-                self.actionLog.splice(0, 0, message);
-            };
-            var self = this;
-            self.actionLog = [];
-        }
-        // Todo: only to overwrite. Use interface? Better typing?
-        Game.prototype.changeLocation = function (location) { };
-        Game.prototype.rollDice = function (dice) { return 0; };
-        return Game;
-    }());
-    StoryScript.Game = Game;
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
     var GameService = (function () {
         function GameService(dataService, locationService, characterService, ruleService, game) {
             var _this = this;
             this.init = function () {
                 var self = _this;
+                var constructedGame = self.ruleService.getGame();
+                for (var n in constructedGame) {
+                    self.game[n] = constructedGame[n];
+                }
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
                 self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
@@ -831,7 +797,7 @@ var StoryScript;
     StoryScript.addFunctionExtensions();
     StoryScript.addArrayExtensions();
     var module = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
-    var game = new StoryScript.Game();
+    var game = {};
     module.value('game', game);
     module.service("dataService", StoryScript.DataService);
     module.service("locationService", StoryScript.LocationService);
@@ -841,40 +807,51 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var DangerousCave;
 (function (DangerousCave) {
-    var Character = (function (_super) {
-        __extends(Character, _super);
+    var Character = (function () {
         function Character() {
-            _super.call(this);
-            var self = this;
-            self.kracht = 1;
-            self.vlugheid = 1;
-            self.oplettendheid = 1;
-            self.hitpoints = 20;
-            self.currentHitpoints = 20;
-            self.level = 1;
-            self.items = [];
-            self.equipment = {
-                head: null,
-                amulet: null,
-                body: null,
-                hands: null,
-                leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
-                feet: null
-            };
-            self.defense = self.vlugheid;
+            this.hitpoints = 20;
+            this.currentHitpoints = 20;
+            this.level = 1;
+            this.kracht = 1;
+            this.vlugheid = 1;
+            this.oplettendheid = 1;
+            this.defense = 1;
         }
         return Character;
-    }(StoryScript.CharacterBase));
+    }());
     DangerousCave.Character = Character;
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
+    var Game = (function () {
+        function Game() {
+            var _this = this;
+            this.logToLocationLog = function (message) {
+                var self = _this;
+                self.currentLocation.log = self.currentLocation.log || [];
+                self.currentLocation.log.push(message);
+            };
+            this.logToActionLog = function (message) {
+                var self = _this;
+                self.actionLog.splice(0, 0, message);
+            };
+            var self = this;
+            self.actionLog = [];
+        }
+        // Todo: only to overwrite. Use interface? Better typing?
+        Game.prototype.changeLocation = function (location) { };
+        Game.prototype.rollDice = function (dice) { return 0; };
+        return Game;
+    }());
+    DangerousCave.Game = Game;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
     var RuleService = (function () {
         function RuleService(game) {
+            this.getGame = function () {
+                return new DangerousCave.Game();
+            };
             var self = this;
             self.game = game;
         }
@@ -882,6 +859,7 @@ var DangerousCave;
             var self = this;
             self.game = game;
             return {
+                getGame: self.getGame,
                 getCharacterForm: self.getCharacterForm,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
@@ -1162,7 +1140,7 @@ var StoryScript;
                 type: 'skill',
                 active: settings.active == undefined ? true : settings.active,
                 execute: function (game) {
-                    var check = game.rollDice(game.character + 'd6');
+                    var check = game.rollDice(game.character.vlugheid + 'd6');
                     var result;
                     result = check * game.character.vlugheid;
                     if (result >= settings.difficulty) {

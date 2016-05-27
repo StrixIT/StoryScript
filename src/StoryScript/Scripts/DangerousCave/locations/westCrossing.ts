@@ -1,5 +1,5 @@
 ﻿module StoryScript.Locations {
-    export function WestCrossing(): Interfaces.ILocation {
+    export function WestCrossing(): ILocation {
         return {
             name: 'Een donkere gemetselde gang',
             enemies: [

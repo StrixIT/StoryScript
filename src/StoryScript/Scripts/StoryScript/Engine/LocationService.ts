@@ -1,24 +1,24 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface ILocationService {
-        init(game: Game): void;
-        loadWorld(): Interfaces.ICollection<Interfaces.ICompiledLocation>;
-        changeLocation(location: any, game: Game): void;
+        init(game: IGame): void;
+        loadWorld(): ICollection<ICompiledLocation>;
+        changeLocation(location: any, game: IGame): void;
     }
 }
 
 module StoryScript {
-    export class LocationService implements ng.IServiceProvider, Interfaces.ILocationService {
-        private dataService: Interfaces.IDataService;
-        private ruleService: Interfaces.IRuleService;
-        private locations: Interfaces.ICollection<Interfaces.ICompiledLocation>;
+    export class LocationService implements ng.IServiceProvider, ILocationService {
+        private dataService: IDataService;
+        private ruleService: IRuleService;
+        private locations: ICollection<ICompiledLocation>;
 
-        constructor(dataService: Interfaces.IDataService, ruleService: Interfaces.IRuleService) {
+        constructor(dataService: IDataService, ruleService: IRuleService) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
         }
 
-        public $get(dataService: Interfaces.IDataService, ruleService: Interfaces.IRuleService): Interfaces.ILocationService {
+        public $get(dataService: IDataService, ruleService: IRuleService): ILocationService {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
@@ -30,7 +30,7 @@ module StoryScript {
             };
         }
 
-        init = (game: Game) => {
+        init = (game: IGame) => {
             var self = this;
             game.changeLocation = (location) => { self.changeLocation.call(self, location, game); };
             game.currentLocation = null;
@@ -38,14 +38,14 @@ module StoryScript {
             game.locations = self.loadWorld();
         }
 
-        public loadWorld(): Interfaces.ICollection<Interfaces.ICompiledLocation> {
+        public loadWorld(): ICollection<ICompiledLocation> {
             var self = this;
-            self.locations = self.dataService.load<Interfaces.ICollection<Interfaces.ICompiledLocation>>(DataKeys.WORLD);
+            self.locations = self.dataService.load<ICollection<ICompiledLocation>>(DataKeys.WORLD);
 
             if (isEmpty(self.locations)) {
                 self.buildWorld();
                 self.dataService.save(DataKeys.WORLD, self.locations);
-                self.locations = self.dataService.load<Interfaces.ICollection<Interfaces.ICompiledLocation>>(DataKeys.WORLD);
+                self.locations = self.dataService.load<ICollection<ICompiledLocation>>(DataKeys.WORLD);
             }
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
@@ -61,7 +61,7 @@ module StoryScript {
             return self.locations;
         }
 
-        public changeLocation(location: Interfaces.ILocation, game: Game) {
+        public changeLocation(location: ILocation, game: IGame) {
             var self = this;
 
             // If no location is specified, go to the previous location.
@@ -100,7 +100,7 @@ module StoryScript {
                     }
 
                     if (destination.barrier && destination.barrier.key) {
-                        key = <Interfaces.IKey>game.character.items.first(destination.barrier.key);
+                        key = <IKey>game.character.items.first(destination.barrier.key);
 
                         if (key) {
                             // Todo: can this be typed somehow?
@@ -133,7 +133,7 @@ module StoryScript {
 
             for (var n in locations) {
                 var definition = locations[n];
-                var location = definitionToObject<Interfaces.ICompiledLocation>(definition);
+                var location = definitionToObject<ICompiledLocation>(definition);
                 location.id = definition.name;
 
                 if (!location.destinations) {
@@ -147,7 +147,7 @@ module StoryScript {
             }
         }
 
-        private setDestinations(location: Interfaces.ICompiledLocation) {
+        private setDestinations(location: ICompiledLocation) {
             var self = this;
 
             // Replace the function pointers for the destination targets with the function keys.
@@ -168,14 +168,14 @@ module StoryScript {
             }
         }
 
-        private buildEnemies(location: Interfaces.ICompiledLocation) {
+        private buildEnemies(location: ICompiledLocation) {
             var self = this;
 
             if (location.enemies) {
-                var enemies: Interfaces.IEnemy[] = [];
+                var enemies: IEnemy[] = [];
 
                 location.enemies.forEach((enDef) => {
-                    var enemy = definitionToObject<Interfaces.IEnemy>(<any>enDef);
+                    var enemy = definitionToObject<IEnemy>(<any>enDef);
                     self.buildItems(enemy);
                     enemies.push(enemy);
                 });
@@ -188,10 +188,10 @@ module StoryScript {
             var self = this;
 
             if (entry.items) {
-                var items: Interfaces.IItem[] = [];
+                var items: IItem[] = [];
 
                 entry.items.forEach((itemDef) => {
-                    var item = definitionToObject<Interfaces.IItem>(itemDef);
+                    var item = definitionToObject<IItem>(itemDef);
                     items.push(item);
                 });
 
@@ -213,7 +213,7 @@ module StoryScript {
             originalFunction.apply(this, args);
         }
 
-        private addEnemy(game: Game) {
+        private addEnemy(game: IGame) {
             var self = this;
             var args = [].slice.apply(arguments);
             var originalFunction = args.shift();
@@ -221,7 +221,7 @@ module StoryScript {
             self.ruleService.addEnemyToLocation(game.currentLocation, enemy);
         }
 
-        private playEvents(game: Game) {
+        private playEvents(game: IGame) {
             var self = this;
 
             for (var n in game.currentLocation.events) {
@@ -229,7 +229,7 @@ module StoryScript {
             }
         }
 
-        private loadLocationDescriptions(game: Game) {
+        private loadLocationDescriptions(game: IGame) {
             var self = this;
 
             if (game.currentLocation.descriptions) {

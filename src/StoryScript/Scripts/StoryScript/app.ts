@@ -4,7 +4,7 @@
 
     var module = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
 
-    var game = new Game();
+    var game = {};
     module.value('game', game);
 
     module.service("dataService", DataService);

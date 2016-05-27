@@ -1,4 +1,4 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface ICollection<T> extends Array<T> {
         all?(id: any): T[];
         first?(id?: any): T;

@@ -1,5 +1,5 @@
 ﻿module StoryScript.Enemies {
-    export function Orc(): Interfaces.IEnemy {
+    export function Orc(): IEnemy {
         return {
             name: 'Ork',
             hitpoints: 12,

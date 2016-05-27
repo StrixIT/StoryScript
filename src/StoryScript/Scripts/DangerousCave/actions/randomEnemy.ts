@@ -1,5 +1,5 @@
 ﻿module StoryScript.Actions {
-    export function RandomEnemy(game: Game) {
+    export function RandomEnemy(game: DangerousCave.Game) {
         var enemies = window['StoryScript']['Enemies'];
         var enemyCount = 0;
 

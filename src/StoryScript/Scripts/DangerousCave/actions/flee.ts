@@ -1,5 +1,5 @@
 ﻿module StoryScript.Actions {
-    export function Flee(text: string): Interfaces.IAction {
+    export function Flee(text: string): IAction {
         return {
             text: text || 'Vluchten!',
             type: 'fight',

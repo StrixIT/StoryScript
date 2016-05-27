@@ -1,5 +1,5 @@
 ﻿module StoryScript.Items {
-    export function Lantern(): Interfaces.IItem {
+    export function Lantern(): IItem {
         return {
             name: 'Lantaren',
             bonuses: {

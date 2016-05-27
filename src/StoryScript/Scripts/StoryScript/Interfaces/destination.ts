@@ -1,7 +1,7 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface IDestination {
         text: string;
         target: () => ILocation;
-        barrier?: Interfaces.IBarrier;
+        barrier?: IBarrier;
     }
 }

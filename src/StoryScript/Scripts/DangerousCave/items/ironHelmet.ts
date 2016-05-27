@@ -1,5 +1,5 @@
 ﻿module StoryScript.Items {
-    export function IronHelmet(): Interfaces.IItem {
+    export function IronHelmet(): IItem {
         return {
             name: 'Helm van ijzer',
             defense: 2,

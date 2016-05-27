@@ -1,5 +1,5 @@
 ﻿module StoryScript.Enemies {
-    export function Goblin(): Interfaces.IEnemy {
+    export function Goblin(): IEnemy {
         return {
             name: 'Goblin',
             hitpoints: 6,

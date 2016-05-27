@@ -1,5 +1,5 @@
 ﻿module StoryScript.Locations {
-    export function RoomOne(): Interfaces.ILocation {
+    export function RoomOne(): ILocation {
         return {
             name: 'De kamer van de ork',
             enemies: [
@@ -21,7 +21,7 @@
                             },
                             {
                                 text: 'Open de deur',
-                                action: Actions.Open((game: Game, destination: Interfaces.IDestination) => {
+                                action: Actions.Open((game: DangerousCave.Game, destination: IDestination) => {
                                     game.logToLocationLog('Je opent de eikenhouten deur.');
                                     destination.text = 'Gang (noord)';
                                 })

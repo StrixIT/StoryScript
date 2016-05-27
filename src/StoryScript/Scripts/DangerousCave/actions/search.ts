@@ -1,25 +1,25 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface SearchSettings {
         text?: string;
         active?: (parameters: any) => boolean;
         difficulty: number;
-        success: (game: Game) => void;
-        fail: (game: Game) => void;
+        success: (game: DangerousCave.Game) => void;
+        fail: (game: DangerousCave.Game) => void;
     }
 }
 
 module StoryScript.Actions {
-    export function Search(settings: Interfaces.SearchSettings): Interfaces.IAction {
+    export function Search(settings: SearchSettings): IAction {
         var text = settings.text || 'Zoek';
 
         return {
             text: text,
             type: 'skill',
             active: settings.active == undefined ? () => { return true; } : settings.active,
-            execute: function (game: Game) {
-                var check = game.rollDice((<DangerousCave.Character> game.character).oplettendheid + 'd6');
+            execute: function (game: DangerousCave.Game) {
+                var check = game.rollDice(game.character.oplettendheid + 'd6');
                 var result;
-                result = check * (<DangerousCave.Character>game.character).oplettendheid;
+                result = check * game.character.oplettendheid;
 
                 for (var n in game.currentLocation.actions) {
                     var action = game.currentLocation.actions[n];

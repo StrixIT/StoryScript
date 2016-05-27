@@ -1,13 +1,13 @@
 ﻿module StoryScript.Actions {
-    export function Unlock(settings: any): Interfaces.IAction {
+    export function Unlock(settings: any): IAction {
         return {
             text: settings.text || 'Slot openen',
             type: 'skill',
             active: settings.active == undefined ? true : settings.active,
-            execute: function (game: StoryScript.Game) {
-                var check = game.rollDice((<DangerousCave.Character>game.character) + 'd6');
+            execute: function (game: DangerousCave.Game) {
+                var check = game.rollDice(game.character.vlugheid + 'd6');
                 var result;
-                result = check * (<DangerousCave.Character>game.character).vlugheid;
+                result = check * game.character.vlugheid;
 
                 if (result >= settings.difficulty) {
                     settings.success(game);

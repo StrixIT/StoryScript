@@ -1,5 +1,5 @@
 ﻿module StoryScript.Locations {
-    export function DoorOne(): Interfaces.ILocation {
+    export function DoorOne(): ILocation {
         return {
             name: 'Een donkere gang met een deur',
             destinations: [
@@ -16,10 +16,10 @@
                 {
                     text: 'Schop tegen de deur',
                     type: 'fight',
-                    execute: (game: Game) => {
+                    execute: (game: DangerousCave.Game) => {
                         var check = Math.floor(Math.random() * 6 + 1);
                         var result;
-                        result = check * (<DangerousCave.Character>game.character).kracht;
+                        result = check * game.character.kracht;
 
                         if (result > 8) {
                             game.changeLocation(Locations.RoomOne);
@@ -32,7 +32,7 @@
                 },
                 Actions.Unlock({
                     difficulty: 10,
-                    success: function (game: Game) {
+                    success: function (game: DangerousCave.Game) {
                         game.changeLocation(Locations.RoomOne);
                         game.logToLocationLog('Met meegebrachte pinnetjes duw je in het slot op het mechanisme tot je een klik voelt. De deur is open!');
                         game.logToLocationLog('Je duwt de deur open en kijkt naar binnen.');

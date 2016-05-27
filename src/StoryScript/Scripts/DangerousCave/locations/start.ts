@@ -1,5 +1,5 @@
 ﻿module StoryScript.Locations {
-    export function Start(): Interfaces.ILocation {
+    export function Start(): ILocation {
         return {
             name: 'De ingang van de Gevaarlijke Grot',
             destinations: [

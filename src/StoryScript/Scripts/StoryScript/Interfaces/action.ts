@@ -1,4 +1,4 @@
-﻿module StoryScript.Interfaces {
+﻿module StoryScript {
     export interface IAction {
         text?: string;
         type?: string,

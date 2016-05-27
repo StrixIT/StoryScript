@@ -1,13 +1,13 @@
 ﻿module StoryScript.Locations {
-    export function CrossRoads(): Interfaces.ILocation {
+    export function CrossRoads(): ILocation {
         return {
             name: 'Een kruispunt',
             events: [
-                (game) => {
+                (game: DangerousCave.Game) => {
                     var orkCorridor = game.locations.first(Locations.DarkCorridor);
                     var orkPresent = !orkCorridor.hasVisited;
 
-                    if ((<DangerousCave.Character>game.character).oplettendheid > 2 && orkPresent) {
+                    if (game.character.oplettendheid > 2 && orkPresent) {
                         game.logToLocationLog('Je hoort vanuit de westelijke gang een snuivende ademhaling.');
                     }
                 }

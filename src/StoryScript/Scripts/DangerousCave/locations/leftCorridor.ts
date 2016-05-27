@@ -1,10 +1,10 @@
 ﻿module StoryScript.Locations {
-    export function LeftCorridor(): Interfaces.ILocation {
+    export function LeftCorridor(): ILocation {
         return {
             name: 'Een pikdonkere gang',
             events: [
-                (game) => {
-                    var damage = Math.floor(Math.random() * 6 + 1) - (<DangerousCave.Character>game.character).vlugheid;
+                (game: DangerousCave.Game) => {
+                    var damage = Math.floor(Math.random() * 6 + 1) - game.character.vlugheid;
                     game.character.currentHitpoints -= Math.max(0, damage);
                     game.logToActionLog('Aah! Je valt plotseling in een diepe kuil en bezeert je. Je krijgt ' + damage + ' schade door het vallen!');
                     game.logToLocationLog('Er is hier een diepe valkuil.')
@@ -14,7 +14,7 @@
                     {
                     text: 'Klim uit de kuil',
                     type: 'skill',
-                    execute: (game: Game) => {
+                    execute: (game: DangerousCave.Game) => {
                         // Todo: skill check
                         //if (false) {
                         //    game.logToActionLog('Het lukt je niet uit de kuil te klimmen.');
@@ -35,7 +35,7 @@
                         );
 
                         // Todo: does this work?
-                        var action = game.currentLocation.actions.first((x: Interfaces.IAction) => { return x.text === 'Klim uit de kuil'; });
+                        var action = game.currentLocation.actions.first((x: IAction) => { return x.text === 'Klim uit de kuil'; });
                         game.currentLocation.actions.remove(action);
                         delete game.currentLocation.actions['klimmen'];
                     }

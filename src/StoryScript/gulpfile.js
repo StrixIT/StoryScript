@@ -44,7 +44,12 @@ gulp.task("clean-html", function (cb) {
     return rimraf(paths.webroot + '**/*.html', cb);
 });
 
-gulp.task('copy-dangerous-cave', ["clean-html"], function () {
+gulp.task('copy-dangerous-cave-css', ["clean-html"], function () {
+    gulp.src([paths.root + 'Scripts/DangerousCave/ui/styles/*.css'])
+        .pipe(gulp.dest(paths.webroot + 'css'));
+});
+
+gulp.task('copy-dangerous-cave-html', ["clean-html"], function () {
     gulp.src([paths.root + 'Scripts/DangerousCave/**/*.html', paths.root + 'Scripts/StoryScript/**/*.html'])
       .pipe(gulp.dest(paths.webroot));
 });
@@ -59,7 +64,7 @@ gulp.task('ts-compile-dangerous-cave', function () {
     ]);
 });
 
-gulp.task('build-dangerous-cave', ["copy-dangerous-cave", 'ts-compile-dangerous-cave'], function () { });
+gulp.task('build-dangerous-cave', ["copy-dangerous-cave-css", "copy-dangerous-cave-html", 'ts-compile-dangerous-cave'], function () { });
 
 gulp.task("tslint", () =>
     gulp.src([paths.root + 'Scripts/StoryScript/app.js', paths.root + 'Scripts/DangerousCave/**/*.js'])

@@ -1,5 +1,5 @@
 ﻿module StoryScript.Items {
-    export function HealingPotion(): Interfaces.IItem {
+    export function HealingPotion(): IItem {
         return {
             name: 'Toverdrank',
             equipmentType: EquipmentType.Miscellaneous,

@@ -1,5 +1,5 @@
 ﻿module StoryScript.Items {
-    export function LeatherArmor(): Interfaces.IItem {
+    export function LeatherArmor(): IItem {
         return {
             name: 'Harnas van leer',
             defense: 2,

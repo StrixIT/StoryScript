@@ -1,5 +1,5 @@
 ﻿module StoryScript.Items {
-    export function Sword(): Interfaces.IItem {
+    export function Sword(): IItem {
         return {
             name: 'Zwaard',
             damage: '3',

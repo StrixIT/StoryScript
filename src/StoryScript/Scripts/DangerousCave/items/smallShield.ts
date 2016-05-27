@@ -1,5 +1,5 @@
 ﻿module StoryScript.Items {
-    export function SmallShield(): Interfaces.IItem {
+    export function SmallShield(): IItem {
         return {
             name: 'Klein schild',
             defense: 2,

@@ -1,5 +1,5 @@
 ﻿module StoryScript.Locations {
-    export function Temp(): Interfaces.ILocation {
+    export function Temp(): ILocation {
         return {
             name: 'Deze locatie bestaat nog niet',
             destinations: [
