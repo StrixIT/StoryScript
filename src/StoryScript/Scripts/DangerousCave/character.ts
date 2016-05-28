@@ -12,7 +12,7 @@
         oplettendheid: number = 1;
         defense: number = 1;
 
-        items: StoryScript.ICollection<StoryScript.IItem>;
+        items: StoryScript.ICollection<StoryScript.IItem> = [];
         equipment: {
             head: StoryScript.IItem,
             amulet: StoryScript.IItem,

@@ -1,5 +1,37 @@
 var StoryScript;
 (function (StoryScript) {
+    var CharacterService = (function () {
+        function CharacterService(dataService, ruleService) {
+            var self = this;
+            self.dataService = dataService;
+            self.ruleService = ruleService;
+        }
+        CharacterService.prototype.$get = function (dataService, ruleService) {
+            var self = this;
+            self.dataService = dataService;
+            self.ruleService = ruleService;
+            return {
+                createCharacter: self.createCharacter
+            };
+        };
+        CharacterService.prototype.createCharacter = function (characterData) {
+            var self = this;
+            var character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
+            if (StoryScript.isEmpty(character)) {
+                character = self.ruleService.createCharacter(characterData);
+            }
+            if (StoryScript.isEmpty(character.items)) {
+                character.items = [];
+            }
+            return character;
+        };
+        return CharacterService;
+    }());
+    StoryScript.CharacterService = CharacterService;
+    CharacterService.$inject = ['dataService', 'ruleService'];
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
     var DataService = (function () {
         function DataService($q, $http, $localStorage) {
             this.definitionCollection = window['StoryScript'];
@@ -74,14 +106,14 @@ var StoryScript;
                 }
                 var value = item[key];
                 var definitionKey = self.toDefinitionKey(key);
-                if (self.definitionCollection.hasOwnProperty(definitionKey) && self.definitionCollection[definitionKey].forEach) {
+                if (self.definitionCollection.hasOwnProperty(definitionKey)) {
                     clone[key] = [];
-                    // For collections, point to the default object. This allows restoring functions on items added to collections
-                    // at runtime.
-                    var pointer = self.definitionCollection[definitionKey] ? '_' + definitionKey : chainPointer + '_' + key;
-                    value.forEach(function (entry) {
-                        clone[key].push(self.cloneAndTransform(entry, pointer));
-                    });
+                    for (var n in value) {
+                        // For collections, point to the default object. This allows restoring functions on items added to collections
+                        // at runtime.
+                        var pointer = self.definitionCollection[definitionKey] && self.definitionCollection[definitionKey][n] ? '_' + definitionKey : chainPointer + '_' + key;
+                        clone[key].push(self.cloneAndTransform(value[n], pointer));
+                    }
                 }
                 else if (typeof value === "object" && value) {
                     clone[key] = self.cloneAndTransform(item[key], chainPointer + '_' + key);
@@ -112,13 +144,13 @@ var StoryScript;
                     pointerParts.shift();
                     pointerParts.shift();
                     // Traverse the original entity and its collections to get to the key value;
-                    for (var n in pointerParts) {
-                        if (original.toString() === 'adventureGame.Collection') {
-                            original = original.find(pointerParts[n]);
-                        }
-                        else {
-                            original = original[pointerParts[n]];
-                        }
+                    for (var i = 0; i < pointerParts.length; i++) {
+                        //if (original.first) {
+                        //    original = original.first(pointerParts[i]);
+                        //}
+                        //else {
+                        original = original[pointerParts[i]];
+                        //}
                         if (!original) {
                             break;
                         }
@@ -205,6 +237,232 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    var GameService = (function () {
+        function GameService(dataService, locationService, characterService, ruleService, game) {
+            var _this = this;
+            this.init = function () {
+                var self = _this;
+                var constructedGame = self.ruleService.getGame();
+                for (var n in constructedGame) {
+                    var value = constructedGame[n];
+                    if (typeof value == 'function') {
+                        self.game[n] = function () { return function () {
+                            var params = [];
+                            for (var _i = 0; _i < arguments.length; _i++) {
+                                params[_i - 0] = arguments[_i];
+                            }
+                            constructedGame[n].apply(self.game, params);
+                        }; }();
+                    }
+                    else {
+                        self.game[n] = constructedGame[n];
+                    }
+                }
+                self.locationService.init(self.game);
+                self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
+                self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
+                var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
+                if (locationName) {
+                    var lastLocation = self.game.locations.first(locationName);
+                    var previousLocationName = self.dataService.load(StoryScript.DataKeys.PREVIOUSLOCATION);
+                    if (previousLocationName) {
+                        self.game.previousLocation = self.game.locations.first(previousLocationName);
+                    }
+                    self.locationService.changeLocation(lastLocation, self.game);
+                    self.game.state = 'play';
+                }
+                else {
+                    self.game.state = 'createCharacter';
+                }
+                self.game.rollDice = self.rollDice;
+            };
+            this.reset = function () {
+                var self = _this;
+                self.dataService.save(StoryScript.DataKeys.WORLD, {});
+                //dataService.save(game.keys.HIGHSCORES, []);
+                self.locationService.init(self.game);
+                var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
+                if (location) {
+                    self.locationService.changeLocation(location, self.game);
+                }
+            };
+            this.startNewGame = function (characterData) {
+                var self = _this;
+                self.game.character = self.characterService.createCharacter(characterData);
+                self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
+                self.ruleService.startGame();
+            };
+            this.restart = function () {
+                var self = _this;
+                self.dataService.save(StoryScript.DataKeys.CHARACTER, {});
+                self.dataService.save(StoryScript.DataKeys.LOCATION, '');
+                self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
+                self.dataService.save(StoryScript.DataKeys.WORLD, {});
+                self.init();
+            };
+            this.saveGame = function () {
+                var self = _this;
+                self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
+                self.dataService.save(StoryScript.DataKeys.WORLD, { Locations: self.game.locations });
+            };
+            this.rollDice = function (input) {
+                //'xdy+/-z'
+                var positiveModifier = input.indexOf('+') > -1;
+                var splitResult = input.split('d');
+                var numberOfDice = parseInt(splitResult[0]);
+                splitResult = positiveModifier ? splitResult[1].split('+') : splitResult[1].split('-');
+                var dieCount = parseInt(splitResult[0]);
+                var bonus = parseInt(splitResult[1]);
+                bonus = isNaN(bonus) ? 0 : bonus;
+                bonus = positiveModifier ? bonus : bonus * -1;
+                var result = 0;
+                for (var i = 0; i < numberOfDice; i++) {
+                    result += Math.floor(Math.random() * dieCount + 1);
+                }
+                result += bonus;
+                return result;
+            };
+            var self = this;
+            self.dataService = dataService;
+            self.locationService = locationService;
+            self.characterService = characterService;
+            self.ruleService = ruleService;
+            self.game = game;
+        }
+        GameService.prototype.$get = function (dataService, locationService, characterService, ruleService, game) {
+            var self = this;
+            self.dataService = dataService;
+            self.locationService = locationService;
+            self.characterService = characterService;
+            self.ruleService = ruleService;
+            self.game = game;
+            return {
+                init: self.init,
+                startNewGame: self.startNewGame,
+                reset: self.reset,
+                restart: self.restart,
+                saveGame: self.saveGame,
+                rollDice: null
+            };
+        };
+        return GameService;
+    }());
+    StoryScript.GameService = GameService;
+    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game'];
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
+    function isEmpty(object, property) {
+        var objectToCheck = property ? object[property] : object;
+        return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
+    }
+    StoryScript.isEmpty = isEmpty;
+    function addFunctionExtensions() {
+        // Need to cast to any for ES5 and lower
+        if (Function.prototype.name === undefined) {
+            Object.defineProperty(Function.prototype, 'name', {
+                get: function () {
+                    return /function ([^(]*)/.exec(this + "")[1];
+                }
+            });
+        }
+        if (Function.prototype.proxy === undefined) {
+            Function.prototype.proxy = function (proxyFunction) {
+                var self = this;
+                return (function () {
+                    return function () {
+                        var args = [].slice.call(arguments);
+                        args.splice(0, 0, self);
+                        return proxyFunction.apply(this, args);
+                    };
+                })();
+            };
+        }
+    }
+    StoryScript.addFunctionExtensions = addFunctionExtensions;
+    function addArrayExtensions() {
+        Object.defineProperty(Array.prototype, 'first', {
+            enumerable: false,
+            value: function (id) {
+                if (id) {
+                    return find(id, this)[0];
+                }
+                else {
+                    return this[0];
+                }
+            }
+        });
+        Object.defineProperty(Array.prototype, 'all', {
+            enumerable: false,
+            value: function (id) {
+                return find(id, this);
+            }
+        });
+        Object.defineProperty(Array.prototype, 'remove', {
+            enumerable: false,
+            value: function (item) {
+                // Need to cast to any for ES5 and lower
+                var index = Array.prototype.findIndex.call(this, function (x) {
+                    return x === item || (item.id && x.id && item.id === x.id);
+                });
+                if (index != -1) {
+                    Array.prototype.splice.call(this, index, 1);
+                }
+            }
+        });
+    }
+    StoryScript.addArrayExtensions = addArrayExtensions;
+    function definitionToObject(definition) {
+        var item = definition();
+        // todo: type
+        // Need to cast to any for ES5 and lower
+        item.id = definition.name;
+        return item;
+    }
+    StoryScript.definitionToObject = definitionToObject;
+    function convertOjectToArray(item) {
+        var isArray = !isEmpty(item);
+        for (var n in item) {
+            if (isNaN(parseInt(n))) {
+                isArray = false;
+                break;
+            }
+        }
+        if (!isArray) {
+            return;
+        }
+        var newArray = [];
+        for (var n in item) {
+            newArray.push(item[n]);
+        }
+        return newArray;
+    }
+    StoryScript.convertOjectToArray = convertOjectToArray;
+    var DataKeys = (function () {
+        function DataKeys() {
+        }
+        DataKeys.HIGHSCORES = 'highScores';
+        DataKeys.CHARACTER = 'character';
+        DataKeys.LOCATION = 'location';
+        DataKeys.PREVIOUSLOCATION = 'previousLocation';
+        DataKeys.WORLD = 'world';
+        return DataKeys;
+    }());
+    StoryScript.DataKeys = DataKeys;
+    function find(id, array) {
+        if (typeof id === 'function') {
+            id = id.name;
+        }
+        return Array.prototype.filter.call(array, matchById(id));
+    }
+    function matchById(id) {
+        return function (x) {
+            return x.id === id || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name === id));
+        };
+    }
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
     var LocationService = (function () {
         function LocationService(dataService, ruleService) {
             var _this = this;
@@ -231,11 +489,9 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            self.locations = self.dataService.load(StoryScript.DataKeys.WORLD);
+            //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
             if (StoryScript.isEmpty(self.locations)) {
                 self.buildWorld();
-                self.dataService.save(StoryScript.DataKeys.WORLD, self.locations);
-                self.locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             }
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
@@ -427,243 +683,6 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
-    var CharacterService = (function () {
-        function CharacterService(dataService, ruleService) {
-            var self = this;
-            self.dataService = dataService;
-            self.ruleService = ruleService;
-        }
-        CharacterService.prototype.$get = function (dataService, ruleService) {
-            var self = this;
-            self.dataService = dataService;
-            self.ruleService = ruleService;
-            return {
-                createCharacter: self.createCharacter
-            };
-        };
-        CharacterService.prototype.createCharacter = function (characterData) {
-            var self = this;
-            var character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
-            if (StoryScript.isEmpty(character)) {
-                character = self.ruleService.createCharacter(characterData);
-            }
-            if (StoryScript.isEmpty(character.items)) {
-                character.items = [];
-            }
-            return character;
-        };
-        return CharacterService;
-    }());
-    StoryScript.CharacterService = CharacterService;
-    CharacterService.$inject = ['dataService', 'ruleService'];
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
-    var GameService = (function () {
-        function GameService(dataService, locationService, characterService, ruleService, game) {
-            var _this = this;
-            this.init = function () {
-                var self = _this;
-                var constructedGame = self.ruleService.getGame();
-                for (var n in constructedGame) {
-                    self.game[n] = constructedGame[n];
-                }
-                self.locationService.init(self.game);
-                self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
-                self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
-                var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
-                if (locationName) {
-                    var lastLocation = self.game.locations.first(locationName);
-                    var previousLocationName = self.dataService.load(StoryScript.DataKeys.PREVIOUSLOCATION);
-                    if (previousLocationName) {
-                        self.game.previousLocation = self.game.locations.first(previousLocationName);
-                    }
-                    self.locationService.changeLocation(lastLocation, self.game);
-                    self.game.state = 'play';
-                }
-                else {
-                    self.game.state = 'createCharacter';
-                }
-                self.game.rollDice = self.rollDice;
-            };
-            this.reset = function () {
-                var self = _this;
-                self.dataService.save(StoryScript.DataKeys.WORLD, {});
-                //dataService.save(game.keys.HIGHSCORES, []);
-                self.locationService.init(self.game);
-                var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
-                if (location) {
-                    self.locationService.changeLocation(location, self.game);
-                }
-            };
-            this.startNewGame = function (characterData) {
-                var self = _this;
-                self.game.character = self.characterService.createCharacter(characterData);
-                self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-                self.ruleService.startGame();
-            };
-            this.restart = function () {
-                var self = _this;
-                self.dataService.save(StoryScript.DataKeys.CHARACTER, {});
-                self.dataService.save(StoryScript.DataKeys.LOCATION, '');
-                self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
-                self.dataService.save(StoryScript.DataKeys.WORLD, {});
-                self.init();
-            };
-            this.saveGame = function () {
-                var self = _this;
-                self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-                self.dataService.save(StoryScript.DataKeys.WORLD, { locations: self.game.locations });
-            };
-            this.rollDice = function (input) {
-                //'xdy+/-z'
-                var positiveModifier = input.indexOf('+') > -1;
-                var splitResult = input.split('d');
-                var numberOfDice = parseInt(splitResult[0]);
-                splitResult = positiveModifier ? splitResult[1].split('+') : splitResult[1].split('-');
-                var dieCount = parseInt(splitResult[0]);
-                var bonus = parseInt(splitResult[1]);
-                bonus = isNaN(bonus) ? 0 : bonus;
-                bonus = positiveModifier ? bonus : bonus * -1;
-                var result = 0;
-                for (var i = 0; i < numberOfDice; i++) {
-                    result += Math.floor(Math.random() * dieCount + 1);
-                }
-                result += bonus;
-                return result;
-            };
-            var self = this;
-            self.dataService = dataService;
-            self.locationService = locationService;
-            self.characterService = characterService;
-            self.ruleService = ruleService;
-            self.game = game;
-        }
-        GameService.prototype.$get = function (dataService, locationService, characterService, ruleService, game) {
-            var self = this;
-            self.dataService = dataService;
-            self.locationService = locationService;
-            self.characterService = characterService;
-            self.ruleService = ruleService;
-            self.game = game;
-            return {
-                init: self.init,
-                startNewGame: self.startNewGame,
-                reset: self.reset,
-                restart: self.restart,
-                saveGame: self.saveGame,
-                rollDice: null
-            };
-        };
-        return GameService;
-    }());
-    StoryScript.GameService = GameService;
-    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game'];
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
-    function isEmpty(object, property) {
-        var objectToCheck = property ? object[property] : object;
-        return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
-    }
-    StoryScript.isEmpty = isEmpty;
-    function addFunctionExtensions() {
-        // Need to cast to any for ES5 and lower
-        if (Function.prototype.name === undefined) {
-            Object.defineProperty(Function.prototype, 'name', {
-                get: function () {
-                    return /function ([^(]*)/.exec(this + "")[1];
-                }
-            });
-        }
-        if (Function.prototype.proxy === undefined) {
-            Function.prototype.proxy = function (proxyFunction) {
-                var self = this;
-                return (function () {
-                    return function () {
-                        var args = [].slice.call(arguments);
-                        args.splice(0, 0, self);
-                        return proxyFunction.apply(this, args);
-                    };
-                })();
-            };
-        }
-    }
-    StoryScript.addFunctionExtensions = addFunctionExtensions;
-    function addArrayExtensions() {
-        Array.prototype.first = function (id) {
-            if (id) {
-                return find(id, this)[0];
-            }
-            else {
-                return this[0];
-            }
-        };
-        Array.prototype.all = function (id) {
-            return find(id, this);
-        };
-        Array.prototype.remove = function (item) {
-            // Need to cast to any for ES5 and lower
-            var index = Array.prototype.findIndex.call(this, function (x) {
-                return x === item || (item.id && x.id && item.id === x.id);
-            });
-            if (index != -1) {
-                Array.prototype.splice.call(this, index, 1);
-            }
-        };
-    }
-    StoryScript.addArrayExtensions = addArrayExtensions;
-    function definitionToObject(definition) {
-        var item = definition();
-        // todo: type
-        // Need to cast to any for ES5 and lower
-        item.id = definition.name;
-        return item;
-    }
-    StoryScript.definitionToObject = definitionToObject;
-    function convertOjectToArray(item) {
-        var isArray = !isEmpty(item);
-        for (var n in item) {
-            if (isNaN(parseInt(n))) {
-                isArray = false;
-                break;
-            }
-        }
-        if (!isArray) {
-            return;
-        }
-        var newArray = [];
-        for (var n in item) {
-            newArray.push(item[n]);
-        }
-        return newArray;
-    }
-    StoryScript.convertOjectToArray = convertOjectToArray;
-    var DataKeys = (function () {
-        function DataKeys() {
-        }
-        DataKeys.HIGHSCORES = 'highScores';
-        DataKeys.CHARACTER = 'character';
-        DataKeys.LOCATION = 'location';
-        DataKeys.PREVIOUSLOCATION = 'previousLocation';
-        DataKeys.WORLD = 'world';
-        return DataKeys;
-    }());
-    StoryScript.DataKeys = DataKeys;
-    function find(id, array) {
-        if (typeof id === 'function') {
-            id = id.name;
-        }
-        return Array.prototype.filter.call(array, matchById(id));
-    }
-    function matchById(id) {
-        return function (x) {
-            return x.id === id || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name === id));
-        };
-    }
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
     var MainController = (function () {
         function MainController($scope, $window, locationService, ruleService, gameService, game) {
             var _this = this;
@@ -816,6 +835,7 @@ var DangerousCave;
             this.vlugheid = 1;
             this.oplettendheid = 1;
             this.defense = 1;
+            this.items = [];
         }
         return Character;
     }());
@@ -836,7 +856,10 @@ var DangerousCave;
                 self.actionLog.splice(0, 0, message);
             };
             var self = this;
+            self.highScores = [];
             self.actionLog = [];
+            self.currentLocation = null;
+            self.previousLocation = null;
         }
         // Todo: only to overwrite. Use interface? Better typing?
         Game.prototype.changeLocation = function (location) { };

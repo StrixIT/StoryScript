@@ -14,7 +14,10 @@
 
         constructor() {
             var self = this;
+            self.highScores = [];
             self.actionLog = [];
+            self.currentLocation = null;
+            self.previousLocation = null;
         }
 
         logToLocationLog = (message: string) => {

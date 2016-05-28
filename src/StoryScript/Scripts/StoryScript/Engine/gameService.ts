@@ -50,7 +50,14 @@ module StoryScript {
             var constructedGame = self.ruleService.getGame();
 
             for (var n in constructedGame) {
-                self.game[n] = constructedGame[n];
+                var value = constructedGame[n];
+
+                if (typeof value == 'function') {
+                    self.game[n] = function() { return (...params) => { constructedGame[n].apply(self.game, params); } }();
+                }
+                else {
+                    self.game[n] = constructedGame[n];
+                }
             }
 
             self.locationService.init(self.game);
@@ -108,7 +115,7 @@ module StoryScript {
         saveGame = (): void => {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-            self.dataService.save(StoryScript.DataKeys.WORLD, { locations: self.game.locations });
+            self.dataService.save(StoryScript.DataKeys.WORLD, { Locations: self.game.locations });
         }
 
         rollDice = (input: string): number => {

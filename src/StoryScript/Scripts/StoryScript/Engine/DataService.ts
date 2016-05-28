@@ -102,16 +102,16 @@ module StoryScript {
                 var value = item[key];
                 var definitionKey = self.toDefinitionKey(key);
 
-                if (self.definitionCollection.hasOwnProperty(definitionKey) && self.definitionCollection[definitionKey].forEach) {
+                if (self.definitionCollection.hasOwnProperty(definitionKey)) {
                     clone[key] = [];
 
-                    // For collections, point to the default object. This allows restoring functions on items added to collections
-                    // at runtime.
-                    var pointer = self.definitionCollection[definitionKey] ? '_' + definitionKey : chainPointer + '_' + key;
+                    for (var n in value) {
+                        // For collections, point to the default object. This allows restoring functions on items added to collections
+                        // at runtime.
+                        var pointer = self.definitionCollection[definitionKey] && self.definitionCollection[definitionKey][n] ? '_' + definitionKey : chainPointer + '_' + key;
 
-                    value.forEach(function (entry) {
-                        clone[key].push(self.cloneAndTransform(entry, pointer));
-                    });
+                        clone[key].push(self.cloneAndTransform(value[n], pointer));
+                    }
                 }
                 else if (typeof value === "object" && value) {
                     clone[key] = self.cloneAndTransform(item[key], chainPointer + '_' + key);
@@ -149,13 +149,13 @@ module StoryScript {
                     pointerParts.shift();
 
                     // Traverse the original entity and its collections to get to the key value;
-                    for (var n in pointerParts) {
-                        if (original.toString() === 'adventureGame.Collection') {
-                            original = original.find(pointerParts[n]);
-                        }
-                        else {
-                            original = original[pointerParts[n]];
-                        }
+                    for (var i = 0; i < pointerParts.length; i++) {
+                        //if (original.first) {
+                        //    original = original.first(pointerParts[i]);
+                        //}
+                        //else {
+                            original = original[pointerParts[i]];
+                        //}
 
                         if (!original) {
                             break;

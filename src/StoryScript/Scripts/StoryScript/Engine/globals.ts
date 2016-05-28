@@ -30,29 +30,38 @@
     }
 
     export function addArrayExtensions() {
-        (<any>Array.prototype).first = function (id: any) {
-            if (id) {
-                return find(id, this)[0];
+        Object.defineProperty(Array.prototype, 'first', {
+            enumerable: false,
+            value: function (id: any) {
+                if (id) {
+                    return find(id, this)[0];
+                }
+                else {
+                    return this[0];
+                }
             }
-            else {
-                return this[0];
+        });
+
+        Object.defineProperty(Array.prototype, 'all', {
+            enumerable: false,
+            value: function (id: any) {
+                return find(id, this);
             }
-        };
+        });
 
-        (<any>Array.prototype).all = function (id: any) {
-            return find(id, this);
-        };
+        Object.defineProperty(Array.prototype, 'remove', {
+            enumerable: false,
+            value: function (item: any) {
+                // Need to cast to any for ES5 and lower
+                var index = (<any>Array.prototype).findIndex.call(this, function (x) {
+                    return x === item || (item.id && x.id && item.id === x.id);
+                });
 
-        (<any>Array.prototype).remove = function (item: any) {
-            // Need to cast to any for ES5 and lower
-            var index = (<any>Array.prototype).findIndex.call(this, function (x) {
-                return x === item || (item.id && x.id && item.id === x.id);
-            });
-
-            if (index != -1) {
-                Array.prototype.splice.call(this, index, 1);
+                if (index != -1) {
+                    Array.prototype.splice.call(this, index, 1);
+                }
             }
-        };
+        });
     }
 
     export function definitionToObject<T>(definition: Function): T {

@@ -138,12 +138,12 @@ var StoryScript;
                 var definitionKey = self.toDefinitionKey(key);
                 if (self.definitionCollection.hasOwnProperty(definitionKey)) {
                     clone[key] = [];
-                    // For collections, point to the default object. This allows restoring functions on items added to collections
-                    // at runtime.
-                    var pointer = self.definitionCollection[definitionKey] ? '_' + definitionKey : chainPointer + '_' + key;
-                    value.forEach(function (entry) {
-                        clone[key].push(self.cloneAndTransform(entry, pointer));
-                    });
+                    for (var n in value) {
+                        // For collections, point to the default object. This allows restoring functions on items added to collections
+                        // at runtime.
+                        var pointer = self.definitionCollection[definitionKey] && self.definitionCollection[definitionKey][n] ? '_' + definitionKey : chainPointer + '_' + key;
+                        clone[key].push(self.cloneAndTransform(value[n], pointer));
+                    }
                 }
                 else if (typeof value === "object" && value) {
                     clone[key] = self.cloneAndTransform(item[key], chainPointer + '_' + key);
@@ -174,13 +174,13 @@ var StoryScript;
                     pointerParts.shift();
                     pointerParts.shift();
                     // Traverse the original entity and its collections to get to the key value;
-                    for (var n in pointerParts) {
-                        if (original.toString() === 'adventureGame.Collection') {
-                            original = original.find(pointerParts[n]);
-                        }
-                        else {
-                            original = original[pointerParts[n]];
-                        }
+                    for (var i = 0; i < pointerParts.length; i++) {
+                        //if (original.first) {
+                        //    original = original.first(pointerParts[i]);
+                        //}
+                        //else {
+                        original = original[pointerParts[i]];
+                        //}
                         if (!original) {
                             break;
                         }
@@ -498,11 +498,9 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            self.locations = self.dataService.load(StoryScript.DataKeys.WORLD).Locations;
+            //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
             if (StoryScript.isEmpty(self.locations)) {
                 self.buildWorld();
-                self.dataService.save(StoryScript.DataKeys.WORLD, { Locations: self.locations });
-                self.locations = self.dataService.load(StoryScript.DataKeys.WORLD).Locations;
             }
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
