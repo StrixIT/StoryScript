@@ -13,6 +13,7 @@
         defense: number = 1;
 
         items: StoryScript.ICollection<StoryScript.IItem> = [];
+
         equipment: {
             head: StoryScript.IItem,
             amulet: StoryScript.IItem,
@@ -25,5 +26,20 @@
             legs: StoryScript.IItem,
             feet: StoryScript.IItem
         };
+
+        constructor() {
+            this.equipment = {
+                head: null,
+                amulet: null,
+                body: null,
+                hands: null,
+                leftHand: null,
+                leftRing: null,
+                rightHand: null,
+                rightRing: null,
+                legs: null,
+                feet: null
+            }
+        }
     }
 }

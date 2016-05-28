@@ -119,12 +119,37 @@
             self.executeAction.apply(this, args);
         }
 
-        changeLocation = (location) => {
+        changeLocation = (location: string) => {
             var self = this;
 
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location);
             self.gameService.saveGame();
+        }
+
+        pickupItem = (item: IItem): void => {
+            var self = this;
+            self.game.character.items.push(item);
+            self.game.currentLocation.items.remove(item);
+        }
+
+        dropItem = (item: IItem): void => {
+            var self = this;
+            self.game.character.items.remove(item);
+            self.game.currentLocation.items.push(item);
+        }
+
+        equip = (item: IItem) => {
+            var self = this;
+
+            var equippedItem = self.game.character.equipment[item.equipmentType];
+
+            if (equippedItem) {
+                self.game.character.items.push(equippedItem);
+            }
+
+            self.game.character.equipment[item.equipmentType] = item;
+            self.game.character.items.remove(item);
         }
     }
 

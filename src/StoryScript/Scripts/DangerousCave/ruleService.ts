@@ -12,7 +12,7 @@
             self.game = game;
 
             return {
-                getGame: self.getGame,
+                setupGame: self.setupGame,
                 getCharacterForm: self.getCharacterForm,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
@@ -22,8 +22,18 @@
             };
         }
 
-        getGame = (): StoryScript.IGame => {
-            return new Game();
+        setupGame = (game: StoryScript.IGame): void => {
+            game.highScores = [];
+            game.actionLog = [];
+
+            game.logToLocationLog = (message: string) => {
+                game.currentLocation.log = game.currentLocation.log || [];
+                game.currentLocation.log.push(message);
+            }
+
+            game.logToActionLog = (message: string) => {
+                game.actionLog.splice(0, 0, message);
+            }
         }
 
         public getCharacterForm() {
@@ -102,6 +112,20 @@
             self.addFleeAction(location);
         }
 
+        levelUp = (reward: string) => {
+            var self = this;
+
+            if (reward != 'gezondheid') {
+                self.game.character[reward]++;
+            }
+            else {
+                self.game.character.hitpoints += 10;
+                self.game.character.currentHitpoints += 10;
+            }
+
+            self.game.state = 'play';
+        }
+
         private addFleeAction(location: StoryScript.ICompiledLocation): void {
             var self = this;
             var numberOfEnemies = location.enemies.length;
@@ -119,6 +143,6 @@
 
     RuleService.$inject = ['game'];
 
-    var storyScript = angular.module("storyscript");
-    storyScript.service("ruleService", RuleService);
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("ruleService", RuleService);
 }

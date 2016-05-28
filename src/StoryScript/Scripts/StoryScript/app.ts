@@ -2,15 +2,15 @@
     addFunctionExtensions();
     addArrayExtensions();
 
-    var module = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
+    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
 
     var game = {};
-    module.value('game', game);
+    storyScriptModule.value('game', game);
 
-    module.service("dataService", DataService);
-    module.service("locationService", LocationService);
-    module.service("characterService", CharacterService);
-    module.service("gameService", GameService);
+    storyScriptModule.service("dataService", DataService);
+    storyScriptModule.service("locationService", LocationService);
+    storyScriptModule.service("characterService", CharacterService);
+    storyScriptModule.service("gameService", GameService);
 
-    module.controller("MainController", MainController);
+    storyScriptModule.controller("MainController", MainController);
 }

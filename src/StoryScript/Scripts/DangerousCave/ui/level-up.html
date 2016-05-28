@@ -1,9 +1,11 @@
-﻿<h1>Je wordt hier beter in!</h1>
-<div><span>Je hebt niveau {{ game.character.level }} bereikt!</span></div>
-<div>
-    <span>Wat wil je verbeteren?</span>
-    <select class="reward-select" ng-options="reward.value for reward in rewards" ng-model="game.selectedReward">
-        <option value="">-- Kies een beloning --</option>
-    </select>
+﻿<div ng-controller="LevelUpController as levelUp">
+    <h1>Je wordt hier beter in!</h1>
+    <div><span>Je hebt niveau {{ levelUp.game.character.level }} bereikt!</span></div>
+    <div>
+        <span>Wat wil je verbeteren?</span>
+        <select class="reward-select" ng-options="reward.value for reward in levelUp.rewards" ng-model="levelUp.selectedReward">
+            <option value="">-- Kies een beloning --</option>
+        </select>
+    </div>
+    <button type="button" class="btn btn-primary" ng-click="levelUp.claimReward()">Ok</button>
 </div>
-<button type="button" class="btn btn-primary" ng-click="claimReward()">Ok</button>

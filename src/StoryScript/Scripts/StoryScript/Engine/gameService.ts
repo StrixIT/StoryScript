@@ -46,20 +46,7 @@ module StoryScript {
 
         init = (): void => {
             var self = this;
-
-            var constructedGame = self.ruleService.getGame();
-
-            for (var n in constructedGame) {
-                var value = constructedGame[n];
-
-                if (typeof value == 'function') {
-                    self.game[n] = function() { return (...params) => { constructedGame[n].apply(self.game, params); } }();
-                }
-                else {
-                    self.game[n] = constructedGame[n];
-                }
-            }
-
+            self.ruleService.setupGame(self.game);
             self.locationService.init(self.game);
             self.game.highScores = self.dataService.load<string[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);

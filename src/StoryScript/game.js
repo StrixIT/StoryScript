@@ -272,10 +272,7 @@ var StoryScript;
             var _this = this;
             this.init = function () {
                 var self = _this;
-                var constructedGame = self.ruleService.getGame();
-                for (var n in constructedGame) {
-                    self.game[n] = constructedGame[n];
-                }
+                self.ruleService.setupGame(self.game);
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
                 self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
@@ -399,26 +396,35 @@ var StoryScript;
     }
     StoryScript.addFunctionExtensions = addFunctionExtensions;
     function addArrayExtensions() {
-        Array.prototype.first = function (id) {
-            if (id) {
-                return find(id, this)[0];
+        Object.defineProperty(Array.prototype, 'first', {
+            enumerable: false,
+            value: function (id) {
+                if (id) {
+                    return find(id, this)[0];
+                }
+                else {
+                    return this[0];
+                }
             }
-            else {
-                return this[0];
+        });
+        Object.defineProperty(Array.prototype, 'all', {
+            enumerable: false,
+            value: function (id) {
+                return find(id, this);
             }
-        };
-        Array.prototype.all = function (id) {
-            return find(id, this);
-        };
-        Array.prototype.remove = function (item) {
-            // Need to cast to any for ES5 and lower
-            var index = Array.prototype.findIndex.call(this, function (x) {
-                return x === item || (item.id && x.id && item.id === x.id);
-            });
-            if (index != -1) {
-                Array.prototype.splice.call(this, index, 1);
+        });
+        Object.defineProperty(Array.prototype, 'remove', {
+            enumerable: false,
+            value: function (item) {
+                // Need to cast to any for ES5 and lower
+                var index = Array.prototype.findIndex.call(this, function (x) {
+                    return x === item || (item.id && x.id && item.id === x.id);
+                });
+                if (index != -1) {
+                    Array.prototype.splice.call(this, index, 1);
+                }
             }
-        };
+        });
     }
     StoryScript.addArrayExtensions = addArrayExtensions;
     function definitionToObject(definition) {
@@ -814,6 +820,7 @@ var DangerousCave;
             this.vlugheid = 1;
             this.oplettendheid = 1;
             this.defense = 1;
+            this.items = [];
         }
         return Character;
     }());
@@ -823,18 +830,8 @@ var DangerousCave;
 (function (DangerousCave) {
     var Game = (function () {
         function Game() {
-            var _this = this;
-            this.logToLocationLog = function (message) {
-                var self = _this;
-                self.currentLocation.log = self.currentLocation.log || [];
-                self.currentLocation.log.push(message);
-            };
-            this.logToActionLog = function (message) {
-                var self = _this;
-                self.actionLog.splice(0, 0, message);
-            };
-            var self = this;
-            self.actionLog = [];
+            this.logToLocationLog = function (message) { };
+            this.logToActionLog = function (message) { };
         }
         // Todo: only to overwrite. Use interface? Better typing?
         Game.prototype.changeLocation = function (location) { };
@@ -847,8 +844,16 @@ var DangerousCave;
 (function (DangerousCave) {
     var RuleService = (function () {
         function RuleService(game) {
-            this.getGame = function () {
-                return new DangerousCave.Game();
+            this.setupGame = function (game) {
+                game.highScores = [];
+                game.actionLog = [];
+                game.logToLocationLog = function (message) {
+                    game.currentLocation.log = game.currentLocation.log || [];
+                    game.currentLocation.log.push(message);
+                };
+                game.logToActionLog = function (message) {
+                    game.actionLog.splice(0, 0, message);
+                };
             };
             var self = this;
             self.game = game;
@@ -857,7 +862,7 @@ var DangerousCave;
             var self = this;
             self.game = game;
             return {
-                getGame: self.getGame,
+                setupGame: self.setupGame,
                 getCharacterForm: self.getCharacterForm,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,

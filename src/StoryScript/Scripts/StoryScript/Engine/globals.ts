@@ -1,4 +1,19 @@
 ﻿module StoryScript {
+    // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
+    if ((<any>Function.prototype).proxy === undefined) {
+        (<any>Function.prototype).proxy = function (proxyFunction: Function) {
+            var self = this;
+
+            return (function () {
+                return function () {
+                    var args = [].slice.call(arguments);
+                    args.splice(0, 0, self);
+                    return proxyFunction.apply(this, args);
+                };
+            })();
+        };
+    }
+
     export function isEmpty(object: any, property?: string) {
         var objectToCheck = property ? object[property] : object;
         return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
@@ -12,20 +27,6 @@
                     return /function ([^(]*)/.exec(this + "")[1];
                 }
             });
-        }
-
-        if ((<any>Function.prototype).proxy === undefined) {
-            (<any>Function.prototype).proxy = function (proxyFunction: Function) {
-                var self = this;
-
-                return (function () {
-                    return function () {
-                        var args = [].slice.call(arguments);
-                        args.splice(0, 0, self);
-                        return proxyFunction.apply(this, args);
-                    };
-                })();
-            };
         }
     }
 

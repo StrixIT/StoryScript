@@ -31,6 +31,6 @@
 <fieldset ng-if="!controller.enemiesPresent()">
     <legend>Dit ligt hier</legend>
     <ul>
-        <li ng-repeat="item in controller.game.currentLocation.items track by $index" ng-click="pickup(item)">{{ item.name }}</li>
+        <li ng-repeat="item in controller.game.currentLocation.items track by $index" ng-click="controller.pickup(item)">{{ item.name }}</li>
     </ul>
 </fieldset>

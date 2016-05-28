@@ -16,6 +16,6 @@
 
     //TextService.$inject = [];
 
-    var storyScript = angular.module("storyscript");
-    storyScript.service("textService", TextService);
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
 }

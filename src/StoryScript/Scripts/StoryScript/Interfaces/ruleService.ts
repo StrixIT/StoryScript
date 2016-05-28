@@ -1,6 +1,6 @@
 ﻿module StoryScript {
     export interface IRuleService {
-        getGame(): IGame;
+        setupGame(game: StoryScript.IGame): void;
         getCharacterForm(): any;
         createCharacter(characterData: any): ICharacter;
         startGame(): void;

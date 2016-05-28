@@ -242,22 +242,7 @@ var StoryScript;
             var _this = this;
             this.init = function () {
                 var self = _this;
-                var constructedGame = self.ruleService.getGame();
-                for (var n in constructedGame) {
-                    var value = constructedGame[n];
-                    if (typeof value == 'function') {
-                        self.game[n] = function () { return function () {
-                            var params = [];
-                            for (var _i = 0; _i < arguments.length; _i++) {
-                                params[_i - 0] = arguments[_i];
-                            }
-                            constructedGame[n].apply(self.game, params);
-                        }; }();
-                    }
-                    else {
-                        self.game[n] = constructedGame[n];
-                    }
-                }
+                self.ruleService.setupGame(self.game);
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
                 self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
@@ -352,6 +337,18 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    if (Function.prototype.proxy === undefined) {
+        Function.prototype.proxy = function (proxyFunction) {
+            var self = this;
+            return (function () {
+                return function () {
+                    var args = [].slice.call(arguments);
+                    args.splice(0, 0, self);
+                    return proxyFunction.apply(this, args);
+                };
+            })();
+        };
+    }
     function isEmpty(object, property) {
         var objectToCheck = property ? object[property] : object;
         return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
@@ -365,18 +362,6 @@ var StoryScript;
                     return /function ([^(]*)/.exec(this + "")[1];
                 }
             });
-        }
-        if (Function.prototype.proxy === undefined) {
-            Function.prototype.proxy = function (proxyFunction) {
-                var self = this;
-                return (function () {
-                    return function () {
-                        var args = [].slice.call(arguments);
-                        args.splice(0, 0, self);
-                        return proxyFunction.apply(this, args);
-                    };
-                })();
-            };
         }
     }
     StoryScript.addFunctionExtensions = addFunctionExtensions;
@@ -758,6 +743,25 @@ var StoryScript;
                 self.game.changeLocation(location);
                 self.gameService.saveGame();
             };
+            this.pickupItem = function (item) {
+                var self = _this;
+                self.game.character.items.push(item);
+                self.game.currentLocation.items.remove(item);
+            };
+            this.dropItem = function (item) {
+                var self = _this;
+                self.game.character.items.remove(item);
+                self.game.currentLocation.items.push(item);
+            };
+            this.equip = function (item) {
+                var self = _this;
+                var equippedItem = self.game.character.equipment[item.equipmentType];
+                if (equippedItem) {
+                    self.game.character.items.push(equippedItem);
+                }
+                self.game.character.equipment[item.equipmentType] = item;
+                self.game.character.items.remove(item);
+            };
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
@@ -815,14 +819,14 @@ var StoryScript;
 (function (StoryScript) {
     StoryScript.addFunctionExtensions();
     StoryScript.addArrayExtensions();
-    var module = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
+    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
     var game = {};
-    module.value('game', game);
-    module.service("dataService", StoryScript.DataService);
-    module.service("locationService", StoryScript.LocationService);
-    module.service("characterService", StoryScript.CharacterService);
-    module.service("gameService", StoryScript.GameService);
-    module.controller("MainController", StoryScript.MainController);
+    storyScriptModule.value('game', game);
+    storyScriptModule.service("dataService", StoryScript.DataService);
+    storyScriptModule.service("locationService", StoryScript.LocationService);
+    storyScriptModule.service("characterService", StoryScript.CharacterService);
+    storyScriptModule.service("gameService", StoryScript.GameService);
+    storyScriptModule.controller("MainController", StoryScript.MainController);
 })(StoryScript || (StoryScript = {}));
 var DangerousCave;
 (function (DangerousCave) {
@@ -836,6 +840,18 @@ var DangerousCave;
             this.oplettendheid = 1;
             this.defense = 1;
             this.items = [];
+            this.equipment = {
+                head: null,
+                amulet: null,
+                body: null,
+                hands: null,
+                leftHand: null,
+                leftRing: null,
+                rightHand: null,
+                rightRing: null,
+                legs: null,
+                feet: null
+            };
         }
         return Character;
     }());
@@ -845,21 +861,8 @@ var DangerousCave;
 (function (DangerousCave) {
     var Game = (function () {
         function Game() {
-            var _this = this;
-            this.logToLocationLog = function (message) {
-                var self = _this;
-                self.currentLocation.log = self.currentLocation.log || [];
-                self.currentLocation.log.push(message);
-            };
-            this.logToActionLog = function (message) {
-                var self = _this;
-                self.actionLog.splice(0, 0, message);
-            };
-            var self = this;
-            self.highScores = [];
-            self.actionLog = [];
-            self.currentLocation = null;
-            self.previousLocation = null;
+            this.logToLocationLog = function (message) { };
+            this.logToActionLog = function (message) { };
         }
         // Todo: only to overwrite. Use interface? Better typing?
         Game.prototype.changeLocation = function (location) { };
@@ -870,10 +873,55 @@ var DangerousCave;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
+    var LevelUpController = (function () {
+        function LevelUpController($scope, ruleService, game) {
+            var _this = this;
+            this.levelUp = function () {
+                var self = _this;
+                self.ruleService.levelUp(self.selectedReward.name);
+            };
+            var self = this;
+            self.$scope = $scope;
+            self.ruleService = ruleService;
+            self.game = game;
+            self.init();
+        }
+        LevelUpController.prototype.init = function () {
+            var self = this;
+        };
+        return LevelUpController;
+    }());
+    DangerousCave.LevelUpController = LevelUpController;
+    LevelUpController.$inject = ['$scope', 'ruleService', 'game'];
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.controller("LevelUpController", LevelUpController);
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var RuleService = (function () {
         function RuleService(game) {
-            this.getGame = function () {
-                return new DangerousCave.Game();
+            var _this = this;
+            this.setupGame = function (game) {
+                game.highScores = [];
+                game.actionLog = [];
+                game.logToLocationLog = function (message) {
+                    game.currentLocation.log = game.currentLocation.log || [];
+                    game.currentLocation.log.push(message);
+                };
+                game.logToActionLog = function (message) {
+                    game.actionLog.splice(0, 0, message);
+                };
+            };
+            this.levelUp = function (reward) {
+                var self = _this;
+                if (reward != 'gezondheid') {
+                    self.game.character[reward]++;
+                }
+                else {
+                    self.game.character.hitpoints += 10;
+                    self.game.character.currentHitpoints += 10;
+                }
+                self.game.state = 'play';
             };
             var self = this;
             self.game = game;
@@ -882,7 +930,7 @@ var DangerousCave;
             var self = this;
             self.game = game;
             return {
-                getGame: self.getGame,
+                setupGame: self.setupGame,
                 getCharacterForm: self.getCharacterForm,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
@@ -976,8 +1024,8 @@ var DangerousCave;
     }());
     DangerousCave.RuleService = RuleService;
     RuleService.$inject = ['game'];
-    var storyScript = angular.module("storyscript");
-    storyScript.service("ruleService", RuleService);
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("ruleService", RuleService);
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
@@ -997,8 +1045,8 @@ var DangerousCave;
     }());
     DangerousCave.TextService = TextService;
     //TextService.$inject = [];
-    var storyScript = angular.module("storyscript");
-    storyScript.service("textService", TextService);
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
 })(DangerousCave || (DangerousCave = {}));
 var StoryScript;
 (function (StoryScript) {
