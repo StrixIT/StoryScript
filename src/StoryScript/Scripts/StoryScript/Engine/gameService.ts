@@ -6,6 +6,10 @@
         restart(): void;
         saveGame(): void;
         rollDice(dice: string): number;
+        fight(enemy: IEnemy): void;
+        scoreChange(change: number): void;
+        hitpointsChange(change: number): void;
+        changeGameState(state: string): void;
     }
 }
 
@@ -40,7 +44,11 @@ module StoryScript {
                 reset: self.reset,
                 restart: self.restart,
                 saveGame: self.saveGame,
-                rollDice: null
+                rollDice: self.rollDice,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange,
+                changeGameState: self.changeGameState
             };
         }
 
@@ -48,7 +56,7 @@ module StoryScript {
             var self = this;
             self.ruleService.setupGame(self.game);
             self.locationService.init(self.game);
-            self.game.highScores = self.dataService.load<string[]>(StoryScript.DataKeys.HIGHSCORES);
+            self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
 
             var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
@@ -69,6 +77,7 @@ module StoryScript {
             }
 
             self.game.rollDice = self.rollDice;
+            self.game.calculateBonus = (person: ICharacter, type: string) => { return self.calculateBonus(self.game, person, type); };
         }
 
         reset = () => {
@@ -122,6 +131,103 @@ module StoryScript {
 
             result += bonus;
             return result;
+        }
+
+        calculateBonus = (game: IGame, person: ICharacter, type: string) => {
+            var self = this;
+            var bonus = 0;
+
+            if (game.character == person) {
+                for (var n in person.equipment) {
+                    var item = <IItem>person.equipment[n];
+
+                    if (item && item.bonuses && item.bonuses[type]) {
+                        bonus += item.bonuses[type];
+                    }
+                };
+            }
+            else {
+                person.items.forEach(function (item) {
+                    if (item && item.bonuses && item.bonuses[type]) {
+                        bonus += item.bonuses[type];
+                    }
+                });
+            }
+
+            return bonus;
+        }
+
+        fight = (enemy: IEnemy) => {
+            var self = this;
+            self.ruleService.fight(enemy);
+        }
+
+        scoreChange = (change: number): void => {
+            var self = this;
+
+            // Todo: change if xp can be lost.
+            if (change > 0) {
+                var character = self.game.character;
+                character.scoreToNextLevel += change;
+                var levelUp = self.ruleService.scoreChange(change);
+
+                if (levelUp) {
+                    character.level += 1;
+                    character.scoreToNextLevel = 0;
+                    self.game.state = 'levelUp';
+                }
+            }
+        }
+
+        hitpointsChange = (change: number): void => {
+            var self = this;
+            self.ruleService.hitpointsChange(change);
+
+            if (self.game.character.currentHitpoints <= 0) {
+                self.game.state = 'gameOver';
+            }
+        }
+
+        changeGameState = (state: string) => {
+            var self = this;
+
+            if (state == 'gameOver' || state == 'victory') {
+                self.updateHighScore();
+                self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
+            }
+        }
+
+        private updateHighScore(): void {
+            var self = this;
+
+            var scoreEntry = { name: self.game.character.name, score: self.game.character.score };
+
+            if (!self.game.highScores || !self.game.highScores.length) {
+                self.game.highScores = [];
+            }
+
+            var scoreAdded = false;
+
+            self.game.highScores.forEach((entry) => {
+                if (self.game.character.score > entry.score && !scoreAdded) {
+                    var index = self.game.highScores.indexOf(entry);
+
+                    if (self.game.highScores.length >= 5) {
+                        self.game.highScores.splice(index, 1, scoreEntry);
+                    }
+                    else {
+                        self.game.highScores.splice(index, 0, scoreEntry);
+                    }
+
+                    scoreAdded = true;
+                }
+            });
+
+            if (self.game.highScores.length < 5 && !scoreAdded) {
+                self.game.highScores.push(scoreEntry);
+            }
+
+            self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
         }
     }
 

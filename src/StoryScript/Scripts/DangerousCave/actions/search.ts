@@ -21,14 +21,9 @@ module StoryScript.Actions {
                 var result;
                 result = check * game.character.oplettendheid;
 
-                for (var n in game.currentLocation.actions) {
-                    var action = game.currentLocation.actions[n];
-
-                    if (action.text == text) {
-                        delete game.currentLocation.actions[n];
-                        break;
-                    }
-                }
+                // Todo: think of something simpler to remove actions.
+                var action = game.currentLocation.actions.first({ callBack: (x: IAction) => { return x.text === text; } });
+                game.currentLocation.actions.remove(action);
 
                 if (result >= settings.difficulty) {
                     settings.success(game);

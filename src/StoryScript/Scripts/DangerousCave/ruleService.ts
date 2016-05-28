@@ -18,7 +18,10 @@
                 startGame: self.startGame,
                 addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
-                initCombat: self.initCombat
+                initCombat: self.initCombat,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange
             };
         }
 
@@ -126,6 +129,51 @@
             self.game.state = 'play';
         }
 
+        fight = (enemyToFight: StoryScript.IEnemy) => {
+            var self = this;
+
+            // Todo: change when multiple enemies of the same type can be present.
+            var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+            var check = self.game.rollDice(self.game.character.kracht + 'd6');
+
+            var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
+            self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+
+            enemy.hitpoints -= characterDamage;
+
+            // Todo: move to game service
+            if (enemy.hitpoints <= 0) {
+                self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
+
+                if (enemy.items && enemy.items.length) {
+                    enemy.items.forEach(function (item) {
+                        // Todo: type
+                        self.game.currentLocation.items.push(<any>item);
+                    });
+
+                    enemy.items.splice(0, enemy.items.length);
+                }
+
+                if (enemy.reward) {
+                    self.game.character.score += enemy.reward;
+                }
+
+                if (enemy.onDefeat) {
+                    enemy.onDefeat(self.game);
+                }
+
+                self.game.currentLocation.enemies.remove(enemy);
+            }
+
+            self.game.currentLocation.enemies.forEach(function (enemy) {
+                var check = self.game.rollDice(enemy.attack);
+                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
+                self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                self.game.character.currentHitpoints -= enemyDamage;
+            });
+        }
+
         private addFleeAction(location: StoryScript.ICompiledLocation): void {
             var self = this;
             var numberOfEnemies = location.enemies.length;
@@ -138,6 +186,28 @@
             if (numberOfEnemies < (<Character>self.game.character).vlugheid) {
                 location.combatActions.push(StoryScript.Actions.Flee(''));
             }
+        }
+
+        hitpointsChange(change: number) {
+            var self = this;
+
+            if (self.game.character.hitpoints < 5) {
+                self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
+            }
+        }
+
+        scoreChange(change: number): boolean {
+            var self = this;
+            var character = self.game.character;
+            var levelUp = character.level >= 1 && character.scoreToNextLevel >= 2 + (2 * (character.level));
+
+            self.game.logToActionLog('Je verdient ' + change + ' punt(en)');
+
+            if (levelUp) {
+                self.game.logToActionLog('Je wordt hier beter in! Je bent nu niveau ' + character.level);
+            }
+
+            return levelUp;
         }
     }
 

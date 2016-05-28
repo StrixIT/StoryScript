@@ -39,14 +39,12 @@ module StoryScript {
 
         public loadWorld(): ICollection<ICompiledLocation> {
             var self = this;
-            var locations = null;
-
-            //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
+            var locations = null;//<ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
 
             if (isEmpty(locations)) {
                 locations = self.buildWorld();
-                //self.dataService.save(DataKeys.WORLD, { Locations: self.locations });
-                //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
+                //self.dataService.save(DataKeys.WORLD, { Locations: locations });
+                //locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
             }
 
             // Add a proxy to the destination collection push function, to replace the target function pointer

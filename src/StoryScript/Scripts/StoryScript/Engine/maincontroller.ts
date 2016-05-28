@@ -28,6 +28,14 @@
             self.gameService.init();
             self.createCharacterForm = self.ruleService.getCharacterForm();
             self.reset = () => { self.gameService.reset.call(self.gameService); };
+
+            // Todo: type
+            (<any>self.$scope).game = self.game;
+
+            // Watch functions.
+            self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
+            self.$scope.$watch('game.character.score', self.watchCharacterScore);
+            self.$scope.$watch('game.state', self.watchGameState);
         }
 
         startNewGame = () => {
@@ -150,6 +158,31 @@
 
             self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]] = item;
             self.game.character.items.remove(item);
+        }
+
+        fight = (enemy: IEnemy) => {
+            var self = this;
+            self.gameService.fight(enemy);
+        }
+
+        private watchCharacterHitpoints(newValue, oldValue, scope) {
+            if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
+                var change = newValue - oldValue;
+                scope.controller.gameService.hitpointsChange(change);
+            }
+        }
+
+        private watchCharacterScore(newValue, oldValue, scope) {
+            if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
+                var increase = newValue - oldValue;
+                scope.controller.gameService.scoreChange(increase);
+            }
+        }
+
+        private watchGameState(newValue, oldValue, scope) {
+            if (newValue != undefined) {
+                scope.controller.gameService.changeGameState(newValue);
+            }
         }
     }
 

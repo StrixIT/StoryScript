@@ -7,5 +7,8 @@
         addEnemyToLocation(location: ICompiledLocation, enemy: IEnemy): void;
         enterLocation(location: ICompiledLocation): void;
         initCombat(location: ICompiledLocation): void;
+        fight(enemy: IEnemy): void;
+        hitpointsChange(change: number): void;
+        scoreChange(change: number): boolean;
     }
 }

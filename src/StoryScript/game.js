@@ -2,14 +2,14 @@ var StoryScript;
 (function (StoryScript) {
     StoryScript.addFunctionExtensions();
     StoryScript.addArrayExtensions();
-    var module = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
+    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
     var game = {};
-    module.value('game', game);
-    module.service("dataService", StoryScript.DataService);
-    module.service("locationService", StoryScript.LocationService);
-    module.service("characterService", StoryScript.CharacterService);
-    module.service("gameService", StoryScript.GameService);
-    module.controller("MainController", StoryScript.MainController);
+    storyScriptModule.value('game', game);
+    storyScriptModule.service("dataService", StoryScript.DataService);
+    storyScriptModule.service("locationService", StoryScript.LocationService);
+    storyScriptModule.service("characterService", StoryScript.CharacterService);
+    storyScriptModule.service("gameService", StoryScript.GameService);
+    storyScriptModule.controller("MainController", StoryScript.MainController);
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -27,6 +27,15 @@ var StoryScript;
         EquipmentType[EquipmentType["Miscellaneous"] = 10] = "Miscellaneous";
     })(StoryScript.EquipmentType || (StoryScript.EquipmentType = {}));
     var EquipmentType = StoryScript.EquipmentType;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
+    var ScoreEntry = (function () {
+        function ScoreEntry() {
+        }
+        return ScoreEntry;
+    }());
+    StoryScript.ScoreEntry = ScoreEntry;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -290,11 +299,11 @@ var StoryScript;
                     self.game.state = 'createCharacter';
                 }
                 self.game.rollDice = self.rollDice;
+                self.game.calculateBonus = function (person, type) { return self.calculateBonus(self.game, person, type); };
             };
             this.reset = function () {
                 var self = _this;
                 self.dataService.save(StoryScript.DataKeys.WORLD, {});
-                //dataService.save(game.keys.HIGHSCORES, []);
                 self.locationService.init(self.game);
                 var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
                 if (location) {
@@ -337,6 +346,59 @@ var StoryScript;
                 result += bonus;
                 return result;
             };
+            this.calculateBonus = function (game, person, type) {
+                var self = _this;
+                var bonus = 0;
+                if (game.character == person) {
+                    for (var n in person.equipment) {
+                        var item = person.equipment[n];
+                        if (item[type]) {
+                            bonus += item[type];
+                        }
+                    }
+                    ;
+                }
+                else {
+                    person.items.forEach(function (item) {
+                        if (item[type]) {
+                            bonus += item[type];
+                        }
+                    });
+                }
+                return bonus;
+            };
+            this.fight = function (enemy) {
+                var self = _this;
+                self.ruleService.fight(enemy);
+            };
+            this.scoreChange = function (change) {
+                var self = _this;
+                // Todo: change if xp can be lost.
+                if (change > 0) {
+                    var character = self.game.character;
+                    character.scoreToNextLevel += change;
+                    var levelUp = self.ruleService.scoreChange(change);
+                    if (levelUp) {
+                        character.level += 1;
+                        character.scoreToNextLevel = 0;
+                        self.game.state = 'levelUp';
+                    }
+                }
+            };
+            this.hitpointsChange = function (change) {
+                var self = _this;
+                self.ruleService.hitpointsChange(change);
+                if (change <= 0) {
+                    self.game.state = 'gameOver';
+                }
+            };
+            this.changeGameState = function (state) {
+                var self = _this;
+                if (state == 'gameOver' || state == 'victory') {
+                    self.updateHighScore();
+                    self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
+                }
+            };
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
@@ -357,8 +419,36 @@ var StoryScript;
                 reset: self.reset,
                 restart: self.restart,
                 saveGame: self.saveGame,
-                rollDice: null
+                rollDice: self.rollDice,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange,
+                changeGameState: self.changeGameState
             };
+        };
+        GameService.prototype.updateHighScore = function () {
+            var self = this;
+            var scoreEntry = { name: self.game.character.name, score: self.game.character.score };
+            if (!self.game.highScores || !self.game.highScores.length) {
+                self.game.highScores = [];
+            }
+            var scoreAdded = false;
+            self.game.highScores.forEach(function (entry) {
+                if (self.game.character.score > entry.score && !scoreAdded) {
+                    var index = self.game.highScores.indexOf(entry);
+                    if (self.game.highScores.length >= 5) {
+                        self.game.highScores.splice(index, 1, scoreEntry);
+                    }
+                    else {
+                        self.game.highScores.splice(index, 0, scoreEntry);
+                    }
+                    scoreAdded = true;
+                }
+            });
+            if (self.game.highScores.length < 5 && !scoreAdded) {
+                self.game.highScores.push(scoreEntry);
+            }
+            self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
         };
         return GameService;
     }());
@@ -367,6 +457,19 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
+    if (Function.prototype.proxy === undefined) {
+        Function.prototype.proxy = function (proxyFunction) {
+            var self = this;
+            return (function () {
+                return function () {
+                    var args = [].slice.call(arguments);
+                    args.splice(0, 0, self);
+                    return proxyFunction.apply(this, args);
+                };
+            })();
+        };
+    }
     function isEmpty(object, property) {
         var objectToCheck = property ? object[property] : object;
         return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
@@ -380,18 +483,6 @@ var StoryScript;
                     return /function ([^(]*)/.exec(this + "")[1];
                 }
             });
-        }
-        if (Function.prototype.proxy === undefined) {
-            Function.prototype.proxy = function (proxyFunction) {
-                var self = this;
-                return (function () {
-                    return function () {
-                        var args = [].slice.call(arguments);
-                        args.splice(0, 0, self);
-                        return proxyFunction.apply(this, args);
-                    };
-                })();
-            };
         }
     }
     StoryScript.addFunctionExtensions = addFunctionExtensions;
@@ -468,7 +559,8 @@ var StoryScript;
         if (typeof id === 'function') {
             id = id.name;
         }
-        return Array.prototype.filter.call(array, matchById(id));
+        var callBack = id.callBack ? id.callBack : matchById(id);
+        return Array.prototype.filter.call(array, callBack);
     }
     function matchById(id) {
         return function (x) {
@@ -504,20 +596,20 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
-            if (StoryScript.isEmpty(self.locations)) {
-                self.buildWorld();
+            var locations = null; //<ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
+            if (StoryScript.isEmpty(locations)) {
+                locations = self.buildWorld();
             }
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
-            self.locations.forEach(function (location) {
+            locations.forEach(function (location) {
                 location.destinations = location.destinations || [];
                 location.destinations.push = location.destinations.push.proxy(self.addDestination);
                 location.enemies = location.enemies || [];
                 location.enemies.push = location.enemies.push.proxy(self.addEnemy);
                 location.combatActions = location.combatActions || [];
             });
-            return self.locations;
+            return locations;
         };
         LocationService.prototype.changeLocation = function (location, game) {
             var self = this;
@@ -548,7 +640,7 @@ var StoryScript;
             // if that is the case.
             if (game.currentLocation.destinations) {
                 game.currentLocation.destinations.forEach(function (destination) {
-                    if (destination.target && destination.target == game.previousLocation.id) {
+                    if (game.previousLocation && destination.target && destination.target == game.previousLocation.id) {
                         destination.isPreviousLocation = true;
                     }
                     if (destination.barrier && destination.barrier.key) {
@@ -562,7 +654,9 @@ var StoryScript;
             }
             // Save the previous and current location, then get the location text.
             self.dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
-            self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+            if (game.previousLocation) {
+                self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+            }
             self.loadLocationDescriptions(game);
             self.ruleService.initCombat(game.currentLocation);
             self.ruleService.enterLocation(game.currentLocation);
@@ -574,8 +668,8 @@ var StoryScript;
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
-            self.locations = [];
             var locations = window['StoryScript']['Locations'];
+            var compiledLocations = [];
             for (var n in locations) {
                 var definition = locations[n];
                 var location = StoryScript.definitionToObject(definition);
@@ -586,8 +680,9 @@ var StoryScript;
                 self.setDestinations(location);
                 self.buildEnemies(location);
                 self.buildItems(location);
-                self.locations.push(location);
+                compiledLocations.push(location);
             }
+            return compiledLocations;
         };
         LocationService.prototype.setDestinations = function (location) {
             var self = this;
@@ -773,6 +868,29 @@ var StoryScript;
                 self.game.changeLocation(location);
                 self.gameService.saveGame();
             };
+            this.pickupItem = function (item) {
+                var self = _this;
+                self.game.character.items.push(item);
+                self.game.currentLocation.items.remove(item);
+            };
+            this.dropItem = function (item) {
+                var self = _this;
+                self.game.character.items.remove(item);
+                self.game.currentLocation.items.push(item);
+            };
+            this.equipItem = function (item) {
+                var self = _this;
+                var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]];
+                if (equippedItem) {
+                    self.game.character.items.push(equippedItem);
+                }
+                self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]] = item;
+                self.game.character.items.remove(item);
+            };
+            this.fight = function (enemy) {
+                var self = _this;
+                self.gameService.fight(enemy);
+            };
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
@@ -790,6 +908,12 @@ var StoryScript;
             self.gameService.init();
             self.createCharacterForm = self.ruleService.getCharacterForm();
             self.reset = function () { self.gameService.reset.call(self.gameService); };
+            // Todo: type
+            self.$scope.game = self.game;
+            // Watch functions.
+            self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
+            self.$scope.$watch('game.character.score', self.watchCharacterScore);
+            self.$scope.$watch('game.state', self.watchGameState);
         };
         MainController.prototype.executeAction = function (action) {
             var self = this;
@@ -803,6 +927,20 @@ var StoryScript;
                 // After each action, save the game.
                 self.gameService.saveGame();
             }
+        };
+        MainController.prototype.watchCharacterHitpoints = function (newValue, oldValue) {
+            var self = this;
+            var change = newValue - oldValue;
+            self.gameService.hitpointsChange(change);
+        };
+        MainController.prototype.watchCharacterScore = function (newValue, oldValue) {
+            var self = this;
+            var increase = newValue - oldValue;
+            self.gameService.scoreChange(increase);
+        };
+        MainController.prototype.watchGameState = function (newValue, oldValue) {
+            var self = this;
+            self.gameService.changeGameState(newValue);
         };
         return MainController;
     }());
@@ -821,6 +959,18 @@ var DangerousCave;
             this.oplettendheid = 1;
             this.defense = 1;
             this.items = [];
+            this.equipment = {
+                head: null,
+                amulet: null,
+                body: null,
+                hands: null,
+                leftHand: null,
+                leftRing: null,
+                rightHand: null,
+                rightRing: null,
+                legs: null,
+                feet: null
+            };
         }
         return Character;
     }());
@@ -836,14 +986,41 @@ var DangerousCave;
         // Todo: only to overwrite. Use interface? Better typing?
         Game.prototype.changeLocation = function (location) { };
         Game.prototype.rollDice = function (dice) { return 0; };
+        Game.prototype.calculateBonus = function (person, type) { return 0; };
         return Game;
     }());
     DangerousCave.Game = Game;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
+    var LevelUpController = (function () {
+        function LevelUpController($scope, ruleService, game) {
+            var _this = this;
+            this.levelUp = function () {
+                var self = _this;
+                self.ruleService.levelUp(self.selectedReward.name);
+            };
+            var self = this;
+            self.$scope = $scope;
+            self.ruleService = ruleService;
+            self.game = game;
+            self.init();
+        }
+        LevelUpController.prototype.init = function () {
+            var self = this;
+        };
+        return LevelUpController;
+    }());
+    DangerousCave.LevelUpController = LevelUpController;
+    LevelUpController.$inject = ['$scope', 'ruleService', 'game'];
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.controller("LevelUpController", LevelUpController);
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var RuleService = (function () {
         function RuleService(game) {
+            var _this = this;
             this.setupGame = function (game) {
                 game.highScores = [];
                 game.actionLog = [];
@@ -854,6 +1031,50 @@ var DangerousCave;
                 game.logToActionLog = function (message) {
                     game.actionLog.splice(0, 0, message);
                 };
+            };
+            this.levelUp = function (reward) {
+                var self = _this;
+                if (reward != 'gezondheid') {
+                    self.game.character[reward]++;
+                }
+                else {
+                    self.game.character.hitpoints += 10;
+                    self.game.character.currentHitpoints += 10;
+                }
+                self.game.state = 'play';
+            };
+            this.fight = function (enemyToFight) {
+                var self = _this;
+                // Todo: change when multiple enemies of the same type can be present.
+                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var check = self.game.rollDice(self.game.character.kracht + 'd6');
+                var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
+                self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+                enemy.hitpoints -= characterDamage;
+                if (enemy.hitpoints <= 0) {
+                    self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                    self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
+                    if (enemy.items && enemy.items.length) {
+                        enemy.items.forEach(function (item) {
+                            // Todo: do not create a new item but use the compiled one.
+                            self.game.currentLocation.items.push(item());
+                        });
+                        enemy.items.splice(0, enemy.items.length);
+                    }
+                    if (enemy.reward) {
+                        self.game.character.score += enemy.reward;
+                    }
+                    if (enemy.onDefeat) {
+                        enemy.onDefeat(self.game);
+                    }
+                    self.game.currentLocation.enemies.remove(enemy);
+                }
+                self.game.currentLocation.enemies.forEach(function (enemy) {
+                    var check = self.game.rollDice(enemy.attack);
+                    var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
+                    self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                    self.game.character.currentHitpoints -= enemyDamage;
+                });
             };
             var self = this;
             self.game = game;
@@ -868,7 +1089,10 @@ var DangerousCave;
                 startGame: self.startGame,
                 addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
-                initCombat: self.initCombat
+                initCombat: self.initCombat,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange
             };
         };
         RuleService.prototype.getCharacterForm = function () {
@@ -952,12 +1176,28 @@ var DangerousCave;
                 location.combatActions.push(StoryScript.Actions.Flee(''));
             }
         };
+        RuleService.prototype.hitpointsChange = function (change) {
+            var self = this;
+            if (change < 5) {
+                self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
+            }
+        };
+        RuleService.prototype.scoreChange = function (change) {
+            var self = this;
+            var character = self.game.character;
+            var levelUp = character.level >= 1 && character.scoreToNextLevel >= 2 + (2 * (character.level));
+            self.game.logToActionLog('Je verdient ' + change + ' punt(en)');
+            if (levelUp) {
+                self.game.logToActionLog('Je wordt hier beter in! Je bent nu niveau ' + character.level);
+            }
+            return levelUp;
+        };
         return RuleService;
     }());
     DangerousCave.RuleService = RuleService;
     RuleService.$inject = ['game'];
-    var storyScript = angular.module("storyscript");
-    storyScript.service("ruleService", RuleService);
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("ruleService", RuleService);
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
@@ -977,8 +1217,8 @@ var DangerousCave;
     }());
     DangerousCave.TextService = TextService;
     //TextService.$inject = [];
-    var storyScript = angular.module("storyscript");
-    storyScript.service("textService", TextService);
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
 })(DangerousCave || (DangerousCave = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -1292,10 +1532,9 @@ var StoryScript;
                                 text: 'Richting ingang',
                                 target: Locations.Entry
                             });
-                            // Todo: does this work?
-                            var action = game.currentLocation.actions.first(function (x) { return x.text === 'Klim uit de kuil'; });
+                            // Todo: think of something simpler to remove actions.
+                            var action = game.currentLocation.actions.first({ callBack: function (x) { return x.text === 'Klim uit de kuil'; } });
                             game.currentLocation.actions.remove(action);
-                            delete game.currentLocation.actions['klimmen'];
                         }
                     },
                     StoryScript.Actions.Search({
@@ -1874,13 +2113,9 @@ var StoryScript;
                     var check = game.rollDice(game.character.oplettendheid + 'd6');
                     var result;
                     result = check * game.character.oplettendheid;
-                    for (var n in game.currentLocation.actions) {
-                        var action = game.currentLocation.actions[n];
-                        if (action.text == text) {
-                            delete game.currentLocation.actions[n];
-                            break;
-                        }
-                    }
+                    // Todo: think of something simpler to remove actions.
+                    var action = game.currentLocation.actions.first({ callBack: function (x) { return x.text === text; } });
+                    game.currentLocation.actions.remove(action);
                     if (result >= settings.difficulty) {
                         settings.success(game);
                     }
