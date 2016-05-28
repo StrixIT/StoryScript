@@ -148,6 +148,8 @@
 
                 if (enemy.items && enemy.items.length) {
                     enemy.items.forEach(function (item) {
+                        self.game.currentLocation.items = self.game.currentLocation.items || [];
+
                         // Todo: type
                         self.game.currentLocation.items.push(<any>item);
                     });

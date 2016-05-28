@@ -9,24 +9,8 @@
             value: string
         }
 
-        public rewards: [
-            {
-                name: 'kracht',
-                value: 'Kracht'
-            },
-            {
-                name: 'vlugheid',
-                value: 'Vlugheid'
-            },
-            {
-                name: 'oplettendheid',
-                value: 'Oplettendheid'
-            },
-            {
-                name: 'gezondheid',
-                value: 'Gezondheid'
-            }
-        ];
+        // Todo: type
+        public rewards: any;
 
         constructor($scope: ng.IScope, ruleService: RuleService, game: Game) {
             var self = this;
@@ -38,10 +22,30 @@
 
         private init() {
             var self = this;
+            self.rewards = [
+                {
+                    name: 'kracht',
+                    value: 'Kracht'
+                },
+                {
+                    name: 'vlugheid',
+                    value: 'Vlugheid'
+                },
+                {
+                    name: 'oplettendheid',
+                    value: 'Oplettendheid'
+                },
+                {
+                    name: 'gezondheid',
+                    value: 'Gezondheid'
+                }
+            ];
 
+            // Todo: type
+            self.selectedReward = <any>{};
         }
 
-        levelUp = () => {
+        claimReward = () => {
             var self = this;
             self.ruleService.levelUp(self.selectedReward.name);
         }

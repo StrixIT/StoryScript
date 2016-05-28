@@ -999,7 +999,7 @@ var DangerousCave;
     var LevelUpController = (function () {
         function LevelUpController($scope, ruleService, game) {
             var _this = this;
-            this.levelUp = function () {
+            this.claimReward = function () {
                 var self = _this;
                 self.ruleService.levelUp(self.selectedReward.name);
             };
@@ -1011,6 +1011,26 @@ var DangerousCave;
         }
         LevelUpController.prototype.init = function () {
             var self = this;
+            self.rewards = [
+                {
+                    name: 'kracht',
+                    value: 'Kracht'
+                },
+                {
+                    name: 'vlugheid',
+                    value: 'Vlugheid'
+                },
+                {
+                    name: 'oplettendheid',
+                    value: 'Oplettendheid'
+                },
+                {
+                    name: 'gezondheid',
+                    value: 'Gezondheid'
+                }
+            ];
+            // Todo: type
+            self.selectedReward = {};
         };
         return LevelUpController;
     }());
@@ -1060,6 +1080,7 @@ var DangerousCave;
                     self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
                     if (enemy.items && enemy.items.length) {
                         enemy.items.forEach(function (item) {
+                            self.game.currentLocation.items = self.game.currentLocation.items || [];
                             // Todo: type
                             self.game.currentLocation.items.push(item);
                         });
