@@ -109,7 +109,8 @@
             id = id.name;
         }
 
-        return Array.prototype.filter.call(array, matchById(id));
+        var callBack = id.callBack ? id.callBack : matchById(id);
+        return Array.prototype.filter.call(array, callBack);
     }
 
     function matchById(id) {

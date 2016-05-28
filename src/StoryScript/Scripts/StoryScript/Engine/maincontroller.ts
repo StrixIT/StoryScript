@@ -139,16 +139,16 @@
             self.game.currentLocation.items.push(item);
         }
 
-        equip = (item: IItem) => {
+        equipItem = (item: IItem) => {
             var self = this;
 
-            var equippedItem = self.game.character.equipment[item.equipmentType];
+            var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]];
 
             if (equippedItem) {
                 self.game.character.items.push(equippedItem);
             }
 
-            self.game.character.equipment[item.equipmentType] = item;
+            self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]] = item;
             self.game.character.items.remove(item);
         }
     }

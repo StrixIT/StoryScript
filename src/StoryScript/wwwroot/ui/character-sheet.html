@@ -16,7 +16,7 @@
                     Hoofd
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.head.name }}
+                    {{ controller.game.character.equipment.Head.name }}
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
                     Amulet
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.amulet.name }}
+                    {{ controller.game.character.equipment.Amulet.name }}
                 </div>
             </div>
         </div>
@@ -41,18 +41,18 @@
                 Linkerhand
             </div>
             <div class="col-md-3">
-                <div class="item-box">{{ controller.game.character.equipment.hands.name }}</div>
-                <div class="item-box side-borders">{{ controller.game.character.equipment.rightHand.name }}</div>
-                <div class="item-box">{{ controller.game.character.equipment.rightRing.name }}</div>
+                <div class="item-box">{{ controller.game.character.equipment.Hands.name }}</div>
+                <div class="item-box side-borders">{{ controller.game.character.equipment.RightHand.name }}</div>
+                <div class="item-box">{{ controller.game.character.equipment.RightRing.name }}</div>
             </div>
             <div class="col-md-6">
                 <div class="item-box no-border"></div>
-                <div class="item-box">{{ controller.game.character.equipment.body.name }}</div>
+                <div class="item-box">{{ controller.game.character.equipment.Body.name }}</div>
             </div>
             <div class="col-md-3">
-                <div class="item-box">{{ controller.game.character.equipment.hands.name }}</div>
-                <div class="item-box side-borders">{{ controller.game.character.equipment.leftHand.name }}</div>
-                <div class="item-box">{{ controller.game.character.equipment.leftRing.name }}</div>
+                <div class="item-box">{{ controller.game.character.equipment.Hands.name }}</div>
+                <div class="item-box side-borders">{{ controller.game.character.equipment.LeftHand.name }}</div>
+                <div class="item-box">{{ controller.game.character.equipment.LeftRing.name }}</div>
             </div>
         </div>
         <div class="row">
@@ -61,7 +61,7 @@
                     Benen
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.legs.name }}
+                    {{ controller.game.character.equipment.Legs.name }}
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                     Voeten
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.feet.name }}
+                    {{ controller.game.character.equipment.Feet.name }}
                 </div>
             </div>
         </div>
@@ -83,9 +83,9 @@
         <li ng-repeat="item in controller.game.character.items">
             <div>
                 <span>{{ item.name }}</span>
-                <button type="button" ng-if="item.equipmentType" class="btn btn-info" ng-click="controller.equip(item)">Equip</button>
+                <button type="button" ng-if="item.equipmentType" class="btn btn-info" ng-click="controller.equipItem(item)">Equip</button>
                 <button type="button" ng-if="item.use" class="btn btn-info" ng-click="controller.executeAction(item.use, item)">Use</button>
-                <button type="button" class="btn btn-info" ng-click="controller.drop(item)">Drop</button>
+                <button type="button" class="btn btn-info" ng-click="controller.dropItem(item)">Drop</button>
             </div>
         </li>
     </ul>

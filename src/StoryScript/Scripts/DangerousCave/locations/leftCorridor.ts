@@ -34,10 +34,9 @@
                             }
                         );
 
-                        // Todo: does this work?
-                        var action = game.currentLocation.actions.first((x: IAction) => { return x.text === 'Klim uit de kuil'; });
+                        // Todo: think of something simpler to remove actions.
+                        var action = game.currentLocation.actions.first({ callBack: (x: IAction) => { return x.text === 'Klim uit de kuil'; } });
                         game.currentLocation.actions.remove(action);
-                        delete game.currentLocation.actions['klimmen'];
                     }
                 },
                 Actions.Search({

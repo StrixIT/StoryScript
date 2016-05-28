@@ -264,7 +264,6 @@ var StoryScript;
             this.reset = function () {
                 var self = _this;
                 self.dataService.save(StoryScript.DataKeys.WORLD, {});
-                //dataService.save(game.keys.HIGHSCORES, []);
                 self.locationService.init(self.game);
                 var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
                 if (location) {
@@ -337,6 +336,7 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
     if (Function.prototype.proxy === undefined) {
         Function.prototype.proxy = function (proxyFunction) {
             var self = this;
@@ -438,7 +438,8 @@ var StoryScript;
         if (typeof id === 'function') {
             id = id.name;
         }
-        return Array.prototype.filter.call(array, matchById(id));
+        var callBack = id.callBack ? id.callBack : matchById(id);
+        return Array.prototype.filter.call(array, callBack);
     }
     function matchById(id) {
         return function (x) {
@@ -474,20 +475,21 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
+            var locations = null;
             //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
-            if (StoryScript.isEmpty(self.locations)) {
-                self.buildWorld();
+            if (StoryScript.isEmpty(locations)) {
+                locations = self.buildWorld();
             }
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
-            self.locations.forEach(function (location) {
+            locations.forEach(function (location) {
                 location.destinations = location.destinations || [];
                 location.destinations.push = location.destinations.push.proxy(self.addDestination);
                 location.enemies = location.enemies || [];
                 location.enemies.push = location.enemies.push.proxy(self.addEnemy);
                 location.combatActions = location.combatActions || [];
             });
-            return self.locations;
+            return locations;
         };
         LocationService.prototype.changeLocation = function (location, game) {
             var self = this;
@@ -518,7 +520,7 @@ var StoryScript;
             // if that is the case.
             if (game.currentLocation.destinations) {
                 game.currentLocation.destinations.forEach(function (destination) {
-                    if (destination.target && destination.target == game.previousLocation.id) {
+                    if (game.previousLocation && destination.target && destination.target == game.previousLocation.id) {
                         destination.isPreviousLocation = true;
                     }
                     if (destination.barrier && destination.barrier.key) {
@@ -532,7 +534,9 @@ var StoryScript;
             }
             // Save the previous and current location, then get the location text.
             self.dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
-            self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+            if (game.previousLocation) {
+                self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+            }
             self.loadLocationDescriptions(game);
             self.ruleService.initCombat(game.currentLocation);
             self.ruleService.enterLocation(game.currentLocation);
@@ -544,8 +548,8 @@ var StoryScript;
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
-            self.locations = [];
             var locations = window['StoryScript']['Locations'];
+            var compiledLocations = [];
             for (var n in locations) {
                 var definition = locations[n];
                 var location = StoryScript.definitionToObject(definition);
@@ -556,8 +560,9 @@ var StoryScript;
                 self.setDestinations(location);
                 self.buildEnemies(location);
                 self.buildItems(location);
-                self.locations.push(location);
+                compiledLocations.push(location);
             }
+            return compiledLocations;
         };
         LocationService.prototype.setDestinations = function (location) {
             var self = this;
@@ -753,13 +758,13 @@ var StoryScript;
                 self.game.character.items.remove(item);
                 self.game.currentLocation.items.push(item);
             };
-            this.equip = function (item) {
+            this.equipItem = function (item) {
                 var self = _this;
-                var equippedItem = self.game.character.equipment[item.equipmentType];
+                var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]];
                 if (equippedItem) {
                     self.game.character.items.push(equippedItem);
                 }
-                self.game.character.equipment[item.equipmentType] = item;
+                self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]] = item;
                 self.game.character.items.remove(item);
             };
             var self = this;
@@ -1747,10 +1752,9 @@ var StoryScript;
                                 text: 'Richting ingang',
                                 target: Locations.Entry
                             });
-                            // Todo: does this work?
-                            var action = game.currentLocation.actions.first(function (x) { return x.text === 'Klim uit de kuil'; });
+                            // Todo: think of something simpler to remove actions.
+                            var action = game.currentLocation.actions.first({ callBack: function (x) { return x.text === 'Klim uit de kuil'; } });
                             game.currentLocation.actions.remove(action);
-                            delete game.currentLocation.actions['klimmen'];
                         }
                     },
                     StoryScript.Actions.Search({

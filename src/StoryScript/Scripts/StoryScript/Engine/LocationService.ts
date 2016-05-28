@@ -10,7 +10,6 @@ module StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
         private dataService: IDataService;
         private ruleService: IRuleService;
-        private locations: ICollection<ICompiledLocation>;
 
         constructor(dataService: IDataService, ruleService: IRuleService) {
             var self = this;
@@ -40,17 +39,19 @@ module StoryScript {
 
         public loadWorld(): ICollection<ICompiledLocation> {
             var self = this;
+            var locations = null;
+
             //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
 
-            if (isEmpty(self.locations)) {
-                self.buildWorld();
+            if (isEmpty(locations)) {
+                locations = self.buildWorld();
                 //self.dataService.save(DataKeys.WORLD, { Locations: self.locations });
                 //self.locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
             }
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
-            self.locations.forEach(function (location) {
+            locations.forEach(function (location) {
                 location.destinations = location.destinations || [];
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination);
                 location.enemies = location.enemies || [];
@@ -58,7 +59,7 @@ module StoryScript {
                 location.combatActions = location.combatActions || [];
             });
 
-            return self.locations;
+            return locations;
         }
 
         public changeLocation(location: ILocation, game: IGame) {
@@ -95,7 +96,7 @@ module StoryScript {
             // if that is the case.
             if (game.currentLocation.destinations) {
                 game.currentLocation.destinations.forEach(destination => {
-                    if (destination.target && (<any>destination.target) == game.previousLocation.id) {
+                    if (game.previousLocation && destination.target && (<any>destination.target) == game.previousLocation.id) {
                         (<any>destination).isPreviousLocation = true;
                     }
 
@@ -112,7 +113,10 @@ module StoryScript {
 
             // Save the previous and current location, then get the location text.
             self.dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
-            self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+
+            if (game.previousLocation) {
+                self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+            }
 
             self.loadLocationDescriptions(game);
 
@@ -126,10 +130,10 @@ module StoryScript {
             }
         }
 
-        private buildWorld() {
+        private buildWorld(): ICompiledLocation[] {
             var self = this;
-            self.locations = [];
             var locations = window['StoryScript']['Locations'];
+            var compiledLocations = [];
 
             for (var n in locations) {
                 var definition = locations[n];
@@ -143,8 +147,10 @@ module StoryScript {
                 self.setDestinations(location);
                 self.buildEnemies(location);
                 self.buildItems(location);
-                self.locations.push(location);
+                compiledLocations.push(location);
             }
+
+            return compiledLocations;
         }
 
         private setDestinations(location: ICompiledLocation) {

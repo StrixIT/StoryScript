@@ -74,7 +74,6 @@ module StoryScript {
         reset = () => {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.WORLD, {});
-            //dataService.save(game.keys.HIGHSCORES, []);
             self.locationService.init(self.game);
             var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
 
