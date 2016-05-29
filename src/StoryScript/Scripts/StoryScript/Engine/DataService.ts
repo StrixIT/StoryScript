@@ -11,20 +11,22 @@ module StoryScript {
         private $q: ng.IQService;
         private $http: ng.IHttpService;
         private $localStorage: any; // Todo: type;
-        private definitionCollection = window['StoryScript'];
+        private definitions: any;
 
-        constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any) {
+        constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, definitions: any) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.definitions = definitions;
         }
 
-        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any): IDataService {
+        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, definitions: any): IDataService {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.definitions = definitions;
 
             return {
                 getDescription: self.getDescription,
@@ -100,15 +102,16 @@ module StoryScript {
                 }
 
                 var value = item[key];
-                var definitionKey = self.toDefinitionKey(key);
 
-                if (self.definitionCollection.hasOwnProperty(definitionKey)) {
+                // For collections, point to the default object. This allows restoring functions on items added to collections
+                // at runtime.
+                if (self.definitions.hasOwnProperty(key)) {
                     clone[key] = [];
 
                     for (var n in value) {
                         // For collections, point to the default object. This allows restoring functions on items added to collections
                         // at runtime.
-                        var pointer = self.definitionCollection[definitionKey] && self.definitionCollection[definitionKey][n] ? '_' + definitionKey : chainPointer + '_' + key;
+                        var pointer = self.definitions[key] && self.definitions[key][n] ? '_' + key : chainPointer + '_' + key;
 
                         clone[key].push(self.cloneAndTransform(value[n], pointer));
                     }
@@ -137,12 +140,12 @@ module StoryScript {
             pointerParts.shift();
 
             // Is there a definition collection for this pointer?
-            var definitionCollection = self.definitionCollection[self.toDefinitionKey(pointerParts[0])];
+            var definitionCollection = self.definitions[pointerParts[0]];
             var original;
 
             if (definitionCollection) {
                 // Get the original entity.
-                original = definitionCollection[self.toDefinitionKey(pointerParts[1])]();
+                original = definitionCollection[pointerParts[1]]();
 
                 if (original) {
                     pointerParts.shift();
@@ -154,7 +157,7 @@ module StoryScript {
                         //    original = original.first(pointerParts[i]);
                         //}
                         //else {
-                            original = original[pointerParts[i]];
+                        original = original[pointerParts[i]];
                         //}
 
                         if (!original) {
@@ -165,7 +168,7 @@ module StoryScript {
             }
 
             if (!original || !original[key]) {
-                original = self.definitionCollection.Actions[key];
+                original = self.definitions.actions[key];
 
                 if (original) {
                     return '_fp_actions_' + key;
@@ -232,7 +235,7 @@ module StoryScript {
                             var pointerParts = value.split('_');
                             pointerParts.shift();
                             pointerParts.shift();
-                            var functionPointer = self.definitionCollection;
+                            var functionPointer = self.definitions;
 
                             for (var n in pointerParts) {
                                 //if (functionPointer.toString() === 'adventureGame.Collection' || functionPointer.toString() === 'adventureGame.DefinitionCollection') {
@@ -254,11 +257,7 @@ module StoryScript {
 
             return item;
         }
-
-        private toDefinitionKey(text: string) {
-            return text.substring(0, 1).toUpperCase() + text.substring(1);
-        }
     }
 
-    DataService.$inject = ['$q', '$http', '$localStorage'];
+    DataService.$inject = ['$q', '$http', '$localStorage', 'definitions'];
 }

@@ -1,13 +1,13 @@
-﻿module StoryScript.Items {
-    export function BlackKey(): IKey {
+﻿module DangerousCave.Items {
+    export function BlackKey(): StoryScript.IKey {
         return {
             name: 'Black key',
             description: 'This black iron key has a gargoyle figurine on it.',
-            equipmentType: EquipmentType.Miscellaneous,
+            equipmentType: StoryScript.EquipmentType.Miscellaneous,
             open: {
                 text: 'Open de deur met de zwarte sleutel',
                 // Todo: does this work? How does the callback get access to the game and destination?
-                execute: (parameters) => Actions.OpenWithKey((game: DangerousCave.Game, destination: IDestination) => {
+                execute: (parameters) => Actions.OpenWithKey((game: Game, destination: StoryScript.IDestination) => {
                     game.logToLocationLog('Je opent de deur.');
                     destination.text = 'Donkere kamer';
                 })

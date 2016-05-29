@@ -1,8 +1,8 @@
-﻿module StoryScript.Items {
-    export function HealingPotion(): IItem {
+﻿module DangerousCave.Items {
+    export function HealingPotion(): StoryScript.IItem {
         return {
             name: 'Toverdrank',
-            equipmentType: EquipmentType.Miscellaneous,
+            equipmentType: StoryScript.EquipmentType.Miscellaneous,
             use: Actions.Heal('1d8')
         }
     }

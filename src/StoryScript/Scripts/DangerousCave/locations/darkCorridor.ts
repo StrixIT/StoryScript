@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function DarkCorridor(): ILocation {
+﻿module DangerousCave.Locations {
+    export function DarkCorridor(): StoryScript.ILocation {
         return {
             name: 'Een donkere smalle gang',
             enemies: [

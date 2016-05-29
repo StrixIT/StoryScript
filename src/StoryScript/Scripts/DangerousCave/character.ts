@@ -4,7 +4,7 @@
         hitpoints: number = 20;
         currentHitpoints: number = 20;
         score: number;
-        scoreToNextLevel: number;
+        scoreToNextLevel: number = 0;
         level: number = 1;
 
         kracht: number = 1;

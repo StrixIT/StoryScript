@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function RoomOne(): ILocation {
+﻿module DangerousCave.Locations {
+    export function RoomOne(): StoryScript.ILocation {
         return {
             name: 'De kamer van de ork',
             enemies: [
@@ -16,12 +16,12 @@
                         text: 'Houten deur',
                         actions: [
                             {
-                                text: 'Open de deur',
+                                text: 'Onderzoek de deur',
                                 action: Actions.Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
                             },
                             {
                                 text: 'Open de deur',
-                                action: Actions.Open((game: DangerousCave.Game, destination: IDestination) => {
+                                action: Actions.Open((game: Game, destination: StoryScript.IDestination) => {
                                     game.logToLocationLog('Je opent de eikenhouten deur.');
                                     destination.text = 'Gang (noord)';
                                 })

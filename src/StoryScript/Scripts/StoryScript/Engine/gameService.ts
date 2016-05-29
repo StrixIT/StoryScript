@@ -20,23 +20,29 @@ module StoryScript {
         private characterService: ICharacterService;
         private ruleService: IRuleService;
         private game: IGame;
+        private gameNameSpace: string;
+        private definitions: any;
 
-        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame) {
+        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: any) {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
             self.ruleService = ruleService;
             self.game = game;
+            self.gameNameSpace = gameNameSpace;
+            self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame): IGameService {
+        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: any): IGameService {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
             self.ruleService = ruleService;
             self.game = game;
+            self.gameNameSpace = gameNameSpace;
+            self.definitions = definitions;
 
             return {
                 init: self.init,
@@ -54,6 +60,14 @@ module StoryScript {
 
         init = (): void => {
             var self = this;
+            self.game.nameSpace = self.gameNameSpace;
+
+            self.definitions.locations = window[self.gameNameSpace]['Locations'];
+            self.definitions.actions = angular.extend(window[self.gameNameSpace]['Actions'], window['StoryScript']['Actions']);
+            self.definitions.enemies = window[self.gameNameSpace]['Enemies'];
+            self.definitions.items = window[self.gameNameSpace]['Items'];
+
+            self.game.definitions = self.definitions;
             self.ruleService.setupGame(self.game);
             self.locationService.init(self.game);
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
@@ -61,7 +75,7 @@ module StoryScript {
 
             var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
 
-            if (locationName) {
+            if (self.game.character && locationName) {
                 var lastLocation = self.game.locations.first(locationName);
                 var previousLocationName = self.dataService.load(StoryScript.DataKeys.PREVIOUSLOCATION);
 
@@ -231,5 +245,5 @@ module StoryScript {
         }
     }
 
-    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game'];
+    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game', 'gameNameSpace', 'definitions'];
 }

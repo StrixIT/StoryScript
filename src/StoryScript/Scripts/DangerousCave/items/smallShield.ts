@@ -1,9 +1,9 @@
-﻿module StoryScript.Items {
-    export function SmallShield(): IItem {
+﻿module DangerousCave.Items {
+    export function SmallShield(): StoryScript.IItem {
         return {
             name: 'Klein schild',
             defense: 2,
-            equipmentType: EquipmentType.LeftHand
+            equipmentType: StoryScript.EquipmentType.LeftHand
         }
     }
 }

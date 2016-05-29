@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function LeftRoom(): ILocation {
+﻿module DangerousCave.Locations {
+    export function LeftRoom(): StoryScript.ILocation {
         return {
             name: 'De slaapkamer van de orks',
             enemies: [

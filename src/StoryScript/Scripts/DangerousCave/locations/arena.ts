@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function Arena(): ILocation {
+﻿module DangerousCave.Locations {
+    export function Arena(): StoryScript.ILocation {
         return {
                 name: 'Een hoek van de grot waar kaarsen branden',
                 enemies: [
@@ -15,7 +15,7 @@
                     {
                         text: 'Onderzoek symbool',
                         type: 'skill',
-                        execute: function (game: DangerousCave.Game) {
+                        execute: function (game: Game) {
                             game.currentLocation.text = game.currentLocation.descriptions['triggered'];
                             var troll = Enemies.Troll();
                             game.currentLocation.enemies.push(troll);
@@ -26,7 +26,7 @@
                 ]
             }
 
-        function onDefeat(game: DangerousCave.Game) {
+        function onDefeat(game: Game) {
             var randomEnemy = Actions.RandomEnemy(game);
             randomEnemy.onDefeat = this.onDefeat;
         }

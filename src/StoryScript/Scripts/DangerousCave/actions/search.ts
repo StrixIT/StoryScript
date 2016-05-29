@@ -1,28 +1,28 @@
-﻿module StoryScript {
+﻿module DangerousCave {
     export interface SearchSettings {
         text?: string;
         active?: (parameters: any) => boolean;
         difficulty: number;
-        success: (game: DangerousCave.Game) => void;
-        fail: (game: DangerousCave.Game) => void;
+        success: (game: Game) => void;
+        fail: (game: Game) => void;
     }
 }
 
-module StoryScript.Actions {
-    export function Search(settings: SearchSettings): IAction {
+module DangerousCave.Actions {
+    export function Search(settings: SearchSettings): StoryScript.IAction {
         var text = settings.text || 'Zoek';
 
         return {
             text: text,
             type: 'skill',
             active: settings.active == undefined ? () => { return true; } : settings.active,
-            execute: function (game: DangerousCave.Game) {
+            execute: function (game: Game) {
                 var check = game.rollDice(game.character.oplettendheid + 'd6');
                 var result;
                 result = check * game.character.oplettendheid;
 
                 // Todo: think of something simpler to remove actions.
-                var action = game.currentLocation.actions.first({ callBack: (x: IAction) => { return x.text === text; } });
+                var action = game.currentLocation.actions.first({ callBack: (x: StoryScript.IAction) => { return x.text === text; } });
                 game.currentLocation.actions.remove(action);
 
                 if (result >= settings.difficulty) {

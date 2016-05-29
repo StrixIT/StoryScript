@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function RightCorridor(): ILocation {
+﻿module DangerousCave.Locations {
+    export function RightCorridor(): StoryScript.ILocation {
         return {
             name: 'Een gemetselde gang',
             destinations: [

@@ -1,6 +1,6 @@
-﻿module StoryScript.Actions {
-    export function Open(callback: (game: DangerousCave.Game, destination: IDestination) => void) {
-        return function (game: DangerousCave.Game, destination: IDestination) {
+﻿module DangerousCave.Actions {
+    export function Open(callback: (game: Game, destination: StoryScript.IDestination) => void) {
+        return function (game: Game, destination: StoryScript.IDestination) {
             delete destination.barrier;
 
             if (callback) {

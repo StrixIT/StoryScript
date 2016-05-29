@@ -1,13 +1,11 @@
-﻿module StoryScript.Actions {
+﻿module DangerousCave.Actions {
     export function Inspect(text: string) {
-        return function (game: DangerousCave.Game, barrier: IBarrier, action: IBarrierAction): void {
-            for (var n in barrier.actions) {
-                var currentAction = barrier.actions.first(action);
+        return function (game: Game, destination: StoryScript.IDestination, barrier: StoryScript.IBarrier, action: StoryScript.IBarrierAction): void {
+            var index = barrier.actions.indexOf(action);
 
-                if (currentAction == action) {
-                    delete barrier.actions[n];
-                    barrier.selectedAction = barrier.actions.first();
-                }
+            if (index > -1) {
+                barrier.actions.splice(index, 1);
+                barrier.selectedAction = barrier.actions.first();
             }
 
             if (text) {

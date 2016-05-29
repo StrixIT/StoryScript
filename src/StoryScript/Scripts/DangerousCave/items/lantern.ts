@@ -1,11 +1,11 @@
-﻿module StoryScript.Items {
-    export function Lantern(): IItem {
+﻿module DangerousCave.Items {
+    export function Lantern(): StoryScript.IItem {
         return {
             name: 'Lantaren',
             bonuses: {
                 perception: 1
             },
-            equipmentType: EquipmentType.LeftHand
+            equipmentType: StoryScript.EquipmentType.LeftHand
         }
     }
 }

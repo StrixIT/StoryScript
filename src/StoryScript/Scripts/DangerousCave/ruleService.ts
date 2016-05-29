@@ -56,9 +56,9 @@
                     }
                 ],
                 items: [
-                    StoryScript.Items.Dagger(),
-                    StoryScript.Items.LeatherHelmet(),
-                    StoryScript.Items.Lantern()
+                    Items.Dagger(),
+                    Items.LeatherHelmet(),
+                    Items.Lantern()
                 ]
             };
         }
@@ -86,7 +86,7 @@
 
         public startGame() {
             var self = this;
-            self.game.changeLocation(self.game.locations.first(StoryScript.Locations.Start));
+            self.game.changeLocation(self.game.locations.first(Locations.Start));
         }
 
         public addEnemyToLocation(location: StoryScript.ICompiledLocation, enemy: StoryScript.IEnemy) {
@@ -179,14 +179,14 @@
         private addFleeAction(location: StoryScript.ICompiledLocation): void {
             var self = this;
             var numberOfEnemies = location.enemies.length;
-            var fleeAction = location.combatActions.first(StoryScript.Actions.Flee);
+            var fleeAction = location.combatActions.first(Actions.Flee);
 
             if (fleeAction) {
                 delete location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
             }
 
-            if (numberOfEnemies < (<Character>self.game.character).vlugheid) {
-                location.combatActions.push(StoryScript.Actions.Flee(''));
+            if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
+                location.combatActions.push(Actions.Flee(''));
             }
         }
 

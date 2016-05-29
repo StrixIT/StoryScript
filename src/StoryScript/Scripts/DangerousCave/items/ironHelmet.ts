@@ -1,9 +1,9 @@
-﻿module StoryScript.Items {
-    export function IronHelmet(): IItem {
+﻿module DangerousCave.Items {
+    export function IronHelmet(): StoryScript.IItem {
         return {
             name: 'Helm van ijzer',
             defense: 2,
-            equipmentType: EquipmentType.Head
+            equipmentType: StoryScript.EquipmentType.Head
         }
     }
 }

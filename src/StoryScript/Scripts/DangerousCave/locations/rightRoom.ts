@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function RightRoom(): ILocation {
+﻿module DangerousCave.Locations {
+    export function RightRoom(): StoryScript.ILocation {
         return {
             name: 'Een schemerige gang',
             enemies: [

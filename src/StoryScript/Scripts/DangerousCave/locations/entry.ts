@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function Entry(): ILocation {
+﻿module DangerousCave.Locations {
+    export function Entry(): StoryScript.ILocation {
         return {
             name: 'De grot',
             // Example
@@ -11,7 +11,7 @@
                 Items.Lantern,
             ],
             events: [
-                (game: DangerousCave.Game) => {
+                (game: Game) => {
                     if (game.character.oplettendheid > 1) {
                         game.logToLocationLog('Je ruikt bloed.');
                     }

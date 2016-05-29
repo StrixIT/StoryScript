@@ -69,18 +69,6 @@
             return buttonClass;
         }
 
-        getActionName = (barrier, action) => {
-            // Get the name of the barrier action from the barrier without the need to specify it
-            // in the definition.
-            for (var n in barrier.actions) {
-                var currentAction = barrier.actions[n];
-
-                if (currentAction == action) {
-                    return n;
-                }
-            }
-        }
-
         enemiesPresent = () => {
             var self = this;
             return self.game.currentLocation.enemies.length;
@@ -160,7 +148,7 @@
             self.game.character.items.remove(item);
         }
 
-        fight = (enemy: IEnemy) => {
+        fight = (game: IGame, enemy: IEnemy) => {
             var self = this;
             self.gameService.fight(enemy);
         }

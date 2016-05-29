@@ -1,5 +1,13 @@
 ﻿module DangerousCave {
     export class Game implements StoryScript.IGame {
+        nameSpace: string;
+        definitions: any;
+        //definitions: {
+        //    locations: [() => StoryScript.ILocation],
+        //    actions: [() => StoryScript.IAction],
+        //    enemies: [() => StoryScript.IEnemy],
+        //    Items: [() => StoryScript.IItem]
+        //};
         character: Character;
         locations: StoryScript.ICollection<StoryScript.ICompiledLocation>;
         currentLocation: StoryScript.ICompiledLocation;
@@ -15,4 +23,7 @@
         logToLocationLog = (message: string) => { }
         logToActionLog = (message: string) => { }
     }
+
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'DangerousCave');
 }

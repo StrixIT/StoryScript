@@ -1,9 +1,9 @@
-﻿module StoryScript.Items {
-    export function Dagger(): IItem {
+﻿module DangerousCave.Items {
+    export function Dagger(): StoryScript.IItem {
         return {
             name: 'Dolk',
             damage: '1',
-            equipmentType: EquipmentType.LeftHand
+            equipmentType: StoryScript.EquipmentType.LeftHand
         }
     }
 }

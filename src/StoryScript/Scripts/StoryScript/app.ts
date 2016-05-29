@@ -6,6 +6,8 @@
 
     var game = {};
     storyScriptModule.value('game', game);
+    var definitions = {};
+    storyScriptModule.value('definitions', definitions);
 
     storyScriptModule.service("dataService", DataService);
     storyScriptModule.service("locationService", LocationService);

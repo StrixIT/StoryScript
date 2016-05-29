@@ -1,6 +1,6 @@
-﻿module StoryScript.Actions {
-    export function RandomEnemy(game: DangerousCave.Game) {
-        var enemies = window['StoryScript']['Enemies'];
+﻿module DangerousCave.Actions {
+    export function RandomEnemy(game: Game) {
+        var enemies = game.definitions.enemies;
         var enemyCount = 0;
 
         for (var n in enemies) {

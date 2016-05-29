@@ -1,5 +1,5 @@
-﻿module StoryScript.Locations {
-    export function CentreRoom(): ILocation {
+﻿module DangerousCave.Locations {
+    export function CentreRoom(): StoryScript.ILocation {
         return {
             name: 'Een opslagkamer',
             destinations: [

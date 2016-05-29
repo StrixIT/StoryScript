@@ -10,17 +10,20 @@ module StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
         private dataService: IDataService;
         private ruleService: IRuleService;
+        private definitions: any
 
-        constructor(dataService: IDataService, ruleService: IRuleService) {
+        constructor(dataService: IDataService, ruleService: IRuleService, definitions: any) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, ruleService: IRuleService): ILocationService {
+        public $get(dataService: IDataService, ruleService: IRuleService, definitions: any): ILocationService {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.definitions = definitions;
 
             return {
                 loadWorld: self.loadWorld,
@@ -43,7 +46,7 @@ module StoryScript {
 
             if (isEmpty(locations)) {
                 locations = self.buildWorld();
-                //self.dataService.save(DataKeys.WORLD, { Locations: locations });
+                self.dataService.save(DataKeys.WORLD, { Locations: locations });
                 //locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
             }
 
@@ -76,6 +79,11 @@ module StoryScript {
                 game.previousLocation = game.currentLocation;
             }
 
+            // If there is no location, we are starting a new game. Quit for now.
+            if (!location) {
+                return;
+            }
+
             var key = typeof location == 'function' ? location.name : location.id ? location.id : location;
             game.currentLocation = game.locations.first(key);
 
@@ -103,7 +111,7 @@ module StoryScript {
 
                         if (key) {
                             // Todo: can this be typed somehow?
-                            (<any>destination.barrier.actions).openWithKey = (<any>key).open();
+                            (<any>destination.barrier.actions).openWithKey = (<any>key).open;
                         }
                     }
                 });
@@ -115,6 +123,9 @@ module StoryScript {
             if (game.previousLocation) {
                 self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
+
+            game.currentLocation.items = game.currentLocation.items || [];
+            game.currentLocation.enemies = game.currentLocation.enemies || [];
 
             self.loadLocationDescriptions(game);
 
@@ -130,7 +141,7 @@ module StoryScript {
 
         private buildWorld(): ICompiledLocation[] {
             var self = this;
-            var locations = window['StoryScript']['Locations'];
+            var locations = self.definitions.locations;
             var compiledLocations = [];
 
             for (var n in locations) {
@@ -166,6 +177,8 @@ module StoryScript {
                     if (destination.barrier) {
                         if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                             destination.barrier.selectedAction = destination.barrier.actions[0];
+                            // Todo: type
+                            (<any>destination.barrier.selectedAction).value = 0;
                         }
                     }
                 });
@@ -281,5 +294,5 @@ module StoryScript {
         }
     }
 
-    LocationService.$inject = ['dataService', 'ruleService'];
+    LocationService.$inject = ['dataService', 'ruleService', 'definitions'];
 }

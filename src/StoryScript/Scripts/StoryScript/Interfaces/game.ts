@@ -5,6 +5,14 @@
     }
 
     export interface IGame {
+        nameSpace: string;
+        definitions: any;
+        //definitions: {
+        //    locations: [() => StoryScript.ILocation],
+        //    actions: [() => StoryScript.IAction],
+        //    enemies: [() => StoryScript.IEnemy],
+        //    Items: [() => StoryScript.IItem]
+        //};
         character: ICharacter;
         locations: ICollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;

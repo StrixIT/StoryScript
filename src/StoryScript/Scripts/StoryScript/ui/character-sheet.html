@@ -83,7 +83,7 @@
         <li ng-repeat="item in controller.game.character.items">
             <div>
                 <span>{{ item.name }}</span>
-                <button type="button" ng-if="item.equipmentType" class="btn btn-info" ng-click="controller.equipItem(item)">Equip</button>
+                <button type="button" ng-if="item.equipmentType != StoryScript.EquipmentType.Miscellaneous" class="btn btn-info" ng-click="controller.equipItem(item)">Equip</button>
                 <button type="button" ng-if="item.use" class="btn btn-info" ng-click="controller.executeAction(item.use, item)">Use</button>
                 <button type="button" class="btn btn-info" ng-click="controller.dropItem(item)">Drop</button>
             </div>

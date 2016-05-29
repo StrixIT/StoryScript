@@ -1,9 +1,9 @@
-﻿module StoryScript.Locations {
-    export function CrossRoads(): ILocation {
+﻿module DangerousCave.Locations {
+    export function CrossRoads(): StoryScript.ILocation {
         return {
             name: 'Een kruispunt',
             events: [
-                (game: DangerousCave.Game) => {
+                (game: Game) => {
                     var orkCorridor = game.locations.first(Locations.DarkCorridor);
                     var orkPresent = !orkCorridor.hasVisited;
 

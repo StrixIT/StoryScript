@@ -1,9 +1,9 @@
-﻿module StoryScript.Locations {
-    export function LeftCorridor(): ILocation {
+﻿module DangerousCave.Locations {
+    export function LeftCorridor(): StoryScript.ILocation {
         return {
             name: 'Een pikdonkere gang',
             events: [
-                (game: DangerousCave.Game) => {
+                (game: Game) => {
                     var damage = Math.floor(Math.random() * 6 + 1) - game.character.vlugheid;
                     game.character.currentHitpoints -= Math.max(0, damage);
                     game.logToActionLog('Aah! Je valt plotseling in een diepe kuil en bezeert je. Je krijgt ' + damage + ' schade door het vallen!');
@@ -14,7 +14,7 @@
                     {
                     text: 'Klim uit de kuil',
                     type: 'skill',
-                    execute: (game: DangerousCave.Game) => {
+                    execute: (game: Game) => {
                         // Todo: skill check
                         //if (false) {
                         //    game.logToActionLog('Het lukt je niet uit de kuil te klimmen.');
@@ -35,7 +35,7 @@
                         );
 
                         // Todo: think of something simpler to remove actions.
-                        var action = game.currentLocation.actions.first({ callBack: (x: IAction) => { return x.text === 'Klim uit de kuil'; } });
+                        var action = game.currentLocation.actions.first({ callBack: (x: StoryScript.IAction) => { return x.text === 'Klim uit de kuil'; } });
                         game.currentLocation.actions.remove(action);
                     }
                 },

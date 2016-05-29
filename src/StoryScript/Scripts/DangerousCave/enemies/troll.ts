@@ -1,5 +1,5 @@
-﻿module StoryScript.Enemies {
-    export function Troll(): IEnemy {
+﻿module DangerousCave.Enemies {
+    export function Troll(): StoryScript.IEnemy {
         return {
             name: 'Trol',
             hitpoints: 20,

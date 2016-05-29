@@ -33,18 +33,19 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var DataService = (function () {
-        function DataService($q, $http, $localStorage) {
-            this.definitionCollection = window['StoryScript'];
+        function DataService($q, $http, $localStorage, definitions) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.definitions = definitions;
         }
-        DataService.prototype.$get = function ($q, $http, $localStorage) {
+        DataService.prototype.$get = function ($q, $http, $localStorage, definitions) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.definitions = definitions;
             return {
                 getDescription: self.getDescription,
                 save: self.save,
@@ -105,13 +106,14 @@ var StoryScript;
                     continue;
                 }
                 var value = item[key];
-                var definitionKey = self.toDefinitionKey(key);
-                if (self.definitionCollection.hasOwnProperty(definitionKey)) {
+                // For collections, point to the default object. This allows restoring functions on items added to collections
+                // at runtime.
+                if (self.definitions.hasOwnProperty(key)) {
                     clone[key] = [];
                     for (var n in value) {
                         // For collections, point to the default object. This allows restoring functions on items added to collections
                         // at runtime.
-                        var pointer = self.definitionCollection[definitionKey] && self.definitionCollection[definitionKey][n] ? '_' + definitionKey : chainPointer + '_' + key;
+                        var pointer = self.definitions[key] && self.definitions[key][n] ? '_' + key : chainPointer + '_' + key;
                         clone[key].push(self.cloneAndTransform(value[n], pointer));
                     }
                 }
@@ -135,11 +137,11 @@ var StoryScript;
             var pointerParts = chainPointer.split('_');
             pointerParts.shift();
             // Is there a definition collection for this pointer?
-            var definitionCollection = self.definitionCollection[self.toDefinitionKey(pointerParts[0])];
+            var definitionCollection = self.definitions[pointerParts[0]];
             var original;
             if (definitionCollection) {
                 // Get the original entity.
-                original = definitionCollection[self.toDefinitionKey(pointerParts[1])]();
+                original = definitionCollection[pointerParts[1]]();
                 if (original) {
                     pointerParts.shift();
                     pointerParts.shift();
@@ -158,7 +160,7 @@ var StoryScript;
                 }
             }
             if (!original || !original[key]) {
-                original = self.definitionCollection.Actions[key];
+                original = self.definitions.actions[key];
                 if (original) {
                     return '_fp_actions_' + key;
                 }
@@ -209,7 +211,7 @@ var StoryScript;
                             var pointerParts = value.split('_');
                             pointerParts.shift();
                             pointerParts.shift();
-                            var functionPointer = self.definitionCollection;
+                            var functionPointer = self.definitions;
                             for (var n in pointerParts) {
                                 //if (functionPointer.toString() === 'adventureGame.Collection' || functionPointer.toString() === 'adventureGame.DefinitionCollection') {
                                 //    functionPointer = functionPointer.find(pointerParts[n]);
@@ -227,27 +229,30 @@ var StoryScript;
             }
             return item;
         };
-        DataService.prototype.toDefinitionKey = function (text) {
-            return text.substring(0, 1).toUpperCase() + text.substring(1);
-        };
         return DataService;
     }());
     StoryScript.DataService = DataService;
-    DataService.$inject = ['$q', '$http', '$localStorage'];
+    DataService.$inject = ['$q', '$http', '$localStorage', 'definitions'];
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
     var GameService = (function () {
-        function GameService(dataService, locationService, characterService, ruleService, game) {
+        function GameService(dataService, locationService, characterService, ruleService, game, gameNameSpace, definitions) {
             var _this = this;
             this.init = function () {
                 var self = _this;
+                self.game.nameSpace = self.gameNameSpace;
+                self.definitions.locations = window[self.gameNameSpace]['Locations'];
+                self.definitions.actions = angular.extend(window[self.gameNameSpace]['Actions'], window['StoryScript']['Actions']);
+                self.definitions.enemies = window[self.gameNameSpace]['Enemies'];
+                self.definitions.items = window[self.gameNameSpace]['Items'];
+                self.game.definitions = self.definitions;
                 self.ruleService.setupGame(self.game);
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
                 self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
                 var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
-                if (locationName) {
+                if (self.game.character && locationName) {
                     var lastLocation = self.game.locations.first(locationName);
                     var previousLocationName = self.dataService.load(StoryScript.DataKeys.PREVIOUSLOCATION);
                     if (previousLocationName) {
@@ -366,14 +371,18 @@ var StoryScript;
             self.characterService = characterService;
             self.ruleService = ruleService;
             self.game = game;
+            self.gameNameSpace = gameNameSpace;
+            self.definitions = definitions;
         }
-        GameService.prototype.$get = function (dataService, locationService, characterService, ruleService, game) {
+        GameService.prototype.$get = function (dataService, locationService, characterService, ruleService, game, gameNameSpace, definitions) {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
             self.ruleService = ruleService;
             self.game = game;
+            self.gameNameSpace = gameNameSpace;
+            self.definitions = definitions;
             return {
                 init: self.init,
                 startNewGame: self.startNewGame,
@@ -414,7 +423,7 @@ var StoryScript;
         return GameService;
     }());
     StoryScript.GameService = GameService;
-    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game'];
+    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game', 'gameNameSpace', 'definitions'];
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -532,7 +541,7 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var LocationService = (function () {
-        function LocationService(dataService, ruleService) {
+        function LocationService(dataService, ruleService, definitions) {
             var _this = this;
             this.init = function (game) {
                 var self = _this;
@@ -544,11 +553,13 @@ var StoryScript;
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.definitions = definitions;
         }
-        LocationService.prototype.$get = function (dataService, ruleService) {
+        LocationService.prototype.$get = function (dataService, ruleService, definitions) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.definitions = definitions;
             return {
                 loadWorld: self.loadWorld,
                 changeLocation: self.changeLocation,
@@ -560,6 +571,7 @@ var StoryScript;
             var locations = null; //<ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
             if (StoryScript.isEmpty(locations)) {
                 locations = self.buildWorld();
+                self.dataService.save(StoryScript.DataKeys.WORLD, { Locations: locations });
             }
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
@@ -585,6 +597,10 @@ var StoryScript;
             else if (game.currentLocation) {
                 game.previousLocation = game.currentLocation;
             }
+            // If there is no location, we are starting a new game. Quit for now.
+            if (!location) {
+                return;
+            }
             var key = typeof location == 'function' ? location.name : location.id ? location.id : location;
             game.currentLocation = game.locations.first(key);
             // remove the return message from the current location destinations.
@@ -608,7 +624,7 @@ var StoryScript;
                         key = game.character.items.first(destination.barrier.key);
                         if (key) {
                             // Todo: can this be typed somehow?
-                            destination.barrier.actions.openWithKey = key.open();
+                            destination.barrier.actions.openWithKey = key.open;
                         }
                     }
                 });
@@ -618,6 +634,8 @@ var StoryScript;
             if (game.previousLocation) {
                 self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
+            game.currentLocation.items = game.currentLocation.items || [];
+            game.currentLocation.enemies = game.currentLocation.enemies || [];
             self.loadLocationDescriptions(game);
             self.ruleService.initCombat(game.currentLocation);
             self.ruleService.enterLocation(game.currentLocation);
@@ -629,7 +647,7 @@ var StoryScript;
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
-            var locations = window['StoryScript']['Locations'];
+            var locations = self.definitions.locations;
             var compiledLocations = [];
             for (var n in locations) {
                 var definition = locations[n];
@@ -658,6 +676,8 @@ var StoryScript;
                     if (destination.barrier) {
                         if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                             destination.barrier.selectedAction = destination.barrier.actions[0];
+                            // Todo: type
+                            destination.barrier.selectedAction.value = 0;
                         }
                     }
                 });
@@ -750,7 +770,7 @@ var StoryScript;
         return LocationService;
     }());
     StoryScript.LocationService = LocationService;
-    LocationService.$inject = ['dataService', 'ruleService'];
+    LocationService.$inject = ['dataService', 'ruleService', 'definitions'];
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -788,16 +808,6 @@ var StoryScript;
                         break;
                 }
                 return buttonClass;
-            };
-            this.getActionName = function (barrier, action) {
-                // Get the name of the barrier action from the barrier without the need to specify it
-                // in the definition.
-                for (var n in barrier.actions) {
-                    var currentAction = barrier.actions[n];
-                    if (currentAction == action) {
-                        return n;
-                    }
-                }
             };
             this.enemiesPresent = function () {
                 var self = _this;
@@ -848,7 +858,7 @@ var StoryScript;
                 self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]] = item;
                 self.game.character.items.remove(item);
             };
-            this.fight = function (enemy) {
+            this.fight = function (game, enemy) {
                 var self = _this;
                 self.gameService.fight(enemy);
             };
@@ -944,6 +954,8 @@ var StoryScript;
     var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
     var game = {};
     storyScriptModule.value('game', game);
+    var definitions = {};
+    storyScriptModule.value('definitions', definitions);
     storyScriptModule.service("dataService", StoryScript.DataService);
     storyScriptModule.service("locationService", StoryScript.LocationService);
     storyScriptModule.service("characterService", StoryScript.CharacterService);
@@ -956,6 +968,7 @@ var DangerousCave;
         function Character() {
             this.hitpoints = 20;
             this.currentHitpoints = 20;
+            this.scoreToNextLevel = 0;
             this.level = 1;
             this.kracht = 1;
             this.vlugheid = 1;
@@ -993,6 +1006,8 @@ var DangerousCave;
         return Game;
     }());
     DangerousCave.Game = Game;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'DangerousCave');
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
@@ -1137,9 +1152,9 @@ var DangerousCave;
                     }
                 ],
                 items: [
-                    StoryScript.Items.Dagger(),
-                    StoryScript.Items.LeatherHelmet(),
-                    StoryScript.Items.Lantern()
+                    DangerousCave.Items.Dagger(),
+                    DangerousCave.Items.LeatherHelmet(),
+                    DangerousCave.Items.Lantern()
                 ]
             };
         };
@@ -1169,7 +1184,7 @@ var DangerousCave;
         };
         RuleService.prototype.startGame = function () {
             var self = this;
-            self.game.changeLocation(self.game.locations.first(StoryScript.Locations.Start));
+            self.game.changeLocation(self.game.locations.first(DangerousCave.Locations.Start));
         };
         RuleService.prototype.addEnemyToLocation = function (location, enemy) {
             var self = this;
@@ -1193,12 +1208,12 @@ var DangerousCave;
         RuleService.prototype.addFleeAction = function (location) {
             var self = this;
             var numberOfEnemies = location.enemies.length;
-            var fleeAction = location.combatActions.first(StoryScript.Actions.Flee);
+            var fleeAction = location.combatActions.first(DangerousCave.Actions.Flee);
             if (fleeAction) {
                 delete location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
             }
-            if (numberOfEnemies < self.game.character.vlugheid) {
-                location.combatActions.push(StoryScript.Actions.Flee(''));
+            if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
+                location.combatActions.push(DangerousCave.Actions.Flee(''));
             }
         };
         RuleService.prototype.hitpointsChange = function (change) {
@@ -1245,8 +1260,8 @@ var DangerousCave;
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.service("textService", TextService);
 })(DangerousCave || (DangerousCave = {}));
-var StoryScript;
-(function (StoryScript) {
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function Flee(text) {
@@ -1274,10 +1289,10 @@ var StoryScript;
             };
         }
         Actions.Flee = Flee;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function Heal(potency) {
@@ -1293,20 +1308,18 @@ var StoryScript;
             };
         }
         Actions.Heal = Heal;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function Inspect(text) {
-            return function (game, barrier, action) {
-                for (var n in barrier.actions) {
-                    var currentAction = barrier.actions.first(action);
-                    if (currentAction == action) {
-                        delete barrier.actions[n];
-                        barrier.selectedAction = barrier.actions.first();
-                    }
+            return function (game, destination, barrier, action) {
+                var index = barrier.actions.indexOf(action);
+                if (index > -1) {
+                    barrier.actions.splice(index, 1);
+                    barrier.selectedAction = barrier.actions.first();
                 }
                 if (text) {
                     game.logToLocationLog(text);
@@ -1314,10 +1327,10 @@ var StoryScript;
             };
         }
         Actions.Inspect = Inspect;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function Open(callback) {
@@ -1329,10 +1342,10 @@ var StoryScript;
             };
         }
         Actions.Open = Open;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function OpenWithKey(callBack) {
@@ -1345,14 +1358,14 @@ var StoryScript;
             };
         }
         Actions.OpenWithKey = OpenWithKey;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function RandomEnemy(game) {
-            var enemies = window['StoryScript']['Enemies'];
+            var enemies = game.definitions.enemies;
             var enemyCount = 0;
             for (var n in enemies) {
                 enemyCount++;
@@ -1362,10 +1375,10 @@ var StoryScript;
             return randomEnemy;
         }
         Actions.RandomEnemy = RandomEnemy;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function Search(settings) {
@@ -1392,10 +1405,10 @@ var StoryScript;
             };
         }
         Actions.Search = Search;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function Unlock(settings) {
@@ -1419,12 +1432,12 @@ var StoryScript;
             };
         }
         Actions.Unlock = Unlock;
-    })(Actions = StoryScript.Actions || (StoryScript.Actions = {}));
-})(StoryScript || (StoryScript = {}));
+    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
+})(DangerousCave || (DangerousCave = {}));
 //deze button moet active blijven, behalve bij een critical fail misschien. Dus een extra setting, kan dat? 
 // Of kunnen we bijvoorbeeld drie pogingen geven voor hij inactive wordt? 
-var StoryScript;
-(function (StoryScript) {
+var DangerousCave;
+(function (DangerousCave) {
     var Enemies;
     (function (Enemies) {
         function GiantBat() {
@@ -1436,10 +1449,10 @@ var StoryScript;
             };
         }
         Enemies.GiantBat = GiantBat;
-    })(Enemies = StoryScript.Enemies || (StoryScript.Enemies = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Enemies;
     (function (Enemies) {
         function Goblin() {
@@ -1449,15 +1462,15 @@ var StoryScript;
                 attack: 'd4+3',
                 reward: 1,
                 items: [
-                    StoryScript.Items.Dagger
+                    DangerousCave.Items.Dagger
                 ]
             };
         }
         Enemies.Goblin = Goblin;
-    })(Enemies = StoryScript.Enemies || (StoryScript.Enemies = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Enemies;
     (function (Enemies) {
         function Orc() {
@@ -1467,15 +1480,15 @@ var StoryScript;
                 attack: '2d4+1',
                 reward: 1,
                 items: [
-                    StoryScript.Items.IronHelmet
+                    DangerousCave.Items.IronHelmet
                 ]
             };
         }
         Enemies.Orc = Orc;
-    })(Enemies = StoryScript.Enemies || (StoryScript.Enemies = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Enemies;
     (function (Enemies) {
         function Troll() {
@@ -1485,29 +1498,29 @@ var StoryScript;
                 attack: '2d6',
                 reward: 2,
                 items: [
-                    StoryScript.Items.HealingPotion
+                    DangerousCave.Items.HealingPotion
                 ]
             };
         }
         Enemies.Troll = Troll;
-    })(Enemies = StoryScript.Enemies || (StoryScript.Enemies = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function HealingPotion() {
             return {
                 name: 'Toverdrank',
                 equipmentType: StoryScript.EquipmentType.Miscellaneous,
-                use: StoryScript.Actions.Heal('1d8')
+                use: DangerousCave.Actions.Heal('1d8')
             };
         }
         Items.HealingPotion = HealingPotion;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function BlackKey() {
@@ -1518,7 +1531,7 @@ var StoryScript;
                 open: {
                     text: 'Open de deur met de zwarte sleutel',
                     // Todo: does this work? How does the callback get access to the game and destination?
-                    execute: function (parameters) { return StoryScript.Actions.OpenWithKey(function (game, destination) {
+                    execute: function (parameters) { return DangerousCave.Actions.OpenWithKey(function (game, destination) {
                         game.logToLocationLog('Je opent de deur.');
                         destination.text = 'Donkere kamer';
                     }); }
@@ -1526,10 +1539,10 @@ var StoryScript;
             };
         }
         Items.BlackKey = BlackKey;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function Dagger() {
@@ -1540,10 +1553,10 @@ var StoryScript;
             };
         }
         Items.Dagger = Dagger;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function IronHelmet() {
@@ -1554,10 +1567,10 @@ var StoryScript;
             };
         }
         Items.IronHelmet = IronHelmet;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function Lantern() {
@@ -1570,10 +1583,10 @@ var StoryScript;
             };
         }
         Items.Lantern = Lantern;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function LeatherArmor() {
@@ -1584,10 +1597,10 @@ var StoryScript;
             };
         }
         Items.LeatherArmor = LeatherArmor;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function LeatherHelmet() {
@@ -1598,10 +1611,10 @@ var StoryScript;
             };
         }
         Items.LeatherHelmet = LeatherHelmet;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function SmallShield() {
@@ -1612,10 +1625,10 @@ var StoryScript;
             };
         }
         Items.SmallShield = SmallShield;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function Sword() {
@@ -1626,17 +1639,17 @@ var StoryScript;
             };
         }
         Items.Sword = Sword;
-    })(Items = StoryScript.Items || (StoryScript.Items = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function Arena() {
             return {
                 name: 'Een hoek van de grot waar kaarsen branden',
                 enemies: [
-                    StoryScript.Enemies.Orc
+                    DangerousCave.Enemies.Orc
                 ],
                 destinations: [
                     {
@@ -1650,7 +1663,7 @@ var StoryScript;
                         type: 'skill',
                         execute: function (game) {
                             game.currentLocation.text = game.currentLocation.descriptions['triggered'];
-                            var troll = StoryScript.Enemies.Troll();
+                            var troll = DangerousCave.Enemies.Troll();
                             game.currentLocation.enemies.push(troll);
                             troll.onDefeat = onDefeat;
                             game.logToActionLog('Er verschijnt op magische wijze een enorme trol waar het symbool was! Hij valt je aan!');
@@ -1659,15 +1672,15 @@ var StoryScript;
                 ]
             };
             function onDefeat(game) {
-                var randomEnemy = StoryScript.Actions.RandomEnemy(game);
+                var randomEnemy = DangerousCave.Actions.RandomEnemy(game);
                 randomEnemy.onDefeat = this.onDefeat;
             }
         }
         Locations.Arena = Arena;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function CandleLitCave() {
@@ -1688,24 +1701,24 @@ var StoryScript;
                     }
                 ],
                 actions: [
-                    StoryScript.Actions.Search({
+                    DangerousCave.Actions.Search({
                         difficulty: 12,
                         success: function (game) {
                             game.logToLocationLog('Je voelt dat hier kortgeleden sterke magie gebruikt is. Ook zie je aan sporen op de vloer dat hier vaak orks lopen.');
                         },
                         fail: function (game) {
                             game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                            game.currentLocation.enemies.push(StoryScript.Enemies.Orc());
+                            game.currentLocation.enemies.push(DangerousCave.Enemies.Orc());
                         }
                     })
                 ]
             };
         }
         Locations.CandleLitCave = CandleLitCave;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function CentreRoom() {
@@ -1718,12 +1731,12 @@ var StoryScript;
                     }
                 ],
                 actions: [
-                    StoryScript.Actions.Search({
+                    DangerousCave.Actions.Search({
                         difficulty: 9,
                         success: function (game) {
                             game.logToLocationLog('Je vindt een schild!');
                             // Todo: allow pushing definition instead of item.
-                            game.character.items.push(StoryScript.Items.SmallShield());
+                            game.character.items.push(DangerousCave.Items.SmallShield());
                         },
                         fail: function (game) {
                             game.logToLocationLog('Je vindt niets.');
@@ -1733,10 +1746,10 @@ var StoryScript;
             };
         }
         Locations.CentreRoom = CentreRoom;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function CrossRoads() {
@@ -1772,17 +1785,17 @@ var StoryScript;
             };
         }
         Locations.CrossRoads = CrossRoads;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function DarkCorridor() {
             return {
                 name: 'Een donkere smalle gang',
                 enemies: [
-                    StoryScript.Enemies.Orc
+                    DangerousCave.Enemies.Orc
                 ],
                 destinations: [
                     {
@@ -1797,10 +1810,10 @@ var StoryScript;
             };
         }
         Locations.DarkCorridor = DarkCorridor;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function DoorOne() {
@@ -1834,7 +1847,7 @@ var StoryScript;
                             ;
                         }
                     },
-                    StoryScript.Actions.Unlock({
+                    DangerousCave.Actions.Unlock({
                         difficulty: 10,
                         success: function (game) {
                             game.changeLocation(Locations.RoomOne);
@@ -1844,7 +1857,7 @@ var StoryScript;
                         fail: function (game) {
                         }
                     }),
-                    StoryScript.Actions.Search({
+                    DangerousCave.Actions.Search({
                         difficulty: 10,
                         success: function (game) {
                             game.logToLocationLog('Je tast de deur, vloer en muren af. Hoog aan de rechtermuur vind je aan een haakje een grote sleutel!');
@@ -1857,10 +1870,10 @@ var StoryScript;
             };
         }
         Locations.DoorOne = DoorOne;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function Entry() {
@@ -1872,7 +1885,7 @@ var StoryScript;
                 //},
                 //navigationDisabled: true,
                 items: [
-                    StoryScript.Items.Lantern,
+                    DangerousCave.Items.Lantern,
                 ],
                 events: [
                     function (game) {
@@ -1892,7 +1905,7 @@ var StoryScript;
                     }
                 ],
                 actions: [
-                    StoryScript.Actions.Search({
+                    DangerousCave.Actions.Search({
                         difficulty: 5,
                         success: function (game) {
                             game.logToLocationLog('Op de muur staat een pijl, getekend met bloed. Hij wijst naar de rechtergang.');
@@ -1905,10 +1918,10 @@ var StoryScript;
             };
         }
         Locations.Entry = Entry;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function LeftCorridor() {
@@ -1945,11 +1958,11 @@ var StoryScript;
                             game.currentLocation.actions.remove(action);
                         }
                     },
-                    StoryScript.Actions.Search({
+                    DangerousCave.Actions.Search({
                         text: 'Doorzoek de kuil',
                         difficulty: 9,
                         success: function (game) {
-                            game.currentLocation.items.push(StoryScript.Items.LeatherHelmet());
+                            game.currentLocation.items.push(DangerousCave.Items.LeatherHelmet());
                             game.logToLocationLog('In de kuil voel je botten, spinrag en de resten van kleding. Ook vind je er een nog bruikbare helm!');
                         },
                         fail: function (game) {
@@ -1960,18 +1973,18 @@ var StoryScript;
             };
         }
         Locations.LeftCorridor = LeftCorridor;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function LeftRoom() {
             return {
                 name: 'De slaapkamer van de orks',
                 enemies: [
-                    StoryScript.Enemies.Orc,
-                    StoryScript.Enemies.Goblin
+                    DangerousCave.Enemies.Orc,
+                    DangerousCave.Enemies.Goblin
                 ],
                 destinations: [
                     {
@@ -1982,10 +1995,10 @@ var StoryScript;
             };
         }
         Locations.LeftRoom = LeftRoom;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function RightCorridor() {
@@ -2004,17 +2017,17 @@ var StoryScript;
             };
         }
         Locations.RightCorridor = RightCorridor;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function RightRoom() {
             return {
                 name: 'Een schemerige gang',
                 enemies: [
-                    StoryScript.Enemies.GiantBat
+                    DangerousCave.Enemies.GiantBat
                 ],
                 destinations: [
                     {
@@ -2027,7 +2040,7 @@ var StoryScript;
                     }
                 ],
                 actions: [
-                    StoryScript.Actions.Search({
+                    DangerousCave.Actions.Search({
                         difficulty: 8,
                         success: function (game) {
                             game.logToLocationLog('Je ruikt de geur van brandende kaarsen.');
@@ -2040,20 +2053,20 @@ var StoryScript;
             };
         }
         Locations.RightRoom = RightRoom;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function RoomOne() {
             return {
                 name: 'De kamer van de ork',
                 enemies: [
-                    StoryScript.Enemies.Orc
+                    DangerousCave.Enemies.Orc
                 ],
                 items: [
-                    StoryScript.Items.BlackKey
+                    DangerousCave.Items.BlackKey
                 ],
                 destinations: [
                     {
@@ -2063,12 +2076,12 @@ var StoryScript;
                             text: 'Houten deur',
                             actions: [
                                 {
-                                    text: 'Open de deur',
-                                    action: StoryScript.Actions.Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
+                                    text: 'Onderzoek de deur',
+                                    action: DangerousCave.Actions.Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
                                 },
                                 {
                                     text: 'Open de deur',
-                                    action: StoryScript.Actions.Open(function (game, destination) {
+                                    action: DangerousCave.Actions.Open(function (game, destination) {
                                         game.logToLocationLog('Je opent de eikenhouten deur.');
                                         destination.text = 'Gang (noord)';
                                     })
@@ -2092,10 +2105,10 @@ var StoryScript;
             };
         }
         Locations.RoomOne = RoomOne;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function Start() {
@@ -2108,7 +2121,7 @@ var StoryScript;
                     }
                 ],
                 actions: [
-                    StoryScript.Actions.Search({
+                    DangerousCave.Actions.Search({
                         difficulty: 10,
                         success: function (game) {
                             game.logToLocationLog('Aan de achterkant van het waarschuwingsbord staan enkele runen in de taal van de orken en trollen. Je kan deze taal helaas niet lezen. Het lijkt erop dat er bloed gebruikt is als inkt.');
@@ -2121,10 +2134,10 @@ var StoryScript;
             };
         }
         Locations.Start = Start;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function Temp() {
@@ -2139,17 +2152,17 @@ var StoryScript;
             };
         }
         Locations.Temp = Temp;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Locations;
     (function (Locations) {
         function WestCrossing() {
             return {
                 name: 'Een donkere gemetselde gang',
                 enemies: [
-                    StoryScript.Enemies.Goblin
+                    DangerousCave.Enemies.Goblin
                 ],
                 destinations: [
                     {
@@ -2161,15 +2174,15 @@ var StoryScript;
                         target: Locations.Arena,
                         barrier: {
                             text: 'Metalen deur',
-                            key: StoryScript.Items.BlackKey,
+                            key: DangerousCave.Items.BlackKey,
                             actions: [
                                 {
                                     text: 'Onderzoek de deur',
-                                    action: StoryScript.Actions.Inspect('Een deur van een dof grijs metaal, met een rode deurknop. Op de deur staat een grote afbeelding: een rood zwaard. Zodra je het handvat aanraakt, gloeit het zwaard op met een rood licht. De deur is niet op slot.')
+                                    action: DangerousCave.Actions.Inspect('Een deur van een dof grijs metaal, met een rode deurknop. Op de deur staat een grote afbeelding: een rood zwaard. Zodra je het handvat aanraakt, gloeit het zwaard op met een rood licht. De deur is niet op slot.')
                                 },
                                 {
                                     text: 'Open de deur',
-                                    action: StoryScript.Actions.Open(function (game, destination) {
+                                    action: DangerousCave.Actions.Open(function (game, destination) {
                                         game.logToLocationLog('Je opent de deur.');
                                         destination.text = 'Donkere kamer';
                                     })
@@ -2181,7 +2194,7 @@ var StoryScript;
             };
         }
         Locations.WestCrossing = WestCrossing;
-    })(Locations = StoryScript.Locations || (StoryScript.Locations = {}));
-})(StoryScript || (StoryScript = {}));
+    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
+})(DangerousCave || (DangerousCave = {}));
 
 //# sourceMappingURL=../maps/game.js.map

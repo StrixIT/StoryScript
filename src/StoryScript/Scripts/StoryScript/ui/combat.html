@@ -7,7 +7,7 @@
     </ul>
     <ul class="inline button-row">
         <li ng-repeat="action in controller.game.currentLocation.combatActions">
-            <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action.action)">{{ action.text }}</button>
+            <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action.execute)">{{ action.text }}</button>
         </li>
     </ul>
 </fieldset>

@@ -1,6 +1,6 @@
-﻿module StoryScript.Actions {
+﻿module DangerousCave.Actions {
     export function Heal(potency: string): (...params) => void {
-        return function (game: DangerousCave.Game, item: IItem) {
+        return function (game: Game, item: StoryScript.IItem) {
             var healed = game.rollDice(potency);
             game.character.currentHitpoints += healed;
 

@@ -15,7 +15,7 @@
                     <div ng-if="destination.barrier">
                         <button type="button" class="btn btn-info" ng-click="controller.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.text }}</button>
                         <select class="action-select" ng-model="destination.barrier.selectedAction">
-                            <option ng-repeat="action in destination.barrier.actions" value="{{ controller.getActionName(destination.barrier, action) }}">{{ action.text }}</option>
+                            <option ng-repeat="action in destination.barrier.actions" value="{{ destination.barrier.actions.indexOf(action) }}">{{ action.text }}</option>
                         </select>
                     </div>
                 </td>

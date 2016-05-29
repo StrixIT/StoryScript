@@ -1,5 +1,5 @@
-﻿module StoryScript.Actions {
-    export function Flee(text: string): IAction {
+﻿module DangerousCave.Actions {
+    export function Flee(text: string): StoryScript.IAction {
         return {
             text: text || 'Vluchten!',
             type: 'fight',
