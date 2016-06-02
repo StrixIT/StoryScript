@@ -393,24 +393,28 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var LocationService = (function () {
-        function LocationService(dataService, ruleService, definitions) {
+        function LocationService(dataService, ruleService, game, definitions) {
             var _this = this;
+            this.functionIdCounter = 0;
             this.init = function (game) {
                 var self = _this;
                 game.changeLocation = function (location) { self.changeLocation.call(self, location, game); };
                 game.currentLocation = null;
                 game.previousLocation = null;
+                self.functionList = {};
                 game.locations = self.loadWorld();
             };
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.game = game;
             self.definitions = definitions;
         }
-        LocationService.prototype.$get = function (dataService, ruleService, definitions) {
+        LocationService.prototype.$get = function (dataService, ruleService, game, definitions) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.game = game;
             self.definitions = definitions;
             return {
                 loadWorld: self.loadWorld,
@@ -427,14 +431,20 @@ var StoryScript;
                 self.save(self.pristineLocations, self.pristineLocations);
                 locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             }
-            self.restore(locations, self.pristineLocations);
+            self.restore(locations);
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
             locations.forEach(function (location) {
                 location.destinations = location.destinations || [];
                 location.destinations.push = location.destinations.push.proxy(self.addDestination);
                 location.enemies = location.enemies || [];
-                location.enemies.push = location.enemies.push.proxy(self.addEnemy);
+                location.enemies.push = location.enemies.push.proxy((function () {
+                    return function () {
+                        var args = [].slice.apply(arguments);
+                        args.splice(0, 0, this);
+                        self.addEnemy(self, args);
+                    };
+                })());
                 location.combatActions = location.combatActions || [];
             });
             return locations;
@@ -471,17 +481,19 @@ var StoryScript;
                     }
                     self.save(value, pristineValue, clone[key], save);
                 }
-                else if (typeof value == 'function' && !value.isProxy) {
-                    if (pristineValues && pristineValues[key]) {
-                        if (Array.isArray(clone)) {
-                            clone.push(null);
+                else if (typeof value == 'function') {
+                    if (!value.isProxy) {
+                        if (pristineValues && pristineValues[key]) {
+                            if (Array.isArray(clone)) {
+                                clone.push('_function_' + value.functionId);
+                            }
+                            else {
+                                clone[key] = '_function_' + value.functionId;
+                            }
                         }
                         else {
-                            clone[key] = null;
+                            clone[key] = value.toString();
                         }
-                    }
-                    else {
-                        clone[key] = value.toString();
                     }
                 }
                 else {
@@ -492,27 +504,30 @@ var StoryScript;
                 self.dataService.save(StoryScript.DataKeys.WORLD, clone);
             }
         };
-        LocationService.prototype.restore = function (loaded, pristine) {
+        LocationService.prototype.restore = function (loaded) {
             var self = this;
             for (var key in loaded) {
                 if (!loaded.hasOwnProperty(key)) {
                     continue;
                 }
-                var value = pristine[key];
+                var value = loaded[key];
                 if (value == undefined) {
                     return;
                 }
                 else if (typeof value === "object") {
-                    self.restore(loaded[key], pristine[key]);
+                    self.restore(loaded[key]);
                 }
-                else if (typeof value == 'function') {
-                    loaded[key] = pristine[key];
-                }
-                else if (typeof value === 'string' && value.indexOf('function ') > -1) {
-                    // Todo: create a new function instead of using eval.
-                    loaded[key] = eval('(' + value + ')');
+                else if (typeof value === 'string') {
+                    if (value.indexOf('_function_') > -1) {
+                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
+                    }
+                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
+                        // Todo: create a new function instead of using eval.
+                        loaded[key] = eval('(' + value + ')');
+                    }
                 }
             }
+            return loaded;
         };
         LocationService.prototype.changeLocation = function (location, game) {
             var self = this;
@@ -577,6 +592,7 @@ var StoryScript;
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
+            self.functionIdCounter = 0;
             var locations = self.definitions.locations;
             var compiledLocations = [];
             for (var n in locations) {
@@ -589,6 +605,7 @@ var StoryScript;
                 self.setDestinations(location);
                 self.buildEnemies(location);
                 self.buildItems(location);
+                self.getFunctions(location);
                 compiledLocations.push(location);
             }
             return compiledLocations;
@@ -636,6 +653,26 @@ var StoryScript;
                 entry.items = items;
             }
         };
+        LocationService.prototype.getFunctions = function (location) {
+            var self = this;
+            for (var key in location) {
+                if (!location.hasOwnProperty(key)) {
+                    continue;
+                }
+                var value = location[key];
+                if (value == undefined) {
+                    return;
+                }
+                else if (typeof value === "object") {
+                    self.getFunctions(location[key]);
+                }
+                else if (typeof value == 'function') {
+                    self.functionList[self.functionIdCounter] = value;
+                    value.functionId = self.functionIdCounter;
+                    self.functionIdCounter++;
+                }
+            }
+        };
         LocationService.prototype.addDestination = function () {
             var self = this;
             var args = [].slice.apply(arguments);
@@ -647,12 +684,12 @@ var StoryScript;
             }
             originalFunction.apply(this, args);
         };
-        LocationService.prototype.addEnemy = function (game) {
-            var self = this;
-            var args = [].slice.apply(arguments);
-            var originalFunction = args.shift();
-            var enemy = originalFunction.apply(this, args);
-            self.ruleService.addEnemyToLocation(game.currentLocation, enemy);
+        LocationService.prototype.addEnemy = function (scope, args) {
+            var array = args[0];
+            var originalFunction = args[1];
+            var enemy = args[2];
+            originalFunction.call(array, enemy);
+            scope.ruleService.addEnemyToLocation(scope.game.currentLocation, enemy);
         };
         LocationService.prototype.playEvents = function (game) {
             var self = this;
@@ -700,7 +737,7 @@ var StoryScript;
         return LocationService;
     }());
     StoryScript.LocationService = LocationService;
-    LocationService.$inject = ['dataService', 'ruleService', 'definitions'];
+    LocationService.$inject = ['dataService', 'ruleService', 'game', 'definitions'];
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -896,11 +933,11 @@ var DangerousCave;
 (function (DangerousCave) {
     var Character = (function () {
         function Character() {
-            this.hitpoints = 20;
-            this.currentHitpoints = 20;
+            this.hitpoints = 120;
+            this.currentHitpoints = 120;
             this.scoreToNextLevel = 0;
             this.level = 1;
-            this.kracht = 1;
+            this.kracht = 10;
             this.vlugheid = 1;
             this.oplettendheid = 1;
             this.defense = 1;

@@ -11,20 +11,25 @@ module StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
         private dataService: IDataService;
         private ruleService: IRuleService;
+        private game: IGame;
         private definitions: any;
         private pristineLocations: ICollection<ICompiledLocation>;
+        private functionIdCounter: number = 0;
+        private functionList: { [id: number]: Function };
 
-        constructor(dataService: IDataService, ruleService: IRuleService, definitions: any) {
+        constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.game = game;
             self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, ruleService: IRuleService, definitions: any): ILocationService {
+        public $get(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any): ILocationService {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.game = game;
             self.definitions = definitions;
 
             return {
@@ -40,6 +45,7 @@ module StoryScript {
             game.changeLocation = (location) => { self.changeLocation.call(self, location, game); };
             game.currentLocation = null;
             game.previousLocation = null;
+            self.functionList = {};
             game.locations = self.loadWorld();
         }
 
@@ -53,7 +59,7 @@ module StoryScript {
                 locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
             }
 
-            self.restore(locations, self.pristineLocations);
+            self.restore(locations);
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
@@ -61,7 +67,13 @@ module StoryScript {
                 location.destinations = location.destinations || [];
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination);
                 location.enemies = location.enemies || [];
-                location.enemies.push = (<any>location.enemies.push).proxy(self.addEnemy);
+                location.enemies.push = (<any>location.enemies.push).proxy((function (): Function {
+                    return function () {
+                        var args = [].slice.apply(arguments);
+                        args.splice(0, 0, this);
+                        self.addEnemy(self, args);
+                    }
+                })());
                 location.combatActions = location.combatActions || [];
             });
 
@@ -107,17 +119,19 @@ module StoryScript {
 
                     self.save(value, pristineValue, clone[key], save);
                 }
-                else if (typeof value == 'function' && !value.isProxy) {
-                    if (pristineValues && pristineValues[key]) {
-                        if (Array.isArray(clone)) {
-                            clone.push(null);
+                else if (typeof value == 'function') {
+                    if (!value.isProxy) {
+                        if (pristineValues && pristineValues[key]) {
+                            if (Array.isArray(clone)) {
+                                clone.push('_function_' + value.functionId);
+                            }
+                            else {
+                                clone[key] = '_function_' + value.functionId;
+                            }
                         }
                         else {
-                            clone[key] = null;
+                            clone[key] = value.toString();
                         }
-                    }
-                    else {
-                        clone[key] = value.toString();
                     }
                 }
                 else {
@@ -130,7 +144,7 @@ module StoryScript {
             }
         }
 
-        private restore(loaded, pristine) {
+        private restore(loaded) {
             var self = this;
 
             for (var key in loaded) {
@@ -138,22 +152,26 @@ module StoryScript {
                     continue;
                 }
 
-                var value = pristine[key];
+                var value = loaded[key];
 
                 if (value == undefined) {
                     return;
                 }
                 else if (typeof value === "object") {
-                    self.restore(loaded[key], pristine[key]);
+                    self.restore(loaded[key]);
                 }
-                else if (typeof value == 'function') {
-                    loaded[key] = pristine[key];
-                }
-                else if (typeof value === 'string' && value.indexOf('function ') > -1) {
-                    // Todo: create a new function instead of using eval.
-                    loaded[key] = eval('(' + value + ')');
+                else if (typeof value === 'string') {
+                    if (value.indexOf('_function_') > -1) {
+                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
+                    }
+                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
+                        // Todo: create a new function instead of using eval.
+                        loaded[key] = eval('(' + value + ')');
+                    }
                 }
             }
+
+            return loaded;
         }
 
         public changeLocation(location: ILocation, game: IGame) {
@@ -234,6 +252,7 @@ module StoryScript {
 
         private buildWorld(): ICompiledLocation[] {
             var self = this;
+            self.functionIdCounter = 0;
             var locations = self.definitions.locations;
             var compiledLocations = [];
 
@@ -249,6 +268,7 @@ module StoryScript {
                 self.setDestinations(location);
                 self.buildEnemies(location);
                 self.buildItems(location);
+                self.getFunctions(location);
                 compiledLocations.push(location);
             }
 
@@ -309,6 +329,30 @@ module StoryScript {
             }
         }
 
+        private getFunctions(location: any) {
+            var self = this;
+
+            for (var key in location) {
+                if (!location.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                var value = location[key];
+
+                if (value == undefined) {
+                    return;
+                }
+                else if (typeof value === "object") {
+                    self.getFunctions(location[key]);
+                }
+                else if (typeof value == 'function') {
+                    self.functionList[self.functionIdCounter] = value;
+                    value.functionId = self.functionIdCounter;
+                    self.functionIdCounter++;
+                }
+            }
+        }
+
         private addDestination() {
             var self = this;
             var args = [].slice.apply(arguments);
@@ -323,12 +367,12 @@ module StoryScript {
             originalFunction.apply(this, args);
         }
 
-        private addEnemy(game: IGame) {
-            var self = this;
-            var args = [].slice.apply(arguments);
-            var originalFunction = args.shift();
-            var enemy = originalFunction.apply(this, args);
-            self.ruleService.addEnemyToLocation(game.currentLocation, enemy);
+        private addEnemy(scope: any, args: any) {
+            var array = args[0];
+            var originalFunction = args[1];
+            var enemy = args[2];
+            originalFunction.call(array, enemy);
+            scope.ruleService.addEnemyToLocation(scope.game.currentLocation, enemy);
         }
 
         private playEvents(game: IGame) {
@@ -387,5 +431,5 @@ module StoryScript {
         }
     }
 
-    LocationService.$inject = ['dataService', 'ruleService', 'definitions'];
+    LocationService.$inject = ['dataService', 'ruleService', 'game', 'definitions'];
 }
