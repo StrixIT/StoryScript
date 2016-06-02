@@ -1,13 +1,13 @@
 ﻿module DangerousCave {
     export class Character implements StoryScript.ICharacter {
         name: string;
-        hitpoints: number = 120;
+        hitpoints: number = 20;
         currentHitpoints: number = 120;
         score: number;
         scoreToNextLevel: number = 0;
         level: number = 1;
 
-        kracht: number = 10;
+        kracht: number = 1;
         vlugheid: number = 1;
         oplettendheid: number = 1;
         defense: number = 1;

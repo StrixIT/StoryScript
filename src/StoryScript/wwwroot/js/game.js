@@ -816,6 +816,9 @@ var StoryScript;
                 self.game.character.items.remove(item);
                 self.game.currentLocation.items.push(item);
             };
+            this.canEquip = function (item) {
+                return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
+            };
             this.equipItem = function (item) {
                 var self = _this;
                 var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]];
@@ -933,11 +936,11 @@ var DangerousCave;
 (function (DangerousCave) {
     var Character = (function () {
         function Character() {
-            this.hitpoints = 120;
+            this.hitpoints = 20;
             this.currentHitpoints = 120;
             this.scoreToNextLevel = 0;
             this.level = 1;
-            this.kracht = 10;
+            this.kracht = 1;
             this.vlugheid = 1;
             this.oplettendheid = 1;
             this.defense = 1;
