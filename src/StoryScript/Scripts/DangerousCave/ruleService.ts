@@ -182,11 +182,13 @@
             var fleeAction = location.combatActions.first(Actions.Flee);
 
             if (fleeAction) {
-                delete location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
+                location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
             }
 
             if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
-                location.combatActions.push(Actions.Flee(''));
+                var action = Actions.Flee('');
+                (<any>action).id = (<any>Actions.Flee).name;
+                location.combatActions.push(action);
             }
         }
 

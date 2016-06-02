@@ -1177,10 +1177,12 @@ var DangerousCave;
             var numberOfEnemies = location.enemies.length;
             var fleeAction = location.combatActions.first(DangerousCave.Actions.Flee);
             if (fleeAction) {
-                delete location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
+                location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
             }
             if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
-                location.combatActions.push(DangerousCave.Actions.Flee(''));
+                var action = DangerousCave.Actions.Flee('');
+                action.id = DangerousCave.Actions.Flee.name;
+                location.combatActions.push(action);
             }
         };
         RuleService.prototype.hitpointsChange = function (change) {
