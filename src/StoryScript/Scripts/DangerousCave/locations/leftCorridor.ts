@@ -11,7 +11,7 @@
                 }
             ],
             actions: [
-                    {
+                {
                     text: 'Klim uit de kuil',
                     type: 'skill',
                     execute: (game: Game) => {

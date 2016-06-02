@@ -67,167 +67,17 @@ var StoryScript;
         };
         DataService.prototype.save = function (key, value) {
             var self = this;
-            var clone = self.cloneAndTransform(value, null);
+            var clone = angular.copy(value);
             self.$localStorage[key] = JSON.stringify({ data: clone });
         };
         DataService.prototype.load = function (key) {
             var self = this;
             try {
-                var savedValue = JSON.parse(self.$localStorage[key]).data;
-                savedValue = self.restoreCollectionsAndFunctions(savedValue);
-                return savedValue;
+                return JSON.parse(self.$localStorage[key]).data;
             }
             catch (exception) {
                 console.log('No data loaded for key ' + key);
             }
-        };
-        DataService.prototype.cloneAndTransform = function (item, chainPointer) {
-            var self = this;
-            if (!item) {
-                return;
-            }
-            var clone = {};
-            chainPointer = chainPointer || '';
-            if (typeof item !== "object") {
-                return item;
-            }
-            if (item.id) {
-                chainPointer += '_' + item.id;
-            }
-            if (item.target) {
-                chainPointer += '_' + item.target;
-            }
-            for (var key in item) {
-                if (!item.hasOwnProperty(key)) {
-                    continue;
-                }
-                // Ignore combat actions, they should be reapplied on init combat when a location loads.
-                if (key == 'combatActions') {
-                    continue;
-                }
-                var value = item[key];
-                // For collections, point to the default object. This allows restoring functions on items added to collections
-                // at runtime.
-                if (self.definitions.hasOwnProperty(key)) {
-                    clone[key] = [];
-                    for (var n in value) {
-                        // For collections, point to the default object. This allows restoring functions on items added to collections
-                        // at runtime.
-                        var pointer = self.definitions[key] && self.definitions[key][n] ? '_' + key : chainPointer + '_' + key;
-                        clone[key].push(self.cloneAndTransform(value[n], pointer));
-                    }
-                }
-                else if (typeof value === "object" && value) {
-                    clone[key] = self.cloneAndTransform(item[key], chainPointer + '_' + key);
-                }
-                else if (typeof value == 'function') {
-                    clone[key] = self.getFunctionPointerOrStringValue(chainPointer, item, key);
-                }
-                else {
-                    clone[key] = value;
-                }
-            }
-            return clone;
-        };
-        DataService.prototype.getFunctionPointerOrStringValue = function (chainPointer, item, key) {
-            var self = this;
-            // Check whether the function exists on the original entity. If it does, return a pointer
-            // to that function. If it does not, the function was added at runtime and must be saved
-            // as a string.
-            var pointerParts = chainPointer.split('_');
-            pointerParts.shift();
-            // Is there a definition collection for this pointer?
-            var definitionCollection = self.definitions[pointerParts[0]];
-            var original;
-            if (definitionCollection) {
-                // Get the original entity.
-                original = definitionCollection[pointerParts[1]]();
-                if (original) {
-                    pointerParts.shift();
-                    pointerParts.shift();
-                    // Traverse the original entity and its collections to get to the key value;
-                    for (var i = 0; i < pointerParts.length; i++) {
-                        //if (original.first) {
-                        //    original = original.first(pointerParts[i]);
-                        //}
-                        //else {
-                        original = original[pointerParts[i]];
-                        //}
-                        if (!original) {
-                            break;
-                        }
-                    }
-                }
-            }
-            if (!original || !original[key]) {
-                original = self.definitions.actions[key];
-                if (original) {
-                    return '_fp_actions_' + key;
-                }
-                else {
-                    return item[key].toString();
-                }
-            }
-            // Either there is no definition collection or the original also has the function. Return
-            // the function pointer.
-            return '_fp' + chainPointer;
-        };
-        DataService.prototype.restoreCollectionsAndFunctions = function (item) {
-            var self = this;
-            if (!item) {
-                return;
-            }
-            if (typeof item !== "object") {
-                return item;
-            }
-            var arrayObject = StoryScript.convertOjectToArray(item);
-            if (arrayObject) {
-                item = arrayObject;
-                for (var n in arrayObject) {
-                    self.restoreCollectionsAndFunctions(arrayObject[n]);
-                }
-                return item;
-            }
-            for (var key in item) {
-                if (!item.hasOwnProperty(key)) {
-                    continue;
-                }
-                var value = item[key];
-                if (value) {
-                    if (typeof value === "object") {
-                        arrayObject = StoryScript.convertOjectToArray(item[key]);
-                        if (arrayObject) {
-                            item[key] = arrayObject;
-                            for (var n in arrayObject) {
-                                self.restoreCollectionsAndFunctions(arrayObject[n]);
-                            }
-                        }
-                        else {
-                            self.restoreCollectionsAndFunctions(item[key]);
-                        }
-                    }
-                    if (typeof value === 'string') {
-                        if (value.substring(0, 3) === '_fp') {
-                            var pointerParts = value.split('_');
-                            pointerParts.shift();
-                            pointerParts.shift();
-                            var functionPointer = self.definitions;
-                            for (var n in pointerParts) {
-                                //if (functionPointer.toString() === 'adventureGame.Collection' || functionPointer.toString() === 'adventureGame.DefinitionCollection') {
-                                //    functionPointer = functionPointer.find(pointerParts[n]);
-                                //}
-                                //else {
-                                functionPointer = functionPointer[pointerParts[n]];
-                            }
-                            item[key] = functionPointer[key];
-                        }
-                        else if (value.indexOf('function ') == 0) {
-                            item[key] = eval('(' + value + ')');
-                        }
-                    }
-                }
-            }
-            return item;
         };
         return DataService;
     }());
@@ -293,7 +143,7 @@ var StoryScript;
             this.saveGame = function () {
                 var self = _this;
                 self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-                self.dataService.save(StoryScript.DataKeys.WORLD, { Locations: self.game.locations });
+                self.locationService.saveWorld(self.game.locations);
             };
             this.rollDice = function (input) {
                 //'xdy+/-z'
@@ -432,11 +282,13 @@ var StoryScript;
         Function.prototype.proxy = function (proxyFunction) {
             var self = this;
             return (function () {
-                return function () {
+                var func = function () {
                     var args = [].slice.call(arguments);
                     args.splice(0, 0, self);
                     return proxyFunction.apply(this, args);
                 };
+                func.isProxy = true;
+                return func;
             })();
         };
     }
@@ -562,17 +414,20 @@ var StoryScript;
             self.definitions = definitions;
             return {
                 loadWorld: self.loadWorld,
+                saveWorld: self.saveWorld,
                 changeLocation: self.changeLocation,
                 init: self.init
             };
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            var locations = null; //<ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
+            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
+            self.pristineLocations = self.buildWorld();
             if (StoryScript.isEmpty(locations)) {
-                locations = self.buildWorld();
-                self.dataService.save(StoryScript.DataKeys.WORLD, { Locations: locations });
+                self.save(self.pristineLocations, self.pristineLocations);
+                locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             }
+            self.restore(locations, self.pristineLocations);
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
             locations.forEach(function (location) {
@@ -583,6 +438,81 @@ var StoryScript;
                 location.combatActions = location.combatActions || [];
             });
             return locations;
+        };
+        LocationService.prototype.saveWorld = function (locations) {
+            var self = this;
+            self.save(locations, self.pristineLocations);
+        };
+        LocationService.prototype.save = function (values, pristineValues, clone, save) {
+            var self = this;
+            save = save == undefined ? true : false;
+            if (!clone) {
+                clone = [];
+            }
+            for (var key in values) {
+                if (!values.hasOwnProperty(key)) {
+                    continue;
+                }
+                var value = values[key];
+                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
+                if (!value) {
+                    return;
+                }
+                else if (Array.isArray(value)) {
+                    clone[key] = [];
+                    self.save(value, pristineValue, clone[key], save);
+                }
+                else if (typeof value === "object") {
+                    if (Array.isArray(clone)) {
+                        clone.push(angular.copy(value));
+                    }
+                    else {
+                        clone[key] = angular.copy(value);
+                    }
+                    self.save(value, pristineValue, clone[key], save);
+                }
+                else if (typeof value == 'function' && !value.isProxy) {
+                    if (pristineValues && pristineValues[key]) {
+                        if (Array.isArray(clone)) {
+                            clone.push(null);
+                        }
+                        else {
+                            clone[key] = null;
+                        }
+                    }
+                    else {
+                        clone[key] = value.toString();
+                    }
+                }
+                else {
+                    clone[key] = value;
+                }
+            }
+            if (save) {
+                self.dataService.save(StoryScript.DataKeys.WORLD, clone);
+            }
+        };
+        LocationService.prototype.restore = function (loaded, pristine) {
+            var self = this;
+            for (var key in loaded) {
+                if (!loaded.hasOwnProperty(key)) {
+                    continue;
+                }
+                var value = pristine[key];
+                if (value == undefined) {
+                    return;
+                }
+                else if (typeof value === "object") {
+                    self.restore(loaded[key], pristine[key]);
+                }
+                else if (typeof value == 'function') {
+                    loaded[key] = pristine[key];
+                }
+                else if (typeof value === 'string' && value.indexOf('function ') > -1) {
+                    // Todo: create a new function instead of using eval.
+                    loaded[key] = eval('(' + value + ')');
+                }
+            }
         };
         LocationService.prototype.changeLocation = function (location, game) {
             var self = this;

@@ -2,6 +2,7 @@
     export interface ILocationService {
         init(game: IGame): void;
         loadWorld(): ICollection<ICompiledLocation>;
+        saveWorld(locations: ICollection<ICompiledLocation>): void;
         changeLocation(location: any, game: IGame): void;
     }
 }
@@ -10,7 +11,8 @@ module StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
         private dataService: IDataService;
         private ruleService: IRuleService;
-        private definitions: any
+        private definitions: any;
+        private pristineLocations: ICollection<ICompiledLocation>;
 
         constructor(dataService: IDataService, ruleService: IRuleService, definitions: any) {
             var self = this;
@@ -27,6 +29,7 @@ module StoryScript {
 
             return {
                 loadWorld: self.loadWorld,
+                saveWorld: self.saveWorld,
                 changeLocation: self.changeLocation,
                 init: self.init
             };
@@ -42,13 +45,15 @@ module StoryScript {
 
         public loadWorld(): ICollection<ICompiledLocation> {
             var self = this;
-            var locations = null;//<ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
+            var locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
+            self.pristineLocations = self.buildWorld();
 
             if (isEmpty(locations)) {
-                locations = self.buildWorld();
-                self.dataService.save(DataKeys.WORLD, { Locations: locations });
-                //locations = <ICollection<ICompiledLocation>>self.dataService.load<any>(DataKeys.WORLD).Locations;
+                self.save(self.pristineLocations, self.pristineLocations);
+                locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
             }
+
+            self.restore(locations, self.pristineLocations);
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
@@ -61,6 +66,94 @@ module StoryScript {
             });
 
             return locations;
+        }
+
+        public saveWorld(locations: ICollection<ICompiledLocation>) {
+            var self = this;
+            self.save(locations, self.pristineLocations);
+        }
+
+        private save(values, pristineValues, clone?, save?) {
+            var self = this;
+
+            save = save == undefined ? true : false;
+
+            if (!clone) {
+                clone = [];
+            }
+
+            for (var key in values) {
+                if (!values.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                var value = values[key];
+                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
+
+                if (!value) {
+                    return;
+                }
+                else if (Array.isArray(value)) {
+                    clone[key] = [];
+                    self.save(value, pristineValue, clone[key], save);
+                }
+                else if (typeof value === "object") {
+                    if (Array.isArray(clone)) {
+                        clone.push(angular.copy(value));
+                    }
+                    else {
+                        clone[key] = angular.copy(value);
+                    }
+
+                    self.save(value, pristineValue, clone[key], save);
+                }
+                else if (typeof value == 'function' && !value.isProxy) {
+                    if (pristineValues && pristineValues[key]) {
+                        if (Array.isArray(clone)) {
+                            clone.push(null);
+                        }
+                        else {
+                            clone[key] = null;
+                        }
+                    }
+                    else {
+                        clone[key] = value.toString();
+                    }
+                }
+                else {
+                    clone[key] = value;
+                }
+            }
+
+            if (save) {
+                self.dataService.save(StoryScript.DataKeys.WORLD, clone);
+            }
+        }
+
+        private restore(loaded, pristine) {
+            var self = this;
+
+            for (var key in loaded) {
+                if (!loaded.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                var value = pristine[key];
+
+                if (value == undefined) {
+                    return;
+                }
+                else if (typeof value === "object") {
+                    self.restore(loaded[key], pristine[key]);
+                }
+                else if (typeof value == 'function') {
+                    loaded[key] = pristine[key];
+                }
+                else if (typeof value === 'string' && value.indexOf('function ') > -1) {
+                    // Todo: create a new function instead of using eval.
+                    loaded[key] = eval('(' + value + ')');
+                }
+            }
         }
 
         public changeLocation(location: ILocation, game: IGame) {

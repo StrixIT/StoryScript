@@ -124,7 +124,7 @@ module StoryScript {
         saveGame = (): void => {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-            self.dataService.save(StoryScript.DataKeys.WORLD, { Locations: self.game.locations });
+            self.locationService.saveWorld(self.game.locations);
         }
 
         rollDice = (input: string): number => {

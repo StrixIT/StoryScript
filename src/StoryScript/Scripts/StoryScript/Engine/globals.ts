@@ -5,11 +5,15 @@
             var self = this;
 
             return (function () {
-                return function () {
+                var func = function () {
                     var args = [].slice.call(arguments);
                     args.splice(0, 0, self);
                     return proxyFunction.apply(this, args);
                 };
+
+                (<any>func).isProxy = true;
+
+                return func;
             })();
         };
     }
