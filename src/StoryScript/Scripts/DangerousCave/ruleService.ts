@@ -157,6 +157,8 @@
                     enemy.items.splice(0, enemy.items.length);
                 }
 
+                self.game.currentLocation.enemies.remove(enemy);
+
                 if (enemy.reward) {
                     self.game.character.score += enemy.reward;
                 }
@@ -164,8 +166,6 @@
                 if (enemy.onDefeat) {
                     enemy.onDefeat(self.game);
                 }
-
-                self.game.currentLocation.enemies.remove(enemy);
             }
 
             self.game.currentLocation.enemies.forEach(function (enemy) {

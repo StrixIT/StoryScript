@@ -21,7 +21,7 @@
         actionLog: string[];
         state: string;
 
-        changeLocation(location: any): void;
+        changeLocation(location?: any): void;
         rollDice(dice: string): number;
         calculateBonus(person: IActor, type: string): number;
         logToLocationLog(message: string): void;

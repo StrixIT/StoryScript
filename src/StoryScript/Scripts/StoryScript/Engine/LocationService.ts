@@ -218,11 +218,19 @@ module StoryScript {
                     }
 
                     if (destination.barrier && destination.barrier.key) {
-                        key = <IKey>game.character.items.first(destination.barrier.key);
+                        var barrierKey = <IKey>game.character.items.first(destination.barrier.key);
 
-                        if (key) {
-                            // Todo: can this be typed somehow?
-                            (<any>destination.barrier.actions).openWithKey = (<any>key).open;
+                        if (barrierKey) {
+
+                            // Todo: improve using find on barrier actions.
+                            var existing = null;
+                            destination.barrier.actions.forEach(x => { if (x.text == barrierKey.open.text) { existing = x; }; });
+
+                            if (existing) {
+                                destination.barrier.actions.splice(destination.barrier.actions.indexOf(existing), 1);
+                            }
+
+                            destination.barrier.actions.push(barrierKey.open);
                         }
                     }
                 });
@@ -290,8 +298,6 @@ module StoryScript {
                     if (destination.barrier) {
                         if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                             destination.barrier.selectedAction = destination.barrier.actions[0];
-                            // Todo: type
-                            (<any>destination.barrier.selectedAction).value = 0;
                         }
                     }
                 });

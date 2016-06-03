@@ -661,10 +661,17 @@ var StoryScript;
                         destination.isPreviousLocation = true;
                     }
                     if (destination.barrier && destination.barrier.key) {
-                        key = game.character.items.first(destination.barrier.key);
-                        if (key) {
-                            // Todo: can this be typed somehow?
-                            destination.barrier.actions.openWithKey = key.open;
+                        var barrierKey = game.character.items.first(destination.barrier.key);
+                        if (barrierKey) {
+                            // Todo: improve using find on barrier actions.
+                            var existing = null;
+                            destination.barrier.actions.forEach(function (x) { if (x.text == barrierKey.open.text) {
+                                existing = x;
+                            } ; });
+                            if (existing) {
+                                destination.barrier.actions.splice(destination.barrier.actions.indexOf(existing), 1);
+                            }
+                            destination.barrier.actions.push(barrierKey.open);
                         }
                     }
                 });
@@ -718,8 +725,6 @@ var StoryScript;
                     if (destination.barrier) {
                         if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                             destination.barrier.selectedAction = destination.barrier.actions[0];
-                            // Todo: type
-                            destination.barrier.selectedAction.value = 0;
                         }
                     }
                 });
@@ -1030,7 +1035,7 @@ var DangerousCave;
     var Character = (function () {
         function Character() {
             this.hitpoints = 20;
-            this.currentHitpoints = 120;
+            this.currentHitpoints = 20;
             this.scoreToNextLevel = 0;
             this.level = 1;
             this.kracht = 1;
@@ -1054,11 +1059,6 @@ var DangerousCave;
         return Character;
     }());
     DangerousCave.Character = Character;
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.value("gameNameSpace", 'DangerousCave');
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
@@ -1152,13 +1152,13 @@ var DangerousCave;
                         });
                         enemy.items.splice(0, enemy.items.length);
                     }
+                    self.game.currentLocation.enemies.remove(enemy);
                     if (enemy.reward) {
                         self.game.character.score += enemy.reward;
                     }
                     if (enemy.onDefeat) {
                         enemy.onDefeat(self.game);
                     }
-                    self.game.currentLocation.enemies.remove(enemy);
                 }
                 self.game.currentLocation.enemies.forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
@@ -1294,27 +1294,6 @@ var DangerousCave;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
-    var TextService = (function () {
-        function TextService() {
-        }
-        TextService.prototype.$get = function () {
-            var self = this;
-            return {
-                createCharacter: self.createCharacter
-            };
-        };
-        TextService.prototype.createCharacter = function () {
-            return null;
-        };
-        return TextService;
-    }());
-    DangerousCave.TextService = TextService;
-    //TextService.$inject = [];
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.service("textService", TextService);
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
     var Actions;
     (function (Actions) {
         function Flee(text) {
@@ -1322,7 +1301,7 @@ var DangerousCave;
                 text: text || 'Vluchten!',
                 type: 'fight',
                 active: function (game) {
-                    return !game.isEmpty(game.currentLocation, 'enemies');
+                    return !StoryScript.isEmpty(game.currentLocation.enemies);
                 },
                 execute: function (game) {
                     var check = game.rollDice(game.character.vlugheid + 'd6');
@@ -1335,7 +1314,7 @@ var DangerousCave;
                         game.changeLocation();
                     }
                     else {
-                        game.logAction('Je ontsnapping mislukt!');
+                        game.logToActionLog('Je ontsnapping mislukt!');
                     }
                     ;
                 }
@@ -1573,6 +1552,11 @@ var DangerousCave;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'DangerousCave');
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
     var Items;
     (function (Items) {
         function HealingPotion() {
@@ -1597,7 +1581,7 @@ var DangerousCave;
                 open: {
                     text: 'Open de deur met de zwarte sleutel',
                     // Todo: does this work? How does the callback get access to the game and destination?
-                    execute: function (parameters) { return DangerousCave.Actions.OpenWithKey(function (game, destination) {
+                    action: function (parameters) { return DangerousCave.Actions.OpenWithKey(function (game, destination) {
                         game.logToLocationLog('Je opent de deur.');
                         destination.text = 'Donkere kamer';
                     }); }
@@ -1774,7 +1758,12 @@ var DangerousCave;
                         },
                         fail: function (game) {
                             game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                            game.currentLocation.enemies.push(DangerousCave.Enemies.Orc());
+                            // Todo: improve;
+                            var enemy = DangerousCave.Enemies.Orc();
+                            var items = [];
+                            enemy.items.forEach(function (x) { items.push(x()); });
+                            enemy.items = items;
+                            game.currentLocation.enemies.push(enemy);
                         }
                     })
                 ]

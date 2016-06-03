@@ -2,7 +2,7 @@
     export class Character implements StoryScript.ICharacter {
         name: string;
         hitpoints: number = 20;
-        currentHitpoints: number = 120;
+        currentHitpoints: number = 20;
         score: number;
         scoreToNextLevel: number = 0;
         level: number = 1;

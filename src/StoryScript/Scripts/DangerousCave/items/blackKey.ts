@@ -6,23 +6,11 @@
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             open: {
                 text: 'Open de deur met de zwarte sleutel',
-                // Todo: does this work? How does the callback get access to the game and destination?
-                execute: (parameters) => Actions.OpenWithKey((game: IGame, destination: StoryScript.IDestination) => {
+                action: (parameters) => Actions.OpenWithKey((game: IGame, destination: StoryScript.IDestination) => {
                     game.logToLocationLog('Je opent de deur.');
                     destination.text = 'Donkere kamer';
                 })
             }
-
-            //(game: Game): IAction => {
-            //return function() {
-            //    text: 'Open de deur met de zwarte sleutel',
-            //    execute: Actions.OpenWithKey({
-            //        success: function (game, destination) {
-            //            game.logLocation('Je opent de deur.');
-            //            destination.text = 'Donkere kamer';
-            //        }
-            //    })
-            //}
         }
     }
 }

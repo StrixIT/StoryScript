@@ -24,7 +24,13 @@
                     },
                     fail: (game) => {
                         game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                        game.currentLocation.enemies.push(Enemies.Orc());
+
+                        // Todo: improve;
+                        var enemy = Enemies.Orc();
+                        var items = [];
+                        enemy.items.forEach(x => { items.push(x()); });
+                        (<any>enemy).items = items;
+                        game.currentLocation.enemies.push(enemy);
                     }
                 })
             ]
