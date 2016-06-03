@@ -3,7 +3,7 @@
         return {
             name: 'Een pikdonkere gang',
             events: [
-                (game: Game) => {
+                (game: IGame) => {
                     var damage = Math.floor(Math.random() * 6 + 1) - game.character.vlugheid;
                     game.character.currentHitpoints -= Math.max(0, damage);
                     game.logToActionLog('Aah! Je valt plotseling in een diepe kuil en bezeert je. Je krijgt ' + damage + ' schade door het vallen!');
@@ -14,7 +14,7 @@
                 {
                     text: 'Klim uit de kuil',
                     type: 'skill',
-                    execute: (game: Game) => {
+                    execute: (game: IGame) => {
                         // Todo: skill check
                         //if (false) {
                         //    game.logToActionLog('Het lukt je niet uit de kuil te klimmen.');

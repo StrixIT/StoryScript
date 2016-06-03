@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Actions {
-    export function RandomEnemy(game: Game) {
+    export function RandomEnemy(game: IGame) {
         var enemies = game.definitions.enemies;
         var enemyCount = 0;
         var randomEnemy = null;

@@ -15,7 +15,7 @@
                     {
                         text: 'Onderzoek symbool',
                         type: 'skill',
-                        execute: function (game: Game) {
+                        execute: function (game: IGame) {
                             game.currentLocation.text = game.currentLocation.descriptions['triggered'];
                             var troll = Enemies.Troll();
                             game.currentLocation.enemies.push(troll);
@@ -26,7 +26,7 @@
                 ]
             }
 
-        function onDefeat(game: Game) {
+        function onDefeat(game: IGame) {
             var randomEnemy = Actions.RandomEnemy(game);
             randomEnemy.onDefeat = this.onDefeat;
         }

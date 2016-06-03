@@ -1,6 +1,6 @@
 ﻿module DangerousCave.Actions {
     export function Inspect(text: string) {
-        return function (game: Game, destination: StoryScript.IDestination, barrier: StoryScript.IBarrier, action: StoryScript.IBarrierAction): void {
+        return function (game: IGame, destination: StoryScript.IDestination, barrier: StoryScript.IBarrier, action: StoryScript.IBarrierAction): void {
             var index = barrier.actions.indexOf(action);
 
             if (index > -1) {

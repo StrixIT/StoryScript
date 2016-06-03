@@ -7,7 +7,7 @@
             open: {
                 text: 'Open de deur met de zwarte sleutel',
                 // Todo: does this work? How does the callback get access to the game and destination?
-                execute: (parameters) => Actions.OpenWithKey((game: Game, destination: StoryScript.IDestination) => {
+                execute: (parameters) => Actions.OpenWithKey((game: IGame, destination: StoryScript.IDestination) => {
                     game.logToLocationLog('Je opent de deur.');
                     destination.text = 'Donkere kamer';
                 })

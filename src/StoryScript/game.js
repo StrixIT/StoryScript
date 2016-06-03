@@ -2,7 +2,7 @@ var StoryScript;
 (function (StoryScript) {
     StoryScript.addFunctionExtensions();
     StoryScript.addArrayExtensions();
-    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
+    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage', 'strixIT']);
     var game = {};
     storyScriptModule.value('game', game);
     var definitions = {};
@@ -323,11 +323,13 @@ var StoryScript;
         Function.prototype.proxy = function (proxyFunction) {
             var self = this;
             return (function () {
-                return function () {
+                var func = function () {
                     var args = [].slice.call(arguments);
                     args.splice(0, 0, self);
                     return proxyFunction.apply(this, args);
                 };
+                func.isProxy = true;
+                return func;
             })();
         };
     }
@@ -432,24 +434,28 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var LocationService = (function () {
-        function LocationService(dataService, ruleService, definitions) {
+        function LocationService(dataService, ruleService, game, definitions) {
             var _this = this;
+            this.functionIdCounter = 0;
             this.init = function (game) {
                 var self = _this;
                 game.changeLocation = function (location) { self.changeLocation.call(self, location, game); };
                 game.currentLocation = null;
                 game.previousLocation = null;
+                self.functionList = {};
                 game.locations = self.loadWorld();
             };
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.game = game;
             self.definitions = definitions;
         }
-        LocationService.prototype.$get = function (dataService, ruleService, definitions) {
+        LocationService.prototype.$get = function (dataService, ruleService, game, definitions) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
+            self.game = game;
             self.definitions = definitions;
             return {
                 loadWorld: self.loadWorld,
@@ -460,20 +466,26 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            var locations = null; //<ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
+            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             self.pristineLocations = self.buildWorld();
             if (StoryScript.isEmpty(locations)) {
                 self.save(self.pristineLocations, self.pristineLocations);
                 locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             }
-            self.restore(locations, self.pristineLocations);
+            self.restore(locations);
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
             locations.forEach(function (location) {
                 location.destinations = location.destinations || [];
                 location.destinations.push = location.destinations.push.proxy(self.addDestination);
                 location.enemies = location.enemies || [];
-                location.enemies.push = location.enemies.push.proxy(self.addEnemy);
+                location.enemies.push = location.enemies.push.proxy((function () {
+                    return function () {
+                        var args = [].slice.apply(arguments);
+                        args.splice(0, 0, this);
+                        self.addEnemy(self, args);
+                    };
+                })());
                 location.combatActions = location.combatActions || [];
             });
             return locations;
@@ -484,9 +496,6 @@ var StoryScript;
         };
         LocationService.prototype.save = function (values, pristineValues, clone, save) {
             var self = this;
-            if (!pristineValues) {
-                return;
-            }
             save = save == undefined ? true : false;
             if (!clone) {
                 clone = [];
@@ -496,7 +505,7 @@ var StoryScript;
                     continue;
                 }
                 var value = values[key];
-                var pristineValue = pristineValues[key];
+                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
                 if (!value) {
                     return;
                 }
@@ -509,49 +518,57 @@ var StoryScript;
                         clone.push(angular.copy(value));
                     }
                     else {
-                        clone[key] = value;
+                        clone[key] = angular.copy(value);
                     }
                     self.save(value, pristineValue, clone[key], save);
                 }
                 else if (typeof value == 'function') {
-                    if (pristineValues[key]) {
-                        if (Array.isArray(clone)) {
-                            clone.push(null);
+                    if (!value.isProxy) {
+                        if (pristineValues && pristineValues[key]) {
+                            if (Array.isArray(clone)) {
+                                clone.push('_function_' + value.functionId);
+                            }
+                            else {
+                                clone[key] = '_function_' + value.functionId;
+                            }
                         }
                         else {
-                            clone[key] = null;
+                            clone[key] = value.toString();
                         }
                     }
-                    else {
-                        clone[key] = value[key].toString();
-                    }
+                }
+                else {
+                    clone[key] = value;
                 }
             }
             if (save) {
                 self.dataService.save(StoryScript.DataKeys.WORLD, clone);
             }
         };
-        LocationService.prototype.restore = function (loaded, pristine) {
+        LocationService.prototype.restore = function (loaded) {
             var self = this;
             for (var key in loaded) {
                 if (!loaded.hasOwnProperty(key)) {
                     continue;
                 }
-                var value = pristine[key];
+                var value = loaded[key];
                 if (value == undefined) {
                     return;
                 }
                 else if (typeof value === "object") {
-                    self.restore(loaded[key], pristine[key]);
+                    self.restore(loaded[key]);
                 }
-                else if (typeof value == 'function') {
-                    loaded[key] = pristine[key];
-                }
-                else if (typeof value === 'string' && value.indexOf('function ') > -1) {
-                    // Todo: create a new function instead of using eval.
-                    loaded[key] = eval('(' + value + ')');
+                else if (typeof value === 'string') {
+                    if (value.indexOf('_function_') > -1) {
+                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
+                    }
+                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
+                        // Todo: create a new function instead of using eval.
+                        loaded[key] = eval('(' + value + ')');
+                    }
                 }
             }
+            return loaded;
         };
         LocationService.prototype.changeLocation = function (location, game) {
             var self = this;
@@ -616,6 +633,7 @@ var StoryScript;
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
+            self.functionIdCounter = 0;
             var locations = self.definitions.locations;
             var compiledLocations = [];
             for (var n in locations) {
@@ -628,6 +646,7 @@ var StoryScript;
                 self.setDestinations(location);
                 self.buildEnemies(location);
                 self.buildItems(location);
+                self.getFunctions(location);
                 compiledLocations.push(location);
             }
             return compiledLocations;
@@ -675,6 +694,26 @@ var StoryScript;
                 entry.items = items;
             }
         };
+        LocationService.prototype.getFunctions = function (location) {
+            var self = this;
+            for (var key in location) {
+                if (!location.hasOwnProperty(key)) {
+                    continue;
+                }
+                var value = location[key];
+                if (value == undefined) {
+                    return;
+                }
+                else if (typeof value === "object") {
+                    self.getFunctions(location[key]);
+                }
+                else if (typeof value == 'function') {
+                    self.functionList[self.functionIdCounter] = value;
+                    value.functionId = self.functionIdCounter;
+                    self.functionIdCounter++;
+                }
+            }
+        };
         LocationService.prototype.addDestination = function () {
             var self = this;
             var args = [].slice.apply(arguments);
@@ -686,12 +725,12 @@ var StoryScript;
             }
             originalFunction.apply(this, args);
         };
-        LocationService.prototype.addEnemy = function (game) {
-            var self = this;
-            var args = [].slice.apply(arguments);
-            var originalFunction = args.shift();
-            var enemy = originalFunction.apply(this, args);
-            self.ruleService.addEnemyToLocation(game.currentLocation, enemy);
+        LocationService.prototype.addEnemy = function (scope, args) {
+            var array = args[0];
+            var originalFunction = args[1];
+            var enemy = args[2];
+            originalFunction.call(array, enemy);
+            scope.ruleService.addEnemyToLocation(scope.game.currentLocation, enemy);
         };
         LocationService.prototype.playEvents = function (game) {
             var self = this;
@@ -739,7 +778,7 @@ var StoryScript;
         return LocationService;
     }());
     StoryScript.LocationService = LocationService;
-    LocationService.$inject = ['dataService', 'ruleService', 'definitions'];
+    LocationService.$inject = ['dataService', 'ruleService', 'game', 'definitions'];
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -780,7 +819,7 @@ var StoryScript;
             };
             this.enemiesPresent = function () {
                 var self = _this;
-                return self.game.currentLocation.enemies.length;
+                return self.game.currentLocation && self.game.currentLocation.enemies.length;
             };
             this.barriersPresent = function () {
                 var self = _this;
@@ -796,9 +835,7 @@ var StoryScript;
             };
             this.executeBarrierAction = function (destination, barrier) {
                 var self = _this;
-                // Get the selected action manually because ng-options does not work and I have to use ng-repeat
-                // which does not supply a full object.
-                var action = barrier.actions[barrier.selectedAction];
+                var action = barrier.actions.first({ callBack: function (x) { return x == barrier.selectedAction; } });
                 var args = [action.action, destination, barrier, action];
                 self.executeAction.apply(_this, args);
             };
@@ -817,6 +854,9 @@ var StoryScript;
                 var self = _this;
                 self.game.character.items.remove(item);
                 self.game.currentLocation.items.push(item);
+            };
+            this.canEquip = function (item) {
+                return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
             };
             this.equipItem = function (item) {
                 var self = _this;
@@ -890,12 +930,107 @@ var StoryScript;
     StoryScript.MainController = MainController;
     MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game'];
 })(StoryScript || (StoryScript = {}));
+var Strix;
+(function (Strix) {
+    var directivesModule = angular.module('strixIT', []);
+    directivesModule.directive('strixDropDown', DropDownDirective);
+    function DropDownDirective() {
+        return {
+            require: 'ngModel',
+            priority: 100,
+            scope: { model: '=ngModel', data: '=source', changeCallback: '=' },
+            link: function (scope, elem, attr, ngModel) {
+                var optionLabel = attr['optionLabel'] || 'Name';
+                var optionValue = attr['optionValue'] || 'Id';
+                var defaultFlag = attr['defaultFlag'];
+                var tabIndex = attr['tabindex'];
+                var select = null;
+                // Save the model value on linking of the directive. This value needs to be stored to be able to set a
+                // dropdown correctly when multiple changes of the datasource are triggered before its value is set.
+                scope.oldModelValue = null;
+                // Create the select element, if it is not present already.
+                select = findOrCreateSelectElement(elem, tabIndex);
+                // Watch the data source for changes and recreate the dropdown when changes occur.
+                scope.$watch('data', function (newValue, oldValue) {
+                    dataChanged(select, scope, ngModel, optionLabel, optionValue, defaultFlag);
+                });
+                // Handle the selection of a dropdown option.
+                select.change(function (e) {
+                    onChange(e.currentTarget.value, scope, ngModel);
+                });
+            }
+        };
+        function findOrCreateSelectElement(elem, tabIndex) {
+            var select;
+            if (elem.is('select')) {
+                select = elem;
+            }
+            else {
+                select = elem.find('select');
+            }
+            if (!select.length) {
+                select = $('<select class="pre-select"></select>');
+                elem.append(select);
+            }
+            // If a tabindex was specified, set this index on the select and remove it from the parent element.
+            if (tabIndex && !select.attr('tabIndex')) {
+                select.attr('tabindex', tabIndex);
+                elem.removeAttr('tabindex');
+            }
+            return select;
+        }
+        function dataChanged(select, scope, ngModel, optionLabel, optionValue, defaultFlag) {
+            if (scope.data) {
+                var selectedValue;
+                // Store the old model value on the first data change.
+                if (!scope.oldModelValue) {
+                    scope.oldModelValue = scope.model;
+                }
+                selectedValue = buildSelect(select, scope, optionLabel, optionValue, defaultFlag);
+                // Call onchange to actually set the view value.
+                onChange(selectedValue, scope, ngModel);
+            }
+        }
+        function buildSelect(select, scope, optionLabel, optionValue, defaultFlag) {
+            var selectedValue, options = [];
+            select.empty();
+            for (var n in scope.data) {
+                var entry = scope.data[n];
+                var entryValue = entry[optionValue] || entry;
+                if (scope.model == entryValue || scope.oldModelValue == entryValue || (entry[defaultFlag] && !selectedValue)) {
+                    selectedValue = entryValue;
+                }
+                options.push($('<option value="' + entryValue + '">' + (entry[optionLabel] || entry) + '</option>'));
+            }
+            if (!selectedValue) {
+                selectedValue = scope.data[0] ? scope.data[0][optionValue] || scope.data[0] : null;
+            }
+            for (var n in options) {
+                var option = options[n];
+                if (option.attr('value') == selectedValue) {
+                    option.attr('selected', 'selected');
+                }
+                select.append(option);
+            }
+            return selectedValue;
+        }
+        function onChange(value, scope, ngModel) {
+            // Do the callback before updating the view value. This order is important, which has something
+            // to do with the angular digest cycle. I'm not sure what exactly.
+            if (scope.changeCallback) {
+                scope.changeCallback(value);
+            }
+            ngModel.$setViewValue(value);
+        }
+    }
+    Strix.DropDownDirective = DropDownDirective;
+})(Strix || (Strix = {}));
 var DangerousCave;
 (function (DangerousCave) {
     var Character = (function () {
         function Character() {
             this.hitpoints = 20;
-            this.currentHitpoints = 20;
+            this.currentHitpoints = 120;
             this.scoreToNextLevel = 0;
             this.level = 1;
             this.kracht = 1;
@@ -922,18 +1057,6 @@ var DangerousCave;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {
-    var Game = (function () {
-        function Game() {
-            this.logToLocationLog = function (message) { };
-            this.logToActionLog = function (message) { };
-        }
-        // Todo: only to overwrite. Use interface? Better typing?
-        Game.prototype.changeLocation = function (location) { };
-        Game.prototype.rollDice = function (dice) { return 0; };
-        Game.prototype.calculateBonus = function (person, type) { return 0; };
-        return Game;
-    }());
-    DangerousCave.Game = Game;
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'DangerousCave');
 })(DangerousCave || (DangerousCave = {}));
@@ -1138,10 +1261,12 @@ var DangerousCave;
             var numberOfEnemies = location.enemies.length;
             var fleeAction = location.combatActions.first(DangerousCave.Actions.Flee);
             if (fleeAction) {
-                delete location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
+                location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
             }
             if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
-                location.combatActions.push(DangerousCave.Actions.Flee(''));
+                var action = DangerousCave.Actions.Flee('');
+                action.id = DangerousCave.Actions.Flee.name;
+                location.combatActions.push(action);
             }
         };
         RuleService.prototype.hitpointsChange = function (change) {
@@ -2055,10 +2180,23 @@ var DangerousCave;
         function RandomEnemy(game) {
             var enemies = game.definitions.enemies;
             var enemyCount = 0;
+            var randomEnemy = null;
             for (var n in enemies) {
                 enemyCount++;
             }
-            var randomEnemy = enemies[game.rollDice('1d' + enemyCount) - 1]();
+            var enemyToGet = game.rollDice('1d' + enemyCount) - 1;
+            var index = 0;
+            for (var n in enemies) {
+                index++;
+                if (index == enemyToGet) {
+                    randomEnemy = enemies[n]();
+                    break;
+                }
+            }
+            randomEnemy.items = randomEnemy.items || [];
+            for (var n in randomEnemy.items) {
+                StoryScript.definitionToObject(randomEnemy.items[n]);
+            }
             game.currentLocation.enemies.push(randomEnemy);
             return randomEnemy;
         }

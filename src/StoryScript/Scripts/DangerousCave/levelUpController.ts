@@ -2,7 +2,7 @@
     export class LevelUpController {
         private $scope: ng.IScope;
         private ruleService: RuleService;
-        private game: Game;
+        private game: IGame;
 
         public selectedReward: {
             name: string,
@@ -12,7 +12,7 @@
         // Todo: type
         public rewards: any;
 
-        constructor($scope: ng.IScope, ruleService: RuleService, game: Game) {
+        constructor($scope: ng.IScope, ruleService: RuleService, game: IGame) {
             var self = this;
             self.$scope = $scope;
             self.ruleService = ruleService;

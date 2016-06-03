@@ -2,7 +2,7 @@
     addFunctionExtensions();
     addArrayExtensions();
 
-    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage']);
+    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'ngStorage', 'strixIT']);
 
     var game = {};
     storyScriptModule.value('game', game);

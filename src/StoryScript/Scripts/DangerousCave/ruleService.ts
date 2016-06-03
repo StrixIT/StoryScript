@@ -1,13 +1,13 @@
 ﻿module DangerousCave {
     export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
-        private game: Game;
+        private game: IGame;
 
-        constructor(game: Game) {
+        constructor(game: IGame) {
             var self = this;
             self.game = game;
         }
 
-        public $get(game: Game): StoryScript.IRuleService {
+        public $get(game: IGame): StoryScript.IRuleService {
             var self = this;
             self.game = game;
 
@@ -136,7 +136,7 @@
             var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
             var check = self.game.rollDice(self.game.character.kracht + 'd6');
 
-            var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
+            var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
             self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
 
             enemy.hitpoints -= characterDamage;
@@ -170,7 +170,7 @@
 
             self.game.currentLocation.enemies.forEach(function (enemy) {
                 var check = self.game.rollDice(enemy.attack);
-                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
+                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
                 self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                 self.game.character.currentHitpoints -= enemyDamage;
             });

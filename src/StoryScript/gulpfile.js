@@ -55,7 +55,7 @@ gulp.task('copy-dangerous-cave-html', ["clean-html"], function () {
 });
 
 gulp.task('ts-compile-dangerous-cave', function () {
-    var tsResult = gulp.src([paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/DangerousCave/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
+    var tsResult = gulp.src([paths.root + 'Scripts/Library/**/*.ts', paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/DangerousCave/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
                         .pipe(sourcemaps.init())
                         .pipe(ts(tsProject));
 

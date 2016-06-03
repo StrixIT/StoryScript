@@ -3,7 +3,7 @@
         return {
             name: 'Een kruispunt',
             events: [
-                (game: Game) => {
+                (game: IGame) => {
                     var orkCorridor = game.locations.first(Locations.DarkCorridor);
                     var orkPresent = !orkCorridor.hasVisited;
 

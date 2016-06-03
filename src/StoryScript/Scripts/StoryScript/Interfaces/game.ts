@@ -6,13 +6,12 @@
 
     export interface IGame {
         nameSpace: string;
-        definitions: any;
-        //definitions: {
-        //    locations: [() => StoryScript.ILocation],
-        //    actions: [() => StoryScript.IAction],
-        //    enemies: [() => StoryScript.IEnemy],
-        //    Items: [() => StoryScript.IItem]
-        //};
+        definitions: {
+            locations: [() => StoryScript.ILocation],
+            actions: [() => StoryScript.IAction],
+            enemies: [() => StoryScript.IEnemy],
+            Items: [() => StoryScript.IItem]
+        };
         character: ICharacter;
         locations: ICollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;
@@ -24,7 +23,7 @@
 
         changeLocation(location: any): void;
         rollDice(dice: string): number;
-        calculateBonus(person: ICharacter, type: string): number;
+        calculateBonus(person: IActor, type: string): number;
         logToLocationLog(message: string): void;
         logToActionLog(message: string): void;
     }

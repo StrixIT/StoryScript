@@ -14,8 +14,7 @@
                 <td ng-repeat="destination in controller.game.currentLocation.destinations">
                     <div ng-if="destination.barrier">
                         <button type="button" class="btn btn-info" ng-click="controller.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.text }}</button>
-                        <select class="action-select" ng-model="destination.barrier.selectedAction">
-                            <option ng-repeat="action in destination.barrier.actions" value="{{ destination.barrier.actions.indexOf(action) }}">{{ action.text }}</option>
+                        <select strix-drop-down class="action-select" ng-model="destination.barrier.selectedAction" source="destination.barrier.actions" option-label="text" option-value="{{ destination.barrier.actions.indexOf(action) }}">
                         </select>
                     </div>
                 </td>

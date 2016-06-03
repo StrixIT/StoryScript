@@ -3,8 +3,8 @@
         text?: string;
         active?: (parameters: any) => boolean;
         difficulty: number;
-        success: (game: Game) => void;
-        fail: (game: Game) => void;
+        success: (game: IGame) => void;
+        fail: (game: IGame) => void;
     }
 }
 
@@ -16,7 +16,7 @@ module DangerousCave.Actions {
             text: text,
             type: 'skill',
             active: settings.active == undefined ? () => { return true; } : settings.active,
-            execute: function (game: Game) {
+            execute: function (game: IGame) {
                 var check = game.rollDice(game.character.oplettendheid + 'd6');
                 var result;
                 result = check * game.character.oplettendheid;

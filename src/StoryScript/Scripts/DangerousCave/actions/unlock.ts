@@ -4,7 +4,7 @@
             text: settings.text || 'Slot openen',
             type: 'skill',
             active: settings.active == undefined ? true : settings.active,
-            execute: function (game: Game) {
+            execute: function (game: IGame) {
                 var check = game.rollDice(game.character.vlugheid + 'd6');
                 var result;
                 result = check * game.character.vlugheid;

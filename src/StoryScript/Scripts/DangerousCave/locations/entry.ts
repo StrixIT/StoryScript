@@ -11,7 +11,7 @@
                 Items.Lantern,
             ],
             events: [
-                (game: Game) => {
+                (game: IGame) => {
                     if (game.character.oplettendheid > 1) {
                         game.logToLocationLog('Je ruikt bloed.');
                     }

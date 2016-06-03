@@ -71,7 +71,7 @@
 
         enemiesPresent = () => {
             var self = this;
-            return self.game.currentLocation.enemies.length;
+            return self.game.currentLocation && self.game.currentLocation.enemies.length;
         }
 
         barriersPresent = () => {
@@ -105,12 +105,9 @@
             }
         }
 
-        executeBarrierAction = (destination, barrier) => {
+        executeBarrierAction = (destination, barrier: IBarrier) => {
             var self = this;
-
-            // Get the selected action manually because ng-options does not work and I have to use ng-repeat
-            // which does not supply a full object.
-            var action = barrier.actions[barrier.selectedAction];
+            var action = barrier.actions.first({ callBack: x => x == barrier.selectedAction });
             var args = [action.action, destination, barrier, action];
             self.executeAction.apply(this, args);
         }
