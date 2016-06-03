@@ -73,7 +73,7 @@ gulp.task("tslint", () =>
 );
 
 gulp.task('ts-compile-path-of-heroes', function () {
-    var tsResult = gulp.src([paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/PathOfHeroes/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
+    var tsResult = gulp.src([paths.root + 'Scripts/Library/**/*.ts', paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/PathOfHeroes/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
                         .pipe(sourcemaps.init())
                         .pipe(ts(tsProject));
 
