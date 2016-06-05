@@ -1,7 +1,8 @@
 ﻿module StoryScript {
     export interface IDataService {
+        functionList: { [id: number]: Function };
         getDescription(descriptionName: string);
-        save<T>(key: string, value: T): void;
+        save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
     }
 }
@@ -11,24 +12,23 @@ module StoryScript {
         private $q: ng.IQService;
         private $http: ng.IHttpService;
         private $localStorage: any; // Todo: type;
-        private definitions: any;
+        public functionList: { [id: number]: Function };
 
-        constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, definitions: any) {
+        constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
-            self.definitions = definitions;
         }
 
-        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, definitions: any): IDataService {
+        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any): IDataService {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
-            self.definitions = definitions;
 
             return {
+                functionList: self.functionList,
                 getDescription: self.getDescription,
                 save: self.save,
                 load: self.load
@@ -51,9 +51,9 @@ module StoryScript {
             return deferred.promise;
         }
 
-        public save<T>(key: string, value: T): void {
+        public save<T>(key: string, value: T, pristineValues?: T): void {
             var self = this;
-            var clone = angular.copy(value);
+            var clone = self.buildClone(value, pristineValues, null);
             self.$localStorage[key] = JSON.stringify({ data: clone });
         }
 
@@ -61,11 +61,96 @@ module StoryScript {
             var self = this;
 
             try {
-                return JSON.parse(self.$localStorage[key]).data;
+                return self.restore(JSON.parse(self.$localStorage[key]).data);
             }
             catch (exception) {
                 console.log('No data loaded for key ' + key);
             }
+        }
+
+        private buildClone(values, pristineValues, clone?) {
+            var self = this;
+
+            if (!clone) {
+                clone = Array.isArray(values) ? [] : {};
+            }
+
+            for (var key in values) {
+                if (!values.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                var value = values[key];
+                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
+
+                if (!value) {
+                    return;
+                }
+                else if (Array.isArray(value)) {
+                    clone[key] = [];
+                    self.buildClone(value, pristineValue, clone[key]);
+                }
+                else if (typeof value === "object") {
+                    if (Array.isArray(clone)) {
+                        clone.push(angular.copy(value));
+                    }
+                    else {
+                        clone[key] = angular.copy(value);
+                    }
+
+                    self.buildClone(value, pristineValue, clone[key]);
+                }
+                else if (typeof value == 'function') {
+                    if (!value.isProxy) {
+                        if (pristineValues && pristineValues[key]) {
+                            if (Array.isArray(clone)) {
+                                clone.push('_function_' + value.functionId);
+                            }
+                            else {
+                                clone[key] = '_function_' + value.functionId;
+                            }
+                        }
+                        else {
+                            clone[key] = value.toString();
+                        }
+                    }
+                }
+                else {
+                    clone[key] = value;
+                }
+            }
+
+            return clone;
+        }
+
+        private restore(loaded) {
+            var self = this;
+
+            for (var key in loaded) {
+                if (!loaded.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                var value = loaded[key];
+
+                if (value == undefined) {
+                    return;
+                }
+                else if (typeof value === "object") {
+                    self.restore(loaded[key]);
+                }
+                else if (typeof value === 'string') {
+                    if (value.indexOf('_function_') > -1) {
+                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
+                    }
+                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
+                        // Todo: create a new function instead of using eval.
+                        loaded[key] = eval('(' + value + ')');
+                    }
+                }
+            }
+
+            return loaded;
         }
     }
 

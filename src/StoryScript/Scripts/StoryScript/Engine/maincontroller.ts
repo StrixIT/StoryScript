@@ -107,7 +107,7 @@
 
         executeBarrierAction = (destination, barrier: IBarrier) => {
             var self = this;
-            var action = barrier.actions.first({ callBack: x => x == barrier.selectedAction });
+            var action = barrier.actions.first({ callBack: (x: IBarrier) => x.text == barrier.selectedAction.text });
             var args = [action.action, destination, barrier, action];
             self.executeAction.apply(this, args);
         }

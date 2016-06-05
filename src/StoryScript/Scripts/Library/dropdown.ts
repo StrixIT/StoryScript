@@ -1,5 +1,6 @@
 ﻿module Strix.Interfaces {
     export interface IDropDownDirectiveScope extends ng.IScope {
+        data: any[];
         oldModelValue: any
     }
 }
@@ -15,7 +16,7 @@ module Strix {
             scope: { model: '=ngModel', data: '=source', changeCallback: '=' },
             link: function (scope: Strix.Interfaces.IDropDownDirectiveScope, elem, attr, ngModel) {
                 var optionLabel = attr['optionLabel'] || 'Name';
-                var optionValue = attr['optionValue'] || 'Id';
+                var optionValue = attr['optionValue'] || undefined;
                 var defaultFlag = attr['defaultFlag'];
                 var tabIndex = attr['tabindex'];
                 var select = null;
@@ -34,7 +35,7 @@ module Strix {
 
                 // Handle the selection of a dropdown option.
                 select.change(function (e) {
-                    onChange(e.currentTarget.value, scope, ngModel);
+                    onChange(e.currentTarget.value, scope, optionLabel, optionValue, ngModel);
                 });
             }
         }
@@ -75,7 +76,7 @@ module Strix {
                 selectedValue = buildSelect(select, scope, optionLabel, optionValue, defaultFlag);
 
                 // Call onchange to actually set the view value.
-                onChange(selectedValue, scope, ngModel);
+                onChange(selectedValue, scope, optionLabel, optionValue, ngModel);
             }
         }
 
@@ -86,7 +87,7 @@ module Strix {
 
             for (var n in scope.data) {
                 var entry = scope.data[n];
-                var entryValue = entry[optionValue] || entry;
+                var entryValue = optionValue && entry[optionValue] || entry[optionLabel];
 
                 if (scope.model == entryValue || scope.oldModelValue == entryValue || (entry[defaultFlag] && !selectedValue)) {
                     selectedValue = entryValue;
@@ -96,7 +97,7 @@ module Strix {
             }
 
             if (!selectedValue) {
-                selectedValue = scope.data[0] ? scope.data[0][optionValue] || scope.data[0] : null;
+                selectedValue = scope.data[0] ? optionValue && scope.data[0][optionValue] || scope.data[0] : null;
             }
 
             for (var n in options) {
@@ -112,7 +113,11 @@ module Strix {
             return selectedValue;
         }
 
-        function onChange(value, scope, ngModel) {
+        function onChange(value, scope, optionLabel, optionValue, ngModel) {
+            if (!optionValue) {
+                value = scope.data.filter(x => { return x[optionLabel] == value; })[0];
+            }
+
             // Do the callback before updating the view value. This order is important, which has something
             // to do with the angular digest cycle. I'm not sure what exactly.
             if (scope.changeCallback) {

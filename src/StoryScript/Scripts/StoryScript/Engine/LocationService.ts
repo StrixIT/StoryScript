@@ -45,7 +45,6 @@ module StoryScript {
             game.changeLocation = (location) => { self.changeLocation.call(self, location, game); };
             game.currentLocation = null;
             game.previousLocation = null;
-            self.functionList = {};
             game.locations = self.loadWorld();
         }
 
@@ -55,11 +54,9 @@ module StoryScript {
             self.pristineLocations = self.buildWorld();
 
             if (isEmpty(locations)) {
-                self.save(self.pristineLocations, self.pristineLocations);
+                self.dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
                 locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
             }
-
-            self.restore(locations);
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
@@ -82,96 +79,7 @@ module StoryScript {
 
         public saveWorld(locations: ICollection<ICompiledLocation>) {
             var self = this;
-            self.save(locations, self.pristineLocations);
-        }
-
-        private save(values, pristineValues, clone?, save?) {
-            var self = this;
-
-            save = save == undefined ? true : false;
-
-            if (!clone) {
-                clone = [];
-            }
-
-            for (var key in values) {
-                if (!values.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                var value = values[key];
-                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
-
-                if (!value) {
-                    return;
-                }
-                else if (Array.isArray(value)) {
-                    clone[key] = [];
-                    self.save(value, pristineValue, clone[key], save);
-                }
-                else if (typeof value === "object") {
-                    if (Array.isArray(clone)) {
-                        clone.push(angular.copy(value));
-                    }
-                    else {
-                        clone[key] = angular.copy(value);
-                    }
-
-                    self.save(value, pristineValue, clone[key], save);
-                }
-                else if (typeof value == 'function') {
-                    if (!value.isProxy) {
-                        if (pristineValues && pristineValues[key]) {
-                            if (Array.isArray(clone)) {
-                                clone.push('_function_' + value.functionId);
-                            }
-                            else {
-                                clone[key] = '_function_' + value.functionId;
-                            }
-                        }
-                        else {
-                            clone[key] = value.toString();
-                        }
-                    }
-                }
-                else {
-                    clone[key] = value;
-                }
-            }
-
-            if (save) {
-                self.dataService.save(StoryScript.DataKeys.WORLD, clone);
-            }
-        }
-
-        private restore(loaded) {
-            var self = this;
-
-            for (var key in loaded) {
-                if (!loaded.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                var value = loaded[key];
-
-                if (value == undefined) {
-                    return;
-                }
-                else if (typeof value === "object") {
-                    self.restore(loaded[key]);
-                }
-                else if (typeof value === 'string') {
-                    if (value.indexOf('_function_') > -1) {
-                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
-                    }
-                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
-                        // Todo: create a new function instead of using eval.
-                        loaded[key] = eval('(' + value + ')');
-                    }
-                }
-            }
-
-            return loaded;
+            self.dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
         public changeLocation(location: ILocation, game: IGame) {
@@ -263,6 +171,7 @@ module StoryScript {
             self.functionIdCounter = 0;
             var locations = self.definitions.locations;
             var compiledLocations = [];
+            self.functionList = {};
 
             for (var n in locations) {
                 var definition = locations[n];
@@ -280,6 +189,7 @@ module StoryScript {
                 compiledLocations.push(location);
             }
 
+            self.dataService.functionList = self.functionList;
             return compiledLocations;
         }
 
