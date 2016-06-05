@@ -115,7 +115,7 @@ module Strix {
 
         function onChange(value, scope, optionLabel, optionValue, ngModel) {
             if (!optionValue) {
-                value = scope.data.filter(x => { return x[optionLabel] == value; })[0];
+                value = typeof value === 'object' ? value : scope.data.filter(x => { return x[optionLabel] == value; })[0];
             }
 
             // Do the callback before updating the view value. This order is important, which has something

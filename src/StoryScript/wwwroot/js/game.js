@@ -84,7 +84,7 @@ var Strix;
         }
         function onChange(value, scope, optionLabel, optionValue, ngModel) {
             if (!optionValue) {
-                value = scope.data.filter(function (x) { return x[optionLabel] == value; })[0];
+                value = typeof value === 'object' ? value : scope.data.filter(function (x) { return x[optionLabel] == value; })[0];
             }
             // Do the callback before updating the view value. This order is important, which has something
             // to do with the angular digest cycle. I'm not sure what exactly.
@@ -170,7 +170,12 @@ var StoryScript;
         DataService.prototype.load = function (key) {
             var self = this;
             try {
-                return self.restore(JSON.parse(self.$localStorage[key]).data);
+                var data = JSON.parse(self.$localStorage[key]).data;
+                if (StoryScript.isEmpty(data)) {
+                    return null;
+                }
+                self.restore(data);
+                return data;
             }
             catch (exception) {
                 console.log('No data loaded for key ' + key);
@@ -179,7 +184,10 @@ var StoryScript;
         DataService.prototype.buildClone = function (values, pristineValues, clone) {
             var self = this;
             if (!clone) {
-                clone = Array.isArray(values) ? [] : {};
+                clone = Array.isArray(values) ? [] : typeof value === "object" ? {} : values;
+                if (clone == values) {
+                    return clone;
+                }
             }
             for (var key in values) {
                 if (!values.hasOwnProperty(key)) {
@@ -247,7 +255,6 @@ var StoryScript;
                     }
                 }
             }
-            return loaded;
         };
         return DataService;
     }());
@@ -1035,6 +1042,7 @@ var DangerousCave;
         function Character() {
             this.hitpoints = 20;
             this.currentHitpoints = 20;
+            this.score = 0;
             this.scoreToNextLevel = 0;
             this.level = 1;
             this.kracht = 1;
@@ -1146,8 +1154,8 @@ var DangerousCave;
                     if (enemy.items && enemy.items.length) {
                         enemy.items.forEach(function (item) {
                             self.game.currentLocation.items = self.game.currentLocation.items || [];
-                            // Todo: type
-                            self.game.currentLocation.items.push(item);
+                            // Todo: should not need to call function here
+                            self.game.currentLocation.items.push(item());
                         });
                         enemy.items.splice(0, enemy.items.length);
                     }
@@ -1579,10 +1587,10 @@ var DangerousCave;
                 equipmentType: StoryScript.EquipmentType.Miscellaneous,
                 open: {
                     text: 'Open de deur met de zwarte sleutel',
-                    action: function (parameters) { return DangerousCave.Actions.OpenWithKey(function (game, destination) {
+                    action: DangerousCave.Actions.OpenWithKey(function (game, destination) {
                         game.logToLocationLog('Je opent de deur.');
                         destination.text = 'Donkere kamer';
-                    }); }
+                    })
                 }
             };
         }

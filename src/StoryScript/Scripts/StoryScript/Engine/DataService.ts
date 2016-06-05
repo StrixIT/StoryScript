@@ -61,7 +61,14 @@ module StoryScript {
             var self = this;
 
             try {
-                return self.restore(JSON.parse(self.$localStorage[key]).data);
+                var data = JSON.parse(self.$localStorage[key]).data;
+
+                if (isEmpty(data)) {
+                    return null;
+                }
+
+                self.restore(data);
+                return data;
             }
             catch (exception) {
                 console.log('No data loaded for key ' + key);
@@ -72,7 +79,10 @@ module StoryScript {
             var self = this;
 
             if (!clone) {
-                clone = Array.isArray(values) ? [] : {};
+                clone = Array.isArray(values) ? [] : typeof value === "object" ? {} : values;
+                if (clone == values) {
+                    return clone;
+                }
             }
 
             for (var key in values) {
@@ -149,8 +159,6 @@ module StoryScript {
                     }
                 }
             }
-
-            return loaded;
         }
     }
 

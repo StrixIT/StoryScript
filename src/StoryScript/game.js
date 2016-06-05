@@ -74,20 +74,19 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var DataService = (function () {
-        function DataService($q, $http, $localStorage, definitions) {
+        function DataService($q, $http, $localStorage) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
-            self.definitions = definitions;
         }
-        DataService.prototype.$get = function ($q, $http, $localStorage, definitions) {
+        DataService.prototype.$get = function ($q, $http, $localStorage) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
-            self.definitions = definitions;
             return {
+                functionList: self.functionList,
                 getDescription: self.getDescription,
                 save: self.save,
                 load: self.load
@@ -106,18 +105,92 @@ var StoryScript;
             });
             return deferred.promise;
         };
-        DataService.prototype.save = function (key, value) {
+        DataService.prototype.save = function (key, value, pristineValues) {
             var self = this;
-            var clone = angular.copy(value);
+            var clone = self.buildClone(value, pristineValues, null);
             self.$localStorage[key] = JSON.stringify({ data: clone });
         };
         DataService.prototype.load = function (key) {
             var self = this;
             try {
-                return JSON.parse(self.$localStorage[key]).data;
+                var data = JSON.parse(self.$localStorage[key]).data;
+                self.restore(data);
+                return data;
             }
             catch (exception) {
                 console.log('No data loaded for key ' + key);
+            }
+        };
+        DataService.prototype.buildClone = function (values, pristineValues, clone) {
+            var self = this;
+            if (!clone) {
+                clone = Array.isArray(values) ? [] : {};
+            }
+            for (var key in values) {
+                if (!values.hasOwnProperty(key)) {
+                    continue;
+                }
+                var value = values[key];
+                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
+                if (!value) {
+                    return;
+                }
+                else if (Array.isArray(value)) {
+                    clone[key] = [];
+                    self.buildClone(value, pristineValue, clone[key]);
+                }
+                else if (typeof value === "object") {
+                    if (Array.isArray(clone)) {
+                        clone.push(angular.copy(value));
+                    }
+                    else {
+                        clone[key] = angular.copy(value);
+                    }
+                    self.buildClone(value, pristineValue, clone[key]);
+                }
+                else if (typeof value == 'function') {
+                    if (!value.isProxy) {
+                        if (pristineValues && pristineValues[key]) {
+                            if (Array.isArray(clone)) {
+                                clone.push('_function_' + value.functionId);
+                            }
+                            else {
+                                clone[key] = '_function_' + value.functionId;
+                            }
+                        }
+                        else {
+                            clone[key] = value.toString();
+                        }
+                    }
+                }
+                else {
+                    clone[key] = value;
+                }
+            }
+            return clone;
+        };
+        DataService.prototype.restore = function (loaded) {
+            var self = this;
+            for (var key in loaded) {
+                if (!loaded.hasOwnProperty(key)) {
+                    continue;
+                }
+                var value = loaded[key];
+                if (value == undefined) {
+                    return;
+                }
+                else if (typeof value === "object") {
+                    self.restore(loaded[key]);
+                }
+                else if (typeof value === 'string') {
+                    if (value.indexOf('_function_') > -1) {
+                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
+                    }
+                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
+                        // Todo: create a new function instead of using eval.
+                        loaded[key] = eval('(' + value + ')');
+                    }
+                }
             }
         };
         return DataService;
@@ -442,7 +515,6 @@ var StoryScript;
                 game.changeLocation = function (location) { self.changeLocation.call(self, location, game); };
                 game.currentLocation = null;
                 game.previousLocation = null;
-                self.functionList = {};
                 game.locations = self.loadWorld();
             };
             var self = this;
@@ -466,13 +538,12 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
+            var locations = null; //<ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
             self.pristineLocations = self.buildWorld();
             if (StoryScript.isEmpty(locations)) {
-                self.save(self.pristineLocations, self.pristineLocations);
+                self.dataService.save(StoryScript.DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
                 locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             }
-            self.restore(locations);
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
             locations.forEach(function (location) {
@@ -492,83 +563,7 @@ var StoryScript;
         };
         LocationService.prototype.saveWorld = function (locations) {
             var self = this;
-            self.save(locations, self.pristineLocations);
-        };
-        LocationService.prototype.save = function (values, pristineValues, clone, save) {
-            var self = this;
-            save = save == undefined ? true : false;
-            if (!clone) {
-                clone = [];
-            }
-            for (var key in values) {
-                if (!values.hasOwnProperty(key)) {
-                    continue;
-                }
-                var value = values[key];
-                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
-                if (!value) {
-                    return;
-                }
-                else if (Array.isArray(value)) {
-                    clone[key] = [];
-                    self.save(value, pristineValue, clone[key], save);
-                }
-                else if (typeof value === "object") {
-                    if (Array.isArray(clone)) {
-                        clone.push(angular.copy(value));
-                    }
-                    else {
-                        clone[key] = angular.copy(value);
-                    }
-                    self.save(value, pristineValue, clone[key], save);
-                }
-                else if (typeof value == 'function') {
-                    if (!value.isProxy) {
-                        if (pristineValues && pristineValues[key]) {
-                            if (Array.isArray(clone)) {
-                                clone.push('_function_' + value.functionId);
-                            }
-                            else {
-                                clone[key] = '_function_' + value.functionId;
-                            }
-                        }
-                        else {
-                            clone[key] = value.toString();
-                        }
-                    }
-                }
-                else {
-                    clone[key] = value;
-                }
-            }
-            if (save) {
-                self.dataService.save(StoryScript.DataKeys.WORLD, clone);
-            }
-        };
-        LocationService.prototype.restore = function (loaded) {
-            var self = this;
-            for (var key in loaded) {
-                if (!loaded.hasOwnProperty(key)) {
-                    continue;
-                }
-                var value = loaded[key];
-                if (value == undefined) {
-                    return;
-                }
-                else if (typeof value === "object") {
-                    self.restore(loaded[key]);
-                }
-                else if (typeof value === 'string') {
-                    if (value.indexOf('_function_') > -1) {
-                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
-                    }
-                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
-                        // Todo: create a new function instead of using eval.
-                        loaded[key] = eval('(' + value + ')');
-                    }
-                }
-            }
-            return loaded;
+            self.dataService.save(StoryScript.DataKeys.WORLD, locations, self.pristineLocations);
         };
         LocationService.prototype.changeLocation = function (location, game) {
             var self = this;
@@ -643,6 +638,7 @@ var StoryScript;
             self.functionIdCounter = 0;
             var locations = self.definitions.locations;
             var compiledLocations = [];
+            self.functionList = {};
             for (var n in locations) {
                 var definition = locations[n];
                 var location = StoryScript.definitionToObject(definition);
@@ -656,6 +652,7 @@ var StoryScript;
                 self.getFunctions(location);
                 compiledLocations.push(location);
             }
+            self.dataService.functionList = self.functionList;
             return compiledLocations;
         };
         LocationService.prototype.setDestinations = function (location) {
@@ -840,7 +837,7 @@ var StoryScript;
             };
             this.executeBarrierAction = function (destination, barrier) {
                 var self = _this;
-                var action = barrier.actions.first({ callBack: function (x) { return x == barrier.selectedAction; } });
+                var action = barrier.actions.first({ callBack: function (x) { return x.text == barrier.selectedAction.text; } });
                 var args = [action.action, destination, barrier, action];
                 self.executeAction.apply(_this, args);
             };
@@ -1149,7 +1146,7 @@ var Strix;
             scope: { model: '=ngModel', data: '=source', changeCallback: '=' },
             link: function (scope, elem, attr, ngModel) {
                 var optionLabel = attr['optionLabel'] || 'Name';
-                var optionValue = attr['optionValue'] || 'Id';
+                var optionValue = attr['optionValue'] || undefined;
                 var defaultFlag = attr['defaultFlag'];
                 var tabIndex = attr['tabindex'];
                 var select = null;
@@ -1164,7 +1161,7 @@ var Strix;
                 });
                 // Handle the selection of a dropdown option.
                 select.change(function (e) {
-                    onChange(e.currentTarget.value, scope, ngModel);
+                    onChange(e.currentTarget.value, scope, optionLabel, optionValue, ngModel);
                 });
             }
         };
@@ -1196,7 +1193,7 @@ var Strix;
                 }
                 selectedValue = buildSelect(select, scope, optionLabel, optionValue, defaultFlag);
                 // Call onchange to actually set the view value.
-                onChange(selectedValue, scope, ngModel);
+                onChange(selectedValue, scope, optionLabel, optionValue, ngModel);
             }
         }
         function buildSelect(select, scope, optionLabel, optionValue, defaultFlag) {
@@ -1204,14 +1201,14 @@ var Strix;
             select.empty();
             for (var n in scope.data) {
                 var entry = scope.data[n];
-                var entryValue = entry[optionValue] || entry;
+                var entryValue = optionValue && entry[optionValue] || entry[optionLabel];
                 if (scope.model == entryValue || scope.oldModelValue == entryValue || (entry[defaultFlag] && !selectedValue)) {
                     selectedValue = entryValue;
                 }
                 options.push($('<option value="' + entryValue + '">' + (entry[optionLabel] || entry) + '</option>'));
             }
             if (!selectedValue) {
-                selectedValue = scope.data[0] ? scope.data[0][optionValue] || scope.data[0] : null;
+                selectedValue = scope.data[0] ? optionValue && scope.data[0][optionValue] || scope.data[0] : null;
             }
             for (var n in options) {
                 var option = options[n];
@@ -1222,7 +1219,10 @@ var Strix;
             }
             return selectedValue;
         }
-        function onChange(value, scope, ngModel) {
+        function onChange(value, scope, optionLabel, optionValue, ngModel) {
+            if (!optionValue) {
+                value = scope.data.filter(function (x) { return x[optionLabel] == value; })[0];
+            }
             // Do the callback before updating the view value. This order is important, which has something
             // to do with the angular digest cycle. I'm not sure what exactly.
             if (scope.changeCallback) {
@@ -2066,10 +2066,10 @@ var DangerousCave;
                 equipmentType: StoryScript.EquipmentType.Miscellaneous,
                 open: {
                     text: 'Open de deur met de zwarte sleutel',
-                    action: function (parameters) { return DangerousCave.Actions.OpenWithKey(function (game, destination) {
+                    action: DangerousCave.Actions.OpenWithKey(function (game, destination) {
                         game.logToLocationLog('Je opent de deur.');
                         destination.text = 'Donkere kamer';
-                    }); }
+                    })
                 }
             };
         }

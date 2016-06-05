@@ -3,7 +3,7 @@
         name: string;
         hitpoints: number = 20;
         currentHitpoints: number = 20;
-        score: number;
+        score: number = 0;
         scoreToNextLevel: number = 0;
         level: number = 1;
 
