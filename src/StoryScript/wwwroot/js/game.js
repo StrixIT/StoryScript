@@ -1036,8 +1036,8 @@ var StoryScript;
     storyScriptModule.service("gameService", StoryScript.GameService);
     storyScriptModule.controller("MainController", StoryScript.MainController);
 })(StoryScript || (StoryScript = {}));
-var DangerousCave;
-(function (DangerousCave) {
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var Character = (function () {
         function Character() {
             this.hitpoints = 20;
@@ -1065,10 +1065,10 @@ var DangerousCave;
         }
         return Character;
     }());
-    DangerousCave.Character = Character;
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+    QuestForTheKing.Character = Character;
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var LevelUpController = (function () {
         function LevelUpController($scope, ruleService, game) {
             var _this = this;
@@ -1107,13 +1107,13 @@ var DangerousCave;
         };
         return LevelUpController;
     }());
-    DangerousCave.LevelUpController = LevelUpController;
+    QuestForTheKing.LevelUpController = LevelUpController;
     LevelUpController.$inject = ['$scope', 'ruleService', 'game'];
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.controller("LevelUpController", LevelUpController);
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var RuleService = (function () {
         function RuleService(game) {
             var _this = this;
@@ -1210,15 +1210,15 @@ var DangerousCave;
                     }
                 ],
                 items: [
-                    DangerousCave.Items.Dagger(),
-                    DangerousCave.Items.LeatherHelmet(),
-                    DangerousCave.Items.Lantern()
+                    QuestForTheKing.Items.Dagger(),
+                    QuestForTheKing.Items.LeatherHelmet(),
+                    QuestForTheKing.Items.Lantern()
                 ]
             };
         };
         RuleService.prototype.createCharacter = function (characterData) {
             var self = this;
-            var character = new DangerousCave.Character();
+            var character = new QuestForTheKing.Character();
             character.name = characterData.name;
             switch (characterData.selectedSpecialty.name) {
                 case 'sterk':
@@ -1242,7 +1242,7 @@ var DangerousCave;
         };
         RuleService.prototype.startGame = function () {
             var self = this;
-            self.game.changeLocation(self.game.locations.first(DangerousCave.Locations.Start));
+            self.game.changeLocation(self.game.locations.first(QuestForTheKing.Locations.Start));
         };
         RuleService.prototype.addEnemyToLocation = function (location, enemy) {
             var self = this;
@@ -1266,13 +1266,13 @@ var DangerousCave;
         RuleService.prototype.addFleeAction = function (location) {
             var self = this;
             var numberOfEnemies = location.enemies.length;
-            var fleeAction = location.combatActions.first(DangerousCave.Actions.Flee);
+            var fleeAction = location.combatActions.first(QuestForTheKing.Actions.Flee);
             if (fleeAction) {
                 location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
             }
             if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
-                var action = DangerousCave.Actions.Flee('');
-                action.id = DangerousCave.Actions.Flee.name;
+                var action = QuestForTheKing.Actions.Flee('');
+                action.id = QuestForTheKing.Actions.Flee.name;
                 location.combatActions.push(action);
             }
         };
@@ -1294,13 +1294,13 @@ var DangerousCave;
         };
         return RuleService;
     }());
-    DangerousCave.RuleService = RuleService;
+    QuestForTheKing.RuleService = RuleService;
     RuleService.$inject = ['game'];
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.service("ruleService", RuleService);
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var Actions;
     (function (Actions) {
         function Flee(text) {
@@ -1328,277 +1328,15 @@ var DangerousCave;
             };
         }
         Actions.Flee = Flee;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function Heal(potency) {
-            return function (game, item) {
-                var healed = game.rollDice(potency);
-                game.character.currentHitpoints += healed;
-                if (item.charges) {
-                    item.charges--;
-                }
-                if (!item.charges) {
-                    game.character.items.remove(item);
-                }
-            };
-        }
-        Actions.Heal = Heal;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function Inspect(text) {
-            return function (game, destination, barrier, action) {
-                var index = barrier.actions.indexOf(action);
-                if (index > -1) {
-                    barrier.actions.splice(index, 1);
-                    barrier.selectedAction = barrier.actions.first();
-                }
-                if (text) {
-                    game.logToLocationLog(text);
-                }
-            };
-        }
-        Actions.Inspect = Inspect;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function Open(callback) {
-            return function (game, destination) {
-                delete destination.barrier;
-                if (callback) {
-                    callback(game, destination);
-                }
-            };
-        }
-        Actions.Open = Open;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function OpenWithKey(callBack) {
-            return function (game, destination) {
-                // Todo: remove the key used from the character's inventory.
-                delete destination.barrier;
-                if (callBack) {
-                    callBack(game, destination);
-                }
-            };
-        }
-        Actions.OpenWithKey = OpenWithKey;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function RandomEnemy(game) {
-            var enemies = game.definitions.enemies;
-            var enemyCount = 0;
-            var randomEnemy = null;
-            for (var n in enemies) {
-                enemyCount++;
-            }
-            var enemyToGet = game.rollDice('1d' + enemyCount) - 1;
-            var index = 0;
-            for (var n in enemies) {
-                index++;
-                if (index == enemyToGet) {
-                    randomEnemy = enemies[n]();
-                    break;
-                }
-            }
-            randomEnemy.items = randomEnemy.items || [];
-            for (var n in randomEnemy.items) {
-                StoryScript.definitionToObject(randomEnemy.items[n]);
-            }
-            game.currentLocation.enemies.push(randomEnemy);
-            return randomEnemy;
-        }
-        Actions.RandomEnemy = RandomEnemy;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function Search(settings) {
-            var text = settings.text || 'Zoek';
-            return {
-                text: text,
-                type: 'skill',
-                active: settings.active == undefined ? function () { return true; } : settings.active,
-                execute: function (game) {
-                    var check = game.rollDice(game.character.oplettendheid + 'd6');
-                    var result;
-                    result = check * game.character.oplettendheid;
-                    // Todo: think of something simpler to remove actions.
-                    var action = game.currentLocation.actions.first({ callBack: function (x) { return x.text === text; } });
-                    game.currentLocation.actions.remove(action);
-                    if (result >= settings.difficulty) {
-                        settings.success(game);
-                    }
-                    else {
-                        settings.fail(game);
-                    }
-                    ;
-                }
-            };
-        }
-        Actions.Search = Search;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function Unlock(settings) {
-            return {
-                text: settings.text || 'Slot openen',
-                type: 'skill',
-                active: settings.active == undefined ? true : settings.active,
-                execute: function (game) {
-                    var check = game.rollDice(game.character.vlugheid + 'd6');
-                    var result;
-                    result = check * game.character.vlugheid;
-                    if (result >= settings.difficulty) {
-                        settings.success(game);
-                    }
-                    else {
-                        settings.fail(game);
-                        game.logToActionLog('Het lukt niet.');
-                    }
-                    ;
-                }
-            };
-        }
-        Actions.Unlock = Unlock;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-//deze button moet active blijven, behalve bij een critical fail misschien. Dus een extra setting, kan dat? 
-// Of kunnen we bijvoorbeeld drie pogingen geven voor hij inactive wordt? 
-var DangerousCave;
-(function (DangerousCave) {
-    var Enemies;
-    (function (Enemies) {
-        function GiantBat() {
-            return {
-                name: 'Reuzenvleermuis',
-                hitpoints: 7,
-                attack: '1d6',
-                reward: 1
-            };
-        }
-        Enemies.GiantBat = GiantBat;
-    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Enemies;
-    (function (Enemies) {
-        function Goblin() {
-            return {
-                name: 'Goblin',
-                hitpoints: 6,
-                attack: 'd4+3',
-                reward: 1,
-                items: [
-                    DangerousCave.Items.Dagger
-                ]
-            };
-        }
-        Enemies.Goblin = Goblin;
-    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Enemies;
-    (function (Enemies) {
-        function Orc() {
-            return {
-                name: 'Ork',
-                hitpoints: 12,
-                attack: '2d4+1',
-                reward: 1,
-                items: [
-                    DangerousCave.Items.IronHelmet
-                ]
-            };
-        }
-        Enemies.Orc = Orc;
-    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Enemies;
-    (function (Enemies) {
-        function Troll() {
-            return {
-                name: 'Trol',
-                hitpoints: 20,
-                attack: '2d6',
-                reward: 2,
-                items: [
-                    DangerousCave.Items.HealingPotion
-                ]
-            };
-        }
-        Enemies.Troll = Troll;
-    })(Enemies = DangerousCave.Enemies || (DangerousCave.Enemies = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+    })(Actions = QuestForTheKing.Actions || (QuestForTheKing.Actions = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.value("gameNameSpace", 'DangerousCave');
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Items;
-    (function (Items) {
-        function HealingPotion() {
-            return {
-                name: 'Toverdrank',
-                equipmentType: StoryScript.EquipmentType.Miscellaneous,
-                use: DangerousCave.Actions.Heal('1d8')
-            };
-        }
-        Items.HealingPotion = HealingPotion;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Items;
-    (function (Items) {
-        function BlackKey() {
-            return {
-                name: 'Black key',
-                description: 'This black iron key has a gargoyle figurine on it.',
-                equipmentType: StoryScript.EquipmentType.Miscellaneous,
-                open: {
-                    text: 'Open de deur met de zwarte sleutel',
-                    action: DangerousCave.Actions.OpenWithKey(function (game, destination) {
-                        game.logToLocationLog('Je opent de deur.');
-                        destination.text = 'Donkere kamer';
-                    })
-                }
-            };
-        }
-        Items.BlackKey = BlackKey;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+    storyScriptModule.value("gameNameSpace", 'QuestForTheKing');
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var Items;
     (function (Items) {
         function Dagger() {
@@ -1609,24 +1347,10 @@ var DangerousCave;
             };
         }
         Items.Dagger = Dagger;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Items;
-    (function (Items) {
-        function IronHelmet() {
-            return {
-                name: 'Helm van ijzer',
-                defense: 2,
-                equipmentType: StoryScript.EquipmentType.Head
-            };
-        }
-        Items.IronHelmet = IronHelmet;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var Items;
     (function (Items) {
         function Lantern() {
@@ -1639,24 +1363,10 @@ var DangerousCave;
             };
         }
         Items.Lantern = Lantern;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Items;
-    (function (Items) {
-        function LeatherArmor() {
-            return {
-                name: 'Harnas van leer',
-                defense: 2,
-                equipmentType: StoryScript.EquipmentType.Body
-            };
-        }
-        Items.LeatherArmor = LeatherArmor;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var Items;
     (function (Items) {
         function LeatherHelmet() {
@@ -1667,509 +1377,10 @@ var DangerousCave;
             };
         }
         Items.LeatherHelmet = LeatherHelmet;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Items;
-    (function (Items) {
-        function SmallShield() {
-            return {
-                name: 'Klein schild',
-                defense: 2,
-                equipmentType: StoryScript.EquipmentType.LeftHand
-            };
-        }
-        Items.SmallShield = SmallShield;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Items;
-    (function (Items) {
-        function Sword() {
-            return {
-                name: 'Zwaard',
-                damage: '3',
-                equipmentType: StoryScript.EquipmentType.RightHand
-            };
-        }
-        Items.Sword = Sword;
-    })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function Arena() {
-            return {
-                name: 'Een hoek van de grot waar kaarsen branden',
-                enemies: [
-                    DangerousCave.Enemies.Orc
-                ],
-                destinations: [
-                    {
-                        text: 'De grote grot in',
-                        target: Locations.CandleLitCave
-                    }
-                ],
-                actions: [
-                    {
-                        text: 'Onderzoek symbool',
-                        type: 'skill',
-                        execute: function (game) {
-                            game.currentLocation.text = game.currentLocation.descriptions['triggered'];
-                            var troll = DangerousCave.Enemies.Troll();
-                            game.currentLocation.enemies.push(troll);
-                            troll.onDefeat = onDefeat;
-                            game.logToActionLog('Er verschijnt op magische wijze een enorme trol waar het symbool was! Hij valt je aan!');
-                        }
-                    }
-                ]
-            };
-            function onDefeat(game) {
-                var randomEnemy = DangerousCave.Actions.RandomEnemy(game);
-                randomEnemy.onDefeat = this.onDefeat;
-            }
-        }
-        Locations.Arena = Arena;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function CandleLitCave() {
-            return {
-                name: 'Een grot met kaarslicht',
-                destinations: [
-                    {
-                        text: 'Onderzoek het kaarslicht',
-                        target: Locations.Arena
-                    },
-                    {
-                        text: 'Sluip naar de donkere gang',
-                        target: Locations.DarkCorridor
-                    },
-                    {
-                        text: 'Richting ingang',
-                        target: Locations.RightCorridor
-                    }
-                ],
-                actions: [
-                    DangerousCave.Actions.Search({
-                        difficulty: 12,
-                        success: function (game) {
-                            game.logToLocationLog('Je voelt dat hier kortgeleden sterke magie gebruikt is. Ook zie je aan sporen op de vloer dat hier vaak orks lopen.');
-                        },
-                        fail: function (game) {
-                            game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                            // Todo: improve;
-                            var enemy = DangerousCave.Enemies.Orc();
-                            var items = [];
-                            enemy.items.forEach(function (x) { items.push(x()); });
-                            enemy.items = items;
-                            game.currentLocation.enemies.push(enemy);
-                        }
-                    })
-                ]
-            };
-        }
-        Locations.CandleLitCave = CandleLitCave;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function CentreRoom() {
-            return {
-                name: 'Een opslagkamer',
-                destinations: [
-                    {
-                        text: 'De kamer van de ork',
-                        target: Locations.RoomOne
-                    }
-                ],
-                actions: [
-                    DangerousCave.Actions.Search({
-                        difficulty: 9,
-                        success: function (game) {
-                            game.logToLocationLog('Je vindt een schild!');
-                            // Todo: allow pushing definition instead of item.
-                            game.character.items.push(DangerousCave.Items.SmallShield());
-                        },
-                        fail: function (game) {
-                            game.logToLocationLog('Je vindt niets.');
-                        }
-                    })
-                ]
-            };
-        }
-        Locations.CentreRoom = CentreRoom;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function CrossRoads() {
-            return {
-                name: 'Een kruispunt',
-                events: [
-                    function (game) {
-                        var orkCorridor = game.locations.first(Locations.DarkCorridor);
-                        var orkPresent = !orkCorridor.hasVisited;
-                        if (game.character.oplettendheid > 2 && orkPresent) {
-                            game.logToLocationLog('Je hoort vanuit de westelijke gang een snuivende ademhaling.');
-                        }
-                    }
-                ],
-                destinations: [
-                    {
-                        text: 'Donkere tunnel (oost)',
-                        target: Locations.DarkCorridor
-                    },
-                    {
-                        text: 'Nog niet! Gang (noord)',
-                        target: Locations.Temp
-                    },
-                    {
-                        text: 'Donkere tunnel (west)',
-                        target: Locations.WestCrossing
-                    },
-                    {
-                        text: 'Gang (zuid)',
-                        target: Locations.RightCorridor
-                    }
-                ],
-            };
-        }
-        Locations.CrossRoads = CrossRoads;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function DarkCorridor() {
-            return {
-                name: 'Een donkere smalle gang',
-                enemies: [
-                    DangerousCave.Enemies.Orc
-                ],
-                destinations: [
-                    {
-                        text: 'Richting grote grot (oost)',
-                        target: Locations.CandleLitCave
-                    },
-                    {
-                        text: 'Richting kruispunt (west)',
-                        target: Locations.CrossRoads
-                    }
-                ],
-            };
-        }
-        Locations.DarkCorridor = DarkCorridor;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function DoorOne() {
-            return {
-                name: 'Een donkere gang met een deur',
-                destinations: [
-                    {
-                        text: 'De kamer in',
-                        target: Locations.RoomOne
-                    },
-                    {
-                        text: 'Donkere gang',
-                        target: Locations.LeftCorridor
-                    }
-                ],
-                actions: [
-                    {
-                        text: 'Schop tegen de deur',
-                        type: 'fight',
-                        execute: function (game) {
-                            var check = Math.floor(Math.random() * 6 + 1);
-                            var result;
-                            result = check * game.character.kracht;
-                            if (result > 8) {
-                                game.changeLocation(Locations.RoomOne);
-                                game.logToLocationLog('Met een enorme klap schop je de deur doormidden. Je hoort een verrast gegrom en ziet een ork opspringen.');
-                            }
-                            else {
-                                game.logToActionLog('Auw je tenen!! De deur is nog heel.');
-                            }
-                            ;
-                        }
-                    },
-                    DangerousCave.Actions.Unlock({
-                        difficulty: 10,
-                        success: function (game) {
-                            game.changeLocation(Locations.RoomOne);
-                            game.logToLocationLog('Met meegebrachte pinnetjes duw je in het slot op het mechanisme tot je een klik voelt. De deur is open!');
-                            game.logToLocationLog('Je duwt de deur open en kijkt naar binnen.');
-                        },
-                        fail: function (game) {
-                        }
-                    }),
-                    DangerousCave.Actions.Search({
-                        difficulty: 10,
-                        success: function (game) {
-                            game.logToLocationLog('Je tast de deur, vloer en muren af. Hoog aan de rechtermuur vind je aan een haakje een grote sleutel!');
-                        },
-                        fail: function (game) {
-                            game.logToLocationLog('Je tast de deur, vloer en muren af. Stenen, hout en gruis. Je vindt niets nuttigs.');
-                        }
-                    })
-                ]
-            };
-        }
-        Locations.DoorOne = DoorOne;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function Entry() {
-            return {
-                name: 'De grot',
-                // Example
-                //descriptionSelector: function() {
-                //    return game.currentLocation.descriptions['lantern'];
-                //},
-                //navigationDisabled: true,
-                items: [
-                    DangerousCave.Items.Lantern,
-                ],
-                events: [
-                    function (game) {
-                        if (game.character.oplettendheid > 1) {
-                            game.logToLocationLog('Je ruikt bloed.');
-                        }
-                    }
-                ],
-                destinations: [
-                    {
-                        text: 'Donkere gang (west)',
-                        target: Locations.LeftCorridor
-                    },
-                    {
-                        text: 'Schemerige gang (oost)',
-                        target: Locations.RightCorridor
-                    }
-                ],
-                actions: [
-                    DangerousCave.Actions.Search({
-                        difficulty: 5,
-                        success: function (game) {
-                            game.logToLocationLog('Op de muur staat een pijl, getekend met bloed. Hij wijst naar de rechtergang.');
-                        },
-                        fail: function (game) {
-                            game.logToLocationLog('Je vindt alleen stenen en stof.');
-                        }
-                    })
-                ]
-            };
-        }
-        Locations.Entry = Entry;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function LeftCorridor() {
-            return {
-                name: 'Een pikdonkere gang',
-                events: [
-                    function (game) {
-                        var damage = Math.floor(Math.random() * 6 + 1) - game.character.vlugheid;
-                        game.character.currentHitpoints -= Math.max(0, damage);
-                        game.logToActionLog('Aah! Je valt plotseling in een diepe kuil en bezeert je. Je krijgt ' + damage + ' schade door het vallen!');
-                        game.logToLocationLog('Er is hier een diepe valkuil.');
-                    }
-                ],
-                actions: [
-                    {
-                        text: 'Klim uit de kuil',
-                        type: 'skill',
-                        execute: function (game) {
-                            // Todo: skill check
-                            //if (false) {
-                            //    game.logToActionLog('Het lukt je niet uit de kuil te klimmen.');
-                            //    return;
-                            //}
-                            game.logToActionLog('Je klimt uit de kuil.');
-                            game.currentLocation.destinations.push({
-                                text: 'Dieper de grot in',
-                                target: Locations.DoorOne
-                            }, {
-                                text: 'Richting ingang',
-                                target: Locations.Entry
-                            });
-                            // Todo: think of something simpler to remove actions.
-                            var action = game.currentLocation.actions.first({ callBack: function (x) { return x.text === 'Klim uit de kuil'; } });
-                            game.currentLocation.actions.remove(action);
-                        }
-                    },
-                    DangerousCave.Actions.Search({
-                        text: 'Doorzoek de kuil',
-                        difficulty: 9,
-                        success: function (game) {
-                            game.currentLocation.items.push(DangerousCave.Items.LeatherHelmet());
-                            game.logToLocationLog('In de kuil voel je botten, spinrag en de resten van kleding. Ook vind je er een nog bruikbare helm!');
-                        },
-                        fail: function (game) {
-                            game.logToLocationLog('In de kuil voel je botten, spinrag en de resten van kleding.');
-                        }
-                    })
-                ]
-            };
-        }
-        Locations.LeftCorridor = LeftCorridor;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function LeftRoom() {
-            return {
-                name: 'De slaapkamer van de orks',
-                enemies: [
-                    DangerousCave.Enemies.Orc,
-                    DangerousCave.Enemies.Goblin
-                ],
-                destinations: [
-                    {
-                        text: 'De kamer van de ork',
-                        target: Locations.RoomOne
-                    }
-                ]
-            };
-        }
-        Locations.LeftRoom = LeftRoom;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function RightCorridor() {
-            return {
-                name: 'Een gemetselde gang',
-                destinations: [
-                    {
-                        text: 'Naar het kruispunt (noord)',
-                        target: Locations.CrossRoads
-                    },
-                    {
-                        text: 'Door de houten deur (zuid)',
-                        target: Locations.RoomOne
-                    }
-                ]
-            };
-        }
-        Locations.RightCorridor = RightCorridor;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function RightRoom() {
-            return {
-                name: 'Een schemerige gang',
-                enemies: [
-                    DangerousCave.Enemies.GiantBat
-                ],
-                destinations: [
-                    {
-                        text: 'Richting het licht',
-                        target: Locations.CandleLitCave
-                    },
-                    {
-                        text: 'Richting ingang',
-                        target: Locations.Entry
-                    }
-                ],
-                actions: [
-                    DangerousCave.Actions.Search({
-                        difficulty: 8,
-                        success: function (game) {
-                            game.logToLocationLog('Je ruikt de geur van brandende kaarsen.');
-                        },
-                        fail: function (game) {
-                            game.logToLocationLog('Er zijn hier heel veel vleermuizen. En heel veel vleermuispoep.');
-                        }
-                    })
-                ]
-            };
-        }
-        Locations.RightRoom = RightRoom;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function RoomOne() {
-            return {
-                name: 'De kamer van de ork',
-                enemies: [
-                    DangerousCave.Enemies.Orc
-                ],
-                items: [
-                    DangerousCave.Items.BlackKey
-                ],
-                destinations: [
-                    {
-                        text: 'Noord',
-                        target: Locations.RightCorridor,
-                        barrier: {
-                            text: 'Houten deur',
-                            actions: [
-                                {
-                                    text: 'Onderzoek de deur',
-                                    action: DangerousCave.Actions.Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
-                                },
-                                {
-                                    text: 'Open de deur',
-                                    action: DangerousCave.Actions.Open(function (game, destination) {
-                                        game.logToLocationLog('Je opent de eikenhouten deur.');
-                                        destination.text = 'Gang (noord)';
-                                    })
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        text: 'Tweede deur (west)',
-                        target: Locations.CentreRoom,
-                    },
-                    {
-                        text: 'Derde deur (zuid)',
-                        target: Locations.LeftRoom
-                    },
-                    {
-                        text: 'Deuropening (oost); richting ingang',
-                        target: Locations.LeftCorridor
-                    }
-                ]
-            };
-        }
-        Locations.RoomOne = RoomOne;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
+    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var Locations;
     (function (Locations) {
         function Start() {
@@ -2178,84 +1389,14 @@ var DangerousCave;
                 destinations: [
                     {
                         text: 'Ga de grot in',
-                        target: Locations.Entry,
+                        target: Locations.Start
                     }
                 ],
-                actions: [
-                    DangerousCave.Actions.Search({
-                        difficulty: 10,
-                        success: function (game) {
-                            game.logToLocationLog('Aan de achterkant van het waarschuwingsbord staan enkele runen in de taal van de orken en trollen. Je kan deze taal helaas niet lezen. Het lijkt erop dat er bloed gebruikt is als inkt.');
-                        },
-                        fail: function (game) {
-                            game.logToLocationLog('Je ziet gras, bomen en struiken. Alle plantengroei stopt een paar centimeter buiten de grot. Binnen is het donker.');
-                        }
-                    })
-                ]
+                actions: []
             };
         }
         Locations.Start = Start;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function Temp() {
-            return {
-                name: 'Deze locatie bestaat nog niet',
-                destinations: [
-                    {
-                        text: 'Ga terug naar de ingang',
-                        target: Locations.Entry,
-                    }
-                ]
-            };
-        }
-        Locations.Temp = Temp;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Locations;
-    (function (Locations) {
-        function WestCrossing() {
-            return {
-                name: 'Een donkere gemetselde gang',
-                enemies: [
-                    DangerousCave.Enemies.Goblin
-                ],
-                destinations: [
-                    {
-                        text: 'Richting kruispunt (oost)',
-                        target: Locations.CrossRoads
-                    },
-                    {
-                        text: 'Deur (west)',
-                        target: Locations.Arena,
-                        barrier: {
-                            text: 'Metalen deur',
-                            key: DangerousCave.Items.BlackKey,
-                            actions: [
-                                {
-                                    text: 'Onderzoek de deur',
-                                    action: DangerousCave.Actions.Inspect('Een deur van een dof grijs metaal, met een rode deurknop. Op de deur staat een grote afbeelding: een rood zwaard. Zodra je het handvat aanraakt, gloeit het zwaard op met een rood licht. De deur is niet op slot.')
-                                },
-                                {
-                                    text: 'Open de deur',
-                                    action: DangerousCave.Actions.Open(function (game, destination) {
-                                        game.logToLocationLog('Je opent de deur.');
-                                        destination.text = 'Donkere kamer';
-                                    })
-                                }
-                            ]
-                        }
-                    }
-                ]
-            };
-        }
-        Locations.WestCrossing = WestCrossing;
-    })(Locations = DangerousCave.Locations || (DangerousCave.Locations = {}));
-})(DangerousCave || (DangerousCave = {}));
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
 
 //# sourceMappingURL=../maps/game.js.map

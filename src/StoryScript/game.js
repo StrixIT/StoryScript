@@ -114,6 +114,9 @@ var StoryScript;
             var self = this;
             try {
                 var data = JSON.parse(self.$localStorage[key]).data;
+                if (StoryScript.isEmpty(data)) {
+                    return null;
+                }
                 self.restore(data);
                 return data;
             }
@@ -124,7 +127,10 @@ var StoryScript;
         DataService.prototype.buildClone = function (values, pristineValues, clone) {
             var self = this;
             if (!clone) {
-                clone = Array.isArray(values) ? [] : {};
+                clone = Array.isArray(values) ? [] : typeof value === "object" ? {} : values;
+                if (clone == values) {
+                    return clone;
+                }
             }
             for (var key in values) {
                 if (!values.hasOwnProperty(key)) {
@@ -538,7 +544,7 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            var locations = null; //<ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
+            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             self.pristineLocations = self.buildWorld();
             if (StoryScript.isEmpty(locations)) {
                 self.dataService.save(StoryScript.DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
@@ -932,6 +938,368 @@ var StoryScript;
     StoryScript.MainController = MainController;
     MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game'];
 })(StoryScript || (StoryScript = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Character = (function () {
+        function Character() {
+            this.hitpoints = 20;
+            this.currentHitpoints = 20;
+            this.score = 0;
+            this.scoreToNextLevel = 0;
+            this.level = 1;
+            this.kracht = 1;
+            this.vlugheid = 1;
+            this.oplettendheid = 1;
+            this.defense = 1;
+            this.items = [];
+            this.equipment = {
+                head: null,
+                amulet: null,
+                body: null,
+                hands: null,
+                leftHand: null,
+                leftRing: null,
+                rightHand: null,
+                rightRing: null,
+                legs: null,
+                feet: null
+            };
+        }
+        return Character;
+    }());
+    QuestForTheKing.Character = Character;
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var LevelUpController = (function () {
+        function LevelUpController($scope, ruleService, game) {
+            var _this = this;
+            this.claimReward = function () {
+                var self = _this;
+                self.ruleService.levelUp(self.selectedReward.name);
+            };
+            var self = this;
+            self.$scope = $scope;
+            self.ruleService = ruleService;
+            self.game = game;
+            self.init();
+        }
+        LevelUpController.prototype.init = function () {
+            var self = this;
+            self.rewards = [
+                {
+                    name: 'kracht',
+                    value: 'Kracht'
+                },
+                {
+                    name: 'vlugheid',
+                    value: 'Vlugheid'
+                },
+                {
+                    name: 'oplettendheid',
+                    value: 'Oplettendheid'
+                },
+                {
+                    name: 'gezondheid',
+                    value: 'Gezondheid'
+                }
+            ];
+            // Todo: type
+            self.selectedReward = {};
+        };
+        return LevelUpController;
+    }());
+    QuestForTheKing.LevelUpController = LevelUpController;
+    LevelUpController.$inject = ['$scope', 'ruleService', 'game'];
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.controller("LevelUpController", LevelUpController);
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var RuleService = (function () {
+        function RuleService(game) {
+            var _this = this;
+            this.setupGame = function (game) {
+                game.highScores = [];
+                game.actionLog = [];
+                game.logToLocationLog = function (message) {
+                    game.currentLocation.log = game.currentLocation.log || [];
+                    game.currentLocation.log.push(message);
+                };
+                game.logToActionLog = function (message) {
+                    game.actionLog.splice(0, 0, message);
+                };
+            };
+            this.levelUp = function (reward) {
+                var self = _this;
+                if (reward != 'gezondheid') {
+                    self.game.character[reward]++;
+                }
+                else {
+                    self.game.character.hitpoints += 10;
+                    self.game.character.currentHitpoints += 10;
+                }
+                self.game.state = 'play';
+            };
+            this.fight = function (enemyToFight) {
+                var self = _this;
+                // Todo: change when multiple enemies of the same type can be present.
+                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var check = self.game.rollDice(self.game.character.kracht + 'd6');
+                var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
+                self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+                enemy.hitpoints -= characterDamage;
+                // Todo: move to game service
+                if (enemy.hitpoints <= 0) {
+                    self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                    self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
+                    if (enemy.items && enemy.items.length) {
+                        enemy.items.forEach(function (item) {
+                            self.game.currentLocation.items = self.game.currentLocation.items || [];
+                            // Todo: should not need to call function here
+                            self.game.currentLocation.items.push(item());
+                        });
+                        enemy.items.splice(0, enemy.items.length);
+                    }
+                    self.game.currentLocation.enemies.remove(enemy);
+                    if (enemy.reward) {
+                        self.game.character.score += enemy.reward;
+                    }
+                    if (enemy.onDefeat) {
+                        enemy.onDefeat(self.game);
+                    }
+                }
+                self.game.currentLocation.enemies.forEach(function (enemy) {
+                    var check = self.game.rollDice(enemy.attack);
+                    var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
+                    self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                    self.game.character.currentHitpoints -= enemyDamage;
+                });
+            };
+            var self = this;
+            self.game = game;
+        }
+        RuleService.prototype.$get = function (game) {
+            var self = this;
+            self.game = game;
+            return {
+                setupGame: self.setupGame,
+                getCharacterForm: self.getCharacterForm,
+                createCharacter: self.createCharacter,
+                startGame: self.startGame,
+                addEnemyToLocation: self.addEnemyToLocation,
+                enterLocation: self.enterLocation,
+                initCombat: self.initCombat,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange
+            };
+        };
+        RuleService.prototype.getCharacterForm = function () {
+            return {
+                specialties: [
+                    {
+                        name: 'sterk',
+                        value: 'Sterk'
+                    },
+                    {
+                        name: 'snel',
+                        value: 'Snel'
+                    },
+                    {
+                        name: 'slim',
+                        value: 'Slim'
+                    }
+                ],
+                items: [
+                    QuestForTheKing.Items.Dagger(),
+                    QuestForTheKing.Items.LeatherHelmet(),
+                    QuestForTheKing.Items.Lantern()
+                ]
+            };
+        };
+        RuleService.prototype.createCharacter = function (characterData) {
+            var self = this;
+            var character = new QuestForTheKing.Character();
+            character.name = characterData.name;
+            switch (characterData.selectedSpecialty.name) {
+                case 'sterk':
+                    {
+                        character.kracht++;
+                    }
+                    break;
+                case 'snel':
+                    {
+                        character.vlugheid++;
+                    }
+                    break;
+                case 'slim':
+                    {
+                        character.oplettendheid++;
+                    }
+                    break;
+            }
+            character.items.push(characterData.selectedItem);
+            return character;
+        };
+        RuleService.prototype.startGame = function () {
+            var self = this;
+            self.game.changeLocation(self.game.locations.first(QuestForTheKing.Locations.Start));
+        };
+        RuleService.prototype.addEnemyToLocation = function (location, enemy) {
+            var self = this;
+            self.addFleeAction(location);
+        };
+        RuleService.prototype.enterLocation = function (location) {
+            var self = this;
+            self.game.logToActionLog('Je komt aan in ' + location.name);
+            if (location.id != 'start' && !location.hasVisited) {
+                self.game.character.score += 1;
+            }
+        };
+        RuleService.prototype.initCombat = function (location) {
+            var self = this;
+            // Log the presense of enemies to the action log.
+            location.enemies.forEach(function (enemy) {
+                self.game.logToActionLog('Er is hier een ' + enemy.name);
+            });
+            self.addFleeAction(location);
+        };
+        RuleService.prototype.addFleeAction = function (location) {
+            var self = this;
+            var numberOfEnemies = location.enemies.length;
+            var fleeAction = location.combatActions.first(QuestForTheKing.Actions.Flee);
+            if (fleeAction) {
+                location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
+            }
+            if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
+                var action = QuestForTheKing.Actions.Flee('');
+                action.id = QuestForTheKing.Actions.Flee.name;
+                location.combatActions.push(action);
+            }
+        };
+        RuleService.prototype.hitpointsChange = function (change) {
+            var self = this;
+            if (self.game.character.hitpoints < 5) {
+                self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
+            }
+        };
+        RuleService.prototype.scoreChange = function (change) {
+            var self = this;
+            var character = self.game.character;
+            var levelUp = character.level >= 1 && character.scoreToNextLevel >= 2 + (2 * (character.level));
+            self.game.logToActionLog('Je verdient ' + change + ' punt(en)');
+            if (levelUp) {
+                self.game.logToActionLog('Je wordt hier beter in! Je bent nu niveau ' + character.level);
+            }
+            return levelUp;
+        };
+        return RuleService;
+    }());
+    QuestForTheKing.RuleService = RuleService;
+    RuleService.$inject = ['game'];
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("ruleService", RuleService);
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function Start() {
+            return {
+                name: 'De ingang van de Gevaarlijke Grot',
+                destinations: [
+                    {
+                        text: 'Ga de grot in',
+                        target: null // Locations.Entry
+                    }
+                ],
+                actions: []
+            };
+        }
+        Locations.Start = Start;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Items;
+    (function (Items) {
+        function Dagger() {
+            return {
+                name: 'Dolk',
+                damage: '1',
+                equipmentType: StoryScript.EquipmentType.LeftHand
+            };
+        }
+        Items.Dagger = Dagger;
+    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Items;
+    (function (Items) {
+        function Lantern() {
+            return {
+                name: 'Lantaren',
+                bonuses: {
+                    perception: 1
+                },
+                equipmentType: StoryScript.EquipmentType.LeftHand
+            };
+        }
+        Items.Lantern = Lantern;
+    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Items;
+    (function (Items) {
+        function LeatherHelmet() {
+            return {
+                name: 'Helm van leer',
+                defense: 1,
+                equipmentType: StoryScript.EquipmentType.Head
+            };
+        }
+        Items.LeatherHelmet = LeatherHelmet;
+    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'QuestForTheKing');
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Actions;
+    (function (Actions) {
+        function Flee(text) {
+            return {
+                text: text || 'Vluchten!',
+                type: 'fight',
+                active: function (game) {
+                    return !StoryScript.isEmpty(game.currentLocation.enemies);
+                },
+                execute: function (game) {
+                    var check = game.rollDice(game.character.vlugheid + 'd6');
+                    var result = check * game.character.vlugheid;
+                    var totalHitpoints = 0;
+                    game.currentLocation.enemies.forEach(function (enemy) {
+                        totalHitpoints += enemy.hitpoints;
+                    });
+                    if (result >= totalHitpoints / 2) {
+                        game.changeLocation();
+                    }
+                    else {
+                        game.logToActionLog('Je ontsnapping mislukt!');
+                    }
+                    ;
+                }
+            };
+        }
+        Actions.Flee = Flee;
+    })(Actions = QuestForTheKing.Actions || (QuestForTheKing.Actions = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
 var PathOfHeroes;
 (function (PathOfHeroes) {
     var Character = (function () {
@@ -1221,7 +1589,7 @@ var Strix;
         }
         function onChange(value, scope, optionLabel, optionValue, ngModel) {
             if (!optionValue) {
-                value = scope.data.filter(function (x) { return x[optionLabel] == value; })[0];
+                value = typeof value === 'object' ? value : scope.data.filter(function (x) { return x[optionLabel] == value; })[0];
             }
             // Do the callback before updating the view value. This order is important, which has something
             // to do with the angular digest cycle. I'm not sure what exactly.
@@ -1239,6 +1607,7 @@ var DangerousCave;
         function Character() {
             this.hitpoints = 20;
             this.currentHitpoints = 20;
+            this.score = 0;
             this.scoreToNextLevel = 0;
             this.level = 1;
             this.kracht = 1;
@@ -1350,8 +1719,8 @@ var DangerousCave;
                     if (enemy.items && enemy.items.length) {
                         enemy.items.forEach(function (item) {
                             self.game.currentLocation.items = self.game.currentLocation.items || [];
-                            // Todo: type
-                            self.game.currentLocation.items.push(item);
+                            // Todo: should not need to call function here
+                            self.game.currentLocation.items.push(item());
                         });
                         enemy.items.splice(0, enemy.items.length);
                     }
