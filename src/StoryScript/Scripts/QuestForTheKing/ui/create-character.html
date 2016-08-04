@@ -1,0 +1,17 @@
+﻿<h1>Nieuw spel</h1>
+<div><span>Hoe heet je?</span><input class="name-input" type="text" ng-model="controller.createCharacterForm.name" /></div>
+<div>
+    <span>Ben je sterk, snel of slim?</span>
+    <select class="specialty-select" ng-options="specialty.value for specialty in controller.createCharacterForm.specialties" ng-model="controller.createCharacterForm.selectedSpecialty">
+        <option value="">-- Kies een specialiteit --</option>
+    </select>
+</div>
+<p>Je bent: {{ controller.createCharacterForm.selectedSpecialty.value }}</p>
+<div>
+    <span>Wat neem je mee?</span>
+    <select class="weapon-select" ng-options="item.name for item in controller.createCharacterForm.items" ng-model="controller.createCharacterForm.selectedItem">
+        <option value="">-- Kies een voorwerp --</option>
+    </select>
+</div>
+<p>Je neemt mee: {{ controller.createCharacterForm.selectedItem.name }}</p>
+<button type="button" class="btn btn-primary" ng-click="controller.startNewGame()">Start avontuur</button>
