@@ -73,6 +73,8 @@ module StoryScript {
 
             self.game.definitions = self.definitions;
             self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
+            self.game.createCharacterSheet.currentStep = 0;
+            self.game.createCharacterSheet.nextStep = (data: ICreateCharacter) => { data.currentStep++; };
 
             if (self.ruleService.setupGame) {
                 self.ruleService.setupGame(self.game);

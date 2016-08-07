@@ -3,7 +3,7 @@
     <span class="col-md-4 question-label">{{ texts.yourName }}</span>
     <input class="col-md-8 question-input" type="text" ng-model="game.createCharacterSheet.name" />
 </div>
-<div class="row" ng-repeat="step in game.createCharacterSheet.steps">
+<div class="row" ng-repeat="step in game.createCharacterSheet.steps" ng-show="game.createCharacterSheet.currentStep == $index">
     <div class="row question-row" ng-repeat="question in step.questions">
         <span class="col-md-4 question-label">{{ question.question }}</span>
         <select strix-drop-down class="col-md-8 question-select" ng-model="question.selectedEntry" source="question.entries" option-label="text"></select>
@@ -12,5 +12,6 @@
         <span class="col-md-4 question-label">{{ attribute.attribute }}</span>
         <input class="col-md-8 question-input" type="number" min="{{ attribute.min }}" max="{{ attribute.max }}" />
     </div>
+    <button type="button" class="btn btn-primary" ng-click="game.createCharacterSheet.nextStep(game.createCharacterSheet)" ng-show="game.createCharacterSheet.currentStep < game.createCharacterSheet.steps.length - 1">{{ texts.nextQuestion }}</button>
 </div>
-<button type="button" class="btn btn-primary" ng-click="controller.startNewGame()">{{ texts.startAdventure }}</button>
+<button type="button" class="btn btn-primary" ng-click="controller.startNewGame()" ng-show="game.createCharacterSheet.currentStep >= game.createCharacterSheet.steps.length - 1">{{ texts.startAdventure }}</button>

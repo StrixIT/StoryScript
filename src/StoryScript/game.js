@@ -86,6 +86,21 @@ var GameTemplate;
 })(GameTemplate || (GameTemplate = {}));
 var GameTemplate;
 (function (GameTemplate) {
+    var TextService = (function () {
+        function TextService() {
+        }
+        TextService.prototype.$get = function (game) {
+            var self = this;
+            return {};
+        };
+        return TextService;
+    }());
+    GameTemplate.TextService = TextService;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
+})(GameTemplate || (GameTemplate = {}));
+var GameTemplate;
+(function (GameTemplate) {
     var Locations;
     (function (Locations) {
         function Start() {
@@ -326,6 +341,56 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    var DefaultTexts = (function () {
+        function DefaultTexts() {
+            this.equipmentHeader = "Equipment";
+            this.head = "Head";
+            this.amulet = "Amulet";
+            this.rightHand = "Right hand";
+            this.leftHand = "Left hand";
+            this.body = "Body";
+            this.legs = "Legs";
+            this.feet = "Feet";
+            this.backpack = "Backpack";
+            this.equip = "Equip";
+            this.use = "Use";
+            this.drop = "Drop";
+            this.enemies = "Enemies";
+            this.attack = "Attack {0}!";
+            this.newGame = "New game";
+            this.yourName = "What is your name?";
+            this.startAdventure = "Start adventure";
+            this.actions = "Actions";
+            this.destinations = "Destinations";
+            this.back = "Back: ";
+            this.onTheGround = "On the ground";
+            this.youLost = "You lost...";
+            this.questFailed = "You have failed your quest!";
+            this.finalScore = "Your score: ";
+            this.tryAgain = "Try again";
+            this.highScores = "High Scores";
+            this.youWon = "You won!";
+            this.congratulations = "Congratulations! You have won the game!";
+            this.playAgain = "Play again";
+            this.startOver = "Start over";
+            this.resetWorld = "Reset world";
+            this.gameName = "Game template";
+            this.loading = "Loading...";
+            this.youAreHere = "You are here";
+            this.messages = "Messages";
+            this.format = function (template, tokens) {
+                for (var i = 0; i < tokens.length; i++) {
+                    template = template.replace('{' + i + '}', tokens[i]);
+                }
+                return template;
+            };
+        }
+        return DefaultTexts;
+    }());
+    StoryScript.DefaultTexts = DefaultTexts;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
     var GameService = (function () {
         function GameService(dataService, locationService, characterService, ruleService, game, gameNameSpace, definitions) {
             var _this = this;
@@ -333,7 +398,9 @@ var StoryScript;
                 var self = _this;
                 self.game.nameSpace = self.gameNameSpace;
                 self.definitions.locations = window[self.gameNameSpace]['Locations'];
-                self.definitions.actions = angular.extend(window[self.gameNameSpace]['Actions'], window['StoryScript']['Actions']);
+                var actions = window['StoryScript']['Actions'];
+                var customActions = window[self.gameNameSpace]['Actions'];
+                self.definitions.actions = customActions ? angular.extend(customActions, actions) : actions;
                 self.definitions.enemies = window[self.gameNameSpace]['Enemies'];
                 self.definitions.items = window[self.gameNameSpace]['Items'];
                 self.game.definitions = self.definitions;
@@ -944,8 +1011,9 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var MainController = (function () {
-        function MainController($scope, $window, locationService, ruleService, gameService, game) {
+        function MainController($scope, $window, locationService, ruleService, gameService, game, textService) {
             var _this = this;
+            this.texts = {};
             this.startNewGame = function () {
                 var self = _this;
                 self.gameService.startNewGame(self.game.createCharacterSheet);
@@ -1039,6 +1107,7 @@ var StoryScript;
             self.ruleService = ruleService;
             self.gameService = gameService;
             self.game = game;
+            self.textService = textService;
             self.init();
         }
         // Todo: can this be done differently?
@@ -1048,8 +1117,16 @@ var StoryScript;
             var self = this;
             self.gameService.init();
             self.reset = function () { self.gameService.reset.call(self.gameService); };
+            // Set the texts
+            var defaultTexts = new StoryScript.DefaultTexts();
+            var customTexts = self.textService.$get();
+            for (var n in defaultTexts) {
+                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
+            }
+            self.texts.format = defaultTexts.format;
             // Todo: type
             self.$scope.game = self.game;
+            self.$scope.texts = self.texts;
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
@@ -1088,7 +1165,7 @@ var StoryScript;
         return MainController;
     }());
     StoryScript.MainController = MainController;
-    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game'];
+    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game', 'textService'];
 })(StoryScript || (StoryScript = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
@@ -1225,6 +1302,21 @@ var QuestForTheKing;
     RuleService.$inject = ['game'];
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.service("ruleService", RuleService);
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var TextService = (function () {
+        function TextService() {
+        }
+        TextService.prototype.$get = function (game) {
+            var self = this;
+            return {};
+        };
+        return TextService;
+    }());
+    QuestForTheKing.TextService = TextService;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
@@ -1427,9 +1519,142 @@ var PathOfHeroes;
 })(PathOfHeroes || (PathOfHeroes = {}));
 var PathOfHeroes;
 (function (PathOfHeroes) {
+    var TextService = (function () {
+        function TextService() {
+        }
+        TextService.prototype.$get = function (game) {
+            var self = this;
+            return {};
+        };
+        return TextService;
+    }());
+    PathOfHeroes.TextService = TextService;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
+})(PathOfHeroes || (PathOfHeroes = {}));
+var PathOfHeroes;
+(function (PathOfHeroes) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'PathOfHeroes');
 })(PathOfHeroes || (PathOfHeroes = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Character = (function () {
+        function Character() {
+            this.score = 0;
+            this.level = 1;
+            this.hitpoints = 0;
+            this.currentHitpoints = 0;
+            this.items = [];
+            this.equipment = {
+                head: null,
+                amulet: null,
+                body: null,
+                hands: null,
+                leftHand: null,
+                leftRing: null,
+                rightHand: null,
+                rightRing: null,
+                legs: null,
+                feet: null
+            };
+        }
+        return Character;
+    }());
+    MyNewGame.Character = Character;
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var RuleService = (function () {
+        function RuleService(game) {
+            var _this = this;
+            this.getCreateCharacterSheet = function () {
+                return {
+                    steps: []
+                };
+            };
+            this.fight = function (enemyToFight) {
+                var self = _this;
+                var win = false;
+                // Todo: change when multiple enemies of the same type can be present.
+                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                // Implement character attack here.
+                if (win) {
+                    return true;
+                }
+                self.game.currentLocation.enemies.forEach(function (enemy) {
+                    // Implement monster attack here
+                });
+                return false;
+            };
+            var self = this;
+            self.game = game;
+        }
+        RuleService.prototype.$get = function (game) {
+            var self = this;
+            self.game = game;
+            return {
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
+                createCharacter: self.createCharacter,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange
+            };
+        };
+        RuleService.prototype.createCharacter = function (characterData) {
+            var self = this;
+            var character = new MyNewGame.Character();
+            return character;
+        };
+        RuleService.prototype.hitpointsChange = function (change) {
+            var self = this;
+            // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
+            return false;
+        };
+        RuleService.prototype.scoreChange = function (change) {
+            var self = this;
+            // Implement logic to occur when the score changes. Return true when the character gains a level.
+            return false;
+        };
+        return RuleService;
+    }());
+    MyNewGame.RuleService = RuleService;
+    RuleService.$inject = ['game'];
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("ruleService", RuleService);
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var TextService = (function () {
+        function TextService() {
+        }
+        TextService.prototype.$get = function (game) {
+            var self = this;
+            return {};
+        };
+        return TextService;
+    }());
+    MyNewGame.TextService = TextService;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Locations;
+    (function (Locations) {
+        function Start() {
+            return {
+                name: 'Start'
+            };
+        }
+        Locations.Start = Start;
+    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'GameTemplate');
+})(MyNewGame || (MyNewGame = {}));
 var Strix;
 (function (Strix) {
     var directivesModule = angular.module('strixIT', []);
@@ -1774,6 +1999,44 @@ var DangerousCave;
     RuleService.$inject = ['game'];
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.service("ruleService", RuleService);
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
+    var TextService = (function () {
+        function TextService() {
+        }
+        TextService.prototype.$get = function () {
+            var self = this;
+            return {
+                newGame: "Nieuw spel",
+                startAdventure: "Start avontuur",
+                equipmentHeader: "Uitrusting",
+                gameName: "Gevaarlijke grot",
+                yourName: "Hoe heet je?",
+                youAreHere: "Je bent hier",
+                destinations: "Uitgangen",
+                onTheGround: "Op de grond",
+                messages: "Gebeurtenissen",
+                backpack: "Rugzak",
+                back: "Terug: ",
+                attack: "Val {0} aan!",
+                startOver: "Begin overnieuw",
+                resetWorld: "Reset wereld",
+                actions: "Acties",
+                head: "Hoofd",
+                body: "Lichaam",
+                enemies: "Vijanden",
+                loading: "Laden...",
+                equip: "Ter hand nemen",
+                use: "Gebruiken",
+                drop: "Laten vallen"
+            };
+        };
+        return TextService;
+    }());
+    DangerousCave.TextService = TextService;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {

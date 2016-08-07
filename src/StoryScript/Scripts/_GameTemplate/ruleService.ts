@@ -23,6 +23,7 @@
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
             return {
                 steps: [
+                    // Add the character creation steps here.
                 ]
             };
         }
