@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gevaarlijk Avontuur</title>
+    <title>StoryScript adventure</title>
     <link href="css/lib/bootstrap.css" rel="stylesheet" />
     <link href="css/game.css" rel="stylesheet" type="text/css" />
 </head>
@@ -13,8 +13,8 @@
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"><button type="button" class="btn btn-danger btn-sm" ng-click="controller.restart()">Begin overnieuw</button></span>
-                        <span class="icon-bar"><button type="button" class="btn btn-danger btn-sm" ng-click="controller.reset()">Reset wereld</button></span>
+                        <span class="icon-bar"><button type="button" class="btn btn-danger btn-sm" ng-click="controller.restart()">{{ texts.startOver }}</button></span>
+                        <span class="icon-bar"><button type="button" class="btn btn-danger btn-sm" ng-click="controller.reset()">{{ texts.resetWorld }}</button></span>
                         <span class="icon-bar"></span>
                     </button>
                 </div>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="container body-content">
-            <h2>De Gevaarlijke Grot</h2>
+            <h2>{{ texts.gameName }}</h2>
 
             <div class="row">
                 <div id="character-container" class="col-md-4">
@@ -33,11 +33,11 @@
                 </div>
                 <div id="location-container" class="col-md-8">
                     <div ng-if="!controller.game.state">
-                        Laden...
+                        {{ texts.loading }}
                     </div>
                     <div ng-if="controller.game.state == 'play'">
                         <fieldset>
-                            <legend>Hier ben je</legend>
+                            <legend>{{ texts.youAreHere }}</legend>
                             <h4 ng-bind-html="controller.game.currentLocation.name"></h4>
                             <p ng-bind-html="controller.game.currentLocation.text"></p>
                             <ul id="location-log">
@@ -47,7 +47,7 @@
                         <div class="exploration" ng-include="'/ui/exploration.html'"></div>
                         <div class="combat" ng-include="'/ui/combat.html'"></div>
                         <fieldset>
-                            <legend>Gebeurtenissen</legend>
+                            <legend>{{ texts.messages }}</legend>
                             <ul id="action-log">
                                 <li ng-repeat="message in controller.game.actionLog track by $index">{{ message }}</li>
                             </ul>

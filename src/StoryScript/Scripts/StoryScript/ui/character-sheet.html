@@ -8,12 +8,12 @@
     </ul>
 </fieldset>
 <fieldset id="equipment">
-    <legend>Uitrusting</legend>
+    <legend>{{ texts.equipmentHeader }}</legend>
     <div>
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    Hoofd
+                    {{ texts.head }}
                 </div>
                 <div class="item-box">
                     {{ game.character.equipment.Head.name }}
@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    Amulet
+                    {{ texts.amulet }}
                 </div>
                 <div class="item-box">
                     {{ game.character.equipment.Amulet.name }}
@@ -32,13 +32,13 @@
         </div>
         <div class="row">
             <div class="col-md-3">
-                Rechterhand
+                {{ texts.rightHand }}
             </div>
             <div class="col-md-6">
-                Lichaam
+                {{ texts.body }}
             </div>
             <div class="col-md-3">
-                Linkerhand
+                {{ texts.leftHand }}
             </div>
             <div class="col-md-3">
                 <div class="item-box">{{ game.character.equipment.Hands.name }}</div>
@@ -58,7 +58,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    Benen
+                    {{ texts.legs }}
                 </div>
                 <div class="item-box">
                     {{ game.character.equipment.Legs.name }}
@@ -68,7 +68,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    Voeten
+                    {{ texts.feet }}
                 </div>
                 <div class="item-box">
                     {{ game.character.equipment.Feet.name }}
@@ -78,14 +78,14 @@
     </div>
 </fieldset>
 <fieldset>
-    <legend>Rugzak</legend>
+    <legend>{{ texts.backpack }}</legend>
     <ul>
         <li ng-repeat="item in game.character.items">
             <div>
                 <span>{{ item.name }}</span>
-                <button type="button" ng-if="controller.canEquip(item)" class="btn btn-info" ng-click="controller.equipItem(item)">Equip</button>
-                <button type="button" ng-if="item.use" class="btn btn-info" ng-click="controller.executeAction(item.use, item)">Use</button>
-                <button type="button" class="btn btn-info" ng-click="controller.dropItem(item)">Drop</button>
+                <button type="button" ng-if="controller.canEquip(item)" class="btn btn-info" ng-click="controller.equipItem(item)">{{ texts.equip }}</button>
+                <button type="button" ng-if="item.use" class="btn btn-info" ng-click="controller.executeAction(item.use, item)">{{ texts.use }}</button>
+                <button type="button" class="btn btn-info" ng-click="controller.dropItem(item)">{{ texts.drop }}</button>
             </div>
         </li>
     </ul>

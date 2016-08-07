@@ -6,11 +6,13 @@
         private ruleService: IRuleService;
         private gameService: IGameService;
         private game: IGame;
+        private textService: ITextService;
+        private texts: any = {};
 
         // Todo: can this be done differently?
         public reset(): void { };
 
-        constructor($scope: ng.IScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame) {
+        constructor($scope: ng.IScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, textService: ITextService) {
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
@@ -18,6 +20,7 @@
             self.ruleService = ruleService;
             self.gameService = gameService;
             self.game = game;
+            self.textService = textService;
             self.init();
         }
 
@@ -26,8 +29,18 @@
             self.gameService.init();
             self.reset = () => { self.gameService.reset.call(self.gameService); };
 
+            // Set the texts
+            var defaultTexts = new DefaultTexts();
+
+            for (var n in defaultTexts) {
+                self.texts[n] = self.textService[n] ? self.textService[n] : defaultTexts[n];
+            }
+
+            self.texts.format = defaultTexts.format;
+
             // Todo: type
             (<any>self.$scope).game = self.game;
+            (<any>self.$scope).texts = self.texts;
 
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
@@ -172,5 +185,5 @@
         }
     }
 
-    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game'];
+    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game', 'textService'];
 }

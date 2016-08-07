@@ -38,6 +38,7 @@ paths.cssLib = "./" + project.webroot + "/css/lib/";
 
 var tsProject = ts.createProject('tsconfig.json');
 
+gulp.task('build-game-template', buildGame('_GameTemplate'));
 gulp.task('build-dangerous-cave', buildGame('DangerousCave'));
 gulp.task('build-quest-for-the-king', buildGame('QuestForTheKing'));
 gulp.task('build-path-of-heroes', buildGame('PathOfHeroes'));

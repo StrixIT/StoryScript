@@ -63,7 +63,11 @@ module StoryScript {
             self.game.nameSpace = self.gameNameSpace;
 
             self.definitions.locations = window[self.gameNameSpace]['Locations'];
-            self.definitions.actions = angular.extend(window[self.gameNameSpace]['Actions'], window['StoryScript']['Actions']);
+
+            var actions = window['StoryScript']['Actions'];
+            var customActions = window[self.gameNameSpace]['Actions'];
+            self.definitions.actions = customActions ? angular.extend(customActions, actions) : actions;
+
             self.definitions.enemies = window[self.gameNameSpace]['Enemies'];
             self.definitions.items = window[self.gameNameSpace]['Items'];
 

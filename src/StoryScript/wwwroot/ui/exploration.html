@@ -1,5 +1,5 @@
 <fieldset ng-if="controller.actionsPresent()">
-    <legend>Acties</legend>
+    <legend>{{ texts.actions }}</legend>
     <ul class="button-row">
         <li ng-repeat="action in controller.game.currentLocation.actions">
             <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action.execute)" ng-disabled="controller.disableActionButton(action)">{{ action.text }}</button>
@@ -7,7 +7,7 @@
     </ul>
 </fieldset>
 <fieldset ng-if="!controller.enemiesPresent()">
-    <legend>Uitgangen</legend>
+    <legend>{{ texts.destinations }}</legend>
     <table>
         <tbody>
             <tr ng-if="controller.barriersPresent()">
@@ -21,14 +21,14 @@
             </tr>
             <tr>
                 <td ng-repeat="destination in controller.game.currentLocation.destinations">
-                    <button type="button" class="btn btn-info" ng-click="controller.changeLocation(destination.target)" ng-disabled="destination.barrier || controller.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">Terug: </span> {{ destination.text }}</button>
+                    <button type="button" class="btn btn-info" ng-click="controller.changeLocation(destination.target)" ng-disabled="destination.barrier || controller.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ texts.back }}</span> {{ destination.text }}</button>
                 </td>
             </tr>
         </tbody>
     </table>
 </fieldset>
 <fieldset ng-if="!controller.enemiesPresent()">
-    <legend>Dit ligt hier</legend>
+    <legend>{{ texts.onTheGround }}</legend>
     <ul>
         <li ng-repeat="item in controller.game.currentLocation.items track by $index" ng-click="controller.pickupItem(item)">{{ item.name }}</li>
     </ul>
