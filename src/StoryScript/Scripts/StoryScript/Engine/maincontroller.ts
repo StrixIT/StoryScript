@@ -31,9 +31,10 @@
 
             // Set the texts
             var defaultTexts = new DefaultTexts();
+            var customTexts = (<any>self.textService).$get();
 
             for (var n in defaultTexts) {
-                self.texts[n] = self.textService[n] ? self.textService[n] : defaultTexts[n];
+                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
             }
 
             self.texts.format = defaultTexts.format;

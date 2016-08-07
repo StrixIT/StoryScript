@@ -1058,8 +1058,9 @@ var StoryScript;
             self.reset = function () { self.gameService.reset.call(self.gameService); };
             // Set the texts
             var defaultTexts = new StoryScript.DefaultTexts();
+            var customTexts = self.textService.$get();
             for (var n in defaultTexts) {
-                self.texts[n] = self.textService[n] ? self.textService[n] : defaultTexts[n];
+                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
             }
             self.texts.format = defaultTexts.format;
             // Todo: type
@@ -1398,9 +1399,26 @@ var DangerousCave;
     var TextService = (function () {
         function TextService() {
         }
-        TextService.prototype.$get = function (game) {
+        TextService.prototype.$get = function () {
             var self = this;
-            return {};
+            return {
+                newGame: "Nieuw spel",
+                startAdventure: "Start avontuur",
+                equipmentHeader: "Uitrusting",
+                gameName: "Gevaarlijke grot",
+                yourName: "Hoe heet je?",
+                messages: "Gebeurtenissen",
+                backpack: "Rugzak",
+                back: "Terug: ",
+                attack: "Val {0} aan!",
+                startOver: "Begin overnieuw",
+                resetWorld: "Reset wereld",
+                actions: "Acties",
+                head: "Hoofd",
+                body: "Lichaam",
+                enemies: "Vijanden",
+                loading: "Laden...",
+            };
         };
         return TextService;
     }());
