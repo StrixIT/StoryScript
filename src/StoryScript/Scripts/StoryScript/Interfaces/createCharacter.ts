@@ -23,6 +23,7 @@
 
     export interface ICreateCharacterAttribute {
         attribute: string;
+        value: number;
         min: number;
         max: number;
     }

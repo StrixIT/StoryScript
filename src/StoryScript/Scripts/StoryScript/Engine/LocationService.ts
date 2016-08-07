@@ -156,8 +156,13 @@ module StoryScript {
 
             self.loadLocationDescriptions(game);
 
-            self.ruleService.initCombat(game.currentLocation);
-            self.ruleService.enterLocation(game.currentLocation);
+            if (self.ruleService.initCombat) {
+                self.ruleService.initCombat(game.currentLocation);
+            }
+
+            if (self.ruleService.enterLocation) {
+                self.ruleService.enterLocation(game.currentLocation);
+            }
 
             // If the player hasn't been here before, play the location events.
             if (!game.currentLocation.hasVisited) {
@@ -288,7 +293,11 @@ module StoryScript {
             var originalFunction = args[1];
             var enemy = args[2];
             originalFunction.call(array, enemy);
-            scope.ruleService.addEnemyToLocation(scope.game.currentLocation, enemy);
+            var ruleService = <IRuleService>scope.ruleService;
+
+            if (ruleService.addEnemyToLocation) {
+                ruleService.addEnemyToLocation((<IGame>scope.game).currentLocation, enemy);
+            }
         }
 
         private playEvents(game: IGame) {

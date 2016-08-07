@@ -47,7 +47,7 @@
 
         claimReward = () => {
             var self = this;
-            self.ruleService.levelUp(self.selectedReward.name);
+            //self.ruleService.levelUp(self.selectedReward.name);
         }
     }
 

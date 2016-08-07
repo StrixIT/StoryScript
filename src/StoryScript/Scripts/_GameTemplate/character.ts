@@ -3,6 +3,8 @@
         name: string;
         score: number = 0;
         level: number = 1;
+        hitpoints: number = 0;
+        currentHitpoints: number = 0;
 
         items: StoryScript.ICollection<StoryScript.IItem> = [];
 

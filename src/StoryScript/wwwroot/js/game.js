@@ -116,7 +116,24 @@ var StoryScript;
             var self = this;
             var character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
             if (StoryScript.isEmpty(character)) {
+                var self = this;
                 character = self.ruleService.createCharacter(characterData);
+                character.name = characterData.name;
+                characterData.steps.forEach(function (step) {
+                    if (step.questions) {
+                        step.questions.forEach(function (question) {
+                            character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                        });
+                    }
+                });
+                characterData.steps.forEach(function (step) {
+                    if (step.attributes) {
+                        step.attributes.forEach(function (attribute) {
+                            character[attribute.attribute] = attribute.value;
+                        });
+                    }
+                });
+                return character;
             }
             if (StoryScript.isEmpty(character.items)) {
                 character.items = [];
@@ -275,7 +292,20 @@ var StoryScript;
                 self.definitions.items = window[self.gameNameSpace]['Items'];
                 self.game.definitions = self.definitions;
                 self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
-                self.ruleService.setupGame(self.game);
+                if (self.ruleService.setupGame) {
+                    self.ruleService.setupGame(self.game);
+                }
+                // Game setup start
+                self.game.highScores = [];
+                self.game.actionLog = [];
+                self.game.logToLocationLog = function (message) {
+                    self.game.currentLocation.log = self.game.currentLocation.log || [];
+                    self.game.currentLocation.log.push(message);
+                };
+                self.game.logToActionLog = function (message) {
+                    self.game.actionLog.splice(0, 0, message);
+                };
+                // Game setup end
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
                 self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
@@ -308,7 +338,7 @@ var StoryScript;
                 var self = _this;
                 self.game.character = self.characterService.createCharacter(characterData);
                 self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-                self.ruleService.startGame();
+                self.game.changeLocation(self.game.locations.first('Start'));
             };
             this.restart = function () {
                 var self = _this;
@@ -363,7 +393,22 @@ var StoryScript;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                self.ruleService.fight(enemy);
+                var win = self.ruleService.fight(enemy);
+                if (win) {
+                    if (enemy.items && enemy.items.length) {
+                        enemy.items.forEach(function (item) {
+                            self.game.currentLocation.items = self.game.currentLocation.items || [];
+                            // Todo: type
+                            self.game.currentLocation.items.push(item);
+                        });
+                        enemy.items.splice(0, enemy.items.length);
+                    }
+                    self.game.currentLocation.enemies.remove(enemy);
+                    self.ruleService.enemyDefeated(enemy);
+                    if (enemy.onDefeat) {
+                        enemy.onDefeat(self.game);
+                    }
+                }
             };
             this.scoreChange = function (change) {
                 var self = _this;
@@ -378,7 +423,7 @@ var StoryScript;
             };
             this.hitpointsChange = function (change) {
                 var self = _this;
-                var defeat = self.ruleService.healthChange(change);
+                var defeat = self.ruleService.hitpointsChange(change);
                 if (defeat) {
                     self.game.state = 'gameOver';
                 }
@@ -686,8 +731,12 @@ var StoryScript;
             game.currentLocation.items = game.currentLocation.items || [];
             game.currentLocation.enemies = game.currentLocation.enemies || [];
             self.loadLocationDescriptions(game);
-            self.ruleService.initCombat(game.currentLocation);
-            self.ruleService.enterLocation(game.currentLocation);
+            if (self.ruleService.initCombat) {
+                self.ruleService.initCombat(game.currentLocation);
+            }
+            if (self.ruleService.enterLocation) {
+                self.ruleService.enterLocation(game.currentLocation);
+            }
             // If the player hasn't been here before, play the location events.
             if (!game.currentLocation.hasVisited) {
                 game.currentLocation.hasVisited = true;
@@ -793,7 +842,10 @@ var StoryScript;
             var originalFunction = args[1];
             var enemy = args[2];
             originalFunction.call(array, enemy);
-            scope.ruleService.addEnemyToLocation(scope.game.currentLocation, enemy);
+            var ruleService = scope.ruleService;
+            if (ruleService.addEnemyToLocation) {
+                ruleService.addEnemyToLocation(scope.game.currentLocation, enemy);
+            }
         };
         LocationService.prototype.playEvents = function (game) {
             var self = this;
@@ -1114,17 +1166,6 @@ var DangerousCave;
     var RuleService = (function () {
         function RuleService(game) {
             var _this = this;
-            this.setupGame = function (game) {
-                game.highScores = [];
-                game.actionLog = [];
-                game.logToLocationLog = function (message) {
-                    game.currentLocation.log = game.currentLocation.log || [];
-                    game.currentLocation.log.push(message);
-                };
-                game.logToActionLog = function (message) {
-                    game.actionLog.splice(0, 0, message);
-                };
-            };
             this.getCreateCharacterSheet = function () {
                 return {
                     steps: [
@@ -1172,6 +1213,27 @@ var DangerousCave;
                     ]
                 };
             };
+            this.fight = function (enemyToFight) {
+                var self = _this;
+                // Todo: change when multiple enemies of the same type can be present.
+                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var check = self.game.rollDice(self.game.character.kracht + 'd6');
+                var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
+                self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+                enemy.hitpoints -= characterDamage;
+                if (enemy.hitpoints <= 0) {
+                    self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                    self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
+                    return true;
+                }
+                self.game.currentLocation.enemies.forEach(function (enemy) {
+                    var check = self.game.rollDice(enemy.attack);
+                    var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
+                    self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                    self.game.character.currentHitpoints -= enemyDamage;
+                });
+                return false;
+            };
             this.levelUp = function (reward) {
                 var self = _this;
                 if (reward != 'gezondheid') {
@@ -1183,41 +1245,6 @@ var DangerousCave;
                 }
                 self.game.state = 'play';
             };
-            this.fight = function (enemyToFight) {
-                var self = _this;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
-                var check = self.game.rollDice(self.game.character.kracht + 'd6');
-                var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
-                self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
-                enemy.hitpoints -= characterDamage;
-                // Todo: move to game service
-                if (enemy.hitpoints <= 0) {
-                    self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
-                    self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
-                    if (enemy.items && enemy.items.length) {
-                        enemy.items.forEach(function (item) {
-                            self.game.currentLocation.items = self.game.currentLocation.items || [];
-                            // Todo: type
-                            self.game.currentLocation.items.push(item);
-                        });
-                        enemy.items.splice(0, enemy.items.length);
-                    }
-                    self.game.currentLocation.enemies.remove(enemy);
-                    if (enemy.reward) {
-                        self.game.character.score += enemy.reward;
-                    }
-                    if (enemy.onDefeat) {
-                        enemy.onDefeat(self.game);
-                    }
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
-                    var check = self.game.rollDice(enemy.attack);
-                    var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
-                    self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
-                    self.game.character.currentHitpoints -= enemyDamage;
-                });
-            };
             var self = this;
             self.game = game;
         }
@@ -1225,29 +1252,21 @@ var DangerousCave;
             var self = this;
             self.game = game;
             return {
-                setupGame: self.setupGame,
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
-                startGame: self.startGame,
-                addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
                 initCombat: self.initCombat,
                 fight: self.fight,
-                healthChange: self.healthChange,
+                hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange
             };
         };
         RuleService.prototype.createCharacter = function (characterData) {
             var self = this;
             var character = new DangerousCave.Character();
-            character.name = characterData.name;
-            character[characterData.steps[0].questions[0].selectedEntry.value] += characterData.steps[0].questions[0].selectedEntry.bonus;
-            character.items.push(self.game.definitions.items[characterData.steps[0].questions[1].selectedEntry.value]());
+            var chosenItem = characterData.steps[0].questions[1].selectedEntry;
+            character.items.push(self.game.definitions.items[chosenItem.value]());
             return character;
-        };
-        RuleService.prototype.startGame = function () {
-            var self = this;
-            self.game.changeLocation(self.game.locations.first(DangerousCave.Locations.Start));
         };
         RuleService.prototype.addEnemyToLocation = function (location, enemy) {
             var self = this;
@@ -1262,31 +1281,23 @@ var DangerousCave;
         };
         RuleService.prototype.initCombat = function (location) {
             var self = this;
-            // Log the presense of enemies to the action log.
             location.enemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
             self.addFleeAction(location);
         };
-        RuleService.prototype.addFleeAction = function (location) {
+        RuleService.prototype.enemyDefeated = function (enemy) {
             var self = this;
-            var numberOfEnemies = location.enemies.length;
-            var fleeAction = location.combatActions.first(DangerousCave.Actions.Flee);
-            if (fleeAction) {
-                location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
-            }
-            if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
-                var action = DangerousCave.Actions.Flee('');
-                action.id = DangerousCave.Actions.Flee.name;
-                location.combatActions.push(action);
+            if (enemy.reward) {
+                self.game.character.score += enemy.reward;
             }
         };
-        RuleService.prototype.healthChange = function (change) {
+        RuleService.prototype.hitpointsChange = function (change) {
             var self = this;
             if (self.game.character.hitpoints < 5) {
                 self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
             }
-            return self.game.character.hitpoints <= 0;
+            return self.game.character.currentHitpoints <= 0;
         };
         RuleService.prototype.scoreChange = function (change) {
             var self = this;
@@ -1300,6 +1311,19 @@ var DangerousCave;
                 self.game.logToActionLog('Je wordt hier beter in! Je bent nu niveau ' + character.level);
             }
             return levelUp;
+        };
+        RuleService.prototype.addFleeAction = function (location) {
+            var self = this;
+            var numberOfEnemies = location.enemies.length;
+            var fleeAction = location.combatActions.first(DangerousCave.Actions.Flee);
+            if (fleeAction) {
+                location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
+            }
+            if (numberOfEnemies > 0 && numberOfEnemies < self.game.character.vlugheid) {
+                var action = DangerousCave.Actions.Flee('');
+                action.id = DangerousCave.Actions.Flee.name;
+                location.combatActions.push(action);
+            }
         };
         return RuleService;
     }());

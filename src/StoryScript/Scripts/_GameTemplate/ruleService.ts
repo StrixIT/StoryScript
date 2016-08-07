@@ -1,4 +1,4 @@
-﻿module PathOfHeroes {
+﻿module GameTemplate {
     export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
         private game: IGame;
 

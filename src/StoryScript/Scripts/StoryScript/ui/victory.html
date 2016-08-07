@@ -1,0 +1,5 @@
+﻿<h1>You won!</h1>
+<div><span>Congratulations! You have won the game!</span></div>
+<div><span>Your score: {{ game.character.score }}</span></div>
+<button type="button" class="btn btn-primary" ng-click="restart()">Play again</button>
+<div ng-include="'/ui/highscores.html'"></div>

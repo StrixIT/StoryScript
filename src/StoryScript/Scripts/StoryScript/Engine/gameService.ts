@@ -69,7 +69,25 @@ module StoryScript {
 
             self.game.definitions = self.definitions;
             self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
-            self.ruleService.setupGame(self.game);
+
+            if (self.ruleService.setupGame) {
+                self.ruleService.setupGame(self.game);
+            }
+
+            // Game setup start
+            self.game.highScores = [];
+            self.game.actionLog = [];
+
+            self.game.logToLocationLog = (message: string) => {
+                self.game.currentLocation.log = self.game.currentLocation.log || [];
+                self.game.currentLocation.log.push(message);
+            }
+
+            self.game.logToActionLog = (message: string) => {
+                self.game.actionLog.splice(0, 0, message);
+            }
+            // Game setup end
+
             self.locationService.init(self.game);
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
@@ -110,7 +128,7 @@ module StoryScript {
             var self = this;
             self.game.character = self.characterService.createCharacter(characterData);
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-            self.ruleService.startGame();
+            self.game.changeLocation(self.game.locations.first('Start'));
         }
 
         restart = (): void => {
@@ -174,7 +192,28 @@ module StoryScript {
 
         fight = (enemy: IEnemy) => {
             var self = this;
-            self.ruleService.fight(enemy);
+            var win = self.ruleService.fight(enemy);
+
+            if (win) {
+                if (enemy.items && enemy.items.length) {
+                    enemy.items.forEach(function (item) {
+                        self.game.currentLocation.items = self.game.currentLocation.items || [];
+
+                        // Todo: type
+                        self.game.currentLocation.items.push(<any>item);
+                    });
+
+                    enemy.items.splice(0, enemy.items.length);
+                }
+
+                self.game.currentLocation.enemies.remove(enemy);
+
+                self.ruleService.enemyDefeated(enemy);
+
+                if (enemy.onDefeat) {
+                    enemy.onDefeat(self.game);
+                }
+            }
         }
 
         scoreChange = (change: number): void => {
@@ -193,7 +232,7 @@ module StoryScript {
 
         hitpointsChange = (change: number): void => {
             var self = this;
-            var defeat = self.ruleService.healthChange(change);
+            var defeat = self.ruleService.hitpointsChange(change);
 
             if (defeat) {
                 self.game.state = 'gameOver';

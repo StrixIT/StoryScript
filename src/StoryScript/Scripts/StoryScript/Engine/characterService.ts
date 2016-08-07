@@ -25,12 +25,33 @@ module StoryScript {
             };
         }
 
-        public createCharacter(characterData: any): ICharacter {
+        public createCharacter(characterData: ICreateCharacter): ICharacter {
             var self = this;
             var character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
 
             if (isEmpty(character)) {
+
+                var self = this;
                 character = self.ruleService.createCharacter(characterData);
+                character.name = characterData.name;
+
+                characterData.steps.forEach(function (step) {
+                    if (step.questions) {
+                        step.questions.forEach(function (question) {
+                            character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                        });
+                    }
+                });
+
+                characterData.steps.forEach(function (step) {
+                    if (step.attributes) {
+                        step.attributes.forEach(function (attribute) {
+                            character[attribute.attribute] = attribute.value;
+                        });
+                    }
+                });
+
+                return character; 
             }
 
             if (isEmpty(character.items)) {
