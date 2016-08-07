@@ -10,8 +10,9 @@
             locations: [() => StoryScript.ILocation],
             actions: [() => StoryScript.IAction],
             enemies: [() => StoryScript.IEnemy],
-            Items: [() => StoryScript.IItem]
+            items: [() => StoryScript.IItem]
         };
+        createCharacterSheet?: ICreateCharacter;
         character: ICharacter;
         locations: ICollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;

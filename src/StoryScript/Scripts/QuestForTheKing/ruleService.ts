@@ -13,14 +13,14 @@
 
             return {
                 setupGame: self.setupGame,
-                getCharacterForm: self.getCharacterForm,
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
                 addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
                 initCombat: self.initCombat,
                 fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
+                healthChange: self.healthChange,
                 scoreChange: self.scoreChange
             };
         }
@@ -39,26 +39,50 @@
             }
         }
 
-        public getCharacterForm() {
+        getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
             return {
-                specialties: [
+                steps: [
                     {
-                        name: 'sterk',
-                        value: 'Sterk'
-                    },
-                    {
-                        name: 'snel',
-                        value: 'Snel'
-                    },
-                    {
-                        name: 'slim',
-                        value: 'Slim'
+                        questions: [
+                            {
+                                question: 'Ben je sterk, snel of slim?',
+                                entries: [
+                                    {
+                                        text: 'Sterk',
+                                        value: 'kracht',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Snel',
+                                        value: 'vlugheid',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Slim',
+                                        value: 'oplettendheid',
+                                        bonus: 1
+                                    }
+                                ]
+                            },
+                            {
+                                question: 'Wat neem je mee?',
+                                entries: [
+                                    {
+                                        text: 'Dolk',
+                                        value: (<any>Items.Dagger).name,
+                                    },
+                                    {
+                                        text: 'Leren helm',
+                                        value: (<any>Items.LeatherHelmet).name,
+                                    },
+                                    {
+                                        text: 'Lantaren',
+                                        value: (<any>Items.Lantern).name,
+                                    }
+                                ]
+                            }
+                        ]
                     }
-                ],
-                items: [
-                    Items.Dagger(),
-                    Items.LeatherHelmet(),
-                    Items.Lantern()
                 ]
             };
         }
@@ -150,8 +174,8 @@
                     enemy.items.forEach(function (item) {
                         self.game.currentLocation.items = self.game.currentLocation.items || [];
 
-                        // Todo: should not need to call function here
-                        self.game.currentLocation.items.push(item());
+                         // Todo: type
+                        self.game.currentLocation.items.push(<any>item);
                     });
 
                     enemy.items.splice(0, enemy.items.length);
@@ -192,12 +216,14 @@
             }
         }
 
-        hitpointsChange(change: number) {
+        healthChange(change: number) {
             var self = this;
 
             if (self.game.character.hitpoints < 5) {
                 self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
             }
+
+            return self.game.character.hitpoints <= 0;
         }
 
         scoreChange(change: number): boolean {

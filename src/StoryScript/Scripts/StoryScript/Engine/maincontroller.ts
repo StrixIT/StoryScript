@@ -7,8 +7,6 @@
         private gameService: IGameService;
         private game: IGame;
 
-        public createCharacterForm: any;
-
         // Todo: can this be done differently?
         public reset(): void { };
 
@@ -26,7 +24,6 @@
         private init() {
             var self = this;
             self.gameService.init();
-            self.createCharacterForm = self.ruleService.getCharacterForm();
             self.reset = () => { self.gameService.reset.call(self.gameService); };
 
             // Todo: type
@@ -40,7 +37,7 @@
 
         startNewGame = () => {
             var self = this;
-            self.gameService.startNewGame(self.createCharacterForm);
+            self.gameService.startNewGame(self.game.createCharacterSheet);
             self.game.state = 'play';
         }
 

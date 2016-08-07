@@ -1,7 +1,6 @@
 ﻿/// <binding ProjectOpened='ts-watch' />
 
-var gulp = require("gulp"),
-    rimraf = require("rimraf"),
+var gulp = require("gulp"), 
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
@@ -11,6 +10,7 @@ var gulp = require("gulp"),
     sourcemaps = require('gulp-sourcemaps'),
     shell = require('gulp-shell'),
     project = require("./project.json");
+    del = require('del');
 
 var paths = {
     webroot: "./" + project.webroot + "/",
@@ -30,80 +30,48 @@ paths.tsDef = paths.webroot + "js/types/**/*.ts";
 paths.jsLib = "./" + project.webroot + "/js/lib/";
 paths.cssLib = "./" + project.webroot + "/css/lib/";
 
-gulp.task("clean:js", function (cb) {
-    rimraf(paths.jsLib, cb);
-});
-
-gulp.task("clean:css", function (cb) {
-    rimraf(paths.cssLib, cb);
-});
+//gulp.task("tslint", () =>
+//    gulp.src([paths.root + 'Scripts/StoryScript/app.js', paths.root + 'Scripts/DangerousCave/**/*.js'])
+//        .pipe(tslint())
+//        .pipe(tslint.report("verbose"))
+//);
 
 var tsProject = ts.createProject('tsconfig.json');
 
-gulp.task("clean-html", function (cb) {
-    return rimraf(paths.webroot + '**/*.html', cb);
-});
-
-gulp.task('copy-dangerous-cave-css', ["clean-html"], function () {
-    gulp.src([paths.root + 'Scripts/DangerousCave/ui/styles/*.css'])
-        .pipe(gulp.dest(paths.webroot + 'css'));
-});
-
-gulp.task('copy-dangerous-cave-html', ["clean-html"], function () {
-    gulp.src([paths.root + 'Scripts/DangerousCave/**/*.html', paths.root + 'Scripts/StoryScript/**/*.html'])
-      .pipe(gulp.dest(paths.webroot));
-});
-
-gulp.task('ts-compile-dangerous-cave', function () {
-    var tsResult = gulp.src([paths.root + 'Scripts/Library/**/*.ts', paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/DangerousCave/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
-                        .pipe(sourcemaps.init())
-                        .pipe(ts(tsProject));
-
-    return merge([
-        tsResult.js.pipe(sourcemaps.write('../maps')).pipe(gulp.dest(paths.webroot + 'js'))
-    ]);
-});
-
-gulp.task('build-dangerous-cave', ["copy-dangerous-cave-css", "copy-dangerous-cave-html", 'ts-compile-dangerous-cave'], function () { });
-
-gulp.task('copy-quest-for-the-king-css', ["clean-html"], function () {
-    gulp.src([paths.root + 'Scripts/QuestForTheKing/ui/styles/*.css'])
-        .pipe(gulp.dest(paths.webroot + 'css'));
-});
-
-gulp.task('copy-quest-for-the-king-html', ["clean-html"], function () {
-    gulp.src([paths.root + 'Scripts/QuestForTheKing/**/*.html', paths.root + 'Scripts/StoryScript/**/*.html'])
-      .pipe(gulp.dest(paths.webroot));
-});
-
-gulp.task('ts-compile-quest-for-the-king', function () {
-    var tsResult = gulp.src([paths.root + 'Scripts/Library/**/*.ts', paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/QuestForTheKing/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
-                        .pipe(sourcemaps.init())
-                        .pipe(ts(tsProject));
-
-    return merge([
-        tsResult.js.pipe(sourcemaps.write('../maps')).pipe(gulp.dest(paths.webroot + 'js'))
-    ]);
-});
-
-gulp.task('build-quest-for-the-king', ["copy-quest-for-the-king-css", "copy-quest-for-the-king-html", 'ts-compile-quest-for-the-king'], function () { });
-
-gulp.task("tslint", () =>
-    gulp.src([paths.root + 'Scripts/StoryScript/app.js', paths.root + 'Scripts/DangerousCave/**/*.js'])
-        .pipe(tslint())
-        .pipe(tslint.report("verbose"))
-);
-
-gulp.task('ts-compile-path-of-heroes', function () {
-    var tsResult = gulp.src([paths.root + 'Scripts/Library/**/*.ts', paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/PathOfHeroes/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
-                        .pipe(sourcemaps.init())
-                        .pipe(ts(tsProject));
-
-    return merge([
-        tsResult.js.pipe(sourcemaps.write('../maps')).pipe(gulp.dest(paths.webroot + 'js'))
-    ]);
-});
+gulp.task('build-dangerous-cave', buildGame('DangerousCave'));
+gulp.task('build-quest-for-the-king', buildGame('QuestForTheKing'));
+gulp.task('build-path-of-heroes', buildGame('PathOfHeroes'));
 
 gulp.task('ts-watch', function () {
-    gulp.watch(paths.root + 'Scripts/**/*.ts', ['ts-compile-dangerous-cave']);
+    gulp.watch(paths.root + 'Scripts/**/*.ts', ['build-dangerous-cave']);
 });
+
+function buildGame(nameSpace) {
+    return function () {
+        copyCss(nameSpace);
+        copyHtml(nameSpace);
+        compileTypeScript(nameSpace);
+    }
+}
+
+function copyCss(nameSpace) {
+    // Copy css
+    gulp.src([paths.root + 'Scripts/StoryScript/ui/styles/*.css', paths.root + 'Scripts/' + nameSpace + '/ui/styles/*.css'])
+        .pipe(gulp.dest(paths.webroot + 'css'));
+}
+
+function copyHtml(nameSpace) {
+    // Copy html
+    gulp.src([paths.root + 'Scripts/StoryScript/**/*.html', paths.root + 'Scripts/' + nameSpace + '/**/*.html'])
+      .pipe(gulp.dest(paths.webroot));
+}
+
+function compileTypeScript(nameSpace) {
+    var tsResult = gulp.src([paths.root + 'Scripts/Library/**/*.ts', paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/' + nameSpace + '/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
+                        .pipe(sourcemaps.init())
+                        .pipe(ts(tsProject));
+
+    return merge([
+        tsResult.js.pipe(sourcemaps.write('../maps')).pipe(gulp.dest(paths.webroot + 'js'))
+    ]);
+}

@@ -1,10 +1,10 @@
 <fieldset>
-    <legend>{{ controller.game.character.name }}</legend>
+    <legend>{{ game.character.name }}</legend>
     <ul>
-        <li>Kracht {{ controller.game.character.kracht }}</li>
-        <li>Vlugheid {{ controller.game.character.vlugheid }}</li>
-        <li>Oplettendheid {{ controller.game.character.oplettendheid }}</li>
-        <li>Gezondheid {{ controller.game.character.currentHitpoints }} / {{ controller.game.character.hitpoints }}</li>
+        <li>Kracht {{ game.character.kracht }}</li>
+        <li>Vlugheid {{ game.character.vlugheid }}</li>
+        <li>Oplettendheid {{ game.character.oplettendheid }}</li>
+        <li>Gezondheid {{ game.character.currentHitpoints }} / {{ game.character.hitpoints }}</li>
     </ul>
 </fieldset>
 <fieldset id="equipment">
@@ -16,7 +16,7 @@
                     Hoofd
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.Head.name }}
+                    {{ game.character.equipment.Head.name }}
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
                     Amulet
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.Amulet.name }}
+                    {{ game.character.equipment.Amulet.name }}
                 </div>
             </div>
         </div>
@@ -41,18 +41,18 @@
                 Linkerhand
             </div>
             <div class="col-md-3">
-                <div class="item-box">{{ controller.game.character.equipment.Hands.name }}</div>
-                <div class="item-box side-borders">{{ controller.game.character.equipment.RightHand.name }}</div>
-                <div class="item-box">{{ controller.game.character.equipment.RightRing.name }}</div>
+                <div class="item-box">{{ game.character.equipment.Hands.name }}</div>
+                <div class="item-box side-borders">{{ game.character.equipment.RightHand.name }}</div>
+                <div class="item-box">{{ game.character.equipment.RightRing.name }}</div>
             </div>
             <div class="col-md-6">
                 <div class="item-box no-border"></div>
-                <div class="item-box">{{ controller.game.character.equipment.Body.name }}</div>
+                <div class="item-box">{{ game.character.equipment.Body.name }}</div>
             </div>
             <div class="col-md-3">
-                <div class="item-box">{{ controller.game.character.equipment.Hands.name }}</div>
-                <div class="item-box side-borders">{{ controller.game.character.equipment.LeftHand.name }}</div>
-                <div class="item-box">{{ controller.game.character.equipment.LeftRing.name }}</div>
+                <div class="item-box">{{ game.character.equipment.Hands.name }}</div>
+                <div class="item-box side-borders">{{ game.character.equipment.LeftHand.name }}</div>
+                <div class="item-box">{{ game.character.equipment.LeftRing.name }}</div>
             </div>
         </div>
         <div class="row">
@@ -61,7 +61,7 @@
                     Benen
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.Legs.name }}
+                    {{ game.character.equipment.Legs.name }}
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                     Voeten
                 </div>
                 <div class="item-box">
-                    {{ controller.game.character.equipment.Feet.name }}
+                    {{ game.character.equipment.Feet.name }}
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
 <fieldset>
     <legend>Rugzak</legend>
     <ul>
-        <li ng-repeat="item in controller.game.character.items">
+        <li ng-repeat="item in game.character.items">
             <div>
                 <span>{{ item.name }}</span>
                 <button type="button" ng-if="controller.canEquip(item)" class="btn btn-info" ng-click="controller.equipItem(item)">Equip</button>

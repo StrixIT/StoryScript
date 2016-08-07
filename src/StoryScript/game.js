@@ -1,3 +1,35 @@
+var GameTemplate;
+(function (GameTemplate) {
+    var Character = (function () {
+        function Character() {
+            this.hitpoints = 0;
+            this.currentHitpoints = 0;
+            this.score = 0;
+            this.scoreToNextLevel = 0;
+            this.level = 1;
+            this.items = [];
+            this.equipment = {
+                head: null,
+                amulet: null,
+                body: null,
+                hands: null,
+                leftHand: null,
+                leftRing: null,
+                rightHand: null,
+                rightRing: null,
+                legs: null,
+                feet: null
+            };
+        }
+        return Character;
+    }());
+    GameTemplate.Character = Character;
+})(GameTemplate || (GameTemplate = {}));
+var GameTemplate;
+(function (GameTemplate) {
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'DangerousCave');
+})(GameTemplate || (GameTemplate = {}));
 var StoryScript;
 (function (StoryScript) {
     StoryScript.addFunctionExtensions();
@@ -217,6 +249,7 @@ var StoryScript;
                 self.definitions.enemies = window[self.gameNameSpace]['Enemies'];
                 self.definitions.items = window[self.gameNameSpace]['Items'];
                 self.game.definitions = self.definitions;
+                self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
                 self.ruleService.setupGame(self.game);
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
@@ -232,7 +265,7 @@ var StoryScript;
                     self.game.state = 'play';
                 }
                 else {
-                    self.game.state = 'createCharacter';
+                    self.game.state = 'createCharacterSheet';
                 }
                 self.game.rollDice = self.rollDice;
                 self.game.calculateBonus = function (person, type) { return self.calculateBonus(self.game, person, type); };
@@ -312,19 +345,16 @@ var StoryScript;
                 // Todo: change if xp can be lost.
                 if (change > 0) {
                     var character = self.game.character;
-                    character.scoreToNextLevel += change;
                     var levelUp = self.ruleService.scoreChange(change);
                     if (levelUp) {
-                        character.level += 1;
-                        character.scoreToNextLevel = 0;
                         self.game.state = 'levelUp';
                     }
                 }
             };
             this.hitpointsChange = function (change) {
                 var self = _this;
-                self.ruleService.hitpointsChange(change);
-                if (self.game.character.currentHitpoints <= 0) {
+                var defeat = self.ruleService.healthChange(change);
+                if (defeat) {
                     self.game.state = 'gameOver';
                 }
             };
@@ -795,7 +825,7 @@ var StoryScript;
             var _this = this;
             this.startNewGame = function () {
                 var self = _this;
-                self.gameService.startNewGame(self.createCharacterForm);
+                self.gameService.startNewGame(self.game.createCharacterSheet);
                 self.game.state = 'play';
             };
             this.restart = function () {
@@ -894,7 +924,6 @@ var StoryScript;
         MainController.prototype.init = function () {
             var self = this;
             self.gameService.init();
-            self.createCharacterForm = self.ruleService.getCharacterForm();
             self.reset = function () { self.gameService.reset.call(self.gameService); };
             // Todo: type
             self.$scope.game = self.game;
@@ -1030,6 +1059,53 @@ var QuestForTheKing;
                     game.actionLog.splice(0, 0, message);
                 };
             };
+            this.getCreateCharacterSheet = function () {
+                return {
+                    steps: [
+                        {
+                            questions: [
+                                {
+                                    question: 'Ben je sterk, snel of slim?',
+                                    entries: [
+                                        {
+                                            text: 'Sterk',
+                                            value: 'kracht',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Snel',
+                                            value: 'vlugheid',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Slim',
+                                            value: 'oplettendheid',
+                                            bonus: 1
+                                        }
+                                    ]
+                                },
+                                {
+                                    question: 'Wat neem je mee?',
+                                    entries: [
+                                        {
+                                            text: 'Dolk',
+                                            value: QuestForTheKing.Items.Dagger.name,
+                                        },
+                                        {
+                                            text: 'Leren helm',
+                                            value: QuestForTheKing.Items.LeatherHelmet.name,
+                                        },
+                                        {
+                                            text: 'Lantaren',
+                                            value: QuestForTheKing.Items.Lantern.name,
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                };
+            };
             this.levelUp = function (reward) {
                 var self = _this;
                 if (reward != 'gezondheid') {
@@ -1084,38 +1160,15 @@ var QuestForTheKing;
             self.game = game;
             return {
                 setupGame: self.setupGame,
-                getCharacterForm: self.getCharacterForm,
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
                 addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
                 initCombat: self.initCombat,
                 fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
+                healthChange: self.healthChange,
                 scoreChange: self.scoreChange
-            };
-        };
-        RuleService.prototype.getCharacterForm = function () {
-            return {
-                specialties: [
-                    {
-                        name: 'sterk',
-                        value: 'Sterk'
-                    },
-                    {
-                        name: 'snel',
-                        value: 'Snel'
-                    },
-                    {
-                        name: 'slim',
-                        value: 'Slim'
-                    }
-                ],
-                items: [
-                    QuestForTheKing.Items.Dagger(),
-                    QuestForTheKing.Items.LeatherHelmet(),
-                    QuestForTheKing.Items.Lantern()
-                ]
             };
         };
         RuleService.prototype.createCharacter = function (characterData) {
@@ -1178,11 +1231,12 @@ var QuestForTheKing;
                 location.combatActions.push(action);
             }
         };
-        RuleService.prototype.hitpointsChange = function (change) {
+        RuleService.prototype.healthChange = function (change) {
             var self = this;
             if (self.game.character.hitpoints < 5) {
                 self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
             }
+            return self.game.character.hitpoints <= 0;
         };
         RuleService.prototype.scoreChange = function (change) {
             var self = this;
@@ -1211,7 +1265,7 @@ var QuestForTheKing;
                 destinations: [
                     {
                         text: 'Ga de grot in',
-                        target: null // Locations.Entry
+                        target: Locations.Start
                     }
                 ],
                 actions: []
@@ -1306,12 +1360,22 @@ var PathOfHeroes;
         function Character() {
             this.hitpoints = 20;
             this.currentHitpoints = 20;
+            this.mana = 20;
+            this.currentMana = 20;
             this.scoreToNextLevel = 0;
             this.level = 1;
-            this.kracht = 1;
-            this.vlugheid = 1;
-            this.oplettendheid = 1;
-            this.defense = 1;
+            this.strength = 1;
+            this.agility = 1;
+            this.intelligence = 1;
+            this.charisma = 1;
+            this.melee = 0;
+            this.armor = 0;
+            this.ranged = 0;
+            this.stealth = 0;
+            this.creation = 0;
+            this.destruction = 0;
+            this.body = 0;
+            this.spirit = 0;
             this.items = [];
             this.equipment = {
                 head: null,
@@ -1346,6 +1410,11 @@ var PathOfHeroes;
                     game.actionLog.splice(0, 0, message);
                 };
             };
+            this.getCreateCharacterSheet = function () {
+                return {
+                    steps: []
+                };
+            };
             this.levelUp = function (reward) {
                 var self = _this;
                 if (reward != 'gezondheid') {
@@ -1361,10 +1430,10 @@ var PathOfHeroes;
                 var self = _this;
                 // Todo: change when multiple enemies of the same type can be present.
                 var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
-                var check = self.game.rollDice(self.game.character.kracht + 'd6');
-                var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
-                self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
-                enemy.hitpoints -= characterDamage;
+                //var check = self.game.rollDice(self.game.character.kracht + 'd6');
+                //var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
+                //self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+                //enemy.hitpoints -= characterDamage;
                 // Todo: move to game service
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
@@ -1387,9 +1456,9 @@ var PathOfHeroes;
                 }
                 self.game.currentLocation.enemies.forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
-                    var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
-                    self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
-                    self.game.character.currentHitpoints -= enemyDamage;
+                    //var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
+                    //self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                    //self.game.character.currentHitpoints -= enemyDamage;
                 });
             };
             var self = this;
@@ -1400,34 +1469,15 @@ var PathOfHeroes;
             self.game = game;
             return {
                 setupGame: self.setupGame,
-                getCharacterForm: self.getCharacterForm,
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
                 addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
                 initCombat: self.initCombat,
                 fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
+                healthChange: self.healthChange,
                 scoreChange: self.scoreChange
-            };
-        };
-        RuleService.prototype.getCharacterForm = function () {
-            return {
-                specialties: [
-                    {
-                        name: 'sterk',
-                        value: 'Sterk'
-                    },
-                    {
-                        name: 'snel',
-                        value: 'Snel'
-                    },
-                    {
-                        name: 'slim',
-                        value: 'Slim'
-                    }
-                ],
-                items: []
             };
         };
         RuleService.prototype.createCharacter = function (characterData) {
@@ -1437,17 +1487,14 @@ var PathOfHeroes;
             switch (characterData.selectedSpecialty.name) {
                 case 'sterk':
                     {
-                        character.kracht++;
                     }
                     break;
                 case 'snel':
                     {
-                        character.vlugheid++;
                     }
                     break;
                 case 'slim':
                     {
-                        character.oplettendheid++;
                     }
                     break;
             }
@@ -1475,11 +1522,12 @@ var PathOfHeroes;
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
         };
-        RuleService.prototype.hitpointsChange = function (change) {
+        RuleService.prototype.healthChange = function (change) {
             var self = this;
             if (self.game.character.hitpoints < 5) {
                 self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
             }
+            return self.game.character.hitpoints <= 0;
         };
         RuleService.prototype.scoreChange = function (change) {
             var self = this;
@@ -1693,6 +1741,53 @@ var DangerousCave;
                     game.actionLog.splice(0, 0, message);
                 };
             };
+            this.getCreateCharacterSheet = function () {
+                return {
+                    steps: [
+                        {
+                            questions: [
+                                {
+                                    question: 'Ben je sterk, snel of slim?',
+                                    entries: [
+                                        {
+                                            text: 'Sterk',
+                                            value: 'kracht',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Snel',
+                                            value: 'vlugheid',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Slim',
+                                            value: 'oplettendheid',
+                                            bonus: 1
+                                        }
+                                    ]
+                                },
+                                {
+                                    question: 'Wat neem je mee?',
+                                    entries: [
+                                        {
+                                            text: 'Dolk',
+                                            value: DangerousCave.Items.Dagger.name,
+                                        },
+                                        {
+                                            text: 'Leren helm',
+                                            value: DangerousCave.Items.LeatherHelmet.name,
+                                        },
+                                        {
+                                            text: 'Lantaren',
+                                            value: DangerousCave.Items.Lantern.name,
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                };
+            };
             this.levelUp = function (reward) {
                 var self = _this;
                 if (reward != 'gezondheid') {
@@ -1747,62 +1842,23 @@ var DangerousCave;
             self.game = game;
             return {
                 setupGame: self.setupGame,
-                getCharacterForm: self.getCharacterForm,
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
                 addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
                 initCombat: self.initCombat,
                 fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
+                healthChange: self.healthChange,
                 scoreChange: self.scoreChange
-            };
-        };
-        RuleService.prototype.getCharacterForm = function () {
-            return {
-                specialties: [
-                    {
-                        name: 'sterk',
-                        value: 'Sterk'
-                    },
-                    {
-                        name: 'snel',
-                        value: 'Snel'
-                    },
-                    {
-                        name: 'slim',
-                        value: 'Slim'
-                    }
-                ],
-                items: [
-                    DangerousCave.Items.Dagger(),
-                    DangerousCave.Items.LeatherHelmet(),
-                    DangerousCave.Items.Lantern()
-                ]
             };
         };
         RuleService.prototype.createCharacter = function (characterData) {
             var self = this;
             var character = new DangerousCave.Character();
             character.name = characterData.name;
-            switch (characterData.selectedSpecialty.name) {
-                case 'sterk':
-                    {
-                        character.kracht++;
-                    }
-                    break;
-                case 'snel':
-                    {
-                        character.vlugheid++;
-                    }
-                    break;
-                case 'slim':
-                    {
-                        character.oplettendheid++;
-                    }
-                    break;
-            }
-            character.items.push(characterData.selectedItem);
+            character[characterData.steps[0].questions[0].selectedEntry.value] += characterData.steps[0].questions[0].selectedEntry.bonus;
+            character.items.push(self.game.definitions.items[characterData.steps[0].questions[1].selectedEntry.value]());
             return character;
         };
         RuleService.prototype.startGame = function () {
@@ -1841,18 +1897,22 @@ var DangerousCave;
                 location.combatActions.push(action);
             }
         };
-        RuleService.prototype.hitpointsChange = function (change) {
+        RuleService.prototype.healthChange = function (change) {
             var self = this;
             if (self.game.character.hitpoints < 5) {
                 self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
             }
+            return self.game.character.hitpoints <= 0;
         };
         RuleService.prototype.scoreChange = function (change) {
             var self = this;
             var character = self.game.character;
+            character.scoreToNextLevel += change;
             var levelUp = character.level >= 1 && character.scoreToNextLevel >= 2 + (2 * (character.level));
             self.game.logToActionLog('Je verdient ' + change + ' punt(en)');
             if (levelUp) {
+                character.level += 1;
+                character.scoreToNextLevel = 0;
                 self.game.logToActionLog('Je wordt hier beter in! Je bent nu niveau ' + character.level);
             }
             return levelUp;

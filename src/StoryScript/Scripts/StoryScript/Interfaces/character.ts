@@ -1,14 +1,12 @@
 ﻿module StoryScript {
     export interface ICharacter extends IActor {
         name: string;
-        hitpoints: number;
-        currentHitpoints: number;
         score: number;
-        scoreToNextLevel: number;
-        level: number;
+
+        items: StoryScript.ICollection<StoryScript.IItem>;
+
         equipment: {
             head: IItem,
-            amulet: IItem,
             body: IItem,
             hands: IItem,
             leftHand: IItem,

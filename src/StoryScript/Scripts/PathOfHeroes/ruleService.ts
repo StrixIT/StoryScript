@@ -13,14 +13,14 @@
 
             return {
                 setupGame: self.setupGame,
-                getCharacterForm: self.getCharacterForm,
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 startGame: self.startGame,
                 addEnemyToLocation: self.addEnemyToLocation,
                 enterLocation: self.enterLocation,
                 initCombat: self.initCombat,
                 fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
+                healthChange: self.healthChange,
                 scoreChange: self.scoreChange
             };
         }
@@ -39,24 +39,9 @@
             }
         }
 
-        public getCharacterForm() {
+        getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
             return {
-                specialties: [
-                    {
-                        name: 'sterk',
-                        value: 'Sterk'
-                    },
-                    {
-                        name: 'snel',
-                        value: 'Snel'
-                    },
-                    {
-                        name: 'slim',
-                        value: 'Slim'
-                    }
-                ],
-                items: [
-                ]
+                steps: []
             };
         }
 
@@ -67,13 +52,13 @@
 
             switch (characterData.selectedSpecialty.name) {
                 case 'sterk': {
-                    character.kracht++;
+                    //character.kracht++;
                 } break;
                 case 'snel': {
-                    character.vlugheid++;
+                    //character.vlugheid++;
                 } break;
                 case 'slim': {
-                    character.oplettendheid++;
+                    //character.oplettendheid++;
                 } break;
             }
 
@@ -128,12 +113,12 @@
 
             // Todo: change when multiple enemies of the same type can be present.
             var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
-            var check = self.game.rollDice(self.game.character.kracht + 'd6');
+            //var check = self.game.rollDice(self.game.character.kracht + 'd6');
 
-            var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
-            self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+            //var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
+            //self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
 
-            enemy.hitpoints -= characterDamage;
+            //enemy.hitpoints -= characterDamage;
 
             // Todo: move to game service
             if (enemy.hitpoints <= 0) {
@@ -164,18 +149,20 @@
 
             self.game.currentLocation.enemies.forEach(function (enemy) {
                 var check = self.game.rollDice(enemy.attack);
-                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
-                self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
-                self.game.character.currentHitpoints -= enemyDamage;
+                //var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
+                //self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                //self.game.character.currentHitpoints -= enemyDamage;
             });
         }
 
-        hitpointsChange(change: number) {
+        healthChange(change: number) {
             var self = this;
 
             if (self.game.character.hitpoints < 5) {
                 self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
             }
+
+            return self.game.character.hitpoints <= 0;
         }
 
         scoreChange(change: number): boolean {

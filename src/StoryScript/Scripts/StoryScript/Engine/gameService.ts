@@ -68,6 +68,7 @@ module StoryScript {
             self.definitions.items = window[self.gameNameSpace]['Items'];
 
             self.game.definitions = self.definitions;
+            self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
             self.ruleService.setupGame(self.game);
             self.locationService.init(self.game);
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
@@ -182,12 +183,9 @@ module StoryScript {
             // Todo: change if xp can be lost.
             if (change > 0) {
                 var character = self.game.character;
-                character.scoreToNextLevel += change;
                 var levelUp = self.ruleService.scoreChange(change);
 
                 if (levelUp) {
-                    character.level += 1;
-                    character.scoreToNextLevel = 0;
                     self.game.state = 'levelUp';
                 }
             }
@@ -195,9 +193,9 @@ module StoryScript {
 
         hitpointsChange = (change: number): void => {
             var self = this;
-            self.ruleService.hitpointsChange(change);
+            var defeat = self.ruleService.healthChange(change);
 
-            if (self.game.character.currentHitpoints <= 0) {
+            if (defeat) {
                 self.game.state = 'gameOver';
             }
         }
