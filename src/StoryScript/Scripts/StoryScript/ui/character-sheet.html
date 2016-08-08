@@ -42,16 +42,16 @@
             </div>
             <div class="col-md-3">
                 <div class="item-box" ng-show="controller.isSlotUsed('hands')">{{ game.character.equipment.hands.name }}</div>
-                <div class="item-box side-borders" ng-show="controller.isSlotUsed('rightHand')">{{ game.character.equipment.rightHand.name }}</div>
+                <div class="item-box" ng-class="{ 'side-borders' : controller.isSlotUsed('hands') || controller.isSlotUsed('rightRing') }" ng-show="controller.isSlotUsed('rightHand')">{{ game.character.equipment.rightHand.name }}</div>
                 <div class="item-box" ng-show="controller.isSlotUsed('rightRing')">{{ game.character.equipment.rightRing.name }}</div>
             </div>
             <div class="col-md-6">
-                <div class="item-box no-border"></div>
+                <div class="item-box no-border" ng-show="(controller.isSlotUsed('rightHand') || controller.isSlotUsed('leftHand')) && controller.isSlotUsed('hands')"></div>
                 <div class="item-box" ng-show="controller.isSlotUsed('body')">{{ game.character.equipment.body.name }}</div>
             </div>
             <div class="col-md-3">
                 <div class="item-box" ng-show="controller.isSlotUsed('hands')">{{ game.character.equipment.hands.name }}</div>
-                <div class="item-box side-borders" ng-show="controller.isSlotUsed('leftHand')">{{ game.character.equipment.leftHand.name }}</div>
+                <div class="item-box" ng-class="{ 'side-borders' : controller.isSlotUsed('hands') || controller.isSlotUsed('leftRing') }" ng-show="controller.isSlotUsed('leftHand')">{{ game.character.equipment.leftHand.name }}</div>
                 <div class="item-box" ng-show="controller.isSlotUsed('leftRing')">{{ game.character.equipment.leftRing.name }}</div>
             </div>
         </div>
