@@ -380,11 +380,17 @@ var StoryScript;
             this.loading = "Loading...";
             this.youAreHere = "You are here";
             this.messages = "Messages";
+            this.hitpoints = "Health";
             this.format = function (template, tokens) {
-                for (var i = 0; i < tokens.length; i++) {
-                    template = template.replace('{' + i + '}', tokens[i]);
+                if (tokens) {
+                    for (var i = 0; i < tokens.length; i++) {
+                        template = template.replace('{' + i + '}', tokens[i]);
+                    }
                 }
                 return template;
+            };
+            this.titleCase = function (text) {
+                return text.substring(0, 1).toUpperCase() + text.substring(1);
             };
         }
         return DefaultTexts;
@@ -1020,9 +1026,11 @@ var StoryScript;
         function MainController($scope, $window, locationService, ruleService, gameService, game, textService) {
             var _this = this;
             this.texts = {};
+            this.nonDisplayAttributes = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
             this.startNewGame = function () {
                 var self = _this;
                 self.gameService.startNewGame(self.game.createCharacterSheet);
+                self.getCharacterAttributesToShow();
                 self.game.state = 'play';
             };
             this.restart = function () {
@@ -1095,11 +1103,11 @@ var StoryScript;
             };
             this.equipItem = function (item) {
                 var self = _this;
-                var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]];
+                var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()];
                 if (equippedItem) {
                     self.game.character.items.push(equippedItem);
                 }
-                self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]] = item;
+                self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()] = item;
                 self.game.character.items.remove(item);
             };
             this.fight = function (game, enemy) {
@@ -1133,10 +1141,17 @@ var StoryScript;
             // Todo: type
             self.$scope.game = self.game;
             self.$scope.texts = self.texts;
+            self.getCharacterAttributesToShow();
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+        };
+        MainController.prototype.isSlotUsed = function (slot) {
+            var self = this;
+            if (self.game.character) {
+                return self.game.character.equipment[slot] !== undefined;
+            }
         };
         MainController.prototype.executeAction = function (action) {
             var self = this;
@@ -1168,6 +1183,16 @@ var StoryScript;
                 scope.controller.gameService.changeGameState(newValue);
             }
         };
+        MainController.prototype.getCharacterAttributesToShow = function () {
+            var self = this;
+            self.characterAttributes = [];
+            for (var n in self.game.character) {
+                if (self.game.character.hasOwnProperty(n) && self.nonDisplayAttributes.indexOf(n) == -1) {
+                    self.characterAttributes.push(n);
+                }
+            }
+            self.characterAttributes.sort();
+        };
         return MainController;
     }());
     StoryScript.MainController = MainController;
@@ -1178,24 +1203,25 @@ var RidderMagnus;
     var Character = (function () {
         function Character() {
             this.score = 0;
-            this.hitpoints = 1;
-            this.currentHitpoints = 1;
+            this.hitpoints = 20;
+            this.currentHitpoints = 20;
             // Add character properties here.
             this.vechten = 1;
             this.sluipen = 1;
             this.zoeken = 1;
             this.toveren = 1;
+            this.snelheid = 1;
             this.items = [];
             this.equipment = {
                 head: null,
                 amulet: null,
                 body: null,
-                hands: null,
+                //hands: null,
                 leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
+                //leftRing: null,
+                rightHand: RidderMagnus.Items.Dolk,
+                //rightRing: null,
+                //legs: null,
                 feet: null
             };
         }
@@ -1265,15 +1291,22 @@ var RidderMagnus;
             };
             this.fight = function (enemyToFight) {
                 var self = _this;
-                var win = false;
                 // Todo: change when multiple enemies of the same type can be present.
                 var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
-                // Implement character attack here.
-                if (win) {
+                var check = self.game.rollDice(self.game.character.vechten + 'd6');
+                var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
+                self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+                enemy.hitpoints -= characterDamage;
+                if (enemy.hitpoints <= 0) {
+                    self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                    self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
                     return true;
                 }
                 self.game.currentLocation.enemies.forEach(function (enemy) {
-                    // Implement monster attack here
+                    var check = self.game.rollDice(enemy.attack);
+                    var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
+                    self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                    self.game.character.currentHitpoints -= enemyDamage;
                 });
                 return false;
             };
@@ -1295,6 +1328,26 @@ var RidderMagnus;
             var self = this;
             var character = new RidderMagnus.Character();
             return character;
+        };
+        RuleService.prototype.enterLocation = function (location) {
+            var self = this;
+            self.game.logToActionLog('Je komt aan in ' + location.name);
+            if (location.id != 'start' && !location.hasVisited) {
+                self.game.character.score += 1;
+            }
+        };
+        RuleService.prototype.initCombat = function (location) {
+            var self = this;
+            location.enemies.forEach(function (enemy) {
+                self.game.logToActionLog('Er is hier een ' + enemy.name);
+            });
+            //potentieel om te vluchten: self.addFleeAction(location);
+        };
+        RuleService.prototype.enemyDefeated = function (enemy) {
+            var self = this;
+            if (enemy.reward) {
+                self.game.character.score += enemy.reward;
+            }
         };
         RuleService.prototype.hitpointsChange = function (change) {
             var self = this;
@@ -1357,7 +1410,16 @@ var RidderMagnus;
     (function (Locations) {
         function Kelder() {
             return {
-                name: 'De Kelder'
+                name: 'De Kelder',
+                enemies: [
+                    RidderMagnus.Enemies.DireRat
+                ],
+                destinations: [
+                    {
+                        text: 'Terug naar boven',
+                        target: Locations.Start
+                    }
+                ],
             };
         }
         Locations.Kelder = Kelder;
@@ -1369,7 +1431,13 @@ var RidderMagnus;
     (function (Locations) {
         function Start() {
             return {
-                name: 'De Troonzaal'
+                name: 'De Troonzaal',
+                destinations: [
+                    {
+                        text: 'Naar de kelder!',
+                        target: Locations.Kelder
+                    }
+                ],
             };
         }
         Locations.Start = Start;
@@ -1377,8 +1445,66 @@ var RidderMagnus;
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
 (function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function Dolk() {
+            return {
+                name: 'Dolk',
+                damage: '1',
+                equipmentType: StoryScript.EquipmentType.RightHand
+            };
+        }
+        Items.Dolk = Dolk;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function Zwaard() {
+            return {
+                name: 'Zwaard',
+                damage: '3',
+                equipmentType: StoryScript.EquipmentType.RightHand
+            };
+        }
+        Items.Zwaard = Zwaard;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'RidderMagnus');
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Enemies;
+    (function (Enemies) {
+        function DireRat() {
+            return {
+                name: 'Reusachtige rat',
+                hitpoints: 13,
+                attack: '1d6+2',
+                reward: 2
+            };
+        }
+        Enemies.DireRat = DireRat;
+    })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Enemies;
+    (function (Enemies) {
+        function GiantRat() {
+            return {
+                name: 'Enorme rat',
+                hitpoints: 7,
+                attack: '1d6',
+                reward: 1
+            };
+        }
+        Enemies.GiantRat = GiantRat;
+    })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
@@ -1750,299 +1876,6 @@ var PathOfHeroes;
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'PathOfHeroes');
 })(PathOfHeroes || (PathOfHeroes = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Character = (function () {
-        function Character() {
-            this.score = 0;
-            this.level = 1;
-            this.hitpoints = 10;
-            this.currentHitpoints = 10;
-            this.strength = 1;
-            this.agility = 1;
-            this.intelligence = 1;
-            this.items = [];
-            this.equipment = {
-                head: null,
-                amulet: null,
-                body: null,
-                hands: null,
-                leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
-                feet: null
-            };
-        }
-        return Character;
-    }());
-    MyNewGame.Character = Character;
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var RuleService = (function () {
-        function RuleService(game) {
-            var _this = this;
-            this.getCreateCharacterSheet = function () {
-                return {
-                    steps: [
-                        {
-                            questions: [
-                                {
-                                    question: 'As a child, you were always...',
-                                    entries: [
-                                        {
-                                            text: 'strong in fights',
-                                            value: 'strength',
-                                            bonus: 1
-                                        },
-                                        {
-                                            text: 'a fast runner',
-                                            value: 'agility',
-                                            bonus: 1
-                                        },
-                                        {
-                                            text: 'a curious reader',
-                                            value: 'intelligence',
-                                            bonus: 1
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            questions: [
-                                {
-                                    question: 'When time came to become an apprentice, you chose to...',
-                                    entries: [
-                                        {
-                                            text: 'become a guard',
-                                            value: 'strength',
-                                            bonus: 1
-                                        },
-                                        {
-                                            text: 'learn about locks',
-                                            value: 'agility',
-                                            bonus: 1
-                                        },
-                                        {
-                                            text: 'go to magic school',
-                                            value: 'intelligence',
-                                            bonus: 1
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                };
-            };
-            this.fight = function (enemyToFight) {
-                var self = _this;
-                var win = false;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
-                var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
-                self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
-                enemy.hitpoints -= damage;
-                if (enemy.hitpoints <= 0) {
-                    self.game.logToActionLog('You defeat the ' + enemy.name + '!');
-                    win = true;
-                }
-                if (win) {
-                    return true;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
-                    var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(enemy, 'damage');
-                    self.game.logToActionLog('The ' + enemy.name + ' does ' + damage + ' damage!');
-                    self.game.character.currentHitpoints -= damage;
-                });
-                return false;
-            };
-            var self = this;
-            self.game = game;
-        }
-        RuleService.prototype.$get = function (game) {
-            var self = this;
-            self.game = game;
-            return {
-                getCreateCharacterSheet: self.getCreateCharacterSheet,
-                createCharacter: self.createCharacter,
-                fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
-                scoreChange: self.scoreChange
-            };
-        };
-        RuleService.prototype.createCharacter = function (characterData) {
-            var self = this;
-            var character = new MyNewGame.Character();
-            return character;
-        };
-        RuleService.prototype.hitpointsChange = function (change) {
-            var self = this;
-            // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
-            return self.game.character.currentHitpoints <= 0;
-        };
-        RuleService.prototype.scoreChange = function (change) {
-            var self = this;
-            // Implement logic to occur when the score changes. Return true when the character gains a level.
-            return false;
-        };
-        return RuleService;
-    }());
-    MyNewGame.RuleService = RuleService;
-    RuleService.$inject = ['game'];
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.service("ruleService", RuleService);
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var TextService = (function () {
-        function TextService() {
-        }
-        TextService.prototype.$get = function (game) {
-            var self = this;
-            return {
-                gameName: 'My new game',
-                newGame: 'Create your character'
-            };
-        };
-        return TextService;
-    }());
-    MyNewGame.TextService = TextService;
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.service("textService", TextService);
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Locations;
-    (function (Locations) {
-        function DirtRoad() {
-            return {
-                name: 'Dirt road',
-                destinations: [
-                    {
-                        text: 'Enter your home',
-                        target: Locations.Start
-                    }
-                ],
-                enemies: [
-                    MyNewGame.Enemies.Bandit
-                ]
-            };
-        }
-        Locations.DirtRoad = DirtRoad;
-    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Locations;
-    (function (Locations) {
-        function Garden() {
-            return {
-                name: 'Garden',
-                destinations: [
-                    {
-                        text: 'Enter your home',
-                        target: Locations.Start,
-                    }
-                ],
-                events: [
-                    function (game) {
-                        game.logToActionLog('You see a squirrel running off.');
-                    }
-                ]
-            };
-        }
-        Locations.Garden = Garden;
-    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Locations;
-    (function (Locations) {
-        function Start() {
-            return {
-                name: 'Home',
-                descriptionSelector: function () {
-                    var date = new Date();
-                    var hour = date.getHours();
-                    if (hour <= 6 || hour >= 18) {
-                        return 'night';
-                    }
-                    return 'day';
-                },
-                destinations: [
-                    {
-                        text: 'To the garden',
-                        target: Locations.Garden
-                    },
-                    {
-                        text: 'Out the front door',
-                        target: Locations.DirtRoad
-                    }
-                ],
-                items: [
-                    MyNewGame.Items.Sword,
-                    MyNewGame.Items.LeatherArmor
-                ]
-            };
-        }
-        Locations.Start = Start;
-    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Items;
-    (function (Items) {
-        function LeatherArmor() {
-            return {
-                name: 'Leather gloves',
-                defense: 1,
-                equipmentType: StoryScript.EquipmentType.Hands
-            };
-        }
-        Items.LeatherArmor = LeatherArmor;
-    })(Items = MyNewGame.Items || (MyNewGame.Items = {}));
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Items;
-    (function (Items) {
-        function Sword() {
-            return {
-                name: 'Sword',
-                damage: '3',
-                equipmentType: StoryScript.EquipmentType.RightHand
-            };
-        }
-        Items.Sword = Sword;
-    })(Items = MyNewGame.Items || (MyNewGame.Items = {}));
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.value("gameNameSpace", 'MyNewGame');
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Enemies;
-    (function (Enemies) {
-        function Bandit() {
-            return {
-                name: 'Bandit',
-                hitpoints: 10,
-                attack: '1d6',
-                reward: 1,
-                items: [
-                    MyNewGame.Items.Sword
-                ]
-            };
-        }
-        Enemies.Bandit = Bandit;
-    })(Enemies = MyNewGame.Enemies || (MyNewGame.Enemies = {}));
-})(MyNewGame || (MyNewGame = {}));
 var Strix;
 (function (Strix) {
     var directivesModule = angular.module('strixIT', []);
