@@ -64,10 +64,6 @@ function buildGame(nameSpace) {
     }
 }
 
-function deleteFiles() {
-    del([paths.webroot, paths.webroot + 'index.html']);
-}
-
 function copyLibraries() {
     gulp.src([paths.root + 'Scripts/StoryScript/Libraries/**/*.js'])
         .pipe(gulp.dest(paths.webroot + 'js/lib'));
