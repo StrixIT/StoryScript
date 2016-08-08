@@ -15,7 +15,7 @@
                 <div>
                     {{ texts.head }}
                 </div>
-                <div class="item-box">
+                <div class="item-box" ng-click="controller.unequipItem(game.character.equipment.head)">
                     {{ game.character.equipment.head.name }}
                 </div>
             </div>
@@ -25,7 +25,7 @@
                 <div>
                     {{ texts.amulet }}
                 </div>
-                <div class="item-box">
+                <div class="item-box" ng-click="controller.unequipItem(game.character.equipment.amulet)">
                     {{ game.character.equipment.amulet.name }}
                 </div>
             </div>
@@ -41,18 +41,18 @@
                 <span ng-show="controller.isSlotUsed('hands') || controller.isSlotUsed('leftHand') || controller.isSlotUsed('leftRing')">{{ texts.leftHand }}</span>
             </div>
             <div class="col-md-3">
-                <div class="item-box" ng-show="controller.isSlotUsed('hands')">{{ game.character.equipment.hands.name }}</div>
-                <div class="item-box" ng-class="{ 'side-borders' : controller.isSlotUsed('hands') || controller.isSlotUsed('rightRing') }" ng-show="controller.isSlotUsed('rightHand')">{{ game.character.equipment.rightHand.name }}</div>
-                <div class="item-box" ng-show="controller.isSlotUsed('rightRing')">{{ game.character.equipment.rightRing.name }}</div>
+                <div class="item-box" ng-show="controller.isSlotUsed('hands')" ng-click="controller.unequipItem(game.character.equipment.hands)">{{ game.character.equipment.hands.name }}</div>
+                <div class="item-box" ng-class="{ 'side-borders' : controller.isSlotUsed('hands') || controller.isSlotUsed('rightRing') }" ng-show="controller.isSlotUsed('rightHand')" ng-click="controller.unequipItem(game.character.equipment.rightHand)">{{ game.character.equipment.rightHand.name }}</div>
+                <div class="item-box" ng-show="controller.isSlotUsed('rightRing')" ng-click="controller.unequipItem(game.character.equipment.rightRing)">{{ game.character.equipment.rightRing.name }}</div>
             </div>
             <div class="col-md-6">
                 <div class="item-box no-border" ng-show="(controller.isSlotUsed('rightHand') || controller.isSlotUsed('leftHand')) && controller.isSlotUsed('hands')"></div>
-                <div class="item-box" ng-show="controller.isSlotUsed('body')">{{ game.character.equipment.body.name }}</div>
+                <div class="item-box" ng-show="controller.isSlotUsed('body')" ng-click="controller.unequipItem(game.character.equipment.body)">{{ game.character.equipment.body.name }}</div>
             </div>
             <div class="col-md-3">
-                <div class="item-box" ng-show="controller.isSlotUsed('hands')">{{ game.character.equipment.hands.name }}</div>
-                <div class="item-box" ng-class="{ 'side-borders' : controller.isSlotUsed('hands') || controller.isSlotUsed('leftRing') }" ng-show="controller.isSlotUsed('leftHand')">{{ game.character.equipment.leftHand.name }}</div>
-                <div class="item-box" ng-show="controller.isSlotUsed('leftRing')">{{ game.character.equipment.leftRing.name }}</div>
+                <div class="item-box" ng-show="controller.isSlotUsed('hands')" ng-click="controller.unequipItem(game.character.equipment.hands)">{{ game.character.equipment.hands.name }}</div>
+                <div class="item-box" ng-class="{ 'side-borders' : controller.isSlotUsed('hands') || controller.isSlotUsed('leftRing') }" ng-show="controller.isSlotUsed('leftHand')" ng-click="controller.unequipItem(game.character.equipment.leftHand)">{{ game.character.equipment.leftHand.name }}</div>
+                <div class="item-box" ng-show="controller.isSlotUsed('leftRing')" ng-click="controller.unequipItem(game.character.equipment.leftRing)">{{ game.character.equipment.leftRing.name }}</div>
             </div>
         </div>
         <div class="row" ng-show="controller.isSlotUsed('legs')">
@@ -60,7 +60,7 @@
                 <div>
                     {{ texts.legs }}
                 </div>
-                <div class="item-box">
+                <div class="item-box" ng-click="controller.unequipItem(game.character.equipment.legs)">
                     {{ game.character.equipment.legs.name }}
                 </div>
             </div>
@@ -70,7 +70,7 @@
                 <div>
                     {{ texts.feet }}
                 </div>
-                <div class="item-box">
+                <div class="item-box" ng-click="controller.unequipItem(game.character.equipment.feet)">
                     {{ game.character.equipment.feet.name }}
                 </div>
             </div>
