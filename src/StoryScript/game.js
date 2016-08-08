@@ -6,6 +6,7 @@ var GameTemplate;
             this.level = 1;
             this.hitpoints = 0;
             this.currentHitpoints = 0;
+            // Add character properties here.
             this.items = [];
             this.equipment = {
                 head: null,
@@ -359,6 +360,7 @@ var StoryScript;
             this.attack = "Attack {0}!";
             this.newGame = "New game";
             this.yourName = "What is your name?";
+            this.nextQuestion = "Next question";
             this.startAdventure = "Start adventure";
             this.actions = "Actions";
             this.destinations = "Destinations";
@@ -405,6 +407,8 @@ var StoryScript;
                 self.definitions.items = window[self.gameNameSpace]['Items'];
                 self.game.definitions = self.definitions;
                 self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
+                self.game.createCharacterSheet.currentStep = 0;
+                self.game.createCharacterSheet.nextStep = function (data) { data.currentStep++; };
                 if (self.ruleService.setupGame) {
                     self.ruleService.setupGame(self.game);
                 }
@@ -1167,6 +1171,201 @@ var StoryScript;
     StoryScript.MainController = MainController;
     MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game', 'textService'];
 })(StoryScript || (StoryScript = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Character = (function () {
+        function Character() {
+            this.score = 0;
+            this.hitpoints = 1;
+            this.currentHitpoints = 1;
+            // Add character properties here.
+            this.vechten = 1;
+            this.sluipen = 1;
+            this.zoeken = 1;
+            this.toveren = 1;
+            this.items = [];
+            this.equipment = {
+                head: null,
+                amulet: null,
+                body: null,
+                hands: null,
+                leftHand: null,
+                leftRing: null,
+                rightHand: null,
+                rightRing: null,
+                legs: null,
+                feet: null
+            };
+        }
+        return Character;
+    }());
+    RidderMagnus.Character = Character;
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var RuleService = (function () {
+        function RuleService(game) {
+            var _this = this;
+            this.getCreateCharacterSheet = function () {
+                return {
+                    steps: [
+                        // Add the character creation steps here.
+                        {
+                            questions: [
+                                {
+                                    question: 'Voordat je een schildknaap werd, ging je naar:',
+                                    entries: [
+                                        {
+                                            text: 'Een militaire school',
+                                            value: 'vechten',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Zweinstein',
+                                            value: 'toveren',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Geen school, ik leefde op straat',
+                                            value: 'zoeken' + 'sluipen',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'Daarna was je 7 jaar de schildknaap van:',
+                                    entries: [
+                                        {
+                                            text: 'Gerda de Sterke',
+                                            value: 'vechten',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Mihar de Magiër',
+                                            value: 'toveren',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Vanja de Vlugge',
+                                            value: 'sluipen',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                };
+            };
+            this.fight = function (enemyToFight) {
+                var self = _this;
+                var win = false;
+                // Todo: change when multiple enemies of the same type can be present.
+                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                // Implement character attack here.
+                if (win) {
+                    return true;
+                }
+                self.game.currentLocation.enemies.forEach(function (enemy) {
+                    // Implement monster attack here
+                });
+                return false;
+            };
+            var self = this;
+            self.game = game;
+        }
+        RuleService.prototype.$get = function (game) {
+            var self = this;
+            self.game = game;
+            return {
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
+                createCharacter: self.createCharacter,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange
+            };
+        };
+        RuleService.prototype.createCharacter = function (characterData) {
+            var self = this;
+            var character = new RidderMagnus.Character();
+            return character;
+        };
+        RuleService.prototype.hitpointsChange = function (change) {
+            var self = this;
+            // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
+            return false;
+        };
+        RuleService.prototype.scoreChange = function (change) {
+            var self = this;
+            // Implement logic to occur when the score changes. Return true when the character gains a level.
+            return false;
+        };
+        return RuleService;
+    }());
+    RidderMagnus.RuleService = RuleService;
+    RuleService.$inject = ['game'];
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("ruleService", RuleService);
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var TextService = (function () {
+        function TextService() {
+        }
+        TextService.prototype.$get = function (game) {
+            var self = this;
+            return {
+                gameName: "Ridder Magnus",
+                newGame: "Nieuw spel",
+                startAdventure: "Begin",
+                equipmentHeader: "Uitrusting",
+                yourName: "Welkom, Ridder Magnus. Vul hier je naam in:",
+                youAreHere: "Hier ben je",
+                destinations: "Hier kan je heen",
+                onTheGround: "Op de grond",
+                messages: "Wat gebeurt er?",
+                backpack: "Rugzak",
+                back: "Terug: ",
+                attack: "Val {0} aan!",
+                startOver: "Begin overnieuw",
+                resetWorld: "Reset wereld",
+                actions: "Dit kan je doen",
+                head: "Hoofd",
+                body: "Lichaam",
+                enemies: "Vijanden",
+                loading: "Laden...",
+                equip: "Pakken of aantrekken",
+                use: "Gebruiken",
+                drop: "Laten vallen"
+            };
+        };
+        return TextService;
+    }());
+    RidderMagnus.TextService = TextService;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Locations;
+    (function (Locations) {
+        function Start() {
+            return {
+                name: 'De Troonzaal'
+            };
+        }
+        Locations.Start = Start;
+    })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'RidderMagnus');
+})(RidderMagnus || (RidderMagnus = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
     var Character = (function () {
@@ -1537,124 +1736,6 @@ var PathOfHeroes;
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'PathOfHeroes');
 })(PathOfHeroes || (PathOfHeroes = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Character = (function () {
-        function Character() {
-            this.score = 0;
-            this.level = 1;
-            this.hitpoints = 0;
-            this.currentHitpoints = 0;
-            this.items = [];
-            this.equipment = {
-                head: null,
-                amulet: null,
-                body: null,
-                hands: null,
-                leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
-                feet: null
-            };
-        }
-        return Character;
-    }());
-    MyNewGame.Character = Character;
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var RuleService = (function () {
-        function RuleService(game) {
-            var _this = this;
-            this.getCreateCharacterSheet = function () {
-                return {
-                    steps: []
-                };
-            };
-            this.fight = function (enemyToFight) {
-                var self = _this;
-                var win = false;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
-                // Implement character attack here.
-                if (win) {
-                    return true;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
-                    // Implement monster attack here
-                });
-                return false;
-            };
-            var self = this;
-            self.game = game;
-        }
-        RuleService.prototype.$get = function (game) {
-            var self = this;
-            self.game = game;
-            return {
-                getCreateCharacterSheet: self.getCreateCharacterSheet,
-                createCharacter: self.createCharacter,
-                fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
-                scoreChange: self.scoreChange
-            };
-        };
-        RuleService.prototype.createCharacter = function (characterData) {
-            var self = this;
-            var character = new MyNewGame.Character();
-            return character;
-        };
-        RuleService.prototype.hitpointsChange = function (change) {
-            var self = this;
-            // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
-            return false;
-        };
-        RuleService.prototype.scoreChange = function (change) {
-            var self = this;
-            // Implement logic to occur when the score changes. Return true when the character gains a level.
-            return false;
-        };
-        return RuleService;
-    }());
-    MyNewGame.RuleService = RuleService;
-    RuleService.$inject = ['game'];
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.service("ruleService", RuleService);
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var TextService = (function () {
-        function TextService() {
-        }
-        TextService.prototype.$get = function (game) {
-            var self = this;
-            return {};
-        };
-        return TextService;
-    }());
-    MyNewGame.TextService = TextService;
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.service("textService", TextService);
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var Locations;
-    (function (Locations) {
-        function Start() {
-            return {
-                name: 'Start'
-            };
-        }
-        Locations.Start = Start;
-    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
-})(MyNewGame || (MyNewGame = {}));
-var MyNewGame;
-(function (MyNewGame) {
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.value("gameNameSpace", 'GameTemplate');
-})(MyNewGame || (MyNewGame = {}));
 var Strix;
 (function (Strix) {
     var directivesModule = angular.module('strixIT', []);

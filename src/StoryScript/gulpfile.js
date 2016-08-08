@@ -42,6 +42,7 @@ gulp.task('build-game-template', buildGame('_GameTemplate'));
 gulp.task('build-dangerous-cave', buildGame('DangerousCave'));
 gulp.task('build-quest-for-the-king', buildGame('QuestForTheKing'));
 gulp.task('build-path-of-heroes', buildGame('PathOfHeroes'));
+gulp.task('build-ridder-magnus', buildGame('RidderMagnus'));
 
 gulp.task('ts-watch', function () {
     gulp.watch(paths.root + 'Scripts/**/*.ts', ['build-dangerous-cave']);
@@ -49,10 +50,17 @@ gulp.task('ts-watch', function () {
 
 function buildGame(nameSpace) {
     return function () {
+        copyResources(nameSpace);
         copyCss(nameSpace);
         copyHtml(nameSpace);
         compileTypeScript(nameSpace);
     }
+}
+
+function copyResources(nameSpace) {
+    // Copy resources
+    gulp.src([paths.root + 'Scripts/' + nameSpace + '/resources/*.*'])
+        .pipe(gulp.dest(paths.webroot + 'resources'));
 }
 
 function copyCss(nameSpace) {
