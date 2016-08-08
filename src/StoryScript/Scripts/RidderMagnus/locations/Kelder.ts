@@ -14,6 +14,24 @@
                     target: Locations.Start
                 }
             ],
+            actions: [
+                {
+                    text: 'Zoek de ring',
+                    type: 'zoeken',
+                    execute: (game: IGame) => {
+                        var check = Math.floor(Math.random() * 6 + 1);
+                        var result;
+                        result = check * game.character.zoeken;
+
+                        if (result > 6) {
+                            //ring geven
+                            game.logToLocationLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
+                        }
+                        else {
+                            game.logToActionLog('Waar is dat ding toch??');
+                        };
+                    }
+                },
         }
     }
 }
