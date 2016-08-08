@@ -162,15 +162,31 @@
 
         equipItem = (item: IItem) => {
             var self = this;
+            var type = StoryScript.EquipmentType[item.equipmentType];
+            type = type.substring(0, 1).toLowerCase() + type.substring(1);
 
-            var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()];
+            var equippedItem = self.game.character.equipment[type];
 
             if (equippedItem) {
                 self.game.character.items.push(equippedItem);
             }
 
-            self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()] = item;
+            self.game.character.equipment[type] = item;
             self.game.character.items.remove(item);
+        }
+
+        unequipItem = (item: IItem) => {
+            var self = this;
+            var type = StoryScript.EquipmentType[item.equipmentType];
+            type = type.substring(0, 1).toLowerCase() + type.substring(1);
+
+            var equippedItem = self.game.character.equipment[type];
+
+            if (equippedItem) {
+                self.game.character.items.push(equippedItem);
+            }
+
+            self.game.character.equipment[type] = null;
         }
 
         fight = (game: IGame, enemy: IEnemy) => {

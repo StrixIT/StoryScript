@@ -35,5 +35,6 @@
         loading?: string;
         youAreHere?: string;
         messages?: string;
+        hitpoints?: string;
     }
 }

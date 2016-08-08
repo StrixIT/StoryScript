@@ -38,7 +38,9 @@ module StoryScript {
                 characterData.steps.forEach(function (step) {
                     if (step.questions) {
                         step.questions.forEach(function (question) {
-                            character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                            if (character.hasOwnProperty(question.selectedEntry.value)) {
+                                character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                            }
                         });
                     }
                 });
@@ -46,7 +48,9 @@ module StoryScript {
                 characterData.steps.forEach(function (step) {
                     if (step.attributes) {
                         step.attributes.forEach(function (attribute) {
-                            character[attribute.attribute] = attribute.value;
+                            if (character.hasOwnProperty(attribute.attribute)) {
+                                character[attribute.attribute] = attribute.value;
+                            }
                         });
                     }
                 });
