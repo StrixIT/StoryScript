@@ -6,6 +6,7 @@ var GameTemplate;
             this.level = 1;
             this.hitpoints = 0;
             this.currentHitpoints = 0;
+            // Add character properties here.
             this.items = [];
             this.equipment = {
                 head: null,
@@ -359,6 +360,7 @@ var StoryScript;
             this.attack = "Attack {0}!";
             this.newGame = "New game";
             this.yourName = "What is your name?";
+            this.nextQuestion = "Next question";
             this.startAdventure = "Start adventure";
             this.actions = "Actions";
             this.destinations = "Destinations";
@@ -405,6 +407,8 @@ var StoryScript;
                 self.definitions.items = window[self.gameNameSpace]['Items'];
                 self.game.definitions = self.definitions;
                 self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
+                self.game.createCharacterSheet.currentStep = 0;
+                self.game.createCharacterSheet.nextStep = function (data) { data.currentStep++; };
                 if (self.ruleService.setupGame) {
                     self.ruleService.setupGame(self.game);
                 }
@@ -1545,6 +1549,9 @@ var MyNewGame;
             this.level = 1;
             this.hitpoints = 0;
             this.currentHitpoints = 0;
+            this.strength = 1;
+            this.agility = 1;
+            this.intelligence = 1;
             this.items = [];
             this.equipment = {
                 head: null,
@@ -1570,7 +1577,56 @@ var MyNewGame;
             var _this = this;
             this.getCreateCharacterSheet = function () {
                 return {
-                    steps: []
+                    steps: [
+                        {
+                            questions: [
+                                {
+                                    question: 'As a child, you were always...',
+                                    entries: [
+                                        {
+                                            text: 'strong in fights',
+                                            value: 'strength',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'a fast runner',
+                                            value: 'agility',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'a curious reader',
+                                            value: 'intelligence',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'When time came to become an apprentice, you chose to...',
+                                    entries: [
+                                        {
+                                            text: 'become a guard',
+                                            value: 'strength',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'learn about locks',
+                                            value: 'agility',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'go to magic school',
+                                            value: 'intelligence',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 };
             };
             this.fight = function (enemyToFight) {
@@ -1630,7 +1686,10 @@ var MyNewGame;
         }
         TextService.prototype.$get = function (game) {
             var self = this;
-            return {};
+            return {
+                gameName: 'My new game',
+                newGame: 'Create your character'
+            };
         };
         return TextService;
     }());
@@ -1653,7 +1712,7 @@ var MyNewGame;
 var MyNewGame;
 (function (MyNewGame) {
     var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.value("gameNameSpace", 'GameTemplate');
+    storyScriptModule.value("gameNameSpace", 'MyNewGame');
 })(MyNewGame || (MyNewGame = {}));
 var Strix;
 (function (Strix) {
