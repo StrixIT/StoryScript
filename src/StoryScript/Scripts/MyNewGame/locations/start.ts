@@ -2,7 +2,7 @@
     export function Start(): StoryScript.ILocation {
         return {
             name: 'Home',
-            descriptionSelector: () => {
+            descriptionSelector: (game: IGame) => {
                 var date = new Date();
                 var hour = date.getHours();
 
