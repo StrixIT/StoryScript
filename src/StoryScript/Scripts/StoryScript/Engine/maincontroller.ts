@@ -56,6 +56,7 @@
         startNewGame = () => {
             var self = this;
             self.gameService.startNewGame(self.game.createCharacterSheet);
+            self.getCharacterAttributesToShow();
             self.game.state = 'play';
         }
 
