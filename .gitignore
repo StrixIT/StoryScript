@@ -210,4 +210,9 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-/src/StoryScript/wwwroot/locations
+
+# Copied and generated files for StoryScript, resource files that should not be checked in
+/src/StoryScript/wwwroot
+/src/StoryScript/Scripts/DangerousCave/resources
+/src/StoryScript/Scripts/QuestForTheKing/resources
+/src/StoryScript/Scripts/PathOfHeroes/resources
