@@ -1,10 +1,14 @@
 ﻿<fieldset>
     <legend>{{ game.character.name }}</legend>
     <ul>
-        <li>Kracht {{ game.character.kracht }}</li>
+        <li ng-repeat="attribute in controller.characterAttributes">
+            {{ texts.format(attribute) }} {{ game.character[attribute] }}
+        </li>
+
+        <!--<li>Kracht {{ game.character.kracht }}</li>
         <li>Vlugheid {{ game.character.vlugheid }}</li>
-        <li>Oplettendheid {{ game.character.oplettendheid }}</li>
-        <li>Gezondheid {{ game.character.currentHitpoints }} / {{ game.character.hitpoints }}</li>
+        <li>Oplettendheid {{ game.character.oplettendheid }}</li>-->
+        <li>{{ texts.hitpoints }} {{ game.character.currentHitpoints }} / {{ game.character.hitpoints }}</li>
     </ul>
 </fieldset>
 <fieldset id="equipment">

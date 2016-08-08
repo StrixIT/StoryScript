@@ -8,6 +8,8 @@
         private game: IGame;
         private textService: ITextService;
         private texts: any = {};
+        private nonDisplayAttributes: string[] = [ 'name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
+        private characterAttributes: string[];
 
         // Todo: can this be done differently?
         public reset(): void { };
@@ -42,6 +44,8 @@
             // Todo: type
             (<any>self.$scope).game = self.game;
             (<any>self.$scope).texts = self.texts;
+
+            self.getCharacterAttributesToShow();
 
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
@@ -183,6 +187,19 @@
             if (newValue != undefined) {
                 scope.controller.gameService.changeGameState(newValue);
             }
+        }
+
+        private getCharacterAttributesToShow() {
+            var self = this;
+            self.characterAttributes = [];
+
+            for (var n in self.game.character) {
+                if (self.game.character.hasOwnProperty(n) && self.nonDisplayAttributes.indexOf(n) == -1) {
+                    self.characterAttributes.push(n);
+                }
+            }
+
+            self.characterAttributes.sort();
         }
     }
 

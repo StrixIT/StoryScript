@@ -36,10 +36,13 @@
         loading = "Loading...";
         youAreHere = "You are here";
         messages = "Messages";
+        hitpoints = "Health";
 
-        format = (template:string, tokens: string[]): string => {
-            for (var i = 0; i < tokens.length; i++) {
-                template = template.replace('{' + i + '}', tokens[i]);
+        format = (template: string, tokens: string[]): string => {
+            if (tokens) {
+                for (var i = 0; i < tokens.length; i++) {
+                    template = template.replace('{' + i + '}', tokens[i]);
+                }
             }
 
             return template;
