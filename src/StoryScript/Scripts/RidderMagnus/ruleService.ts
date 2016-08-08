@@ -41,7 +41,7 @@
                                     },
                                     {
                                         text: 'Geen school, ik leefde op straat',
-                                        value: 'zoeken' + 'sluipen',
+                                        value: 'sluipen',
                                         bonus: 1
                                     }
                                 ]
@@ -65,7 +65,7 @@
                                     },
                                     {
                                         text: 'Vanja de Vlugge',
-                                        value: 'sluipen',
+                                        value: 'snelheid',
                                         bonus: 1
                                     }
                                 ]
@@ -82,26 +82,64 @@
             return character;
         }
 
-        fight = (enemyToFight: StoryScript.IEnemy) => {
+        public enterLocation(location: StoryScript.ICompiledLocation): void {
             var self = this;
-            var win = false;
+
+            //I want to erase actionlog first
+            self.game.logToActionLog('Je komt aan in ' + location.name);
+
+            if (location.id != 'start' && !location.hasVisited) {
+                self.game.character.score += 1;
+            }
+        }
+
+        public initCombat(location: StoryScript.ICompiledLocation) {
+            var self = this;
+
+            location.enemies.forEach(function (enemy) {
+                self.game.logToActionLog('Er is hier een ' + enemy.name);
+            });
+
+           //als er een flee-action is: self.addFleeAction(location);
+        }
+
+        fight = (enemyToFight: StoryScript.IEnemy): boolean => {
+            var self = this;
 
             // Todo: change when multiple enemies of the same type can be present.
             var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+            var check = self.game.rollDice(self.game.character.vechten + 'd6');
 
-            // Implement character attack here.
+            var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
+            self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
 
-            if (win) {
+            enemy.hitpoints -= characterDamage;
+
+            if (enemy.hitpoints <= 0) {
+                self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
                 return true;
             }
 
             self.game.currentLocation.enemies.forEach(function (enemy) {
-                // Implement monster attack here
+                var check = self.game.rollDice(enemy.attack);
+                var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
+                self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                self.game.character.currentHitpoints -= enemyDamage;
             });
 
             return false;
         }
 
+        enemyDefeated(enemy: IEnemy) {
+            var self = this;
+
+            if (enemy.reward) {
+                self.game.character.score += enemy.reward;
+            }
+        }
+
+        
         hitpointsChange(change: number) {
             var self = this;
 

@@ -25,7 +25,16 @@
                 loading: "Laden...",
                 equip: "Pakken of aantrekken",
                 use: "Gebruiken",
-                drop: "Laten vallen"
+                drop: "Laten vallen",
+                leftHand: "Linkerhand",
+                rightHand: "Rechterhand",
+                amulet: "Sieraad",
+                congratulations: "Gefeliciteerd",
+                feet: "Voeten",
+                finalScore: "Eindscore",
+                youLost: "Verloren",
+                youWon: "Gewonnen",
+
             };
         }
     }

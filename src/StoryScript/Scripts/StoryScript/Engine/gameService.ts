@@ -186,11 +186,13 @@ module StoryScript {
                 };
             }
             else {
-                person.items.forEach(function (item) {
-                    if (item && item.bonuses && item.bonuses[type]) {
-                        bonus += item.bonuses[type];
-                    }
-                });
+                if (person.items) {
+                    person.items.forEach(function (item) {
+                        if (item && item.bonuses && item.bonuses[type]) {
+                            bonus += item.bonuses[type];
+                        }
+                    });
+                }
             }
 
             return bonus;
