@@ -214,7 +214,9 @@ module StoryScript {
 
                 self.game.currentLocation.enemies.remove(enemy);
 
-                self.ruleService.enemyDefeated(enemy);
+                if (self.ruleService.enemyDefeated) {
+                    self.ruleService.enemyDefeated(enemy);
+                }
 
                 if (enemy.onDefeat) {
                     enemy.onDefeat(self.game);

@@ -44,14 +44,14 @@
             // Implement character attack here.
 
             if (win) {
-                return true;
+                return win;
             }
 
             self.game.currentLocation.enemies.forEach(function (enemy) {
                 // Implement monster attack here
             });
 
-            return false;
+            return win;
         }
 
         hitpointsChange(change: number) {
