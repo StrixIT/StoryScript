@@ -9,7 +9,7 @@
         events?: [(game: IGame) => void];
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
-        descriptionSelector?: () => string;
+        descriptionSelector?: (game: IGame) => string;
         text: string;
         hasVisited: boolean;
         descriptions: any;
