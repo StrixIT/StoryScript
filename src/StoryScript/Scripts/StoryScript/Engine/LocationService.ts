@@ -341,7 +341,7 @@ module StoryScript {
                 // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
                 // use the default description selector function.
                 if (game.currentLocation.descriptionSelector) {
-                    game.currentLocation.text = game.currentLocation.descriptionSelector();
+                    game.currentLocation.text = game.currentLocation.descriptions[game.currentLocation.descriptionSelector()];
                 }
                 else {
                     var descriptionSelector = (<any>game.currentLocation).defaultDescriptionSelector;

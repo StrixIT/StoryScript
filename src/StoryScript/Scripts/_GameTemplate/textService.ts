@@ -4,6 +4,7 @@
             var self = this;
 
             return {
+                // Add your custom texts here.
             };
         }
     }
