@@ -66,6 +66,14 @@
             self.init();
         }
 
+        isSlotUsed(slot: string) {
+            var self = this;
+
+            if (self.game.character) {
+                return self.game.character.equipment[slot] !== undefined;
+            }
+        }
+
         getButtonClass = (action) => {
             var type = action.type || 'move';
             var buttonClass = 'btn-';
@@ -155,13 +163,13 @@
         equipItem = (item: IItem) => {
             var self = this;
 
-            var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]];
+            var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()];
 
             if (equippedItem) {
                 self.game.character.items.push(equippedItem);
             }
 
-            self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType]] = item;
+            self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()] = item;
             self.game.character.items.remove(item);
         }
 

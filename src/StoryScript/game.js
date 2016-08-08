@@ -521,7 +521,9 @@ var StoryScript;
                         enemy.items.splice(0, enemy.items.length);
                     }
                     self.game.currentLocation.enemies.remove(enemy);
-                    self.ruleService.enemyDefeated(enemy);
+                    if (self.ruleService.enemyDefeated) {
+                        self.ruleService.enemyDefeated(enemy);
+                    }
                     if (enemy.onDefeat) {
                         enemy.onDefeat(self.game);
                     }
@@ -1754,8 +1756,8 @@ var MyNewGame;
         function Character() {
             this.score = 0;
             this.level = 1;
-            this.hitpoints = 0;
-            this.currentHitpoints = 0;
+            this.hitpoints = 10;
+            this.currentHitpoints = 10;
             this.strength = 1;
             this.agility = 1;
             this.intelligence = 1;
@@ -1880,7 +1882,7 @@ var MyNewGame;
         RuleService.prototype.hitpointsChange = function (change) {
             var self = this;
             // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
-            return false;
+            return self.game.character.currentHitpoints <= 0;
         };
         RuleService.prototype.scoreChange = function (change) {
             var self = this;
