@@ -2,7 +2,6 @@
     export function Flee(text: string): StoryScript.IAction {
         return {
             text: text || 'Vluchten!',
-            type: 'snelheid',
             active: function (game: IGame) {
                 return !StoryScript.isEmpty(game.currentLocation.enemies);
             },

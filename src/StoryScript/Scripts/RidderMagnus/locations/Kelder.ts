@@ -17,7 +17,6 @@
             actions: [
                 {
                     text: 'Zoek de ring',
-                    type: 'zoeken',
                     execute: (game: IGame) => {
                         var check = Math.floor(Math.random() * 6 + 1);
                         var result;

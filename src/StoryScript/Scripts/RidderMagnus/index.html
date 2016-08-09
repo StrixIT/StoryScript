@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryScript adventure</title>
+    <link href="css/lib/bootstrap.css" rel="stylesheet" />
+    <link href="css/game.css" rel="stylesheet" type="text/css" />
+</head>
+<body ng-app="storyscript">
+    <div ng-controller="MainController as controller" ng-init="init()">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"><button type="button" class="btn btn-danger btn-sm" ng-click="controller.restart()">{{ texts.startOver }}</button></span>
+                        <span class="icon-bar"><button type="button" class="btn btn-danger btn-sm" ng-click="controller.reset()">{{ texts.resetWorld }}</button></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container body-content">
+            <h2>{{ texts.gameName }}</h2>
+
+            <div class="row">
+                <div id="character-container" class="col-md-4">
+                    <div class="charactersheet" ng-include="'/ui/character-sheet.html'"></div>
+                </div>
+                <div id="location-container" class="col-md-8">
+                    <div ng-if="!controller.game.state">
+                        {{ texts.loading }}
+                    </div>
+                    <div ng-if="controller.game.state == 'play'">
+                        <fieldset>
+                            <legend>{{ texts.messages }}</legend>
+                            <ul id="action-log">
+                                <li ng-repeat="message in controller.game.actionLog track by $index">{{ message }}</li>
+                            </ul>
+                        </fieldset>
+                        <div class="combat" ng-include="'/ui/combat.html'"></div>
+                        <fieldset ng-if="controller.actionsPresent()">
+                            <legend>{{ texts.actions }}</legend>
+                            <ul class="button-row">
+                                <li ng-repeat="action in controller.game.currentLocation.actions">
+                                    <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action)" ng-disabled="controller.disableActionButton(action)">{{ action.text }}</button>
+                                </li>
+                            </ul>
+                        </fieldset>
+                        <fieldset>
+                            <legend>{{ texts.youAreHere }}</legend>
+                            <h4 ng-bind-html="controller.game.currentLocation.name"></h4>
+                            <p ng-bind-html="controller.game.currentLocation.text"></p>
+                            <ul id="location-log">
+                                <li ng-repeat="message in controller.game.currentLocation.log track by $index">{{ message }}</li>
+                            </ul>
+                        </fieldset>
+                        <div class="exploration" ng-include="'/ui/exploration.html'"></div>
+                    </div>
+                    <div ng-if="controller.game.state == 'createCharacter'" ng-include="'/ui/create-character.html'"></div>
+                    <div ng-if="controller.game.state == 'levelUp'" ng-include="'/ui/level-up.html'"></div>
+                    <div ng-if="controller.game.state == 'gameOver'" ng-include="'/ui/game-over.html'"></div>
+                    <div ng-if="controller.game.state == 'victory'" ng-include="'/ui/victory.html'"></div>
+                </div>
+            </div>
+            <hr />
+            <footer>
+            </footer>
+        </div>
+    </div>
+    <script src="js/lib/jquery/jquery.js"></script>
+    <script src="js/lib/angular/angular.js"></script>
+    <script src="js/lib/angular/angular-sanitize.js"></script>
+    <script src="js/lib/ngStorage/ngStorage.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

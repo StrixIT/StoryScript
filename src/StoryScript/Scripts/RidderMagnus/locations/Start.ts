@@ -9,15 +9,25 @@
                 }
             ],
             descriptionSelector: (game: IGame) => {
-                if (game.character.items.first('GoudenRing'))
-                {
+                if (game.character.items.first('GoudenRing')) {
                     return "een";
                 }
 
                 return "nul";
 
                 //wanneer mogelijk moet deze checken of de quest 'vind de ring' actief is.
-            }
+            },
+            actions: [
+                {
+                    text: 'Genees me',
+                    execute: (game: IGame) => {
+                        Actions.Heal('50d1')
+                        game.logToActionLog('De koninging legt haar hand op je hoofd. Je voelt je direct beter.');
+                        return true
+                    }
+                }
+
+            ]
         }
     }
 }
