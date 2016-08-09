@@ -3,9 +3,12 @@
         equipmentHeader?: string;
         head?: string;
         amulet?: string;
+        body?: string;
+        hands?: string;
         rightHand?: string;
         leftHand?: string;
-        body?: string;
+        rightRing?: string;
+        leftRing?: string;
         legs?: string;
         feet?: string;
         backpack?: string;

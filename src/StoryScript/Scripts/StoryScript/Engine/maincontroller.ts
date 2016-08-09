@@ -189,9 +189,10 @@
             self.game.character.equipment[type] = null;
         }
 
-        fight = (game: IGame, enemy: IEnemy) => {
+        fight = (enemy: IEnemy) => {
             var self = this;
             self.gameService.fight(enemy);
+            self.gameService.saveGame();
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {

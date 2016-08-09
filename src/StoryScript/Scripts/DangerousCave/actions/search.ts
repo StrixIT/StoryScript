@@ -17,13 +17,9 @@ module DangerousCave.Actions {
             type: 'skill',
             active: settings.active == undefined ? () => { return true; } : settings.active,
             execute: function (game: IGame) {
-                var check = game.rollDice(game.character.oplettendheid + 'd6');
                 var result;
+                var check = game.rollDice(game.character.oplettendheid + 'd6');
                 result = check * game.character.oplettendheid;
-
-                // Todo: think of something simpler to remove actions.
-                var action = game.currentLocation.actions.first({ callBack: (x: StoryScript.IAction) => { return x.text === text; } });
-                game.currentLocation.actions.remove(action);
 
                 if (result >= settings.difficulty) {
                     settings.success(game);
