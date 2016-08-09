@@ -1,7 +1,8 @@
 ﻿module RidderMagnus.Enemies {
-    export function DireRat(): StoryScript.IEnemy {
+    export function ReusachtigeRat(): StoryScript.IEnemy {
         return {
             name: 'Reusachtige rat',
+            pictureFileName: 'ReusachtigeRat.jpg',
             hitpoints: 13,
             attack: '1d6+2',
             reward: 2

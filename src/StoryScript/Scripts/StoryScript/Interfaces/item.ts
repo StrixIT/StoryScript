@@ -10,5 +10,6 @@
         bonuses?: any;
         actions?: ICollection<IAction>;
         use?: (...params) => void
+        //requirement?
     }
 }
