@@ -23,15 +23,16 @@
                         var result;
                         result = check * game.character.zoeken;
 
-                        if (result > 6) {
-                            //ring geven
+                        if (result > 4) {
+                            game.currentLocation.items.push(Items.GoudenRing());
                             game.logToLocationLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
                         }
                         else {
                             game.logToActionLog('Waar is dat ding toch??');
-                        };
+                        }
                     }
-                },
+                }
+            ]
         }
     }
 }

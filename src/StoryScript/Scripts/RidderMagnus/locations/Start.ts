@@ -9,7 +9,7 @@
                 }
             ],
             descriptionSelector: (game: IGame) => {
-                if (game.character.items.first('goudenRing'))
+                if (game.character.items.first('GoudenRing'))
                 {
                     return "een";
                 }
