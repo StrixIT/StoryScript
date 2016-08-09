@@ -73,7 +73,7 @@ function copyLibraries() {
 
 function copyResources(nameSpace) {
     // Copy resources
-    gulp.src([paths.root + 'Scripts/' + nameSpace + '/resources/*.*'])
+    gulp.src([paths.root + 'Scripts/' + nameSpace + '/resources/**/*.*'])
         .pipe(gulp.dest(paths.webroot + 'resources'));
 }
 

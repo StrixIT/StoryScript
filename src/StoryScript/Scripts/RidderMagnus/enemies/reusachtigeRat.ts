@@ -2,7 +2,7 @@
     export function ReusachtigeRat(): StoryScript.IEnemy {
         return {
             name: 'Reusachtige rat',
-            pictureFileName: 'ReusachtigeRat.jpg',
+            pictureFileName: 'enemies/ReusachtigeRat.jpg',
             hitpoints: 13,
             attack: '1d6+2',
             reward: 2

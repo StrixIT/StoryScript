@@ -30,10 +30,9 @@
                         else {
                             game.logToActionLog('Waar is dat ding toch??');
                             game.logToActionLog('Een enorme rat bespringt je!');
-                            game.logToLocationLog('Deze kelder zit vol monsterlijke ratten!');
                             var enormeRat = Enemies.EnormeRat();
                             game.currentLocation.enemies.push(enormeRat);
-
+                            return true
                             //En hier de actie weer terug zetten!
                         }
                     }

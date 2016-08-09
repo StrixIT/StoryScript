@@ -2,7 +2,7 @@
     export function EnormeRat(): StoryScript.IEnemy {
         return {
             name: 'Enorme rat',
-            pictureFileName: 'EnormeRat.jpg' ,
+            pictureFileName: 'enemies/EnormeRat.jpg' ,
             hitpoints: 7 ,
             attack: '1d6',
             reward: 1
