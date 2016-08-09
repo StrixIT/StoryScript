@@ -31,7 +31,8 @@
                             game.logToActionLog('Waar is dat ding toch??');
                         };
                     }
-                },
+                }
+            ]
         }
     }
 }

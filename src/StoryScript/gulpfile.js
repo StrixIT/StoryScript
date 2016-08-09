@@ -56,7 +56,6 @@ gulp.task('ts-watch', function () {
 function buildGame(nameSpace) {
     return function () {
         copyLibraries();
-
         copyResources(nameSpace);
         copyCss(nameSpace);
         copyHtml(nameSpace);

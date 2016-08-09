@@ -184,14 +184,18 @@ var StoryScript;
                 characterData.steps.forEach(function (step) {
                     if (step.questions) {
                         step.questions.forEach(function (question) {
-                            character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                            if (character.hasOwnProperty(question.selectedEntry.value)) {
+                                character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                            }
                         });
                     }
                 });
                 characterData.steps.forEach(function (step) {
                     if (step.attributes) {
                         step.attributes.forEach(function (attribute) {
-                            character[attribute.attribute] = attribute.value;
+                            if (character.hasOwnProperty(attribute.attribute)) {
+                                character[attribute.attribute] = attribute.value;
+                            }
                         });
                     }
                 });
@@ -506,11 +510,13 @@ var StoryScript;
                     ;
                 }
                 else {
-                    person.items.forEach(function (item) {
-                        if (item && item.bonuses && item.bonuses[type]) {
-                            bonus += item.bonuses[type];
-                        }
-                    });
+                    if (person.items) {
+                        person.items.forEach(function (item) {
+                            if (item && item.bonuses && item.bonuses[type]) {
+                                bonus += item.bonuses[type];
+                            }
+                        });
+                    }
                 }
                 return bonus;
             };
@@ -1003,7 +1009,7 @@ var StoryScript;
                 // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
                 // use the default description selector function.
                 if (game.currentLocation.descriptionSelector) {
-                    game.currentLocation.text = game.currentLocation.descriptions[game.currentLocation.descriptionSelector()];
+                    game.currentLocation.text = game.currentLocation.descriptions[game.currentLocation.descriptionSelector(game)];
                 }
                 else {
                     var descriptionSelector = game.currentLocation.defaultDescriptionSelector;
@@ -1026,6 +1032,7 @@ var StoryScript;
         function MainController($scope, $window, locationService, ruleService, gameService, game, textService) {
             var _this = this;
             this.texts = {};
+            // Todo: can this be done differently?
             this.nonDisplayAttributes = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
             this.startNewGame = function () {
                 var self = _this;
@@ -1103,12 +1110,24 @@ var StoryScript;
             };
             this.equipItem = function (item) {
                 var self = _this;
-                var equippedItem = self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()];
+                var type = StoryScript.EquipmentType[item.equipmentType];
+                type = type.substring(0, 1).toLowerCase() + type.substring(1);
+                var equippedItem = self.game.character.equipment[type];
                 if (equippedItem) {
                     self.game.character.items.push(equippedItem);
                 }
-                self.game.character.equipment[StoryScript.EquipmentType[item.equipmentType].toLowerCase()] = item;
+                self.game.character.equipment[type] = item;
                 self.game.character.items.remove(item);
+            };
+            this.unequipItem = function (item) {
+                var self = _this;
+                var type = StoryScript.EquipmentType[item.equipmentType];
+                type = type.substring(0, 1).toLowerCase() + type.substring(1);
+                var equippedItem = self.game.character.equipment[type];
+                if (equippedItem) {
+                    self.game.character.items.push(equippedItem);
+                }
+                self.game.character.equipment[type] = null;
             };
             this.fight = function (game, enemy) {
                 var self = _this;
@@ -1130,22 +1149,16 @@ var StoryScript;
         MainController.prototype.init = function () {
             var self = this;
             self.gameService.init();
-            self.reset = function () { self.gameService.reset.call(self.gameService); };
-            // Set the texts
-            var defaultTexts = new StoryScript.DefaultTexts();
-            var customTexts = self.textService.$get();
-            for (var n in defaultTexts) {
-                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
-            }
-            self.texts.format = defaultTexts.format;
             // Todo: type
             self.$scope.game = self.game;
             self.$scope.texts = self.texts;
+            self.setDisplayTexts();
             self.getCharacterAttributesToShow();
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+            self.reset = function () { self.gameService.reset.call(self.gameService); };
         };
         MainController.prototype.isSlotUsed = function (slot) {
             var self = this;
@@ -1156,12 +1169,15 @@ var StoryScript;
         MainController.prototype.executeAction = function (action) {
             var self = this;
             if (action && typeof action === 'function') {
-                // Modify the arguments collection to add the game to the collection before
-                // calling the function specified.
+                // Modify the arguments collection to add the game to the collection before calling the function specified.
                 var args = [].slice.call(arguments);
                 args.shift();
                 args.splice(0, 0, self.game);
-                action.apply(this, args);
+                // Execute the action and when nothing or false is returned, remove it from the current location.
+                var result = action.apply(this, args);
+                if (!result) {
+                    self.game.currentLocation.actions.remove(action);
+                }
                 // After each action, save the game.
                 self.gameService.saveGame();
             }
@@ -1193,6 +1209,15 @@ var StoryScript;
             }
             self.characterAttributes.sort();
         };
+        MainController.prototype.setDisplayTexts = function () {
+            var self = this;
+            var defaultTexts = new StoryScript.DefaultTexts();
+            var customTexts = self.textService.$get();
+            for (var n in defaultTexts) {
+                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
+            }
+            self.texts.format = defaultTexts.format;
+        };
         return MainController;
     }());
     StoryScript.MainController = MainController;
@@ -1209,7 +1234,7 @@ var RidderMagnus;
             this.vechten = 1;
             this.sluipen = 1;
             this.zoeken = 1;
-            this.toveren = 1;
+            this.toveren = 0;
             this.snelheid = 1;
             this.items = [];
             this.equipment = {
@@ -1255,7 +1280,7 @@ var RidderMagnus;
                                         },
                                         {
                                             text: 'Geen school, ik leefde op straat',
-                                            value: 'zoeken' + 'sluipen',
+                                            value: 'sluipen',
                                             bonus: 1
                                         }
                                     ]
@@ -1279,7 +1304,7 @@ var RidderMagnus;
                                         },
                                         {
                                             text: 'Vanja de Vlugge',
-                                            value: 'sluipen',
+                                            value: 'snelheid',
                                             bonus: 1
                                         }
                                     ]
@@ -1331,6 +1356,7 @@ var RidderMagnus;
         };
         RuleService.prototype.enterLocation = function (location) {
             var self = this;
+            //I want to erase actionlog first
             self.game.logToActionLog('Je komt aan in ' + location.name);
             if (location.id != 'start' && !location.hasVisited) {
                 self.game.character.score += 1;
@@ -1341,7 +1367,7 @@ var RidderMagnus;
             location.enemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
-            //potentieel om te vluchten: self.addFleeAction(location);
+            //als er een flee-action is: self.addFleeAction(location);
         };
         RuleService.prototype.enemyDefeated = function (enemy) {
             var self = this;
@@ -1395,7 +1421,15 @@ var RidderMagnus;
                 loading: "Laden...",
                 equip: "Pakken of aantrekken",
                 use: "Gebruiken",
-                drop: "Laten vallen"
+                drop: "Laten vallen",
+                leftHand: "Linkerhand",
+                rightHand: "Rechterhand",
+                amulet: "Sieraad",
+                congratulations: "Gefeliciteerd",
+                feet: "Voeten",
+                finalScore: "Eindscore",
+                youLost: "Verloren",
+                youWon: "Gewonnen",
             };
         };
         return TextService;
@@ -1411,15 +1445,37 @@ var RidderMagnus;
         function Kelder() {
             return {
                 name: 'De Kelder',
+                //Bij eerste bezoek: er komt hier als event eenmalig een dire rat, tenzij je succesvol sluipt. 
+                //Met zoeken is er een ring te vinden. 
+                //Als de ring al gevonden is, levert zoeken vooral ratten op.
                 enemies: [
                     RidderMagnus.Enemies.DireRat
                 ],
                 destinations: [
                     {
-                        text: 'Terug naar boven',
+                        text: 'Naar boven',
                         target: Locations.Start
                     }
                 ],
+                actions: [
+                    {
+                        text: 'Zoek de ring',
+                        type: 'zoeken',
+                        execute: function (game) {
+                            var check = Math.floor(Math.random() * 6 + 1);
+                            var result;
+                            result = check * game.character.zoeken;
+                            if (result > 6) {
+                                //ring geven
+                                game.logToLocationLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
+                            }
+                            else {
+                                game.logToActionLog('Waar is dat ding toch??');
+                            }
+                            ;
+                        }
+                    }
+                ]
             };
         }
         Locations.Kelder = Kelder;
@@ -1438,6 +1494,13 @@ var RidderMagnus;
                         target: Locations.Kelder
                     }
                 ],
+                descriptionSelector: function (game) {
+                    if (game.character.items.first('goudenRing')) {
+                        return "een";
+                    }
+                    return "nul";
+                    //wanneer mogelijk moet deze checken of de quest 'vind de ring' actief is.
+                }
             };
         }
         Locations.Start = Start;
@@ -1455,6 +1518,20 @@ var RidderMagnus;
             };
         }
         Items.Dolk = Dolk;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function GoudenRing() {
+            return {
+                name: 'Gouden ring',
+                damage: '0',
+                equipmentType: StoryScript.EquipmentType.Amulet
+            };
+        }
+        Items.GoudenRing = GoudenRing;
     })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
@@ -1876,6 +1953,357 @@ var PathOfHeroes;
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'PathOfHeroes');
 })(PathOfHeroes || (PathOfHeroes = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Character = (function () {
+        function Character() {
+            this.score = 0;
+            this.level = 1;
+            this.hitpoints = 10;
+            this.currentHitpoints = 10;
+            this.strength = 1;
+            this.agility = 1;
+            this.intelligence = 1;
+            this.items = [];
+            this.equipment = {
+                head: null,
+                body: null,
+                leftHand: null,
+                rightHand: null,
+                feet: null
+            };
+        }
+        return Character;
+    }());
+    MyNewGame.Character = Character;
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var RuleService = (function () {
+        function RuleService(game) {
+            var _this = this;
+            this.getCreateCharacterSheet = function () {
+                return {
+                    steps: [
+                        {
+                            questions: [
+                                {
+                                    question: 'As a child, you were always...',
+                                    entries: [
+                                        {
+                                            text: 'strong in fights',
+                                            value: 'strength',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'a fast runner',
+                                            value: 'agility',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'a curious reader',
+                                            value: 'intelligence',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'When time came to become an apprentice, you chose to...',
+                                    entries: [
+                                        {
+                                            text: 'become a guard',
+                                            value: 'strength',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'learn about locks',
+                                            value: 'agility',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'go to magic school',
+                                            value: 'intelligence',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                };
+            };
+            this.fight = function (enemyToFight) {
+                var self = _this;
+                var win = false;
+                // Todo: change when multiple enemies of the same type can be present.
+                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
+                self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+                enemy.hitpoints -= damage;
+                if (enemy.hitpoints <= 0) {
+                    self.game.logToActionLog('You defeat the ' + enemy.name + '!');
+                    win = true;
+                }
+                if (win) {
+                    return true;
+                }
+                self.game.currentLocation.enemies.forEach(function (enemy) {
+                    var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(enemy, 'damage');
+                    self.game.logToActionLog('The ' + enemy.name + ' does ' + damage + ' damage!');
+                    self.game.character.currentHitpoints -= damage;
+                });
+                return false;
+            };
+            var self = this;
+            self.game = game;
+        }
+        RuleService.prototype.$get = function (game) {
+            var self = this;
+            self.game = game;
+            return {
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
+                createCharacter: self.createCharacter,
+                fight: self.fight,
+                hitpointsChange: self.hitpointsChange,
+                scoreChange: self.scoreChange
+            };
+        };
+        RuleService.prototype.createCharacter = function (characterData) {
+            var self = this;
+            var character = new MyNewGame.Character();
+            return character;
+        };
+        RuleService.prototype.hitpointsChange = function (change) {
+            var self = this;
+            // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
+            return self.game.character.currentHitpoints <= 0;
+        };
+        RuleService.prototype.scoreChange = function (change) {
+            var self = this;
+            // Implement logic to occur when the score changes. Return true when the character gains a level.
+            return false;
+        };
+        return RuleService;
+    }());
+    MyNewGame.RuleService = RuleService;
+    RuleService.$inject = ['game'];
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("ruleService", RuleService);
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var TextService = (function () {
+        function TextService() {
+        }
+        TextService.prototype.$get = function (game) {
+            var self = this;
+            return {
+                gameName: 'My new game',
+                newGame: 'Create your character'
+            };
+        };
+        return TextService;
+    }());
+    MyNewGame.TextService = TextService;
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.service("textService", TextService);
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Locations;
+    (function (Locations) {
+        function Basement() {
+            return {
+                name: 'Basement',
+                destinations: [
+                    {
+                        text: 'To the garden',
+                        target: Locations.Garden
+                    }
+                ]
+            };
+        }
+        Locations.Basement = Basement;
+    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Locations;
+    (function (Locations) {
+        function DirtRoad() {
+            return {
+                name: 'Dirt road',
+                destinations: [
+                    {
+                        text: 'Enter your home',
+                        target: Locations.Start
+                    }
+                ],
+                enemies: [
+                    MyNewGame.Enemies.Bandit
+                ],
+                combatActions: [
+                    {
+                        text: 'Run back inside',
+                        execute: function (game) {
+                            game.changeLocation('Start');
+                            game.logToActionLog("You storm back into your house and slam the \n                                            door behind you. You where lucky... this time!");
+                        }
+                    }
+                ],
+            };
+        }
+        Locations.DirtRoad = DirtRoad;
+    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Locations;
+    (function (Locations) {
+        function Garden() {
+            return {
+                name: 'Garden',
+                destinations: [
+                    {
+                        text: 'Enter your home',
+                        target: Locations.Start,
+                    }
+                ],
+                events: [
+                    function (game) {
+                        game.logToActionLog('You see a squirrel running off.');
+                    }
+                ],
+                actions: [
+                    {
+                        text: 'Search the Shed',
+                        execute: function (game) {
+                            var garden = game.locations.first('Garden');
+                            // Add a new destination.
+                            garden.destinations.push({
+                                text: 'Enter the basement',
+                                target: Locations.Basement,
+                                barrier: {
+                                    text: 'Wooden trap door',
+                                    actions: [
+                                        {
+                                            text: 'Inspect',
+                                            action: function () {
+                                            }
+                                        },
+                                        {
+                                            text: 'Open',
+                                            action: function () {
+                                            }
+                                        }
+                                    ]
+                                }
+                            });
+                        }
+                    },
+                    {
+                        text: 'Look in the pond',
+                        execute: function (game) {
+                            var garden = game.locations.first('Garden');
+                            game.logToLocationLog("The pond is shallow. There are frogs\n                             and snails in there, but nothing of interest.");
+                        }
+                    }
+                ]
+            };
+        }
+        Locations.Garden = Garden;
+    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Locations;
+    (function (Locations) {
+        function Start() {
+            return {
+                name: 'Home',
+                descriptionSelector: function (game) {
+                    var date = new Date();
+                    var hour = date.getHours();
+                    if (hour <= 6 || hour >= 18) {
+                        return 'night';
+                    }
+                    return 'day';
+                },
+                destinations: [
+                    {
+                        text: 'To the garden',
+                        target: Locations.Garden
+                    },
+                    {
+                        text: 'Out the front door',
+                        target: Locations.DirtRoad
+                    }
+                ],
+                items: [
+                    MyNewGame.Items.Sword,
+                    MyNewGame.Items.LeatherBoots
+                ]
+            };
+        }
+        Locations.Start = Start;
+    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Items;
+    (function (Items) {
+        function LeatherBoots() {
+            return {
+                name: 'Leather boots',
+                defense: 1,
+                equipmentType: StoryScript.EquipmentType.Feet
+            };
+        }
+        Items.LeatherBoots = LeatherBoots;
+    })(Items = MyNewGame.Items || (MyNewGame.Items = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Items;
+    (function (Items) {
+        function Sword() {
+            return {
+                name: 'Sword',
+                damage: '3',
+                equipmentType: StoryScript.EquipmentType.RightHand
+            };
+        }
+        Items.Sword = Sword;
+    })(Items = MyNewGame.Items || (MyNewGame.Items = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var storyScriptModule = angular.module("storyscript");
+    storyScriptModule.value("gameNameSpace", 'MyNewGame');
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Enemies;
+    (function (Enemies) {
+        function Bandit() {
+            return {
+                name: 'Bandit',
+                pictureFileName: 'bandit.jpg',
+                hitpoints: 10,
+                attack: '1d6',
+                reward: 1,
+                items: [
+                    MyNewGame.Items.Sword
+                ]
+            };
+        }
+        Enemies.Bandit = Bandit;
+    })(Enemies = MyNewGame.Enemies || (MyNewGame.Enemies = {}));
+})(MyNewGame || (MyNewGame = {}));
 var Strix;
 (function (Strix) {
     var directivesModule = angular.module('strixIT', []);
