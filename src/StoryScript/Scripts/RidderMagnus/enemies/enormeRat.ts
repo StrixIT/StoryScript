@@ -1,5 +1,5 @@
 ﻿module RidderMagnus.Enemies {
-    export function EnormeRat(): StoryScript.IEnemy {
+    export function EnormeRat(): IEnemy {
         return {
             name: 'Enorme rat',
             pictureFileName: 'enemies/EnormeRat.jpg' ,

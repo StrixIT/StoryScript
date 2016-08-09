@@ -23,7 +23,8 @@
                         result = check * game.character.zoeken;
 
                         if (result > 4) {
-                            game.currentLocation.items.push(Items.GoudenRing());
+                            // Todo: make this easy to do!
+                            game.currentLocation.items.push(StoryScript.definitionToObject<IItem>(Items.GoudenRing));
                             game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
                         }
                         else {

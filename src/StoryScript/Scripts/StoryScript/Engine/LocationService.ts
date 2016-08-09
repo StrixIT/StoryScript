@@ -312,6 +312,7 @@ module StoryScript {
             var self = this;
 
             if (game.currentLocation.descriptions) {
+                self.selectLocationDescription(game);
                 return;
             }
 
@@ -338,23 +339,21 @@ module StoryScript {
                     game.currentLocation.descriptions[name] = node.innerHTML;
                 }
 
-                // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
-                // use the default description selector function.
-                if (game.currentLocation.descriptionSelector) {
-                    // Use this casting to allow the description selector to be a function or a string.
-                    var selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
-                    game.currentLocation.text = game.currentLocation.descriptions[selector];
-                }
-                else {
-                    var descriptionSelector = (<any>game.currentLocation).defaultDescriptionSelector;
-                    game.currentLocation.text = descriptionSelector ? descriptionSelector() : game.currentLocation.descriptions['default'];
-                }
-
-                // If the description selector did not return a text, use the default description.
-                if (!game.currentLocation.text) {
-                    game.currentLocation.text = game.currentLocation.descriptions['default'];
-                }
+                self.selectLocationDescription(game);
             });
+        }
+
+        private selectLocationDescription(game: IGame) {
+            // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
+            // use the default description selector function.
+            if (game.currentLocation.descriptionSelector) {
+                // Use this casting to allow the description selector to be a function or a string.
+                var selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
+                game.currentLocation.text = game.currentLocation.descriptions[selector];
+            }
+            else {
+                game.currentLocation.text = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
+            }
         }
     }
 

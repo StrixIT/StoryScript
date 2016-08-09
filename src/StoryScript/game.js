@@ -660,7 +660,7 @@ var StoryScript;
     }
     StoryScript.addFunctionExtensions = addFunctionExtensions;
     function addArrayExtensions() {
-        Object.defineProperty(Array.prototype, 'first', {
+        Object.defineProperty(Array.prototype, 'get', {
             enumerable: false,
             value: function (id) {
                 if (id) {
@@ -732,8 +732,7 @@ var StoryScript;
         if (typeof id === 'function') {
             id = id.name;
         }
-        var callBack = id.callBack ? id.callBack : matchById(id);
-        return Array.prototype.filter.call(array, callBack);
+        return Array.prototype.filter.call(array, matchById(id));
     }
     function matchById(id) {
         return function (x) {
@@ -1089,8 +1088,11 @@ var StoryScript;
                 var self = _this;
                 // improve, use selected action as object.
                 var action = barrier.actions.filter(function (item) { return item.text == barrier.selectedAction.text; })[0];
-                var args = [action.action, destination, barrier, action];
-                self.executeAction.apply(_this, args);
+                var result = action.action(self.game, destination, barrier, action);
+                if (!result) {
+                    barrier.actions.remove(action);
+                }
+                self.gameService.saveGame();
             };
             this.changeLocation = function (location) {
                 var self = _this;
@@ -1246,7 +1248,7 @@ var RidderMagnus;
                 head: null,
                 amulet: null,
                 body: null,
-                hands: null,
+                //hands: null,
                 leftHand: null,
                 //leftRing: null,
                 rightHand: RidderMagnus.Items.Dolk,
@@ -1406,36 +1408,35 @@ var RidderMagnus;
         TextService.prototype.$get = function (game) {
             var self = this;
             return {
-                gameName: "Ridder Magnus",
-                newGame: "Nieuw spel",
-                startAdventure: "Begin",
-                equipmentHeader: "Uitrusting",
-                yourName: "Welkom, Ridder Magnus. Vul hier je naam in:",
-                youAreHere: "Hier ben je",
-                destinations: "Hier kan je heen",
-                onTheGround: "Op de grond",
-                messages: "Wat gebeurt er?",
-                backpack: "Rugzak",
-                back: "Terug: ",
-                attack: "Val {0} aan!",
-                startOver: "Begin overnieuw",
-                resetWorld: "Reset wereld",
                 actions: "Dit kan je doen",
-                head: "Hoofd",
-                body: "Lichaam",
-                enemies: "Vijanden",
-                loading: "Laden...",
-                equip: "Pakken of aantrekken",
-                use: "Gebruiken",
-                drop: "Laten vallen",
-                leftHand: "Linkerhand",
-                rightHand: "Rechterhand",
                 amulet: "Sieraad",
+                attack: "Val {0} aan!",
+                back: "Terug: ",
+                backpack: "Rugzak",
+                body: "Lichaam",
                 congratulations: "Gefeliciteerd",
+                destinations: "Hier kan je heen",
+                drop: "Laten vallen",
+                enemies: "Vijanden",
+                equip: "Pakken of aantrekken",
+                equipmentHeader: "Uitrusting",
                 feet: "Voeten",
                 finalScore: "Eindscore",
+                head: "Hoofd",
+                leftHand: "Linkerhand",
+                loading: "Laden...",
+                messages: "Wat gebeurt er?",
+                newGame: "Nieuw spel",
+                onTheGround: "Op de grond",
+                resetWorld: "Reset wereld",
+                rightHand: "Rechterhand",
+                startAdventure: "Begin",
+                startOver: "Begin overnieuw",
+                use: "Gebruiken",
+                youAreHere: "Hier ben je",
                 youLost: "Verloren",
                 youWon: "Gewonnen",
+                yourName: "Welkom, Ridder Magnus. Vul hier je naam in:",
             };
         };
         return TextService;
@@ -1455,7 +1456,7 @@ var RidderMagnus;
                 //Met zoeken is er een ring te vinden. 
                 //Als de ring al gevonden is, levert zoeken vooral ratten op.
                 enemies: [
-                    RidderMagnus.Enemies.DireRat
+                    RidderMagnus.Enemies.ReusachtigeRat
                 ],
                 destinations: [
                     {
@@ -1472,10 +1473,13 @@ var RidderMagnus;
                             result = check * game.character.zoeken;
                             if (result > 4) {
                                 game.currentLocation.items.push(RidderMagnus.Items.GoudenRing());
-                                game.logToLocationLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
+                                game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
                             }
                             else {
                                 game.logToActionLog('Waar is dat ding toch??');
+                                game.logToActionLog('Een enorme rat bespringt je!');
+                                var enormeRat = RidderMagnus.Enemies.EnormeRat();
+                                game.currentLocation.enemies.push(enormeRat);
                                 return true;
                             }
                         }
@@ -1500,12 +1504,22 @@ var RidderMagnus;
                     }
                 ],
                 descriptionSelector: function (game) {
-                    if (game.character.items.get('GoudenRing')) {
+                    if (game.character.items.get(RidderMagnus.Items.GoudenRing)) {
                         return "een";
                     }
                     return "nul";
                     //wanneer mogelijk moet deze checken of de quest 'vind de ring' actief is.
-                }
+                },
+                actions: [
+                    {
+                        text: 'Genees me',
+                        execute: function (game) {
+                            RidderMagnus.Actions.Heal('50d1');
+                            game.logToActionLog('De koninging legt haar hand op je hoofd. Je voelt je direct beter.');
+                            return true;
+                        }
+                    }
+                ]
             };
         }
         Locations.Start = Start;
@@ -1519,7 +1533,8 @@ var RidderMagnus;
             return {
                 name: 'Dolk',
                 damage: '1',
-                equipmentType: StoryScript.EquipmentType.RightHand
+                equipmentType: StoryScript.EquipmentType.RightHand,
+                price: 1
             };
         }
         Items.Dolk = Dolk;
@@ -1529,13 +1544,60 @@ var RidderMagnus;
 (function (RidderMagnus) {
     var Items;
     (function (Items) {
+        function GeneesDrank() {
+            return {
+                name: 'Geneesdrank',
+                equipmentType: StoryScript.EquipmentType.Miscellaneous,
+                use: RidderMagnus.Actions.Heal('1d8'),
+                price: 5
+            };
+        }
+        Items.GeneesDrank = GeneesDrank;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
         function GoudenRing() {
             return {
                 name: 'Gouden ring',
-                equipmentType: StoryScript.EquipmentType.Amulet
+                damage: '0',
+                equipmentType: StoryScript.EquipmentType.Amulet,
+                price: 30
             };
         }
         Items.GoudenRing = GoudenRing;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function IJzerenHelm() {
+            return {
+                name: 'IJzeren helm',
+                defense: 1,
+                equipmentType: StoryScript.EquipmentType.Head,
+                price: 4
+            };
+        }
+        Items.IJzerenHelm = IJzerenHelm;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function KleinSchild() {
+            return {
+                name: 'Klein schild',
+                defense: 1,
+                equipmentType: StoryScript.EquipmentType.LeftHand,
+                price: 4
+            };
+        }
+        Items.KleinSchild = KleinSchild;
     })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
@@ -1546,7 +1608,8 @@ var RidderMagnus;
             return {
                 name: 'Zwaard',
                 damage: '3',
-                equipmentType: StoryScript.EquipmentType.RightHand
+                equipmentType: StoryScript.EquipmentType.RightHand,
+                price: 5
             };
         }
         Items.Zwaard = Zwaard;
@@ -1561,31 +1624,82 @@ var RidderMagnus;
 (function (RidderMagnus) {
     var Enemies;
     (function (Enemies) {
-        function DireRat() {
+        function EnormeRat() {
             return {
-                name: 'Reusachtige rat',
-                hitpoints: 13,
-                attack: '1d6+2',
-                reward: 2
+                name: 'Enorme rat',
+                pictureFileName: 'enemies/EnormeRat.jpg',
+                hitpoints: 7,
+                attack: '1d6',
+                reward: 1
             };
         }
-        Enemies.DireRat = DireRat;
+        Enemies.EnormeRat = EnormeRat;
     })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
 (function (RidderMagnus) {
     var Enemies;
     (function (Enemies) {
-        function GiantRat() {
+        function ReusachtigeRat() {
             return {
-                name: 'Enorme rat',
-                hitpoints: 7,
-                attack: '1d6',
-                reward: 1
+                name: 'Reusachtige rat',
+                pictureFileName: 'enemies/ReusachtigeRat.jpg',
+                hitpoints: 13,
+                attack: '1d6+2',
+                reward: 2
             };
         }
-        Enemies.GiantRat = GiantRat;
+        Enemies.ReusachtigeRat = ReusachtigeRat;
     })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Actions;
+    (function (Actions) {
+        function Flee(text) {
+            return {
+                text: text || 'Vluchten!',
+                active: function (game) {
+                    return !StoryScript.isEmpty(game.currentLocation.enemies);
+                },
+                execute: function (game) {
+                    var check = game.rollDice(game.character.snelheid + 'd6');
+                    var result = check * game.character.snelheid;
+                    var totalHitpoints = 0;
+                    game.currentLocation.enemies.forEach(function (enemy) {
+                        totalHitpoints += enemy.hitpoints;
+                    });
+                    if (result >= totalHitpoints / 2) {
+                        game.changeLocation();
+                    }
+                    else {
+                        game.logToActionLog('Je bent niet snel genoeg!');
+                    }
+                    ;
+                }
+            };
+        }
+        Actions.Flee = Flee;
+    })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Actions;
+    (function (Actions) {
+        function Heal(potency) {
+            return function (game, item) {
+                var healed = game.rollDice(potency);
+                game.character.currentHitpoints += healed;
+                if (item.charges) {
+                    item.charges--;
+                }
+                if (!item.charges) {
+                    game.character.items.remove(item);
+                }
+            };
+        }
+        Actions.Heal = Heal;
+    })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
@@ -3509,11 +3623,6 @@ var DangerousCave;
     (function (Actions) {
         function Inspect(text) {
             return function (game, destination, barrier, action) {
-                var index = barrier.actions.indexOf(action);
-                if (index > -1) {
-                    barrier.actions.splice(index, 1);
-                    barrier.selectedAction = barrier.actions.get();
-                }
                 if (text) {
                     game.logToLocationLog(text);
                 }
@@ -3567,11 +3676,11 @@ var DangerousCave;
             var enemyToGet = game.rollDice('1d' + enemyCount) - 1;
             var index = 0;
             for (var n in enemies) {
-                index++;
                 if (index == enemyToGet) {
                     randomEnemy = enemies[n]();
                     break;
                 }
+                index++;
             }
             randomEnemy.items = randomEnemy.items || [];
             for (var n in randomEnemy.items) {
@@ -3601,7 +3710,6 @@ var DangerousCave;
                     }
                     else {
                         settings.fail(game);
-                        return true;
                     }
                     ;
                 }
