@@ -21,12 +21,11 @@
                 {
                     text: 'Genees me',
                     execute: (game: IGame) => {
-                        Actions.Heal('50d1')
+                        Actions.Heal('50d1')(game);
                         game.logToActionLog('De koninging legt haar hand op je hoofd. Je voelt je direct beter.');
                         return true
                     }
                 }
-
             ]
         }
     }
