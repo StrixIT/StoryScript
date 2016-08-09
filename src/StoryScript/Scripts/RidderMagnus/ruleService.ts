@@ -86,6 +86,8 @@
             var self = this;
 
             //I want to erase actionlog first
+            self.game.actionLog = [];
+
             self.game.logToActionLog('Je komt aan in ' + location.name);
 
             if (location.id != 'start' && !location.hasVisited) {

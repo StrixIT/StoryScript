@@ -8,6 +8,8 @@
         private game: IGame;
         private textService: ITextService;
         private texts: any = {};
+
+        // Todo: can this be done differently?
         private nonDisplayAttributes: string[] = [ 'name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
         private characterAttributes: string[];
 
@@ -29,28 +31,20 @@
         private init() {
             var self = this;
             self.gameService.init();
-            self.reset = () => { self.gameService.reset.call(self.gameService); };
-
-            // Set the texts
-            var defaultTexts = new DefaultTexts();
-            var customTexts = (<any>self.textService).$get();
-
-            for (var n in defaultTexts) {
-                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
-            }
-
-            self.texts.format = defaultTexts.format;
 
             // Todo: type
             (<any>self.$scope).game = self.game;
             (<any>self.$scope).texts = self.texts;
 
+            self.setDisplayTexts();
             self.getCharacterAttributesToShow();
 
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+
+            self.reset = () => { self.gameService.reset.call(self.gameService); };
         }
 
         startNewGame = () => {
@@ -113,16 +107,22 @@
             return typeof action.active === "function" ? !action.active(self.game) : action.active == undefined ? false : !action.active;
         }
 
-        public executeAction(action) {
+        public executeAction(action: IAction) {
             var self = this;
 
-            if (action && typeof action === 'function') {
-                // Modify the arguments collection to add the game to the collection before
-                // calling the function specified.
+            if (action && action.execute) {
+                // Modify the arguments collection to add the game to the collection before calling the function specified.
                 var args = [].slice.call(arguments);
                 args.shift();
                 args.splice(0, 0, self.game);
-                action.apply(this, args);
+
+                // Execute the action and when nothing or false is returned, remove it from the current location.
+                var result = action.execute.apply(this, args);
+
+                // Todo: combat actions will never be removed this way.
+                if (!result && self.game.currentLocation.actions) {
+                    self.game.currentLocation.actions.remove(action);
+                }
 
                 // After each action, save the game.
                 self.gameService.saveGame();
@@ -225,6 +225,19 @@
             }
 
             self.characterAttributes.sort();
+        }
+
+        private setDisplayTexts() {
+            var self = this;
+
+            var defaultTexts = new DefaultTexts();
+            var customTexts = (<any>self.textService).$get();
+
+            for (var n in defaultTexts) {
+                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
+            }
+
+            self.texts.format = defaultTexts.format;
         }
     }
 

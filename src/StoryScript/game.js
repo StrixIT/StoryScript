@@ -1032,6 +1032,7 @@ var StoryScript;
         function MainController($scope, $window, locationService, ruleService, gameService, game, textService) {
             var _this = this;
             this.texts = {};
+            // Todo: can this be done differently?
             this.nonDisplayAttributes = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
             this.startNewGame = function () {
                 var self = _this;
@@ -1148,22 +1149,16 @@ var StoryScript;
         MainController.prototype.init = function () {
             var self = this;
             self.gameService.init();
-            self.reset = function () { self.gameService.reset.call(self.gameService); };
-            // Set the texts
-            var defaultTexts = new StoryScript.DefaultTexts();
-            var customTexts = self.textService.$get();
-            for (var n in defaultTexts) {
-                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
-            }
-            self.texts.format = defaultTexts.format;
             // Todo: type
             self.$scope.game = self.game;
             self.$scope.texts = self.texts;
+            self.setDisplayTexts();
             self.getCharacterAttributesToShow();
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+            self.reset = function () { self.gameService.reset.call(self.gameService); };
         };
         MainController.prototype.isSlotUsed = function (slot) {
             var self = this;
@@ -1174,12 +1169,15 @@ var StoryScript;
         MainController.prototype.executeAction = function (action) {
             var self = this;
             if (action && typeof action === 'function') {
-                // Modify the arguments collection to add the game to the collection before
-                // calling the function specified.
+                // Modify the arguments collection to add the game to the collection before calling the function specified.
                 var args = [].slice.call(arguments);
                 args.shift();
                 args.splice(0, 0, self.game);
-                action.apply(this, args);
+                // Execute the action and when nothing or false is returned, remove it from the current location.
+                var result = action.apply(this, args);
+                if (!result) {
+                    self.game.currentLocation.actions.remove(action);
+                }
                 // After each action, save the game.
                 self.gameService.saveGame();
             }
@@ -1210,6 +1208,15 @@ var StoryScript;
                 }
             }
             self.characterAttributes.sort();
+        };
+        MainController.prototype.setDisplayTexts = function () {
+            var self = this;
+            var defaultTexts = new StoryScript.DefaultTexts();
+            var customTexts = self.textService.$get();
+            for (var n in defaultTexts) {
+                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
+            }
+            self.texts.format = defaultTexts.format;
         };
         return MainController;
     }());
@@ -1458,13 +1465,14 @@ var RidderMagnus;
                             var check = Math.floor(Math.random() * 6 + 1);
                             var result;
                             result = check * game.character.zoeken;
-                            if (result > 4) {
-                                game.currentLocation.items.push(RidderMagnus.Items.GoudenRing());
+                            if (result > 6) {
+                                //ring geven
                                 game.logToLocationLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
                             }
                             else {
                                 game.logToActionLog('Waar is dat ding toch??');
                             }
+                            ;
                         }
                     }
                 ]
@@ -1487,7 +1495,7 @@ var RidderMagnus;
                     }
                 ],
                 descriptionSelector: function (game) {
-                    if (game.character.items.first('GoudenRing')) {
+                    if (game.character.items.first('goudenRing')) {
                         return "een";
                     }
                     return "nul";
@@ -2195,8 +2203,6 @@ var MyNewGame;
                                     ]
                                 }
                             });
-                            // Remove the action from the garden.
-                            garden.actions.splice(0, 1);
                         }
                     },
                     {
@@ -2204,10 +2210,6 @@ var MyNewGame;
                         execute: function (game) {
                             var garden = game.locations.first('Garden');
                             game.logToLocationLog("The pond is shallow. There are frogs\n                             and snails in there, but nothing of interest.");
-                            // Remove the action from the garden. Take into account
-                            // that the Search action might or might not be there
-                            var start = garden.actions.length - 1;
-                            garden.actions.splice(start, 1);
                         }
                     }
                 ]
