@@ -34,6 +34,7 @@
                 finalScore: "Eindscore",
                 youLost: "Verloren",
                 youWon: "Gewonnen",
+                
 
             };
         }
