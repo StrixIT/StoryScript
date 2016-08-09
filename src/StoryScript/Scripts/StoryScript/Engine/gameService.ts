@@ -98,14 +98,14 @@ module StoryScript {
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
 
-            var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
+            var locationName = self.dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
             if (self.game.character && locationName) {
-                var lastLocation = self.game.locations.first(locationName);
-                var previousLocationName = self.dataService.load(StoryScript.DataKeys.PREVIOUSLOCATION);
+                var lastLocation = self.game.locations.get(locationName);
+                var previousLocationName = self.dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
 
                 if (previousLocationName) {
-                    self.game.previousLocation = self.game.locations.first(previousLocationName);
+                    self.game.previousLocation = self.game.locations.get(previousLocationName);
                 }
 
                 self.locationService.changeLocation(lastLocation, self.game);
@@ -134,7 +134,7 @@ module StoryScript {
             var self = this;
             self.game.character = self.characterService.createCharacter(characterData);
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-            self.game.changeLocation(self.game.locations.first('Start'));
+            self.game.changeLocation('Start');
         }
 
         restart = (): void => {

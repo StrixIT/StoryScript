@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Items {
-    export function LeatherArmor(): StoryScript.IItem {
+    export function LeatherArmor(): IItem {
         return {
             name: 'Harnas van leer',
             defense: 2,

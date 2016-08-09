@@ -104,7 +104,7 @@ module StoryScript {
             }
 
             var key = typeof location == 'function' ? location.name : location.id ? location.id : location;
-            game.currentLocation = game.locations.first(key);
+            game.currentLocation = game.locations.get(key);
 
             // remove the return message from the current location destinations.
             if (game.currentLocation.destinations) {
@@ -126,7 +126,7 @@ module StoryScript {
                     }
 
                     if (destination.barrier && destination.barrier.key) {
-                        var barrierKey = <IKey>game.character.items.first(destination.barrier.key);
+                        var barrierKey = <IKey>game.character.items.get(destination.barrier.key);
 
                         if (barrierKey) {
 
@@ -341,7 +341,9 @@ module StoryScript {
                 // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
                 // use the default description selector function.
                 if (game.currentLocation.descriptionSelector) {
-                    game.currentLocation.text = game.currentLocation.descriptions[game.currentLocation.descriptionSelector(game)];
+                    // Use this casting to allow the description selector to be a function or a string.
+                    var selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
+                    game.currentLocation.text = game.currentLocation.descriptions[selector];
                 }
                 else {
                     var descriptionSelector = (<any>game.currentLocation).defaultDescriptionSelector;

@@ -12,12 +12,11 @@
         var index = 0;
 
         for (var n in enemies) {
-            index++;
-
             if (index == enemyToGet) {
                 randomEnemy = enemies[n]();
                 break;
             }
+            index++;
         }
 
         randomEnemy.items = randomEnemy.items || [];

@@ -14,7 +14,6 @@
                 actions: [
                     {
                         text: 'Onderzoek symbool',
-                        type: 'skill',
                         execute: function (game: IGame) {
                             game.currentLocation.text = game.currentLocation.descriptions['triggered'];
                             var troll = Enemies.Troll();

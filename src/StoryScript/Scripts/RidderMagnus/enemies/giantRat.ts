@@ -1,5 +1,5 @@
 ﻿module RidderMagnus.Enemies {
-    export function GiantRat(): StoryScript.IEnemy {
+    export function GiantRat(): IEnemy {
         return {
             name: 'Enorme rat',
             hitpoints: 7 ,

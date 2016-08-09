@@ -1,5 +1,5 @@
 ﻿module MyNewGame.Items {
-    export function LeatherBoots(): StoryScript.IItem {
+    export function LeatherBoots(): IItem {
         return {
             name: 'Leather boots',
             defense: 1,

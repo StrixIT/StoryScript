@@ -4,7 +4,7 @@
             name: 'Een kruispunt',
             events: [
                 (game: IGame) => {
-                    var orkCorridor = game.locations.first(Locations.DarkCorridor);
+                    var orkCorridor = game.locations.get(Locations.DarkCorridor);
                     var orkPresent = !orkCorridor.hasVisited;
 
                     if (game.character.oplettendheid > 2 && orkPresent) {

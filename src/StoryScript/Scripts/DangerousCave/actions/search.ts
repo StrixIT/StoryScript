@@ -1,7 +1,7 @@
 ﻿module DangerousCave {
     export interface SearchSettings {
         text?: string;
-        active?: (parameters: any) => boolean;
+        active?: (game: IGame, ...params) => boolean;
         difficulty: number;
         success: (game: IGame) => void;
         fail: (game: IGame) => void;
@@ -14,7 +14,6 @@ module DangerousCave.Actions {
 
         return {
             text: text,
-            type: 'skill',
             active: settings.active == undefined ? () => { return true; } : settings.active,
             execute: function (game: IGame) {
                 var result;

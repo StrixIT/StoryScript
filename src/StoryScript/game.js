@@ -39,7 +39,7 @@ var GameTemplate;
                 var self = _this;
                 var win = false;
                 // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 // Implement character attack here.
                 if (win) {
                     return win;
@@ -438,10 +438,10 @@ var StoryScript;
                 self.game.character = self.dataService.load(StoryScript.DataKeys.CHARACTER);
                 var locationName = self.dataService.load(StoryScript.DataKeys.LOCATION);
                 if (self.game.character && locationName) {
-                    var lastLocation = self.game.locations.first(locationName);
+                    var lastLocation = self.game.locations.get(locationName);
                     var previousLocationName = self.dataService.load(StoryScript.DataKeys.PREVIOUSLOCATION);
                     if (previousLocationName) {
-                        self.game.previousLocation = self.game.locations.first(previousLocationName);
+                        self.game.previousLocation = self.game.locations.get(previousLocationName);
                     }
                     self.locationService.changeLocation(lastLocation, self.game);
                     self.game.state = 'play';
@@ -465,7 +465,7 @@ var StoryScript;
                 var self = _this;
                 self.game.character = self.characterService.createCharacter(characterData);
                 self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-                self.game.changeLocation(self.game.locations.first('Start'));
+                self.game.changeLocation('Start');
             };
             this.restart = function () {
                 var self = _this;
@@ -820,7 +820,7 @@ var StoryScript;
                 return;
             }
             var key = typeof location == 'function' ? location.name : location.id ? location.id : location;
-            game.currentLocation = game.locations.first(key);
+            game.currentLocation = game.locations.get(key);
             // remove the return message from the current location destinations.
             if (game.currentLocation.destinations) {
                 game.currentLocation.destinations.forEach(function (destination) {
@@ -839,7 +839,7 @@ var StoryScript;
                         destination.isPreviousLocation = true;
                     }
                     if (destination.barrier && destination.barrier.key) {
-                        var barrierKey = game.character.items.first(destination.barrier.key);
+                        var barrierKey = game.character.items.get(destination.barrier.key);
                         if (barrierKey) {
                             // Todo: improve using find on barrier actions.
                             var existing = null;
@@ -1009,7 +1009,9 @@ var StoryScript;
                 // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
                 // use the default description selector function.
                 if (game.currentLocation.descriptionSelector) {
-                    game.currentLocation.text = game.currentLocation.descriptions[game.currentLocation.descriptionSelector(game)];
+                    // Use this casting to allow the description selector to be a function or a string.
+                    var selector = typeof game.currentLocation.descriptionSelector == 'function' ? game.currentLocation.descriptionSelector(game) : game.currentLocation.descriptionSelector;
+                    game.currentLocation.text = game.currentLocation.descriptions[selector];
                 }
                 else {
                     var descriptionSelector = game.currentLocation.defaultDescriptionSelector;
@@ -1085,7 +1087,8 @@ var StoryScript;
             };
             this.executeBarrierAction = function (destination, barrier) {
                 var self = _this;
-                var action = barrier.actions.first({ callBack: function (x) { return x.text == barrier.selectedAction.text; } });
+                // improve, use selected action as object.
+                var action = barrier.actions.filter(function (item) { return item.text == barrier.selectedAction.text; })[0];
                 var args = [action.action, destination, barrier, action];
                 self.executeAction.apply(_this, args);
             };
@@ -1129,9 +1132,10 @@ var StoryScript;
                 }
                 self.game.character.equipment[type] = null;
             };
-            this.fight = function (game, enemy) {
+            this.fight = function (enemy) {
                 var self = _this;
                 self.gameService.fight(enemy);
+                self.gameService.saveGame();
             };
             var self = this;
             self.$scope = $scope;
@@ -1168,14 +1172,15 @@ var StoryScript;
         };
         MainController.prototype.executeAction = function (action) {
             var self = this;
-            if (action && typeof action === 'function') {
+            if (action && action.execute) {
                 // Modify the arguments collection to add the game to the collection before calling the function specified.
                 var args = [].slice.call(arguments);
                 args.shift();
                 args.splice(0, 0, self.game);
                 // Execute the action and when nothing or false is returned, remove it from the current location.
-                var result = action.apply(this, args);
-                if (!result) {
+                var result = action.execute.apply(this, args);
+                // Todo: combat actions will never be removed this way.
+                if (!result && self.game.currentLocation.actions) {
                     self.game.currentLocation.actions.remove(action);
                 }
                 // After each action, save the game.
@@ -1241,7 +1246,7 @@ var RidderMagnus;
                 head: null,
                 amulet: null,
                 body: null,
-                //hands: null,
+                hands: null,
                 leftHand: null,
                 //leftRing: null,
                 rightHand: RidderMagnus.Items.Dolk,
@@ -1317,7 +1322,7 @@ var RidderMagnus;
             this.fight = function (enemyToFight) {
                 var self = _this;
                 // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 var check = self.game.rollDice(self.game.character.vechten + 'd6');
                 var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
                 self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
@@ -1357,6 +1362,7 @@ var RidderMagnus;
         RuleService.prototype.enterLocation = function (location) {
             var self = this;
             //I want to erase actionlog first
+            self.game.actionLog = [];
             self.game.logToActionLog('Je komt aan in ' + location.name);
             if (location.id != 'start' && !location.hasVisited) {
                 self.game.character.score += 1;
@@ -1460,19 +1466,18 @@ var RidderMagnus;
                 actions: [
                     {
                         text: 'Zoek de ring',
-                        type: 'zoeken',
                         execute: function (game) {
                             var check = Math.floor(Math.random() * 6 + 1);
                             var result;
                             result = check * game.character.zoeken;
-                            if (result > 6) {
-                                //ring geven
+                            if (result > 4) {
+                                game.currentLocation.items.push(RidderMagnus.Items.GoudenRing());
                                 game.logToLocationLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
                             }
                             else {
                                 game.logToActionLog('Waar is dat ding toch??');
+                                return true;
                             }
-                            ;
                         }
                     }
                 ]
@@ -1495,7 +1500,7 @@ var RidderMagnus;
                     }
                 ],
                 descriptionSelector: function (game) {
-                    if (game.character.items.first('goudenRing')) {
+                    if (game.character.items.get('GoudenRing')) {
                         return "een";
                     }
                     return "nul";
@@ -1527,7 +1532,6 @@ var RidderMagnus;
         function GoudenRing() {
             return {
                 name: 'Gouden ring',
-                damage: '0',
                 equipmentType: StoryScript.EquipmentType.Amulet
             };
         }
@@ -1673,7 +1677,7 @@ var QuestForTheKing;
                 var self = _this;
                 var win = false;
                 // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 // Implement character attack here.
                 if (win) {
                     return true;
@@ -1809,7 +1813,6 @@ var QuestForTheKing;
         function Flee(text) {
             return {
                 text: text || 'Vluchten!',
-                type: 'fight',
                 active: function (game) {
                     return !StoryScript.isEmpty(game.currentLocation.enemies);
                 },
@@ -1825,6 +1828,7 @@ var QuestForTheKing;
                     }
                     else {
                         game.logToActionLog('Je ontsnapping mislukt!');
+                        return true;
                     }
                     ;
                 }
@@ -1887,7 +1891,7 @@ var PathOfHeroes;
                 var self = _this;
                 var win = false;
                 // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 // Implement character attack here.
                 if (win) {
                     return true;
@@ -2040,7 +2044,7 @@ var MyNewGame;
                 var self = _this;
                 var win = false;
                 // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
                 self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
@@ -2152,6 +2156,7 @@ var MyNewGame;
                         execute: function (game) {
                             game.changeLocation('Start');
                             game.logToActionLog("You storm back into your house and slam the \n                                            door behind you. You where lucky... this time!");
+                            return true;
                         }
                     }
                 ],
@@ -2182,9 +2187,8 @@ var MyNewGame;
                     {
                         text: 'Search the Shed',
                         execute: function (game) {
-                            var garden = game.locations.first('Garden');
                             // Add a new destination.
-                            garden.destinations.push({
+                            game.currentLocation.destinations.push({
                                 text: 'Enter the basement',
                                 target: Locations.Basement,
                                 barrier: {
@@ -2208,7 +2212,6 @@ var MyNewGame;
                     {
                         text: 'Look in the pond',
                         execute: function (game) {
-                            var garden = game.locations.first('Garden');
                             game.logToLocationLog("The pond is shallow. There are frogs\n                             and snails in there, but nothing of interest.");
                         }
                     }
@@ -2295,7 +2298,6 @@ var MyNewGame;
                 pictureFileName: 'bandit.jpg',
                 hitpoints: 10,
                 attack: '1d6',
-                reward: 1,
                 items: [
                     MyNewGame.Items.Sword
                 ]
@@ -2533,7 +2535,7 @@ var DangerousCave;
             this.fight = function (enemyToFight) {
                 var self = _this;
                 // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 var check = self.game.rollDice(self.game.character.kracht + 'd6');
                 var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
                 self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
@@ -2632,7 +2634,7 @@ var DangerousCave;
         RuleService.prototype.addFleeAction = function (location) {
             var self = this;
             var numberOfEnemies = location.enemies.length;
-            var fleeAction = location.combatActions.first(DangerousCave.Actions.Flee);
+            var fleeAction = location.combatActions.get(DangerousCave.Actions.Flee);
             if (fleeAction) {
                 location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);
             }
@@ -2706,7 +2708,6 @@ var DangerousCave;
                 actions: [
                     {
                         text: 'Onderzoek symbool',
-                        type: 'skill',
                         execute: function (game) {
                             game.currentLocation.text = game.currentLocation.descriptions['triggered'];
                             var troll = DangerousCave.Enemies.Troll();
@@ -2808,7 +2809,7 @@ var DangerousCave;
                 name: 'Een kruispunt',
                 events: [
                     function (game) {
-                        var orkCorridor = game.locations.first(Locations.DarkCorridor);
+                        var orkCorridor = game.locations.get(Locations.DarkCorridor);
                         var orkPresent = !orkCorridor.hasVisited;
                         if (game.character.oplettendheid > 2 && orkPresent) {
                             game.logToLocationLog('Je hoort vanuit de westelijke gang een snuivende ademhaling.');
@@ -2883,7 +2884,6 @@ var DangerousCave;
                 actions: [
                     {
                         text: 'Schop tegen de deur',
-                        type: 'fight',
                         execute: function (game) {
                             var check = Math.floor(Math.random() * 6 + 1);
                             var result;
@@ -2894,6 +2894,7 @@ var DangerousCave;
                             }
                             else {
                                 game.logToActionLog('Auw je tenen!! De deur is nog heel.');
+                                return true;
                             }
                             ;
                         }
@@ -2989,12 +2990,11 @@ var DangerousCave;
                 actions: [
                     {
                         text: 'Klim uit de kuil',
-                        type: 'skill',
                         execute: function (game) {
                             // Todo: skill check
                             //if (false) {
                             //    game.logToActionLog('Het lukt je niet uit de kuil te klimmen.');
-                            //    return;
+                            //    return true;
                             //}
                             game.logToActionLog('Je klimt uit de kuil.');
                             game.currentLocation.destinations.push({
@@ -3004,9 +3004,6 @@ var DangerousCave;
                                 text: 'Richting ingang',
                                 target: Locations.Entry
                             });
-                            // Todo: think of something simpler to remove actions.
-                            var action = game.currentLocation.actions.first({ callBack: function (x) { return x.text === 'Klim uit de kuil'; } });
-                            game.currentLocation.actions.remove(action);
                         }
                     },
                     DangerousCave.Actions.Search({
@@ -3463,7 +3460,6 @@ var DangerousCave;
         function Flee(text) {
             return {
                 text: text || 'Vluchten!',
-                type: 'fight',
                 active: function (game) {
                     return !StoryScript.isEmpty(game.currentLocation.enemies);
                 },
@@ -3481,6 +3477,7 @@ var DangerousCave;
                         game.logToActionLog('Je ontsnapping mislukt!');
                     }
                     ;
+                    return true;
                 }
             };
         }
@@ -3515,7 +3512,7 @@ var DangerousCave;
                 var index = barrier.actions.indexOf(action);
                 if (index > -1) {
                     barrier.actions.splice(index, 1);
-                    barrier.selectedAction = barrier.actions.first();
+                    barrier.selectedAction = barrier.actions.get();
                 }
                 if (text) {
                     game.logToLocationLog(text);
@@ -3594,20 +3591,17 @@ var DangerousCave;
             var text = settings.text || 'Zoek';
             return {
                 text: text,
-                type: 'skill',
                 active: settings.active == undefined ? function () { return true; } : settings.active,
                 execute: function (game) {
-                    var check = game.rollDice(game.character.oplettendheid + 'd6');
                     var result;
+                    var check = game.rollDice(game.character.oplettendheid + 'd6');
                     result = check * game.character.oplettendheid;
-                    // Todo: think of something simpler to remove actions.
-                    var action = game.currentLocation.actions.first({ callBack: function (x) { return x.text === text; } });
-                    game.currentLocation.actions.remove(action);
                     if (result >= settings.difficulty) {
                         settings.success(game);
                     }
                     else {
                         settings.fail(game);
+                        return true;
                     }
                     ;
                 }
@@ -3623,8 +3617,7 @@ var DangerousCave;
         function Unlock(settings) {
             return {
                 text: settings.text || 'Slot openen',
-                type: 'skill',
-                active: settings.active == undefined ? true : settings.active,
+                active: settings.active == undefined ? function () { return true; } : settings.active,
                 execute: function (game) {
                     var check = game.rollDice(game.character.vlugheid + 'd6');
                     var result;
@@ -3635,6 +3628,7 @@ var DangerousCave;
                     else {
                         settings.fail(game);
                         game.logToActionLog('Het lukt niet.');
+                        return true;
                     }
                     ;
                 }

@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Enemies {
-    export function Orc(): StoryScript.IEnemy {
+    export function Orc(): IEnemy {
         return {
             name: 'Ork',
             hitpoints: 12,

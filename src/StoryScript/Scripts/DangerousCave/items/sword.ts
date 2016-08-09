@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Items {
-    export function Sword(): StoryScript.IItem {
+    export function Sword(): IItem {
         return {
             name: 'Zwaard',
             damage: '3',

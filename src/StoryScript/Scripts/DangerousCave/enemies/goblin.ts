@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Enemies {
-    export function Goblin(): StoryScript.IEnemy {
+    export function Goblin(): IEnemy {
         return {
             name: 'Goblin',
             hitpoints: 6,

@@ -2,17 +2,16 @@
     export interface ICompiledLocation {
         id?: string;
         name: string;
-        fileLocation?: string;
+        descriptionSelector?: string | ((game: IGame) => string);
         enemies?: ICollection<IEnemy>;
         items?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
-        events?: [(game: IGame) => void];
+        events?: ICollection<(game: IGame) => void>;
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
-        descriptionSelector?: (game: IGame) => string;
         text: string;
         hasVisited: boolean;
-        descriptions: any;
+        descriptions: { [key: string] : string; };
         log: string[];
     }
 }

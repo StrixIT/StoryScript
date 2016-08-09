@@ -1,5 +1,5 @@
 ﻿module RidderMagnus.Items {
-    export function Zwaard(): StoryScript.IItem {
+    export function Zwaard(): IItem {
         return {
             name: 'Zwaard',
             damage: '3',

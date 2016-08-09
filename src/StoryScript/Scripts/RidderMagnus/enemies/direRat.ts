@@ -1,5 +1,5 @@
 ﻿module RidderMagnus.Enemies {
-    export function DireRat(): StoryScript.IEnemy {
+    export function DireRat(): IEnemy {
         return {
             name: 'Reusachtige rat',
             hitpoints: 13,

@@ -35,7 +35,7 @@
     }
 
     export function addArrayExtensions() {
-        Object.defineProperty(Array.prototype, 'first', {
+        Object.defineProperty(Array.prototype, 'get', {
             enumerable: false,
             value: function (id: any) {
                 if (id) {
@@ -113,8 +113,7 @@
             id = id.name;
         }
 
-        var callBack = id.callBack ? id.callBack : matchById(id);
-        return Array.prototype.filter.call(array, callBack);
+        return Array.prototype.filter.call(array, matchById(id));
     }
 
     function matchById(id) {

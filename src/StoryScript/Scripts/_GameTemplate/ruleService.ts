@@ -39,7 +39,7 @@
             var win = false;
 
             // Todo: change when multiple enemies of the same type can be present.
-            var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+            var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
 
             // Implement character attack here.
 

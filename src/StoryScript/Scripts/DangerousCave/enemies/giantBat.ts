@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Enemies {
-    export function GiantBat(): StoryScript.IEnemy {
+    export function GiantBat(): IEnemy {
         return {
             name: 'Reuzenvleermuis',
             hitpoints: 7,

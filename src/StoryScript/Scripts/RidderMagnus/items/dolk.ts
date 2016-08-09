@@ -1,5 +1,5 @@
 ﻿module RidderMagnus.Items {
-    export function Dolk(): StoryScript.IItem {
+    export function Dolk(): IItem {
         return {
             name: 'Dolk',
             damage: '1',

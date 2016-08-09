@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Items {
-    export function LeatherHelmet(): StoryScript.IItem {
+    export function LeatherHelmet(): IItem {
         return {
             name: 'Helm van leer',
             defense: 1,

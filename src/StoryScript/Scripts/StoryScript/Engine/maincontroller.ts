@@ -131,9 +131,16 @@
 
         executeBarrierAction = (destination, barrier: IBarrier) => {
             var self = this;
-            var action = barrier.actions.first({ callBack: (x: IBarrier) => x.text == barrier.selectedAction.text });
-            var args = [action.action, destination, barrier, action];
-            self.executeAction.apply(this, args);
+
+            // improve, use selected action as object.
+            var action = barrier.actions.filter((item: IBarrier) => { return item.text == barrier.selectedAction.text; })[0];
+            var result = action.action(self.game, destination, barrier, action);
+
+            if (!result) {
+                barrier.actions.remove(action);
+            }
+
+            self.gameService.saveGame();
         }
 
         changeLocation = (location: string) => {

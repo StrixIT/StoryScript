@@ -1,5 +1,5 @@
 ﻿module MyNewGame.Items {
-    export function Sword(): StoryScript.IItem {
+    export function Sword(): IItem {
         return {
             name: 'Sword',
             damage: '3',

@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Items {
-    export function Dagger(): StoryScript.IItem {
+    export function Dagger(): IItem {
         return {
             name: 'Dolk',
             damage: '1',

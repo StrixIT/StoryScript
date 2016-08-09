@@ -14,7 +14,7 @@
         };
         createCharacterSheet?: ICreateCharacter;
         character: ICharacter;
-        locations: ICollection<ICompiledLocation>;
+        locations: ICompiledCollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
 
@@ -22,7 +22,7 @@
         actionLog: string[];
         state: string;
 
-        changeLocation(location?: any): void;
+        changeLocation(location?: string | (() => ILocation)): void;
         rollDice(dice: string): number;
         calculateBonus(person: IActor, type: string): number;
         logToLocationLog(message: string): void;

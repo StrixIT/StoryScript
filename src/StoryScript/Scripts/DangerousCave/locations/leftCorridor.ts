@@ -13,12 +13,11 @@
             actions: [
                 {
                     text: 'Klim uit de kuil',
-                    type: 'skill',
                     execute: (game: IGame) => {
                         // Todo: skill check
                         //if (false) {
                         //    game.logToActionLog('Het lukt je niet uit de kuil te klimmen.');
-                        //    return;
+                        //    return true;
                         //}
 
                         game.logToActionLog('Je klimt uit de kuil.');
@@ -33,10 +32,6 @@
                                 target: Locations.Entry
                             }
                         );
-
-                        // Todo: think of something simpler to remove actions.
-                        var action = game.currentLocation.actions.first({ callBack: (x: StoryScript.IAction) => { return x.text === 'Klim uit de kuil'; } });
-                        game.currentLocation.actions.remove(action);
                     }
                 },
                 Actions.Search({

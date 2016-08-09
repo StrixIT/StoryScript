@@ -2,12 +2,12 @@
     export interface ILocation {
         id?: string;
         name: string;
+        descriptionSelector?: string | ((game: IGame) => string);
         enemies?: [() => IEnemy];
         items?: [() => IItem];
         destinations?: ICollection<IDestination>;
-        events?: [(game: IGame) => void];
+        events?: ICollection<(game: IGame) => void>;
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
-        descriptionSelector?: (game: IGame) => string;
     }
 }

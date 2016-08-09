@@ -18,6 +18,7 @@
                         game.changeLocation('Start');
                         game.logToActionLog(`You storm back into your house and slam the 
                                             door behind you. You where lucky... this time!`);
+                        return true;
                     }
                 }
             ],

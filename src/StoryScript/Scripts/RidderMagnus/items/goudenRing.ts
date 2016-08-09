@@ -1,8 +1,7 @@
 ﻿module RidderMagnus.Items {
-    export function GoudenRing(): StoryScript.IItem {
+    export function GoudenRing(): IItem {
         return {
             name: 'Gouden ring',
-            damage: '0',
             equipmentType: StoryScript.EquipmentType.Amulet
         }
     }

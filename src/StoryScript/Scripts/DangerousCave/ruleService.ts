@@ -107,7 +107,7 @@
             var self = this;
 
             // Todo: change when multiple enemies of the same type can be present.
-            var enemy = self.game.currentLocation.enemies.first(enemyToFight.id);
+            var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
             var check = self.game.rollDice(self.game.character.kracht + 'd6');
 
             var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
@@ -184,7 +184,7 @@
         private addFleeAction(location: StoryScript.ICompiledLocation): void {
             var self = this;
             var numberOfEnemies = location.enemies.length;
-            var fleeAction = location.combatActions.first(Actions.Flee);
+            var fleeAction = location.combatActions.get(Actions.Flee);
 
             if (fleeAction) {
                 location.combatActions.splice(location.combatActions.indexOf(fleeAction), 1);

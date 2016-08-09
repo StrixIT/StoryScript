@@ -1,6 +1,6 @@
 ﻿module StoryScript {
     export interface IRuleService {
-        setupGame?(game: StoryScript.IGame): void;
+        setupGame?(game: IGame): void;
         getCreateCharacterSheet(): ICreateCharacter
         createCharacter(characterData: ICreateCharacter): ICharacter;
         addEnemyToLocation?(location: ICompiledLocation, enemy: IEnemy): void;

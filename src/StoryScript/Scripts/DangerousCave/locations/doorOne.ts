@@ -15,7 +15,6 @@
             actions: [
                 {
                     text: 'Schop tegen de deur',
-                    type: 'fight',
                     execute: (game: IGame) => {
                         var check = Math.floor(Math.random() * 6 + 1);
                         var result;
@@ -27,6 +26,7 @@
                         }
                         else {
                             game.logToActionLog('Auw je tenen!! De deur is nog heel.');
+                            return true;
                         };
                     }
                 },

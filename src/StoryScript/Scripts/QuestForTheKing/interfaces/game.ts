@@ -1,7 +1,7 @@
 ﻿module QuestForTheKing {
     export interface IGame extends StoryScript.IGame {
         character: Character;
-        locations: StoryScript.ICollection<ICompiledLocation>;
+        locations: StoryScript.ICompiledCollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
         highScores: StoryScript.ScoreEntry[];
