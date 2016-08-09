@@ -2,7 +2,10 @@
     export function GoudenRing(): IItem {
         return {
             name: 'Gouden ring',
-            equipmentType: StoryScript.EquipmentType.Amulet
+            damage: '0',
+            equipmentType: StoryScript.EquipmentType.Amulet ,
+            price: 30
+            //requirement: sluipen >0
         }
     }
 }

@@ -3,7 +3,9 @@
         return {
             name: 'Dolk',
             damage: '1',
-            equipmentType: StoryScript.EquipmentType.RightHand
+            equipmentType: StoryScript.EquipmentType.RightHand ,
+            price: 1 
+            //requirement: vechten >0
         }
     }
 }

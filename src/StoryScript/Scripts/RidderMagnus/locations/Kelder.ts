@@ -6,7 +6,7 @@
             //Met zoeken is er een ring te vinden. 
             //Als de ring al gevonden is, levert zoeken vooral ratten op.
             enemies: [
-                Enemies.DireRat
+                Enemies.ReusachtigeRat
             ],
             destinations: [
                 {
@@ -24,11 +24,15 @@
 
                         if (result > 4) {
                             game.currentLocation.items.push(Items.GoudenRing());
-                            game.logToLocationLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
+                            game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
                         }
                         else {
                             game.logToActionLog('Waar is dat ding toch??');
-                            return true;
+                            game.logToActionLog('Een enorme rat bespringt je!');
+                            var enormeRat = Enemies.EnormeRat();
+                            game.currentLocation.enemies.push(enormeRat);
+                            return true
+                            //En hier de actie weer terug zetten!
                         }
                     }
                 }

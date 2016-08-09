@@ -1,5 +1,6 @@
 ﻿module RidderMagnus {
     export interface IItem extends StoryScript.IItem {
-        damage?: string;
+        price: number;
+        // requirement: skill-waarde - dit moet in ruleservice zitten
     }
 }

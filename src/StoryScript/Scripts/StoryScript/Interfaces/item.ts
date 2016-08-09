@@ -4,7 +4,12 @@
         pictureFileName?: string;
         equipmentType: EquipmentType;
         description?: string;
+        damage?: string;
+        defense?: number;
+        charges?: number;
         bonuses?: any;
-        use?: (...params) => void;
+        actions?: ICollection<IAction>;
+        use?: (...params) => void
+        //requirement?
     }
 }
