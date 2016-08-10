@@ -41,8 +41,7 @@
                             game.currentLocation.enemies.push(enormeRat);
                             return true
 
-                            //er moet nog een 'tussen'-resultaat bij, waarbij je een goudstuk vindt ipv de ring (zodra er goud is)
-                            //dit moet makkelijker zijn als je licht hebt, dan nauwelijks kans op ratten (via betere zoeken skill of via functie?)
+                           //dit moet makkelijker zijn als je licht hebt, dan nauwelijks kans op ratten (via betere zoeken skill of via functie?)
                         }
                     }
                 }

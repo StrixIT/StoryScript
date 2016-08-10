@@ -107,9 +107,9 @@
 
         fight = (enemy: StoryScript.IEnemy): boolean => {
             var self = this;
-            var check = self.game.rollDice(self.game.character.vechten + 'd6');
+            var check = self.game.rollDice('d6' + self.game.character.vechten);
 
-            var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
+            var characterDamage = check + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
             self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
 
             enemy.hitpoints -= characterDamage;

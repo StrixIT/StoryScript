@@ -232,17 +232,19 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var DataService = (function () {
-        function DataService($q, $http, $localStorage) {
+        function DataService($q, $http, $localStorage, gameSpaceName) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.gameSpaceName = gameSpaceName;
         }
-        DataService.prototype.$get = function ($q, $http, $localStorage) {
+        DataService.prototype.$get = function ($q, $http, $localStorage, gameSpaceName) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.gameSpaceName = gameSpaceName;
             return {
                 functionList: self.functionList,
                 getDescription: self.getDescription,
@@ -266,12 +268,12 @@ var StoryScript;
         DataService.prototype.save = function (key, value, pristineValues) {
             var self = this;
             var clone = self.buildClone(value, pristineValues, null);
-            self.$localStorage[key] = JSON.stringify({ data: clone });
+            self.$localStorage[self.gameSpaceName + '_' + key] = JSON.stringify({ data: clone });
         };
         DataService.prototype.load = function (key) {
             var self = this;
             try {
-                var data = JSON.parse(self.$localStorage[key]).data;
+                var data = JSON.parse(self.$localStorage[self.gameSpaceName + '_' + key]).data;
                 if (StoryScript.isEmpty(data)) {
                     return null;
                 }
@@ -360,7 +362,7 @@ var StoryScript;
         return DataService;
     }());
     StoryScript.DataService = DataService;
-    DataService.$inject = ['$q', '$http', '$localStorage', 'definitions'];
+    DataService.$inject = ['$q', '$http', '$localStorage', 'gameNameSpace'];
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -1524,6 +1526,54 @@ var RidderMagnus;
 (function (RidderMagnus) {
     var Locations;
     (function (Locations) {
+        function SlaapkamerPrinses() {
+            return {
+                name: 'De Slaapkamer van de Prinses',
+                destinations: [
+                    {
+                        text: 'Naar beneden',
+                        target: Locations.Start
+                    }
+                ],
+                actions: [
+                    {
+                        //Toelichting: dit is een zoekactie, goed resultaat vind de ratman, zodat je hem kan aanvallen met voordeel
+                        text: 'Doorzoek de kamer',
+                        execute: function (game) {
+                            var check = Math.floor(Math.random() * 6 + 1);
+                            var result;
+                            result = check + game.character.sluipen;
+                            if (result > 6) {
+                                game.logToLocationLog('Daar! Onder het bed ligt echt een monster. Het heeft jou nog niet gezien.');
+                                game.currentLocation.actions.push({
+                                    text: 'Besluip het monster',
+                                    type: StoryScript.ActionType.Combat,
+                                    execute: function (game) {
+                                        var ratMan = RidderMagnus.Enemies.RatMan();
+                                        game.currentLocation.enemies.push(ratMan);
+                                        var damage = game.character.sluipen * game.character.vechten;
+                                        ratMan.hitpoints -= damage;
+                                        game.logToLocationLog('Je valt onverhoeds aan en doet ' + damage + ' schade.');
+                                    }
+                                });
+                            }
+                            else {
+                                game.logToActionLog('Opeens word je aangevallen door een monster! Het lijkt op een gigantische rat die op zijn achterpoten loopt.');
+                                var ratMan = RidderMagnus.Enemies.RatMan();
+                                game.currentLocation.enemies.push(ratMan);
+                            }
+                        }
+                    }
+                ]
+            };
+        }
+        Locations.SlaapkamerPrinses = SlaapkamerPrinses;
+    })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Locations;
+    (function (Locations) {
         function Start() {
             return {
                 name: 'De Troonzaal',
@@ -1531,15 +1581,21 @@ var RidderMagnus;
                     {
                         text: 'Naar de kelder!',
                         target: Locations.Kelder
+                    },
+                    {
+                        text: 'Naar de kamer van de prinses!',
+                        target: Locations.SlaapkamerPrinses
                     }
                 ],
-                //
+                //elke destination is voor een quest en moeten dus 1 voor 1 zichtbaar worden
                 descriptionSelector: function (game) {
                     if (game.character.items.get(RidderMagnus.Items.GoudenRing)) {
                         return "een";
                     }
                     return "nul";
                     //wanneer mogelijk moet deze checken of de quest 'vind de ring' actief is.
+                    //quest 2: prinses zegt dat er een monster in haar kamer is. Doe er wat aan.
+                    //activeer dan pas nieuwe destination: Slaapkamer prinses
                 },
                 actions: [
                     {
@@ -1751,6 +1807,24 @@ var RidderMagnus;
             };
         }
         Enemies.EnormeRat = EnormeRat;
+    })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Enemies;
+    (function (Enemies) {
+        function RatMan() {
+            return {
+                name: 'Ratman',
+                pictureFileName: 'enemies/RatMan.jpg',
+                hitpoints: 15,
+                attack: '2d4+1',
+                defense: 1,
+                reward: 1,
+                goudstukken: 2
+            };
+        }
+        Enemies.RatMan = RatMan;
     })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
