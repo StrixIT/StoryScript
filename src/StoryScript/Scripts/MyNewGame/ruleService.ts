@@ -24,6 +24,18 @@
             return {
                 steps: [
                     {
+                        attributes: [
+                            {
+                                question: 'What is your name?',
+                                entries: [
+                                    {
+                                        attribute: 'name'
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         questions: [
                             {
                                 question: 'As a child, you were always...',

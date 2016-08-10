@@ -24,9 +24,14 @@
     }
 
     export interface ICreateCharacterAttribute {
+        question: string;
+        entries: ICreateCharacterAttributeEntry[];
+    }
+
+    export interface ICreateCharacterAttributeEntry {
         attribute: string;
-        value: number;
-        min: number;
-        max: number;
+        value?: number | string;
+        min?: number;
+        max?: number;
     }
 }

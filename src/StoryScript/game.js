@@ -211,9 +211,11 @@ var StoryScript;
                 characterData.steps.forEach(function (step) {
                     if (step.attributes) {
                         step.attributes.forEach(function (attribute) {
-                            if (character.hasOwnProperty(attribute.attribute)) {
-                                character[attribute.attribute] = attribute.value;
-                            }
+                            attribute.entries.forEach(function (entry) {
+                                if (character.hasOwnProperty(entry.attribute)) {
+                                    character[entry.attribute] = entry.value;
+                                }
+                            });
                         });
                     }
                 });
@@ -232,17 +234,19 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     var DataService = (function () {
-        function DataService($q, $http, $localStorage) {
+        function DataService($q, $http, $localStorage, gameSpaceName) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.gameSpaceName = gameSpaceName;
         }
-        DataService.prototype.$get = function ($q, $http, $localStorage) {
+        DataService.prototype.$get = function ($q, $http, $localStorage, gameSpaceName) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.gameSpaceName = gameSpaceName;
             return {
                 functionList: self.functionList,
                 getDescription: self.getDescription,
@@ -266,12 +270,12 @@ var StoryScript;
         DataService.prototype.save = function (key, value, pristineValues) {
             var self = this;
             var clone = self.buildClone(value, pristineValues, null);
-            self.$localStorage[key] = JSON.stringify({ data: clone });
+            self.$localStorage[self.gameSpaceName + '_' + key] = JSON.stringify({ data: clone });
         };
         DataService.prototype.load = function (key) {
             var self = this;
             try {
-                var data = JSON.parse(self.$localStorage[key]).data;
+                var data = JSON.parse(self.$localStorage[self.gameSpaceName + '_' + key]).data;
                 if (StoryScript.isEmpty(data)) {
                     return null;
                 }
@@ -360,7 +364,7 @@ var StoryScript;
         return DataService;
     }());
     StoryScript.DataService = DataService;
-    DataService.$inject = ['$q', '$http', '$localStorage', 'definitions'];
+    DataService.$inject = ['$q', '$http', '$localStorage', 'gameNameSpace'];
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -792,8 +796,8 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             self.pristineLocations = self.buildWorld();
+            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             if (StoryScript.isEmpty(locations)) {
                 self.dataService.save(StoryScript.DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
                 locations = self.dataService.load(StoryScript.DataKeys.WORLD);
@@ -2636,6 +2640,18 @@ var MyNewGame;
             this.getCreateCharacterSheet = function () {
                 return {
                     steps: [
+                        {
+                            attributes: [
+                                {
+                                    question: 'What is your name?',
+                                    entries: [
+                                        {
+                                            attribute: 'name'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         {
                             questions: [
                                 {
