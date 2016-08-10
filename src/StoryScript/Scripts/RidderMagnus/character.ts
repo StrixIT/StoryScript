@@ -36,7 +36,7 @@
                 //hands: null,
                 leftHand: null,
                 //leftRing: null,
-                rightHand: <any>Items.Dolk,
+                rightHand: Items.Dolk(),
                 //rightRing: null,
                 //legs: null,
                 feet: null

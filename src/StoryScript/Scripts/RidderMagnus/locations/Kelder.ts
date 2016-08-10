@@ -29,7 +29,7 @@
                             game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
                             game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
                         }
-                        if (result = 3, 4, 5) {
+                        else if (result >= 3 && result <= 5) {
                             game.character.goudstukken += 1;
                             game.logToActionLog('Daar glinstert iets! Oh, het is een goudstuk.');
                             return true
