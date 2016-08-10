@@ -11,5 +11,6 @@
         actions?: ICollection<IAction>;
         use?: (...params) => void
         //requirement?
+        //price/value?
     }
 }
