@@ -1,8 +1,8 @@
 ﻿module QuestForTheKing.Items {
-    export function Dagger(): IItem {
+    export function LongSword(): StoryScript.IItem {
         return {
-            name: 'Dolk',
-            damage: '1',
+            name: 'Long Sword',
+            damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand
         }
     }

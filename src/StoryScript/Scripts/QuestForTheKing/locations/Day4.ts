@@ -1,12 +1,14 @@
 ﻿module QuestForTheKing.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function Day4(): StoryScript.ILocation {
         return {
-            name: 'Start',
+            name: 'Day 4',
             destinations: [
                 {
-                    text: 'Day 1',
-                    target: Locations.Day1
-                }
+                    text: 'Sir Ayric Defeated',
+                    target: Locations.SirAyricDefeated
+
+                },
+
             ],
             actions: [
                 //Actions.Search({

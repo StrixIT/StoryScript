@@ -1,12 +1,13 @@
 ﻿module QuestForTheKing.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function Day3(): StoryScript.ILocation {
         return {
-            name: 'Start',
+            name: 'Day 3',
             destinations: [
                 {
-                    text: 'Day 1',
-                    target: Locations.Day1
-                }
+                    text: 'Shieldmaiden Defeated',
+                    target: Locations.ShieldmaidenDefeated
+                },
+
             ],
             actions: [
                 //Actions.Search({

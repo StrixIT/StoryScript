@@ -1,12 +1,23 @@
 ﻿module QuestForTheKing.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function NoblemanDefeated(): StoryScript.ILocation {
         return {
-            name: 'Start',
+            name: 'Nobleman Defeated',
             destinations: [
                 {
-                    text: 'Day 1',
-                    target: Locations.Day1
-                }
+                    text: 'Night in your Tent',
+                    target: Locations.NightInYourTent
+                },
+                {
+
+                    text: 'Weapon Smith',
+                    target: Locations.WeaponSmith2
+                },
+                {
+
+                    text: 'Healers Tent',
+                    target: Locations.HealersTent2
+                },
+
             ],
             actions: [
                 //Actions.Search({

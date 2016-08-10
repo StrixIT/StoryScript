@@ -1,12 +1,18 @@
 ﻿module QuestForTheKing.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function HealersTent(): StoryScript.ILocation {
         return {
-            name: 'Start',
+            name: 'Healers Tent',
             destinations: [
                 {
-                    text: 'Day 1',
-                    target: Locations.Day1
-                }
+                    text: 'Day 2',
+                    target: Locations.Day2
+                },
+                {
+
+                    text: 'Weapon Smith',
+                    target: Locations.WeaponSmith
+                },
+               
             ],
             actions: [
                 //Actions.Search({

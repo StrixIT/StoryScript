@@ -1,11 +1,11 @@
 ﻿module QuestForTheKing.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function NightInYourTent(): StoryScript.ILocation {
         return {
-            name: 'Start',
+            name: 'Night in your Tent',
             destinations: [
                 {
-                    text: 'Day 1',
-                    target: Locations.Day1
+                    text: 'Assassins Defeated',
+                    target: Locations.AssassinsDefeated
                 }
             ],
             actions: [
