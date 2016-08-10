@@ -50,8 +50,8 @@ module StoryScript {
 
         public loadWorld(): ICollection<ICompiledLocation> {
             var self = this;
-            var locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
             self.pristineLocations = self.buildWorld();
+            var locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
 
             if (isEmpty(locations)) {
                 self.dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
