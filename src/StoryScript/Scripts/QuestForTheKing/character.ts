@@ -1,8 +1,8 @@
 ﻿module QuestForTheKing {
     export class Character implements StoryScript.ICharacter {
         name: string;
-        hitpoints: number = 20;
-        currentHitpoints: number = 20;
+        hitpoints: number = 200;
+        currentHitpoints: number = 200;
         score: number = 0;
 
         strength: number = 1;
