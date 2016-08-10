@@ -96,3 +96,16 @@ table td {
             border-top: none;
             border-bottom: 0;
         }
+
+.question-row, .attribute-row {
+    margin: 10px 0;
+}
+
+.btn.fight {
+    display: block;
+    margin-bottom: 10px;
+}
+
+blockquote {
+    font-size: smaller;
+}

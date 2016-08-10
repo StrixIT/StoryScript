@@ -986,6 +986,7 @@ var StoryScript;
         LocationService.prototype.loadLocationDescriptions = function (game) {
             var self = this;
             if (game.currentLocation.descriptions) {
+                self.selectLocationDescription(game);
                 return;
             }
             self.dataService.getDescription(game.currentLocation.id).then(function (descriptions) {
@@ -1005,22 +1006,20 @@ var StoryScript;
                     }
                     game.currentLocation.descriptions[name] = node.innerHTML;
                 }
-                // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
-                // use the default description selector function.
-                if (game.currentLocation.descriptionSelector) {
-                    // Use this casting to allow the description selector to be a function or a string.
-                    var selector = typeof game.currentLocation.descriptionSelector == 'function' ? game.currentLocation.descriptionSelector(game) : game.currentLocation.descriptionSelector;
-                    game.currentLocation.text = game.currentLocation.descriptions[selector];
-                }
-                else {
-                    var descriptionSelector = game.currentLocation.defaultDescriptionSelector;
-                    game.currentLocation.text = descriptionSelector ? descriptionSelector() : game.currentLocation.descriptions['default'];
-                }
-                // If the description selector did not return a text, use the default description.
-                if (!game.currentLocation.text) {
-                    game.currentLocation.text = game.currentLocation.descriptions['default'];
-                }
+                self.selectLocationDescription(game);
             });
+        };
+        LocationService.prototype.selectLocationDescription = function (game) {
+            // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
+            // use the default description selector function.
+            if (game.currentLocation.descriptionSelector) {
+                // Use this casting to allow the description selector to be a function or a string.
+                var selector = typeof game.currentLocation.descriptionSelector == 'function' ? game.currentLocation.descriptionSelector(game) : game.currentLocation.descriptionSelector;
+                game.currentLocation.text = game.currentLocation.descriptions[selector];
+            }
+            else {
+                game.currentLocation.text = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
+            }
         };
         return LocationService;
     }());
@@ -1472,7 +1471,8 @@ var RidderMagnus;
                             var result;
                             result = check * game.character.zoeken;
                             if (result > 4) {
-                                game.currentLocation.items.push(RidderMagnus.Items.GoudenRing());
+                                // Todo: make this easy to do!
+                                game.currentLocation.items.push(StoryScript.definitionToObject(RidderMagnus.Items.GoudenRing));
                                 game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
                             }
                             else {
@@ -1514,7 +1514,7 @@ var RidderMagnus;
                     {
                         text: 'Genees me',
                         execute: function (game) {
-                            RidderMagnus.Actions.Heal('50d1');
+                            RidderMagnus.Actions.Heal('50d1')(game);
                             game.logToActionLog('De koninging legt haar hand op je hoofd. Je voelt je direct beter.');
                             return true;
                         }
@@ -1689,7 +1689,7 @@ var RidderMagnus;
         function Heal(potency) {
             return function (game, item) {
                 var healed = game.rollDice(potency);
-                game.character.currentHitpoints += healed;
+                game.character.currentHitpoints = Math.min(game.character.hitpoints, game.character.currentHitpoints += healed);
                 if (item.charges) {
                     item.charges--;
                 }
@@ -1856,13 +1856,296 @@ var QuestForTheKing;
 (function (QuestForTheKing) {
     var Locations;
     (function (Locations) {
-        function Start() {
+        function AssassinsDefeated() {
             return {
-                name: 'De ingang van de Gevaarlijke Grot',
+                name: 'Night in your Tent',
                 destinations: [
                     {
-                        text: 'Ga de grot in',
-                        target: Locations.Start
+                        text: 'Day 3',
+                        target: Locations.Day3
+                    }
+                ],
+                actions: []
+            };
+        }
+        Locations.AssassinsDefeated = AssassinsDefeated;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function Day1() {
+            return {
+                name: 'Day 1',
+                destinations: [
+                    {
+                        text: 'Farmboy Defeated',
+                        target: Locations.FarmboyDefeated
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.Day1 = Day1;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function Day2() {
+            return {
+                name: 'Day 2',
+                destinations: [
+                    {
+                        text: 'Nobleman Defeated',
+                        target: Locations.NoblemanDefeated
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.Day2 = Day2;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function Day3() {
+            return {
+                name: 'Day 3',
+                destinations: [
+                    {
+                        text: 'Shieldmaiden Defeated',
+                        target: Locations.ShieldmaidenDefeated
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.Day3 = Day3;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function Day4() {
+            return {
+                name: 'Day 4',
+                destinations: [
+                    {
+                        text: 'Sir Ayric Defeated',
+                        target: Locations.SirAyricDefeated
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.Day4 = Day4;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function FarmboyDefeated() {
+            return {
+                name: 'Farmboy Defeated',
+                destinations: [
+                    {
+                        text: 'Day 2',
+                        target: Locations.Day2
+                    },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.FarmboyDefeated = FarmboyDefeated;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function HealersTent() {
+            return {
+                name: 'Healers Tent',
+                destinations: [
+                    {
+                        text: 'Day 2',
+                        target: Locations.Day2
+                    },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.HealersTent = HealersTent;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function HealersTent2() {
+            return {
+                name: 'Healers Tent',
+                destinations: [
+                    {
+                        text: 'Night in your Tent',
+                        target: Locations.NightInYourTent
+                    },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith2
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.HealersTent2 = HealersTent2;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function HealersTent3() {
+            return {
+                name: 'Healers Tent',
+                destinations: [
+                    {
+                        text: 'Day 4',
+                        target: Locations.Day4
+                    },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith3
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.HealersTent3 = HealersTent3;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function NightInYourTent() {
+            return {
+                name: 'Night in your Tent',
+                destinations: [
+                    {
+                        text: 'Assassins Defeated',
+                        target: Locations.AssassinsDefeated
+                    }
+                ],
+                actions: []
+            };
+        }
+        Locations.NightInYourTent = NightInYourTent;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function NoblemanDefeated() {
+            return {
+                name: 'Nobleman Defeated',
+                destinations: [
+                    {
+                        text: 'Night in your Tent',
+                        target: Locations.NightInYourTent
+                    },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith2
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent2
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.NoblemanDefeated = NoblemanDefeated;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function ShieldmaidenDefeated() {
+            return {
+                name: 'Shieldmaiden Defeated',
+                destinations: [
+                    {
+                        text: 'Day 4',
+                        target: Locations.Day4
+                    },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith3
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent3
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.ShieldmaidenDefeated = ShieldmaidenDefeated;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function SirAyricDefeated() {
+            return {
+                name: 'Sir Ayric Defeated',
+                destinations: [
+                    {
+                        text: 'Victory',
+                        target: Locations.Victory
+                    }
+                ],
+                actions: []
+            };
+        }
+        Locations.SirAyricDefeated = SirAyricDefeated;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function Start() {
+            return {
+                name: 'Start',
+                destinations: [
+                    {
+                        text: 'Day 1',
+                        target: Locations.Day1
                     }
                 ],
                 actions: []
@@ -1873,46 +2156,104 @@ var QuestForTheKing;
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
-    var Items;
-    (function (Items) {
-        function Dagger() {
+    var Locations;
+    (function (Locations) {
+        function Victory() {
             return {
-                name: 'Dolk',
-                damage: '1',
-                equipmentType: StoryScript.EquipmentType.LeftHand
+                name: 'Victory',
+                destinations: [
+                    {
+                        text: 'Start Again',
+                        target: Locations.Start
+                    }
+                ],
+                actions: []
             };
         }
-        Items.Dagger = Dagger;
-    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
+        Locations.Victory = Victory;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function WeaponSmith() {
+            return {
+                name: 'Weapon Smith',
+                destinations: [
+                    {
+                        text: 'Day 2',
+                        target: Locations.Day2
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.WeaponSmith = WeaponSmith;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function WeaponSmith2() {
+            return {
+                name: 'Weapon Smith',
+                destinations: [
+                    {
+                        text: 'Night in your Tent',
+                        target: Locations.NightInYourTent
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent2
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.WeaponSmith2 = WeaponSmith2;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Locations;
+    (function (Locations) {
+        function WeaponSmith3() {
+            return {
+                name: 'Weapon Smith',
+                destinations: [
+                    {
+                        text: 'Day 4',
+                        target: Locations.Day4
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent3
+                    },
+                ],
+                actions: []
+            };
+        }
+        Locations.WeaponSmith3 = WeaponSmith3;
+    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
     var Items;
     (function (Items) {
-        function Lantern() {
+        function LongSword() {
             return {
-                name: 'Lantaren',
-                bonuses: {
-                    perception: 1
-                },
+                name: 'Long Sword',
+                damage: '2',
                 equipmentType: StoryScript.EquipmentType.LeftHand
             };
         }
-        Items.Lantern = Lantern;
-    })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
-})(QuestForTheKing || (QuestForTheKing = {}));
-var QuestForTheKing;
-(function (QuestForTheKing) {
-    var Items;
-    (function (Items) {
-        function LeatherHelmet() {
-            return {
-                name: 'Helm van leer',
-                defense: 1,
-                equipmentType: StoryScript.EquipmentType.Head
-            };
-        }
-        Items.LeatherHelmet = LeatherHelmet;
+        Items.LongSword = LongSword;
     })(Items = QuestForTheKing.Items || (QuestForTheKing.Items = {}));
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
@@ -1922,34 +2263,18 @@ var QuestForTheKing;
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
-    var Actions;
-    (function (Actions) {
-        function Flee(text) {
+    var Enemies;
+    (function (Enemies) {
+        function Farmboy() {
             return {
-                text: text || 'Vluchten!',
-                active: function (game) {
-                    return !StoryScript.isEmpty(game.currentLocation.enemies);
-                },
-                execute: function (game) {
-                    var check = game.rollDice(game.character.vlugheid + 'd6');
-                    var result = check * game.character.vlugheid;
-                    var totalHitpoints = 0;
-                    game.currentLocation.enemies.forEach(function (enemy) {
-                        totalHitpoints += enemy.hitpoints;
-                    });
-                    if (result >= totalHitpoints / 2) {
-                        game.changeLocation();
-                    }
-                    else {
-                        game.logToActionLog('Je ontsnapping mislukt!');
-                        return true;
-                    }
-                    ;
-                }
+                name: 'Farmboy',
+                hitpoints: 5,
+                attack: '1d4',
+                reward: 1
             };
         }
-        Actions.Flee = Flee;
-    })(Actions = QuestForTheKing.Actions || (QuestForTheKing.Actions = {}));
+        Enemies.Farmboy = Farmboy;
+    })(Enemies = QuestForTheKing.Enemies || (QuestForTheKing.Enemies = {}));
 })(QuestForTheKing || (QuestForTheKing = {}));
 var PathOfHeroes;
 (function (PathOfHeroes) {
