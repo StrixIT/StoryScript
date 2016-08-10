@@ -15,7 +15,6 @@
         enemies = "Enemies";
         attack = "Attack {0}!";
         newGame = "New game";
-        yourName = "What is your name?";
         nextQuestion = "Next question"
         startAdventure = "Start adventure";
         actions = "Actions";

@@ -26,6 +26,18 @@
             return {
                 steps: [
                     {
+                        attributes: [
+                            {
+                                question: 'Hoe heet je?',
+                                entries: [
+                                    {
+                                        attribute: 'name'
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         questions: [
                             {
                                 question: 'Ben je sterk, snel of slim?',

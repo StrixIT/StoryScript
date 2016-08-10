@@ -33,7 +33,6 @@ module StoryScript {
 
                 var self = this;
                 character = self.ruleService.createCharacter(characterData);
-                character.name = characterData.name;
 
                 characterData.steps.forEach(function (step) {
                     if (step.questions) {

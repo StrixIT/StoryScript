@@ -1,6 +1,5 @@
 ﻿module StoryScript {
     export interface ICreateCharacter {
-        name?: string;
         steps: ICreateCharacterStep[];
         currentStep?: number;
         nextStep?(data: ICreateCharacter): void;

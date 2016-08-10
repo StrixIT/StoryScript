@@ -1,6 +1,6 @@
 ﻿module RidderMagnus {
     export class Character implements StoryScript.ICharacter {
-        name: 'Magnus';
+        name: string = 'Magnus';
         score: number = 0;
         hitpoints: number = 20;
         currentHitpoints: number = 20;

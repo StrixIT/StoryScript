@@ -8,7 +8,6 @@
                 startAdventure: "Start avontuur",
                 equipmentHeader: "Uitrusting",
                 gameName: "Gevaarlijke grot",
-                yourName: "Hoe heet je?",
                 youAreHere: "Je bent hier",
                 destinations: "Uitgangen",
                 onTheGround: "Op de grond",
