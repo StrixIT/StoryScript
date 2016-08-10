@@ -81,12 +81,10 @@
             return character;
         }
 
-        fight = (enemyToFight: StoryScript.IEnemy) => {
+        fight = (enemy: StoryScript.IEnemy) => {
             var self = this;
             var win = false;
 
-            // Todo: change when multiple enemies of the same type can be present.
-            var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
             var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
             self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
 

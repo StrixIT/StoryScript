@@ -33,12 +33,9 @@
             return character;
         }
 
-        fight = (enemyToFight: StoryScript.IEnemy) => {
+        fight = (enemy: StoryScript.IEnemy) => {
             var self = this;
             var win = false;
-
-            // Todo: change when multiple enemies of the same type can be present.
-            var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
 
             // Implement character attack here.
 

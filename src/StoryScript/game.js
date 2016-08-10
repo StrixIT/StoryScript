@@ -153,8 +153,8 @@ var StoryScript;
 var StoryScript;
 (function (StoryScript) {
     (function (ActionType) {
-        ActionType[ActionType["Navigation"] = 0] = "Navigation";
-        ActionType[ActionType["Action"] = 1] = "Action";
+        ActionType[ActionType["Regular"] = 0] = "Regular";
+        ActionType[ActionType["Check"] = 1] = "Check";
         ActionType[ActionType["Combat"] = 2] = "Combat";
     })(StoryScript.ActionType || (StoryScript.ActionType = {}));
     var ActionType = StoryScript.ActionType;
@@ -1064,15 +1064,15 @@ var StoryScript;
                 self.init();
             };
             this.getButtonClass = function (action) {
-                var type = action.type || StoryScript.ActionType.Navigation;
+                var type = action.type || StoryScript.ActionType.Regular;
                 var buttonClass = 'btn-';
                 switch (type) {
-                    case StoryScript.ActionType.Navigation:
+                    case StoryScript.ActionType.Regular:
                         {
                             buttonClass += 'info';
                         }
                         break;
-                    case StoryScript.ActionType.Action:
+                    case StoryScript.ActionType.Check:
                         {
                             buttonClass += 'warning';
                         }
@@ -1273,7 +1273,7 @@ var RidderMagnus;
                 //hands: null,
                 leftHand: null,
                 //leftRing: null,
-                rightHand: RidderMagnus.Items.Dolk,
+                rightHand: RidderMagnus.Items.Dolk(),
                 //rightRing: null,
                 //legs: null,
                 feet: null
@@ -1343,10 +1343,8 @@ var RidderMagnus;
                     ]
                 };
             };
-            this.fight = function (enemyToFight) {
+            this.fight = function (enemy) {
                 var self = _this;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 var check = self.game.rollDice(self.game.character.vechten + 'd6');
                 var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
                 self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
@@ -1502,7 +1500,7 @@ var RidderMagnus;
                                 game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
                                 game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
                             }
-                            if (result = 3, 4, 5) {
+                            else if (result >= 3 && result <= 5) {
                                 game.character.goudstukken += 1;
                                 game.logToActionLog('Daar glinstert iets! Oh, het is een goudstuk.');
                                 return true;
@@ -1778,6 +1776,7 @@ var RidderMagnus;
         function Flee(text) {
             return {
                 text: text || 'Vluchten!',
+                type: StoryScript.ActionType.Check,
                 status: function (game) {
                     return StoryScript.isEmpty(game.currentLocation.enemies) ? StoryScript.ActionStatus.Unavailable : StoryScript.ActionStatus.Available;
                 },
@@ -2008,11 +2007,9 @@ var QuestForTheKing;
                     ]
                 };
             };
-            this.fight = function (enemyToFight) {
+            this.fight = function (enemy) {
                 var self = _this;
                 var win = false;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
                 self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
@@ -2539,11 +2536,9 @@ var PathOfHeroes;
                     steps: []
                 };
             };
-            this.fight = function (enemyToFight) {
+            this.fight = function (enemy) {
                 var self = _this;
                 var win = false;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 // Implement character attack here.
                 if (win) {
                     return true;
@@ -2692,11 +2687,9 @@ var MyNewGame;
                     ]
                 };
             };
-            this.fight = function (enemyToFight) {
+            this.fight = function (enemy) {
                 var self = _this;
                 var win = false;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
                 self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
@@ -3184,10 +3177,8 @@ var DangerousCave;
                     ]
                 };
             };
-            this.fight = function (enemyToFight) {
+            this.fight = function (enemy) {
                 var self = _this;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 var check = self.game.rollDice(self.game.character.kracht + 'd6');
                 var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
                 self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
@@ -4112,6 +4103,7 @@ var DangerousCave;
         function Flee(text) {
             return {
                 text: text || 'Vluchten!',
+                type: StoryScript.ActionType.Check,
                 status: function (game) {
                     return StoryScript.isEmpty(game.currentLocation.enemies) ? StoryScript.ActionStatus.Unavailable : StoryScript.ActionStatus.Available;
                 },
@@ -4238,6 +4230,7 @@ var DangerousCave;
             var text = settings.text || 'Zoek';
             return {
                 text: text,
+                type: StoryScript.ActionType.Check,
                 execute: function (game) {
                     var result;
                     var check = game.rollDice(game.character.oplettendheid + 'd6');
@@ -4262,6 +4255,7 @@ var DangerousCave;
         function Unlock(settings) {
             return {
                 text: settings.text || 'Slot openen',
+                type: StoryScript.ActionType.Check,
                 execute: function (game) {
                     var check = game.rollDice(game.character.vlugheid + 'd6');
                     var result;

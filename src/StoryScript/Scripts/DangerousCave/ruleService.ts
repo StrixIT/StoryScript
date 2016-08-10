@@ -103,11 +103,9 @@
             self.addFleeAction(location);
         }
 
-        fight = (enemyToFight: StoryScript.IEnemy): boolean => {
+        fight = (enemy: StoryScript.IEnemy): boolean => {
             var self = this;
 
-            // Todo: change when multiple enemies of the same type can be present.
-            var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
             var check = self.game.rollDice(self.game.character.kracht + 'd6');
 
             var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
