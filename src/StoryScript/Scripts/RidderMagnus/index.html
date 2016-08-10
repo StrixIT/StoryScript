@@ -47,7 +47,7 @@
                             <legend>{{ texts.actions }}</legend>
                             <ul class="button-row">
                                 <li ng-repeat="action in controller.game.currentLocation.actions">
-                                    <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action)" ng-disabled="controller.disableActionButton(action)">{{ action.text }}</button>
+                                    <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action)" ng-disabled="controller.disableActionButton(action)" ng-hide="controller.hideActionButton(action)">{{ action.text }}</button>
                                 </li>
                             </ul>
                         </fieldset>

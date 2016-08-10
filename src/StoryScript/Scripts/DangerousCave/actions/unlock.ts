@@ -1,7 +1,6 @@
 ﻿module DangerousCave {
     export interface UnlockSettings {
         text?: string;
-        active?: (game: IGame, ...params) => boolean;
         difficulty: number;
         success: (game: IGame) => void;
         fail: (game: IGame) => void;
@@ -12,7 +11,7 @@ module DangerousCave.Actions {
     export function Unlock(settings: UnlockSettings): StoryScript.IAction {
         return {
             text: settings.text || 'Slot openen',
-            active: settings.active == undefined ? () => { return true; } : settings.active,
+            type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
                 var check = game.rollDice(game.character.vlugheid + 'd6');
                 var result;

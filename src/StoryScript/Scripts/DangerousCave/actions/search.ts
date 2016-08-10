@@ -1,7 +1,6 @@
 ﻿module DangerousCave {
     export interface SearchSettings {
         text?: string;
-        active?: (game: IGame, ...params) => boolean;
         difficulty: number;
         success: (game: IGame) => void;
         fail: (game: IGame) => void;
@@ -14,7 +13,7 @@ module DangerousCave.Actions {
 
         return {
             text: text,
-            active: settings.active == undefined ? () => { return true; } : settings.active,
+            type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
                 var result;
                 var check = game.rollDice(game.character.oplettendheid + 'd6');

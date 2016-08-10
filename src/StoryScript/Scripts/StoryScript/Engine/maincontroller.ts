@@ -68,18 +68,18 @@
             }
         }
 
-        getButtonClass = (action) => {
-            var type = action.type || 'move';
+        getButtonClass = (action: IAction) => {
+            var type = action.type || ActionType.Regular;
             var buttonClass = 'btn-';
 
             switch (type) {
-                case 'move': {
+                case ActionType.Regular: {
                     buttonClass += 'info'
                 } break;
-                case 'skill': {
+                case ActionType.Check: {
                     buttonClass += 'warning';
                 } break;
-                case 'fight': {
+                case ActionType.Combat: {
                     buttonClass += 'danger';
                 } break;
             }
@@ -102,9 +102,14 @@
             return !self.enemiesPresent() && !isEmpty(self.game.currentLocation.actions);
         }
 
-        disableActionButton = (action) => {
+        disableActionButton = (action: IAction) => {
             var self = this;
-            return typeof action.active === "function" ? !action.active(self.game) : action.active == undefined ? false : !action.active;
+            return typeof action.status === "function" ? (<any>action).status(self.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
+        }
+
+        hideActionButton = (action: IAction) => {
+            var self = this;
+            return typeof action.status === "function" ? (<any>action).status(self.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
         }
 
         public executeAction(action: IAction) {

@@ -2,8 +2,9 @@
     export function Flee(text: string): StoryScript.IAction {
         return {
             text: text || 'Vluchten!',
-            active: function (game: IGame) {
-                return !StoryScript.isEmpty(game.currentLocation.enemies);
+            type: StoryScript.ActionType.Check,
+            status: function (game: IGame) {
+                return StoryScript.isEmpty(game.currentLocation.enemies) ? StoryScript.ActionStatus.Unavailable : StoryScript.ActionStatus.Available;
             },
             execute: function (game: IGame) {
                 var check = game.rollDice(game.character.snelheid + 'd6');

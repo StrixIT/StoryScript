@@ -134,6 +134,33 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    var ScoreEntry = (function () {
+        function ScoreEntry() {
+        }
+        return ScoreEntry;
+    }());
+    StoryScript.ScoreEntry = ScoreEntry;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
+    (function (ActionStatus) {
+        ActionStatus[ActionStatus["Available"] = 0] = "Available";
+        ActionStatus[ActionStatus["Disabled"] = 1] = "Disabled";
+        ActionStatus[ActionStatus["Unavailable"] = 2] = "Unavailable";
+    })(StoryScript.ActionStatus || (StoryScript.ActionStatus = {}));
+    var ActionStatus = StoryScript.ActionStatus;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
+    (function (ActionType) {
+        ActionType[ActionType["Navigation"] = 0] = "Navigation";
+        ActionType[ActionType["Action"] = 1] = "Action";
+        ActionType[ActionType["Combat"] = 2] = "Combat";
+    })(StoryScript.ActionType || (StoryScript.ActionType = {}));
+    var ActionType = StoryScript.ActionType;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
     (function (EquipmentType) {
         EquipmentType[EquipmentType["Head"] = 0] = "Head";
         EquipmentType[EquipmentType["Amulet"] = 1] = "Amulet";
@@ -148,15 +175,6 @@ var StoryScript;
         EquipmentType[EquipmentType["Miscellaneous"] = 10] = "Miscellaneous";
     })(StoryScript.EquipmentType || (StoryScript.EquipmentType = {}));
     var EquipmentType = StoryScript.EquipmentType;
-})(StoryScript || (StoryScript = {}));
-var StoryScript;
-(function (StoryScript) {
-    var ScoreEntry = (function () {
-        function ScoreEntry() {
-        }
-        return ScoreEntry;
-    }());
-    StoryScript.ScoreEntry = ScoreEntry;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -1046,20 +1064,20 @@ var StoryScript;
                 self.init();
             };
             this.getButtonClass = function (action) {
-                var type = action.type || 'move';
+                var type = action.type || StoryScript.ActionType.Navigation;
                 var buttonClass = 'btn-';
                 switch (type) {
-                    case 'move':
+                    case StoryScript.ActionType.Navigation:
                         {
                             buttonClass += 'info';
                         }
                         break;
-                    case 'skill':
+                    case StoryScript.ActionType.Action:
                         {
                             buttonClass += 'warning';
                         }
                         break;
-                    case 'fight':
+                    case StoryScript.ActionType.Combat:
                         {
                             buttonClass += 'danger';
                         }
@@ -1081,7 +1099,11 @@ var StoryScript;
             };
             this.disableActionButton = function (action) {
                 var self = _this;
-                return typeof action.active === "function" ? !action.active(self.game) : action.active == undefined ? false : !action.active;
+                return typeof action.status === "function" ? action.status(self.game) == StoryScript.ActionStatus.Disabled : action.status == undefined ? false : action.status == StoryScript.ActionStatus.Disabled;
+            };
+            this.hideActionButton = function (action) {
+                var self = _this;
+                return typeof action.status === "function" ? action.status(self.game) == StoryScript.ActionStatus.Unavailable : action.status == undefined ? false : action.status == StoryScript.ActionStatus.Unavailable;
             };
             this.executeBarrierAction = function (destination, barrier) {
                 var self = _this;
@@ -1236,6 +1258,7 @@ var RidderMagnus;
             this.score = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
+            this.goudstukken = 0;
             // Add character properties here.
             this.vechten = 1;
             this.sluipen = 1;
@@ -1414,6 +1437,7 @@ var RidderMagnus;
                 backpack: "Rugzak",
                 body: "Lichaam",
                 congratulations: "Gefeliciteerd",
+                hitpoints: "Gezondheid",
                 destinations: "Hier kan je heen",
                 drop: "Laten vallen",
                 enemies: "Vijanden",
@@ -1427,6 +1451,7 @@ var RidderMagnus;
                 messages: "Wat gebeurt er?",
                 newGame: "Nieuw spel",
                 onTheGround: "Op de grond",
+                //price: "Waarde",
                 resetWorld: "Reset wereld",
                 rightHand: "Rechterhand",
                 startAdventure: "Begin",
@@ -1465,18 +1490,25 @@ var RidderMagnus;
                 ],
                 actions: [
                     {
+                        //Toelichting: dit is een zoekactie, goed resultaat vindt de ring, gemiddeld een goudstuk, slecht een rat.
                         text: 'Zoek de ring',
                         execute: function (game) {
                             var check = Math.floor(Math.random() * 6 + 1);
                             var result;
-                            result = check * game.character.zoeken;
-                            if (result > 4) {
+                            result = check + game.character.zoeken;
+                            if (result > 5) {
                                 // Todo: make this easy to do!
                                 game.currentLocation.items.push(StoryScript.definitionToObject(RidderMagnus.Items.GoudenRing));
-                                game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is hem! Snel terug naar de koningin.');
+                                game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
+                                game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
+                            }
+                            if (result = 3, 4, 5) {
+                                game.character.goudstukken += 1;
+                                game.logToActionLog('Daar glinstert iets! Oh, het is een goudstuk.');
+                                return true;
                             }
                             else {
-                                game.logToActionLog('Waar is dat ding toch??');
+                                game.logToActionLog('Waar is die ring toch? Niet onder dit wijnvat, hier is alleen een... rat!');
                                 game.logToActionLog('Een enorme rat bespringt je!');
                                 var enormeRat = RidderMagnus.Enemies.EnormeRat();
                                 game.currentLocation.enemies.push(enormeRat);
@@ -1503,6 +1535,7 @@ var RidderMagnus;
                         target: Locations.Kelder
                     }
                 ],
+                //
                 descriptionSelector: function (game) {
                     if (game.character.items.get(RidderMagnus.Items.GoudenRing)) {
                         return "een";
@@ -1514,9 +1547,23 @@ var RidderMagnus;
                     {
                         text: 'Genees me',
                         execute: function (game) {
-                            RidderMagnus.Actions.Heal('50d1')(game);
-                            game.logToActionLog('De koninging legt haar hand op je hoofd. Je voelt je direct beter.');
+                            RidderMagnus.Actions.Heal('20d1')(game, {});
+                            game.logToActionLog('De koningin legt haar hand op je hoofd. Je voelt je direct beter.');
                             return true;
+                        }
+                    },
+                    {
+                        text: 'Geef de ring terug',
+                        status: function (game) {
+                            return game.character.items.get(RidderMagnus.Items.GoudenRing) != undefined ? StoryScript.ActionStatus.Available : StoryScript.ActionStatus.Unavailable;
+                        },
+                        execute: function (game) {
+                            var ring = game.character.items.get(RidderMagnus.Items.GoudenRing);
+                            game.character.items.remove(ring);
+                            game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');
+                            RidderMagnus.Actions.RandomItem(game);
+                            //de beloning moet een keuze worden: geld, random training of random item (item hier geen gouden ring)
+                            //of een specifiek item gebaseerd op het personage? of keuze uit specifieke items
                         }
                     }
                 ]
@@ -1524,6 +1571,24 @@ var RidderMagnus;
         }
         Locations.Start = Start;
     })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function Adelaarsveer() {
+            return {
+                name: 'Adelaarsveer',
+                equipmentType: StoryScript.EquipmentType.Amulet,
+                description: 'Een verzilverde veer aan een zilveren ketting. Men zegt dat de drager er scherpere ogen van krijgt.',
+                bonuses: {
+                    zoeken: 1
+                },
+                price: 11
+            };
+        }
+        Items.Adelaarsveer = Adelaarsveer;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
 (function (RidderMagnus) {
@@ -1548,7 +1613,8 @@ var RidderMagnus;
             return {
                 name: 'Geneesdrank',
                 equipmentType: StoryScript.EquipmentType.Miscellaneous,
-                use: RidderMagnus.Actions.Heal('1d8'),
+                description: 'Drink dit op als je zwaar gewond bent.',
+                use: RidderMagnus.Actions.Heal('4d2'),
                 price: 5
             };
         }
@@ -1598,6 +1664,59 @@ var RidderMagnus;
             };
         }
         Items.KleinSchild = KleinSchild;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function LerenHarnas() {
+            return {
+                name: 'Leren harnas',
+                defense: 2,
+                equipmentType: StoryScript.EquipmentType.Body,
+                price: 10
+            };
+        }
+        Items.LerenHarnas = LerenHarnas;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function NachtLaarzen() {
+            return {
+                name: 'Nachtlaarzen',
+                equipmentType: StoryScript.EquipmentType.Feet,
+                description: 'Diepzwarte laarzen van fluweelzacht leer, waarmee je geluidloos loopt.',
+                bonuses: {
+                    sluipen: 1,
+                    snelheid: 1
+                },
+                price: 25
+            };
+        }
+        Items.NachtLaarzen = NachtLaarzen;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function Tovermantel() {
+            return {
+                name: 'Tovermantel',
+                equipmentType: StoryScript.EquipmentType.Body,
+                description: 'Een witte mantel die in het licht glinstert in alle kleuren van de regenboog. Hij beschermt je en versterkt je toverkracht.',
+                bonuses: {
+                    toveren: 1
+                },
+                defense: 1,
+                price: 15
+            };
+        }
+        Items.Tovermantel = Tovermantel;
     })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
@@ -1659,8 +1778,8 @@ var RidderMagnus;
         function Flee(text) {
             return {
                 text: text || 'Vluchten!',
-                active: function (game) {
-                    return !StoryScript.isEmpty(game.currentLocation.enemies);
+                status: function (game) {
+                    return StoryScript.isEmpty(game.currentLocation.enemies) ? StoryScript.ActionStatus.Unavailable : StoryScript.ActionStatus.Available;
                 },
                 execute: function (game) {
                     var check = game.rollDice(game.character.snelheid + 'd6');
@@ -1701,30 +1820,78 @@ var RidderMagnus;
         Actions.Heal = Heal;
     })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
 })(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Actions;
+    (function (Actions) {
+        function RandomEnemy(game) {
+            var enemies = game.definitions.enemies;
+            var enemyCount = 0;
+            var randomEnemy = null;
+            for (var n in enemies) {
+                enemyCount++;
+            }
+            var enemyToGet = game.rollDice('1d' + enemyCount) - 1;
+            var index = 0;
+            for (var n in enemies) {
+                if (index == enemyToGet) {
+                    randomEnemy = enemies[n]();
+                    break;
+                }
+                index++;
+            }
+            randomEnemy.items = randomEnemy.items || [];
+            for (var n in randomEnemy.items) {
+                StoryScript.definitionToObject(randomEnemy.items[n]);
+            }
+            game.currentLocation.enemies.push(randomEnemy);
+            return randomEnemy;
+        }
+        Actions.RandomEnemy = RandomEnemy;
+    })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Actions;
+    (function (Actions) {
+        function RandomItem(game) {
+            var items = game.definitions.items;
+            var itemCount = 0;
+            var randomItem = null;
+            for (var n in items) {
+                itemCount++;
+            }
+            var itemToGet = game.rollDice('1d' + itemCount) - 1;
+            var index = 0;
+            for (var n in items) {
+                if (index == itemToGet) {
+                    randomItem = items[n]();
+                    break;
+                }
+                index++;
+            }
+            game.currentLocation.items.push(randomItem);
+        }
+        Actions.RandomItem = RandomItem;
+    })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
+})(RidderMagnus || (RidderMagnus = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
     var Character = (function () {
         function Character() {
-            this.hitpoints = 20;
-            this.currentHitpoints = 20;
+            this.hitpoints = 200;
+            this.currentHitpoints = 200;
             this.score = 0;
-            this.scoreToNextLevel = 0;
-            this.level = 1;
-            this.kracht = 1;
-            this.vlugheid = 1;
-            this.oplettendheid = 1;
-            this.defense = 1;
+            this.strength = 1;
+            this.agility = 1;
+            this.intelligence = 1;
+            this.charisma = 1;
             this.items = [];
             this.equipment = {
                 head: null,
-                amulet: null,
                 body: null,
-                hands: null,
                 leftHand: null,
-                leftRing: null,
                 rightHand: null,
-                rightRing: null,
-                legs: null,
                 feet: null
             };
         }
@@ -1784,7 +1951,61 @@ var QuestForTheKing;
             var _this = this;
             this.getCreateCharacterSheet = function () {
                 return {
-                    steps: []
+                    steps: [
+                        {
+                            questions: [
+                                {
+                                    question: 'As a child, you were always...',
+                                    entries: [
+                                        {
+                                            text: 'strong in fights',
+                                            value: 'strength',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'a fast runner',
+                                            value: 'agility',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'a curious reader',
+                                            value: 'intelligence',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Popular',
+                                            value: 'charisma',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'When time came to become an apprentice, you chose to...',
+                                    entries: [
+                                        {
+                                            text: 'become a guard',
+                                            value: 'strength',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'learn about locks',
+                                            value: 'agility',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'go to magic school',
+                                            value: 'intelligence',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 };
             };
             this.fight = function (enemyToFight) {
@@ -1792,12 +2013,23 @@ var QuestForTheKing;
                 var win = false;
                 // Todo: change when multiple enemies of the same type can be present.
                 var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
-                // Implement character attack here.
+                var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
+                self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+                enemy.hitpoints -= damage;
+                if (enemy.hitpoints <= 0) {
+                    self.game.logToActionLog('You defeat the ' + enemy.name + '!');
+                    win = true;
+                }
                 if (win) {
+                    if (self.game.currentLocation.enemies.length == 0) {
+                        self.game.currentLocation.text = self.game.currentLocation.descriptions['after'];
+                    }
                     return true;
                 }
                 self.game.currentLocation.enemies.forEach(function (enemy) {
-                    // Implement monster attack here
+                    var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(enemy, 'damage');
+                    self.game.logToActionLog('The ' + enemy.name + ' does ' + damage + ' damage!');
+                    self.game.character.currentHitpoints -= damage;
                 });
                 return false;
             };
@@ -1823,7 +2055,7 @@ var QuestForTheKing;
         RuleService.prototype.hitpointsChange = function (change) {
             var self = this;
             // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
-            return false;
+            return self.game.character.currentHitpoints <= 0;
         };
         RuleService.prototype.scoreChange = function (change) {
             var self = this;
@@ -1844,7 +2076,9 @@ var QuestForTheKing;
         }
         TextService.prototype.$get = function (game) {
             var self = this;
-            return {};
+            return {
+                gameName: 'Quests for the King'
+            };
         };
         return TextService;
     }());
@@ -1856,35 +2090,26 @@ var QuestForTheKing;
 (function (QuestForTheKing) {
     var Locations;
     (function (Locations) {
-        function AssassinsDefeated() {
-            return {
-                name: 'Night in your Tent',
-                destinations: [
-                    {
-                        text: 'Day 3',
-                        target: Locations.Day3
-                    }
-                ],
-                actions: []
-            };
-        }
-        Locations.AssassinsDefeated = AssassinsDefeated;
-    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
-})(QuestForTheKing || (QuestForTheKing = {}));
-var QuestForTheKing;
-(function (QuestForTheKing) {
-    var Locations;
-    (function (Locations) {
         function Day1() {
             return {
                 name: 'Day 1',
                 destinations: [
                     {
-                        text: 'Farmboy Defeated',
-                        target: Locations.FarmboyDefeated
+                        text: 'Day 2',
+                        target: Locations.Day2
                     },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent
+                    }
                 ],
-                actions: []
+                enemies: [
+                    QuestForTheKing.Enemies.Farmboy
+                ]
             };
         }
         Locations.Day1 = Day1;
@@ -1897,13 +2122,23 @@ var QuestForTheKing;
         function Day2() {
             return {
                 name: 'Day 2',
+                enemies: [
+                    QuestForTheKing.Enemies.Nobleman
+                ],
                 destinations: [
                     {
-                        text: 'Nobleman Defeated',
-                        target: Locations.NoblemanDefeated
+                        text: 'Night in your Tent',
+                        target: Locations.NightInYourTent
                     },
-                ],
-                actions: []
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith2
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent2
+                    }
+                ]
             };
         }
         Locations.Day2 = Day2;
@@ -1918,11 +2153,21 @@ var QuestForTheKing;
                 name: 'Day 3',
                 destinations: [
                     {
-                        text: 'Shieldmaiden Defeated',
-                        target: Locations.ShieldmaidenDefeated
+                        text: 'Day 4',
+                        target: Locations.Day4
+                    },
+                    {
+                        text: 'Weapon Smith',
+                        target: Locations.WeaponSmith3
+                    },
+                    {
+                        text: 'Healers Tent',
+                        target: Locations.HealersTent3
                     },
                 ],
-                actions: []
+                enemies: [
+                    QuestForTheKing.Enemies.Shieldmaiden
+                ]
             };
         }
         Locations.Day3 = Day3;
@@ -1937,41 +2182,16 @@ var QuestForTheKing;
                 name: 'Day 4',
                 destinations: [
                     {
-                        text: 'Sir Ayric Defeated',
-                        target: Locations.SirAyricDefeated
-                    },
+                        text: 'Victory',
+                        target: Locations.Victory
+                    }
                 ],
-                actions: []
+                enemies: [
+                    QuestForTheKing.Enemies.SirAyric
+                ]
             };
         }
         Locations.Day4 = Day4;
-    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
-})(QuestForTheKing || (QuestForTheKing = {}));
-var QuestForTheKing;
-(function (QuestForTheKing) {
-    var Locations;
-    (function (Locations) {
-        function FarmboyDefeated() {
-            return {
-                name: 'Farmboy Defeated',
-                destinations: [
-                    {
-                        text: 'Day 2',
-                        target: Locations.Day2
-                    },
-                    {
-                        text: 'Weapon Smith',
-                        target: Locations.WeaponSmith
-                    },
-                    {
-                        text: 'Healers Tent',
-                        target: Locations.HealersTent
-                    },
-                ],
-                actions: []
-            };
-        }
-        Locations.FarmboyDefeated = FarmboyDefeated;
     })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
@@ -2049,90 +2269,20 @@ var QuestForTheKing;
     (function (Locations) {
         function NightInYourTent() {
             return {
-                name: 'Night in your Tent',
+                name: 'Night in your tent',
                 destinations: [
                     {
-                        text: 'Assassins Defeated',
-                        target: Locations.AssassinsDefeated
+                        text: 'Day 3',
+                        target: Locations.Day3
                     }
                 ],
-                actions: []
+                enemies: [
+                    QuestForTheKing.Enemies.Assassin,
+                    QuestForTheKing.Enemies.Assassin
+                ]
             };
         }
         Locations.NightInYourTent = NightInYourTent;
-    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
-})(QuestForTheKing || (QuestForTheKing = {}));
-var QuestForTheKing;
-(function (QuestForTheKing) {
-    var Locations;
-    (function (Locations) {
-        function NoblemanDefeated() {
-            return {
-                name: 'Nobleman Defeated',
-                destinations: [
-                    {
-                        text: 'Night in your Tent',
-                        target: Locations.NightInYourTent
-                    },
-                    {
-                        text: 'Weapon Smith',
-                        target: Locations.WeaponSmith2
-                    },
-                    {
-                        text: 'Healers Tent',
-                        target: Locations.HealersTent2
-                    },
-                ],
-                actions: []
-            };
-        }
-        Locations.NoblemanDefeated = NoblemanDefeated;
-    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
-})(QuestForTheKing || (QuestForTheKing = {}));
-var QuestForTheKing;
-(function (QuestForTheKing) {
-    var Locations;
-    (function (Locations) {
-        function ShieldmaidenDefeated() {
-            return {
-                name: 'Shieldmaiden Defeated',
-                destinations: [
-                    {
-                        text: 'Day 4',
-                        target: Locations.Day4
-                    },
-                    {
-                        text: 'Weapon Smith',
-                        target: Locations.WeaponSmith3
-                    },
-                    {
-                        text: 'Healers Tent',
-                        target: Locations.HealersTent3
-                    },
-                ],
-                actions: []
-            };
-        }
-        Locations.ShieldmaidenDefeated = ShieldmaidenDefeated;
-    })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
-})(QuestForTheKing || (QuestForTheKing = {}));
-var QuestForTheKing;
-(function (QuestForTheKing) {
-    var Locations;
-    (function (Locations) {
-        function SirAyricDefeated() {
-            return {
-                name: 'Sir Ayric Defeated',
-                destinations: [
-                    {
-                        text: 'Victory',
-                        target: Locations.Victory
-                    }
-                ],
-                actions: []
-            };
-        }
-        Locations.SirAyricDefeated = SirAyricDefeated;
     })(Locations = QuestForTheKing.Locations || (QuestForTheKing.Locations = {}));
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
@@ -2265,15 +2415,78 @@ var QuestForTheKing;
 (function (QuestForTheKing) {
     var Enemies;
     (function (Enemies) {
+        function Assassin() {
+            return {
+                name: 'Assassin',
+                hitpoints: 16,
+                attack: '1d6',
+                reward: 1
+            };
+        }
+        Enemies.Assassin = Assassin;
+    })(Enemies = QuestForTheKing.Enemies || (QuestForTheKing.Enemies = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Enemies;
+    (function (Enemies) {
         function Farmboy() {
             return {
                 name: 'Farmboy',
-                hitpoints: 5,
+                hitpoints: 10,
                 attack: '1d4',
                 reward: 1
             };
         }
         Enemies.Farmboy = Farmboy;
+    })(Enemies = QuestForTheKing.Enemies || (QuestForTheKing.Enemies = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Enemies;
+    (function (Enemies) {
+        function Nobleman() {
+            return {
+                name: 'Nobleman',
+                hitpoints: 15,
+                attack: '1d6',
+                reward: 1
+            };
+        }
+        Enemies.Nobleman = Nobleman;
+    })(Enemies = QuestForTheKing.Enemies || (QuestForTheKing.Enemies = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Enemies;
+    (function (Enemies) {
+        function Shieldmaiden() {
+            return {
+                name: 'Shieldmaiden',
+                hitpoints: 18,
+                attack: '1d8',
+                reward: 1
+            };
+        }
+        Enemies.Shieldmaiden = Shieldmaiden;
+    })(Enemies = QuestForTheKing.Enemies || (QuestForTheKing.Enemies = {}));
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
+    var Enemies;
+    (function (Enemies) {
+        function SirAyric() {
+            return {
+                name: 'Sir Ayric',
+                hitpoints: 20,
+                attack: '1d8',
+                reward: 1,
+                onDefeat: function (game) {
+                    game.state = 'victory';
+                }
+            };
+        }
+        Enemies.SirAyric = SirAyric;
     })(Enemies = QuestForTheKing.Enemies || (QuestForTheKing.Enemies = {}));
 })(QuestForTheKing || (QuestForTheKing = {}));
 var PathOfHeroes;
@@ -3899,8 +4112,8 @@ var DangerousCave;
         function Flee(text) {
             return {
                 text: text || 'Vluchten!',
-                active: function (game) {
-                    return !StoryScript.isEmpty(game.currentLocation.enemies);
+                status: function (game) {
+                    return StoryScript.isEmpty(game.currentLocation.enemies) ? StoryScript.ActionStatus.Unavailable : StoryScript.ActionStatus.Available;
                 },
                 execute: function (game) {
                     var check = game.rollDice(game.character.vlugheid + 'd6');
@@ -4025,7 +4238,6 @@ var DangerousCave;
             var text = settings.text || 'Zoek';
             return {
                 text: text,
-                active: settings.active == undefined ? function () { return true; } : settings.active,
                 execute: function (game) {
                     var result;
                     var check = game.rollDice(game.character.oplettendheid + 'd6');
@@ -4050,7 +4262,6 @@ var DangerousCave;
         function Unlock(settings) {
             return {
                 text: settings.text || 'Slot openen',
-                active: settings.active == undefined ? function () { return true; } : settings.active,
                 execute: function (game) {
                     var check = game.rollDice(game.character.vlugheid + 'd6');
                     var result;

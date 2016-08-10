@@ -31,8 +31,8 @@
                 },
                 {
                     text: 'Geef de ring terug',
-                    active: (game: IGame) => {
-                        return game.character.items.get(Items.GoudenRing) != undefined;
+                    status: (game: IGame) => {
+                        return game.character.items.get(Items.GoudenRing) != undefined ? StoryScript.ActionStatus.Available : StoryScript.ActionStatus.Unavailable;
                     },
                     execute: (game: IGame) => {
                         var ring = game.character.items.get(Items.GoudenRing);
