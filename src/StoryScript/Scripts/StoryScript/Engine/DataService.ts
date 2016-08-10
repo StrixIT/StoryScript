@@ -12,20 +12,24 @@ module StoryScript {
         private $q: ng.IQService;
         private $http: ng.IHttpService;
         private $localStorage: any; // Todo: type;
+        private gameSpaceName: string;
+
         public functionList: { [id: number]: Function };
 
-        constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any) {
+        constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, gameSpaceName: string) {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.gameSpaceName = gameSpaceName;
         }
 
-        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any): IDataService {
+        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, gameSpaceName: string): IDataService {
             var self = this;
             self.$http = $http;
             self.$q = $q;
             self.$localStorage = $localStorage;
+            self.gameSpaceName = gameSpaceName;
 
             return {
                 functionList: self.functionList,
@@ -54,14 +58,14 @@ module StoryScript {
         public save<T>(key: string, value: T, pristineValues?: T): void {
             var self = this;
             var clone = self.buildClone(value, pristineValues, null);
-            self.$localStorage[key] = JSON.stringify({ data: clone });
+            self.$localStorage[self.gameSpaceName + '_' + key] = JSON.stringify({ data: clone });
         }
 
         public load<T>(key: string): T {
             var self = this;
 
             try {
-                var data = JSON.parse(self.$localStorage[key]).data;
+                var data = JSON.parse(self.$localStorage[self.gameSpaceName + '_' + key]).data;
 
                 if (isEmpty(data)) {
                     return null;
@@ -162,5 +166,5 @@ module StoryScript {
         }
     }
 
-    DataService.$inject = ['$q', '$http', '$localStorage', 'definitions'];
+    DataService.$inject = ['$q', '$http', '$localStorage', 'gameNameSpace'];
 }
