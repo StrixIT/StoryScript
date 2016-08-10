@@ -19,6 +19,7 @@
                 equipmentHeader: "Uitrusting",
                 feet: "Voeten",
                 finalScore: "Eindscore",
+                gameName: 'Ridder Magnus',
                 head: "Hoofd",
                 leftHand: "Linkerhand",
                 loading: "Laden...",

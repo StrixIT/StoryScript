@@ -33,7 +33,6 @@ module StoryScript {
 
                 var self = this;
                 character = self.ruleService.createCharacter(characterData);
-                character.name = characterData.name;
 
                 characterData.steps.forEach(function (step) {
                     if (step.questions) {
@@ -48,9 +47,11 @@ module StoryScript {
                 characterData.steps.forEach(function (step) {
                     if (step.attributes) {
                         step.attributes.forEach(function (attribute) {
-                            if (character.hasOwnProperty(attribute.attribute)) {
-                                character[attribute.attribute] = attribute.value;
-                            }
+                            attribute.entries.forEach(function (entry) {
+                                if (character.hasOwnProperty(entry.attribute)) {
+                                    character[entry.attribute] = entry.value;
+                                }
+                            });
                         });
                     }
                 });

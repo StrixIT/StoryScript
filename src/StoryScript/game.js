@@ -211,9 +211,11 @@ var StoryScript;
                 characterData.steps.forEach(function (step) {
                     if (step.attributes) {
                         step.attributes.forEach(function (attribute) {
-                            if (character.hasOwnProperty(attribute.attribute)) {
-                                character[attribute.attribute] = attribute.value;
-                            }
+                            attribute.entries.forEach(function (entry) {
+                                if (character.hasOwnProperty(entry.attribute)) {
+                                    character[entry.attribute] = entry.value;
+                                }
+                            });
                         });
                     }
                 });
@@ -794,8 +796,8 @@ var StoryScript;
         };
         LocationService.prototype.loadWorld = function () {
             var self = this;
-            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             self.pristineLocations = self.buildWorld();
+            var locations = self.dataService.load(StoryScript.DataKeys.WORLD);
             if (StoryScript.isEmpty(locations)) {
                 self.dataService.save(StoryScript.DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
                 locations = self.dataService.load(StoryScript.DataKeys.WORLD);
@@ -2710,6 +2712,18 @@ var MyNewGame;
             this.getCreateCharacterSheet = function () {
                 return {
                     steps: [
+                        {
+                            attributes: [
+                                {
+                                    question: 'What is your name?',
+                                    entries: [
+                                        {
+                                            attribute: 'name'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         {
                             questions: [
                                 {

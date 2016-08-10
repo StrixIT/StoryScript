@@ -1,6 +1,5 @@
 ﻿module StoryScript {
     export interface ICreateCharacter {
-        name?: string;
         steps: ICreateCharacterStep[];
         currentStep?: number;
         nextStep?(data: ICreateCharacter): void;
@@ -24,9 +23,14 @@
     }
 
     export interface ICreateCharacterAttribute {
+        question: string;
+        entries: ICreateCharacterAttributeEntry[];
+    }
+
+    export interface ICreateCharacterAttributeEntry {
         attribute: string;
-        value: number;
-        min: number;
-        max: number;
+        value?: number | string;
+        min?: number;
+        max?: number;
     }
 }
