@@ -103,7 +103,10 @@
             }
 
             if (win) {
-                self.game.currentLocation.text = self.game.currentLocation.descriptions['after'];
+                if (self.game.currentLocation.enemies.length == 0) {
+                    self.game.currentLocation.text = self.game.currentLocation.descriptions['after'];
+                }
+
                 return true;
             }
 

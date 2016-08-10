@@ -1,7 +1,7 @@
 ﻿module QuestForTheKing.Enemies {
-    export function Assassins(): IEnemy {
+    export function Assassin(): IEnemy {
         return {
-            name: 'Assassins',
+            name: 'Assassin',
             hitpoints: 16,
             attack: '1d6',
             reward: 1

@@ -9,7 +9,8 @@
                 }
             ],
             enemies: [
-                Enemies.Assassins
+                Enemies.Assassin,
+                Enemies.Assassin
             ]
         }
     }
