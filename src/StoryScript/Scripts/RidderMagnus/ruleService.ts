@@ -40,8 +40,13 @@
                                         bonus: 1
                                     },
                                     {
+                                        text: 'De politieschool',
+                                        value: 'zoeken',
+                                        bonus: 1
+                                    },
+                                    {
                                         text: 'Geen school, ik leefde op straat',
-                                        value: 'sluipen',
+                                        value: 'snelheid',
                                         bonus: 1
                                     }
                                 ]
@@ -51,7 +56,7 @@
                     {
                         questions: [
                             {
-                                question: 'Daarna was je 7 jaar de schildknaap van:',
+                                question: 'Daarna was je zeven jaar de schildknaap van:',
                                 entries: [
                                     {
                                         text: 'Gerda de Sterke',
@@ -61,6 +66,11 @@
                                     {
                                         text: 'Mihar de Magiër',
                                         value: 'toveren',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Falco de Meesterdief',
+                                        value: 'sluipen',
                                         bonus: 1
                                     },
                                     {
@@ -107,9 +117,9 @@
 
         fight = (enemy: StoryScript.IEnemy): boolean => {
             var self = this;
-            var check = self.game.rollDice('d6' + self.game.character.vechten);
+            var check = self.game.rollDice('1d6' + self.game.character.vechten);
 
-            var characterDamage = check + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
+            var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
             self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
 
             enemy.hitpoints -= characterDamage;
