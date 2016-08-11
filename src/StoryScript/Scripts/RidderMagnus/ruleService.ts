@@ -112,6 +112,10 @@
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
 
+            if (!self.game.currentLocation.sluipCheck) {
+                return;
+            }
+
             // check stats
             var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
 

@@ -1,5 +1,5 @@
 ﻿module RidderMagnus.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function Start(): ILocation {
         return {
             name: 'De Troonzaal',
             destinations: [

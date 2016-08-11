@@ -1,7 +1,8 @@
 ﻿module RidderMagnus.Locations {
-    export function Kelder(): StoryScript.ILocation {
+    export function Kelder(): ILocation {
         return {
             name: 'De Kelder',
+            sluipCheck: 10,
             //Bij eerste bezoek: er komt hier als event eenmalig een dire rat, tenzij je succesvol sluipt. 
             //Met zoeken is er een ring te vinden. 
             //Als de ring al gevonden is, levert zoeken vooral ratten op.

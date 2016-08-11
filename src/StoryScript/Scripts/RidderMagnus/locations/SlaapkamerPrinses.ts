@@ -1,5 +1,5 @@
 ﻿module RidderMagnus.Locations {
-    export function SlaapkamerPrinses(): StoryScript.ILocation {
+    export function SlaapkamerPrinses(): ILocation {
         return {
             name: 'De Slaapkamer van de Prinses',
 
