@@ -128,13 +128,11 @@
                     type: StoryScript.ActionType.Combat,
                     execute: (game: IGame) => {
                         // Do damage to sneaked enemy.
-                        var damage = 5;
-                        enemy.hitpoints -= damage;
-                        self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + damage + ' schade!');
+                        self.game.fight(enemy);
 
                         // Move all enemies into combat.
                         game.currentLocation.actions.filter((action: IAction) => {
-                            return action.sneakEnemy != undefined;
+                            return action.sneakEnemy != undefined && action.sneakEnemy.hitpoints > 0;
                         }).forEach((action: IAction) => {
                             game.currentLocation.enemies.push(action.sneakEnemy);
                         });
@@ -155,27 +153,28 @@
 
         fight = (enemy: StoryScript.IEnemy): boolean => {
             var self = this;
+            var win = false;
             var check = self.game.rollDice('1d6+' + self.game.character.vechten);
 
             var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
             self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
 
             enemy.hitpoints -= characterDamage;
+            win = enemy.hitpoints <= 0
 
-            if (enemy.hitpoints <= 0) {
+            if (win) {
                 self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
                 self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
-                return true;
             }
 
-            self.game.currentLocation.enemies.forEach(function (enemy) {
+            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 var check = self.game.rollDice(enemy.attack);
                 var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
                 self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                 self.game.character.currentHitpoints -= enemyDamage;
             });
 
-            return false;
+            return win;
         }
 
         enemyDefeated(enemy: IEnemy) {

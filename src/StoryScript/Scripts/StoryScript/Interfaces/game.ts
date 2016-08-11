@@ -25,5 +25,6 @@
 
         randomEnemy: (selector: (enemy: IEnemy) => boolean) => IEnemy;
         randomItem: (selector: (enemy: IItem) => boolean) => IItem;
+        fight: (enemy: IEnemy) => void;
     }
 }

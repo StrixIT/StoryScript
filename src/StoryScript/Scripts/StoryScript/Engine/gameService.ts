@@ -105,6 +105,7 @@ module StoryScript {
             }
 
             self.game.rollDice = self.rollDice;
+            self.game.fight = self.fight;
 
             // Game setup end
 
