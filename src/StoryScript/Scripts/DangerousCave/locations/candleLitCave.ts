@@ -24,7 +24,7 @@
                     },
                     fail: (game: IGame) => {
                         game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                        game.currentLocation.enemies.push(game.getEnemy(Enemies.Orc);
+                        game.currentLocation.enemies.push(game.getEnemy(Enemies.Orc));
                     }
                 })
             ]

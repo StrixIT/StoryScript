@@ -13,8 +13,8 @@
                     difficulty: 9,
                     success: function (game) {
                         game.logToLocationLog('Je vindt een schild!');
-                        // Todo: allow pushing definition instead of item.
-                        game.character.items.push(Items.SmallShield());
+                        var item = game.getItem(Items.SmallShield);
+                        game.character.items.push(item);
                     },
                     fail: function (game) {
                         game.logToLocationLog('Je vindt niets.');

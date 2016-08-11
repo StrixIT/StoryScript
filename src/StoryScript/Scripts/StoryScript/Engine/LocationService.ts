@@ -82,7 +82,7 @@ module StoryScript {
             self.dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
-        public changeLocation(location: ILocation, game: IGame) {
+        public changeLocation(location: ILocation | ICompiledLocation, game: IGame) {
             var self = this;
 
             // If no location is specified, go to the previous location.
@@ -90,8 +90,7 @@ module StoryScript {
                 var tempLocation = game.currentLocation;
                 game.currentLocation = game.previousLocation;
                 game.previousLocation = tempLocation;
-                // Todo: can this be typed somehow?
-                location = <any>game.currentLocation;
+                location = game.currentLocation;
             }
             // If currently at a location, make this the previous location.
             else if (game.currentLocation) {
