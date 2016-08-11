@@ -26,6 +26,23 @@
         return selection[index];
     }
 
+    export function randomList<T>(collection: T[] | ([() => T]), count: number, selector?: (item: T) => boolean): ICollection<T> {
+        var selection = getFilteredInstantiatedCollection<T>(collection, selector);
+        var results = <ICollection<T>>[];
+
+        if (selection.length > 0) {
+            while (results.length < count && results.length < selection.length) {
+                var index = Math.floor(Math.random() * selection.length);
+
+                if (results.indexOf(selection[index]) == -1) {
+                    results.push(selection[index]);
+                }
+            }
+        }
+
+        return results;
+    }
+
     export function find<T>(collection: T[] | ([() => T]), selector: string | (() => T) | ((item: T) => boolean)): T {
         if (!collection && !selector) {
             return null;
@@ -62,7 +79,7 @@
     }
 
     export function custom<T>(definition: () => T, customData: {}) {
-        return (): IEnemy => {
+        return (): T => {
             var instance = definition();
             return angular.extend(instance, customData);
         };

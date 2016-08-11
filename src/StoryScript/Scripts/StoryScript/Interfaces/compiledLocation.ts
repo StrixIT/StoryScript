@@ -13,5 +13,6 @@
         hasVisited: boolean;
         descriptions: { [key: string] : string; };
         log: string[];
+        trade?: ITrade;
     }
 }

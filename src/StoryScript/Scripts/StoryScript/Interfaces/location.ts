@@ -9,5 +9,6 @@
         events?: ICollection<(game: IGame) => void>;
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
+        trade?: ITrade;
     }
 }

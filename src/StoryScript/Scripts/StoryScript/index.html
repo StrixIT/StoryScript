@@ -37,6 +37,7 @@
                     </div>
                     <div ng-if="controller.game.state == 'play'">
                         <div class="combat" ng-include="'/ui/combat.html'"></div>
+                        <div class="trade" ng-include="'/ui/trade.html'"></div>
                         <fieldset>
                             <legend>{{ texts.youAreHere }}</legend>
                             <h4 ng-bind-html="controller.game.currentLocation.name"></h4>

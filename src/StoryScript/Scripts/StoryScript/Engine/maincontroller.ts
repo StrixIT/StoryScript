@@ -207,6 +207,10 @@
             self.gameService.saveGame();
         }
 
+        canPay = (currency: number, value: number) => {
+            return value != undefined && currency != undefined && currency >= value;
+        }
+
         private watchCharacterHitpoints(newValue, oldValue, scope) {
             if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                 var change = newValue - oldValue;

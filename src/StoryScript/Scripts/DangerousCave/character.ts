@@ -1,9 +1,10 @@
 ﻿module DangerousCave {
     export class Character implements StoryScript.ICharacter {
         name: string;
+        score: number = 0;
         hitpoints: number = 20;
         currentHitpoints: number = 20;
-        score: number = 0;
+        currency: number = 0;
         scoreToNextLevel: number = 0;
         level: number = 1;
 

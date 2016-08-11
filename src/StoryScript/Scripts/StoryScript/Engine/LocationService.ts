@@ -168,6 +168,8 @@ module StoryScript {
                 game.currentLocation.hasVisited = true;
                 self.playEvents(game);
             }
+
+            self.prepareTrade(game);
         }
 
         private buildWorld(): ICompiledLocation[] {
@@ -304,6 +306,43 @@ module StoryScript {
 
             for (var n in game.currentLocation.events) {
                 game.currentLocation.events[n](game);
+            }
+        }
+
+        private prepareTrade(game: IGame) {
+            var self = this;
+
+            if (!game.currentLocation.trade) {
+                return;
+            }
+
+            var sell = game.currentLocation.trade.sell;
+            var buy = game.currentLocation.trade.buy;
+            var itemsForSale = sell.items;
+
+            if (!itemsForSale) {
+                itemsForSale = StoryScript.randomList<IItem>(game.definitions.items, sell.maxItems, sell.itemSelector);
+            }
+
+            sell.items = itemsForSale;
+            buy.items = StoryScript.randomList<IItem>(game.character.items, buy.maxItems, buy.itemSelector);
+
+            if (sell.priceModifier != undefined) {
+                sell.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof sell.priceModifier === 'function' ? (<any>sell).priceModifier() : sell.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+
+            if (buy.priceModifier != undefined) {
+                buy.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof buy.priceModifier === 'function' ? (<any>buy).priceModifier() : buy.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
             }
         }
 

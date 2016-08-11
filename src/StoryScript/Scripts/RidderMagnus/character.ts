@@ -4,7 +4,7 @@
         score: number = 0;
         hitpoints: number = 20;
         currentHitpoints: number = 20;
-        goudstukken: number = 0;
+        currency: number = 0;
 
         // Add character properties here.
         vechten: number = 1;

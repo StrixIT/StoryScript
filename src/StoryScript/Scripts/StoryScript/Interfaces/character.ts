@@ -4,7 +4,7 @@
         score: number;
         hitpoints: number;
         currentHitpoints: number;
-        //money: number? en deze onder hitpoints tonen?
+        currency: number;
 
         items: StoryScript.ICollection<StoryScript.IItem>;
 

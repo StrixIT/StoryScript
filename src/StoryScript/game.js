@@ -3,9 +3,9 @@ var GameTemplate;
     var Character = (function () {
         function Character() {
             this.score = 0;
-            this.level = 1;
             this.hitpoints = 0;
             this.currentHitpoints = 0;
+            this.currency = 0;
             // Add character properties here.
             this.items = [];
             this.equipment = {
@@ -104,6 +104,13 @@ var GameTemplate;
         }
         Locations.Start = Start;
     })(Locations = GameTemplate.Locations || (GameTemplate.Locations = {}));
+})(GameTemplate || (GameTemplate = {}));
+var GameTemplate;
+(function (GameTemplate) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    GameTemplate.custom = custom;
 })(GameTemplate || (GameTemplate = {}));
 var GameTemplate;
 (function (GameTemplate) {
@@ -440,26 +447,11 @@ var StoryScript;
                     self.game.actionLog.splice(0, 0, message);
                 };
                 self.game.getEnemy = function (selector) {
-                    selector = typeof selector === 'function' ? selector.name : selector;
-                    var match = self.game.definitions.enemies.filter(function (def) {
-                        return def.name === selector;
-                    })[0];
-                    if (match) {
-                        var instance = StoryScript.definitionToObject(match);
-                        return self.instantiateEnemy(instance);
-                    }
-                    return null;
+                    var instance = StoryScript.find(self.game.definitions.enemies, selector);
+                    return self.instantiateEnemy(instance);
                 };
                 self.game.getItem = function (selector) {
-                    selector = typeof selector === 'function' ? selector.name : selector;
-                    var match = self.game.definitions.items.filter(function (def) {
-                        return def.name === selector;
-                    })[0];
-                    if (match) {
-                        var instance = StoryScript.definitionToObject(match);
-                        return instance;
-                    }
-                    return null;
+                    return StoryScript.find(self.game.definitions.items, selector);
                 };
                 self.game.randomEnemy = function (selector) {
                     var instance = StoryScript.random(self.game.definitions.enemies, selector);
@@ -488,16 +480,6 @@ var StoryScript;
                     self.game.state = 'createCharacter';
                 }
                 self.game.calculateBonus = function (person, type) { return self.calculateBonus(self.game, person, type); };
-            };
-            this.instantiateEnemy = function (enemy) {
-                var items = [];
-                if (enemy.items) {
-                    enemy.items.forEach(function (def) {
-                        items.push(StoryScript.definitionToObject(def));
-                    });
-                }
-                enemy.items = items;
-                return enemy;
             };
             this.reset = function () {
                 var self = _this;
@@ -611,6 +593,19 @@ var StoryScript;
                     self.updateHighScore();
                     self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
                 }
+            };
+            this.instantiateEnemy = function (enemy) {
+                if (!enemy) {
+                    return null;
+                }
+                var items = [];
+                if (enemy.items) {
+                    enemy.items.forEach(function (def) {
+                        items.push(StoryScript.definitionToObject(def));
+                    });
+                }
+                enemy.items = items;
+                return enemy;
             };
             var self = this;
             self.dataService = dataService;
@@ -844,7 +839,6 @@ var StoryScript;
                 var tempLocation = game.currentLocation;
                 game.currentLocation = game.previousLocation;
                 game.previousLocation = tempLocation;
-                // Todo: can this be typed somehow?
                 location = game.currentLocation;
             }
             else if (game.currentLocation) {
@@ -907,6 +901,7 @@ var StoryScript;
             if (!game.currentLocation.hasVisited) {
                 game.currentLocation.hasVisited = true;
                 self.playEvents(game);
+                self.prepareTrade(game);
             }
         };
         LocationService.prototype.buildWorld = function () {
@@ -923,8 +918,8 @@ var StoryScript;
                     console.log('No destinations specified for location ' + location.id);
                 }
                 self.setDestinations(location);
-                //self.buildEnemies(location);
-                //self.buildItems(location);
+                self.buildEnemies(location);
+                self.buildItems(location);
                 self.getFunctions(location);
                 compiledLocations.push(location);
             }
@@ -1018,6 +1013,20 @@ var StoryScript;
             for (var n in game.currentLocation.events) {
                 game.currentLocation.events[n](game);
             }
+        };
+        LocationService.prototype.prepareTrade = function (game) {
+            var self = this;
+            if (!game.currentLocation.trade) {
+                return;
+            }
+            var sell = game.currentLocation.trade.sell;
+            var buy = game.currentLocation.trade.buy;
+            var itemsForSale = sell.items;
+            if (!itemsForSale) {
+                itemsForSale = StoryScript.randomList(game.definitions.items, sell.maxItems, sell.itemSelector);
+            }
+            sell.items = itemsForSale;
+            buy.items = StoryScript.randomList(game.character.items, buy.maxItems, buy.itemSelector);
         };
         LocationService.prototype.loadLocationDescriptions = function (game) {
             var self = this;
@@ -1276,33 +1285,10 @@ var StoryScript;
         return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
     }
     StoryScript.isEmpty = isEmpty;
-    function iterateOverProperties(instance, callback, parentProperty) {
-        for (var n in instance) {
-            var prop = instance[n];
-            if (instance.hasOwnProperty(n)) {
-                if (Array.isArray(prop) || typeof prop === "object") {
-                    iterateOverProperties(prop, callback, n);
-                }
-                else {
-                    callback(instance, n, parentProperty);
-                }
-            }
-        }
-    }
-    StoryScript.iterateOverProperties = iterateOverProperties;
     function definitionToObject(definition) {
-        var callback = function (object, property, parentProperty) {
-            var prop = object[property];
-            if (typeof prop === 'function' && prop.name && window['StoryScript']['DefinitionNames'][parentProperty].indexOf(property) > -1) {
-                var name = prop.name;
-                object[property] = prop();
-                object[property].id = name;
-            }
-        };
         var instance = definition();
         // Need to cast to any for ES5 and lower
         instance.id = definition.name;
-        iterateOverProperties(instance, callback);
         return instance;
     }
     StoryScript.definitionToObject = definitionToObject;
@@ -1311,10 +1297,27 @@ var StoryScript;
             return null;
         }
         var selection = getFilteredInstantiatedCollection(collection, selector);
+        if (selection.length == 0) {
+            return null;
+        }
         var index = Math.floor(Math.random() * selection.length);
         return selection[index];
     }
     StoryScript.random = random;
+    function randomList(collection, count, selector) {
+        var selection = getFilteredInstantiatedCollection(collection, selector);
+        var results = [];
+        if (selection.length > 0) {
+            while (results.length < count && results.length < selection.length) {
+                var index = Math.floor(Math.random() * selection.length);
+                if (results.indexOf(selection[index]) == -1) {
+                    results.push(selection[index]);
+                }
+            }
+        }
+        return results;
+    }
+    StoryScript.randomList = randomList;
     function find(collection, selector) {
         if (!collection && !selector) {
             return null;
@@ -1331,16 +1334,23 @@ var StoryScript;
                 var match = collection.filter(function (definition) {
                     return definition.name === selector;
                 });
-                return definitionToObject(match[0]);
+                return match[0] ? definitionToObject(match[0]) : null;
             }
         }
         var results = getFilteredInstantiatedCollection(collection, selector);
         if (results.length > 1) {
             throw new Error('Collection contains more than one match!');
         }
-        return results[0] || null;
+        return results[0] ? results[0] : null;
     }
     StoryScript.find = find;
+    function custom(definition, customData) {
+        return function () {
+            var instance = definition();
+            return angular.extend(instance, customData);
+        };
+    }
+    StoryScript.custom = custom;
     function getFilteredInstantiatedCollection(collection, selector) {
         var collectionToFilter = [];
         if (typeof collection[0] === 'function') {
@@ -1362,7 +1372,7 @@ var RidderMagnus;
             this.score = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
-            this.goudstukken = 0;
+            this.currency = 0;
             // Add character properties here.
             this.vechten = 1;
             this.sluipen = 1;
@@ -1644,13 +1654,13 @@ var RidderMagnus;
                             var result;
                             result = check + game.character.zoeken;
                             if (result > 5) {
-                                // Todo: make this easy to do!
-                                game.currentLocation.items.push(StoryScript.definitionToObject(RidderMagnus.Items.GoudenRing));
+                                var ring = game.getItem(RidderMagnus.Items.GoudenRing);
+                                game.currentLocation.items.push(ring);
                                 game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
                                 game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
                             }
                             else if (result >= 3 && result <= 5) {
-                                game.character.goudstukken += 1;
+                                game.character.currency += 1;
                                 game.logToActionLog('Daar glinstert iets! Oh, het is een goudstuk.');
                                 return true;
                             }
@@ -1942,6 +1952,13 @@ var RidderMagnus;
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
 (function (RidderMagnus) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    RidderMagnus.custom = custom;
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'RidderMagnus');
 })(RidderMagnus || (RidderMagnus = {}));
@@ -1993,6 +2010,35 @@ var RidderMagnus;
             };
         }
         Enemies.ReusachtigeRat = ReusachtigeRat;
+    })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Enemies;
+    (function (Enemies) {
+        function Trader() {
+            return {
+                name: 'Trader',
+                hitpoints: 7,
+                attack: '1d6',
+                reward: 1,
+                trade: {
+                    buy: {
+                        itemSelector: function (item) {
+                            return item.damage != undefined;
+                        },
+                        maxItems: 3
+                    },
+                    sell: {
+                        itemSelector: function (item) {
+                            return item.damage != undefined && item.price <= 10;
+                        },
+                        maxItems: 5
+                    }
+                }
+            };
+        }
+        Enemies.Trader = Trader;
     })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
@@ -2052,6 +2098,7 @@ var QuestForTheKing;
             this.hitpoints = 200;
             this.currentHitpoints = 200;
             this.score = 0;
+            this.currency = 0;
             this.strength = 1;
             this.agility = 1;
             this.intelligence = 1;
@@ -2582,6 +2629,13 @@ var QuestForTheKing;
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    QuestForTheKing.custom = custom;
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'QuestForTheKing');
 })(QuestForTheKing || (QuestForTheKing = {}));
@@ -2667,6 +2721,7 @@ var PathOfHeroes;
 (function (PathOfHeroes) {
     var Character = (function () {
         function Character() {
+            this.currency = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
             this.mana = 20;
@@ -2773,6 +2828,13 @@ var PathOfHeroes;
 })(PathOfHeroes || (PathOfHeroes = {}));
 var PathOfHeroes;
 (function (PathOfHeroes) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    PathOfHeroes.custom = custom;
+})(PathOfHeroes || (PathOfHeroes = {}));
+var PathOfHeroes;
+(function (PathOfHeroes) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'PathOfHeroes');
 })(PathOfHeroes || (PathOfHeroes = {}));
@@ -2781,6 +2843,7 @@ var MyNewGame;
     var Character = (function () {
         function Character() {
             this.score = 0;
+            this.currency = 0;
             this.level = 1;
             this.hitpoints = 10;
             this.currentHitpoints = 10;
@@ -2961,6 +3024,38 @@ var MyNewGame;
 (function (MyNewGame) {
     var Locations;
     (function (Locations) {
+        function Bedroom() {
+            return {
+                name: 'Bedroom',
+                destinations: [
+                    {
+                        text: 'Back to the living room',
+                        target: Locations.Start
+                    }
+                ],
+                trade: {
+                    buy: {
+                        itemSelector: function (item) {
+                            return item.damage != undefined;
+                        },
+                        maxItems: 3
+                    },
+                    sell: {
+                        itemSelector: function (item) {
+                            return item.damage != undefined && item.value <= 10;
+                        },
+                        maxItems: 5
+                    }
+                }
+            };
+        }
+        Locations.Bedroom = Bedroom;
+    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Locations;
+    (function (Locations) {
         function DirtRoad() {
             return {
                 name: 'Dirt road',
@@ -3061,6 +3156,10 @@ var MyNewGame;
                 },
                 destinations: [
                     {
+                        text: 'To the bedroom',
+                        target: Locations.Bedroom
+                    },
+                    {
                         text: 'To the garden',
                         target: Locations.Garden
                     },
@@ -3105,6 +3204,13 @@ var MyNewGame;
         }
         Items.Sword = Sword;
     })(Items = MyNewGame.Items || (MyNewGame.Items = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    MyNewGame.custom = custom;
 })(MyNewGame || (MyNewGame = {}));
 var MyNewGame;
 (function (MyNewGame) {
@@ -3231,9 +3337,10 @@ var DangerousCave;
 (function (DangerousCave) {
     var Character = (function () {
         function Character() {
+            this.score = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
-            this.score = 0;
+            this.currency = 0;
             this.scoreToNextLevel = 0;
             this.level = 1;
             this.kracht = 1;
@@ -3415,7 +3522,7 @@ var DangerousCave;
             var self = this;
             var character = new DangerousCave.Character();
             var chosenItem = characterData.steps[1].questions[1].selectedEntry;
-            character.items.push(StoryScript.find(self.game.definitions.items, chosenItem.value));
+            character.items.push(self.game.getItem(chosenItem.value));
             return character;
         };
         RuleService.prototype.addEnemyToLocation = function (location, enemy) {
@@ -3586,7 +3693,7 @@ var DangerousCave;
                         },
                         fail: function (game) {
                             game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                            var orc = game.currentLocation.enemies.push(StoryScript.find(game.definitions.enemies, DangerousCave.Enemies.Orc));
+                            game.currentLocation.enemies.push(game.getEnemy(DangerousCave.Enemies.Orc));
                         }
                     })
                 ]
@@ -3613,8 +3720,8 @@ var DangerousCave;
                         difficulty: 9,
                         success: function (game) {
                             game.logToLocationLog('Je vindt een schild!');
-                            // Todo: allow pushing definition instead of item.
-                            game.character.items.push(DangerousCave.Items.SmallShield());
+                            var item = game.getItem(DangerousCave.Items.SmallShield);
+                            game.character.items.push(item);
                         },
                         fail: function (game) {
                             game.logToLocationLog('Je vindt niets.');
@@ -4204,6 +4311,13 @@ var DangerousCave;
         }
         Items.Sword = Sword;
     })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    DangerousCave.custom = custom;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {

@@ -1,5 +1,5 @@
 ﻿module MyNewGame.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function Start(): ILocation {
         return {
             name: 'Home',
             descriptionSelector: (game: IGame) => {
@@ -13,6 +13,10 @@
                 return 'day';
             },
             destinations: [
+                {
+                    text: 'To the bedroom',
+                    target: Locations.Bedroom
+                },
                 {
                     text: 'To the garden',
                     target: Locations.Garden
