@@ -901,8 +901,8 @@ var StoryScript;
             if (!game.currentLocation.hasVisited) {
                 game.currentLocation.hasVisited = true;
                 self.playEvents(game);
-                self.prepareTrade(game);
             }
+            self.prepareTrade(game);
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
@@ -1027,6 +1027,22 @@ var StoryScript;
             }
             sell.items = itemsForSale;
             buy.items = StoryScript.randomList(game.character.items, buy.maxItems, buy.itemSelector);
+            if (sell.priceModifier != undefined) {
+                sell.items.forEach(function (item) {
+                    if (item.value) {
+                        var modifier = typeof sell.priceModifier === 'function' ? sell.priceModifier() : sell.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+            if (buy.priceModifier != undefined) {
+                buy.items.forEach(function (item) {
+                    if (item.value) {
+                        var modifier = typeof buy.priceModifier === 'function' ? buy.priceModifier() : buy.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
         };
         LocationService.prototype.loadLocationDescriptions = function (game) {
             var self = this;
@@ -1186,6 +1202,9 @@ var StoryScript;
                 var self = _this;
                 self.gameService.fight(enemy);
                 self.gameService.saveGame();
+            };
+            this.canPay = function (currency, value) {
+                return value != undefined && currency != undefined && currency >= value;
             };
             var self = this;
             self.$scope = $scope;
@@ -3034,17 +3053,25 @@ var MyNewGame;
                     }
                 ],
                 trade: {
+                    description: 'Do you want to take something out of your closet or put it back in?',
+                    currency: 10,
                     buy: {
+                        description: 'Put back in closet',
                         itemSelector: function (item) {
-                            return item.damage != undefined;
+                            return true;
                         },
-                        maxItems: 3
+                        maxItems: 3,
+                        priceModifier: 0
                     },
                     sell: {
+                        description: 'Take out of closet',
                         itemSelector: function (item) {
-                            return item.damage != undefined && item.value <= 10;
+                            return true;
                         },
-                        maxItems: 5
+                        maxItems: 5,
+                        priceModifier: function (game) {
+                            return 0;
+                        }
                     }
                 }
             };
@@ -3185,7 +3212,8 @@ var MyNewGame;
             return {
                 name: 'Leather boots',
                 defense: 1,
-                equipmentType: StoryScript.EquipmentType.Feet
+                equipmentType: StoryScript.EquipmentType.Feet,
+                value: 2
             };
         }
         Items.LeatherBoots = LeatherBoots;
@@ -3199,7 +3227,8 @@ var MyNewGame;
             return {
                 name: 'Sword',
                 damage: '3',
-                equipmentType: StoryScript.EquipmentType.RightHand
+                equipmentType: StoryScript.EquipmentType.RightHand,
+                value: 5
             };
         }
         Items.Sword = Sword;

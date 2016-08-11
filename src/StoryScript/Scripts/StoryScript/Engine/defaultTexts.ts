@@ -36,6 +36,7 @@
         youAreHere = "You are here";
         messages = "Messages";
         hitpoints = "Health";
+        currency = "Money";
 
         format = (template: string, tokens: string[]): string => {
             if (tokens) {

@@ -16,7 +16,7 @@
                     itemSelector: (item: IItem) => {
                         return true;
                     },
-                    maxItems: 3,
+                    maxItems: 1,
                     priceModifier: 0
                 },
                 sell: {

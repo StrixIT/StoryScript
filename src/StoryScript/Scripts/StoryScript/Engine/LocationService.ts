@@ -330,7 +330,7 @@ module StoryScript {
             if (sell.priceModifier != undefined) {
                 sell.items.forEach((item: IItem) => {
                     if (item.value) {
-                        var modifier = typeof sell.priceModifier === 'function' ? (<any>sell).priceModifier() : sell.priceModifier;
+                        var modifier = typeof sell.priceModifier === 'function' ? (<any>sell).priceModifier(game) : sell.priceModifier;
                         item.value *= modifier;
                     }
                 });
@@ -339,7 +339,7 @@ module StoryScript {
             if (buy.priceModifier != undefined) {
                 buy.items.forEach((item: IItem) => {
                     if (item.value) {
-                        var modifier = typeof buy.priceModifier === 'function' ? (<any>buy).priceModifier() : buy.priceModifier;
+                        var modifier = typeof buy.priceModifier === 'function' ? (<any>buy).priceModifier(game) : buy.priceModifier;
                         item.value *= modifier;
                     }
                 });
