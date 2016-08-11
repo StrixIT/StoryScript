@@ -17,6 +17,11 @@
         }
 
         var selection = getFilteredInstantiatedCollection<T>(collection, selector);
+
+        if (selection.length == 0) {
+            return null;
+        }
+
         var index = Math.floor(Math.random() * selection.length);
         return selection[index];
     }
@@ -43,7 +48,7 @@
                     return (<any>definition).name === <string>selector;
                 });
 
-                return definitionToObject(match[0]);
+                return match[0] ? definitionToObject(match[0]) : null;
             }
         }
 
@@ -53,7 +58,14 @@
             throw new Error('Collection contains more than one match!');
         }
 
-        return results[0] || null;
+        return results[0] ? results[0] : null;
+    }
+
+    export function custom<T>(definition: () => T, customData: {}) {
+        return (): IEnemy => {
+            var instance = definition();
+            return angular.extend(instance, customData);
+        };
     }
 
     function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), selector?: (item: T) => boolean) {

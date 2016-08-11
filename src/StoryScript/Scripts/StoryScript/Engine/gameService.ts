@@ -86,31 +86,12 @@ module StoryScript {
             }
 
             self.game.getEnemy = (selector: string | (() => IEnemy)) => {
-                selector = typeof selector === 'function' ? (<any>selector).name : selector;
-                var match = self.game.definitions.enemies.filter((def: () => IEnemy) => {
-                    return (<any>def).name === selector;
-                })[0];
-
-                if (match) {
-                    var instance = definitionToObject(match);
-                    return self.instantiateEnemy(instance);
-                }
-
-                return null;
+                var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector);
+                return self.instantiateEnemy(instance);
             }
 
             self.game.getItem = (selector: string | (() => IItem)) => {
-                selector = typeof selector === 'function' ? (<any>selector).name : selector;
-                var match = self.game.definitions.items.filter((def: () => IItem) => {
-                    return (<any>def).name === selector;
-                })[0];
-
-                if (match) {
-                    var instance = definitionToObject(match);
-                    return instance;
-                }
-
-                return null;
+                return StoryScript.find<IItem>(self.game.definitions.items, selector);
             }
 
             self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
@@ -350,6 +331,10 @@ module StoryScript {
         }
 
         private instantiateEnemy = (enemy: IEnemy): IEnemy => {
+            if (!enemy) {
+                return null;
+            }
+
             var items = <IItem[]>[];
 
             if (enemy.items) {

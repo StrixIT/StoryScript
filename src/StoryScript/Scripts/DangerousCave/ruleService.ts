@@ -86,7 +86,7 @@
             var self = this;
             var character = new Character();
             var chosenItem = characterData.steps[1].questions[1].selectedEntry;
-            character.items.push(StoryScript.find<IItem>(self.game.definitions.items, chosenItem.value));
+            character.items.push(self.game.getItem(chosenItem.value));
             return character;
         }
 
