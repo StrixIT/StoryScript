@@ -23,8 +23,11 @@
         logToLocationLog(message: string): void;
         logToActionLog(message: string): void;
 
-        randomEnemy: (selector: (enemy: IEnemy) => boolean) => IEnemy;
-        randomItem: (selector: (enemy: IItem) => boolean) => IItem;
+        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
+        randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
+        getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
+        getItem: (selector: string | (() => IItem)) => IItem;
+
         fight: (enemy: IEnemy) => void;
     }
 }

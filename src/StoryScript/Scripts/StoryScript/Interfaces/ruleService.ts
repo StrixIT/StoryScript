@@ -6,7 +6,7 @@
         addEnemyToLocation?(location: ICompiledLocation, enemy: IEnemy): void;
         enterLocation?(location: ICompiledLocation): void;
         initCombat?(location: ICompiledLocation): void;
-        fight(enemy: IEnemy): boolean;
+        fight(enemy: IEnemy): void;
         enemyDefeated?(enemy: IEnemy): void;
         hitpointsChange(change: number): boolean;
         scoreChange(change: number): boolean;

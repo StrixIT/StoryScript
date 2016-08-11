@@ -155,18 +155,14 @@
             //als er een flee-action is: self.addFleeAction(location);
         }
 
-        fight = (enemy: StoryScript.IEnemy): boolean => {
+        fight = (enemy: StoryScript.IEnemy) => {
             var self = this;
-            var win = false;
             var check = self.game.rollDice('1d6+' + self.game.character.vechten);
-
             var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
             self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
-
             enemy.hitpoints -= characterDamage;
-            win = enemy.hitpoints <= 0
 
-            if (win) {
+            if (enemy.hitpoints <= 0) {
                 self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
                 self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
             }
@@ -177,8 +173,6 @@
                 self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                 self.game.character.currentHitpoints -= enemyDamage;
             });
-
-            return win;
         }
 
         enemyDefeated(enemy: IEnemy) {

@@ -4,7 +4,7 @@
         pictureFileName?: string;
         name: string;
         hitpoints: number;
-        items?: [() => IItem];
+        items?: [IItem | (() => IItem)];
         onDefeat?: (game: IGame) => void;
     }
 }

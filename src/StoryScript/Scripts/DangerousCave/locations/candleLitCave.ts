@@ -22,15 +22,9 @@
                     success: (game) => {
                         game.logToLocationLog('Je voelt dat hier kortgeleden sterke magie gebruikt is. Ook zie je aan sporen op de vloer dat hier vaak orks lopen.')
                     },
-                    fail: (game) => {
+                    fail: (game: IGame) => {
                         game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-
-                        // Todo: improve;
-                        var enemy = Enemies.Orc();
-                        var items = [];
-                        enemy.items.forEach(x => { items.push(x()); });
-                        (<any>enemy).items = items;
-                        game.currentLocation.enemies.push(enemy);
+                        game.currentLocation.enemies.push(game.getEnemy(Enemies.Orc);
                     }
                 })
             ]

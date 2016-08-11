@@ -35,19 +35,12 @@
 
         fight = (enemy: StoryScript.IEnemy) => {
             var self = this;
-            var win = false;
 
             // Implement character attack here.
 
-            if (win) {
-                return true;
-            }
-
-            self.game.currentLocation.enemies.forEach(function (enemy) {
+            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 // Implement monster attack here
             });
-
-            return false;
         }
 
         hitpointsChange(change: number) {

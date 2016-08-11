@@ -35,19 +35,12 @@ var GameTemplate;
                     steps: []
                 };
             };
-            this.fight = function (enemyToFight) {
+            this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 // Implement character attack here.
-                if (win) {
-                    return win;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     // Implement monster attack here
                 });
-                return win;
             };
             var self = this;
             self.game = game;
@@ -446,21 +439,37 @@ var StoryScript;
                 self.game.logToActionLog = function (message) {
                     self.game.actionLog.splice(0, 0, message);
                 };
+                self.game.getEnemy = function (selector) {
+                    selector = typeof selector === 'function' ? selector.name : selector;
+                    var match = self.game.definitions.enemies.filter(function (def) {
+                        return def.name === selector;
+                    })[0];
+                    if (match) {
+                        var instance = StoryScript.definitionToObject(match);
+                        return self.instantiateEnemy(instance);
+                    }
+                    return null;
+                };
+                self.game.getItem = function (selector) {
+                    selector = typeof selector === 'function' ? selector.name : selector;
+                    var match = self.game.definitions.items.filter(function (def) {
+                        return def.name === selector;
+                    })[0];
+                    if (match) {
+                        var instance = StoryScript.definitionToObject(match);
+                        return instance;
+                    }
+                    return null;
+                };
                 self.game.randomEnemy = function (selector) {
                     var instance = StoryScript.random(self.game.definitions.enemies, selector);
-                    var items = [];
-                    if (instance.items) {
-                        instance.items.forEach(function (def) {
-                            items.push(StoryScript.definitionToObject(def));
-                        });
-                    }
-                    instance.items = items;
-                    return instance;
+                    return self.instantiateEnemy(instance);
                 };
                 self.game.randomItem = function (selector) {
-                    var instance = StoryScript.random(self.game.definitions.items, selector);
-                    return instance;
+                    return StoryScript.random(self.game.definitions.items, selector);
                 };
+                self.game.rollDice = self.rollDice;
+                self.game.fight = self.fight;
                 // Game setup end
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
@@ -478,8 +487,17 @@ var StoryScript;
                 else {
                     self.game.state = 'createCharacter';
                 }
-                self.game.rollDice = self.rollDice;
                 self.game.calculateBonus = function (person, type) { return self.calculateBonus(self.game, person, type); };
+            };
+            this.instantiateEnemy = function (enemy) {
+                var items = [];
+                if (enemy.items) {
+                    enemy.items.forEach(function (def) {
+                        items.push(StoryScript.definitionToObject(def));
+                    });
+                }
+                enemy.items = items;
+                return enemy;
             };
             this.reset = function () {
                 var self = _this;
@@ -551,15 +569,14 @@ var StoryScript;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = self.ruleService.fight(enemy);
-                if (win) {
-                    if (enemy.items && enemy.items.length) {
+                self.ruleService.fight(enemy);
+                if (enemy.hitpoints <= 0) {
+                    if (enemy.items) {
                         enemy.items.forEach(function (item) {
                             self.game.currentLocation.items = self.game.currentLocation.items || [];
-                            // Todo: type
                             self.game.currentLocation.items.push(item);
                         });
-                        enemy.items.splice(0, enemy.items.length);
+                        enemy.items = [];
                     }
                     self.game.currentLocation.enemies.remove(enemy);
                     if (self.ruleService.enemyDefeated) {
@@ -906,8 +923,8 @@ var StoryScript;
                     console.log('No destinations specified for location ' + location.id);
                 }
                 self.setDestinations(location);
-                self.buildEnemies(location);
-                self.buildItems(location);
+                //self.buildEnemies(location);
+                //self.buildItems(location);
                 self.getFunctions(location);
                 compiledLocations.push(location);
             }
@@ -1259,10 +1276,33 @@ var StoryScript;
         return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
     }
     StoryScript.isEmpty = isEmpty;
+    function iterateOverProperties(instance, callback, parentProperty) {
+        for (var n in instance) {
+            var prop = instance[n];
+            if (instance.hasOwnProperty(n)) {
+                if (Array.isArray(prop) || typeof prop === "object") {
+                    iterateOverProperties(prop, callback, n);
+                }
+                else {
+                    callback(instance, n, parentProperty);
+                }
+            }
+        }
+    }
+    StoryScript.iterateOverProperties = iterateOverProperties;
     function definitionToObject(definition) {
+        var callback = function (object, property, parentProperty) {
+            var prop = object[property];
+            if (typeof prop === 'function' && prop.name && window['StoryScript']['DefinitionNames'][parentProperty].indexOf(property) > -1) {
+                var name = prop.name;
+                object[property] = prop();
+                object[property].id = name;
+            }
+        };
         var instance = definition();
         // Need to cast to any for ES5 and lower
         instance.id = definition.name;
+        iterateOverProperties(instance, callback);
         return instance;
     }
     StoryScript.definitionToObject = definitionToObject;
@@ -1426,15 +1466,13 @@ var RidderMagnus;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
                     self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
-                    return true;
                 }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
                     self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                     self.game.character.currentHitpoints -= enemyDamage;
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -1469,6 +1507,9 @@ var RidderMagnus;
             location.enemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
+            if (!self.game.currentLocation.sluipCheck) {
+                return;
+            }
             // check stats
             var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
             if (roll < self.game.currentLocation.sluipCheck) {
@@ -1481,23 +1522,23 @@ var RidderMagnus;
                     text: 'Besluip ' + enemy.name,
                     type: StoryScript.ActionType.Combat,
                     execute: function (game) {
-                        // Find sneaked enemy.
-                        // Todo: fix for multiple enemies of the same type.
-                        var sneakedEnemy = game.currentLocation.actions.filter(function (action) {
-                            return action.sneakEnemy.id == enemy.id;
-                        })[0].sneakEnemy;
                         // Do damage to sneaked enemy.
-                        sneakedEnemy.hitpoints -= 5;
+                        self.game.fight(enemy);
                         // Move all enemies into combat.
                         game.currentLocation.actions.filter(function (action) {
-                            return action.sneakEnemy != undefined;
+                            return action.sneakEnemy != undefined && action.sneakEnemy.hitpoints > 0;
                         }).forEach(function (action) {
                             game.currentLocation.enemies.push(action.sneakEnemy);
+                        });
+                        // Remove the remaining sneak actions
+                        game.currentLocation.actions = game.currentLocation.actions.filter(function (action) {
+                            return action.sneakEnemy == undefined;
                         });
                     }
                 });
             });
             self.game.currentLocation.enemies = [];
+            self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
             //als er een flee-action is: self.addFleeAction(location);
         };
         RuleService.prototype.enemyDefeated = function (enemy) {
@@ -1581,6 +1622,7 @@ var RidderMagnus;
         function Kelder() {
             return {
                 name: 'De Kelder',
+                sluipCheck: 10,
                 //Bij eerste bezoek: er komt hier als event eenmalig een dire rat, tenzij je succesvol sluipt. 
                 //Met zoeken is er een ring te vinden. 
                 //Als de ring al gevonden is, levert zoeken vooral ratten op.
@@ -2150,26 +2192,20 @@ var QuestForTheKing;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
                 var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
                 self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('You defeat the ' + enemy.name + '!');
-                    win = true;
-                }
-                if (win) {
                     if (self.game.currentLocation.enemies.length == 0) {
                         self.game.currentLocation.text = self.game.currentLocation.descriptions['after'];
                     }
-                    return true;
                 }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(enemy, 'damage');
                     self.game.logToActionLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                     self.game.character.currentHitpoints -= damage;
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -2679,15 +2715,10 @@ var PathOfHeroes;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
                 // Implement character attack here.
-                if (win) {
-                    return true;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     // Implement monster attack here
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -2842,23 +2873,17 @@ var MyNewGame;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
                 var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
                 self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('You defeat the ' + enemy.name + '!');
-                    win = true;
                 }
-                if (win) {
-                    return true;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(enemy, 'damage');
                     self.game.logToActionLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                     self.game.character.currentHitpoints -= damage;
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -3351,15 +3376,13 @@ var DangerousCave;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
                     self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
-                    return true;
                 }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
                     self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                     self.game.character.currentHitpoints -= enemyDamage;
                 });
-                return false;
             };
             this.levelUp = function (reward) {
                 var self = _this;
@@ -3563,12 +3586,7 @@ var DangerousCave;
                         },
                         fail: function (game) {
                             game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                            // Todo: improve;
-                            var enemy = DangerousCave.Enemies.Orc();
-                            var items = [];
-                            enemy.items.forEach(function (x) { items.push(x()); });
-                            enemy.items = items;
-                            game.currentLocation.enemies.push(enemy);
+                            var orc = game.currentLocation.enemies.push(StoryScript.find(game.definitions.enemies, DangerousCave.Enemies.Orc));
                         }
                     })
                 ]

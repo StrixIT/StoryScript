@@ -85,23 +85,41 @@ module StoryScript {
                 self.game.actionLog.splice(0, 0, message);
             }
 
-            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
-                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, selector);
-                var items = <IItem[]>[];
+            self.game.getEnemy = (selector: string | (() => IEnemy)) => {
+                selector = typeof selector === 'function' ? (<any>selector).name : selector;
+                var match = self.game.definitions.enemies.filter((def: () => IEnemy) => {
+                    return (<any>def).name === selector;
+                })[0];
 
-                if (instance.items) {
-                    instance.items.forEach((def: () => IItem) => {
-                        items.push(StoryScript.definitionToObject(def));
-                    });
+                if (match) {
+                    var instance = definitionToObject(match);
+                    return self.instantiateEnemy(instance);
                 }
 
-                (<any>instance).items = items;
-                return instance;
+                return null;
             }
 
-            self.game.randomItem = (selector?: (item: IItem) => boolean): IItem => {
-                var instance = StoryScript.random<IItem>(self.game.definitions.items, selector);
-                return instance;
+            self.game.getItem = (selector: string | (() => IItem)) => {
+                selector = typeof selector === 'function' ? (<any>selector).name : selector;
+                var match = self.game.definitions.items.filter((def: () => IItem) => {
+                    return (<any>def).name === selector;
+                })[0];
+
+                if (match) {
+                    var instance = definitionToObject(match);
+                    return instance;
+                }
+
+                return null;
+            }
+
+            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
+                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, <(enemy: IEnemy) => boolean>selector);
+                return self.instantiateEnemy(instance);
+            }
+
+            self.game.randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
+                return StoryScript.random<IItem>(self.game.definitions.items, <(item: IItem) => boolean>selector);
             }
 
             self.game.rollDice = self.rollDice;
@@ -214,18 +232,16 @@ module StoryScript {
 
         fight = (enemy: IEnemy) => {
             var self = this;
-            var win = self.ruleService.fight(enemy);
+            self.ruleService.fight(enemy);
 
-            if (win) {
-                if (enemy.items && enemy.items.length) {
-                    enemy.items.forEach(function (item) {
+            if (enemy.hitpoints <= 0) {
+                if (enemy.items) {
+                    enemy.items.forEach((item: IItem) => {
                         self.game.currentLocation.items = self.game.currentLocation.items || [];
-
-                        // Todo: type
-                        self.game.currentLocation.items.push(<any>item);
+                        self.game.currentLocation.items.push(item);
                     });
 
-                    enemy.items.splice(0, enemy.items.length);
+                    enemy.items = <[IItem | (() => IItem)]>[];
                 }
 
                 self.game.currentLocation.enemies.remove(enemy);
@@ -331,6 +347,19 @@ module StoryScript {
                     collection.push(object[n]);
                 }
             }
+        }
+
+        private instantiateEnemy = (enemy: IEnemy): IEnemy => {
+            var items = <IItem[]>[];
+
+            if (enemy.items) {
+                enemy.items.forEach((def: () => IItem) => {
+                    items.push(StoryScript.definitionToObject(def));
+                });
+            }
+
+            (<any>enemy).items = items;
+            return enemy;
         }
     }
 

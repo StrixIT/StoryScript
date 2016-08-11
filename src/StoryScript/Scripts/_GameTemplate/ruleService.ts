@@ -34,24 +34,15 @@
             return character;
         }
 
-        fight = (enemyToFight: StoryScript.IEnemy) => {
+        fight = (enemy: StoryScript.IEnemy) => {
             var self = this;
-            var win = false;
-
-            // Todo: change when multiple enemies of the same type can be present.
-            var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
 
             // Implement character attack here.
 
-            if (win) {
-                return win;
-            }
 
-            self.game.currentLocation.enemies.forEach(function (enemy) {
+            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 // Implement monster attack here
             });
-
-            return win;
         }
 
         hitpointsChange(change: number) {

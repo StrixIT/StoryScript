@@ -1,5 +1,6 @@
 ﻿module StoryScript {
     export interface IItem {
+        id?: string;
         name: string;
         pictureFileName?: string;
         equipmentType: EquipmentType;
@@ -11,6 +12,6 @@
         actions?: ICollection<IAction>;
         use?: (...params) => void
         //requirement?
-        //price/value?
+        value?: number;
     }
 }
