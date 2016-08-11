@@ -49,3 +49,5 @@
         }
     }
 }
+
+// var randomEnemy = game.randomEnemy((enemy: IEnemy) => { return enemy.name.indexOf('rat') > -1; });

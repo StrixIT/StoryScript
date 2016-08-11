@@ -85,8 +85,8 @@
         public createCharacter(characterData: any): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
-            var chosenItem = characterData.steps[0].questions[1].selectedEntry;
-            character.items.push(self.game.definitions.items[chosenItem.value]());
+            var chosenItem = characterData.steps[1].questions[1].selectedEntry;
+            character.items.push(StoryScript.find<IItem>(self.game.definitions.items, (item: IItem) => { return (<any>item).id == chosenItem.value; }));
             return character;
         }
 

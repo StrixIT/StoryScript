@@ -198,7 +198,6 @@ var StoryScript;
             if (StoryScript.isEmpty(character)) {
                 var self = this;
                 character = self.ruleService.createCharacter(characterData);
-                character.name = characterData.name;
                 characterData.steps.forEach(function (step) {
                     if (step.questions) {
                         step.questions.forEach(function (question) {
@@ -385,7 +384,6 @@ var StoryScript;
             this.enemies = "Enemies";
             this.attack = "Attack {0}!";
             this.newGame = "New game";
-            this.yourName = "What is your name?";
             this.nextQuestion = "Next question";
             this.startAdventure = "Start adventure";
             this.actions = "Actions";
@@ -431,13 +429,7 @@ var StoryScript;
             this.init = function () {
                 var self = _this;
                 self.game.nameSpace = self.gameNameSpace;
-                self.definitions.locations = window[self.gameNameSpace]['Locations'];
-                var actions = window['StoryScript']['Actions'];
-                var customActions = window[self.gameNameSpace]['Actions'];
-                self.definitions.actions = customActions ? angular.extend(customActions, actions) : actions;
-                self.definitions.enemies = window[self.gameNameSpace]['Enemies'];
-                self.definitions.items = window[self.gameNameSpace]['Items'];
-                self.game.definitions = self.definitions;
+                self.getDefinitions();
                 self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
                 self.game.createCharacterSheet.currentStep = 0;
                 self.game.createCharacterSheet.nextStep = function (data) { data.currentStep++; };
@@ -453,6 +445,19 @@ var StoryScript;
                 };
                 self.game.logToActionLog = function (message) {
                     self.game.actionLog.splice(0, 0, message);
+                };
+                self.game.randomEnemy = function (selector) {
+                    var instance = StoryScript.random(self.game.definitions.enemies, selector);
+                    var items = [];
+                    instance.items.forEach(function (def) {
+                        items.push(StoryScript.definitionToObject(def));
+                    });
+                    instance.items = items;
+                    return instance;
+                };
+                self.game.randomItem = function (selector) {
+                    var instance = StoryScript.random(self.game.definitions.items, selector);
+                    return instance;
                 };
                 // Game setup end
                 self.locationService.init(self.game);
@@ -643,6 +648,27 @@ var StoryScript;
             }
             self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
         };
+        GameService.prototype.getDefinitions = function () {
+            var self = this;
+            var nameSpaceObject = window[self.gameNameSpace];
+            self.definitions.locations = [];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], self.definitions.locations);
+            self.definitions.enemies = [];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], self.definitions.enemies);
+            self.definitions.items = [];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Items'], self.definitions.items);
+            self.definitions.actions = [];
+            self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], self.definitions.actions);
+            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], self.definitions.actions);
+            self.game.definitions = self.definitions;
+        };
+        GameService.prototype.moveObjectPropertiesToArray = function (object, collection) {
+            for (var n in object) {
+                if (object.hasOwnProperty(n)) {
+                    collection.push(object[n]);
+                }
+            }
+        };
         return GameService;
     }());
     StoryScript.GameService = GameService;
@@ -665,11 +691,6 @@ var StoryScript;
             })();
         };
     }
-    function isEmpty(object, property) {
-        var objectToCheck = property ? object[property] : object;
-        return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
-    }
-    StoryScript.isEmpty = isEmpty;
     function addFunctionExtensions() {
         // Need to cast to any for ES5 and lower
         if (Function.prototype.name === undefined) {
@@ -713,32 +734,6 @@ var StoryScript;
         });
     }
     StoryScript.addArrayExtensions = addArrayExtensions;
-    function definitionToObject(definition) {
-        var item = definition();
-        // todo: type
-        // Need to cast to any for ES5 and lower
-        item.id = definition.name;
-        return item;
-    }
-    StoryScript.definitionToObject = definitionToObject;
-    function convertOjectToArray(item) {
-        var isArray = !isEmpty(item);
-        for (var n in item) {
-            if (isNaN(parseInt(n))) {
-                isArray = false;
-                break;
-            }
-        }
-        if (!isArray) {
-            return;
-        }
-        var newArray = [];
-        for (var n in item) {
-            newArray.push(item[n]);
-        }
-        return newArray;
-    }
-    StoryScript.convertOjectToArray = convertOjectToArray;
     var DataKeys = (function () {
         function DataKeys() {
         }
@@ -1255,10 +1250,44 @@ var StoryScript;
     StoryScript.MainController = MainController;
     MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game', 'textService'];
 })(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
+    function isEmpty(object, property) {
+        var objectToCheck = property ? object[property] : object;
+        return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
+    }
+    StoryScript.isEmpty = isEmpty;
+    function definitionToObject(definition) {
+        var instance = definition();
+        // Need to cast to any for ES5 and lower
+        instance.id = definition.name;
+        return instance;
+    }
+    StoryScript.definitionToObject = definitionToObject;
+    function random(collection, selector) {
+        if (!collection) {
+            return null;
+        }
+        var collectionToFilter = [];
+        if (typeof collection[0] === 'function') {
+            collection.forEach(function (def) {
+                collectionToFilter.push(definitionToObject(def));
+            });
+        }
+        else {
+            collectionToFilter = collection;
+        }
+        var selection = selector ? collectionToFilter.filter(selector) : collectionToFilter;
+        var index = Math.floor(Math.random() * selection.length);
+        return selection[index];
+    }
+    StoryScript.random = random;
+})(StoryScript || (StoryScript = {}));
 var RidderMagnus;
 (function (RidderMagnus) {
     var Character = (function () {
         function Character() {
+            this.name = 'Magnus';
             this.score = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
@@ -1312,8 +1341,13 @@ var RidderMagnus;
                                             bonus: 1
                                         },
                                         {
+                                            text: 'De politieschool',
+                                            value: 'zoeken',
+                                            bonus: 1
+                                        },
+                                        {
                                             text: 'Geen school, ik leefde op straat',
-                                            value: 'sluipen',
+                                            value: 'snelheid',
                                             bonus: 1
                                         }
                                     ]
@@ -1323,7 +1357,7 @@ var RidderMagnus;
                         {
                             questions: [
                                 {
-                                    question: 'Daarna was je 7 jaar de schildknaap van:',
+                                    question: 'Daarna was je zeven jaar de schildknaap van:',
                                     entries: [
                                         {
                                             text: 'Gerda de Sterke',
@@ -1333,6 +1367,11 @@ var RidderMagnus;
                                         {
                                             text: 'Mihar de Magiër',
                                             value: 'toveren',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Falco de Meesterdief',
+                                            value: 'sluipen',
                                             bonus: 1
                                         },
                                         {
@@ -1349,7 +1388,7 @@ var RidderMagnus;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var check = self.game.rollDice(self.game.character.vechten + 'd6');
+                var check = self.game.rollDice('1d6' + self.game.character.vechten);
                 var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
                 self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
                 enemy.hitpoints -= characterDamage;
@@ -1447,6 +1486,7 @@ var RidderMagnus;
                 equipmentHeader: "Uitrusting",
                 feet: "Voeten",
                 finalScore: "Eindscore",
+                gameName: 'Ridder Magnus',
                 head: "Hoofd",
                 leftHand: "Linkerhand",
                 loading: "Laden...",
@@ -1524,6 +1564,7 @@ var RidderMagnus;
         Locations.Kelder = Kelder;
     })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
 })(RidderMagnus || (RidderMagnus = {}));
+// var randomEnemy = game.randomEnemy((enemy: IEnemy) => { return enemy.name.indexOf('rat') > -1; }); 
 var RidderMagnus;
 (function (RidderMagnus) {
     var Locations;
@@ -2027,6 +2068,18 @@ var QuestForTheKing;
             this.getCreateCharacterSheet = function () {
                 return {
                     steps: [
+                        {
+                            attributes: [
+                                {
+                                    question: 'What is your name?',
+                                    entries: [
+                                        {
+                                            attribute: 'name'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         {
                             questions: [
                                 {
@@ -3222,6 +3275,18 @@ var DangerousCave;
                 return {
                     steps: [
                         {
+                            attributes: [
+                                {
+                                    question: 'Hoe heet je?',
+                                    entries: [
+                                        {
+                                            attribute: 'name'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
                             questions: [
                                 {
                                     question: 'Ben je sterk, snel of slim?',
@@ -3314,7 +3379,7 @@ var DangerousCave;
         RuleService.prototype.createCharacter = function (characterData) {
             var self = this;
             var character = new DangerousCave.Character();
-            var chosenItem = characterData.steps[0].questions[1].selectedEntry;
+            var chosenItem = characterData.steps[1].questions[1].selectedEntry;
             character.items.push(self.game.definitions.items[chosenItem.value]());
             return character;
         };
@@ -3394,7 +3459,6 @@ var DangerousCave;
                 startAdventure: "Start avontuur",
                 equipmentHeader: "Uitrusting",
                 gameName: "Gevaarlijke grot",
-                yourName: "Hoe heet je?",
                 youAreHere: "Je bent hier",
                 destinations: "Uitgangen",
                 onTheGround: "Op de grond",
@@ -3450,7 +3514,8 @@ var DangerousCave;
                 ]
             };
             function onDefeat(game) {
-                var randomEnemy = DangerousCave.Actions.RandomEnemy(game);
+                var randomEnemy = game.randomEnemy();
+                game.currentLocation.enemies.push(randomEnemy);
                 randomEnemy.onDefeat = this.onDefeat;
             }
         }

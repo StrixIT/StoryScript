@@ -21,9 +21,9 @@ module StoryScript {
         private ruleService: IRuleService;
         private game: IGame;
         private gameNameSpace: string;
-        private definitions: any;
+        private definitions: IDefinitions;
 
-        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: any) {
+        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: IDefinitions) {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
@@ -34,7 +34,7 @@ module StoryScript {
             self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: any): IGameService {
+        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: IDefinitions): IGameService {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
@@ -62,16 +62,8 @@ module StoryScript {
             var self = this;
             self.game.nameSpace = self.gameNameSpace;
 
-            self.definitions.locations = window[self.gameNameSpace]['Locations'];
+            self.getDefinitions();
 
-            var actions = window['StoryScript']['Actions'];
-            var customActions = window[self.gameNameSpace]['Actions'];
-            self.definitions.actions = customActions ? angular.extend(customActions, actions) : actions;
-
-            self.definitions.enemies = window[self.gameNameSpace]['Enemies'];
-            self.definitions.items = window[self.gameNameSpace]['Items'];
-
-            self.game.definitions = self.definitions;
             self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
             self.game.createCharacterSheet.currentStep = 0;
             self.game.createCharacterSheet.nextStep = (data: ICreateCharacter) => { data.currentStep++; };
@@ -92,6 +84,26 @@ module StoryScript {
             self.game.logToActionLog = (message: string) => {
                 self.game.actionLog.splice(0, 0, message);
             }
+
+            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
+                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, selector);
+                var items = <IItem[]>[];
+
+                if (instance.items) {
+                    instance.items.forEach((def: () => IItem) => {
+                        items.push(StoryScript.definitionToObject(def));
+                    });
+                }
+
+                (<any>instance).items = items;
+                return instance;
+            }
+
+            self.game.randomItem = (selector?: (item: IItem) => boolean): IItem => {
+                var instance = StoryScript.random<IItem>(self.game.definitions.items, selector);
+                return instance;
+            }
+
             // Game setup end
 
             self.locationService.init(self.game);
@@ -289,6 +301,34 @@ module StoryScript {
             }
 
             self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
+        }
+
+        private getDefinitions() {
+            var self = this;
+            var nameSpaceObject = window[self.gameNameSpace];
+
+            self.definitions.locations = <[() => ILocation]>[];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], self.definitions.locations);
+
+            self.definitions.enemies = <[() => IEnemy]>[];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], self.definitions.enemies);
+
+            self.definitions.items = <[() => IItem]>[];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Items'], self.definitions.items);
+
+            self.definitions.actions = <[() => IAction]>[];
+            self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], self.definitions.actions);
+            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], self.definitions.actions);
+
+            self.game.definitions = self.definitions;
+        }
+
+        private moveObjectPropertiesToArray<T>(object: {}, collection: [() => T]) {
+            for (var n in object) {
+                if (object.hasOwnProperty(n)) {
+                    collection.push(object[n]);
+                }
+            }
         }
     }
 

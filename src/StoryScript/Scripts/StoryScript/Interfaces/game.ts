@@ -6,12 +6,7 @@
 
     export interface IGame {
         nameSpace: string;
-        definitions: {
-            locations: [() => StoryScript.ILocation],
-            actions: [() => StoryScript.IAction],
-            enemies: [() => StoryScript.IEnemy],
-            items: [() => StoryScript.IItem]
-        };
+        definitions: IDefinitions;
         createCharacterSheet?: ICreateCharacter;
         character: ICharacter;
         locations: ICompiledCollection<ICompiledLocation>;
@@ -27,5 +22,8 @@
         calculateBonus(person: IActor, type: string): number;
         logToLocationLog(message: string): void;
         logToActionLog(message: string): void;
+
+        randomEnemy: (selector: (enemy: IEnemy) => boolean) => IEnemy;
+        randomItem: (selector: (enemy: IItem) => boolean) => IItem;
     }
 }

@@ -18,11 +18,6 @@
         };
     }
 
-    export function isEmpty(object: any, property?: string) {
-        var objectToCheck = property ? object[property] : object;
-        return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
-    }
-
     export function addFunctionExtensions() {
         // Need to cast to any for ES5 and lower
         if ((<any>Function.prototype).name === undefined) {
@@ -67,37 +62,6 @@
                 }
             }
         });
-    }
-
-    export function definitionToObject<T>(definition: Function): T {
-        var item = <T>definition();
-        // todo: type
-        // Need to cast to any for ES5 and lower
-        (<any>item).id = (<any>definition).name;
-        return item;
-    }
-
-    export function convertOjectToArray(item) {
-        var isArray = !isEmpty(item);
-
-        for (var n in item) {
-            if (isNaN(parseInt(n))) {
-                isArray = false;
-                break;
-            }
-        }
-
-        if (!isArray) {
-            return;
-        }
-
-        var newArray = [];
-
-        for (var n in item) {
-            newArray.push(item[n]);
-        }
-
-        return newArray;
     }
 
     export class DataKeys {

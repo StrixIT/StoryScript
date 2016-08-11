@@ -26,7 +26,8 @@
             }
 
         function onDefeat(game: IGame) {
-            var randomEnemy = Actions.RandomEnemy(game);
+            var randomEnemy = game.randomEnemy();
+            game.currentLocation.enemies.push(randomEnemy);
             randomEnemy.onDefeat = this.onDefeat;
         }
     }

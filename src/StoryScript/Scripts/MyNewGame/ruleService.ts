@@ -96,7 +96,6 @@
         fight = (enemy: StoryScript.IEnemy) => {
             var self = this;
             var win = false;
-
             var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
             self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
 
