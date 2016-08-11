@@ -82,11 +82,11 @@
             };
         }
 
-        public createCharacter(characterData: any): StoryScript.ICharacter {
+        public createCharacter(characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
             var chosenItem = characterData.steps[1].questions[1].selectedEntry;
-            character.items.push(StoryScript.find<IItem>(self.game.definitions.items, (item: IItem) => { return (<any>item).id == chosenItem.value; }));
+            character.items.push(StoryScript.find<IItem>(self.game.definitions.items, chosenItem.value));
             return character;
         }
 
