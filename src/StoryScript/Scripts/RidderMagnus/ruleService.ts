@@ -105,14 +105,52 @@
             }
         }
 
-        public initCombat(location: StoryScript.ICompiledLocation) {
+        public initCombat(location: ICompiledLocation) {
             var self = this;
 
             location.enemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
 
-           //als er een flee-action is: self.addFleeAction(location);
+            // check stats
+            var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
+
+            if (roll < self.game.currentLocation.sluipCheck) {
+                return;
+            }
+
+            var sneakActions = <IAction[]>[];
+
+            self.game.currentLocation.enemies.forEach((enemy: IEnemy) => {
+                sneakActions.push({
+                    sneakEnemy: enemy,
+                    text: 'Besluip ' + enemy.name,
+                    type: StoryScript.ActionType.Combat,
+                    execute: (game: IGame) => {
+                        // Do damage to sneaked enemy.
+                        var damage = 5;
+                        enemy.hitpoints -= damage;
+                        self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + damage + ' schade!');
+
+                        // Move all enemies into combat.
+                        game.currentLocation.actions.filter((action: IAction) => {
+                            return action.sneakEnemy != undefined;
+                        }).forEach((action: IAction) => {
+                            game.currentLocation.enemies.push(action.sneakEnemy);
+                        });
+
+                        // Remove the remaining sneak actions
+                        game.currentLocation.actions = game.currentLocation.actions.filter((action: IAction) => {
+                            return action.sneakEnemy == undefined;
+                        });
+                    }
+                });
+            });
+
+            self.game.currentLocation.enemies = [];
+            self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
+
+            //als er een flee-action is: self.addFleeAction(location);
         }
 
         fight = (enemy: StoryScript.IEnemy): boolean => {
@@ -148,7 +186,7 @@
             }
         }
 
-        
+
         hitpointsChange(change: number) {
             var self = this;
 

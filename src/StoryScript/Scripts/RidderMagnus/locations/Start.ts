@@ -44,7 +44,14 @@
                         var ring = game.character.items.get(Items.GoudenRing);
                         game.character.items.remove(ring);
                         game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');
-                        Actions.RandomItem(game);
+
+
+                        var randomItem = game.randomItem((item: IItem) => {
+                            return (<any>item).id !== (<any>Items.GoudenRing).name && item.price < 30;
+                            //of item met price <30, is nog beter
+                        });
+                        game.character.items.push(randomItem);
+
                        //de beloning moet een keuze worden: geld, random training of random item (item hier geen gouden ring)
                         //of een specifiek item gebaseerd op het personage? of keuze uit specifieke items
                     }

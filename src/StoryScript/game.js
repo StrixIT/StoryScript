@@ -449,9 +449,11 @@ var StoryScript;
                 self.game.randomEnemy = function (selector) {
                     var instance = StoryScript.random(self.game.definitions.enemies, selector);
                     var items = [];
-                    instance.items.forEach(function (def) {
-                        items.push(StoryScript.definitionToObject(def));
-                    });
+                    if (instance.items) {
+                        instance.items.forEach(function (def) {
+                            items.push(StoryScript.definitionToObject(def));
+                        });
+                    }
                     instance.items = items;
                     return instance;
                 };
@@ -1268,6 +1270,38 @@ var StoryScript;
         if (!collection) {
             return null;
         }
+        var selection = getFilteredInstantiatedCollection(collection, selector);
+        var index = Math.floor(Math.random() * selection.length);
+        return selection[index];
+    }
+    StoryScript.random = random;
+    function find(collection, selector) {
+        if (!collection && !selector) {
+            return null;
+        }
+        var collectionToFilter = [];
+        // Are we working with a definition collection?
+        if (typeof collection[0] === 'function') {
+            // If so, is the selector a string value or a named function?
+            if (typeof selector === 'string' || (selector.name)) {
+                // Then, use the string or function name to get the definition.
+                if (selector.name) {
+                    selector = selector.name;
+                }
+                var match = collection.filter(function (definition) {
+                    return definition.name === selector;
+                });
+                return definitionToObject(match[0]);
+            }
+        }
+        var results = getFilteredInstantiatedCollection(collection, selector);
+        if (results.length > 1) {
+            throw new Error('Collection contains more than one match!');
+        }
+        return results[0] || null;
+    }
+    StoryScript.find = find;
+    function getFilteredInstantiatedCollection(collection, selector) {
         var collectionToFilter = [];
         if (typeof collection[0] === 'function') {
             collection.forEach(function (def) {
@@ -1277,11 +1311,8 @@ var StoryScript;
         else {
             collectionToFilter = collection;
         }
-        var selection = selector ? collectionToFilter.filter(selector) : collectionToFilter;
-        var index = Math.floor(Math.random() * selection.length);
-        return selection[index];
+        return selector ? collectionToFilter.filter(selector) : collectionToFilter;
     }
-    StoryScript.random = random;
 })(StoryScript || (StoryScript = {}));
 var RidderMagnus;
 (function (RidderMagnus) {
@@ -1388,7 +1419,7 @@ var RidderMagnus;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var check = self.game.rollDice('1d6' + self.game.character.vechten);
+                var check = self.game.rollDice('1d6+' + self.game.character.vechten);
                 var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(enemy, 'defense');
                 self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
                 enemy.hitpoints -= characterDamage;
@@ -1438,6 +1469,35 @@ var RidderMagnus;
             location.enemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
+            // check stats
+            var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
+            if (roll < self.game.currentLocation.sluipCheck) {
+                return;
+            }
+            var sneakActions = [];
+            self.game.currentLocation.enemies.forEach(function (enemy) {
+                sneakActions.push({
+                    sneakEnemy: enemy,
+                    text: 'Besluip ' + enemy.name,
+                    type: StoryScript.ActionType.Combat,
+                    execute: function (game) {
+                        // Find sneaked enemy.
+                        // Todo: fix for multiple enemies of the same type.
+                        var sneakedEnemy = game.currentLocation.actions.filter(function (action) {
+                            return action.sneakEnemy.id == enemy.id;
+                        })[0].sneakEnemy;
+                        // Do damage to sneaked enemy.
+                        sneakedEnemy.hitpoints -= 5;
+                        // Move all enemies into combat.
+                        game.currentLocation.actions.filter(function (action) {
+                            return action.sneakEnemy != undefined;
+                        }).forEach(function (action) {
+                            game.currentLocation.enemies.push(action.sneakEnemy);
+                        });
+                    }
+                });
+            });
+            self.game.currentLocation.enemies = [];
             //als er een flee-action is: self.addFleeAction(location);
         };
         RuleService.prototype.enemyDefeated = function (enemy) {
@@ -1511,6 +1571,9 @@ var RidderMagnus;
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.service("textService", TextService);
 })(RidderMagnus || (RidderMagnus = {}));
+//Voor een random Item, behalve 1 specifieke:
+//var randomItem = game.randomItem((item: IItem) => {
+//    return (<any>item).id !== 'GoudenRing'; 
 var RidderMagnus;
 (function (RidderMagnus) {
     var Locations;
@@ -1658,7 +1721,11 @@ var RidderMagnus;
                             var ring = game.character.items.get(RidderMagnus.Items.GoudenRing);
                             game.character.items.remove(ring);
                             game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');
-                            RidderMagnus.Actions.RandomItem(game);
+                            var randomItem = game.randomItem(function (item) {
+                                return item.id !== RidderMagnus.Items.GoudenRing.name && item.price < 30;
+                                //of item met price <30, is nog beter
+                            });
+                            game.character.items.push(randomItem);
                             //de beloning moet een keuze worden: geld, random training of random item (item hier geen gouden ring)
                             //of een specifiek item gebaseerd op het personage? of keuze uit specifieke items
                         }
@@ -1934,61 +2001,6 @@ var RidderMagnus;
             };
         }
         Actions.Heal = Heal;
-    })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
-})(RidderMagnus || (RidderMagnus = {}));
-var RidderMagnus;
-(function (RidderMagnus) {
-    var Actions;
-    (function (Actions) {
-        function RandomEnemy(game) {
-            var enemies = game.definitions.enemies;
-            var enemyCount = 0;
-            var randomEnemy = null;
-            for (var n in enemies) {
-                enemyCount++;
-            }
-            var enemyToGet = game.rollDice('1d' + enemyCount) - 1;
-            var index = 0;
-            for (var n in enemies) {
-                if (index == enemyToGet) {
-                    randomEnemy = enemies[n]();
-                    break;
-                }
-                index++;
-            }
-            randomEnemy.items = randomEnemy.items || [];
-            for (var n in randomEnemy.items) {
-                StoryScript.definitionToObject(randomEnemy.items[n]);
-            }
-            game.currentLocation.enemies.push(randomEnemy);
-            return randomEnemy;
-        }
-        Actions.RandomEnemy = RandomEnemy;
-    })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
-})(RidderMagnus || (RidderMagnus = {}));
-var RidderMagnus;
-(function (RidderMagnus) {
-    var Actions;
-    (function (Actions) {
-        function RandomItem(game) {
-            var items = game.definitions.items;
-            var itemCount = 0;
-            var randomItem = null;
-            for (var n in items) {
-                itemCount++;
-            }
-            var itemToGet = game.rollDice('1d' + itemCount) - 1;
-            var index = 0;
-            for (var n in items) {
-                if (index == itemToGet) {
-                    randomItem = items[n]();
-                    break;
-                }
-                index++;
-            }
-            game.currentLocation.items.push(randomItem);
-        }
-        Actions.RandomItem = RandomItem;
     })(Actions = RidderMagnus.Actions || (RidderMagnus.Actions = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var QuestForTheKing;
@@ -3380,7 +3392,7 @@ var DangerousCave;
             var self = this;
             var character = new DangerousCave.Character();
             var chosenItem = characterData.steps[1].questions[1].selectedEntry;
-            character.items.push(self.game.definitions.items[chosenItem.value]());
+            character.items.push(StoryScript.find(self.game.definitions.items, chosenItem.value));
             return character;
         };
         RuleService.prototype.addEnemyToLocation = function (location, enemy) {
@@ -4343,36 +4355,6 @@ var DangerousCave;
             };
         }
         Actions.OpenWithKey = OpenWithKey;
-    })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
-})(DangerousCave || (DangerousCave = {}));
-var DangerousCave;
-(function (DangerousCave) {
-    var Actions;
-    (function (Actions) {
-        function RandomEnemy(game) {
-            var enemies = game.definitions.enemies;
-            var enemyCount = 0;
-            var randomEnemy = null;
-            for (var n in enemies) {
-                enemyCount++;
-            }
-            var enemyToGet = game.rollDice('1d' + enemyCount) - 1;
-            var index = 0;
-            for (var n in enemies) {
-                if (index == enemyToGet) {
-                    randomEnemy = enemies[n]();
-                    break;
-                }
-                index++;
-            }
-            randomEnemy.items = randomEnemy.items || [];
-            for (var n in randomEnemy.items) {
-                StoryScript.definitionToObject(randomEnemy.items[n]);
-            }
-            game.currentLocation.enemies.push(randomEnemy);
-            return randomEnemy;
-        }
-        Actions.RandomEnemy = RandomEnemy;
     })(Actions = DangerousCave.Actions || (DangerousCave.Actions = {}));
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;

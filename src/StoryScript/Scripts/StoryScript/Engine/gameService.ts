@@ -104,6 +104,8 @@ module StoryScript {
                 return instance;
             }
 
+            self.game.rollDice = self.rollDice;
+
             // Game setup end
 
             self.locationService.init(self.game);
@@ -127,7 +129,6 @@ module StoryScript {
                 self.game.state = 'createCharacter';
             }
 
-            self.game.rollDice = self.rollDice;
             self.game.calculateBonus = (person: ICharacter, type: string) => { return self.calculateBonus(self.game, person, type); };
         }
 
