@@ -38,7 +38,7 @@
                     text: 'Doorzoek de kuil',
                     difficulty: 9,
                     success: (game) => {
-                        game.currentLocation.items.push(Items.LeatherHelmet());
+                        game.currentLocation.items.push(game.getItem(Items.LeatherHelmet));
                         game.logToLocationLog('In de kuil voel je botten, spinrag en de resten van kleding. Ook vind je er een nog bruikbare helm!')
                     },
                     fail: (game) => {

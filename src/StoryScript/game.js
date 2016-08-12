@@ -502,6 +502,9 @@ var StoryScript;
                         }
                     });
                 }
+                self.game.equals = function (entity, definition) {
+                    return entity.id === definition.name;
+                };
                 // Game setup end
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
@@ -1311,7 +1314,7 @@ var StoryScript;
                     self.game.state = StoryScript.GameState.Combat;
                 }
                 else if (newValue && newValue.length == 0) {
-                    self.game.state = StoryScript.GameState.Play;
+                    self.$scope.modalSettings.canClose = true;
                 }
             };
             this.fight = function (enemy) {
@@ -1346,42 +1349,41 @@ var StoryScript;
                 self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
                 self.$scope.modalSettings.canClose = true;
                 self.game.currentLocation.activePerson = person;
-                var activePerson = self.game.currentLocation.activePerson;
-                var activeNode = activePerson.conversation.activeNode;
+                var activeNode = person.conversation.activeNode;
                 if (!activeNode) {
-                    activeNode = activePerson.conversation.nodes.some(function (node) { return node.active; })[0];
+                    activeNode = person.conversation.nodes.some(function (node) { return node.active; })[0];
                     if (!activeNode) {
-                        activePerson.conversation.nodes[0].active = true;
-                        activePerson.conversation.activeNode = activePerson.conversation.nodes[0];
+                        person.conversation.nodes[0].active = true;
+                        person.conversation.activeNode = person.conversation.nodes[0];
                     }
                 }
-                if (self.ruleService.prepareReplies) {
-                    self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+                if (person.conversation.prepareReplies) {
+                    person.conversation.prepareReplies(self.game, person, person.conversation.activeNode);
                 }
                 self.game.state = StoryScript.GameState.Conversation;
             };
             this.answer = function (node, reply) {
                 var self = _this;
-                var activePerson = self.game.currentLocation.activePerson;
-                activePerson.conversation.conversationLog = activePerson.conversation.conversationLog || [];
-                activePerson.conversation.conversationLog.push({
+                var person = self.game.currentLocation.activePerson;
+                person.conversation.conversationLog = person.conversation.conversationLog || [];
+                person.conversation.conversationLog.push({
                     lines: node.lines,
                     reply: reply.lines
                 });
-                if (self.ruleService.handleReply) {
-                    self.ruleService.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
+                if (person.conversation.handleReply) {
+                    person.conversation.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
                 }
                 if (reply.linkToNode) {
-                    activePerson.conversation.activeNode = activePerson.conversation.nodes.filter(function (node) { return node.node == reply.linkToNode; })[0];
-                    if (self.ruleService.prepareReplies) {
-                        self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+                    person.conversation.activeNode = person.conversation.nodes.filter(function (node) { return node.node == reply.linkToNode; })[0];
+                    if (person.conversation.prepareReplies) {
+                        person.conversation.prepareReplies(self.game, self.game.currentLocation.activePerson, person.conversation.activeNode);
                     }
                 }
                 else {
-                    activePerson.conversation.nodes.forEach(function (node) {
+                    person.conversation.nodes.forEach(function (node) {
                         node.active = false;
                     });
-                    activePerson.conversation.activeNode = null;
+                    person.conversation.activeNode = null;
                 }
             };
             this.trade = function (game, trade) {
@@ -2102,7 +2104,7 @@ var RidderMagnus;
                             game.character.items.remove(ring);
                             game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');
                             var randomItem = game.randomItem(function (item) {
-                                return item.id !== RidderMagnus.Items.GoudenRing.name && item.value < 30;
+                                return game.equals(item, RidderMagnus.Items.GoudenRing) && item.value < 30;
                             });
                             game.character.items.push(randomItem);
                             //de beloning moet een keuze worden: geld, random training of random item (item hier geen gouden ring)
@@ -2256,8 +2258,8 @@ var RidderMagnus;
                 name: 'Licht (spreuk)',
                 equipmentType: StoryScript.EquipmentType.Miscellaneous,
                 description: 'Een magisch licht dat de duisternis verjaagt.',
-                use: function (game, item) {
-                    game.currentLocation.text = game.currentLocation.descriptions["licht"] || game.currentLocation.text;
+                use: function (game) {
+                    game.currentLocation.text = game.currentLocation.descriptions["light"] || game.currentLocation.text;
                     game.logToActionLog('Een helder licht straalt vanuit je handen en verlicht een grote kring rondom je.');
                 },
                 value: 10
@@ -4369,7 +4371,7 @@ var DangerousCave;
                         text: 'Doorzoek de kuil',
                         difficulty: 9,
                         success: function (game) {
-                            game.currentLocation.items.push(DangerousCave.Items.LeatherHelmet());
+                            game.currentLocation.items.push(game.getItem(DangerousCave.Items.LeatherHelmet));
                             game.logToLocationLog('In de kuil voel je botten, spinrag en de resten van kleding. Ook vind je er een nog bruikbare helm!');
                         },
                         fail: function (game) {

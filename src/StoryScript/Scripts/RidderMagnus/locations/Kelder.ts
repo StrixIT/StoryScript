@@ -38,7 +38,7 @@
                         else {
                             game.logToActionLog('Waar is die ring toch? Niet onder dit wijnvat, hier is alleen een... rat!');
                             game.logToActionLog('Een enorme rat bespringt je!');
-                            var enormeRat = Enemies.EnormeRat();
+                            var enormeRat = game.getEnemy(Enemies.EnormeRat);
                             game.currentLocation.enemies.push(enormeRat);
                             return true
 

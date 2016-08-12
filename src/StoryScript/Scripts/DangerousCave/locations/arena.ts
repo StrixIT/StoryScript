@@ -16,7 +16,7 @@
                         text: 'Onderzoek symbool',
                         execute: function (game: IGame) {
                             game.currentLocation.text = game.currentLocation.descriptions['triggered'];
-                            var troll = Enemies.Troll();
+                            var troll = game.getEnemy(Enemies.Troll);
                             game.currentLocation.enemies.push(troll);
                             troll.onDefeat = onDefeat;
                             game.logToActionLog('Er verschijnt op magische wijze een enorme trol waar het symbool was! Hij valt je aan!');
