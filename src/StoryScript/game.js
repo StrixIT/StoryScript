@@ -709,6 +709,8 @@ var StoryScript;
             self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], self.definitions.locations);
             self.definitions.enemies = [];
             self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], self.definitions.enemies);
+            self.definitions.persons = [];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Persons'], self.definitions.persons);
             self.definitions.items = [];
             self.moveObjectPropertiesToArray(nameSpaceObject['Items'], self.definitions.items);
             self.definitions.actions = [];
@@ -1090,6 +1092,9 @@ var StoryScript;
         };
         LocationService.prototype.loadConversations = function (game) {
             var self = this;
+            if (!game.currentLocation.persons) {
+                return;
+            }
             game.currentLocation.persons.filter(function (p) { return !p.conversation; }).forEach(function (person) {
                 self.dataService.getDescription('persons', person.id).then(function (conversations) {
                     var parser = new DOMParser();
@@ -1267,6 +1272,10 @@ var StoryScript;
                 self.game.character.items.remove(item);
                 self.game.currentLocation.items.push(item);
             };
+            this.useItem = function (item) {
+                var self = _this;
+                item.use(self.game, item);
+            };
             this.canEquip = function (item) {
                 return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
             };
@@ -1346,6 +1355,9 @@ var StoryScript;
                         activePerson.conversation.activeNode = activePerson.conversation.nodes[0];
                     }
                 }
+                if (self.ruleService.prepareReplies) {
+                    self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+                }
                 self.game.state = StoryScript.GameState.Conversation;
             };
             this.answer = function (node, reply) {
@@ -1356,8 +1368,14 @@ var StoryScript;
                     lines: node.lines,
                     reply: reply.lines
                 });
+                if (self.ruleService.handleReply) {
+                    self.ruleService.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
+                }
                 if (reply.linkToNode) {
                     activePerson.conversation.activeNode = activePerson.conversation.nodes.filter(function (node) { return node.node == reply.linkToNode; })[0];
+                    if (self.ruleService.prepareReplies) {
+                        self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+                    }
                 }
                 else {
                     activePerson.conversation.nodes.forEach(function (node) {
@@ -2238,7 +2256,7 @@ var RidderMagnus;
                 name: 'Licht (spreuk)',
                 equipmentType: StoryScript.EquipmentType.Miscellaneous,
                 description: 'Een magisch licht dat de duisternis verjaagt.',
-                use: function (game) {
+                use: function (game, item) {
                     game.currentLocation.text = game.currentLocation.descriptions["licht"] || game.currentLocation.text;
                     game.logToActionLog('Een helder licht straalt vanuit je handen en verlicht een grote kring rondom je.');
                 },

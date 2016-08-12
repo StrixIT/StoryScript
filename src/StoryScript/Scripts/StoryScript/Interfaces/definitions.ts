@@ -3,6 +3,7 @@
         locations: [() => ILocation];
         actions: [() => IAction];
         enemies: [() => IEnemy];
+        persons: [() => IPerson];
         items: [() => IItem];
     }
 }

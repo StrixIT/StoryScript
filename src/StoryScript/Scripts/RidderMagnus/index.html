@@ -32,7 +32,7 @@
                     <div class="charactersheet" ng-include="'/ui/character-sheet.html'"></div>
                 </div>
                 <div id="location-container" class="col-md-8">
-                    <div ng-if="!game.state">
+                    <div ng-if="!game.stateString">
                         {{ texts.loading }}
                     </div>
                     <div ng-if="game.stateString == 'Play'">

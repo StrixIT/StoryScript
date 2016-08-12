@@ -247,7 +247,7 @@
                 self.game.state = GameState.Combat;
             }
             else if (newValue && newValue.length == 0) {
-                self.game.state = GameState.Play;
+                self.$scope.modalSettings.canClose = true;
             }
         }
 
@@ -302,6 +302,10 @@
                 }
             }
 
+            if (self.ruleService.prepareReplies) {
+                self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+            }
+
             self.game.state = GameState.Conversation;
         }
 
@@ -316,8 +320,16 @@
                 reply: reply.lines
             });
 
+            if (self.ruleService.handleReply) {
+                self.ruleService.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
+            }
+
             if (reply.linkToNode) {
                 activePerson.conversation.activeNode = activePerson.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
+
+                if (self.ruleService.prepareReplies) {
+                    self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+                }
             }
             else {
                 activePerson.conversation.nodes.forEach((node) => {
