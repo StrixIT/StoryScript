@@ -52,3 +52,4 @@
 }
 
 // var randomEnemy = game.randomEnemy((enemy: IEnemy) => { return enemy.name.indexOf('rat') > -1; });
+//bij latere quest een zoekactie die destination: Tunnel onthult
