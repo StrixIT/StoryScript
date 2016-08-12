@@ -1,3 +1,21 @@
 ﻿<div>
-    Converse
+    <div ng-show="game.currentLocation.activePerson.conversation.activeNode">
+        <div ng-bind-html="game.currentLocation.activePerson.conversation.activeNode.lines"></div>
+        <ul>
+            <li ng-repeat="reply in game.currentLocation.activePerson.conversation.activeNode.replies">
+                <div ng-bind-html="reply.lines" ng-click="controller.answer(game.currentLocation.activePerson.conversation.activeNode, reply)"></div>
+            </li>
+        </ul>
+    </div>
+    <div ng-hide="game.currentLocation.activePerson.conversation.activeNode">
+        Your conversation has ended.
+    </div>
+    <hr />
+    <h4>Conversation history</h4>
+    <ul>
+        <li ng-repeat="entry in game.currentLocation.activePerson.conversation.conversationLog">
+            <div ng-bind-html="entry.lines"></div>
+            <div ng-bind-html="entry.reply"></div>
+        </li>
+    </ul>
 </div>

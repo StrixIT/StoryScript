@@ -1,16 +1,25 @@
 ﻿module StoryScript {
     export interface IConversation {
+        title?: string;
         nodes: ICollection<IConversationNode>;
+        activeNode?: IConversationNode;
+        conversationLog?: IConversationLogEntry[];
     }
 
     export interface IConversationNode {
+        active?: boolean;
         node: string;
         lines: string;
-        Replies?: ICollection<IReply>;
+        replies?: ICollection<IConversationReply>;
     }
 
-    export interface IReply {
+    export interface IConversationReply {
         lines?: string;
-        linkToNode: IConversationNode;
+        linkToNode?: string;
+    }
+
+    export interface IConversationLogEntry {
+        lines: string;
+        reply: string;
     }
 }
