@@ -4,6 +4,8 @@
         nodes: ICollection<IConversationNode>;
         activeNode?: IConversationNode;
         conversationLog?: IConversationLogEntry[];
+        prepareReplies?(game: IGame, person: IPerson, node: IConversationNode): void;
+        handleReply?(game: IGame, person: IPerson, node: IConversationNode, reply: IConversationReply): void;
     }
 
     export interface IConversationNode {

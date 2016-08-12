@@ -288,22 +288,19 @@
             self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
             self.$scope.modalSettings.canClose = true;
             self.game.currentLocation.activePerson = person;
-
-            var activePerson = self.game.currentLocation.activePerson;
-
-            var activeNode = activePerson.conversation.activeNode;
+            var activeNode = person.conversation.activeNode;
 
             if (!activeNode) {
-                activeNode = activePerson.conversation.nodes.some((node) => { return node.active; })[0];
+                activeNode = person.conversation.nodes.some((node) => { return node.active; })[0];
 
                 if (!activeNode) {
-                    activePerson.conversation.nodes[0].active = true;
-                    activePerson.conversation.activeNode = activePerson.conversation.nodes[0];
+                    person.conversation.nodes[0].active = true;
+                    person.conversation.activeNode = person.conversation.nodes[0];
                 }
             }
 
-            if (self.ruleService.prepareReplies) {
-                self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+            if (person.conversation.prepareReplies) {
+                person.conversation.prepareReplies(self.game, person, person.conversation.activeNode);
             }
 
             self.game.state = GameState.Conversation;
@@ -311,31 +308,31 @@
 
         answer = (node: IConversationNode, reply: IConversationReply) => {
             var self = this;
-            var activePerson = self.game.currentLocation.activePerson;
+            var person = self.game.currentLocation.activePerson;
 
-            activePerson.conversation.conversationLog = activePerson.conversation.conversationLog || [];
+            person.conversation.conversationLog = person.conversation.conversationLog || [];
 
-            activePerson.conversation.conversationLog.push({
+            person.conversation.conversationLog.push({
                 lines: node.lines,
                 reply: reply.lines
             });
 
-            if (self.ruleService.handleReply) {
-                self.ruleService.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
+            if (person.conversation.handleReply) {
+                person.conversation.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
             }
 
             if (reply.linkToNode) {
-                activePerson.conversation.activeNode = activePerson.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
+                person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
 
-                if (self.ruleService.prepareReplies) {
-                    self.ruleService.prepareReplies(self.game, self.game.currentLocation.activePerson, activePerson.conversation.activeNode);
+                if (person.conversation.prepareReplies) {
+                    person.conversation.prepareReplies(self.game, self.game.currentLocation.activePerson, person.conversation.activeNode);
                 }
             }
             else {
-                activePerson.conversation.nodes.forEach((node) => {
+                person.conversation.nodes.forEach((node) => {
                     node.active = false;
                 });
-                activePerson.conversation.activeNode = null;
+                person.conversation.activeNode = null;
             }
         }
 

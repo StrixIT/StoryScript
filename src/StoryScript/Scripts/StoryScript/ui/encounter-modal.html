@@ -12,12 +12,12 @@
                 <div ng-if="game.stateString == 'Trade'" class="trade" ng-include="'/ui/trade.html'"></div>
                 <div ng-if="game.stateString == 'Conversation'" class="trade" ng-include="'/ui/conversation.html'"></div>
                 <hr />
-                <fieldset>
-                    <legend>{{ texts.messages }}</legend>
+                <div>
+                    <h5>{{ texts.messages }}</h5>
                     <ul id="action-log">
                         <li ng-repeat="message in game.actionLog track by $index">{{ message }}</li>
                     </ul>
-                </fieldset>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" ng-click="controller.closeModal()" ng-show="modalSettings.canClose">{{ modalSettings.closeText }}</button>

@@ -116,6 +116,10 @@ module StoryScript {
                 });
             }
 
+            self.game.equals = <T>(entity: T, definition: () => T): boolean => {
+                return (<any>entity).id === (<any>definition).name;
+            }
+
             // Game setup end
 
             self.locationService.init(self.game);

@@ -28,6 +28,8 @@
         getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
 
+        equals<T>(entity: T, definition: () => T): boolean;
+
         fight: (enemy: IEnemy) => void;
     }
 }

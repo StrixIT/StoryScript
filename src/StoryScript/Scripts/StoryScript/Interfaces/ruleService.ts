@@ -10,9 +10,5 @@
         enemyDefeated?(enemy: IEnemy): void;
         hitpointsChange(change: number): boolean;
         scoreChange(change: number): boolean;
-
-        // Conversation
-        prepareReplies?(game: IGame, person: IPerson, node: IConversationNode): void;
-        handleReply?(game: IGame, person: IPerson, node: IConversationNode, reply: IConversationReply): void;
     }
 }
