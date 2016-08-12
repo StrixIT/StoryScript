@@ -405,6 +405,7 @@ var StoryScript;
             this.youAreHere = "You are here";
             this.messages = "Messages";
             this.hitpoints = "Health";
+            this.currency = "Money";
             this.format = function (template, tokens) {
                 if (tokens) {
                     for (var i = 0; i < tokens.length; i++) {
@@ -1030,7 +1031,7 @@ var StoryScript;
             if (sell.priceModifier != undefined) {
                 sell.items.forEach(function (item) {
                     if (item.value) {
-                        var modifier = typeof sell.priceModifier === 'function' ? sell.priceModifier() : sell.priceModifier;
+                        var modifier = typeof sell.priceModifier === 'function' ? sell.priceModifier(game) : sell.priceModifier;
                         item.value *= modifier;
                     }
                 });
@@ -1038,7 +1039,7 @@ var StoryScript;
             if (buy.priceModifier != undefined) {
                 buy.items.forEach(function (item) {
                     if (item.value) {
-                        var modifier = typeof buy.priceModifier === 'function' ? buy.priceModifier() : buy.priceModifier;
+                        var modifier = typeof buy.priceModifier === 'function' ? buy.priceModifier(game) : buy.priceModifier;
                         item.value *= modifier;
                     }
                 });
@@ -1205,6 +1206,20 @@ var StoryScript;
             };
             this.canPay = function (currency, value) {
                 return value != undefined && currency != undefined && currency >= value;
+            };
+            this.buy = function (item, trade) {
+                var self = _this;
+                self.game.character.currency -= item.value;
+                self.game.character.items.push(item);
+                trade.currency += item.value;
+                trade.sell.items.remove(item);
+            };
+            this.sell = function (item, trade) {
+                var self = _this;
+                self.game.character.currency += item.value;
+                self.game.character.items.remove(item);
+                trade.currency -= item.value;
+                trade.sell.items.push(item);
             };
             var self = this;
             self.$scope = $scope;
@@ -3060,7 +3075,7 @@ var MyNewGame;
                         itemSelector: function (item) {
                             return true;
                         },
-                        maxItems: 3,
+                        maxItems: 1,
                         priceModifier: 0
                     },
                     sell: {

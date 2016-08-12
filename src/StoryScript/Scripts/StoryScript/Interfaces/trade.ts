@@ -9,7 +9,8 @@
 
     export interface IStock {
         description?: string;
-        items?: IItem[];
+        emptyText?: string;
+        items?: ICollection<IItem>;
         priceModifier?: number | ((game: IGame) => number);
         itemSelector?: (item: IItem) => boolean;
         maxItems?: number;

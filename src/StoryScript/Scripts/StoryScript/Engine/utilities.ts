@@ -30,6 +30,10 @@
         var selection = getFilteredInstantiatedCollection<T>(collection, selector);
         var results = <ICollection<T>>[];
 
+        if (count === undefined) {
+            count = selection.length;
+        }
+
         if (selection.length > 0) {
             while (results.length < count && results.length < selection.length) {
                 var index = Math.floor(Math.random() * selection.length);

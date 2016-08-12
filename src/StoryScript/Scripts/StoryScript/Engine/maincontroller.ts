@@ -211,6 +211,23 @@
             return value != undefined && currency != undefined && currency >= value;
         }
 
+        buy = (item: IItem, trade: ITrade) => {
+            var self = this;
+            self.game.character.currency -= item.value;
+            self.game.character.items.push(item);
+            trade.currency += item.value;
+            trade.sell.items.remove(item);
+        }
+
+        sell = (item: IItem, trade: ITrade) => {
+            var self = this;
+            self.game.character.currency += item.value;
+            self.game.character.items.remove(item);
+            trade.buy.items.remove(item);
+            trade.currency -= item.value;
+            trade.sell.items.push(item);
+        }
+
         private watchCharacterHitpoints(newValue, oldValue, scope) {
             if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                 var change = newValue - oldValue;
