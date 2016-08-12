@@ -44,5 +44,7 @@
         talk?: string;
         encounters?: string;
         closeModal?: string;
+        combatTitle?: string;
+        value?: string;
     }
 }

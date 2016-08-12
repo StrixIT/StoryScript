@@ -25,7 +25,7 @@
         private modalSettings: IModalSettings;
 
         // Todo: can this be done differently?
-        private nonDisplayAttributes: string[] = [ 'name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
+        private nonDisplayAttributes: string[] = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
         private characterAttributes: string[];
 
         // Todo: can this be done differently?
@@ -57,6 +57,7 @@
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+            self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
 
             self.reset = () => { self.gameService.reset.call(self.gameService); };
 
@@ -224,6 +225,25 @@
             }
 
             self.game.character.equipment[type] = null;
+        }
+
+        initCombat = (newValue: IEnemy[]) => {
+            var self = this;
+
+            if (newValue && newValue.length > 0) {
+
+                self.$scope.modalSettings.title = self.texts.combatTitle;
+                self.$scope.modalSettings.canClose = false;
+
+                if (self.ruleService.initCombat) {
+                    self.ruleService.initCombat(self.game.currentLocation);
+                }
+
+                self.game.state = GameState.Combat;
+            }
+            else if (newValue && newValue.length == 0) {
+                self.game.state = GameState.Play;
+            }
         }
 
         fight = (enemy: IEnemy) => {

@@ -155,10 +155,6 @@ module StoryScript {
 
             self.loadLocationDescriptions(game);
 
-            if (self.ruleService.initCombat) {
-                self.ruleService.initCombat(game.currentLocation);
-            }
-
             if (self.ruleService.enterLocation) {
                 self.ruleService.enterLocation(game.currentLocation);
             }
