@@ -15,7 +15,7 @@
                 },
                 sell: {
                     itemSelector: (item: IItem) => {
-                        return item.damage != undefined && item.price <= 10;
+                        return item.damage != undefined && item.value <= 10;
                     },
                     maxItems: 5
                 }
