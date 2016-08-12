@@ -10,7 +10,7 @@
         charges?: number;
         bonuses?: any;
         actions?: ICollection<IAction>;
-        use?: (...params) => void
+        use?: (game: IGame, item: IItem) => void
         //requirement?
         value?: number;
     }

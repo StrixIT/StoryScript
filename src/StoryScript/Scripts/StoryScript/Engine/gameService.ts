@@ -322,6 +322,9 @@ module StoryScript {
             self.definitions.enemies = <[() => IEnemy]>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], self.definitions.enemies);
 
+            self.definitions.persons = <[() => IPerson]>[];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Persons'], self.definitions.persons);
+
             self.definitions.items = <[() => IItem]>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Items'], self.definitions.items);
 
