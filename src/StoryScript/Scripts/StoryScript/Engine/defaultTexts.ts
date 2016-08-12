@@ -41,6 +41,8 @@
         talk = "Talk to {0}";
         encounters = "Encounters";
         closeModal = "Close";
+        combatTitle = "Combat";
+        value = "value";
 
         format = (template: string, tokens: string[]): string => {
             if (tokens) {

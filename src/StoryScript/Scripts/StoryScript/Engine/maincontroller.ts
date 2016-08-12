@@ -25,7 +25,7 @@
         private modalSettings: IModalSettings;
 
         // Todo: can this be done differently?
-        private nonDisplayAttributes: string[] = [ 'name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
+        private nonDisplayAttributes: string[] = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
         private characterAttributes: string[];
 
         // Todo: can this be done differently?
@@ -57,6 +57,7 @@
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+            self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
 
             self.reset = () => { self.gameService.reset.call(self.gameService); };
 
@@ -140,8 +141,13 @@
                 args.shift();
                 args.splice(0, 0, self.game);
 
+                if (typeof action.execute !== 'function') {
+                    action.execute = self[<string>action.execute];
+                    args = args.concat(action.arguments);
+                }
+
                 // Execute the action and when nothing or false is returned, remove it from the current location.
-                var result = action.execute.apply(this, args);
+                var result = (<(game: IGame, ...params) => void>action.execute).apply(this, args);
 
                 // Todo: combat actions will never be removed this way.
                 if (!result && self.game.currentLocation.actions) {
@@ -221,6 +227,25 @@
             self.game.character.equipment[type] = null;
         }
 
+        initCombat = (newValue: IEnemy[]) => {
+            var self = this;
+
+            if (newValue && newValue.length > 0) {
+
+                self.$scope.modalSettings.title = self.texts.combatTitle;
+                self.$scope.modalSettings.canClose = false;
+
+                if (self.ruleService.initCombat) {
+                    self.ruleService.initCombat(self.game.currentLocation);
+                }
+
+                self.game.state = GameState.Combat;
+            }
+            else if (newValue && newValue.length == 0) {
+                self.game.state = GameState.Play;
+            }
+        }
+
         fight = (enemy: IEnemy) => {
             var self = this;
             self.gameService.fight(enemy);
@@ -229,6 +254,11 @@
 
         canPay = (currency: number, value: number) => {
             return value != undefined && currency != undefined && currency >= value;
+        }
+
+        displayPrice = (item: IItem) => {
+            var self = this;
+            return item.value ? (item.name + ': ' + item.value + ' ' + self.texts.currency) : item.name;
         }
 
         buy = (item: IItem, trade: ITrade) => {
@@ -290,6 +320,50 @@
                 });
                 activePerson.conversation.activeNode = null;
             }
+        }
+
+        trade = (game: IGame, trade: IPerson | ITrade) => {
+            var self = this;
+
+            if (!trade) {
+                return;
+            }
+
+            self.game.currentLocation.activeTrade = (<IPerson>trade).trade ? (<IPerson>trade).trade : trade;
+            var trader = self.game.currentLocation.activeTrade;
+            trader.currency = trader.currency || (<IPerson>trade).currency;
+
+            self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<IPerson>trade).name]);
+            self.$scope.modalSettings.canClose = true;
+
+            var itemsForSale = trader.sell.items;
+
+            if (!itemsForSale) {
+                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.sell.maxItems, trader.sell.itemSelector);
+            }
+
+            trader.sell.items = itemsForSale;
+            trader.buy.items = StoryScript.randomList<IItem>(self.game.character.items, trader.buy.maxItems, trader.buy.itemSelector);
+
+            if (trader.sell.priceModifier != undefined) {
+                trader.sell.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof trader.sell.priceModifier === 'function' ? (<any>trader.sell).priceModifier(self.game) : trader.sell.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+
+            if (trader.buy.priceModifier != undefined) {
+                trader.buy.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof trader.buy.priceModifier === 'function' ? (<any>trader.buy).priceModifier(self.game) : trader.buy.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+
+            self.game.state = GameState.Trade;
         }
 
         closeModal = () => {

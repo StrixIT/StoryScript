@@ -6,6 +6,7 @@
             attack: '1d6',
             reward: 1,
             disposition: StoryScript.Disposition.Neutral,
+            currency: 10,
             trade: {
                 buy: {
                     itemSelector: (item: IItem) => {

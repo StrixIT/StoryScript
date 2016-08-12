@@ -1,5 +1,6 @@
 ﻿module StoryScript {
     export interface ITrade {
+        title?: string;
         description?: string;
         sell?: IStock;
         buy?: IStock;

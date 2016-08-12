@@ -9,6 +9,7 @@
                 }
             ],
             trade: {
+                title: 'Your personal closet',
                 description: 'Do you want to take something out of your closet or put it back in?',
                 currency: 10,
                 buy: {

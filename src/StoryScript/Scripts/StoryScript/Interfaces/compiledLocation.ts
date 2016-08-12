@@ -15,6 +15,7 @@
         descriptions: { [key: string] : string; };
         trade?: ITrade;
         activePerson?: IPerson;
+        activeTrade?: ITrade;
         log: string[];
     }
 }

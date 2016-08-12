@@ -107,12 +107,14 @@ module StoryScript {
             self.game.fight = self.fight;
 
             // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
-            Object.defineProperty(self.game, 'stateString', {
-                enumerable: true,
-                get: function () {
-                    return GameState[self.game.state];
-                }
-            });
+            if (!(<any>self.game).stateString) {
+                Object.defineProperty(self.game, 'stateString', {
+                    enumerable: true,
+                    get: function () {
+                        return GameState[self.game.state];
+                    }
+                });
+            }
 
             // Game setup end
 

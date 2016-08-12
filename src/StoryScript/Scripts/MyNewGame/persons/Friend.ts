@@ -8,6 +8,25 @@
             items: [
                 Items.Sword
             ],
+            currency: 10,
+            trade: {
+                buy: {
+                    description: 'These items look good, I\'d like to buy them from you',
+                    emptyText: 'You have nothing left that I\'m interested in',
+                    itemSelector: (item: IItem) => {
+                        return true;
+                    },
+                    maxItems: 5
+                },
+                sell: {
+                    description: 'I\'m willing to part with these items...',
+                    emptyText: 'I have nothing left to sell to you...',
+                    itemSelector: (item: IItem) => {
+                        return true;
+                    },
+                    maxItems: 5
+                }
+            },
             disposition: StoryScript.Disposition.Friendly
         }
     }
