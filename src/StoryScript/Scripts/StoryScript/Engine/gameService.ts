@@ -9,7 +9,7 @@
         fight(enemy: IEnemy): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
-        changeGameState(state: string): void;
+        changeGameState(state: StoryScript.GameState): void;
     }
 }
 
@@ -106,6 +106,13 @@ module StoryScript {
             self.game.rollDice = self.rollDice;
             self.game.fight = self.fight;
 
+            Object.defineProperty(self.game, 'stateString', {
+                enumerable: true,
+                get: function () {
+                    return GameState[self.game.state];
+                }
+            });
+
             // Game setup end
 
             self.locationService.init(self.game);
@@ -123,10 +130,10 @@ module StoryScript {
                 }
 
                 self.locationService.changeLocation(lastLocation, self.game);
-                self.game.state = 'play';
+                self.game.state = StoryScript.GameState.Play;
             }
             else {
-                self.game.state = 'createCharacter';
+                self.game.state = StoryScript.GameState.CreateCharacter;
             }
 
             self.game.calculateBonus = (person: ICharacter, type: string) => { return self.calculateBonus(self.game, person, type); };
@@ -246,7 +253,7 @@ module StoryScript {
                 var levelUp = self.ruleService.scoreChange(change);
 
                 if (levelUp) {
-                    self.game.state = 'levelUp';
+                    self.game.state = StoryScript.GameState.LevelUp;
                 }
             }
         }
@@ -256,14 +263,14 @@ module StoryScript {
             var defeat = self.ruleService.hitpointsChange(change);
 
             if (defeat) {
-                self.game.state = 'gameOver';
+                self.game.state = StoryScript.GameState.GameOver;
             }
         }
 
-        changeGameState = (state: string) => {
+        changeGameState = (state: StoryScript.GameState) => {
             var self = this;
 
-            if (state == 'gameOver' || state == 'victory') {
+            if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
                 self.updateHighScore();
                 self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
             }

@@ -154,7 +154,7 @@
                 self.game.character.currentHitpoints += 10;
             }
 
-            self.game.state = 'play';
+            self.game.state = StoryScript.GameState.Play;
         }
 
 

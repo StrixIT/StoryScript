@@ -40,6 +40,7 @@
         trade = "Trade with {0}";
         talk = "Talk to {0}";
         encounters = "Encounters";
+        closeModal = "Close";
 
         format = (template: string, tokens: string[]): string => {
             if (tokens) {

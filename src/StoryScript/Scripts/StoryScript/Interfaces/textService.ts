@@ -39,5 +39,10 @@
         youAreHere?: string;
         messages?: string;
         hitpoints?: string;
+        currency?: string;
+        trade?: string;
+        talk?: string;
+        encounters?: string;
+        closeModal?: string;
     }
 }

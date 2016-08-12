@@ -32,44 +32,44 @@
                     <div class="charactersheet" ng-include="'/ui/character-sheet.html'"></div>
                 </div>
                 <div id="location-container" class="col-md-8">
-                    <div ng-if="!controller.game.state">
+                    <div ng-if="!game.state">
                         {{ texts.loading }}
                     </div>
-                    <div ng-if="controller.game.state == 'play'">
+                    <div ng-if="game.stateString == 'Play'">
                         <div class="combat" ng-include="'/ui/encounters.html'"></div>
-                        <div class="combat" ng-include="'/ui/combat.html'"></div>
-                        <div class="trade" ng-include="'/ui/trade.html'"></div>
                         <fieldset>
                             <legend>{{ texts.youAreHere }}</legend>
-                            <h4 ng-bind-html="controller.game.currentLocation.name"></h4>
-                            <p ng-bind-html="controller.game.currentLocation.text"></p>
+                            <h4 ng-bind-html="game.currentLocation.name"></h4>
+                            <p ng-bind-html="game.currentLocation.text"></p>
                             <ul id="location-log">
-                                <li ng-repeat="message in controller.game.currentLocation.log track by $index">{{ message }}</li>
+                                <li ng-repeat="message in game.currentLocation.log track by $index">{{ message }}</li>
                             </ul>
                         </fieldset>
                         <div class="exploration" ng-include="'/ui/exploration.html'"></div>
                         <fieldset>
                             <legend>{{ texts.messages }}</legend>
                             <ul id="action-log">
-                                <li ng-repeat="message in controller.game.actionLog track by $index">{{ message }}</li>
+                                <li ng-repeat="message in game.actionLog track by $index">{{ message }}</li>
                             </ul>
                         </fieldset>
                     </div>
-                    <div ng-if="controller.game.state == 'createCharacter'" ng-include="'/ui/create-character.html'"></div>
-                    <div ng-if="controller.game.state == 'levelUp'" ng-include="'/ui/level-up.html'"></div>
-                    <div ng-if="controller.game.state == 'gameOver'" ng-include="'/ui/game-over.html'"></div>
-                    <div ng-if="controller.game.state == 'victory'" ng-include="'/ui/victory.html'"></div>
+                    <div ng-if="game.stateString == 'CreateCharacter'" ng-include="'/ui/create-character.html'"></div>
+                    <div ng-if="game.stateString == 'LevelUp'" ng-include="'/ui/level-up.html'"></div>
+                    <div ng-if="game.stateString == 'GameOver'" ng-include="'/ui/game-over.html'"></div>
+                    <div ng-if="game.stateString == 'Victory'" ng-include="'/ui/victory.html'"></div>
                 </div>
             </div>
             <hr />
             <footer>
             </footer>
         </div>
+        <div ng-include="'/ui/encounter-modal.html'"></div>
     </div>
     <script src="js/lib/jquery/jquery.js"></script>
     <script src="js/lib/angular/angular.js"></script>
     <script src="js/lib/angular/angular-sanitize.js"></script>
     <script src="js/lib/ngStorage/ngStorage.js"></script>
+    <script src="js/lib/bootstrap/bootstrap.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>

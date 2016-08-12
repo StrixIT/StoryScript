@@ -9,6 +9,7 @@
         private textService: ITextService;
         private texts: any = {};
         private encounters: ICollection<IEnemy>;
+        private modalSettings;
 
         // Todo: can this be done differently?
         private nonDisplayAttributes: string[] = [ 'name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
@@ -40,21 +41,24 @@
             self.setDisplayTexts();
             self.getCharacterAttributesToShow();
 
-            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
-
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
 
             self.reset = () => { self.gameService.reset.call(self.gameService); };
+
+            self.modalSettings = {
+                title: '',
+                closeText: self.texts.closeModal
+            }
         }
 
         startNewGame = () => {
             var self = this;
             self.gameService.startNewGame(self.game.createCharacterSheet);
             self.getCharacterAttributesToShow();
-            self.game.state = 'play';
+            self.game.state = StoryScript.GameState.Play;
         }
 
         restart = () => {
@@ -157,8 +161,6 @@
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location);
 
-            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
-
             self.gameService.saveGame();
         }
 
@@ -234,6 +236,11 @@
             trade.sell.items.push(item);
         }
 
+        talk = (person: IPerson) => {
+            var self = this;
+            self.game.state = GameState.Conversation;
+        }
+
         private watchCharacterHitpoints(newValue, oldValue, scope) {
             if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                 var change = newValue - oldValue;
@@ -248,8 +255,17 @@
             }
         }
 
-        private watchGameState(newValue, oldValue, scope) {
+        private watchGameState(newValue: GameState, oldValue, scope) {
+            var self = this;
+
             if (newValue != undefined) {
+                if (newValue == GameState.Combat || newValue == GameState.Trade || newValue == GameState.Conversation) {
+                    $('#encounters').modal('show');
+                }
+                else {
+                    $('#encounters').modal('hide');
+                }
+
                 scope.controller.gameService.changeGameState(newValue);
             }
         }

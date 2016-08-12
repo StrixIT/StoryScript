@@ -187,6 +187,20 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    (function (GameState) {
+        GameState[GameState["CreateCharacter"] = 0] = "CreateCharacter";
+        GameState[GameState["Play"] = 1] = "Play";
+        GameState[GameState["Combat"] = 2] = "Combat";
+        GameState[GameState["Trade"] = 3] = "Trade";
+        GameState[GameState["Conversation"] = 4] = "Conversation";
+        GameState[GameState["LevelUp"] = 5] = "LevelUp";
+        GameState[GameState["GameOver"] = 6] = "GameOver";
+        GameState[GameState["Victory"] = 7] = "Victory";
+    })(StoryScript.GameState || (StoryScript.GameState = {}));
+    var GameState = StoryScript.GameState;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
     var CharacterService = (function () {
         function CharacterService(dataService, ruleService) {
             var self = this;
@@ -262,10 +276,10 @@ var StoryScript;
                 load: self.load
             };
         };
-        DataService.prototype.getDescription = function (descriptionId) {
+        DataService.prototype.getDescription = function (folder, descriptionId) {
             var self = this;
             var deferred = self.$q.defer();
-            var url = '/locations/' + descriptionId + '.html';
+            var url = '/' + folder + '/' + descriptionId + '.html';
             self.$http.get(url)
                 .success(function (data, status, headers, config) {
                 deferred.resolve(data);
@@ -416,7 +430,8 @@ var StoryScript;
             this.hitpoints = "Health";
             this.currency = "Money";
             this.trade = "Trade with {0}";
-            this.talk = "Talk with {0}";
+            this.talk = "Talk to {0}";
+            this.encounters = "Encounters";
             this.format = function (template, tokens) {
                 if (tokens) {
                     for (var i = 0; i < tokens.length; i++) {
@@ -486,10 +501,10 @@ var StoryScript;
                         self.game.previousLocation = self.game.locations.get(previousLocationName);
                     }
                     self.locationService.changeLocation(lastLocation, self.game);
-                    self.game.state = 'play';
+                    self.game.state = StoryScript.GameState.Play;
                 }
                 else {
-                    self.game.state = 'createCharacter';
+                    self.game.state = StoryScript.GameState.CreateCharacter;
                 }
                 self.game.calculateBonus = function (person, type) { return self.calculateBonus(self.game, person, type); };
             };
@@ -588,7 +603,7 @@ var StoryScript;
                     var character = self.game.character;
                     var levelUp = self.ruleService.scoreChange(change);
                     if (levelUp) {
-                        self.game.state = 'levelUp';
+                        self.game.state = StoryScript.GameState.LevelUp;
                     }
                 }
             };
@@ -596,12 +611,12 @@ var StoryScript;
                 var self = _this;
                 var defeat = self.ruleService.hitpointsChange(change);
                 if (defeat) {
-                    self.game.state = 'gameOver';
+                    self.game.state = StoryScript.GameState.GameOver;
                 }
             };
             this.changeGameState = function (state) {
                 var self = _this;
-                if (state == 'gameOver' || state == 'victory') {
+                if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
                     self.updateHighScore();
                     self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
                 }
@@ -915,6 +930,7 @@ var StoryScript;
                 self.playEvents(game);
             }
             self.prepareTrade(game);
+            self.loadConversations(game);
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
@@ -931,6 +947,7 @@ var StoryScript;
                 }
                 self.setDestinations(location);
                 self.buildEnemies(location);
+                self.buildPersons(location);
                 self.buildItems(location);
                 self.getFunctions(location);
                 compiledLocations.push(location);
@@ -967,6 +984,24 @@ var StoryScript;
                 });
                 location.enemies = enemies;
             }
+            else {
+                location.enemies = [];
+            }
+        };
+        LocationService.prototype.buildPersons = function (location) {
+            var self = this;
+            if (location.persons) {
+                var persons = [];
+                location.persons.forEach(function (enDef) {
+                    var person = StoryScript.definitionToObject(enDef);
+                    self.buildItems(person);
+                    persons.push(person);
+                });
+                location.persons = persons;
+            }
+            else {
+                location.persons = [];
+            }
         };
         LocationService.prototype.buildItems = function (entry) {
             var self = this;
@@ -977,6 +1012,9 @@ var StoryScript;
                     items.push(item);
                 });
                 entry.items = items;
+            }
+            else {
+                entry.items = [];
             }
         };
         LocationService.prototype.getFunctions = function (location) {
@@ -1056,13 +1094,62 @@ var StoryScript;
                 });
             }
         };
+        LocationService.prototype.loadConversations = function (game) {
+            var self = this;
+            game.currentLocation.persons.forEach(function (person) {
+                self.dataService.getDescription('persons', person.id).then(function (conversations) {
+                    var parser = new DOMParser();
+                    if (conversations.indexOf('<conversation>') == -1) {
+                        conversations = '<conversation>' + conversations + '</conversation>';
+                    }
+                    var xmlDoc = parser.parseFromString(conversations, "text/xml");
+                    var conversationNodes = xmlDoc.getElementsByTagName("node");
+                    person.conversation = {
+                        nodes: []
+                    };
+                    for (var i = 0; i < conversationNodes.length; i++) {
+                        var node = conversationNodes[i];
+                        var nameAttribute = node.attributes['name'];
+                        if (!nameAttribute) {
+                            throw new Error('Missing name attribute on node for conversation ' + person.id + '.');
+                        }
+                        if (person.conversation.nodes.some(function (node) { return node.node == nameAttribute; })) {
+                            throw new Error('Duplicate nodes with name ' + name + ' for conversation ' + person.id + '.');
+                        }
+                        var newNode = {
+                            node: nameAttribute.value,
+                            lines: '',
+                            Replies: []
+                        };
+                        for (var j = 0; j < node.childNodes.length; j++) {
+                            var replies = node.childNodes[j];
+                            if (replies.nodeName == 'replies') {
+                                for (var k = 0; k < replies.childNodes.length; k++) {
+                                    var replyNode = replies.childNodes[k];
+                                    if (replyNode.nodeName == 'reply') {
+                                        var reply = {
+                                            lines: replyNode.innerHTML,
+                                            linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
+                                        };
+                                        newNode.Replies.push(reply);
+                                    }
+                                }
+                                node.removeChild(replies);
+                                newNode.lines = node.innerHTML;
+                            }
+                        }
+                        person.conversation.nodes.push(newNode);
+                    }
+                });
+            });
+        };
         LocationService.prototype.loadLocationDescriptions = function (game) {
             var self = this;
             if (game.currentLocation.descriptions) {
                 self.selectLocationDescription(game);
                 return;
             }
-            self.dataService.getDescription(game.currentLocation.id).then(function (descriptions) {
+            self.dataService.getDescription('locations', game.currentLocation.id).then(function (descriptions) {
                 var parser = new DOMParser();
                 if (descriptions.indexOf('<descriptions>') == -1) {
                     descriptions = '<descriptions>' + descriptions + '</descriptions>';
@@ -1111,7 +1198,7 @@ var StoryScript;
                 var self = _this;
                 self.gameService.startNewGame(self.game.createCharacterSheet);
                 self.getCharacterAttributesToShow();
-                self.game.state = 'play';
+                self.game.state = StoryScript.GameState.Play;
             };
             this.restart = function () {
                 var self = _this;
@@ -1255,6 +1342,7 @@ var StoryScript;
             self.$scope.texts = self.texts;
             self.setDisplayTexts();
             self.getCharacterAttributesToShow();
+            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
@@ -1567,39 +1655,42 @@ var RidderMagnus;
             location.enemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
-            if (!self.game.currentLocation.sluipCheck) {
-                return;
-            }
-            // check stats
-            var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
-            if (roll < self.game.currentLocation.sluipCheck) {
-                return;
-            }
-            var sneakActions = [];
-            self.game.currentLocation.enemies.forEach(function (enemy) {
-                sneakActions.push({
-                    sneakEnemy: enemy,
-                    text: 'Besluip ' + enemy.name,
-                    type: StoryScript.ActionType.Combat,
-                    execute: function (game) {
-                        // Do damage to sneaked enemy.
-                        self.game.fight(enemy);
-                        // Move all enemies into combat.
-                        game.currentLocation.actions.filter(function (action) {
-                            return action.sneakEnemy != undefined && action.sneakEnemy.hitpoints > 0;
-                        }).forEach(function (action) {
-                            game.currentLocation.enemies.push(action.sneakEnemy);
+            if (self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited) {
+                // check stats
+                var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
+                if (roll >= self.game.currentLocation.sluipCheck) {
+                    var sneakActions = [];
+                    self.game.currentLocation.enemies.forEach(function (enemy) {
+                        sneakActions.push({
+                            sneakEnemy: enemy,
+                            text: 'Besluip ' + enemy.name,
+                            type: StoryScript.ActionType.Combat,
+                            execute: function (game) {
+                                // Do damage to sneaked enemy.
+                                self.game.fight(enemy);
+                                // Move all enemies into combat.
+                                game.currentLocation.actions.filter(function (action) {
+                                    return action.sneakEnemy != undefined && action.sneakEnemy.hitpoints > 0;
+                                }).forEach(function (action) {
+                                    game.currentLocation.enemies.push(action.sneakEnemy);
+                                });
+                                // Remove the remaining sneak actions
+                                game.currentLocation.actions = game.currentLocation.actions.filter(function (action) {
+                                    return action.sneakEnemy == undefined;
+                                });
+                                if (self.game.currentLocation.enemies.length > 0) {
+                                    self.game.currentLocation.combatActions.push(RidderMagnus.Actions.Flee('Vluchten!'));
+                                }
+                            }
                         });
-                        // Remove the remaining sneak actions
-                        game.currentLocation.actions = game.currentLocation.actions.filter(function (action) {
-                            return action.sneakEnemy == undefined;
-                        });
-                    }
-                });
-            });
-            self.game.currentLocation.enemies = [];
-            self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
-            //als er een flee-action is: self.addFleeAction(location);
+                    });
+                    self.game.currentLocation.enemies = [];
+                    self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
+                }
+            }
+            else if (self.game.currentLocation.enemies.length > 0) {
+                self.game.currentLocation.combatActions.push(RidderMagnus.Actions.Flee('Vluchten!'));
+            }
         };
         RuleService.prototype.enemyDefeated = function (enemy) {
             var self = this;
@@ -1682,7 +1773,7 @@ var RidderMagnus;
         function Kelder() {
             return {
                 name: 'De Kelder',
-                sluipCheck: 10,
+                sluipCheck: 4,
                 //Bij eerste bezoek: er komt hier als event eenmalig een dire rat, tenzij je succesvol sluipt. 
                 //Met zoeken is er een ring te vinden. 
                 //Als de ring al gevonden is, levert zoeken vooral ratten op.
@@ -2112,6 +2203,7 @@ var RidderMagnus;
                     });
                     if (result >= totalHitpoints / 2) {
                         game.changeLocation();
+                        game.logToActionLog('Je bent onsnapt.');
                     }
                     else {
                         game.logToActionLog('Je bent niet snel genoeg!');
@@ -2761,7 +2853,7 @@ var QuestForTheKing;
                 attack: '1d8',
                 reward: 1,
                 onDefeat: function (game) {
-                    game.state = 'victory';
+                    game.state = StoryScript.GameState.Victory;
                 }
             };
         }
@@ -3585,7 +3677,7 @@ var DangerousCave;
                     self.game.character.hitpoints += 10;
                     self.game.character.currentHitpoints += 10;
                 }
-                self.game.state = 'play';
+                self.game.state = StoryScript.GameState.Play;
             };
             var self = this;
             self.game = game;

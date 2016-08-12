@@ -6,7 +6,7 @@
             attack: '1d8',
             reward: 1,
             onDefeat: (game: IGame) => {
-                game.state = 'victory';
+                game.state = StoryScript.GameState.Victory;
             }
         }
     }

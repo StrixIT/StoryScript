@@ -32,39 +32,39 @@
                     <div class="charactersheet" ng-include="'/ui/character-sheet.html'"></div>
                 </div>
                 <div id="location-container" class="col-md-8">
-                    <div ng-if="!controller.game.state">
+                    <div ng-if="!game.state">
                         {{ texts.loading }}
                     </div>
-                    <div ng-if="controller.game.state == 'play'">
+                    <div ng-if="game.stateString == 'Play'">
                         <fieldset>
                             <legend>{{ texts.messages }}</legend>
                             <ul id="action-log">
-                                <li ng-repeat="message in controller.game.actionLog track by $index">{{ message }}</li>
+                                <li ng-repeat="message in game.actionLog track by $index">{{ message }}</li>
                             </ul>
                         </fieldset>
                         <div class="combat" ng-include="'/ui/combat.html'"></div>
                         <fieldset ng-if="controller.actionsPresent()">
                             <legend>{{ texts.actions }}</legend>
                             <ul class="button-row">
-                                <li ng-repeat="action in controller.game.currentLocation.actions">
+                                <li ng-repeat="action in game.currentLocation.actions">
                                     <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action)" ng-disabled="controller.disableActionButton(action)" ng-hide="controller.hideActionButton(action)">{{ action.text }}</button>
                                 </li>
                             </ul>
                         </fieldset>
                         <fieldset>
                             <legend>{{ texts.youAreHere }}</legend>
-                            <h4 ng-bind-html="controller.game.currentLocation.name"></h4>
-                            <p ng-bind-html="controller.game.currentLocation.text"></p>
+                            <h4 ng-bind-html="game.currentLocation.name"></h4>
+                            <p ng-bind-html="game.currentLocation.text"></p>
                             <ul id="location-log">
-                                <li ng-repeat="message in controller.game.currentLocation.log track by $index">{{ message }}</li>
+                                <li ng-repeat="message in game.currentLocation.log track by $index">{{ message }}</li>
                             </ul>
                         </fieldset>
                         <div class="exploration" ng-include="'/ui/exploration.html'"></div>
                     </div>
-                    <div ng-if="controller.game.state == 'createCharacter'" ng-include="'/ui/create-character.html'"></div>
-                    <div ng-if="controller.game.state == 'levelUp'" ng-include="'/ui/level-up.html'"></div>
-                    <div ng-if="controller.game.state == 'gameOver'" ng-include="'/ui/game-over.html'"></div>
-                    <div ng-if="controller.game.state == 'victory'" ng-include="'/ui/victory.html'"></div>
+                    <div ng-if="game.stateString == 'CreateCharacter'" ng-include="'/ui/create-character.html'"></div>
+                    <div ng-if="game.stateString == 'LevelUp'" ng-include="'/ui/level-up.html'"></div>
+                    <div ng-if="game.stateString == 'GameOver'" ng-include="'/ui/game-over.html'"></div>
+                    <div ng-if="game.stateString == 'Victory'" ng-include="'/ui/victory.html'"></div>
                 </div>
             </div>
             <hr />

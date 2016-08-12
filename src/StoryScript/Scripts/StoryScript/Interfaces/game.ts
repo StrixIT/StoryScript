@@ -15,7 +15,7 @@
 
         highScores: ScoreEntry[];
         actionLog: string[];
-        state: string;
+        state: StoryScript.GameState;
 
         changeLocation(location?: string | (() => ILocation)): void;
         rollDice(dice: string): number;
