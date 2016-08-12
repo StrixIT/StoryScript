@@ -3,8 +3,10 @@
         return {
             name: 'De Troonzaal',
             items: [Items.LichtSpreuk ],
-            enemies: [
-                //Enemies.Trader
+            persons: [
+                //persons.Trader
+                //persons.Trainer
+                Persons.KoninginDagmar
             ],
             destinations: [
                 {
@@ -57,7 +59,7 @@
 
                         var randomItem = game.randomItem((item: IItem) => {
                             return (<any>item).id !== (<any>Items.GoudenRing).name && item.value < 30;
-                            //of item met price <30, is nog beter
+                            
                         });
                         game.character.items.push(randomItem);
 

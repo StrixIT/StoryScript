@@ -42,7 +42,7 @@
                                 <li ng-repeat="message in game.actionLog track by $index">{{ message }}</li>
                             </ul>
                         </fieldset>
-                        <div class="combat" ng-include="'/ui/combat.html'"></div>
+                        <div class="combat" ng-include="'/ui/encounters.html'"></div>
                         <fieldset ng-if="controller.actionsPresent()">
                             <legend>{{ texts.actions }}</legend>
                             <ul class="button-row">

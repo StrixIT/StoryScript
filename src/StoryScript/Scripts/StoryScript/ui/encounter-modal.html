@@ -11,6 +11,13 @@
                 <div ng-if="game.stateString == 'Combat'" class="combat" ng-include="'/ui/combat.html'"></div>
                 <div ng-if="game.stateString == 'Trade'" class="trade" ng-include="'/ui/trade.html'"></div>
                 <div ng-if="game.stateString == 'Conversation'" class="trade" ng-include="'/ui/conversation.html'"></div>
+                <hr />
+                <fieldset>
+                    <legend>{{ texts.messages }}</legend>
+                    <ul id="action-log">
+                        <li ng-repeat="message in game.actionLog track by $index">{{ message }}</li>
+                    </ul>
+                </fieldset>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" ng-click="controller.closeModal()" ng-show="modalSettings.canClose">{{ modalSettings.closeText }}</button>
