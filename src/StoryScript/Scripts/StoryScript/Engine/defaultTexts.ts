@@ -37,6 +37,9 @@
         messages = "Messages";
         hitpoints = "Health";
         currency = "Money";
+        trade = "Trade with {0}";
+        talk = "Talk to {0}";
+        encounters = "Encounters";
 
         format = (template: string, tokens: string[]): string => {
             if (tokens) {

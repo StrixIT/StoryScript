@@ -29,6 +29,9 @@
             items: [
                 Items.Sword,
                 Items.LeatherBoots
+            ],
+            persons: [
+                Persons.Friend
             ]
         }
     }

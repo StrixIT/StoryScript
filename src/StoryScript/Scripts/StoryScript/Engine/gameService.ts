@@ -185,13 +185,13 @@ module StoryScript {
             return result;
         }
 
-        calculateBonus = (game: IGame, person: IActor, type: string) => {
+        calculateBonus = (game: IGame, person: { items: ICollection<IItem>, equipment?: {} }, type: string) => {
             var self = this;
             var bonus = 0;
 
             if (game.character == person) {
-                for (var n in (<ICharacter>person).equipment) {
-                    var item = (<ICharacter>person).equipment[n];
+                for (var n in person.equipment) {
+                    var item = person.equipment[n];
 
                     if (item && item.bonuses && item.bonuses[type]) {
                         bonus += item.bonuses[type];

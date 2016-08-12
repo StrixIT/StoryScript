@@ -161,6 +161,15 @@ var StoryScript;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
+    (function (Disposition) {
+        Disposition[Disposition["Hostile"] = 0] = "Hostile";
+        Disposition[Disposition["Neutral"] = 1] = "Neutral";
+        Disposition[Disposition["Friendly"] = 2] = "Friendly";
+    })(StoryScript.Disposition || (StoryScript.Disposition = {}));
+    var Disposition = StoryScript.Disposition;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
     (function (EquipmentType) {
         EquipmentType[EquipmentType["Head"] = 0] = "Head";
         EquipmentType[EquipmentType["Amulet"] = 1] = "Amulet";
@@ -406,6 +415,8 @@ var StoryScript;
             this.messages = "Messages";
             this.hitpoints = "Health";
             this.currency = "Money";
+            this.trade = "Trade with {0}";
+            this.talk = "Talk with {0}";
             this.format = function (template, tokens) {
                 if (tokens) {
                     for (var i = 0; i < tokens.length; i++) {
@@ -1163,6 +1174,7 @@ var StoryScript;
                 var self = _this;
                 // Call changeLocation without using the execute action as the game parameter is not needed.
                 self.game.changeLocation(location);
+                self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
                 self.gameService.saveGame();
             };
             this.pickupItem = function (item) {
@@ -1218,6 +1230,7 @@ var StoryScript;
                 var self = _this;
                 self.game.character.currency += item.value;
                 self.game.character.items.remove(item);
+                trade.buy.items.remove(item);
                 trade.currency -= item.value;
                 trade.sell.items.push(item);
             };
@@ -1341,6 +1354,9 @@ var StoryScript;
     function randomList(collection, count, selector) {
         var selection = getFilteredInstantiatedCollection(collection, selector);
         var results = [];
+        if (count === undefined) {
+            count = selection.length;
+        }
         if (selection.length > 0) {
             while (results.length < count && results.length < selection.length) {
                 var index = Math.floor(Math.random() * selection.length);
@@ -2056,6 +2072,7 @@ var RidderMagnus;
                 hitpoints: 7,
                 attack: '1d6',
                 reward: 1,
+                disposition: StoryScript.Disposition.Neutral,
                 trade: {
                     buy: {
                         itemSelector: function (item) {
@@ -3038,6 +3055,25 @@ var MyNewGame;
 })(MyNewGame || (MyNewGame = {}));
 var MyNewGame;
 (function (MyNewGame) {
+    var Persons;
+    (function (Persons) {
+        function Friend() {
+            return {
+                name: 'Joe',
+                pictureFileName: 'bandit.jpg',
+                hitpoints: 10,
+                attack: '1d6',
+                items: [
+                    MyNewGame.Items.Sword
+                ],
+                disposition: StoryScript.Disposition.Friendly
+            };
+        }
+        Persons.Friend = Friend;
+    })(Persons = MyNewGame.Persons || (MyNewGame.Persons = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
     var Locations;
     (function (Locations) {
         function Basement() {
@@ -3072,14 +3108,16 @@ var MyNewGame;
                     currency: 10,
                     buy: {
                         description: 'Put back in closet',
+                        emptyText: 'You have nothing to put in the your closet',
                         itemSelector: function (item) {
                             return true;
                         },
-                        maxItems: 1,
+                        maxItems: 5,
                         priceModifier: 0
                     },
                     sell: {
                         description: 'Take out of closet',
+                        emptyText: 'The closet is empty',
                         itemSelector: function (item) {
                             return true;
                         },
@@ -3213,6 +3251,9 @@ var MyNewGame;
                 items: [
                     MyNewGame.Items.Sword,
                     MyNewGame.Items.LeatherBoots
+                ],
+                persons: [
+                    MyNewGame.Persons.Friend
                 ]
             };
         }

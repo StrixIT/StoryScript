@@ -1,5 +1,5 @@
 ﻿module StoryScript {
-    export interface ICharacter extends IActor {
+    export interface ICharacter {
         name: string;
         score: number;
         hitpoints: number;

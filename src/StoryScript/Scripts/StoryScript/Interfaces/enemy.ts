@@ -6,6 +6,5 @@
         hitpoints: number;
         items?: [IItem | (() => IItem)];
         onDefeat?: (game: IGame) => void;
-        trade?: ITrade;
     }
 }

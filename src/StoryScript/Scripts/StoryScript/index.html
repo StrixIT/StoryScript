@@ -36,6 +36,7 @@
                         {{ texts.loading }}
                     </div>
                     <div ng-if="controller.game.state == 'play'">
+                        <div class="combat" ng-include="'/ui/encounters.html'"></div>
                         <div class="combat" ng-include="'/ui/combat.html'"></div>
                         <div class="trade" ng-include="'/ui/trade.html'"></div>
                         <fieldset>

@@ -1,10 +1,11 @@
 ﻿module RidderMagnus.Enemies {
-    export function Trader(): IEnemy {
+    export function Trader(): IPerson {
         return {
             name: 'Trader',
             hitpoints: 7,
             attack: '1d6',
             reward: 1,
+            disposition: StoryScript.Disposition.Neutral,
             trade: {
                 buy: {
                     itemSelector: (item: IItem) => {

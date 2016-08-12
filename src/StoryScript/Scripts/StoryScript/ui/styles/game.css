@@ -49,6 +49,10 @@ textarea {
         margin-right: 10px;
     }
 
+    .button-row button {
+        display: inline-block;
+    }
+
 .inline {
     display: inline-block;
 }

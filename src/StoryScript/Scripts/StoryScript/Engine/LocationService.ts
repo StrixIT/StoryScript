@@ -170,6 +170,8 @@ module StoryScript {
             }
 
             self.prepareTrade(game);
+
+            self.loadConversations(game);
         }
 
         private buildWorld(): ICompiledLocation[] {
@@ -190,6 +192,7 @@ module StoryScript {
 
                 self.setDestinations(location);
                 self.buildEnemies(location);
+                self.buildPersons(location);
                 self.buildItems(location);
                 self.getFunctions(location);
                 compiledLocations.push(location);
@@ -234,6 +237,28 @@ module StoryScript {
 
                 (<any>location).enemies = enemies;
             }
+            else {
+                location.enemies = [];
+            }
+        }
+
+        private buildPersons(location: ICompiledLocation) {
+            var self = this;
+
+            if (location.persons) {
+                var persons: IPerson[] = [];
+
+                location.persons.forEach((enDef) => {
+                    var person = definitionToObject<IPerson>(<any>enDef);
+                    self.buildItems(person);
+                    persons.push(person);
+                });
+
+                (<any>location).persons = persons;
+            }
+            else {
+                location.persons = [];
+            }
         }
 
         private buildItems(entry: any) {
@@ -248,6 +273,9 @@ module StoryScript {
                 });
 
                 (<any>entry).items = items;
+            }
+            else {
+                entry.items = [];
             }
         }
 
@@ -346,6 +374,70 @@ module StoryScript {
             }
         }
 
+        private loadConversations(game: IGame) {
+            var self = this;
+
+            game.currentLocation.persons.forEach((person) => {
+                self.dataService.getDescription('persons', person.id).then(function (conversations) {
+                    var parser = new DOMParser();
+
+                    if (conversations.indexOf('<conversation>') == -1) {
+                        conversations = '<conversation>' + conversations + '</conversation>';
+                    }
+
+                    var xmlDoc = parser.parseFromString(conversations, "text/xml");
+                    var conversationNodes = xmlDoc.getElementsByTagName("node");
+
+                    person.conversation = {
+                        nodes: []
+                    };
+
+                    for (var i = 0; i < conversationNodes.length; i++) {
+                        var node = conversationNodes[i];
+                        var nameAttribute = node.attributes['name'];
+
+                        if (!nameAttribute) {
+                            throw new Error('Missing name attribute on node for conversation ' + person.id + '.');
+                        }
+
+                        if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
+                            throw new Error('Duplicate nodes with name ' + name + ' for conversation ' + person.id + '.');
+                        }
+
+                        var newNode = <IConversationNode>{
+                            node: nameAttribute.value,
+                            lines: '',
+                            Replies: []
+                        };
+
+                        for (var j = 0; j < node.childNodes.length; j++) {
+                            var replies = node.childNodes[j];
+
+                            if (replies.nodeName == 'replies') {
+                                for (var k = 0; k < replies.childNodes.length; k++) {
+                                    var replyNode = replies.childNodes[k];
+
+                                    if (replyNode.nodeName == 'reply') {
+                                        var reply = <IReply>{
+                                            lines: (<any>replyNode).innerHTML,
+                                            linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
+                                        }
+
+                                        newNode.Replies.push(reply);
+                                    }
+                                }
+
+                                node.removeChild(replies);
+                                newNode.lines = node.innerHTML;
+                            }
+                        }
+
+                        person.conversation.nodes.push(newNode);
+                    }
+                });
+            });
+        }
+
         private loadLocationDescriptions(game: IGame) {
             var self = this;
 
@@ -354,7 +446,7 @@ module StoryScript {
                 return;
             }
 
-            self.dataService.getDescription(game.currentLocation.id).then(function (descriptions) {
+            self.dataService.getDescription('locations', game.currentLocation.id).then(function (descriptions) {
                 var parser = new DOMParser();
 
                 if (descriptions.indexOf('<descriptions>') == -1) {
