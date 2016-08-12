@@ -90,9 +90,12 @@ function copyHtml(nameSpace) {
 }
 
 function compileTypeScript(nameSpace) {
-    var tsResult = gulp.src([paths.root + 'StoryScript/Components/**/*.ts', paths.root + 'StoryScript/**/!(app)*.ts', paths.root + 'StoryScript/app.ts', paths.root + 'Games/' + nameSpace + '/**/*.ts', 'Types/**/*.ts'], { base: paths.webroot })
+    var tsResult = gulp.src([paths.root + 'StoryScript/Components/**/*.ts', paths.root + 'StoryScript/**/!(app)*.ts', paths.root + 'StoryScript/app.ts', paths.root + 'Games/' + nameSpace + '/**/*.ts', 'Types/**/*.ts'], { base: paths.webroot + 'js' })
                         .pipe(sourcemaps.init())
-                        .pipe(ts(tsProject));
+                        .pipe(ts({
+                            target: "es5",
+                            outFile: "game.js"
+                        }));
 
     return merge([
         tsResult.js.pipe(sourcemaps.write('../maps')).pipe(gulp.dest(paths.webroot + 'js'))
