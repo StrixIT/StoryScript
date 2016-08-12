@@ -352,6 +352,10 @@ module StoryScript {
         private loadConversations(game: IGame) {
             var self = this;
 
+            if (!game.currentLocation.persons) {
+                return;
+            }
+
             game.currentLocation.persons.filter(p => !p.conversation).forEach((person) => {
                 self.dataService.getDescription('persons', person.id).then(function (conversations) {
                     var parser = new DOMParser();

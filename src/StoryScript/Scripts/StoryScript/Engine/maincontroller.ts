@@ -194,6 +194,11 @@
             self.game.currentLocation.items.push(item);
         }
 
+        useItem = (item: IItem): void => {
+            var self = this;
+            item.use(self.game, item);
+        }
+
         canEquip = (item: IItem): boolean => {
             return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
         }

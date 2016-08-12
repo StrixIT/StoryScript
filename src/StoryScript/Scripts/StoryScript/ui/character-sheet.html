@@ -85,7 +85,7 @@
             <div>
                 <span>{{ item.name }}</span>
                 <button type="button" ng-if="controller.canEquip(item)" class="btn btn-info" ng-click="controller.equipItem(item)">{{ texts.equip }}</button>
-                <button type="button" ng-if="item.use" class="btn btn-info" ng-click="controller.executeAction(item.use, item)">{{ texts.use }}</button>
+                <button type="button" ng-if="item.use" class="btn btn-info" ng-click="controller.useItem(item)">{{ texts.use }}</button>
                 <button type="button" class="btn btn-info" ng-click="controller.dropItem(item)">{{ texts.drop }}</button>
             </div>
         </li>
