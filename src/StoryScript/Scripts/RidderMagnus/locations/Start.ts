@@ -2,6 +2,9 @@
     export function Start(): ILocation {
         return {
             name: 'De Troonzaal',
+            enemies: [
+                //Enemies.Trader
+            ],
             destinations: [
                 {
                     text: 'Naar de kelder!',

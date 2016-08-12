@@ -40,8 +40,6 @@
             self.setDisplayTexts();
             self.getCharacterAttributesToShow();
 
-            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
-
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
@@ -156,8 +154,6 @@
 
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location);
-
-            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
 
             self.gameService.saveGame();
         }
