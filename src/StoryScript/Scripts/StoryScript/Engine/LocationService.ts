@@ -407,7 +407,7 @@ module StoryScript {
                         var newNode = <IConversationNode>{
                             node: nameAttribute.value,
                             lines: '',
-                            Replies: []
+                            replies: []
                         };
 
                         for (var j = 0; j < node.childNodes.length; j++) {
@@ -418,12 +418,12 @@ module StoryScript {
                                     var replyNode = replies.childNodes[k];
 
                                     if (replyNode.nodeName == 'reply') {
-                                        var reply = <IReply>{
+                                        var reply = <IConversationReply>{
                                             lines: (<any>replyNode).innerHTML,
                                             linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
                                         }
 
-                                        newNode.Replies.push(reply);
+                                        newNode.replies.push(reply);
                                     }
                                 }
 

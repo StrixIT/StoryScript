@@ -1,6 +1,19 @@
 ﻿module StoryScript {
+    export interface IModalSettings {
+        title: string;
+        closeText: string;
+        canClose: boolean;
+        closeAction: (game: IGame) => void;
+    }
+
+    export interface IMainControllerScope extends ng.IScope {
+        modalSettings: IModalSettings;
+        game: IGame;
+        texts: any;
+    }
+
     export class MainController {
-        private $scope: ng.IScope;
+        private $scope: IMainControllerScope;
         private $window: ng.IWindowService;
         private locationService: ILocationService;
         private ruleService: IRuleService;
@@ -9,7 +22,7 @@
         private textService: ITextService;
         private texts: any = {};
         private encounters: ICollection<IEnemy>;
-        private modalSettings;
+        private modalSettings: IModalSettings;
 
         // Todo: can this be done differently?
         private nonDisplayAttributes: string[] = [ 'name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
@@ -18,7 +31,7 @@
         // Todo: can this be done differently?
         public reset(): void { };
 
-        constructor($scope: ng.IScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, textService: ITextService) {
+        constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, textService: ITextService) {
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
@@ -34,9 +47,8 @@
             var self = this;
             self.gameService.init();
 
-            // Todo: type
-            (<any>self.$scope).game = self.game;
-            (<any>self.$scope).texts = self.texts;
+            self.$scope.game = self.game;
+            self.$scope.texts = self.texts;
 
             self.setDisplayTexts();
             self.getCharacterAttributesToShow();
@@ -48,7 +60,7 @@
 
             self.reset = () => { self.gameService.reset.call(self.gameService); };
 
-            self.modalSettings = {
+            self.$scope.modalSettings = <IModalSettings>{
                 title: '',
                 closeText: self.texts.closeModal
             }
@@ -238,7 +250,51 @@
 
         talk = (person: IPerson) => {
             var self = this;
+            self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
+            self.$scope.modalSettings.canClose = true;
+            self.game.currentLocation.activePerson = person;
+
+            var activePerson = self.game.currentLocation.activePerson;
+
+            var activeNode = activePerson.conversation.activeNode;
+
+            if (!activeNode) {
+                activeNode = activePerson.conversation.nodes.some((node) => { return node.active; })[0];
+
+                if (!activeNode) {
+                    activePerson.conversation.nodes[0].active = true;
+                    activePerson.conversation.activeNode = activePerson.conversation.nodes[0];
+                }
+            }
+
             self.game.state = GameState.Conversation;
+        }
+
+        answer = (node: IConversationNode, reply: IConversationReply) => {
+            var self = this;
+            var activePerson = self.game.currentLocation.activePerson;
+
+            activePerson.conversation.conversationLog = activePerson.conversation.conversationLog || [];
+
+            activePerson.conversation.conversationLog.push({
+                lines: node.lines,
+                reply: reply.lines
+            });
+
+            if (reply.linkToNode) {
+                activePerson.conversation.activeNode = activePerson.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
+            }
+            else {
+                activePerson.conversation.nodes.forEach((node) => {
+                    node.active = false;
+                });
+                activePerson.conversation.activeNode = null;
+            }
+        }
+
+        closeModal = () => {
+            var self = this;
+            self.game.state = GameState.Play;
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {
@@ -255,8 +311,12 @@
             }
         }
 
-        private watchGameState(newValue: GameState, oldValue, scope) {
-            var self = this;
+        private watchGameState(newValue: GameState, oldValue, scope: IMainControllerScope) {
+            if (oldValue != undefined) {
+                if ((oldValue == GameState.Combat || oldValue == GameState.Trade || oldValue == GameState.Conversation) && scope.modalSettings.closeAction) {
+                    scope.modalSettings.closeAction(scope.game);
+                }
+            }
 
             if (newValue != undefined) {
                 if (newValue == GameState.Combat || newValue == GameState.Trade || newValue == GameState.Conversation) {
@@ -266,7 +326,7 @@
                     $('#encounters').modal('hide');
                 }
 
-                scope.controller.gameService.changeGameState(newValue);
+                (<any>scope).controller.gameService.changeGameState(newValue);
             }
         }
 

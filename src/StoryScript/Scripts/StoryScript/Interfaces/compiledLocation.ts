@@ -13,7 +13,8 @@
         text: string;
         hasVisited: boolean;
         descriptions: { [key: string] : string; };
-        log: string[];
         trade?: ITrade;
+        activePerson?: IPerson;
+        log: string[];
     }
 }
