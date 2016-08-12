@@ -46,5 +46,6 @@
         closeModal?: string;
         combatTitle?: string;
         value?: string;
+        traderCurrency?: string;
     }
 }
