@@ -17,6 +17,7 @@
 
                 if (result >= totalHitpoints / 2) {
                     game.changeLocation();
+                    game.logToActionLog('Je bent onsnapt.');
                 }
                 else {
                     game.logToActionLog('Je bent niet snel genoeg!');
