@@ -203,6 +203,16 @@
             // Implement logic to occur when the score changes. Return true when the character gains a level.
             return false;
         }
+
+        prepareReplies = (game: IGame, person: IPerson, node: StoryScript.IConversationNode): void => {
+
+        }
+
+        handleReply = (game: IGame, person: IPerson, node: StoryScript.IConversationNode, reply: StoryScript.IConversationReply): void => {
+            if (person.id == (<any>Persons.KoninginDagmar).name && reply.linkToNode == 'accept') {
+                var test = 0;
+            }
+        }
     }
 
     RuleService.$inject = ['game'];

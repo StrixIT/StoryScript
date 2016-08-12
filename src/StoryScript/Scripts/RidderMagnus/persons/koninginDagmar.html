@@ -1,4 +1,5 @@
 ﻿<conversation>
+
     <node name="eerstequest">
         <p>
             Mijn nobele jonge ridder, heer Magnus, ik heb voor u een taak.
@@ -7,10 +8,7 @@
             Bent u dapper genoeg om de ring voor haar te vinden?
         </p>
         <replies>
-            <reply node="refuse">
-               Nee, dat durf ik niet!
-            </reply>
-            <reply node="accept">
+                       <reply node="accept">
                 Natuurlijk, Hoogheid!
             </reply>
         </replies>
@@ -20,39 +18,40 @@
             Hebt u de ring gevonden?
         </p>
         <replies>
-            <reply>
+            <reply node ="questcomplete">
                 Ja, hier is hij.
             </reply>
         </replies>
     </node>
     <node name="tweedequest">
         <p>
-            Back so soon?
+            De prinses durft haar kamer niet meer in, ze zegt dat er een monster is.
+            Ik wil dat u haar kamer doorzoekt.
         </p>
         <replies>
-            <reply>
-                Never mind. See you later.
+            <reply node="accept">
+                Uiteraard, Hoogheid.
             </reply>
         </replies>
     </node>
-    <node name="fine">
+    <node name="tweedequestklaar">
         <p>
-            Good. What are you up to today?
+            En, was er een monster?
         </p>
         <replies>
-            <reply>
-                Never mind. See you later.
+            <reply node="questcomplete">
+               Ja! Er was een soort ratachtige man, maar ik heb hem verslagen. De prinses is weer veilig.
             </reply>
         </replies>
     </node>
-    <node name="sick">
+    <node name="accept">
         <p>
-            That sucks! Anything I can do to help?
+            Dankuwel en moge de goden u bijstaan!
         </p>
-        <replies>
-            <reply>
-                Never mind. See you later.
-            </reply>
-        </replies>
+    </node>
+    <node name="questcomplete">
+        <p>
+            Gelukkig! Goed gedaan, Ridder Magnus. Hier is uw beloning.
+        </p>
     </node>
 </conversation>
