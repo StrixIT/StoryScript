@@ -1,10 +1,10 @@
 ﻿module StoryScript {
-    export interface ICharacter extends IActor {
+    export interface ICharacter {
         name: string;
         score: number;
         hitpoints: number;
         currentHitpoints: number;
-        //money: number? en deze onder hitpoints tonen?
+        currency: number;
 
         items: StoryScript.ICollection<StoryScript.IItem>;
 

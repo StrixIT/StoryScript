@@ -3,7 +3,8 @@
         return {
             name: 'Sword',
             damage: '3',
-            equipmentType: StoryScript.EquipmentType.RightHand
+            equipmentType: StoryScript.EquipmentType.RightHand,
+            value: 5
         }
     }
 }

@@ -85,23 +85,22 @@ module StoryScript {
                 self.game.actionLog.splice(0, 0, message);
             }
 
-            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
-                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, selector);
-                var items = <IItem[]>[];
-
-                if (instance.items) {
-                    instance.items.forEach((def: () => IItem) => {
-                        items.push(StoryScript.definitionToObject(def));
-                    });
-                }
-
-                (<any>instance).items = items;
-                return instance;
+            self.game.getEnemy = (selector: string | (() => IEnemy)) => {
+                var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector);
+                return self.instantiateEnemy(instance);
             }
 
-            self.game.randomItem = (selector?: (item: IItem) => boolean): IItem => {
-                var instance = StoryScript.random<IItem>(self.game.definitions.items, selector);
-                return instance;
+            self.game.getItem = (selector: string | (() => IItem)) => {
+                return StoryScript.find<IItem>(self.game.definitions.items, selector);
+            }
+
+            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
+                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, <(enemy: IEnemy) => boolean>selector);
+                return self.instantiateEnemy(instance);
+            }
+
+            self.game.randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
+                return StoryScript.random<IItem>(self.game.definitions.items, <(item: IItem) => boolean>selector);
             }
 
             self.game.rollDice = self.rollDice;
@@ -186,13 +185,13 @@ module StoryScript {
             return result;
         }
 
-        calculateBonus = (game: IGame, person: IActor, type: string) => {
+        calculateBonus = (game: IGame, person: { items: ICollection<IItem>, equipment?: {} }, type: string) => {
             var self = this;
             var bonus = 0;
 
             if (game.character == person) {
-                for (var n in (<ICharacter>person).equipment) {
-                    var item = (<ICharacter>person).equipment[n];
+                for (var n in person.equipment) {
+                    var item = person.equipment[n];
 
                     if (item && item.bonuses && item.bonuses[type]) {
                         bonus += item.bonuses[type];
@@ -214,18 +213,16 @@ module StoryScript {
 
         fight = (enemy: IEnemy) => {
             var self = this;
-            var win = self.ruleService.fight(enemy);
+            self.ruleService.fight(enemy);
 
-            if (win) {
-                if (enemy.items && enemy.items.length) {
-                    enemy.items.forEach(function (item) {
+            if (enemy.hitpoints <= 0) {
+                if (enemy.items) {
+                    enemy.items.forEach((item: IItem) => {
                         self.game.currentLocation.items = self.game.currentLocation.items || [];
-
-                        // Todo: type
-                        self.game.currentLocation.items.push(<any>item);
+                        self.game.currentLocation.items.push(item);
                     });
 
-                    enemy.items.splice(0, enemy.items.length);
+                    enemy.items = <[IItem | (() => IItem)]>[];
                 }
 
                 self.game.currentLocation.enemies.remove(enemy);
@@ -331,6 +328,23 @@ module StoryScript {
                     collection.push(object[n]);
                 }
             }
+        }
+
+        private instantiateEnemy = (enemy: IEnemy): IEnemy => {
+            if (!enemy) {
+                return null;
+            }
+
+            var items = <IItem[]>[];
+
+            if (enemy.items) {
+                enemy.items.forEach((def: () => IItem) => {
+                    items.push(StoryScript.definitionToObject(def));
+                });
+            }
+
+            (<any>enemy).items = items;
+            return enemy;
         }
     }
 

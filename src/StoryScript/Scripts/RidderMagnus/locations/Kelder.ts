@@ -25,13 +25,13 @@
                         result = check + game.character.zoeken;
 
                         if (result > 5) {
-                            // Todo: make this easy to do!
-                            game.currentLocation.items.push(StoryScript.definitionToObject<IItem>(Items.GoudenRing));
+                            var ring = game.getItem(Items.GoudenRing);
+                            game.currentLocation.items.push(ring);
                             game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
                             game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
                         }
                         else if (result >= 3 && result <= 5) {
-                            game.character.goudstukken += 1;
+                            game.character.currency += 1;
                             game.logToActionLog('Daar glinstert iets! Oh, het is een goudstuk.');
                             return true
                         }

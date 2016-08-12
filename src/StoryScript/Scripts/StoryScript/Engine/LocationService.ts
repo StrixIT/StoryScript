@@ -82,7 +82,7 @@ module StoryScript {
             self.dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
-        public changeLocation(location: ILocation, game: IGame) {
+        public changeLocation(location: ILocation | ICompiledLocation, game: IGame) {
             var self = this;
 
             // If no location is specified, go to the previous location.
@@ -90,8 +90,7 @@ module StoryScript {
                 var tempLocation = game.currentLocation;
                 game.currentLocation = game.previousLocation;
                 game.previousLocation = tempLocation;
-                // Todo: can this be typed somehow?
-                location = <any>game.currentLocation;
+                location = game.currentLocation;
             }
             // If currently at a location, make this the previous location.
             else if (game.currentLocation) {
@@ -169,6 +168,10 @@ module StoryScript {
                 game.currentLocation.hasVisited = true;
                 self.playEvents(game);
             }
+
+            self.prepareTrade(game);
+
+            self.loadConversations(game);
         }
 
         private buildWorld(): ICompiledLocation[] {
@@ -189,6 +192,7 @@ module StoryScript {
 
                 self.setDestinations(location);
                 self.buildEnemies(location);
+                self.buildPersons(location);
                 self.buildItems(location);
                 self.getFunctions(location);
                 compiledLocations.push(location);
@@ -233,6 +237,28 @@ module StoryScript {
 
                 (<any>location).enemies = enemies;
             }
+            else {
+                location.enemies = [];
+            }
+        }
+
+        private buildPersons(location: ICompiledLocation) {
+            var self = this;
+
+            if (location.persons) {
+                var persons: IPerson[] = [];
+
+                location.persons.forEach((enDef) => {
+                    var person = definitionToObject<IPerson>(<any>enDef);
+                    self.buildItems(person);
+                    persons.push(person);
+                });
+
+                (<any>location).persons = persons;
+            }
+            else {
+                location.persons = [];
+            }
         }
 
         private buildItems(entry: any) {
@@ -247,6 +273,9 @@ module StoryScript {
                 });
 
                 (<any>entry).items = items;
+            }
+            else {
+                entry.items = [];
             }
         }
 
@@ -308,6 +337,107 @@ module StoryScript {
             }
         }
 
+        private prepareTrade(game: IGame) {
+            var self = this;
+
+            if (!game.currentLocation.trade) {
+                return;
+            }
+
+            var sell = game.currentLocation.trade.sell;
+            var buy = game.currentLocation.trade.buy;
+            var itemsForSale = sell.items;
+
+            if (!itemsForSale) {
+                itemsForSale = StoryScript.randomList<IItem>(game.definitions.items, sell.maxItems, sell.itemSelector);
+            }
+
+            sell.items = itemsForSale;
+            buy.items = StoryScript.randomList<IItem>(game.character.items, buy.maxItems, buy.itemSelector);
+
+            if (sell.priceModifier != undefined) {
+                sell.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof sell.priceModifier === 'function' ? (<any>sell).priceModifier(game) : sell.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+
+            if (buy.priceModifier != undefined) {
+                buy.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof buy.priceModifier === 'function' ? (<any>buy).priceModifier(game) : buy.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+        }
+
+        private loadConversations(game: IGame) {
+            var self = this;
+
+            game.currentLocation.persons.forEach((person) => {
+                self.dataService.getDescription('persons', person.id).then(function (conversations) {
+                    var parser = new DOMParser();
+
+                    if (conversations.indexOf('<conversation>') == -1) {
+                        conversations = '<conversation>' + conversations + '</conversation>';
+                    }
+
+                    var xmlDoc = parser.parseFromString(conversations, "text/xml");
+                    var conversationNodes = xmlDoc.getElementsByTagName("node");
+
+                    person.conversation = {
+                        nodes: []
+                    };
+
+                    for (var i = 0; i < conversationNodes.length; i++) {
+                        var node = conversationNodes[i];
+                        var nameAttribute = node.attributes['name'];
+
+                        if (!nameAttribute) {
+                            throw new Error('Missing name attribute on node for conversation ' + person.id + '.');
+                        }
+
+                        if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
+                            throw new Error('Duplicate nodes with name ' + name + ' for conversation ' + person.id + '.');
+                        }
+
+                        var newNode = <IConversationNode>{
+                            node: nameAttribute.value,
+                            lines: '',
+                            Replies: []
+                        };
+
+                        for (var j = 0; j < node.childNodes.length; j++) {
+                            var replies = node.childNodes[j];
+
+                            if (replies.nodeName == 'replies') {
+                                for (var k = 0; k < replies.childNodes.length; k++) {
+                                    var replyNode = replies.childNodes[k];
+
+                                    if (replyNode.nodeName == 'reply') {
+                                        var reply = <IReply>{
+                                            lines: (<any>replyNode).innerHTML,
+                                            linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
+                                        }
+
+                                        newNode.Replies.push(reply);
+                                    }
+                                }
+
+                                node.removeChild(replies);
+                                newNode.lines = node.innerHTML;
+                            }
+                        }
+
+                        person.conversation.nodes.push(newNode);
+                    }
+                });
+            });
+        }
+
         private loadLocationDescriptions(game: IGame) {
             var self = this;
 
@@ -316,7 +446,7 @@ module StoryScript {
                 return;
             }
 
-            self.dataService.getDescription(game.currentLocation.id).then(function (descriptions) {
+            self.dataService.getDescription('locations', game.currentLocation.id).then(function (descriptions) {
                 var parser = new DOMParser();
 
                 if (descriptions.indexOf('<descriptions>') == -1) {

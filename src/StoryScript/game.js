@@ -3,9 +3,9 @@ var GameTemplate;
     var Character = (function () {
         function Character() {
             this.score = 0;
-            this.level = 1;
             this.hitpoints = 0;
             this.currentHitpoints = 0;
+            this.currency = 0;
             // Add character properties here.
             this.items = [];
             this.equipment = {
@@ -35,19 +35,12 @@ var GameTemplate;
                     steps: []
                 };
             };
-            this.fight = function (enemyToFight) {
+            this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
-                // Todo: change when multiple enemies of the same type can be present.
-                var enemy = self.game.currentLocation.enemies.get(enemyToFight.id);
                 // Implement character attack here.
-                if (win) {
-                    return win;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     // Implement monster attack here
                 });
-                return win;
             };
             var self = this;
             self.game = game;
@@ -114,6 +107,13 @@ var GameTemplate;
 })(GameTemplate || (GameTemplate = {}));
 var GameTemplate;
 (function (GameTemplate) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    GameTemplate.custom = custom;
+})(GameTemplate || (GameTemplate = {}));
+var GameTemplate;
+(function (GameTemplate) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'GameTemplate');
 })(GameTemplate || (GameTemplate = {}));
@@ -158,6 +158,15 @@ var StoryScript;
         ActionType[ActionType["Combat"] = 2] = "Combat";
     })(StoryScript.ActionType || (StoryScript.ActionType = {}));
     var ActionType = StoryScript.ActionType;
+})(StoryScript || (StoryScript = {}));
+var StoryScript;
+(function (StoryScript) {
+    (function (Disposition) {
+        Disposition[Disposition["Hostile"] = 0] = "Hostile";
+        Disposition[Disposition["Neutral"] = 1] = "Neutral";
+        Disposition[Disposition["Friendly"] = 2] = "Friendly";
+    })(StoryScript.Disposition || (StoryScript.Disposition = {}));
+    var Disposition = StoryScript.Disposition;
 })(StoryScript || (StoryScript = {}));
 var StoryScript;
 (function (StoryScript) {
@@ -405,6 +414,9 @@ var StoryScript;
             this.youAreHere = "You are here";
             this.messages = "Messages";
             this.hitpoints = "Health";
+            this.currency = "Money";
+            this.trade = "Trade with {0}";
+            this.talk = "Talk with {0}";
             this.format = function (template, tokens) {
                 if (tokens) {
                     for (var i = 0; i < tokens.length; i++) {
@@ -446,21 +458,22 @@ var StoryScript;
                 self.game.logToActionLog = function (message) {
                     self.game.actionLog.splice(0, 0, message);
                 };
+                self.game.getEnemy = function (selector) {
+                    var instance = StoryScript.find(self.game.definitions.enemies, selector);
+                    return self.instantiateEnemy(instance);
+                };
+                self.game.getItem = function (selector) {
+                    return StoryScript.find(self.game.definitions.items, selector);
+                };
                 self.game.randomEnemy = function (selector) {
                     var instance = StoryScript.random(self.game.definitions.enemies, selector);
-                    var items = [];
-                    if (instance.items) {
-                        instance.items.forEach(function (def) {
-                            items.push(StoryScript.definitionToObject(def));
-                        });
-                    }
-                    instance.items = items;
-                    return instance;
+                    return self.instantiateEnemy(instance);
                 };
                 self.game.randomItem = function (selector) {
-                    var instance = StoryScript.random(self.game.definitions.items, selector);
-                    return instance;
+                    return StoryScript.random(self.game.definitions.items, selector);
                 };
+                self.game.rollDice = self.rollDice;
+                self.game.fight = self.fight;
                 // Game setup end
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
@@ -478,7 +491,6 @@ var StoryScript;
                 else {
                     self.game.state = 'createCharacter';
                 }
-                self.game.rollDice = self.rollDice;
                 self.game.calculateBonus = function (person, type) { return self.calculateBonus(self.game, person, type); };
             };
             this.reset = function () {
@@ -551,15 +563,14 @@ var StoryScript;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = self.ruleService.fight(enemy);
-                if (win) {
-                    if (enemy.items && enemy.items.length) {
+                self.ruleService.fight(enemy);
+                if (enemy.hitpoints <= 0) {
+                    if (enemy.items) {
                         enemy.items.forEach(function (item) {
                             self.game.currentLocation.items = self.game.currentLocation.items || [];
-                            // Todo: type
                             self.game.currentLocation.items.push(item);
                         });
-                        enemy.items.splice(0, enemy.items.length);
+                        enemy.items = [];
                     }
                     self.game.currentLocation.enemies.remove(enemy);
                     if (self.ruleService.enemyDefeated) {
@@ -594,6 +605,19 @@ var StoryScript;
                     self.updateHighScore();
                     self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
                 }
+            };
+            this.instantiateEnemy = function (enemy) {
+                if (!enemy) {
+                    return null;
+                }
+                var items = [];
+                if (enemy.items) {
+                    enemy.items.forEach(function (def) {
+                        items.push(StoryScript.definitionToObject(def));
+                    });
+                }
+                enemy.items = items;
+                return enemy;
             };
             var self = this;
             self.dataService = dataService;
@@ -827,7 +851,6 @@ var StoryScript;
                 var tempLocation = game.currentLocation;
                 game.currentLocation = game.previousLocation;
                 game.previousLocation = tempLocation;
-                // Todo: can this be typed somehow?
                 location = game.currentLocation;
             }
             else if (game.currentLocation) {
@@ -891,6 +914,7 @@ var StoryScript;
                 game.currentLocation.hasVisited = true;
                 self.playEvents(game);
             }
+            self.prepareTrade(game);
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
@@ -1000,6 +1024,36 @@ var StoryScript;
             var self = this;
             for (var n in game.currentLocation.events) {
                 game.currentLocation.events[n](game);
+            }
+        };
+        LocationService.prototype.prepareTrade = function (game) {
+            var self = this;
+            if (!game.currentLocation.trade) {
+                return;
+            }
+            var sell = game.currentLocation.trade.sell;
+            var buy = game.currentLocation.trade.buy;
+            var itemsForSale = sell.items;
+            if (!itemsForSale) {
+                itemsForSale = StoryScript.randomList(game.definitions.items, sell.maxItems, sell.itemSelector);
+            }
+            sell.items = itemsForSale;
+            buy.items = StoryScript.randomList(game.character.items, buy.maxItems, buy.itemSelector);
+            if (sell.priceModifier != undefined) {
+                sell.items.forEach(function (item) {
+                    if (item.value) {
+                        var modifier = typeof sell.priceModifier === 'function' ? sell.priceModifier(game) : sell.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+            if (buy.priceModifier != undefined) {
+                buy.items.forEach(function (item) {
+                    if (item.value) {
+                        var modifier = typeof buy.priceModifier === 'function' ? buy.priceModifier(game) : buy.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
             }
         };
         LocationService.prototype.loadLocationDescriptions = function (game) {
@@ -1120,6 +1174,7 @@ var StoryScript;
                 var self = _this;
                 // Call changeLocation without using the execute action as the game parameter is not needed.
                 self.game.changeLocation(location);
+                self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
                 self.gameService.saveGame();
             };
             this.pickupItem = function (item) {
@@ -1160,6 +1215,24 @@ var StoryScript;
                 var self = _this;
                 self.gameService.fight(enemy);
                 self.gameService.saveGame();
+            };
+            this.canPay = function (currency, value) {
+                return value != undefined && currency != undefined && currency >= value;
+            };
+            this.buy = function (item, trade) {
+                var self = _this;
+                self.game.character.currency -= item.value;
+                self.game.character.items.push(item);
+                trade.currency += item.value;
+                trade.sell.items.remove(item);
+            };
+            this.sell = function (item, trade) {
+                var self = _this;
+                self.game.character.currency += item.value;
+                self.game.character.items.remove(item);
+                trade.buy.items.remove(item);
+                trade.currency -= item.value;
+                trade.sell.items.push(item);
             };
             var self = this;
             self.$scope = $scope;
@@ -1271,10 +1344,30 @@ var StoryScript;
             return null;
         }
         var selection = getFilteredInstantiatedCollection(collection, selector);
+        if (selection.length == 0) {
+            return null;
+        }
         var index = Math.floor(Math.random() * selection.length);
         return selection[index];
     }
     StoryScript.random = random;
+    function randomList(collection, count, selector) {
+        var selection = getFilteredInstantiatedCollection(collection, selector);
+        var results = [];
+        if (count === undefined) {
+            count = selection.length;
+        }
+        if (selection.length > 0) {
+            while (results.length < count && results.length < selection.length) {
+                var index = Math.floor(Math.random() * selection.length);
+                if (results.indexOf(selection[index]) == -1) {
+                    results.push(selection[index]);
+                }
+            }
+        }
+        return results;
+    }
+    StoryScript.randomList = randomList;
     function find(collection, selector) {
         if (!collection && !selector) {
             return null;
@@ -1291,16 +1384,23 @@ var StoryScript;
                 var match = collection.filter(function (definition) {
                     return definition.name === selector;
                 });
-                return definitionToObject(match[0]);
+                return match[0] ? definitionToObject(match[0]) : null;
             }
         }
         var results = getFilteredInstantiatedCollection(collection, selector);
         if (results.length > 1) {
             throw new Error('Collection contains more than one match!');
         }
-        return results[0] || null;
+        return results[0] ? results[0] : null;
     }
     StoryScript.find = find;
+    function custom(definition, customData) {
+        return function () {
+            var instance = definition();
+            return angular.extend(instance, customData);
+        };
+    }
+    StoryScript.custom = custom;
     function getFilteredInstantiatedCollection(collection, selector) {
         var collectionToFilter = [];
         if (typeof collection[0] === 'function') {
@@ -1322,7 +1422,7 @@ var RidderMagnus;
             this.score = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
-            this.goudstukken = 0;
+            this.currency = 0;
             // Add character properties here.
             this.vechten = 1;
             this.sluipen = 1;
@@ -1426,15 +1526,13 @@ var RidderMagnus;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
                     self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
-                    return true;
                 }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
                     self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                     self.game.character.currentHitpoints -= enemyDamage;
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -1469,6 +1567,9 @@ var RidderMagnus;
             location.enemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
+            if (!self.game.currentLocation.sluipCheck) {
+                return;
+            }
             // check stats
             var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
             if (roll < self.game.currentLocation.sluipCheck) {
@@ -1481,23 +1582,23 @@ var RidderMagnus;
                     text: 'Besluip ' + enemy.name,
                     type: StoryScript.ActionType.Combat,
                     execute: function (game) {
-                        // Find sneaked enemy.
-                        // Todo: fix for multiple enemies of the same type.
-                        var sneakedEnemy = game.currentLocation.actions.filter(function (action) {
-                            return action.sneakEnemy.id == enemy.id;
-                        })[0].sneakEnemy;
                         // Do damage to sneaked enemy.
-                        sneakedEnemy.hitpoints -= 5;
+                        self.game.fight(enemy);
                         // Move all enemies into combat.
                         game.currentLocation.actions.filter(function (action) {
-                            return action.sneakEnemy != undefined;
+                            return action.sneakEnemy != undefined && action.sneakEnemy.hitpoints > 0;
                         }).forEach(function (action) {
                             game.currentLocation.enemies.push(action.sneakEnemy);
+                        });
+                        // Remove the remaining sneak actions
+                        game.currentLocation.actions = game.currentLocation.actions.filter(function (action) {
+                            return action.sneakEnemy == undefined;
                         });
                     }
                 });
             });
             self.game.currentLocation.enemies = [];
+            self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
             //als er een flee-action is: self.addFleeAction(location);
         };
         RuleService.prototype.enemyDefeated = function (enemy) {
@@ -1581,6 +1682,7 @@ var RidderMagnus;
         function Kelder() {
             return {
                 name: 'De Kelder',
+                sluipCheck: 10,
                 //Bij eerste bezoek: er komt hier als event eenmalig een dire rat, tenzij je succesvol sluipt. 
                 //Met zoeken is er een ring te vinden. 
                 //Als de ring al gevonden is, levert zoeken vooral ratten op.
@@ -1602,13 +1704,13 @@ var RidderMagnus;
                             var result;
                             result = check + game.character.zoeken;
                             if (result > 5) {
-                                // Todo: make this easy to do!
-                                game.currentLocation.items.push(StoryScript.definitionToObject(RidderMagnus.Items.GoudenRing));
+                                var ring = game.getItem(RidderMagnus.Items.GoudenRing);
+                                game.currentLocation.items.push(ring);
                                 game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
                                 game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
                             }
                             else if (result >= 3 && result <= 5) {
-                                game.character.goudstukken += 1;
+                                game.character.currency += 1;
                                 game.logToActionLog('Daar glinstert iets! Oh, het is een goudstuk.');
                                 return true;
                             }
@@ -1900,6 +2002,13 @@ var RidderMagnus;
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
 (function (RidderMagnus) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    RidderMagnus.custom = custom;
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'RidderMagnus');
 })(RidderMagnus || (RidderMagnus = {}));
@@ -1951,6 +2060,36 @@ var RidderMagnus;
             };
         }
         Enemies.ReusachtigeRat = ReusachtigeRat;
+    })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Enemies;
+    (function (Enemies) {
+        function Trader() {
+            return {
+                name: 'Trader',
+                hitpoints: 7,
+                attack: '1d6',
+                reward: 1,
+                disposition: StoryScript.Disposition.Neutral,
+                trade: {
+                    buy: {
+                        itemSelector: function (item) {
+                            return item.damage != undefined;
+                        },
+                        maxItems: 3
+                    },
+                    sell: {
+                        itemSelector: function (item) {
+                            return item.damage != undefined && item.price <= 10;
+                        },
+                        maxItems: 5
+                    }
+                }
+            };
+        }
+        Enemies.Trader = Trader;
     })(Enemies = RidderMagnus.Enemies || (RidderMagnus.Enemies = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
@@ -2010,6 +2149,7 @@ var QuestForTheKing;
             this.hitpoints = 200;
             this.currentHitpoints = 200;
             this.score = 0;
+            this.currency = 0;
             this.strength = 1;
             this.agility = 1;
             this.intelligence = 1;
@@ -2150,26 +2290,20 @@ var QuestForTheKing;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
                 var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
                 self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('You defeat the ' + enemy.name + '!');
-                    win = true;
-                }
-                if (win) {
                     if (self.game.currentLocation.enemies.length == 0) {
                         self.game.currentLocation.text = self.game.currentLocation.descriptions['after'];
                     }
-                    return true;
                 }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(enemy, 'damage');
                     self.game.logToActionLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                     self.game.character.currentHitpoints -= damage;
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -2546,6 +2680,13 @@ var QuestForTheKing;
 })(QuestForTheKing || (QuestForTheKing = {}));
 var QuestForTheKing;
 (function (QuestForTheKing) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    QuestForTheKing.custom = custom;
+})(QuestForTheKing || (QuestForTheKing = {}));
+var QuestForTheKing;
+(function (QuestForTheKing) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'QuestForTheKing');
 })(QuestForTheKing || (QuestForTheKing = {}));
@@ -2631,6 +2772,7 @@ var PathOfHeroes;
 (function (PathOfHeroes) {
     var Character = (function () {
         function Character() {
+            this.currency = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
             this.mana = 20;
@@ -2679,15 +2821,10 @@ var PathOfHeroes;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
                 // Implement character attack here.
-                if (win) {
-                    return true;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     // Implement monster attack here
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -2742,6 +2879,13 @@ var PathOfHeroes;
 })(PathOfHeroes || (PathOfHeroes = {}));
 var PathOfHeroes;
 (function (PathOfHeroes) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    PathOfHeroes.custom = custom;
+})(PathOfHeroes || (PathOfHeroes = {}));
+var PathOfHeroes;
+(function (PathOfHeroes) {
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'PathOfHeroes');
 })(PathOfHeroes || (PathOfHeroes = {}));
@@ -2750,6 +2894,7 @@ var MyNewGame;
     var Character = (function () {
         function Character() {
             this.score = 0;
+            this.currency = 0;
             this.level = 1;
             this.hitpoints = 10;
             this.currentHitpoints = 10;
@@ -2842,23 +2987,17 @@ var MyNewGame;
             };
             this.fight = function (enemy) {
                 var self = _this;
-                var win = false;
                 var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
                 self.game.logToActionLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('You defeat the ' + enemy.name + '!');
-                    win = true;
                 }
-                if (win) {
-                    return true;
-                }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(enemy, 'damage');
                     self.game.logToActionLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                     self.game.character.currentHitpoints -= damage;
                 });
-                return false;
             };
             var self = this;
             self.game = game;
@@ -2916,6 +3055,25 @@ var MyNewGame;
 })(MyNewGame || (MyNewGame = {}));
 var MyNewGame;
 (function (MyNewGame) {
+    var Persons;
+    (function (Persons) {
+        function Friend() {
+            return {
+                name: 'Joe',
+                pictureFileName: 'bandit.jpg',
+                hitpoints: 10,
+                attack: '1d6',
+                items: [
+                    MyNewGame.Items.Sword
+                ],
+                disposition: StoryScript.Disposition.Friendly
+            };
+        }
+        Persons.Friend = Friend;
+    })(Persons = MyNewGame.Persons || (MyNewGame.Persons = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
     var Locations;
     (function (Locations) {
         function Basement() {
@@ -2930,6 +3088,48 @@ var MyNewGame;
             };
         }
         Locations.Basement = Basement;
+    })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    var Locations;
+    (function (Locations) {
+        function Bedroom() {
+            return {
+                name: 'Bedroom',
+                destinations: [
+                    {
+                        text: 'Back to the living room',
+                        target: Locations.Start
+                    }
+                ],
+                trade: {
+                    description: 'Do you want to take something out of your closet or put it back in?',
+                    currency: 10,
+                    buy: {
+                        description: 'Put back in closet',
+                        emptyText: 'You have nothing to put in the your closet',
+                        itemSelector: function (item) {
+                            return true;
+                        },
+                        maxItems: 5,
+                        priceModifier: 0
+                    },
+                    sell: {
+                        description: 'Take out of closet',
+                        emptyText: 'The closet is empty',
+                        itemSelector: function (item) {
+                            return true;
+                        },
+                        maxItems: 5,
+                        priceModifier: function (game) {
+                            return 0;
+                        }
+                    }
+                }
+            };
+        }
+        Locations.Bedroom = Bedroom;
     })(Locations = MyNewGame.Locations || (MyNewGame.Locations = {}));
 })(MyNewGame || (MyNewGame = {}));
 var MyNewGame;
@@ -3036,6 +3236,10 @@ var MyNewGame;
                 },
                 destinations: [
                     {
+                        text: 'To the bedroom',
+                        target: Locations.Bedroom
+                    },
+                    {
                         text: 'To the garden',
                         target: Locations.Garden
                     },
@@ -3047,6 +3251,9 @@ var MyNewGame;
                 items: [
                     MyNewGame.Items.Sword,
                     MyNewGame.Items.LeatherBoots
+                ],
+                persons: [
+                    MyNewGame.Persons.Friend
                 ]
             };
         }
@@ -3061,7 +3268,8 @@ var MyNewGame;
             return {
                 name: 'Leather boots',
                 defense: 1,
-                equipmentType: StoryScript.EquipmentType.Feet
+                equipmentType: StoryScript.EquipmentType.Feet,
+                value: 2
             };
         }
         Items.LeatherBoots = LeatherBoots;
@@ -3075,11 +3283,19 @@ var MyNewGame;
             return {
                 name: 'Sword',
                 damage: '3',
-                equipmentType: StoryScript.EquipmentType.RightHand
+                equipmentType: StoryScript.EquipmentType.RightHand,
+                value: 5
             };
         }
         Items.Sword = Sword;
     })(Items = MyNewGame.Items || (MyNewGame.Items = {}));
+})(MyNewGame || (MyNewGame = {}));
+var MyNewGame;
+(function (MyNewGame) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    MyNewGame.custom = custom;
 })(MyNewGame || (MyNewGame = {}));
 var MyNewGame;
 (function (MyNewGame) {
@@ -3206,9 +3422,10 @@ var DangerousCave;
 (function (DangerousCave) {
     var Character = (function () {
         function Character() {
+            this.score = 0;
             this.hitpoints = 20;
             this.currentHitpoints = 20;
-            this.score = 0;
+            this.currency = 0;
             this.scoreToNextLevel = 0;
             this.level = 1;
             this.kracht = 1;
@@ -3351,15 +3568,13 @@ var DangerousCave;
                 if (enemy.hitpoints <= 0) {
                     self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
                     self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
-                    return true;
                 }
-                self.game.currentLocation.enemies.forEach(function (enemy) {
+                self.game.currentLocation.enemies.filter(function (enemy) { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(enemy, 'damage'));
                     self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                     self.game.character.currentHitpoints -= enemyDamage;
                 });
-                return false;
             };
             this.levelUp = function (reward) {
                 var self = _this;
@@ -3392,7 +3607,7 @@ var DangerousCave;
             var self = this;
             var character = new DangerousCave.Character();
             var chosenItem = characterData.steps[1].questions[1].selectedEntry;
-            character.items.push(StoryScript.find(self.game.definitions.items, chosenItem.value));
+            character.items.push(self.game.getItem(chosenItem.value));
             return character;
         };
         RuleService.prototype.addEnemyToLocation = function (location, enemy) {
@@ -3563,12 +3778,7 @@ var DangerousCave;
                         },
                         fail: function (game) {
                             game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                            // Todo: improve;
-                            var enemy = DangerousCave.Enemies.Orc();
-                            var items = [];
-                            enemy.items.forEach(function (x) { items.push(x()); });
-                            enemy.items = items;
-                            game.currentLocation.enemies.push(enemy);
+                            game.currentLocation.enemies.push(game.getEnemy(DangerousCave.Enemies.Orc));
                         }
                     })
                 ]
@@ -3595,8 +3805,8 @@ var DangerousCave;
                         difficulty: 9,
                         success: function (game) {
                             game.logToLocationLog('Je vindt een schild!');
-                            // Todo: allow pushing definition instead of item.
-                            game.character.items.push(DangerousCave.Items.SmallShield());
+                            var item = game.getItem(DangerousCave.Items.SmallShield);
+                            game.character.items.push(item);
                         },
                         fail: function (game) {
                             game.logToLocationLog('Je vindt niets.');
@@ -4186,6 +4396,13 @@ var DangerousCave;
         }
         Items.Sword = Sword;
     })(Items = DangerousCave.Items || (DangerousCave.Items = {}));
+})(DangerousCave || (DangerousCave = {}));
+var DangerousCave;
+(function (DangerousCave) {
+    function custom(definition, customData) {
+        return StoryScript.custom(definition, customData);
+    }
+    DangerousCave.custom = custom;
 })(DangerousCave || (DangerousCave = {}));
 var DangerousCave;
 (function (DangerousCave) {

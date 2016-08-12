@@ -17,8 +17,34 @@
         }
 
         var selection = getFilteredInstantiatedCollection<T>(collection, selector);
+
+        if (selection.length == 0) {
+            return null;
+        }
+
         var index = Math.floor(Math.random() * selection.length);
         return selection[index];
+    }
+
+    export function randomList<T>(collection: T[] | ([() => T]), count: number, selector?: (item: T) => boolean): ICollection<T> {
+        var selection = getFilteredInstantiatedCollection<T>(collection, selector);
+        var results = <ICollection<T>>[];
+
+        if (count === undefined) {
+            count = selection.length;
+        }
+
+        if (selection.length > 0) {
+            while (results.length < count && results.length < selection.length) {
+                var index = Math.floor(Math.random() * selection.length);
+
+                if (results.indexOf(selection[index]) == -1) {
+                    results.push(selection[index]);
+                }
+            }
+        }
+
+        return results;
     }
 
     export function find<T>(collection: T[] | ([() => T]), selector: string | (() => T) | ((item: T) => boolean)): T {
@@ -43,7 +69,7 @@
                     return (<any>definition).name === <string>selector;
                 });
 
-                return definitionToObject(match[0]);
+                return match[0] ? definitionToObject(match[0]) : null;
             }
         }
 
@@ -53,7 +79,14 @@
             throw new Error('Collection contains more than one match!');
         }
 
-        return results[0] || null;
+        return results[0] ? results[0] : null;
+    }
+
+    export function custom<T>(definition: () => T, customData: {}) {
+        return (): T => {
+            var instance = definition();
+            return angular.extend(instance, customData);
+        };
     }
 
     function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), selector?: (item: T) => boolean) {

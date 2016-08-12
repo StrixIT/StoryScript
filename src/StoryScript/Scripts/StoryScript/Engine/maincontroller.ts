@@ -8,6 +8,7 @@
         private game: IGame;
         private textService: ITextService;
         private texts: any = {};
+        private encounters: ICollection<IEnemy>;
 
         // Todo: can this be done differently?
         private nonDisplayAttributes: string[] = [ 'name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
@@ -38,6 +39,8 @@
 
             self.setDisplayTexts();
             self.getCharacterAttributesToShow();
+
+            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
 
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
@@ -153,6 +156,9 @@
 
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location);
+
+            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
+
             self.gameService.saveGame();
         }
 
@@ -205,6 +211,27 @@
             var self = this;
             self.gameService.fight(enemy);
             self.gameService.saveGame();
+        }
+
+        canPay = (currency: number, value: number) => {
+            return value != undefined && currency != undefined && currency >= value;
+        }
+
+        buy = (item: IItem, trade: ITrade) => {
+            var self = this;
+            self.game.character.currency -= item.value;
+            self.game.character.items.push(item);
+            trade.currency += item.value;
+            trade.sell.items.remove(item);
+        }
+
+        sell = (item: IItem, trade: ITrade) => {
+            var self = this;
+            self.game.character.currency += item.value;
+            self.game.character.items.remove(item);
+            trade.buy.items.remove(item);
+            trade.currency -= item.value;
+            trade.sell.items.push(item);
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {

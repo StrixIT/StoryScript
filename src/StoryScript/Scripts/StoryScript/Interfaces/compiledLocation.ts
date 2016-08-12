@@ -4,6 +4,7 @@
         name: string;
         descriptionSelector?: string | ((game: IGame) => string);
         enemies?: ICollection<IEnemy>;
+        persons?: ICollection<IPerson>;
         items?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
         events?: ICollection<(game: IGame) => void>;
@@ -13,5 +14,6 @@
         hasVisited: boolean;
         descriptions: { [key: string] : string; };
         log: string[];
+        trade?: ITrade;
     }
 }

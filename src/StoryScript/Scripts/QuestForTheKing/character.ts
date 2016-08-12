@@ -4,6 +4,7 @@
         hitpoints: number = 200;
         currentHitpoints: number = 200;
         score: number = 0;
+        currency: number = 0;
 
         strength: number = 1;
         agility: number = 1;

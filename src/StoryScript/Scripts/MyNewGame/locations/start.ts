@@ -1,5 +1,5 @@
 ﻿module MyNewGame.Locations {
-    export function Start(): StoryScript.ILocation {
+    export function Start(): ILocation {
         return {
             name: 'Home',
             descriptionSelector: (game: IGame) => {
@@ -14,6 +14,10 @@
             },
             destinations: [
                 {
+                    text: 'To the bedroom',
+                    target: Locations.Bedroom
+                },
+                {
                     text: 'To the garden',
                     target: Locations.Garden
                 },
@@ -25,6 +29,9 @@
             items: [
                 Items.Sword,
                 Items.LeatherBoots
+            ],
+            persons: [
+                Persons.Friend
             ]
         }
     }

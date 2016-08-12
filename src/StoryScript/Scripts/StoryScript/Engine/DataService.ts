@@ -1,7 +1,7 @@
 ﻿module StoryScript {
     export interface IDataService {
         functionList: { [id: number]: Function };
-        getDescription(descriptionName: string);
+        getDescription(folder: string, descriptionid: string);
         save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
     }
@@ -39,10 +39,10 @@ module StoryScript {
             };
         }
 
-        public getDescription(descriptionId: string) {
+        public getDescription(folder: string, descriptionId: string) {
             var self = this;
             var deferred = self.$q.defer();
-            var url = '/locations/' + descriptionId + '.html';
+            var url = '/' + folder + '/' + descriptionId + '.html';
 
             self.$http.get(url)
                 .success(function (data, status, headers, config) {
