@@ -4,7 +4,7 @@
             name: 'Klein schild',
             defense: 1 ,
             equipmentType: StoryScript.EquipmentType.LeftHand ,
-            price: 4
+            value: 4
             //requirement: vechten >1
         }
     }

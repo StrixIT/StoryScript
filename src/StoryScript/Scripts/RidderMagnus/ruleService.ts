@@ -141,9 +141,7 @@
                                     return action.sneakEnemy == undefined;
                                 });
 
-                                if (self.game.currentLocation.enemies.length > 0) {
-                                    self.game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
-                                }
+                                self.addSneakAction(self.game);
                             }
                         });
                     });
@@ -152,8 +150,14 @@
                     self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
                 }
             }
-            else if (self.game.currentLocation.enemies.length > 0) {
-                self.game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
+            else {
+                self.addSneakAction(self.game);
+            }
+        }
+
+        addSneakAction = (game: IGame) => {
+            if (game.currentLocation.enemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
+                game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
             }
         }
 
@@ -185,7 +189,7 @@
             }
         }
 
-       
+
         hitpointsChange(change: number) {
             var self = this;
 

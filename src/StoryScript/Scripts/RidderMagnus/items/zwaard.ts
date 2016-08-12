@@ -4,7 +4,7 @@
             name: 'Zwaard',
             damage: '3',
             equipmentType: StoryScript.EquipmentType.RightHand,
-            price: 5
+            value: 5
             //requirement: vechten >1
         }
     }

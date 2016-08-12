@@ -4,7 +4,7 @@
             name: 'IJzeren helm',
             defense: 1 ,
             equipmentType: StoryScript.EquipmentType.Head,
-            price: 4
+            value: 4
             //requirement: zoeken >1
         }
     }

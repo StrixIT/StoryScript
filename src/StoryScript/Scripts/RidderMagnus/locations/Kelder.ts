@@ -26,9 +26,9 @@
 
                         if (result > 5) {
                             var ring = game.getItem(Items.GoudenRing);
-                            game.currentLocation.items.push(ring);
+                            game.character.items.push(ring);
                             game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
-                            game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
+                            game.logToActionLog('Breng de ring snel terug naar de koningin.');
                         }
                         else if (result >= 3 && result <= 5) {
                             game.character.currency += 1;

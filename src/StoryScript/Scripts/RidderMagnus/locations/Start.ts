@@ -2,6 +2,7 @@
     export function Start(): ILocation {
         return {
             name: 'De Troonzaal',
+            items: [Items.LichtSpreuk ],
             enemies: [
                 //Enemies.Trader
             ],

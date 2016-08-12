@@ -432,6 +432,7 @@ var StoryScript;
             this.trade = "Trade with {0}";
             this.talk = "Talk to {0}";
             this.encounters = "Encounters";
+            this.closeModal = "Close";
             this.format = function (template, tokens) {
                 if (tokens) {
                     for (var i = 0; i < tokens.length; i++) {
@@ -489,6 +490,12 @@ var StoryScript;
                 };
                 self.game.rollDice = self.rollDice;
                 self.game.fight = self.fight;
+                Object.defineProperty(self.game, 'stateString', {
+                    enumerable: true,
+                    get: function () {
+                        return StoryScript.GameState[self.game.state];
+                    }
+                });
                 // Game setup end
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
@@ -1261,7 +1268,6 @@ var StoryScript;
                 var self = _this;
                 // Call changeLocation without using the execute action as the game parameter is not needed.
                 self.game.changeLocation(location);
-                self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
                 self.gameService.saveGame();
             };
             this.pickupItem = function (item) {
@@ -1321,6 +1327,10 @@ var StoryScript;
                 trade.currency -= item.value;
                 trade.sell.items.push(item);
             };
+            this.talk = function (person) {
+                var self = _this;
+                self.game.state = StoryScript.GameState.Conversation;
+            };
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
@@ -1342,12 +1352,15 @@ var StoryScript;
             self.$scope.texts = self.texts;
             self.setDisplayTexts();
             self.getCharacterAttributesToShow();
-            self.encounters = self.game.currentLocation.enemies.concat(self.game.currentLocation.persons);
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
             self.reset = function () { self.gameService.reset.call(self.gameService); };
+            self.modalSettings = {
+                title: '',
+                closeText: self.texts.closeModal
+            };
         };
         MainController.prototype.isSlotUsed = function (slot) {
             var self = this;
@@ -1385,7 +1398,14 @@ var StoryScript;
             }
         };
         MainController.prototype.watchGameState = function (newValue, oldValue, scope) {
+            var self = this;
             if (newValue != undefined) {
+                if (newValue == StoryScript.GameState.Combat || newValue == StoryScript.GameState.Trade || newValue == StoryScript.GameState.Conversation) {
+                    $('#encounters').modal('show');
+                }
+                else {
+                    $('#encounters').modal('hide');
+                }
                 scope.controller.gameService.changeGameState(newValue);
             }
         };
@@ -1688,7 +1708,7 @@ var RidderMagnus;
                     self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
                 }
             }
-            else if (self.game.currentLocation.enemies.length > 0) {
+            else if (self.game.currentLocation.enemies.length > 0 && !self.game.currentLocation.combatActions.some(function (action) { return action.text == 'Vluchten'; })[0]) {
                 self.game.currentLocation.combatActions.push(RidderMagnus.Actions.Flee('Vluchten!'));
             }
         };
@@ -1770,6 +1790,40 @@ var RidderMagnus;
 (function (RidderMagnus) {
     var Locations;
     (function (Locations) {
+        function EersteGang() {
+            return {
+                name: 'Een lange, rechte gang',
+                destinations: [
+                    {
+                        text: 'Naar de tunnel',
+                        target: Locations.Tunnel
+                    }
+                ],
+                actions: [
+                    {
+                        text: 'Zoeken',
+                        execute: function (game) {
+                            var check = Math.floor(Math.random() * 6 + 1);
+                            var result;
+                            result = check + game.character.zoeken;
+                            if (result > 6) {
+                                game.logToLocationLog('Er zitten twee ruitvormige gaten in de muur, recht tegenover de tunnel. En tussen de twee gaten in loopt een smalle spleet van boven naar onderen over de muur.');
+                            }
+                            else {
+                                game.logToActionLog('Je vindt niets bijzonders.');
+                            }
+                        }
+                    }
+                ]
+            };
+        }
+        Locations.EersteGang = EersteGang;
+    })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Locations;
+    (function (Locations) {
         function Kelder() {
             return {
                 name: 'De Kelder',
@@ -1820,7 +1874,8 @@ var RidderMagnus;
         Locations.Kelder = Kelder;
     })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
 })(RidderMagnus || (RidderMagnus = {}));
-// var randomEnemy = game.randomEnemy((enemy: IEnemy) => { return enemy.name.indexOf('rat') > -1; }); 
+// var randomEnemy = game.randomEnemy((enemy: IEnemy) => { return enemy.name.indexOf('rat') > -1; });
+//bij latere quest een zoekactie die destination: Tunnel onthult 
 var RidderMagnus;
 (function (RidderMagnus) {
     var Locations;
@@ -1876,6 +1931,8 @@ var RidderMagnus;
         function Start() {
             return {
                 name: 'De Troonzaal',
+                items: [RidderMagnus.Items.LichtSpreuk],
+                enemies: [],
                 destinations: [
                     {
                         text: 'Naar de kelder!',
@@ -1895,6 +1952,11 @@ var RidderMagnus;
                     //wanneer mogelijk moet deze checken of de quest 'vind de ring' actief is.
                     //quest 2: prinses zegt dat er een monster in haar kamer is. Doe er wat aan.
                     //activeer dan pas nieuwe destination: Slaapkamer prinses
+                    //Quest 3: waar komen de ratten vandaan? Doorzoek zowel slaapkamer (luik onder bed) als kelder (hol wijnvat met tunnel)
+                    // dat kan subtiel met zoeken / magie, of lomp met veel geweld en lawaai
+                    //Quest 4: into the tunnels! Er zit hier een val en een deur die op slot is. Daar achter een doolhof.
+                    //Quest 5: verken het doolhof - (en ontsnap met veel moeite)
+                    //quest 6: de prinses is ontvoerd! je moet terug de doolhof in. Wat heb je nodig? (draad, licht, ? )
                 },
                 actions: [
                     {
@@ -1927,6 +1989,28 @@ var RidderMagnus;
             };
         }
         Locations.Start = Start;
+    })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Locations;
+    (function (Locations) {
+        function Tunnel() {
+            return {
+                name: 'Een tunnel onder het paleis',
+                destinations: [
+                    {
+                        text: 'Naar beneden',
+                        target: Locations.EersteGang
+                    },
+                    {
+                        text: 'Naar boven',
+                        target: Locations.Kelder
+                    }
+                ],
+            };
+        }
+        Locations.Tunnel = Tunnel;
     })(Locations = RidderMagnus.Locations || (RidderMagnus.Locations = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
@@ -1972,6 +2056,7 @@ var RidderMagnus;
                 equipmentType: StoryScript.EquipmentType.Miscellaneous,
                 description: 'Drink dit op als je zwaar gewond bent.',
                 use: RidderMagnus.Actions.Heal('4d2'),
+                charges: 1,
                 price: 5
             };
         }
@@ -2036,6 +2121,25 @@ var RidderMagnus;
             };
         }
         Items.LerenHarnas = LerenHarnas;
+    })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
+    var Items;
+    (function (Items) {
+        function LichtSpreuk() {
+            return {
+                name: 'Licht (spreuk)',
+                equipmentType: StoryScript.EquipmentType.Miscellaneous,
+                description: 'Een magisch licht dat de duisternis verjaagt.',
+                use: function (game) {
+                    game.currentLocation.text = game.currentLocation.descriptions["licht"] || game.currentLocation.text;
+                    game.logToActionLog('Een helder licht straalt vanuit je handen en verlicht een grote kring rondom je.');
+                },
+                price: 10
+            };
+        }
+        Items.LichtSpreuk = LichtSpreuk;
     })(Items = RidderMagnus.Items || (RidderMagnus.Items = {}));
 })(RidderMagnus || (RidderMagnus = {}));
 var RidderMagnus;
