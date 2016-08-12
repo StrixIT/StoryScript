@@ -2,6 +2,9 @@
     export function Start(): ILocation {
         return {
             name: 'De Troonzaal',
+            enemies: [
+                //Enemies.Trader
+            ],
             destinations: [
                 {
                     text: 'Naar de kelder!',
@@ -25,6 +28,11 @@
                 //wanneer mogelijk moet deze checken of de quest 'vind de ring' actief is.
                 //quest 2: prinses zegt dat er een monster in haar kamer is. Doe er wat aan.
                 //activeer dan pas nieuwe destination: Slaapkamer prinses
+                //Quest 3: waar komen de ratten vandaan? Doorzoek zowel slaapkamer (luik onder bed) als kelder (hol wijnvat met tunnel)
+                // dat kan subtiel met zoeken / magie, of lomp met veel geweld en lawaai
+                //Quest 4: into the tunnels! Er zit hier een val en een deur die op slot is. Daar achter een doolhof.
+                //Quest 5: verken het doolhof - (en ontsnap met veel moeite)
+                //quest 6: de prinses is ontvoerd! je moet terug de doolhof in. Wat heb je nodig? (draad, licht, ? )
             },
             actions: [
                 {
