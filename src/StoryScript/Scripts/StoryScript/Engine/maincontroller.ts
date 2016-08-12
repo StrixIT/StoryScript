@@ -345,7 +345,11 @@
 
             self.game.currentLocation.activeTrade = (<IPerson>trade).trade ? (<IPerson>trade).trade : trade;
             var trader = self.game.currentLocation.activeTrade;
-            trader.currency = trader.currency || (<IPerson>trade).currency;
+
+            if ((<IPerson>trade).trade) {
+                trader.currency = (<IPerson>trade).currency;
+                self.game.currentLocation.activePerson = <IPerson>trade;
+            }
 
             self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<IPerson>trade).name]);
             self.$scope.modalSettings.canClose = true;
@@ -401,6 +405,13 @@
 
         private watchGameState(newValue: GameState, oldValue, scope: IMainControllerScope) {
             if (oldValue != undefined) {
+                // If there is a person trader, sync the money between him and the shop on trade end.
+                if (oldValue == GameState.Trade) {
+                    if (scope.game.currentLocation.activePerson && scope.game.currentLocation.activePerson.trade === scope.game.currentLocation.activeTrade) {
+                        scope.game.currentLocation.activePerson.currency = scope.game.currentLocation.activeTrade.currency;
+                    }
+                }
+
                 if ((oldValue == GameState.Combat || oldValue == GameState.Trade || oldValue == GameState.Conversation) && scope.modalSettings.closeAction) {
                     scope.modalSettings.closeAction(scope.game);
                 }
