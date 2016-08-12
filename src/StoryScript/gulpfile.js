@@ -17,18 +17,18 @@ var paths = {
     root: "./"
 };
 
-paths.js = paths.webroot + "js/**/*.js";
+//paths.js = paths.webroot + "js/**/*.js";
 //paths.minJs = paths.webroot + "js/**/*.min.js";
-paths.css = paths.webroot + "css/**/*.css";
+//paths.css = paths.webroot + "css/**/*.css";
 //paths.minCss = paths.webroot + "css/**/*.min.css";
 //paths.concatJsDest = paths.webroot + "js/site.js";
 //paths.concatJsDestMin = paths.webroot + "js/site.min.js";
 //paths.concatCssDest = paths.webroot + "css/site.min.css";
-paths.tsSource = paths.root + 'Scripts/**/*.ts';
-paths.tsDef = paths.webroot + "js/types/**/*.ts";
+//paths.tsSource = paths.root + 'Scripts/**/*.ts';
+//paths.tsDef = paths.webroot + "js/types/**/*.ts";
 //paths.bower = "./bower_components/";
-paths.jsLib = "./" + project.webroot + "/js/lib/";
-paths.cssLib = "./" + project.webroot + "/css/lib/";
+//paths.jsLib = "./" + project.webroot + "/js/lib/";
+//paths.cssLib = "./" + project.webroot + "/css/lib/";
 
 //gulp.task("tslint", () =>
 //    gulp.src([paths.root + 'Scripts/StoryScript/app.js', paths.root + 'Scripts/DangerousCave/**/*.js'])
@@ -49,9 +49,9 @@ gulp.task('delete-files', function () {
     del([paths.webroot + 'locations/**/*', paths.webroot + 'resources/**/*', paths.webroot + 'ui/**/*']);
 });
 
-gulp.task('ts-watch', function () {
-    gulp.watch(paths.root + 'Scripts/**/*.ts', ['build-dangerous-cave']);
-});
+//gulp.task('ts-watch', function () {
+//    gulp.watch(paths.root + 'Scripts/**/*.ts', ['build-dangerous-cave']);
+//});
 
 function buildGame(nameSpace) {
     return function () {
@@ -64,33 +64,33 @@ function buildGame(nameSpace) {
 }
 
 function copyLibraries() {
-    gulp.src([paths.root + 'Scripts/StoryScript/Libraries/**/*.js'])
+    gulp.src([paths.root + 'Libraries/**/*.js'])
         .pipe(gulp.dest(paths.webroot + 'js/lib'));
 
-    gulp.src([paths.root + 'Scripts/StoryScript/Libraries/bootstrap/bootstrap.css'])
+    gulp.src([paths.root + 'Libraries/bootstrap/bootstrap.css'])
         .pipe(gulp.dest(paths.webroot + 'css/lib'));
 }
 
 function copyResources(nameSpace) {
     // Copy resources
-    gulp.src([paths.root + 'Scripts/' + nameSpace + '/resources/**/*.*'])
+    gulp.src([paths.root + 'Games/' + nameSpace + '/resources/**/*.*'])
         .pipe(gulp.dest(paths.webroot + 'resources'));
 }
 
 function copyCss(nameSpace) {
     // Copy css
-    gulp.src([paths.root + 'Scripts/StoryScript/ui/styles/*.css', paths.root + 'Scripts/' + nameSpace + '/ui/styles/*.css'])
+    gulp.src([paths.root + 'StoryScript/ui/styles/*.css', paths.root + 'Games/' + nameSpace + '/ui/styles/*.css'])
         .pipe(gulp.dest(paths.webroot + 'css'));
 }
 
 function copyHtml(nameSpace) {
     // Copy html
-    gulp.src([paths.root + 'Scripts/StoryScript/**/*.html', paths.root + 'Scripts/' + nameSpace + '/**/*.html'])
+    gulp.src([paths.root + 'StoryScript/**/*.html', paths.root + 'Games/' + nameSpace + '/**/*.html'])
       .pipe(gulp.dest(paths.webroot));
 }
 
 function compileTypeScript(nameSpace) {
-    var tsResult = gulp.src([paths.root + 'Scripts/Library/**/*.ts', paths.root + 'Scripts/StoryScript/**/!(app)*.ts', paths.root + 'Scripts/StoryScript/app.ts', paths.root + 'Scripts/' + nameSpace + '/**/*.ts', 'Scripts/Types/**/*.ts'], { base: paths.root + 'Scripts' })
+    var tsResult = gulp.src([paths.root + 'StoryScript/Components/**/*.ts', paths.root + 'StoryScript/**/!(app)*.ts', paths.root + 'StoryScript/app.ts', paths.root + 'Games/' + nameSpace + '/**/*.ts', 'Types/**/*.ts'], { base: paths.webroot })
                         .pipe(sourcemaps.init())
                         .pipe(ts(tsProject));
 
