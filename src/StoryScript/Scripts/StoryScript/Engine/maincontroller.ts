@@ -236,6 +236,11 @@
             return value != undefined && currency != undefined && currency >= value;
         }
 
+        displayPrice = (item: IItem) => {
+            var self = this;
+            return item.value ? (item.name + ': ' + item.value + ' ' + self.texts.currency) : item.name;
+        }
+
         buy = (item: IItem, trade: ITrade) => {
             var self = this;
             self.game.character.currency -= item.value;
@@ -306,6 +311,7 @@
 
             self.game.currentLocation.activeTrade = (<IPerson>trade).trade ? (<IPerson>trade).trade : trade;
             var trader = self.game.currentLocation.activeTrade;
+            trader.currency = trader.currency || (<IPerson>trade).currency;
 
             self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<IPerson>trade).name]);
             self.$scope.modalSettings.canClose = true;

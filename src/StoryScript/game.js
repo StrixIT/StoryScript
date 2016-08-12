@@ -156,6 +156,7 @@ var StoryScript;
         ActionType[ActionType["Regular"] = 0] = "Regular";
         ActionType[ActionType["Check"] = 1] = "Check";
         ActionType[ActionType["Combat"] = 2] = "Combat";
+        ActionType[ActionType["Trade"] = 3] = "Trade";
     })(StoryScript.ActionType || (StoryScript.ActionType = {}));
     var ActionType = StoryScript.ActionType;
 })(StoryScript || (StoryScript = {}));
@@ -490,6 +491,7 @@ var StoryScript;
                 };
                 self.game.rollDice = self.rollDice;
                 self.game.fight = self.fight;
+                // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
                 Object.defineProperty(self.game, 'stateString', {
                     enumerable: true,
                     get: function () {
@@ -931,13 +933,27 @@ var StoryScript;
             if (self.ruleService.enterLocation) {
                 self.ruleService.enterLocation(game.currentLocation);
             }
+            self.initTrade(game);
             // If the player hasn't been here before, play the location events.
             if (!game.currentLocation.hasVisited) {
                 game.currentLocation.hasVisited = true;
                 self.playEvents(game);
             }
-            self.prepareTrade(game);
             self.loadConversations(game);
+        };
+        LocationService.prototype.initTrade = function (game) {
+            // Todo: better way to get action. Use action function name from function list?
+            if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(function (a) { return a.type == StoryScript.ActionType.Trade; }))) {
+                game.currentLocation.actions = game.currentLocation.actions || [];
+                game.currentLocation.actions.push({
+                    text: game.currentLocation.trade.title,
+                    type: StoryScript.ActionType.Trade,
+                    execute: 'trade',
+                    arguments: [
+                        game.currentLocation.trade
+                    ]
+                });
+            }
         };
         LocationService.prototype.buildWorld = function () {
             var self = this;
@@ -1071,39 +1087,9 @@ var StoryScript;
                 game.currentLocation.events[n](game);
             }
         };
-        LocationService.prototype.prepareTrade = function (game) {
-            var self = this;
-            if (!game.currentLocation.trade) {
-                return;
-            }
-            var sell = game.currentLocation.trade.sell;
-            var buy = game.currentLocation.trade.buy;
-            var itemsForSale = sell.items;
-            if (!itemsForSale) {
-                itemsForSale = StoryScript.randomList(game.definitions.items, sell.maxItems, sell.itemSelector);
-            }
-            sell.items = itemsForSale;
-            buy.items = StoryScript.randomList(game.character.items, buy.maxItems, buy.itemSelector);
-            if (sell.priceModifier != undefined) {
-                sell.items.forEach(function (item) {
-                    if (item.value) {
-                        var modifier = typeof sell.priceModifier === 'function' ? sell.priceModifier(game) : sell.priceModifier;
-                        item.value *= modifier;
-                    }
-                });
-            }
-            if (buy.priceModifier != undefined) {
-                buy.items.forEach(function (item) {
-                    if (item.value) {
-                        var modifier = typeof buy.priceModifier === 'function' ? buy.priceModifier(game) : buy.priceModifier;
-                        item.value *= modifier;
-                    }
-                });
-            }
-        };
         LocationService.prototype.loadConversations = function (game) {
             var self = this;
-            game.currentLocation.persons.forEach(function (person) {
+            game.currentLocation.persons.filter(function (p) { return !p.conversation; }).forEach(function (person) {
                 self.dataService.getDescription('persons', person.id).then(function (conversations) {
                     var parser = new DOMParser();
                     if (conversations.indexOf('<conversation>') == -1) {
@@ -1126,7 +1112,7 @@ var StoryScript;
                         var newNode = {
                             node: nameAttribute.value,
                             lines: '',
-                            Replies: []
+                            replies: []
                         };
                         for (var j = 0; j < node.childNodes.length; j++) {
                             var replies = node.childNodes[j];
@@ -1138,7 +1124,7 @@ var StoryScript;
                                             lines: replyNode.innerHTML,
                                             linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
                                         };
-                                        newNode.Replies.push(reply);
+                                        newNode.replies.push(reply);
                                     }
                                 }
                                 node.removeChild(replies);
@@ -1312,6 +1298,10 @@ var StoryScript;
             this.canPay = function (currency, value) {
                 return value != undefined && currency != undefined && currency >= value;
             };
+            this.displayPrice = function (item) {
+                var self = _this;
+                return item.value ? (item.name + ': ' + item.value + ' ' + self.texts.currency) : item.name;
+            };
             this.buy = function (item, trade) {
                 var self = _this;
                 self.game.character.currency -= item.value;
@@ -1329,7 +1319,75 @@ var StoryScript;
             };
             this.talk = function (person) {
                 var self = _this;
+                self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
+                self.$scope.modalSettings.canClose = true;
+                self.game.currentLocation.activePerson = person;
+                var activePerson = self.game.currentLocation.activePerson;
+                var activeNode = activePerson.conversation.activeNode;
+                if (!activeNode) {
+                    activeNode = activePerson.conversation.nodes.some(function (node) { return node.active; })[0];
+                    if (!activeNode) {
+                        activePerson.conversation.nodes[0].active = true;
+                        activePerson.conversation.activeNode = activePerson.conversation.nodes[0];
+                    }
+                }
                 self.game.state = StoryScript.GameState.Conversation;
+            };
+            this.answer = function (node, reply) {
+                var self = _this;
+                var activePerson = self.game.currentLocation.activePerson;
+                activePerson.conversation.conversationLog = activePerson.conversation.conversationLog || [];
+                activePerson.conversation.conversationLog.push({
+                    lines: node.lines,
+                    reply: reply.lines
+                });
+                if (reply.linkToNode) {
+                    activePerson.conversation.activeNode = activePerson.conversation.nodes.filter(function (node) { return node.node == reply.linkToNode; })[0];
+                }
+                else {
+                    activePerson.conversation.nodes.forEach(function (node) {
+                        node.active = false;
+                    });
+                    activePerson.conversation.activeNode = null;
+                }
+            };
+            this.trade = function (game, trade) {
+                var self = _this;
+                if (!trade) {
+                    return;
+                }
+                self.game.currentLocation.activeTrade = trade.trade ? trade.trade : trade;
+                var trader = self.game.currentLocation.activeTrade;
+                trader.currency = trader.currency || trade.currency;
+                self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [trade.name]);
+                self.$scope.modalSettings.canClose = true;
+                var itemsForSale = trader.sell.items;
+                if (!itemsForSale) {
+                    itemsForSale = StoryScript.randomList(self.game.definitions.items, trader.sell.maxItems, trader.sell.itemSelector);
+                }
+                trader.sell.items = itemsForSale;
+                trader.buy.items = StoryScript.randomList(self.game.character.items, trader.buy.maxItems, trader.buy.itemSelector);
+                if (trader.sell.priceModifier != undefined) {
+                    trader.sell.items.forEach(function (item) {
+                        if (item.value) {
+                            var modifier = typeof trader.sell.priceModifier === 'function' ? trader.sell.priceModifier(self.game) : trader.sell.priceModifier;
+                            item.value *= modifier;
+                        }
+                    });
+                }
+                if (trader.buy.priceModifier != undefined) {
+                    trader.buy.items.forEach(function (item) {
+                        if (item.value) {
+                            var modifier = typeof trader.buy.priceModifier === 'function' ? trader.buy.priceModifier(self.game) : trader.buy.priceModifier;
+                            item.value *= modifier;
+                        }
+                    });
+                }
+                self.game.state = StoryScript.GameState.Trade;
+            };
+            this.closeModal = function () {
+                var self = _this;
+                self.game.state = StoryScript.GameState.Play;
             };
             var self = this;
             self.$scope = $scope;
@@ -1347,7 +1405,6 @@ var StoryScript;
         MainController.prototype.init = function () {
             var self = this;
             self.gameService.init();
-            // Todo: type
             self.$scope.game = self.game;
             self.$scope.texts = self.texts;
             self.setDisplayTexts();
@@ -1357,7 +1414,7 @@ var StoryScript;
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
             self.reset = function () { self.gameService.reset.call(self.gameService); };
-            self.modalSettings = {
+            self.$scope.modalSettings = {
                 title: '',
                 closeText: self.texts.closeModal
             };
@@ -1375,6 +1432,10 @@ var StoryScript;
                 var args = [].slice.call(arguments);
                 args.shift();
                 args.splice(0, 0, self.game);
+                if (typeof action.execute !== 'function') {
+                    action.execute = self[action.execute];
+                    args = args.concat(action.arguments);
+                }
                 // Execute the action and when nothing or false is returned, remove it from the current location.
                 var result = action.execute.apply(this, args);
                 // Todo: combat actions will never be removed this way.
@@ -1398,7 +1459,11 @@ var StoryScript;
             }
         };
         MainController.prototype.watchGameState = function (newValue, oldValue, scope) {
-            var self = this;
+            if (oldValue != undefined) {
+                if ((oldValue == StoryScript.GameState.Combat || oldValue == StoryScript.GameState.Trade || oldValue == StoryScript.GameState.Conversation) && scope.modalSettings.closeAction) {
+                    scope.modalSettings.closeAction(scope.game);
+                }
+            }
             if (newValue != undefined) {
                 if (newValue == StoryScript.GameState.Combat || newValue == StoryScript.GameState.Trade || newValue == StoryScript.GameState.Conversation) {
                     $('#encounters').modal('show');
@@ -1625,6 +1690,11 @@ var RidderMagnus;
                     ]
                 };
             };
+            this.addSneakAction = function (game) {
+                if (game.currentLocation.enemies.length > 0 && !game.currentLocation.combatActions.some(function (action) { return action.text == 'Vluchten!'; })) {
+                    game.currentLocation.combatActions.push(RidderMagnus.Actions.Flee('Vluchten!'));
+                }
+            };
             this.fight = function (enemy) {
                 var self = _this;
                 var check = self.game.rollDice('1d6+' + self.game.character.vechten);
@@ -1698,9 +1768,7 @@ var RidderMagnus;
                                 game.currentLocation.actions = game.currentLocation.actions.filter(function (action) {
                                     return action.sneakEnemy == undefined;
                                 });
-                                if (self.game.currentLocation.enemies.length > 0) {
-                                    self.game.currentLocation.combatActions.push(RidderMagnus.Actions.Flee('Vluchten!'));
-                                }
+                                self.addSneakAction(self.game);
                             }
                         });
                     });
@@ -1708,8 +1776,8 @@ var RidderMagnus;
                     self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
                 }
             }
-            else if (self.game.currentLocation.enemies.length > 0 && !self.game.currentLocation.combatActions.some(function (action) { return action.text == 'Vluchten'; })[0]) {
-                self.game.currentLocation.combatActions.push(RidderMagnus.Actions.Flee('Vluchten!'));
+            else {
+                self.addSneakAction(self.game);
             }
         };
         RuleService.prototype.enemyDefeated = function (enemy) {
@@ -1750,6 +1818,7 @@ var RidderMagnus;
                 backpack: "Rugzak",
                 body: "Lichaam",
                 congratulations: "Gefeliciteerd",
+                currency: "Goudstukken",
                 hitpoints: "Gezondheid",
                 destinations: "Hier kan je heen",
                 drop: "Laten vallen",
@@ -1765,12 +1834,12 @@ var RidderMagnus;
                 messages: "Wat gebeurt er?",
                 newGame: "Nieuw spel",
                 onTheGround: "Op de grond",
-                //price: "Waarde",
                 resetWorld: "Reset wereld",
                 rightHand: "Rechterhand",
                 startAdventure: "Begin",
                 startOver: "Begin overnieuw",
                 use: "Gebruiken",
+                //value: "Waarde",
                 youAreHere: "Hier ben je",
                 youLost: "Verloren",
                 youWon: "Gewonnen",
@@ -1850,9 +1919,9 @@ var RidderMagnus;
                             result = check + game.character.zoeken;
                             if (result > 5) {
                                 var ring = game.getItem(RidderMagnus.Items.GoudenRing);
-                                game.currentLocation.items.push(ring);
+                                game.character.items.push(ring);
                                 game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
-                                game.logToActionLog('Pak de ring op en ga snel terug naar de koningin.');
+                                game.logToActionLog('Breng de ring snel terug naar de koningin.');
                             }
                             else if (result >= 3 && result <= 5) {
                                 game.character.currency += 1;
@@ -1977,7 +2046,7 @@ var RidderMagnus;
                             game.character.items.remove(ring);
                             game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');
                             var randomItem = game.randomItem(function (item) {
-                                return item.id !== RidderMagnus.Items.GoudenRing.name && item.price < 30;
+                                return item.id !== RidderMagnus.Items.GoudenRing.name && item.value < 30;
                                 //of item met price <30, is nog beter
                             });
                             game.character.items.push(randomItem);
@@ -2025,7 +2094,7 @@ var RidderMagnus;
                 bonuses: {
                     zoeken: 1
                 },
-                price: 11
+                value: 11
             };
         }
         Items.Adelaarsveer = Adelaarsveer;
@@ -2040,7 +2109,7 @@ var RidderMagnus;
                 name: 'Dolk',
                 damage: '1',
                 equipmentType: StoryScript.EquipmentType.RightHand,
-                price: 1
+                value: 1
             };
         }
         Items.Dolk = Dolk;
@@ -2057,7 +2126,7 @@ var RidderMagnus;
                 description: 'Drink dit op als je zwaar gewond bent.',
                 use: RidderMagnus.Actions.Heal('4d2'),
                 charges: 1,
-                price: 5
+                value: 5
             };
         }
         Items.GeneesDrank = GeneesDrank;
@@ -2072,7 +2141,7 @@ var RidderMagnus;
                 name: 'Gouden ring',
                 damage: '0',
                 equipmentType: StoryScript.EquipmentType.Amulet,
-                price: 30
+                value: 30
             };
         }
         Items.GoudenRing = GoudenRing;
@@ -2087,7 +2156,7 @@ var RidderMagnus;
                 name: 'IJzeren helm',
                 defense: 1,
                 equipmentType: StoryScript.EquipmentType.Head,
-                price: 4
+                value: 4
             };
         }
         Items.IJzerenHelm = IJzerenHelm;
@@ -2102,7 +2171,7 @@ var RidderMagnus;
                 name: 'Klein schild',
                 defense: 1,
                 equipmentType: StoryScript.EquipmentType.LeftHand,
-                price: 4
+                value: 4
             };
         }
         Items.KleinSchild = KleinSchild;
@@ -2117,7 +2186,7 @@ var RidderMagnus;
                 name: 'Leren harnas',
                 defense: 2,
                 equipmentType: StoryScript.EquipmentType.Body,
-                price: 10
+                value: 10
             };
         }
         Items.LerenHarnas = LerenHarnas;
@@ -2136,7 +2205,7 @@ var RidderMagnus;
                     game.currentLocation.text = game.currentLocation.descriptions["licht"] || game.currentLocation.text;
                     game.logToActionLog('Een helder licht straalt vanuit je handen en verlicht een grote kring rondom je.');
                 },
-                price: 10
+                value: 10
             };
         }
         Items.LichtSpreuk = LichtSpreuk;
@@ -2155,7 +2224,7 @@ var RidderMagnus;
                     sluipen: 1,
                     snelheid: 1
                 },
-                price: 25
+                value: 25
             };
         }
         Items.NachtLaarzen = NachtLaarzen;
@@ -2174,7 +2243,7 @@ var RidderMagnus;
                     toveren: 1
                 },
                 defense: 1,
-                price: 15
+                value: 15
             };
         }
         Items.Tovermantel = Tovermantel;
@@ -2189,7 +2258,7 @@ var RidderMagnus;
                 name: 'Zwaard',
                 damage: '3',
                 equipmentType: StoryScript.EquipmentType.RightHand,
-                price: 5
+                value: 5
             };
         }
         Items.Zwaard = Zwaard;
@@ -2268,6 +2337,7 @@ var RidderMagnus;
                 attack: '1d6',
                 reward: 1,
                 disposition: StoryScript.Disposition.Neutral,
+                currency: 10,
                 trade: {
                     buy: {
                         itemSelector: function (item) {
@@ -2277,7 +2347,7 @@ var RidderMagnus;
                     },
                     sell: {
                         itemSelector: function (item) {
-                            return item.damage != undefined && item.price <= 10;
+                            return item.damage != undefined && item.value <= 10;
                         },
                         maxItems: 5
                     }
@@ -3262,6 +3332,25 @@ var MyNewGame;
                 items: [
                     MyNewGame.Items.Sword
                 ],
+                currency: 10,
+                trade: {
+                    buy: {
+                        description: 'These items look good, I\'d like to buy them from you',
+                        emptyText: 'You have nothing left that I\'m interested in',
+                        itemSelector: function (item) {
+                            return true;
+                        },
+                        maxItems: 5
+                    },
+                    sell: {
+                        description: 'I\'m willing to part with these items...',
+                        emptyText: 'I have nothing left to sell to you...',
+                        itemSelector: function (item) {
+                            return true;
+                        },
+                        maxItems: 5
+                    }
+                },
                 disposition: StoryScript.Disposition.Friendly
             };
         }
@@ -3300,6 +3389,7 @@ var MyNewGame;
                     }
                 ],
                 trade: {
+                    title: 'Your personal closet',
                     description: 'Do you want to take something out of your closet or put it back in?',
                     currency: 10,
                     buy: {

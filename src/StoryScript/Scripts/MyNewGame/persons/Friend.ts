@@ -8,6 +8,7 @@
             items: [
                 Items.Sword
             ],
+            currency: 10,
             trade: {
                 buy: {
                     description: 'These items look good, I\'d like to buy them from you',
