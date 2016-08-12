@@ -38,7 +38,7 @@
                     <div ng-if="game.stateString == 'Play'">
                         <fieldset>
                             <legend>{{ texts.messages }}</legend>
-                            <ul id="action-log">
+                            <ul class="action-log">
                                 <li ng-repeat="message in game.actionLog track by $index">{{ message }}</li>
                             </ul>
                         </fieldset>

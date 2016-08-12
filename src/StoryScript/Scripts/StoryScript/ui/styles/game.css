@@ -38,7 +38,7 @@ textarea {
     margin: 0 20px;
 }
 
-#action-log, #location-log, .button-row {
+.action-log, #location-log, .button-row {
     list-style: none;
     margin: 10px 0;
     padding: 0;
@@ -52,6 +52,11 @@ textarea {
     .button-row button {
         display: inline-block;
     }
+
+.action-log {
+    max-height: 300px;
+    overflow-y: scroll;
+}
 
 .inline {
     display: inline-block;
