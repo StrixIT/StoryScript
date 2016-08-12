@@ -163,15 +163,31 @@ module StoryScript {
                 self.ruleService.enterLocation(game.currentLocation);
             }
 
+            self.initTrade(game);
+
             // If the player hasn't been here before, play the location events.
             if (!game.currentLocation.hasVisited) {
                 game.currentLocation.hasVisited = true;
                 self.playEvents(game);
             }
 
-            self.prepareTrade(game);
-
             self.loadConversations(game);
+        }
+
+        private initTrade(game: IGame) {
+            // Todo: better way to get action. Use action function name from function list?
+            if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(a => a.type == ActionType.Trade))) {
+                game.currentLocation.actions = game.currentLocation.actions || [];
+
+                game.currentLocation.actions.push({
+                    text: game.currentLocation.trade.title,
+                    type: ActionType.Trade,
+                    execute: 'trade',
+                    arguments: [
+                        game.currentLocation.trade
+                    ]
+                });
+            }
         }
 
         private buildWorld(): ICompiledLocation[] {
@@ -337,47 +353,10 @@ module StoryScript {
             }
         }
 
-        private prepareTrade(game: IGame) {
-            var self = this;
-
-            if (!game.currentLocation.trade) {
-                return;
-            }
-
-            var sell = game.currentLocation.trade.sell;
-            var buy = game.currentLocation.trade.buy;
-            var itemsForSale = sell.items;
-
-            if (!itemsForSale) {
-                itemsForSale = StoryScript.randomList<IItem>(game.definitions.items, sell.maxItems, sell.itemSelector);
-            }
-
-            sell.items = itemsForSale;
-            buy.items = StoryScript.randomList<IItem>(game.character.items, buy.maxItems, buy.itemSelector);
-
-            if (sell.priceModifier != undefined) {
-                sell.items.forEach((item: IItem) => {
-                    if (item.value) {
-                        var modifier = typeof sell.priceModifier === 'function' ? (<any>sell).priceModifier(game) : sell.priceModifier;
-                        item.value *= modifier;
-                    }
-                });
-            }
-
-            if (buy.priceModifier != undefined) {
-                buy.items.forEach((item: IItem) => {
-                    if (item.value) {
-                        var modifier = typeof buy.priceModifier === 'function' ? (<any>buy).priceModifier(game) : buy.priceModifier;
-                        item.value *= modifier;
-                    }
-                });
-            }
-        }
-
         private loadConversations(game: IGame) {
             var self = this;
 
-            game.currentLocation.persons.forEach((person) => {
+            game.currentLocation.persons.filter(p => !p.conversation).forEach((person) => {
                 self.dataService.getDescription('persons', person.id).then(function (conversations) {
                     var parser = new DOMParser();
 

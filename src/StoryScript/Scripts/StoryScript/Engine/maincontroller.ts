@@ -140,8 +140,13 @@
                 args.shift();
                 args.splice(0, 0, self.game);
 
+                if (typeof action.execute !== 'function') {
+                    action.execute = self[<string>action.execute];
+                    args = args.concat(action.arguments);
+                }
+
                 // Execute the action and when nothing or false is returned, remove it from the current location.
-                var result = action.execute.apply(this, args);
+                var result = (<(game: IGame, ...params) => void>action.execute).apply(this, args);
 
                 // Todo: combat actions will never be removed this way.
                 if (!result && self.game.currentLocation.actions) {
@@ -290,6 +295,49 @@
                 });
                 activePerson.conversation.activeNode = null;
             }
+        }
+
+        trade = (game: IGame, trade: IPerson | ITrade) => {
+            var self = this;
+
+            if (!trade) {
+                return;
+            }
+
+            self.game.currentLocation.activeTrade = (<IPerson>trade).trade ? (<IPerson>trade).trade : trade;
+            var trader = self.game.currentLocation.activeTrade;
+
+            self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<IPerson>trade).name]);
+            self.$scope.modalSettings.canClose = true;
+
+            var itemsForSale = trader.sell.items;
+
+            if (!itemsForSale) {
+                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.sell.maxItems, trader.sell.itemSelector);
+            }
+
+            trader.sell.items = itemsForSale;
+            trader.buy.items = StoryScript.randomList<IItem>(self.game.character.items, trader.buy.maxItems, trader.buy.itemSelector);
+
+            if (trader.sell.priceModifier != undefined) {
+                trader.sell.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof trader.sell.priceModifier === 'function' ? (<any>trader.sell).priceModifier(self.game) : trader.sell.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+
+            if (trader.buy.priceModifier != undefined) {
+                trader.buy.items.forEach((item: IItem) => {
+                    if (item.value) {
+                        var modifier = typeof trader.buy.priceModifier === 'function' ? (<any>trader.buy).priceModifier(self.game) : trader.buy.priceModifier;
+                        item.value *= modifier;
+                    }
+                });
+            }
+
+            self.game.state = GameState.Trade;
         }
 
         closeModal = () => {

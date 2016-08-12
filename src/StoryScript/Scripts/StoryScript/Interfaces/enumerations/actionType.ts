@@ -2,6 +2,7 @@
     export enum ActionType {
         Regular,
         Check,
-        Combat
+        Combat,
+        Trade
     }
 }
