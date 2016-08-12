@@ -434,6 +434,8 @@ var StoryScript;
             this.talk = "Talk to {0}";
             this.encounters = "Encounters";
             this.closeModal = "Close";
+            this.combatTitle = "Combat";
+            this.value = "value";
             this.format = function (template, tokens) {
                 if (tokens) {
                     for (var i = 0; i < tokens.length; i++) {
@@ -492,12 +494,14 @@ var StoryScript;
                 self.game.rollDice = self.rollDice;
                 self.game.fight = self.fight;
                 // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
-                Object.defineProperty(self.game, 'stateString', {
-                    enumerable: true,
-                    get: function () {
-                        return StoryScript.GameState[self.game.state];
-                    }
-                });
+                if (!self.game.stateString) {
+                    Object.defineProperty(self.game, 'stateString', {
+                        enumerable: true,
+                        get: function () {
+                            return StoryScript.GameState[self.game.state];
+                        }
+                    });
+                }
                 // Game setup end
                 self.locationService.init(self.game);
                 self.game.highScores = self.dataService.load(StoryScript.DataKeys.HIGHSCORES);
@@ -927,9 +931,6 @@ var StoryScript;
             game.currentLocation.items = game.currentLocation.items || [];
             game.currentLocation.enemies = game.currentLocation.enemies || [];
             self.loadLocationDescriptions(game);
-            if (self.ruleService.initCombat) {
-                self.ruleService.initCombat(game.currentLocation);
-            }
             if (self.ruleService.enterLocation) {
                 self.ruleService.enterLocation(game.currentLocation);
             }
@@ -1290,6 +1291,20 @@ var StoryScript;
                 }
                 self.game.character.equipment[type] = null;
             };
+            this.initCombat = function (newValue) {
+                var self = _this;
+                if (newValue && newValue.length > 0) {
+                    self.$scope.modalSettings.title = self.texts.combatTitle;
+                    self.$scope.modalSettings.canClose = false;
+                    if (self.ruleService.initCombat) {
+                        self.ruleService.initCombat(self.game.currentLocation);
+                    }
+                    self.game.state = StoryScript.GameState.Combat;
+                }
+                else if (newValue && newValue.length == 0) {
+                    self.game.state = StoryScript.GameState.Play;
+                }
+            };
             this.fight = function (enemy) {
                 var self = _this;
                 self.gameService.fight(enemy);
@@ -1413,6 +1428,7 @@ var StoryScript;
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+            self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
             self.reset = function () { self.gameService.reset.call(self.gameService); };
             self.$scope.modalSettings = {
                 title: '',
@@ -1857,6 +1873,24 @@ var RidderMagnus;
 //    return (<any>item).id !== 'GoudenRing'; 
 var RidderMagnus;
 (function (RidderMagnus) {
+    var Persons;
+    (function (Persons) {
+        function KoninginDagmar() {
+            return {
+                name: 'Koningin Dagmar',
+                //pictureFileName:
+                hitpoints: 1000,
+                attack: '10d6',
+                reward: 100,
+                disposition: StoryScript.Disposition.Friendly,
+                currency: 1000
+            };
+        }
+        Persons.KoninginDagmar = KoninginDagmar;
+    })(Persons = RidderMagnus.Persons || (RidderMagnus.Persons = {}));
+})(RidderMagnus || (RidderMagnus = {}));
+var RidderMagnus;
+(function (RidderMagnus) {
     var Locations;
     (function (Locations) {
         function EersteGang() {
@@ -2001,7 +2035,11 @@ var RidderMagnus;
             return {
                 name: 'De Troonzaal',
                 items: [RidderMagnus.Items.LichtSpreuk],
-                enemies: [],
+                persons: [
+                    //persons.Trader
+                    //persons.Trainer
+                    RidderMagnus.Persons.KoninginDagmar
+                ],
                 destinations: [
                     {
                         text: 'Naar de kelder!',
@@ -2047,7 +2085,6 @@ var RidderMagnus;
                             game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');
                             var randomItem = game.randomItem(function (item) {
                                 return item.id !== RidderMagnus.Items.GoudenRing.name && item.value < 30;
-                                //of item met price <30, is nog beter
                             });
                             game.character.items.push(randomItem);
                             //de beloning moet een keuze worden: geld, random training of random item (item hier geen gouden ring)
