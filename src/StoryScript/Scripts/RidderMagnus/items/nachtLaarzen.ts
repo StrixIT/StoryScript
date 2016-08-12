@@ -8,7 +8,7 @@
                 sluipen: 1 ,
                 snelheid: 1
             },
-            price: 25
+            value: 25
             //requirement: sluipen >1
         }
     }

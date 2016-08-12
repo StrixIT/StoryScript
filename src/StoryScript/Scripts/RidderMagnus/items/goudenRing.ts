@@ -4,7 +4,7 @@
             name: 'Gouden ring',
             damage: '0',
             equipmentType: StoryScript.EquipmentType.Amulet ,
-            price: 30
+            value: 30
             //requirement: sluipen >0
         }
     }

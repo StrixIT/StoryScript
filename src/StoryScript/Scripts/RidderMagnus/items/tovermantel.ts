@@ -8,7 +8,7 @@
                 toveren: 1
             },
             defense: 1 ,
-            price: 15
+            value: 15
             //requirement: toveren >0
         }
     }

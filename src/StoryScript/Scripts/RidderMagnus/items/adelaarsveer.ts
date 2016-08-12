@@ -7,7 +7,7 @@
             bonuses: {
                 zoeken: 1
             },
-            price: 11
+            value: 11
             //requirement: zoeken >1
         }
     }
