@@ -51,6 +51,7 @@ textarea {
 
     .button-row button {
         display: inline-block;
+        margin-bottom: 10px;
     }
 
 .action-log {
@@ -108,9 +109,4 @@ table td {
 
 .question-row, .attribute-row {
     margin: 10px 0;
-}
-
-.btn.fight {
-    display: block;
-    margin-bottom: 10px;
 }

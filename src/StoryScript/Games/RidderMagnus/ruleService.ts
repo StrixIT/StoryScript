@@ -165,18 +165,18 @@
             var self = this;
             var check = self.game.rollDice('1d6+' + self.game.character.vechten);
             var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
-            self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+            self.game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
             enemy.hitpoints -= characterDamage;
 
             if (enemy.hitpoints <= 0) {
-                self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                self.game.logToCombatLog('Je verslaat de ' + enemy.name + '!');
                 self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
             }
 
             self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 var check = self.game.rollDice(enemy.attack);
                 var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
-                self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                 self.game.character.currentHitpoints -= enemyDamage;
             });
         }

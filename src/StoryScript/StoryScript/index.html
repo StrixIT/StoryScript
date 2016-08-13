@@ -23,10 +23,8 @@
                 </div>
             </div>
         </div>
-
         <div class="container body-content">
             <h2>{{ texts.gameName }}</h2>
-
             <div class="row">
                 <div id="character-container" class="col-md-4">
                     <div class="charactersheet" ng-include="'/ui/character-sheet.html'"></div>
@@ -37,21 +35,10 @@
                     </div>
                     <div ng-if="game.stateString == 'Play'">
                         <div class="combat" ng-include="'/ui/encounters.html'"></div>
-                        <fieldset>
-                            <legend>{{ texts.youAreHere }}</legend>
-                            <h4 ng-bind-html="game.currentLocation.name"></h4>
-                            <p ng-bind-html="game.currentLocation.text"></p>
-                            <ul id="location-log">
-                                <li ng-repeat="message in game.currentLocation.log track by $index">{{ message }}</li>
-                            </ul>
-                        </fieldset>
+                        <div class="location" ng-include="'/ui/location.html'"></div>
                         <div class="exploration" ng-include="'/ui/exploration.html'"></div>
-                        <fieldset>
-                            <legend>{{ texts.messages }}</legend>
-                            <ul class="action-log">
-                                <li ng-repeat="message in game.actionLog track by $index">{{ message }}</li>
-                            </ul>
-                        </fieldset>
+                        <div class="startcombat" ng-include="'/ui/start-combat.html'"></div>
+                        <div class="actionlog" ng-include="'/ui/action-log.html'"></div>
                     </div>
                     <div ng-if="game.stateString == 'CreateCharacter'" ng-include="'/ui/create-character.html'"></div>
                     <div ng-if="game.stateString == 'LevelUp'" ng-include="'/ui/level-up.html'"></div>

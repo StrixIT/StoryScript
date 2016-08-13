@@ -1,0 +1,8 @@
+﻿<fieldset>
+    <legend>{{ texts.youAreHere }}</legend>
+    <h4 ng-bind-html="game.currentLocation.name"></h4>
+    <p ng-bind-html="game.currentLocation.text"></p>
+    <ul id="location-log">
+        <li ng-repeat="message in game.currentLocation.log track by $index">{{ message }}</li>
+    </ul>
+</fieldset>

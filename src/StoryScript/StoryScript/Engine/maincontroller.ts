@@ -235,20 +235,25 @@
         initCombat = (newValue: IEnemy[]) => {
             var self = this;
 
-            if (newValue && newValue.length > 0) {
+            if (newValue && newValue.length > 0 && self.game.state !== GameState.Combat) {
 
                 self.$scope.modalSettings.title = self.texts.combatTitle;
                 self.$scope.modalSettings.canClose = false;
 
+                self.game.combatLog = [];
+
                 if (self.ruleService.initCombat) {
                     self.ruleService.initCombat(self.game.currentLocation);
                 }
-
-                self.game.state = GameState.Combat;
             }
             else if (newValue && newValue.length == 0) {
                 self.$scope.modalSettings.canClose = true;
             }
+        }
+
+        startCombat = () => {
+            var self = this;
+            self.game.state = GameState.Combat;
         }
 
         fight = (enemy: IEnemy) => {

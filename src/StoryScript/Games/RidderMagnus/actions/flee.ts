@@ -20,7 +20,7 @@
                     game.logToActionLog('Je bent onsnapt.');
                 }
                 else {
-                    game.logToActionLog('Je bent niet snel genoeg!');
+                    game.logToCombatLog('Je bent niet snel genoeg!');
                 };
             }
         }

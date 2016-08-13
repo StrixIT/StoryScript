@@ -1,4 +1,4 @@
-﻿<fieldset ng-if="game.currentLocation.persons && game.currentLocation.persons.length">
+﻿<fieldset ng-if="(game.currentLocation.persons && game.currentLocation.persons.length) && !(game.currentLocation.enemies || game.currentLocation.enemies.length)">
     <legend>{{ texts.encounters }}</legend>
     <ul class="inline button-row">
         <li ng-repeat="person in game.currentLocation.persons">
