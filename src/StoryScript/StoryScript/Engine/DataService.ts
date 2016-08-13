@@ -42,7 +42,7 @@ module StoryScript {
         public getDescription(folder: string, descriptionId: string) {
             var self = this;
             var deferred = self.$q.defer();
-            var url = '/' + folder + '/' + descriptionId + '.html';
+            var url = folder + '/' + descriptionId + '.html';
 
             self.$http.get(url)
                 .success(function (data, status, headers, config) {
