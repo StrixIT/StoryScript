@@ -25,7 +25,7 @@
         private modalSettings: IModalSettings;
 
         // Todo: can this be done differently?
-        private nonDisplayAttributes: string[] = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
+        private nonDisplayAttributes: string[] = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score', 'currency'];
         private characterAttributes: string[];
 
         // Todo: can this be done differently?

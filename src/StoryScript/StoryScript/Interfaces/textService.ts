@@ -49,5 +49,6 @@
         traderCurrency?: string;
         startCombat?: string;
         combatWin?: string;
+        enemiesToFight?: string;
     }
 }
