@@ -4,7 +4,7 @@
         "noEmitOnError": true,
         "removeComments": false,
         "target": "es5",
-        "outFile": "wwwroot/js/game.js"
+        "outFile": "game.js"
     },
   "exclude": [
     "node_modules",
