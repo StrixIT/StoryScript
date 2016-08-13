@@ -398,6 +398,7 @@ module StoryScript {
 
                                     if (replyNode.nodeName == 'reply') {
                                         var reply = <IConversationReply>{
+                                            requires: (replyNode.attributes['requires'] && replyNode.attributes['requires'].value) || null,
                                             lines: (<any>replyNode).innerHTML,
                                             linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
                                         }

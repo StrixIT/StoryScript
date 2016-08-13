@@ -16,6 +16,7 @@
     }
 
     export interface IConversationReply {
+        requires?: string;
         lines?: string;
         linkToNode?: string;
     }
