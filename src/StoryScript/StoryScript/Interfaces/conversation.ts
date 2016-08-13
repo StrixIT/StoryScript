@@ -4,6 +4,7 @@
         nodes: ICollection<IConversationNode>;
         activeNode?: IConversationNode;
         conversationLog?: IConversationLogEntry[];
+        showUnavailableReplies?: boolean;
         prepareReplies?(game: IGame, person: IPerson, node: IConversationNode): void;
         handleReply?(game: IGame, person: IPerson, node: IConversationNode, reply: IConversationReply): void;
     }
@@ -19,6 +20,7 @@
         requires?: string;
         lines?: string;
         linkToNode?: string;
+        showWhenUnavailable?: boolean;
     }
 
     export interface IConversationLogEntry {

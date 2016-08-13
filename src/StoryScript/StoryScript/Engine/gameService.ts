@@ -6,7 +6,7 @@
         restart(): void;
         saveGame(): void;
         rollDice(dice: string): number;
-        fight(enemy: IEnemy): void;
+        fight(enemy: IEnemy, retaliate?: boolean): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
@@ -230,9 +230,9 @@ module StoryScript {
             return bonus;
         }
 
-        fight = (enemy: IEnemy) => {
+        fight = (enemy: IEnemy, retaliate?: boolean) => {
             var self = this;
-            self.ruleService.fight(enemy);
+            self.ruleService.fight(enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
                 if (enemy.items) {

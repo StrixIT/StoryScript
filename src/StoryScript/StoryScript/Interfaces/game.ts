@@ -32,6 +32,6 @@
 
         equals<T>(entity: T, definition: () => T): boolean;
 
-        fight: (enemy: IEnemy) => void;
+        fight: (enemy: IEnemy, retaliate?: boolean) => void;
     }
 }

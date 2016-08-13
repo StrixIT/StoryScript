@@ -34,15 +34,17 @@
             return character;
         }
 
-        fight = (enemy: StoryScript.IEnemy) => {
+        fight = (enemy: StoryScript.IEnemy, retaliate?: boolean) => {
             var self = this;
+            retaliate = retaliate == undefined ? true : retaliate;
 
             // Implement character attack here.
 
-
-            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                // Implement monster attack here
-            });
+            if (retaliate) {
+                self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                    // Implement monster attack here
+                });
+            }
         }
 
         hitpointsChange(change: number) {

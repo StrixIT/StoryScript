@@ -16,6 +16,7 @@
                 });
 
                 if (result >= totalHitpoints / 2) {
+                    game.state = StoryScript.GameState.Play;
                     game.changeLocation();
                     game.logToActionLog('Je bent onsnapt.');
                 }
