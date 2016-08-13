@@ -112,6 +112,11 @@
             return self.game.currentLocation && self.game.currentLocation.enemies.length;
         }
 
+        personsPresent = () => {
+            var self = this;
+            return self.game.currentLocation && self.game.currentLocation.persons.length;
+        }
+
         barriersPresent = () => {
             var self = this;
             return self.game.currentLocation.destinations && self.game.currentLocation.destinations.some(function (destination) { return !isEmpty(destination.barrier); });
