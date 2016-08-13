@@ -274,7 +274,7 @@
         actualPrice = (item: IItem, modifier: number | (() => number)) => {
             var self = this;
             modifier = modifier == undefined ? 1 : typeof modifier === 'function' ? (<any>modifier)(self.game) : modifier;
-            return item.value * <number>modifier;
+            return Math.round(item.value * <number>modifier);
         }
 
         displayPrice = (item: IItem, actualPrice: number) => {
@@ -288,16 +288,15 @@
 
             if (trade.buy.priceModifier != undefined) {
                 var modifier = typeof trade.buy.priceModifier === 'function' ? (<any>trade.buy).priceModifier(self.game) : trade.buy.priceModifier;
-                price = item.value * modifier;
+                price = Math.round(item.value * modifier);
             }
 
-            if (self.game.character.currency) {
-                self.game.character.currency -= price;
-            }
+            self.game.character.currency = self.game.character.currency || 0;
+            self.game.character.currency -= price;
 
             self.game.character.items.push(item);
 
-            if (trade.currency) {
+            if (trade.currency != undefined) {
                 trade.currency += price;
             }
 
@@ -310,17 +309,16 @@
 
             if (trade.sell.priceModifier != undefined) {
                 var modifier = typeof trade.sell.priceModifier === 'function' ? (<any>trade.sell).priceModifier(self.game) : trade.sell.priceModifier;
-                price = item.value * modifier;
+                price = Math.round(item.value * modifier);
             }
 
-            if (self.game.character.currency) {
-                self.game.character.currency += price;
-            }
+            self.game.character.currency = self.game.character.currency || 0;
+            self.game.character.currency += price;
 
             self.game.character.items.remove(item);
             trade.buy.items.remove(item);
 
-            if (trade.currency) {
+            if (trade.currency != undefined) {
                 trade.currency -= price;
             }
 
