@@ -6,7 +6,7 @@
         restart(): void;
         saveGame(): void;
         rollDice(dice: string): number;
-        fight(enemy: IEnemy): void;
+        fight(enemy: IEnemy, retaliate?: boolean): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
@@ -75,6 +75,7 @@ module StoryScript {
             // Game setup start
             self.game.highScores = [];
             self.game.actionLog = [];
+            self.game.combatLog = [];
 
             self.game.logToLocationLog = (message: string) => {
                 self.game.currentLocation.log = self.game.currentLocation.log || [];
@@ -83,6 +84,10 @@ module StoryScript {
 
             self.game.logToActionLog = (message: string) => {
                 self.game.actionLog.splice(0, 0, message);
+            }
+
+            self.game.logToCombatLog = (message: string) => {
+                self.game.combatLog.splice(0, 0, message);
             }
 
             self.game.getEnemy = (selector: string | (() => IEnemy)) => {
@@ -225,9 +230,9 @@ module StoryScript {
             return bonus;
         }
 
-        fight = (enemy: IEnemy) => {
+        fight = (enemy: IEnemy, retaliate?: boolean) => {
             var self = this;
-            self.ruleService.fight(enemy);
+            self.ruleService.fight(enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
                 if (enemy.items) {

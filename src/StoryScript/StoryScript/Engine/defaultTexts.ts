@@ -43,6 +43,10 @@
         closeModal = "Close";
         combatTitle = "Combat";
         value = "value";
+        traderCurrency = "Trader money: {0} {1}";
+        startCombat = "Start combat";
+        combatWin = "You are victorious!";
+        enemiesToFight = "You face these foes: ";
 
         format = (template: string, tokens: string[]): string => {
             if (tokens) {

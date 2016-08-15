@@ -15,6 +15,7 @@
 
         highScores: ScoreEntry[];
         actionLog: string[];
+        combatLog: string[];
         state: StoryScript.GameState;
 
         changeLocation(location?: string | (() => ILocation)): void;
@@ -22,6 +23,7 @@
         calculateBonus(person: { items: ICollection<IItem>, equipment?: {} }, type: string): number;
         logToLocationLog(message: string): void;
         logToActionLog(message: string): void;
+        logToCombatLog(message: string): void;
 
         randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
@@ -30,6 +32,6 @@
 
         equals<T>(entity: T, definition: () => T): boolean;
 
-        fight: (enemy: IEnemy) => void;
+        fight: (enemy: IEnemy, retaliate?: boolean) => void;
     }
 }

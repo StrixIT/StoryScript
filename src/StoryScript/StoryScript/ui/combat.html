@@ -1,8 +1,8 @@
 ﻿<div ng-if="controller.enemiesPresent()">
-    <ul class="inline button-row">
+    <ul ng-show="controller.game.currentLocation.enemies.length > 0" class="inline button-row">
         <li ng-repeat="enemy in controller.game.currentLocation.enemies">
-            <button type="button" class="btn btn-danger fight" ng-click="controller.fight(enemy)">{{ texts.format(texts.attack, [enemy.name]) }}</button>
-            <img ng-src="{{ '/resources/' + enemy.pictureFileName }}" ng-if="enemy.pictureFileName" />
+            <button type="button" class="btn btn-danger" ng-click="controller.fight(enemy)">{{ texts.format(texts.attack, [enemy.name]) }}</button>
+            <img ng-src="{{ 'resources/' + enemy.pictureFileName }}" ng-if="enemy.pictureFileName" />
         </li>
     </ul>
     <ul class="inline button-row">
@@ -11,3 +11,12 @@
         </li>
     </ul>
 </div>
+<div ng-if="!controller.enemiesPresent()">
+    {{ texts.combatWin }}
+</div>
+<fieldset>
+    <legend>{{ texts.messages }}</legend>
+    <ul class="action-log">
+        <li ng-repeat="message in game.combatLog track by $index">{{ message }}</li>
+    </ul>
+</fieldset>

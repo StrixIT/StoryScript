@@ -3,6 +3,7 @@
         actions?: StoryScript.ICollection<IAction>;
         enemies?: StoryScript.ICollection<IEnemy>;
         items?: StoryScript.ICollection<IItem>;
-        sluipCheck: number;
+        sluipCheck?: number;
+        sneakDone?: boolean;
     }
 }

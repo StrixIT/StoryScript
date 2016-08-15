@@ -11,7 +11,6 @@
             trade: {
                 title: 'Your personal closet',
                 description: 'Do you want to take something out of your closet or put it back in?',
-                currency: 10,
                 buy: {
                     description: 'Put back in closet',
                     emptyText: 'You have nothing to put in the your closet',

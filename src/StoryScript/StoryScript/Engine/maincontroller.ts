@@ -25,7 +25,7 @@
         private modalSettings: IModalSettings;
 
         // Todo: can this be done differently?
-        private nonDisplayAttributes: string[] = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score'];
+        private nonDisplayAttributes: string[] = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score', 'currency'];
         private characterAttributes: string[];
 
         // Todo: can this be done differently?
@@ -110,6 +110,11 @@
         enemiesPresent = () => {
             var self = this;
             return self.game.currentLocation && self.game.currentLocation.enemies.length;
+        }
+
+        personsPresent = () => {
+            var self = this;
+            return self.game.currentLocation && self.game.currentLocation.persons.length;
         }
 
         barriersPresent = () => {
@@ -235,20 +240,25 @@
         initCombat = (newValue: IEnemy[]) => {
             var self = this;
 
-            if (newValue && newValue.length > 0) {
+            if (newValue && newValue.length > 0 && self.game.state !== GameState.Combat) {
 
                 self.$scope.modalSettings.title = self.texts.combatTitle;
                 self.$scope.modalSettings.canClose = false;
 
+                self.game.combatLog = [];
+
                 if (self.ruleService.initCombat) {
                     self.ruleService.initCombat(self.game.currentLocation);
                 }
-
-                self.game.state = GameState.Combat;
             }
             else if (newValue && newValue.length == 0) {
                 self.$scope.modalSettings.canClose = true;
             }
+        }
+
+        startCombat = () => {
+            var self = this;
+            self.game.state = GameState.Combat;
         }
 
         fight = (enemy: IEnemy) => {
@@ -258,28 +268,60 @@
         }
 
         canPay = (currency: number, value: number) => {
-            return value != undefined && currency != undefined && currency >= value;
+            return (value != undefined && currency != undefined && currency >= value) || value == 0;
         }
 
-        displayPrice = (item: IItem) => {
+        actualPrice = (item: IItem, modifier: number | (() => number)) => {
             var self = this;
-            return item.value ? (item.name + ': ' + item.value + ' ' + self.texts.currency) : item.name;
+            modifier = modifier == undefined ? 1 : typeof modifier === 'function' ? (<any>modifier)(self.game) : modifier;
+            return Math.round(item.value * <number>modifier);
+        }
+
+        displayPrice = (item: IItem, actualPrice: number) => {
+            var self = this;
+            return actualPrice > 0 ? (item.name + ': ' + actualPrice + ' ' + self.texts.currency) : item.name;
         }
 
         buy = (item: IItem, trade: ITrade) => {
             var self = this;
-            self.game.character.currency -= item.value;
+            var price = item.value;
+
+            if (trade.buy.priceModifier != undefined) {
+                var modifier = typeof trade.buy.priceModifier === 'function' ? (<any>trade.buy).priceModifier(self.game) : trade.buy.priceModifier;
+                price = Math.round(item.value * modifier);
+            }
+
+            self.game.character.currency = self.game.character.currency || 0;
+            self.game.character.currency -= price;
+
             self.game.character.items.push(item);
-            trade.currency += item.value;
+
+            if (trade.currency != undefined) {
+                trade.currency += price;
+            }
+
             trade.sell.items.remove(item);
         }
 
         sell = (item: IItem, trade: ITrade) => {
             var self = this;
-            self.game.character.currency += item.value;
+            var price = item.value;
+
+            if (trade.sell.priceModifier != undefined) {
+                var modifier = typeof trade.sell.priceModifier === 'function' ? (<any>trade.sell).priceModifier(self.game) : trade.sell.priceModifier;
+                price = Math.round(item.value * modifier);
+            }
+
+            self.game.character.currency = self.game.character.currency || 0;
+            self.game.character.currency += price;
+
             self.game.character.items.remove(item);
             trade.buy.items.remove(item);
-            trade.currency -= item.value;
+
+            if (trade.currency != undefined) {
+                trade.currency -= price;
+            }
+
             trade.sell.items.push(item);
         }
 
@@ -362,24 +404,6 @@
 
             trader.sell.items = itemsForSale;
             trader.buy.items = StoryScript.randomList<IItem>(self.game.character.items, trader.buy.maxItems, trader.buy.itemSelector);
-
-            if (trader.sell.priceModifier != undefined) {
-                trader.sell.items.forEach((item: IItem) => {
-                    if (item.value) {
-                        var modifier = typeof trader.sell.priceModifier === 'function' ? (<any>trader.sell).priceModifier(self.game) : trader.sell.priceModifier;
-                        item.value *= modifier;
-                    }
-                });
-            }
-
-            if (trader.buy.priceModifier != undefined) {
-                trader.buy.items.forEach((item: IItem) => {
-                    if (item.value) {
-                        var modifier = typeof trader.buy.priceModifier === 'function' ? (<any>trader.buy).priceModifier(self.game) : trader.buy.priceModifier;
-                        item.value *= modifier;
-                    }
-                });
-            }
 
             self.game.state = GameState.Trade;
         }

@@ -19,7 +19,7 @@
                     game.changeLocation();
                 }
                 else {
-                    game.logToActionLog('Je ontsnapping mislukt!');
+                    game.logToCombatLog('Je ontsnapping mislukt!');
                 };
 
                 return true;

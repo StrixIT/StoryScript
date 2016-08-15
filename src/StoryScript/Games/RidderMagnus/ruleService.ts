@@ -112,7 +112,9 @@
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
 
-            if (self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited) {
+            if (self.game.currentLocation.sluipCheck && !self.game.currentLocation.sneakDone) {
+                self.game.currentLocation.sneakDone = true;
+
                 // check stats
                 var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
 
@@ -122,63 +124,60 @@
 
                     self.game.currentLocation.enemies.forEach((enemy: IEnemy) => {
                         sneakActions.push({
-                            sneakEnemy: enemy,
+                            isSneakAction: true,
                             text: 'Besluip ' + enemy.name,
                             type: StoryScript.ActionType.Combat,
                             execute: (game: IGame) => {
                                 // Do damage to sneaked enemy.
-                                self.game.fight(enemy);
-
-                                // Move all enemies into combat.
-                                game.currentLocation.actions.filter((action: IAction) => {
-                                    return action.sneakEnemy != undefined && action.sneakEnemy.hitpoints > 0;
-                                }).forEach((action: IAction) => {
-                                    game.currentLocation.enemies.push(action.sneakEnemy);
-                                });
+                                self.game.fight(enemy, false);
 
                                 // Remove the remaining sneak actions
-                                game.currentLocation.actions = game.currentLocation.actions.filter((action: IAction) => {
-                                    return action.sneakEnemy == undefined;
+                                game.currentLocation.combatActions = game.currentLocation.combatActions.filter((action: IAction) => {
+                                    return !action.isSneakAction;
                                 });
 
-                                self.addSneakAction(self.game);
+                                // Add the flee action.
+                                self.addFleeAction(self.game);
                             }
                         });
                     });
 
-                    self.game.currentLocation.enemies = [];
-                    self.game.currentLocation.actions = sneakActions.concat(self.game.currentLocation.actions);
+                    self.game.currentLocation.combatActions = sneakActions.concat(self.game.currentLocation.combatActions);
                 }
             }
             else {
-                self.addSneakAction(self.game);
+                self.addFleeAction(self.game);
             }
         }
 
-        addSneakAction = (game: IGame) => {
+        addFleeAction = (game: IGame) => {
             if (game.currentLocation.enemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
                 game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
             }
         }
 
-        fight = (enemy: StoryScript.IEnemy) => {
+        fight = (enemy: StoryScript.IEnemy, retaliate?: boolean) => {
             var self = this;
+            retaliate = retaliate == undefined ? true : retaliate;
+
             var check = self.game.rollDice('1d6+' + self.game.character.vechten);
             var characterDamage = check + self.game.character.vechten + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
-            self.game.logToActionLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+            self.game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
             enemy.hitpoints -= characterDamage;
 
             if (enemy.hitpoints <= 0) {
-                self.game.logToActionLog('Je verslaat de ' + enemy.name + '!');
+                self.game.logToCombatLog('Je verslaat de ' + enemy.name + '!');
                 self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
             }
 
-            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                var check = self.game.rollDice(enemy.attack);
-                var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
-                self.game.logToActionLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
-                self.game.character.currentHitpoints -= enemyDamage;
-            });
+            if (retaliate) {
+                self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                    var check = self.game.rollDice(enemy.attack);
+                    var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
+                    self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                    self.game.character.currentHitpoints -= enemyDamage;
+                });
+            }
         }
 
         enemyDefeated(enemy: IEnemy) {

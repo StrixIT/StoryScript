@@ -46,5 +46,9 @@
         closeModal?: string;
         combatTitle?: string;
         value?: string;
+        traderCurrency?: string;
+        startCombat?: string;
+        combatWin?: string;
+        enemiesToFight?: string;
     }
 }

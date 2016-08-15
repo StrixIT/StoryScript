@@ -14,17 +14,30 @@
                 },
                                 
             ],
-            actions: [
-                //Actions.Search({
-                //    difficulty: 10,
-                //    success: function (game) {
-                //        game.logToLocationLog('Aan de achterkant van het waarschuwingsbord staan enkele runen in de taal van de orken en trollen. Je kan deze taal helaas niet lezen. Het lijkt erop dat er bloed gebruikt is als inkt.')
-                //    },
-                //    fail: function (game) {
-                //        game.logToLocationLog('Je ziet gras, bomen en struiken. Alle plantengroei stopt een paar centimeter buiten de grot. Binnen is het donker.');
-                //    }
-                //})
-            ]
+            trade: {
+                title: 'Trade with Siri',
+                description: 'Siri has several items for sale',
+                buy: {
+                    description: 'Buy from Siri',
+                    emptyText: 'There is nothing for you to trade',
+                    itemSelector: (item: IItem) => {
+                        return true;
+                    },
+                    maxItems: 5,
+                    priceModifier: 0
+                },
+                sell: {
+                    description: 'Sell to Siri',
+                    emptyText: 'There is nothing for you to sell',
+                    itemSelector: (item: IItem) => {
+                        return true;
+                    },
+                    maxItems: 5,
+                    priceModifier: (game: IGame) => {
+                        return 0;
+                    }
+                }
+            }
         }
     }
 }

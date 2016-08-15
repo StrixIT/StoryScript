@@ -16,11 +16,12 @@
                 });
 
                 if (result >= totalHitpoints / 2) {
+                    game.state = StoryScript.GameState.Play;
                     game.changeLocation();
                     game.logToActionLog('Je bent onsnapt.');
                 }
                 else {
-                    game.logToActionLog('Je bent niet snel genoeg!');
+                    game.logToCombatLog('Je bent niet snel genoeg!');
                 };
             }
         }
