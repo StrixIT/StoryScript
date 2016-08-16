@@ -35,29 +35,20 @@
                             }
                         ]
                     },
+
                     {
                         questions: [
                             {             
-                                question: 'As a child, you were always...',
+                                question: 'Do you wish to choose your class manually, or answer questions to determine your path?',
                                 entries: [
                                     {
-                                        text: 'strong in fights',
+                                        text: 'Choose my class',
                                         value: 'strength',
                                         bonus: 1
                                     },
                                     {
-                                        text: 'a fast runner',
+                                        text: 'Answer Questions',
                                         value: 'agility',
-                                        bonus: 1
-                                    },
-                                    {
-                                        text: 'a curious reader',
-                                        value: 'intelligence',
-                                        bonus: 1
-                                    },
-                                    {
-                                        text: 'Popular',
-                                        value: 'charisma',
                                         bonus: 1
                                     }
                                 ]
@@ -67,20 +58,70 @@
                     {
                         questions: [
                             {
-                                question: 'When time came to become an apprentice, you chose to...',
+                                question: 'You witness the village bully pestering a little child. Do you:',
                                 entries: [
                                     {
-                                        text: 'become a guard',
+                                        text: 'Challenge him to try on someone his own size, namely you?',
                                         value: 'strength',
                                         bonus: 1
                                     },
                                     {
-                                        text: 'learn about locks',
+                                        text: 'Try to sneak up on him and trip him, making him fall into a puddle of mud?',
                                         value: 'agility',
                                         bonus: 1
                                     },
                                     {
-                                        text: 'go to magic school',
+                                        text: 'Try to talk to him and show him the error of his ways?',
+                                        value: 'intelligence',
+                                        bonus: 1
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        questions: [
+                            {
+                                question: 'Your village holds the yearly Harvest Festival, which includes many games. Do you:',
+                                entries: [
+                                    {
+                                        text: 'Participate in the Wrestling contest?',
+                                        value: 'strength',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Participate in the Archery contest?',
+                                        value: 'agility',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Participate in the Puzzle contest?',
+                                        value: 'intelligence',
+                                        bonus: 1
+                                    },
+                                    
+                                ]
+                            }
+                        ]
+                    },
+
+                    {
+                        questions: [
+                            {
+                                question: 'You are in love with the most beautiful girl in the village. But you are not the only one. One of your competitors has written a striking poem, and you know the girl loves poetry. Do you:',
+                                entries: [
+                                    {
+                                        text: 'Ignore the poetry and try to impress the girl with a show of strength?',
+                                        value: 'strength',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Try to steal his poem and pass it off as you own?',
+                                        value: 'agility',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Try to write an even better poem?',
                                         value: 'intelligence',
                                         bonus: 1
                                     }
@@ -90,7 +131,9 @@
                     }
                 ]
             };
+
         }
+
 
         public createCharacter(characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;

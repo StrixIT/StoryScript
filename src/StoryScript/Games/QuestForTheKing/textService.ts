@@ -4,7 +4,7 @@
             var self = this;
 
             return {
-                gameName: 'Quests for the King'
+                gameName: 'Quests for the King'                
             };
         }
     }
