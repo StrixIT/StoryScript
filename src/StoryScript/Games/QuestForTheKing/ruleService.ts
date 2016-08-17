@@ -104,7 +104,31 @@
                             }
                         ]
                     },
+                    {
+                        questions: [
+                            {
+                                question: 'A wolf has been ravaging the flocks of sheep of your village. Do you:',
+                                entries: [
+                                    {
+                                        text: 'Go out and hunt the beast?',
+                                        value: 'strength',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Set a devious trap?',
+                                        value: 'agility',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Design and build a new fence to keep the wolf and future predators out?',
+                                        value: 'intelligence',
+                                        bonus: 1
+                                    },
 
+                                ]
+                            }
+                        ]
+                    },
                     {
                         questions: [
                             {
