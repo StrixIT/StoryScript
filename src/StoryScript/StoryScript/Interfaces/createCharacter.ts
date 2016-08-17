@@ -8,6 +8,8 @@
     export interface ICreateCharacterStep {
         questions?: ICreateCharacterQuestion[];
         attributes?: ICreateCharacterAttribute[];
+        validation?: (character: ICreateCharacter) => string;
+        nextStepSelector?: number | ((character: ICreateCharacter, currentStep: ICreateCharacterStep) => number);
     }
 
     export interface ICreateCharacterQuestion {
