@@ -35,7 +35,6 @@
                             }
                         ]
                     },
-
                     {
                         questions: [
                             {             
@@ -43,17 +42,47 @@
                                 entries: [
                                     {
                                         text: 'Choose my class',
-                                        value: 'strength',
-                                        bonus: 1
+                                        value: '2'
                                     },
                                     {
                                         text: 'Answer Questions',
-                                        value: 'agility',
-                                        bonus: 1
+                                        value: '3'
                                     }
                                 ]
                             }
-                        ]
+                        ],
+                        nextStepSelector: (character, currentStep) => {
+                            switch (currentStep.questions[0].selectedEntry.value) {
+                                case '2': {
+                                    return 2;
+                                };
+                                case '3': {
+                                    return 3;
+                                };
+                            }
+                        }
+                    },
+                    {
+                        questions: [
+                            {
+                                question: 'Choose your class',
+                                entries: [
+                                    {
+                                        text: 'Rogue',
+                                        value: 'rogue'
+                                    },
+                                    {
+                                        text: 'Warrior',
+                                        value: 'warrior'
+                                    },
+                                    {
+                                        text: 'Wizard',
+                                        value: 'wizard'
+                                    }
+                                ]
+                            }
+                        ],
+                        nextStepSelector: 7
                     },
                     {
                         questions: [
@@ -151,7 +180,8 @@
                                     }
                                 ]
                             }
-                        ]
+                        ],
+                        nextStepSelector: 7
                     }
                 ]
             };
