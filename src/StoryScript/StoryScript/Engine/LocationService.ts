@@ -9,6 +9,7 @@
 
 module StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
+        private $sce: ng.ISCEService;
         private dataService: IDataService;
         private ruleService: IRuleService;
         private game: IGame;
@@ -17,16 +18,18 @@ module StoryScript {
         private functionIdCounter: number = 0;
         private functionList: { [id: number]: Function };
 
-        constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
+        constructor($sce: ng.ISCEService, dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
             var self = this;
+            self.$sce = $sce;
             self.dataService = dataService;
             self.ruleService = ruleService;
             self.game = game;
             self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any): ILocationService {
+        public $get($sce: ng.ISCEService, dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any): ILocationService {
             var self = this;
+            self.$sce = $sce;
             self.dataService = dataService;
             self.ruleService = ruleService;
             self.game = game;
@@ -446,7 +449,7 @@ module StoryScript {
                         throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');
                     }
 
-                    game.currentLocation.descriptions[name] = node.innerHTML;
+                    game.currentLocation.descriptions[name] = self.$sce.trustAsHtml(node.innerHTML);
                 }
 
                 self.selectLocationDescription(game);
@@ -467,5 +470,5 @@ module StoryScript {
         }
     }
 
-    LocationService.$inject = ['dataService', 'ruleService', 'game', 'definitions'];
+    LocationService.$inject = ['$sce', 'dataService', 'ruleService', 'game', 'definitions'];
 }
