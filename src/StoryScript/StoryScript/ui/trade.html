@@ -1,18 +1,20 @@
-﻿<div ng-if="game.currentLocation.activeTrade">
-    <div ng-if="game.currentLocation.activeTrade.sell">{{ game.currentLocation.activeTrade.sell.description }}</div>
-    <div ng-hide="game.currentLocation.activeTrade.sell.items && game.currentLocation.activeTrade.sell.items.length > 0">{{ game.currentLocation.activeTrade.sell.emptyText }}</div>
-    <ul class="button-row" ng-show="game.currentLocation.activeTrade.sell.items && game.currentLocation.activeTrade.sell.items.length > 0">
-        <li ng-repeat="item in game.currentLocation.activeTrade.sell.items">
-            <button type="button" class="btn btn-success" ng-click="controller.buy(item, game.currentLocation.activeTrade)" ng-disabled="!controller.canPay(game.character.currency, controller.actualPrice(item, game.currentLocation.activeTrade.sell.priceModifier))">{{ controller.displayPrice(item, game.currentLocation.activeTrade.sell.priceModifier) }}</button>
-        </li>
-    </ul>
-    <div ng-if="game.currentLocation.activeTrade.buy">{{ game.currentLocation.activeTrade.buy.description }}</div>
-    <div ng-hide="game.currentLocation.activeTrade.buy.items && game.currentLocation.activeTrade.buy.items.length > 0">{{ game.currentLocation.activeTrade.buy.emptyText }}</div>
-    <ul class="button-row" ng-show="game.currentLocation.activeTrade.buy.items && game.currentLocation.activeTrade.buy.items.length > 0">
-        <li ng-repeat="item in game.currentLocation.activeTrade.buy.items">
-            <button type="button" class="btn btn-warning" ng-click="controller.sell(item, game.currentLocation.activeTrade)" ng-disabled="!controller.canPay(game.currentLocation.activeTrade.currency, controller.actualPrice(item, game.currentLocation.activeTrade.sell.priceModifier))">{{ controller.displayPrice(item, game.currentLocation.activeTrade.buy.priceModifier) }}</button>
-        </li>
-    </ul>
-    <p ng-if="game.currentLocation.activeTrade.currency != undefined">{{ texts.format(texts.traderCurrency, [game.currentLocation.activeTrade.currency, texts.currency]) }}</p>
-    <div class="actionlog" ng-include="'ui/action-log.html'"></div>
+﻿<div ng-controller="TradeController as tradeController">
+    <div ng-if="trade">
+        <div ng-if="trade.sell">{{ trade.sell.description }}</div>
+        <div ng-hide="trade.sell.items && trade.sell.items.length > 0">{{ trade.sell.emptyText }}</div>
+        <ul class="button-row" ng-show="trade.sell.items && trade.sell.items.length > 0">
+            <li ng-repeat="item in trade.sell.items">
+                <button type="button" class="btn btn-success" ng-click="tradeController.buy(item, trade)" ng-disabled="!tradeController.canPay(game.character.currency, tradeController.actualPrice(item, trade.sell.priceModifier))">{{ tradeController.displayPrice(item, trade.sell.priceModifier) }}</button>
+            </li>
+        </ul>
+        <div ng-if="trade.buy">{{ trade.buy.description }}</div>
+        <div ng-hide="trade.buy.items && trade.buy.items.length > 0">{{ trade.buy.emptyText }}</div>
+        <ul class="button-row" ng-show="trade.buy.items && trade.buy.items.length > 0">
+            <li ng-repeat="item in trade.buy.items">
+                <button type="button" class="btn btn-warning" ng-click="tradeController.sell(item, trade)" ng-disabled="!tradeController.canPay(trade.currency, tradeController.actualPrice(item, trade.sell.priceModifier))">{{ tradeController.displayPrice(item, trade.buy.priceModifier) }}</button>
+            </li>
+        </ul>
+        <p ng-if="trade.currency != undefined">{{ texts.format(texts.traderCurrency, [trade.currency, texts.currency]) }}</p>
+        <div class="actionlog" ng-include="'ui/action-log.html'"></div>
+    </div>
 </div>

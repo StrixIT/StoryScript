@@ -21,7 +21,7 @@
         private gameService: IGameService;
         private game: IGame;
         private customTexts: IInterfaceTexts;
-        private texts: any = {};
+        private texts: IInterfaceTexts;
         private encounters: ICollection<IEnemy>;
         private modalSettings: IModalSettings;
 
@@ -50,9 +50,11 @@
             self.gameService.init();
 
             self.$scope.game = self.game;
-            self.$scope.texts = self.texts;
 
             self.setDisplayTexts();
+
+            self.$scope.texts = self.texts;
+
             self.getCharacterAttributesToShow();
 
             // Watch functions.
@@ -277,64 +279,6 @@
             self.gameService.saveGame();
         }
 
-        canPay = (currency: number, value: number) => {
-            return (value != undefined && currency != undefined && currency >= value) || value == 0;
-        }
-
-        actualPrice = (item: IItem, modifier: number | (() => number)) => {
-            var self = this;
-            modifier = modifier == undefined ? 1 : typeof modifier === 'function' ? (<any>modifier)(self.game) : modifier;
-            return Math.round(item.value * <number>modifier);
-        }
-
-        displayPrice = (item: IItem, actualPrice: number) => {
-            var self = this;
-            return actualPrice > 0 ? (item.name + ': ' + actualPrice + ' ' + self.texts.currency) : item.name;
-        }
-
-        buy = (item: IItem, trade: ITrade) => {
-            var self = this;
-            var price = item.value;
-
-            if (trade.buy.priceModifier != undefined) {
-                var modifier = typeof trade.buy.priceModifier === 'function' ? (<any>trade.buy).priceModifier(self.game) : trade.buy.priceModifier;
-                price = Math.round(item.value * modifier);
-            }
-
-            self.game.character.currency = self.game.character.currency || 0;
-            self.game.character.currency -= price;
-
-            self.game.character.items.push(item);
-
-            if (trade.currency != undefined) {
-                trade.currency += price;
-            }
-
-            trade.sell.items.remove(item);
-        }
-
-        sell = (item: IItem, trade: ITrade) => {
-            var self = this;
-            var price = item.value;
-
-            if (trade.sell.priceModifier != undefined) {
-                var modifier = typeof trade.sell.priceModifier === 'function' ? (<any>trade.sell).priceModifier(self.game) : trade.sell.priceModifier;
-                price = Math.round(item.value * modifier);
-            }
-
-            self.game.character.currency = self.game.character.currency || 0;
-            self.game.character.currency += price;
-
-            self.game.character.items.remove(item);
-            trade.buy.items.remove(item);
-
-            if (trade.currency != undefined) {
-                trade.currency -= price;
-            }
-
-            trade.sell.items.push(item);
-        }
-
         talk = (person: IPerson) => {
             var self = this;
             self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
@@ -346,10 +290,6 @@
         trade = (game: IGame, trade: IPerson | ITrade) => {
             var self = this;
 
-            if (!trade) {
-                return;
-            }
-
             self.game.currentLocation.activeTrade = (<IPerson>trade).trade ? (<IPerson>trade).trade : trade;
             var trader = self.game.currentLocation.activeTrade;
 
@@ -360,16 +300,6 @@
 
             self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<IPerson>trade).name]);
             self.$scope.modalSettings.canClose = true;
-
-            var itemsForSale = trader.sell.items;
-
-            if (!itemsForSale) {
-                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.sell.maxItems, trader.sell.itemSelector);
-            }
-
-            trader.sell.items = itemsForSale;
-            trader.buy.items = StoryScript.randomList<IItem>(self.game.character.items, trader.buy.maxItems, trader.buy.itemSelector);
-
             self.game.state = GameState.Trade;
         }
 
@@ -438,9 +368,10 @@
             var defaultTexts = new DefaultTexts();
 
             for (var n in defaultTexts.texts) {
-                self.texts[n] = self.customTexts[n] ? self.customTexts[n] : defaultTexts.texts[n];
+                self.customTexts[n] = self.customTexts[n] ? self.customTexts[n] : defaultTexts.texts[n];
             }
 
+            self.texts = self.customTexts;
             self.texts.format = defaultTexts.format;
             self.texts.titleCase = defaultTexts.titleCase;
         }

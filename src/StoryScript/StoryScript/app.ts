@@ -16,4 +16,5 @@
 
     storyScriptModule.controller("MainController", MainController);
     storyScriptModule.controller("ConversationController", ConversationController);
+    storyScriptModule.controller("TradeController", TradeController);
 }

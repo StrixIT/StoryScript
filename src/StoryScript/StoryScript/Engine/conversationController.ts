@@ -1,18 +1,23 @@
 ﻿module StoryScript {
     export interface IConversationControllerScope extends ng.IScope {
         game: IGame;
+        texts: IInterfaceTexts;
+        conversation: IConversation;
     }
 
     export class ConversationController {
         private $scope: IConversationControllerScope;
         private game: IGame;
-        private customTexts: IInterfaceTexts;
+        private texts: IInterfaceTexts;
 
-        constructor($scope: IConversationControllerScope, game: IGame) {
+        constructor($scope: IConversationControllerScope, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.game = game;
+            self.texts = texts;
             self.$scope.game = self.game;
+            self.$scope.texts = self.texts;
+            self.$scope.conversation = self.game.currentLocation.activePerson.conversation;
             self.init();
         }
 
@@ -82,5 +87,5 @@
         }
     }
 
-    ConversationController.$inject = ['$scope', 'game'];
+    ConversationController.$inject = ['$scope', 'game', 'customTexts'];
 }
