@@ -15,6 +15,7 @@
     export class MainController {
         private $scope: IMainControllerScope;
         private $window: ng.IWindowService;
+        private $sce: ng.ISCEService;
         private locationService: ILocationService;
         private ruleService: IRuleService;
         private gameService: IGameService;
@@ -31,10 +32,11 @@
         // Todo: can this be done differently?
         public reset(): void { };
 
-        constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, textService: ITextService) {
+        constructor($scope: IMainControllerScope, $window: ng.IWindowService, $sce: ng.ISCEService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, textService: ITextService) {
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
+            self.$sce = $sce;
             self.locationService = locationService;
             self.ruleService = ruleService;
             self.gameService = gameService;
@@ -78,6 +80,14 @@
             var self = this;
             self.gameService.restart();
             self.init();
+        }
+
+        getDescription() {
+            var self = this;
+
+            if (self.game.currentLocation && self.game.currentLocation.text) {
+                return self.$sce.trustAsHtml(self.game.currentLocation.text);
+            }
         }
 
         isSlotUsed(slot: string) {
@@ -410,6 +420,7 @@
 
         closeModal = () => {
             var self = this;
+            self.gameService.saveGame();
             self.game.state = GameState.Play;
         }
 
@@ -480,5 +491,5 @@
         }
     }
 
-    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game', 'textService'];
+    MainController.$inject = ['$scope', '$window', '$sce', 'locationService', 'ruleService', 'gameService', 'game', 'textService'];
 }

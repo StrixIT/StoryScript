@@ -9,7 +9,6 @@
 
 module StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
-        private $sce: ng.ISCEService;
         private dataService: IDataService;
         private ruleService: IRuleService;
         private game: IGame;
@@ -18,18 +17,16 @@ module StoryScript {
         private functionIdCounter: number = 0;
         private functionList: { [id: number]: Function };
 
-        constructor($sce: ng.ISCEService, dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
+        constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
             var self = this;
-            self.$sce = $sce;
             self.dataService = dataService;
             self.ruleService = ruleService;
             self.game = game;
             self.definitions = definitions;
         }
 
-        public $get($sce: ng.ISCEService, dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any): ILocationService {
+        public $get(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any): ILocationService {
             var self = this;
-            self.$sce = $sce;
             self.dataService = dataService;
             self.ruleService = ruleService;
             self.game = game;
@@ -449,7 +446,7 @@ module StoryScript {
                         throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');
                     }
 
-                    game.currentLocation.descriptions[name] = self.$sce.trustAsHtml(node.innerHTML);
+                    game.currentLocation.descriptions[name] = node.innerHTML;
                 }
 
                 self.selectLocationDescription(game);
@@ -457,6 +454,12 @@ module StoryScript {
         }
 
         private selectLocationDescription(game: IGame) {
+            var self = this;
+
+            if (game.currentLocation.text) {
+                return;
+            }
+
             // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
             // use the default description selector function.
             if (game.currentLocation.descriptionSelector) {
@@ -470,5 +473,5 @@ module StoryScript {
         }
     }
 
-    LocationService.$inject = ['$sce', 'dataService', 'ruleService', 'game', 'definitions'];
+    LocationService.$inject = ['dataService', 'ruleService', 'game', 'definitions'];
 }
