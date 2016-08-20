@@ -37,7 +37,7 @@
                     },
                     {
                         questions: [
-                            {             
+                            {
                                 question: 'Do you wish to choose your class manually, or answer questions to determine your path?',
                                 entries: [
                                     {
@@ -91,17 +91,17 @@
                                 entries: [
                                     {
                                         text: 'Challenge him to try on someone his own size, namely you?',
-                                        value: 'strength',
+                                        value: 'warrior',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Try to sneak up on him and trip him, making him fall into a puddle of mud?',
-                                        value: 'agility',
+                                        value: 'rogue',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Try to talk to him and show him the error of his ways?',
-                                        value: 'intelligence',
+                                        value: 'wizard',
                                         bonus: 1
                                     }
                                 ]
@@ -115,20 +115,20 @@
                                 entries: [
                                     {
                                         text: 'Participate in the Wrestling contest?',
-                                        value: 'strength',
+                                        value: 'warrior',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Participate in the Archery contest?',
-                                        value: 'agility',
+                                        value: 'rogue',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Participate in the Puzzle contest?',
-                                        value: 'intelligence',
+                                        value: 'wizard',
                                         bonus: 1
                                     },
-                                    
+
                                 ]
                             }
                         ]
@@ -140,17 +140,17 @@
                                 entries: [
                                     {
                                         text: 'Go out and hunt the beast?',
-                                        value: 'strength',
+                                        value: 'warrior',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Set a devious trap?',
-                                        value: 'agility',
+                                        value: 'rogue',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Design and build a new fence to keep the wolf and future predators out?',
-                                        value: 'intelligence',
+                                        value: 'wizard',
                                         bonus: 1
                                     },
 
@@ -165,23 +165,107 @@
                                 entries: [
                                     {
                                         text: 'Ignore the poetry and try to impress the girl with a show of strength?',
-                                        value: 'strength',
+                                        value: 'warrior',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Try to steal his poem and pass it off as you own?',
-                                        value: 'agility',
+                                        value: 'rogue',
                                         bonus: 1
                                     },
                                     {
                                         text: 'Try to write an even better poem?',
-                                        value: 'intelligence',
+                                        value: 'wizard',
                                         bonus: 1
                                     }
                                 ]
                             }
                         ],
                         nextStepSelector: 7
+                    },
+                    {
+                        initStep: (character, previousStep, currentStep) => {
+                            var characterClass = character.steps[2].questions[0].selectedEntry.value;
+                            var points = {
+                                warrior: 0,
+                                rogue: 0,
+                                wizard: 0
+                            };
+
+                            // If questions were answered, calculate which class has the highest score.
+                            if (previousStep > 2) {
+                                for (var i = 3; i <= previousStep; i++) {
+                                    var selectedEntry = character.steps[i].questions[0].selectedEntry;
+                                    points[selectedEntry.value] += selectedEntry.bonus;
+                                }
+
+                                // When the scores are equal, the first class in the list wins (first warrior, then rogue, then wizard).
+                                var max = Math.max(points.warrior, points.rogue, points.wizard);
+                                characterClass = max === points.warrior ? 'warrior' : max === points.rogue ? 'rogue' : 'wizard';
+                            }
+
+                            // Set the items to chose from.
+                            switch (characterClass) {
+                                case 'warrior': {
+                                    currentStep.questions[0].entries = [
+                                        {
+                                            text: Items.LongSword().name,
+                                            value: (<any>Items.LongSword).name
+                                        },
+                                        {
+                                            text: Items.Battleaxe().name,
+                                            value: (<any>Items.Battleaxe).name
+                                        },
+                                        {
+                                            text: Items.Warhammer().name,
+                                            value: (<any>Items.Warhammer).name
+                                        }
+                                    ];
+                                }; break;
+                                case 'rogue': {
+                                    currentStep.questions[0].entries = [
+                                        {
+                                            text: Items.Dagger().name,
+                                            value: (<any>Items.Dagger).name
+                                        },
+                                        {
+                                            text: Items.Rapier().name,
+                                            value: (<any>Items.Rapier).name
+                                        },
+                                        {
+                                            text: Items.Shortsword().name,
+                                            value: (<any>Items.Shortsword).name
+                                        }
+                                    ];
+                                }; break;
+                                case 'wizard': {
+                                    currentStep.questions[0].entries = [
+                                        {
+                                            text: Items.Fireball().name,
+                                            value: (<any>Items.Fireball).name
+                                        },
+                                        {
+                                            text: Items.Frostbite().name,
+                                            value: (<any>Items.Frostbite).name
+                                        },
+                                        {
+                                            text: Items.Shockbolt().name,
+                                            value: (<any>Items.Shockbolt).name
+                                        }
+                                    ];
+                                }; break;
+                            }
+
+                            // Update the class selector step to use when processing the character sheet data.
+                            character.steps[2].questions[0].selectedEntry = character.steps[2].questions[0].entries.filter(entry => entry.value === characterClass)[0];
+                        },
+                        questions: [
+                            {
+                                question: 'Select your weapon',
+                                entries: [
+                                ]
+                            }
+                        ]
                     }
                 ]
             };
@@ -192,6 +276,34 @@
         public createCharacter(characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
+
+            var characterClass = characterData.steps[2].questions[0].selectedEntry.value;
+
+            switch (characterClass) {
+                case 'warrior': {
+                    character.strength = 3;
+                    character.agility = 1;
+                    character.intelligence = 1;
+                    character.charisma = 1;
+                }; break;
+                case 'rogue': {
+                    character.strength = 1;
+                    character.agility = 3;
+                    character.intelligence = 1;
+                    character.charisma = 1;
+                }; break;
+                case 'wizard': {
+                    character.strength = 1;
+                    character.agility = 1;
+                    character.intelligence = 3;
+                    character.charisma = 1;
+                }; break;
+            }
+
+            var weaponStep = characterData.steps[characterData.steps.length - 1];
+            var chosenItem = weaponStep.questions[0].selectedEntry;
+            character.items.push(self.game.getItem(chosenItem.value));
+
             return character;
         }
 
