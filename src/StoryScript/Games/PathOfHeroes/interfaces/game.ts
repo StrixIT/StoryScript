@@ -14,4 +14,6 @@
 
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'PathOfHeroes');
+    storyScriptModule.service("ruleService", RuleService);
+    storyScriptModule.value("customTexts", new CustomTexts().texts);
 }

@@ -1,5 +1,5 @@
 ﻿module StoryScript {
-    export interface ITextService {
+    export interface IInterfaceTexts {
         equipmentHeader?: string;
         head?: string;
         amulet?: string;
@@ -20,6 +20,7 @@
         newGame?: string;
         yourName?: string;
         startAdventure?: string;
+        nextQuestion?: string;
         actions?: string;
         destinations?: string;
         back?: string;

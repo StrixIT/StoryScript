@@ -141,7 +141,7 @@
                             }
                         ],
                         nextStepSelector: 4
-                    }
+                    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
                 ]
             };
         }
@@ -178,7 +178,4 @@
     }
 
     RuleService.$inject = ['game'];
-
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.service("ruleService", RuleService);
 }

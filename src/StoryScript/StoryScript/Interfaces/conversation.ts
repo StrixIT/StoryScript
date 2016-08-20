@@ -1,7 +1,7 @@
 ﻿module StoryScript {
     export interface IConversation {
         title?: string;
-        nodes: ICollection<IConversationNode>;
+        nodes?: ICollection<IConversationNode>;
         activeNode?: IConversationNode;
         conversationLog?: IConversationLogEntry[];
         showUnavailableReplies?: boolean;
@@ -20,6 +20,7 @@
         requires?: string;
         lines?: string;
         linkToNode?: string;
+        available?: boolean;
         showWhenUnavailable?: boolean;
     }
 

@@ -15,4 +15,5 @@
     storyScriptModule.service("gameService", GameService);
 
     storyScriptModule.controller("MainController", MainController);
+    storyScriptModule.controller("ConversationController", ConversationController);
 }

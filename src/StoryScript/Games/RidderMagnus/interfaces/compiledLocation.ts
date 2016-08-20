@@ -4,6 +4,5 @@
         enemies?: StoryScript.ICollection<IEnemy>;
         items?: StoryScript.ICollection<IItem>;
         sluipCheck?: number;
-        sneakDone?: boolean;
     }
 }

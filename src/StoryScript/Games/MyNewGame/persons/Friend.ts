@@ -27,6 +27,9 @@
                     maxItems: 5
                 }
             },
+            conversation: {
+                showUnavailableReplies: true
+            },
             disposition: StoryScript.Disposition.Friendly
         }
     }

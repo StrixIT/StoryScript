@@ -64,6 +64,7 @@ module StoryScript {
                 location.destinations = location.destinations || [];
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination);
                 location.enemies = location.enemies || [];
+
                 location.enemies.push = (<any>location.enemies.push).proxy((function (): Function {
                     return function () {
                         var args = [].slice.apply(arguments);
@@ -71,6 +72,7 @@ module StoryScript {
                         self.addEnemy(self, args);
                     }
                 })());
+
                 location.combatActions = location.combatActions || [];
             });
 
@@ -147,6 +149,7 @@ module StoryScript {
             self.dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
 
             if (game.previousLocation) {
+                game.previousLocation.hasVisited = true;
                 self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
 
@@ -163,7 +166,6 @@ module StoryScript {
 
             // If the player hasn't been here before, play the location events.
             if (!game.currentLocation.hasVisited) {
-                game.currentLocation.hasVisited = true;
                 self.playEvents(game);
             }
 
@@ -356,7 +358,7 @@ module StoryScript {
                 return;
             }
 
-            game.currentLocation.persons.filter(p => !p.conversation).forEach((person) => {
+            game.currentLocation.persons.filter(p => !p.conversation.nodes).forEach((person) => {
                 self.dataService.getDescription('persons', person.id).then(function (conversations) {
                     var parser = new DOMParser();
 

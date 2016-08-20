@@ -20,7 +20,7 @@
         private ruleService: IRuleService;
         private gameService: IGameService;
         private game: IGame;
-        private textService: ITextService;
+        private customTexts: IInterfaceTexts;
         private texts: any = {};
         private encounters: ICollection<IEnemy>;
         private modalSettings: IModalSettings;
@@ -32,7 +32,7 @@
         // Todo: can this be done differently?
         public reset(): void { };
 
-        constructor($scope: IMainControllerScope, $window: ng.IWindowService, $sce: ng.ISCEService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, textService: ITextService) {
+        constructor($scope: IMainControllerScope, $window: ng.IWindowService, $sce: ng.ISCEService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, customTexts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
@@ -41,7 +41,7 @@
             self.ruleService = ruleService;
             self.gameService = gameService;
             self.game = game;
-            self.textService = textService;
+            self.customTexts = customTexts;
             self.init();
         }
 
@@ -340,52 +340,7 @@
             self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
             self.$scope.modalSettings.canClose = true;
             self.game.currentLocation.activePerson = person;
-            var activeNode = person.conversation.activeNode;
-
-            if (!activeNode) {
-                activeNode = person.conversation.nodes.some((node) => { return node.active; })[0];
-
-                if (!activeNode) {
-                    person.conversation.nodes[0].active = true;
-                    person.conversation.activeNode = person.conversation.nodes[0];
-                }
-            }
-
-            if (person.conversation.prepareReplies) {
-                person.conversation.prepareReplies(self.game, person, person.conversation.activeNode);
-            }
-
             self.game.state = GameState.Conversation;
-        }
-
-        answer = (node: IConversationNode, reply: IConversationReply) => {
-            var self = this;
-            var person = self.game.currentLocation.activePerson;
-
-            person.conversation.conversationLog = person.conversation.conversationLog || [];
-
-            person.conversation.conversationLog.push({
-                lines: node.lines,
-                reply: reply.lines
-            });
-
-            if (person.conversation.handleReply) {
-                person.conversation.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
-            }
-
-            if (reply.linkToNode) {
-                person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
-
-                if (person.conversation.prepareReplies) {
-                    person.conversation.prepareReplies(self.game, self.game.currentLocation.activePerson, person.conversation.activeNode);
-                }
-            }
-            else {
-                person.conversation.nodes.forEach((node) => {
-                    node.active = false;
-                });
-                person.conversation.activeNode = null;
-            }
         }
 
         trade = (game: IGame, trade: IPerson | ITrade) => {
@@ -481,15 +436,15 @@
             var self = this;
 
             var defaultTexts = new DefaultTexts();
-            var customTexts = (<any>self.textService).$get();
 
-            for (var n in defaultTexts) {
-                self.texts[n] = customTexts[n] ? customTexts[n] : defaultTexts[n];
+            for (var n in defaultTexts.texts) {
+                self.texts[n] = self.customTexts[n] ? self.customTexts[n] : defaultTexts.texts[n];
             }
 
             self.texts.format = defaultTexts.format;
+            self.texts.titleCase = defaultTexts.titleCase;
         }
     }
 
-    MainController.$inject = ['$scope', '$window', '$sce', 'locationService', 'ruleService', 'gameService', 'game', 'textService'];
+    MainController.$inject = ['$scope', '$window', '$sce', 'locationService', 'ruleService', 'gameService', 'game', 'customTexts'];
 }

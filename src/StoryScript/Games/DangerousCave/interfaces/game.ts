@@ -14,4 +14,6 @@
 
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'DangerousCave');
+    storyScriptModule.service("ruleService", RuleService);
+    storyScriptModule.value("customTexts", new CustomTexts().texts);
 }

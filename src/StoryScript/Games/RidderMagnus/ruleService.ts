@@ -112,9 +112,7 @@
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
 
-            if (self.game.currentLocation.sluipCheck && !self.game.currentLocation.sneakDone) {
-                self.game.currentLocation.sneakDone = true;
-
+            if (self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited) {
                 // check stats
                 var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
 
@@ -215,7 +213,4 @@
     }
 
     RuleService.$inject = ['game'];
-
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.service("ruleService", RuleService);
 }

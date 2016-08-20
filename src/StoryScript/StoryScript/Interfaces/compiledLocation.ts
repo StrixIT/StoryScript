@@ -2,7 +2,7 @@
     export interface ICompiledLocation {
         id?: string;
         name: string;
-        descriptionSelector?: string | ((game: IGame) => string);
+        descriptionSelector?: (game: IGame) => string;
         enemies?: ICollection<IEnemy>;
         persons?: ICollection<IPerson>;
         items?: ICollection<IItem>;

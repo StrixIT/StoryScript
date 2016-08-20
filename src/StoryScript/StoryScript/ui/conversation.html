@@ -1,11 +1,9 @@
-﻿<div>
+﻿<div ng-controller="ConversationController as conversation" ng-init="init()">
     <div ng-show="game.currentLocation.activePerson.conversation.activeNode">
         <div ng-bind-html="game.currentLocation.activePerson.conversation.activeNode.lines"></div>
-        <ul>
-            <li ng-repeat="reply in game.currentLocation.activePerson.conversation.activeNode.replies">
-                <div ng-bind-html="reply.lines" ng-click="controller.answer(game.currentLocation.activePerson.conversation.activeNode, reply)"></div>
-            </li>
-        </ul>
+        <div ng-repeat="reply in game.currentLocation.activePerson.conversation.activeNode.replies" >
+            <input type="radio" ng-disabled="!reply.available" ng-hide="!reply.available && !reply.showWhenUnavailable" ng-click="conversation.answer(game.currentLocation.activePerson.conversation.activeNode, reply)" /><span ng-bind-html="reply.lines"></span>
+        </div>
     </div>
     <div ng-hide="game.currentLocation.activePerson.conversation.activeNode">
         Your conversation has ended.
