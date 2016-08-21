@@ -1,6 +1,6 @@
 ﻿<fieldset ng-if="game.currentLocation.enemies && game.currentLocation.enemies.length">
     <legend>{{ texts.encounters }}</legend>
-    <h3>{{ texts.enemiesToFight }}</h3>
+    <p>{{ texts.enemiesToFight }}</p>
     <ul>
         <li ng-repeat="enemy in game.currentLocation.enemies">
             {{ enemy.name }}

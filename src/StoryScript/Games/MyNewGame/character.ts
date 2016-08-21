@@ -7,6 +7,7 @@
         hitpoints: number = 10;
         currentHitpoints: number = 10;
 
+        // Add character properties here.
         strength: number = 1;
         agility: number = 1;
         intelligence: number = 1;

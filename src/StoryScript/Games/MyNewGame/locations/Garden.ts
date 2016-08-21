@@ -9,14 +9,14 @@
                 }
             ],
             events: [
-                (game: IGame) => {
+                (game) => {
                     game.logToActionLog('You see a squirrel running off.');
                 }
             ],
             actions: [
                 {
                     text: 'Search the Shed',
-                    execute: (game: IGame) => {
+                    execute: (game) => {
                         // Add a new destination.
                         game.currentLocation.destinations.push({
                             text: 'Enter the basement',
