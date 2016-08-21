@@ -14,8 +14,7 @@ module StoryScript {
         private game: IGame;
         private definitions: any;
         private pristineLocations: ICollection<ICompiledLocation>;
-        private functionIdCounter: number = 0;
-        private functionList: { [id: number]: Function };
+        private functionList: { [id: string]: Function };
 
         constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
             var self = this;
@@ -190,7 +189,6 @@ module StoryScript {
 
         private buildWorld(): ICompiledLocation[] {
             var self = this;
-            self.functionIdCounter = 0;
             var locations = self.definitions.locations;
             var compiledLocations = [];
             self.functionList = {};
@@ -208,7 +206,7 @@ module StoryScript {
                 self.buildEnemies(location);
                 self.buildPersons(location);
                 self.buildItems(location);
-                self.getFunctions(location);
+                self.getFunctions(location, null);
                 compiledLocations.push(location);
             }
 
@@ -293,8 +291,12 @@ module StoryScript {
             }
         }
 
-        private getFunctions(location: any) {
+        private getFunctions(location: any, parentId: any) {
             var self = this;
+
+            if (!parentId) {
+                parentId = location.id || location.name;
+            }
 
             for (var key in location) {
                 if (!location.hasOwnProperty(key)) {
@@ -307,12 +309,17 @@ module StoryScript {
                     return;
                 }
                 else if (typeof value === "object") {
-                    self.getFunctions(location[key]);
+                    self.getFunctions(location[key], parentId + '_' + key);
                 }
                 else if (typeof value == 'function') {
-                    self.functionList[self.functionIdCounter] = value;
-                    value.functionId = self.functionIdCounter;
-                    self.functionIdCounter++;
+                    var functionId = parentId + '_' + key;
+
+                    if (self.functionList[functionId]) {
+                        throw new Error('Trying to register a duplicate function key: ' + functionId);
+                    }
+
+                    self.functionList[functionId] = value;
+                    value.functionId = functionId;
                 }
             }
         }

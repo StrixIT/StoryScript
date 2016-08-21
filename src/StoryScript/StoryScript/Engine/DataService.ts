@@ -14,7 +14,7 @@ module StoryScript {
         private $localStorage: any; // Todo: type;
         private gameSpaceName: string;
 
-        public functionList: { [id: number]: Function };
+        public functionList: { [id: string]: Function };
 
         constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, gameSpaceName: string) {
             var self = this;
@@ -155,7 +155,13 @@ module StoryScript {
                 }
                 else if (typeof value === 'string') {
                     if (value.indexOf('_function_') > -1) {
-                        loaded[key] = self.functionList[parseInt(value.replace('_function_', ''))];
+                        var functionId = value.replace('_function_', '');
+
+                        if (!self.functionList[functionId]) {
+                            console.log('Function with key: ' + functionId + ' could not be found!');
+                        }
+
+                        loaded[key] = self.functionList[functionId];
                     }
                     else if (typeof value === 'string' && value.indexOf('function ') > -1) {
                         // Todo: create a new function instead of using eval.
