@@ -378,8 +378,8 @@ module StoryScript {
                         conversations = '<conversation>' + conversations + '</conversation>';
                     }
 
-                    var xmlDoc = parser.parseFromString(conversations, "text/xml");
-                    var conversationNodes = xmlDoc.getElementsByTagName("node");
+                    var htmlDoc = parser.parseFromString(conversations, "text/html");
+                    var conversationNodes = htmlDoc.getElementsByTagName("node");
 
                     person.conversation = {
                         nodes: []
@@ -387,7 +387,7 @@ module StoryScript {
 
                     for (var i = 0; i < conversationNodes.length; i++) {
                         var node = conversationNodes[i];
-                        var nameAttribute = node.attributes['name'];
+                        var nameAttribute = node.attributes['name'].nodeValue;
 
                         if (!nameAttribute) {
                             throw new Error('Missing name attribute on node for conversation ' + person.id + '.');
@@ -398,7 +398,7 @@ module StoryScript {
                         }
 
                         var newNode = <IConversationNode>{
-                            node: nameAttribute.value,
+                            node: nameAttribute,
                             lines: '',
                             replies: []
                         };
@@ -406,11 +406,11 @@ module StoryScript {
                         for (var j = 0; j < node.childNodes.length; j++) {
                             var replies = node.childNodes[j];
 
-                            if (replies.nodeName == 'replies') {
+                            if (replies.nodeName.toLowerCase() == 'replies') {
                                 for (var k = 0; k < replies.childNodes.length; k++) {
                                     var replyNode = replies.childNodes[k];
 
-                                    if (replyNode.nodeName == 'reply') {
+                                    if (replyNode.nodeName.toLowerCase() == 'reply') {
                                         var reply = <IConversationReply>{
                                             requires: (replyNode.attributes['requires'] && replyNode.attributes['requires'].value) || null,
                                             lines: (<any>replyNode).innerHTML,
@@ -447,14 +447,14 @@ module StoryScript {
                     descriptions = '<descriptions>' + descriptions + '</descriptions>';
                 }
 
-                var xmlDoc = parser.parseFromString(descriptions, "text/xml");
-                var descriptionNodes = xmlDoc.getElementsByTagName("description");
+                var htmlDoc = parser.parseFromString(descriptions, "text/html");
+                var descriptionNodes = htmlDoc.getElementsByTagName("description");
                 game.currentLocation.descriptions = {};
 
                 for (var i = 0; i < descriptionNodes.length; i++) {
                     var node = descriptionNodes[i];
-                    var nameAttribute = node.attributes['name'];
-                    var name = nameAttribute ? nameAttribute.value : 'default';
+                    var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+                    var name = nameAttribute ? nameAttribute : 'default';
 
                     if (game.currentLocation.descriptions[name]) {
                         throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');

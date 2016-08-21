@@ -7,12 +7,14 @@
 
     export class ConversationController {
         private $scope: IConversationControllerScope;
+        private $sce: ng.ISCEService;
         private game: IGame;
         private texts: IInterfaceTexts;
 
-        constructor($scope: IConversationControllerScope, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: IConversationControllerScope, $sce: ng.ISCEService, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
+            self.$sce = $sce;
             self.game = game;
             self.texts = texts;
             self.$scope.game = self.game;
@@ -75,6 +77,14 @@
             }
         }
 
+        getLines = (lines: string) => {
+            var self = this;
+
+            if (lines) {
+                return self.$sce.trustAsHtml(lines);
+            }
+        }
+
         private setReplyStatus(conversation: IConversation, node: IConversationNode) {
             node.replies.forEach(reply => {
                 if (reply.available == undefined) {
@@ -87,5 +97,5 @@
         }
     }
 
-    ConversationController.$inject = ['$scope', 'game', 'customTexts'];
+    ConversationController.$inject = ['$scope', '$sce', 'game', 'customTexts'];
 }
