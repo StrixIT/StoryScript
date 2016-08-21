@@ -148,7 +148,12 @@ module StoryScript {
             self.dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
 
             if (game.previousLocation) {
-                game.previousLocation.hasVisited = true;
+                if (!game.previousLocation.hasVisited) {
+                    game.previousLocation.hasVisited = true;
+                    self.game.statistics.LocationsVisited = self.game.statistics.LocationsVisited || 0;
+                    self.game.statistics.LocationsVisited += 1;
+                }
+
                 self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
 

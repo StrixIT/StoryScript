@@ -10,5 +10,6 @@
         enemyDefeated?(enemy: IEnemy): void;
         hitpointsChange(change: number): boolean;
         scoreChange(change: number): boolean;
+        determineFinalScore?(): void;
     }
 }

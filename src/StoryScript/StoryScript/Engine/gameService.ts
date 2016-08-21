@@ -88,7 +88,6 @@ module StoryScript {
             }
 
             // Game setup start
-            self.game.highScores = [];
             self.game.actionLog = [];
             self.game.combatLog = [];
 
@@ -145,6 +144,7 @@ module StoryScript {
             self.locationService.init(self.game);
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
+            self.game.statistics = self.dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || {};
 
             var locationName = self.dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
@@ -187,6 +187,7 @@ module StoryScript {
         restart = (): void => {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.CHARACTER, {});
+            self.dataService.save(StoryScript.DataKeys.STATISTICS, {});
             self.dataService.save(StoryScript.DataKeys.LOCATION, '');
             self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
             self.dataService.save(StoryScript.DataKeys.WORLD, {});
@@ -196,6 +197,7 @@ module StoryScript {
         saveGame = (): void => {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
+            self.dataService.save(StoryScript.DataKeys.STATISTICS, self.game.statistics);
             self.locationService.saveWorld(self.game.locations);
         }
 
@@ -259,6 +261,9 @@ module StoryScript {
                     enemy.items = <[IItem | (() => IItem)]>[];
                 }
 
+                self.game.statistics.enemiesDefeated = self.game.statistics.enemiesDefeated || 0;
+                self.game.statistics.enemiesDefeated += 1;
+
                 self.game.currentLocation.enemies.remove(enemy);
 
                 if (self.ruleService.enemyDefeated) {
@@ -298,6 +303,10 @@ module StoryScript {
             var self = this;
 
             if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
+                if (self.ruleService.determineFinalScore) {
+                    self.ruleService.determineFinalScore();
+                }
+
                 self.updateHighScore();
                 self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
             }

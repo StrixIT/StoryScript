@@ -18,6 +18,8 @@
         combatLog: string[];
         state: StoryScript.GameState;
 
+        statistics: IStatistics;
+
         changeLocation(location?: string | (() => ILocation)): void;
         rollDice(dice: string): number;
         calculateBonus(person: { items: ICollection<IItem>, equipment?: {} }, type: string): number;
