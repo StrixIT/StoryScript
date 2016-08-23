@@ -28,7 +28,7 @@
                 },
                 sell: {
                     description: 'Buy from Siri',
-                    emptyText: 'Siri has no items left',
+                    emptyText: 'Siri has nothing to trade',
                     itemSelector: (item: IItem) => {
                         return true;
                     },
