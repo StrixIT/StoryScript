@@ -12,6 +12,10 @@
                     text: 'Healers Tent',
                     target: Locations.HealersTent
                 },
+                {
+                    text: 'Fasold the Storyteller',
+                    target: Locations.Fasold1
+                }, 
             ],
             trade: {
                 title: 'Trade Bjarni',

@@ -12,6 +12,11 @@
                     text: 'Weapon Smith',
                     target: Locations.WeaponSmith
                 },
+                {
+
+                    text: 'Fasold the Storyteller',
+                    target: Locations.Fasold1
+                },
                
             ],
             trade: {
