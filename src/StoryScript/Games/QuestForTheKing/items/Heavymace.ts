@@ -1,9 +1,11 @@
 ﻿module QuestForTheKing.Items {
-    export function Heavymace(): StoryScript.IItem {
+    export function Heavymace(): IItem {
         return {
             name: 'Heavy Mace',
             damage: '2',
-            equipmentType: StoryScript.EquipmentType.LeftHand
+            equipmentType: StoryScript.EquipmentType.LeftHand,
+            dayAvailable: 3,
+            arcane: false
         }
     }
 }

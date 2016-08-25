@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Items {
-    export function Warhammer(): StoryScript.IItem {
+    export function Warhammer(): IItem {
         return {
             name: 'Warhammer',
             damage: '2',

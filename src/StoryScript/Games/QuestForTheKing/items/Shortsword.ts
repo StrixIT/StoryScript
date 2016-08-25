@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Items {
-    export function Shortsword(): StoryScript.IItem {
+    export function Shortsword(): IItem {
         return {
             name: 'Shortsword',
             damage: '2',

@@ -1,9 +1,11 @@
 ﻿module QuestForTheKing.Items {
-    export function Roundshield(): StoryScript.IItem {
+    export function Roundshield(): IItem {
         return {
             name: 'Round Shield',
             damage: '2',
-            equipmentType: StoryScript.EquipmentType.RightHand
+            equipmentType: StoryScript.EquipmentType.RightHand,
+            dayAvailable: 2,
+            arcane: false
         }
     }
 }

@@ -4,7 +4,8 @@
             name: 'Leather Armor',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Body,
-            dayAvailable: 1
+            dayAvailable: 1,
+            arcane: false
         }
     }
 }

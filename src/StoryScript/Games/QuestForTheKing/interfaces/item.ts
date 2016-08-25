@@ -3,5 +3,6 @@
         damage?: string;
         defense?: number;
         dayAvailable?: number;
+        arcane?: boolean;
     }
 }

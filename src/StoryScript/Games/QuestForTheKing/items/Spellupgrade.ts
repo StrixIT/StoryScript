@@ -1,9 +1,11 @@
 ﻿module QuestForTheKing.Items {
-    export function Spellupgrade(): StoryScript.IItem {
+    export function Spellupgrade(): IItem {
         return {
             name: 'Spell Upgrade',
             damage: '2',
-            equipmentType: StoryScript.EquipmentType.Miscellaneous
+            equipmentType: StoryScript.EquipmentType.Miscellaneous,
+            dayAvailable: 2,
+            arcane: true
         }
     }
 }
