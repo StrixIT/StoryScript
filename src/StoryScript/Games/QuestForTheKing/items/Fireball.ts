@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Items {
-    export function Fireball(): StoryScript.IItem {
+    export function Fireball(): IItem {
         return {
             name: 'Fireball Spell',
             damage: '2',

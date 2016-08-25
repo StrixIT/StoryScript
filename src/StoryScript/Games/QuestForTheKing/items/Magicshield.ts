@@ -1,9 +1,11 @@
 ﻿module QuestForTheKing.Items {
-    export function Magicshield(): StoryScript.IItem {
+    export function Magicshield(): IItem {
         return {
             name: 'Magic Shield Spell',
             damage: '2',
-            equipmentType: StoryScript.EquipmentType.LeftHand
+            equipmentType: StoryScript.EquipmentType.LeftHand,
+            dayAvailable: 2,
+            arcane: false
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Items {
-    export function Rapier(): StoryScript.IItem {
+    export function Rapier(): IItem {
         return {
             name: 'Rapier',
             damage: '2',

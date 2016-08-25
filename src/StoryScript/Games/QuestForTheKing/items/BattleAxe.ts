@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Items {
-    export function Battleaxe(): StoryScript.IItem {
+    export function Battleaxe(): IItem {
         return {
             name: 'Battle Axe',
             damage: '2',
