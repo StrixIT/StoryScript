@@ -2,26 +2,25 @@
     export function HealersTent(): StoryScript.ILocation {
         return {
             name: 'Healers Tent',
+            descriptionSelector: (game: IGame) => {
+                return 'day' + game.currentDay;
+            },
             destinations: [
-                {
-                    text: 'Day 2',
-                    target: Locations.Day2
-                },
-                {
-
-                    text: 'Weapon Smith',
-                    target: Locations.WeaponSmith
-                },
-                {
-
-                    text: 'Fasold the Storyteller',
-                    target: Locations.Fasold1
-                },
-               
             ],
             trade: {
                 title: 'Trade with Siri',
                 description: 'Siri has several items for sale',
+                initCollection: (game: IGame, trade: ITrade) => {
+                    var reset = false;
+                    trade.currentDay = trade.currentDay || 0;
+
+                    if (game.currentDay != trade.currentDay) {
+                        trade.currentDay = game.currentDay;
+                        reset = true;
+                    }
+
+                    return reset;
+                },
                 buy: {
                     description: 'Sell to Siri',
                     emptyText: 'There is nothing for you to trade',

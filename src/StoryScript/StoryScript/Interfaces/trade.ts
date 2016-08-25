@@ -6,6 +6,7 @@
         buy?: IStock;
         currency?: number;
         ownItemsOnly?: boolean;
+        initCollection?: (game: IGame, trade: ITrade) => boolean;
     }
 
     export interface IStock {

@@ -2,24 +2,25 @@
     export function WeaponSmith(): StoryScript.ILocation {
         return {
             name: 'Weapon Smith',
+            descriptionSelector: (game: IGame) => {
+                return 'day' + game.currentDay;
+            },
             destinations: [
-                {
-                    text: 'Day 2',
-                    target: Locations.Day2
-                },              
-                {
-
-                    text: 'Healers Tent',
-                    target: Locations.HealersTent
-                },
-                {
-                    text: 'Fasold the Storyteller',
-                    target: Locations.Fasold1
-                }, 
             ],
             trade: {
                 title: 'Trade Bjarni',
                 description: 'Bjarni has several items for sale',
+                initCollection: (game: IGame, trade: ITrade) => {
+                    var reset = false;
+                    trade.currentDay = trade.currentDay || 0;
+
+                    if (game.currentDay != trade.currentDay) {
+                        trade.currentDay = game.currentDay;
+                        reset = true;
+                    }
+
+                    return reset;
+                },
                 buy: {
                     description: 'Sell to Bjarni',
                     emptyText: 'There is nothing for you to trade',

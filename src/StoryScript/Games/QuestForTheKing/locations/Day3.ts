@@ -10,21 +10,19 @@
                 {
 
                     text: 'Weapon Smith',
-                    target: Locations.WeaponSmith3
+                    target: Locations.WeaponSmith
                 },
                 {
 
                     text: 'Healers Tent',
-                    target: Locations.HealersTent3
+                    target: Locations.HealersTent
                 },
             ],
             enemies: [
                 Enemies.Shieldmaiden
             ],
             events: [
-                (game: IGame) => {
-                    game.currentDay = 3;
-                }
+                changeDay
             ]
         }
     }

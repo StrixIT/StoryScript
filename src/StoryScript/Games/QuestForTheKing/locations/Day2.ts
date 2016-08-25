@@ -13,19 +13,17 @@
                 {
 
                     text: 'Weapon Smith',
-                    target: Locations.WeaponSmith2
+                    target: Locations.WeaponSmith
                 },
                 {
 
                     text: 'Healers Tent',
-                    target: Locations.HealersTent2
+                    target: Locations.HealersTent
                 }
 
             ],
             events: [
-                (game: IGame) => {
-                    game.currentDay = 2;
-                }
+                changeDay
             ]
         }
     }
