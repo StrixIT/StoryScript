@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Items {
-    export function Leatherarmor(): StoryScript.IItem {
+    export function Leatherarmor():IItem {
         return {
             name: 'Leather Armor',
             damage: '2',

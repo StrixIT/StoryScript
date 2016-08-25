@@ -26,7 +26,7 @@
             ],
             enemies: [
                 Enemies.Farmboy
-            ]
+            ],        
         }
     }
 }
