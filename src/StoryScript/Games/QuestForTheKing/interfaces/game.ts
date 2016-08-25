@@ -10,6 +10,8 @@
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
         getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
+
+        currentDay?: number;
     }
 
     var storyScriptModule = angular.module("storyscript");
