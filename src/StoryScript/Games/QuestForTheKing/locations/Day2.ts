@@ -21,6 +21,11 @@
                     target: Locations.HealersTent2
                 }
 
+            ],
+            events: [
+                (game: IGame) => {
+                    game.currentDay = 2;
+                }
             ]
         }
     }

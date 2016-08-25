@@ -20,6 +20,11 @@
             ],
             enemies: [
                 Enemies.Shieldmaiden
+            ],
+            events: [
+                (game: IGame) => {
+                    game.currentDay = 3;
+                }
             ]
         }
     }

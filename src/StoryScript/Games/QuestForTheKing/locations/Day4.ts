@@ -10,7 +10,12 @@
             //],
             enemies: [
                 Enemies.SirAyric
-            ]    
+            ],
+            events: [
+                (game: IGame) => {
+                    game.currentDay = 4;
+                }
+            ]
         }
     }
 }

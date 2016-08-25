@@ -26,6 +26,11 @@
             ],
             enemies: [
                 Enemies.Farmboy
+            ],
+            events: [
+                (game: IGame) => {
+                    game.currentDay = 1;
+                }
             ]
         }
     }

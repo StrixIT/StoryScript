@@ -25,8 +25,8 @@
                 buy: {
                     description: 'Sell to Siri',
                     emptyText: 'There is nothing for you to trade',
-                    itemSelector: (item: IItem) => {
-                        return true;
+                    itemSelector: (game: IGame, item: IItem) => {
+                        return item.arcane;
                     },
                     maxItems: 5,
                     priceModifier: 0
@@ -34,8 +34,8 @@
                 sell: {
                     description: 'Buy from Siri',
                     emptyText: 'Siri has nothing to trade',
-                    itemSelector: (item: IItem) => {
-                        return true;
+                    itemSelector: (game: IGame, item: IItem) => {
+                        return game.currentDay == item.dayAvailable && item.arcane;
                     },
                     maxItems: 5,
                     priceModifier: (game: IGame) => {

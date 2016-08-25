@@ -13,7 +13,7 @@
         emptyText?: string;
         items?: ICollection<IItem>;
         priceModifier?: number | ((game: IGame) => number);
-        itemSelector?: (item: IItem) => boolean;
+        itemSelector?: (game: IGame, item: IItem) => boolean;
         maxItems?: number;
     }
 }
