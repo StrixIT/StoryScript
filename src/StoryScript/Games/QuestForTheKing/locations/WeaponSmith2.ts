@@ -19,7 +19,7 @@
                 buy: {
                     description: 'Sell to Bjarni',
                     emptyText: 'There is nothing for you to trade',
-                    itemSelector: (item: IItem) => {
+                    itemSelector: (game: IGame, item: IItem) => {
                         return true;
                     },
                     maxItems: 5,
@@ -28,7 +28,7 @@
                 sell: {
                     description: 'Buy from Bjarni',
                     emptyText: 'Bjarni has nothing to trade',
-                    itemSelector: (item: IItem) => {
+                    itemSelector: (game: IGame, item: IItem) => {
                         return true;
                     },
                     maxItems: 5,

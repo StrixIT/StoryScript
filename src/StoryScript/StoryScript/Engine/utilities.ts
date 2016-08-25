@@ -26,7 +26,7 @@
         return selection[index];
     }
 
-    export function randomList<T>(collection: T[] | ([() => T]), count: number, selector?: (game: IGame, item: T) => boolean): ICollection<T> {
+    export function randomList<T>(collection: T[] | ([() => T]), count: number, selector?: (item: T) => boolean): ICollection<T> {
         var selection = getFilteredInstantiatedCollection<T>(collection, selector);
         var results = <ICollection<T>>[];
 

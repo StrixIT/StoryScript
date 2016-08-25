@@ -9,13 +9,13 @@
             currency: 10,
             trade: {
                 buy: {
-                    itemSelector: (item: IItem) => {
+                    itemSelector: (game: IGame, item: IItem) => {
                         return item.damage != undefined;
                     },
                     maxItems: 3
                 },
                 sell: {
-                    itemSelector: (item: IItem) => {
+                    itemSelector: (game: IGame, item: IItem) => {
                         return item.damage != undefined && item.value <= 10;
                     },
                     maxItems: 5

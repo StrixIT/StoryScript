@@ -27,12 +27,16 @@
 
             var itemsForSale = trader.sell.items;
 
+            var selector = (item: IItem) => {
+                return trader.sell.itemSelector(self.game, item);
+            };
+
             if (!itemsForSale) {
-                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.sell.maxItems, trader.sell.itemSelector);
+                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.sell.maxItems, selector);
             }
 
             trader.sell.items = itemsForSale;
-            trader.buy.items = StoryScript.randomList<IItem>(self.game.character.items, trader.buy.maxItems, trader.buy.itemSelector);
+            trader.buy.items = StoryScript.randomList<IItem>(self.game.character.items, trader.buy.maxItems, selector);
         }
 
         canPay = (currency: number, value: number) => {

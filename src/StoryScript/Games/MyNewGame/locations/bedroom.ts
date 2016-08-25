@@ -14,7 +14,7 @@
                 buy: {
                     description: 'Put back in closet',
                     emptyText: 'You have nothing to put in the your closet',
-                    itemSelector: (item: IItem) => {
+                    itemSelector: (game: IGame, item: IItem) => {
                         return true;
                     },
                     maxItems: 5,
@@ -23,7 +23,7 @@
                 sell: {
                     description: 'Take out of closet',
                     emptyText: 'The closet is empty',
-                    itemSelector: (item: IItem) => {
+                    itemSelector: (game: IGame, item: IItem) => {
                         return true;
                     },
                     maxItems: 5,
