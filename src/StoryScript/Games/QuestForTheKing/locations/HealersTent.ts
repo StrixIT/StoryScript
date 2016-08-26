@@ -6,6 +6,11 @@
                 return 'day' + game.currentDay;
             },
             destinations: [
+                {
+
+                    text: 'Weapon Smith',
+                    target: Locations.WeaponSmith
+                }
             ],
             trade: {
                 title: 'Trade with Siri',

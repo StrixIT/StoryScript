@@ -16,8 +16,13 @@
                 createCharacter: self.createCharacter,
                 fight: self.fight,
                 hitpointsChange: self.hitpointsChange,
-                scoreChange: self.scoreChange
+                scoreChange: self.scoreChange,
+                setupGame: self.setupGame
             };
+        }
+
+        setupGame = (game: IGame) => {
+            game.currentDay = 0;
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
@@ -271,7 +276,6 @@
             };
 
         }
-
 
         public createCharacter(characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;

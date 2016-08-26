@@ -6,6 +6,10 @@
                 return 'day' + game.currentDay;
             },
             destinations: [
+                {
+                    text: 'Healers Tent',
+                    target: Locations.HealersTent
+                }
             ],
             trade: {
                 title: 'Trade Bjarni',
