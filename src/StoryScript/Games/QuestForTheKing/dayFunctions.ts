@@ -9,11 +9,11 @@
     function updateDestination(game: IGame, location: ICompiledLocation, day: number) {
         var dayLocation = <any>Locations['Day' + day];
 
-        var dayDestination = location.destinations.filter(d => d.target == dayLocation.name)[0];
+        var dayDestinations = location.destinations.filter(d => (<any>d.target).indexOf('Day') > -1);
 
-        if (dayDestination) {
-            location.destinations.remove(dayDestination);
-        }
+        dayDestinations.forEach(destination => {
+            location.destinations.remove(destination);
+        });
 
         location.destinations.push({
             text: game.locations.get(dayLocation).name,
