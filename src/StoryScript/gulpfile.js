@@ -29,6 +29,7 @@ function buildGame(nameSpace) {
         copyResources(nameSpace);
         copyCss(nameSpace);
         copyHtml(nameSpace);
+        copyConfig(nameSpace);
         compileTypeScript(nameSpace);
     }
 }
@@ -42,20 +43,22 @@ function copyLibraries() {
 }
 
 function copyResources(nameSpace) {
-    // Copy resources
     gulp.src([paths.root + 'Games/' + nameSpace + '/resources/**/*.*'])
         .pipe(gulp.dest(paths.webroot + 'resources'));
 }
 
 function copyCss(nameSpace) {
-    // Copy css
     gulp.src([paths.root + 'StoryScript/ui/styles/*.css', paths.root + 'Games/' + nameSpace + '/ui/styles/*.css'])
         .pipe(gulp.dest(paths.webroot + 'css'));
 }
 
 function copyHtml(nameSpace) {
-    // Copy html
     gulp.src([paths.root + 'StoryScript/**/*.html', paths.root + 'Games/' + nameSpace + '/**/*.html'])
+      .pipe(gulp.dest(paths.webroot));
+}
+
+function copyConfig(nameSpace) {
+    gulp.src([paths.root + '/bs-config.json', paths.root + 'Games/' + nameSpace + '/bs-config.json'])
       .pipe(gulp.dest(paths.webroot));
 }
 
