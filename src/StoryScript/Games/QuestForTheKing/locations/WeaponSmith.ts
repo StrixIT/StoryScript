@@ -14,6 +14,7 @@
             trade: {
                 title: 'Trade Bjarni',
                 description: 'Bjarni has several items for sale',
+                currency: 10,
                 initCollection: (game: IGame, trade: ITrade) => {
                     var reset = false;
                     trade.currentDay = trade.currentDay || 0;
@@ -31,8 +32,7 @@
                     itemSelector: (game: IGame, item: IItem) => {
                         return !item.arcane;
                     },
-                    maxItems: 5,
-                    priceModifier: 0
+                    maxItems: 5
                 },
                 sell: {
                     description: 'Buy from Bjarni',
@@ -40,10 +40,7 @@
                     itemSelector: (game: IGame, item: IItem) => {
                         return game.currentDay == item.dayAvailable && !item.arcane;
                     },
-                    maxItems: 5,
-                    priceModifier: (game: IGame) => {
-                        return 0;
-                    }
+                    maxItems: 5
                 }
             }
         }

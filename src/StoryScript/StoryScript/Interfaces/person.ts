@@ -3,6 +3,5 @@
         disposition: Disposition;
         trade?: ITrade;
         conversation?: IConversation;
-        currency: number;
     }
 }

@@ -4,7 +4,8 @@
             name: 'Nobleman',
             hitpoints: 15,
             attack: '1d6',
-            reward: 1
+            reward: 1,
+            currency: 15
         }
     }
 }

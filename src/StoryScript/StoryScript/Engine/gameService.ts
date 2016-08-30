@@ -261,6 +261,9 @@ module StoryScript {
                     enemy.items = <[IItem | (() => IItem)]>[];
                 }
 
+                self.game.character.currency = self.game.character.currency || 0;
+                self.game.character.currency += enemy.currency || 0;
+
                 self.game.statistics.enemiesDefeated = self.game.statistics.enemiesDefeated || 0;
                 self.game.statistics.enemiesDefeated += 1;
 
