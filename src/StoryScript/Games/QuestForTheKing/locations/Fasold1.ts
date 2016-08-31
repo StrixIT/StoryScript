@@ -16,7 +16,12 @@
 
                     text: 'Healers Tent',
                     target: Locations.HealersTent
-                }
+                },
+                {
+
+                    text: 'Ask about the Gods of Idunia',
+                    target: Locations.Gods
+                },       
             ]
         }
     }

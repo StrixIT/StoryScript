@@ -1,11 +1,16 @@
 ﻿module QuestForTheKing.Locations {
-    export function Skysister(): StoryScript.ILocation {
+    export function Gods(): StoryScript.ILocation {
         return {
-            name: 'The Sister of the Sky',
+            name: 'Gods of Idunia',
             destinations: [
                 {
                     text: 'Fasold the Storyteller',
                     target: Locations.Fasold1
+                },
+                {
+
+                    text: 'The Skysister',
+                    target: Locations.Skysister
                 },
                 {
 
@@ -16,13 +21,8 @@
 
                     text: 'The Moonsister',
                     target: Locations.Moonsister
-                },
-                {
-
-                    text: 'Lesser Sisters',
-                    target: Locations.Lessersisters
                 }
-            
+         
             ]
         }
     }
