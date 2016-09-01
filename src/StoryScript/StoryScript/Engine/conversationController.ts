@@ -58,12 +58,12 @@
                         switch (type) {
                             case 'item': {
                                 // Check item available. Item list first, equipment second.
-                                var hasItem = self.game.character.items.get(value) != null;
+                                var hasItem = self.game.character.items.get(value) != undefined;
 
                                 if (!hasItem) {
                                     for (var i in self.game.character.equipment) {
                                         var slotItem = <IItem>self.game.character.equipment[i];
-                                        hasItem = slotItem.id.toLowerCase() === value;
+                                        hasItem = slotItem != undefined && slotItem != null && slotItem.id != undefined && slotItem.id.toLowerCase() === value;
                                     }
                                 }
 
