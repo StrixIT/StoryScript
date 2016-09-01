@@ -83,7 +83,7 @@
 
     function matchById(id) {
         return function (x) {
-            return x.id === id || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name === id));
+            return x.id.toLowerCase() === id.toLowerCase() || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name === id));
         };
     }
 }

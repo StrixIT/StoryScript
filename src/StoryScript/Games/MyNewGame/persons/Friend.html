@@ -7,8 +7,11 @@
             <reply node="fine">
                 Fine, thanks.
             </reply>
-            <reply node="sick" requires="strength=1">
-                Not so great, actually. I feel sick.
+            <reply node="workout" requires="strength=3">
+                Great. I have just completed my workout.
+            </reply>
+            <reply node="garden" requires="location=garden">
+                I just walked through the garden.
             </reply>
         </replies>
     </node>
@@ -17,6 +20,9 @@
             Back so soon?
         </p>
         <replies>
+            <reply requires="item=basementkey">
+                I found the key to the basement.
+            </reply>
             <reply>
                 Never mind. See you later.
             </reply>
@@ -32,9 +38,9 @@
             </reply>
         </replies>
     </node>
-    <node name="sick">
+    <node name="workout">
         <p>
-            That sucks! Anything I can do to help?
+            I can see that.
         </p>
         <replies>
             <reply>
