@@ -5,7 +5,8 @@
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             dayAvailable: 2,
-            arcane: false
+            arcane: false,
+            value: 15
         }
     }
 }

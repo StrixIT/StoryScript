@@ -12,7 +12,7 @@
                 }
             ],
             trade: {
-                title: 'Trade Bjarni',
+                title: 'Trade with Bjarni',
                 description: 'Bjarni has several items for sale',
                 currency: 10,
                 initCollection: (game: IGame, trade: ITrade) => {

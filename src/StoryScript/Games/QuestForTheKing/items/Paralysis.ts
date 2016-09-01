@@ -5,7 +5,8 @@
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Hands,
             dayAvailable: 3,
-            arcane: true
+            arcane: true,
+            value: 30
         }
     }
 }

@@ -3,7 +3,8 @@
         return {
             name: 'Fireball Spell',
             damage: '2',
-            equipmentType: StoryScript.EquipmentType.LeftHand
+            equipmentType: StoryScript.EquipmentType.LeftHand,
+            value: 5
         }
     }
 }
