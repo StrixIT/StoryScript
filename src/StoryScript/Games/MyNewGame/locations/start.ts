@@ -28,7 +28,8 @@
             ],
             items: [
                 Items.Sword,
-                Items.LeatherBoots
+                Items.LeatherBoots,
+                Items.BasementKey
             ],
             persons: [
                 Persons.Friend
