@@ -4,6 +4,6 @@
         defense?: number;
         dayAvailable?: number;
         arcane?: boolean;
-        attackText?: Text;
+        attackText?: string;
     }
 }
