@@ -311,7 +311,7 @@
             return character;
         }
 
-        fight = (enemy: StoryScript.IEnemy) => {
+        fight = (enemy:IEnemy) => {
             var self = this;
             var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
             var combatText = self.game.character.equipment.rightHand ? self.game.character.equipment.rightHand.attackText : '';

@@ -5,7 +5,9 @@
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             dayAvailable: 2,
-            arcane: true
+            arcane: true,
+            value: 15,
+            attackText: 'You cast your shockbolt'
         }
     }
 }

@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.LeftHand,
             dayAvailable: 3,
             arcane: false,
-            value: 25
+            value: 25,
+            attackText: 'You swing your heavy mace'
         }
     }
 }

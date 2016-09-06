@@ -21,8 +21,12 @@
 
                     text: 'The Moonsister',
                     target: Locations.Moonsister
-                }
-         
+                },
+                {
+
+                    text: 'Lesser Sisters',
+                    target: Locations.Lessersisters
+                }        
             ]
         }
     }
