@@ -4,7 +4,8 @@
             name: 'Warhammer',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
-            value: 5
+            value: 5,
+            attackText: 'You swing your warhammer'
         }
     }
 }

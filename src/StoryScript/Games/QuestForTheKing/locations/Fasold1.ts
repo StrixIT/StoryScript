@@ -21,7 +21,12 @@
 
                     text: 'Ask about the Gods of Idunia',
                     target: Locations.Gods
-                },       
+                },     
+                {
+
+                    text: 'Ask about the kingdom of Idunia',
+                    target: Locations.Idunia
+                },  
             ]
         }
     }

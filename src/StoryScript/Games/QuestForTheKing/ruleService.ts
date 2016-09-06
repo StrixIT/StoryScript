@@ -311,9 +311,9 @@
             return character;
         }
 
-        fight = (enemy: StoryScript.IEnemy) => {
+        fight = (enemy:IEnemy) => {
             var self = this;
-            var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
+            var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage')
             self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
             enemy.hitpoints -= damage;
 

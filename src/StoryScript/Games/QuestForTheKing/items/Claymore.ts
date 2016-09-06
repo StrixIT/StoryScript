@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.Hands,
             dayAvailable: 3,
             arcane: false,
-            value: 30
+            value: 30,
+            attackText: 'You swing your claymore'
         }
     }
 }

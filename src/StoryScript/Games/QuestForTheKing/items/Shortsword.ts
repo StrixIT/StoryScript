@@ -3,7 +3,10 @@
         return {
             name: 'Shortsword',
             damage: '2',
-            equipmentType: StoryScript.EquipmentType.LeftHand
+            equipmentType: StoryScript.EquipmentType.LeftHand,
+            arcane: false,
+            value: 15,
+            attackText: 'You swing your shortsword'
         }
     }
 }
