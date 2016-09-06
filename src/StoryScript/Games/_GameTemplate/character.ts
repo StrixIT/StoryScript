@@ -8,19 +8,19 @@
 
         // Add character properties here.
 
-        items: StoryScript.ICollection<StoryScript.IItem> = [];
+        items: StoryScript.ICollection<IItem> = [];
 
         equipment: {
-            head: StoryScript.IItem,
-            amulet: StoryScript.IItem,
-            body: StoryScript.IItem,
-            hands: StoryScript.IItem,
-            leftHand: StoryScript.IItem,
-            leftRing: StoryScript.IItem,
-            rightHand: StoryScript.IItem,
-            rightRing: StoryScript.IItem,
-            legs: StoryScript.IItem,
-            feet: StoryScript.IItem
+            head: IItem,
+            amulet: IItem,
+            body: IItem,
+            hands: IItem,
+            leftHand: IItem,
+            leftRing: IItem,
+            rightHand: IItem,
+            rightRing: IItem,
+            legs: IItem,
+            feet: IItem
         };
 
         constructor() {

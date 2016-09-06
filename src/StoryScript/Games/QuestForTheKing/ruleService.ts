@@ -314,6 +314,9 @@
         fight = (enemy: StoryScript.IEnemy) => {
             var self = this;
             var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
+            var combatText = self.game.character.equipment.rightHand ? self.game.character.equipment.rightHand.attackText : '';
+            combatText = self.game.character.equipment.leftHand ? (combatText ? combatText + '. ' : '') + self.game.character.equipment.leftHand.attackText : combatText;
+            self.game.logToCombatLog(combatText);
             self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
             enemy.hitpoints -= damage;
 

@@ -14,11 +14,11 @@
         items: StoryScript.ICollection<StoryScript.IItem> = [];
 
         equipment: {
-            head: StoryScript.IItem,
-            body: StoryScript.IItem,
-            leftHand: StoryScript.IItem,
-            rightHand: StoryScript.IItem,
-            feet: StoryScript.IItem
+            head: IItem,
+            body: IItem,
+            leftHand: IItem,
+            rightHand: IItem,
+            feet: IItem
         };
 
         constructor() {
