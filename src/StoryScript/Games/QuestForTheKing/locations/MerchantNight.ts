@@ -1,13 +1,15 @@
 ﻿module QuestForTheKing.Locations {
-    export function BrennusDayDefeated(): StoryScript.ILocation {
+    export function MerchantNight(): StoryScript.ILocation {
         return {
-            name: 'Brennus',
+            name: 'The Merchant',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map1
-                },
+                },  
+               
             ]
+                                       
         }
     }
-}
+}    

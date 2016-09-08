@@ -16,7 +16,11 @@
             enemies: [
                 Enemies.Ghost
 
+            ],
+            items: [
+                Items.Parchment,
+                Items.Bow,
             ]
         }
     }
-}    
+}

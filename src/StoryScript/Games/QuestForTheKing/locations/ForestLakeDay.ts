@@ -4,8 +4,8 @@
             name: 'Forest Lake',
             destinations: [
                 {
-                    text: 'Defeated the Bandits',
-                    target: Locations.BanditsDefeated
+                    text: 'Back to the Map',
+                    target: Locations.Quest1map1
                 }
             ],
             enemies: [

@@ -1,16 +1,14 @@
 ﻿module QuestForTheKing.Locations {
-    export function BanditsDefeated(): StoryScript.ILocation {
+    export function Searchmount(): StoryScript.ILocation {
         return {
-            name: 'Defeated the Bandits',
+            name: 'Searching the mount',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map1
-                },              
-          
-            ]
+                }                         
+                    
+                ]
         }
     }
 }    
-
-

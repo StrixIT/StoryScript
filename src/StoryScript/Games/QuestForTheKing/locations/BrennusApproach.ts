@@ -4,8 +4,8 @@
             name: 'Brennus',
             destinations: [
                 {
-                    text: 'Defeated Brennus',
-                    target: Locations.BrennusNightDefeated
+                    text: 'Back to the Map',
+                    target: Locations.Quest1map1
                 }
             ],
             enemies: [

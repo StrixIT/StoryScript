@@ -14,8 +14,18 @@
                 {
                     text: 'Go to the Forest Lake',
                     target: Locations.ForestLakeDay
-                },           
-            ]
+                },       
+                {
+                    text: 'Go to the Stone Mount',
+                    target: Locations.StonemountDay
+                },
+                {
+                    text: 'Go to the Merchant',
+                    target: Locations.MerchantDay
+                },
+            
+            ]    
+           
         }
     }
 }
