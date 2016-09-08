@@ -1,12 +1,12 @@
 ﻿module QuestForTheKing.Locations {
-    export function Quest1(): StoryScript.ILocation {
+    export function BrennusDayDefeated(): StoryScript.ILocation {
         return {
-            name: 'Your First Quest',
+            name: 'Brennus',
             destinations: [
                 {
-                    text: 'Begin your Quest',
+                    text: 'Back to the Map',
                     target: Locations.Quest1map1
-                }             
+                },
             ]
         }
     }
