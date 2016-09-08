@@ -54,7 +54,7 @@
             value: function (item: any) {
                 // Need to cast to any for ES5 and lower
                 var index = (<any>Array.prototype).findIndex.call(this, function (x) {
-                    return x === item || (item.id && x.id && item.id === x.id);
+                    return x === item || (typeof item === 'function' && item.name === x.id) || (item.id && x.id && item.id === x.id);
                 });
 
                 if (index != -1) {
