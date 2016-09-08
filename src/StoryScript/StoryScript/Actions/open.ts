@@ -1,4 +1,4 @@
-﻿module DangerousCave.Actions {
+﻿module StoryScript.Actions {
     export function Open(callback: (game: IGame, destination: StoryScript.IDestination) => void) {
         return function (game: IGame, destination: StoryScript.IDestination) {
             delete destination.barrier;

@@ -6,7 +6,7 @@
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             open: {
                 text: 'Open de deur met de zwarte sleutel',
-                action: Actions.OpenWithKey((game: IGame, destination: StoryScript.IDestination) => {
+                action: StoryScript.Actions.OpenWithKey((game: IGame, destination: StoryScript.IDestination) => {
                     game.logToLocationLog('Je opent de deur.');
                     destination.text = 'Donkere kamer';
                 })

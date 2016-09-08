@@ -26,11 +26,6 @@
                     target: Locations.DirtRoad
                 }
             ],
-            items: [
-                Items.Sword,
-                Items.LeatherBoots,
-                Items.BasementKey
-            ],
             persons: [
                 Persons.Friend
             ]

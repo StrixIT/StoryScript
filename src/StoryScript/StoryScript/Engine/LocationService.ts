@@ -61,7 +61,7 @@ module StoryScript {
             // with the target id when adding destinations and enemies at runtime.
             locations.forEach(function (location) {
                 location.destinations = location.destinations || [];
-                location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination);
+                location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
                 location.enemies = location.enemies || [];
 
                 location.enemies.push = (<any>location.enemies.push).proxy((function (): Function {
@@ -125,22 +125,7 @@ module StoryScript {
                         (<any>destination).isPreviousLocation = true;
                     }
 
-                    if (destination.barrier && destination.barrier.key) {
-                        var barrierKey = <IKey>game.character.items.get(destination.barrier.key);
-
-                        if (barrierKey) {
-
-                            // Todo: improve using find on barrier actions.
-                            var existing = null;
-                            destination.barrier.actions.forEach(x => { if (x.text == barrierKey.open.text) { existing = x; }; });
-
-                            if (existing) {
-                                destination.barrier.actions.splice(destination.barrier.actions.indexOf(existing), 1);
-                            }
-
-                            destination.barrier.actions.push(barrierKey.open);
-                        }
-                    }
+                    addKeyAction(self.game, destination);
                 });
             }
 
@@ -214,6 +199,18 @@ module StoryScript {
                 self.getFunctions(location, null);
                 compiledLocations.push(location);
             }
+
+            // TODO
+            // Register all functions for enemies/persons/items that are added to the game later and are not
+            // referenced when loading the world.
+            //for (var n in self.definitions.enemies) {
+            //}
+
+            //for (var n in self.definitions.persons) {
+            //}
+
+            //for (var n in self.definitions.items) {
+            //}
 
             self.dataService.functionList = self.functionList;
             return compiledLocations;
@@ -335,11 +332,10 @@ module StoryScript {
             var originalFunction = args.shift();
 
             // Replace the target function pointer with the target id.
-            for (var n in args) {
-                var param = args[n];
-                param.target = param.target.name;
-            }
-
+            var param = args[0];
+            param.target = param.target.name;
+            addKeyAction(args[1], param);
+            args.splice(1, 1);
             originalFunction.apply(this, args);
         }
 
@@ -479,6 +475,25 @@ module StoryScript {
             }
             else {
                 game.currentLocation.text = game.currentLocation.text || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
+            }
+        }
+    }
+
+    function addKeyAction(game: IGame, destination: IDestination) {
+        if (destination.barrier && destination.barrier.key) {
+            var barrierKey = <IKey>game.character.items.get(destination.barrier.key);
+
+            if (barrierKey) {
+
+                // Todo: improve using find on barrier actions.
+                var existing = null;
+                destination.barrier.actions.forEach(x => { if (x.text == barrierKey.open.text) { existing = x; }; });
+
+                if (existing) {
+                    destination.barrier.actions.splice(destination.barrier.actions.indexOf(existing), 1);
+                }
+
+                destination.barrier.actions.push(barrierKey.open);
             }
         }
     }

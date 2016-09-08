@@ -1,14 +1,14 @@
 ﻿module StoryScript {
     // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
     if ((<any>Function.prototype).proxy === undefined) {
-        (<any>Function.prototype).proxy = function (proxyFunction: Function) {
+        (<any>Function.prototype).proxy = function (proxyFunction: Function, ...params) {
             var self = this;
 
             return (function () {
                 var func = function () {
                     var args = [].slice.call(arguments);
                     args.splice(0, 0, self);
-                    return proxyFunction.apply(this, args);
+                    return proxyFunction.apply(this, args.concat(...params));
                 };
 
                 (<any>func).isProxy = true;

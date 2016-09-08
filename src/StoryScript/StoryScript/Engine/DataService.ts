@@ -98,7 +98,7 @@ module StoryScript {
                 var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
 
                 if (!value) {
-                    return;
+                    continue;
                 }
                 else if (Array.isArray(value)) {
                     clone[key] = [];

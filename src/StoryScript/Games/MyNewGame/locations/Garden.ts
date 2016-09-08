@@ -22,16 +22,13 @@
                             text: 'Enter the basement',
                             target: Locations.Basement,
                             barrier: {
+                                key: Items.BasementKey,
                                 text: 'Wooden trap door',
                                 actions: [
                                     {
                                         text: 'Inspect',
-                                        action: () => {
-                                        }
-                                    },
-                                    {
-                                        text: 'Open',
-                                        action: () => {
+                                        action: (game: IGame) => {
+                                            game.logToLocationLog('The trap door looks old but still strong due to steel reinforcements. It is not locked.');
                                         }
                                     }
                                 ]

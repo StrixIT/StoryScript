@@ -1,7 +1,12 @@
-﻿module DangerousCave.Actions {
+﻿module StoryScript.Actions {
     export function OpenWithKey(callBack: (game: IGame, destination: StoryScript.IDestination) => void) {
         return function (game: IGame, destination: StoryScript.IDestination) {
-            // Todo: remove the key used from the character's inventory.
+            var key = destination.barrier.key;
+            var keepAfterUse = key().keepAfterUse;
+
+            if (keepAfterUse !== undefined && keepAfterUse !== true) {
+                game.character.items.remove(key);
+            }
 
             delete destination.barrier;
 

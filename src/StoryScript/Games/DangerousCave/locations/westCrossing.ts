@@ -23,7 +23,7 @@
                             },
                             {
                                 text: 'Open de deur',
-                                action: Actions.Open(function (game, destination) {
+                                action: StoryScript.Actions.Open(function (game, destination) {
                                     game.logToLocationLog('Je opent de deur.');
                                     destination.text = 'Donkere kamer';
                                 })

@@ -21,7 +21,7 @@
                             },
                             {
                                 text: 'Open de deur',
-                                action: Actions.Open((game: IGame, destination: StoryScript.IDestination) => {
+                                action: StoryScript.Actions.Open((game: IGame, destination: StoryScript.IDestination) => {
                                     game.logToLocationLog('Je opent de eikenhouten deur.');
                                     destination.text = 'Gang (noord)';
                                 })

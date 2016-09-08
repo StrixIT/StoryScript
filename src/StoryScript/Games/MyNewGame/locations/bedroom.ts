@@ -15,7 +15,7 @@
                     description: 'Put back in closet',
                     emptyText: 'You have nothing to put in the your closet',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return true;
+                        return item.value != undefined;
                     },
                     maxItems: 5,
                     priceModifier: 0
@@ -24,7 +24,7 @@
                     description: 'Take out of closet',
                     emptyText: 'The closet is empty',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return true;
+                        return item.value != undefined;
                     },
                     maxItems: 5,
                     priceModifier: (game: IGame) => {
