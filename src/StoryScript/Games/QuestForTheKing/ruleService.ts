@@ -330,7 +330,7 @@
                 var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');              
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                 self.game.character.currentHitpoints -= damage;            
-                self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+                setTimeout(self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!'), 300)               
                 self.game.logToCombatLog(combatText);
             });
         }
