@@ -3,5 +3,6 @@
         text: string;
         target: () => ILocation;
         barrier?: IBarrier;
+        style?: string;
     }
 }

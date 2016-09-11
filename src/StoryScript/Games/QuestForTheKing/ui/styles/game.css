@@ -114,3 +114,9 @@ table td {
 blockquote {
     font-size: smaller;
 }
+
+.location-danger, .location-danger:hover {
+    background-color: #d9534f;
+    border-color: #d9534f;
+    color: white;
+}
