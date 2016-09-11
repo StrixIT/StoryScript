@@ -126,20 +126,20 @@
                     {
                         questions: [
                             {
-                                question: 'Your village holds the yearly Harvest Festival, which includes many games. Do you:',
+                                question: 'Your grandfather has been telling you stories of the gods of the old homeland. Stories of the mighty Thor, the wise Odin and the clever Loki. He promises to teach you a prayer to one of the gods to invoke his blessing. Which god do you choose?',
                                 entries: [
                                     {
-                                        text: 'Participate in the Wrestling contest?',
+                                        text: 'Thor, the god of storms and lightning, the destroyer of giants.',
                                         value: 'warrior',
                                         bonus: 1
                                     },
                                     {
-                                        text: 'Participate in the Archery contest?',
+                                        text: 'Loki, the god of trickery and deceit, the troublemaker.',
                                         value: 'rogue',
                                         bonus: 1
                                     },
                                     {
-                                        text: 'Participate in the Puzzle contest?',
+                                        text: 'Odin, the god of wisdom and insight, the Allfather.',
                                         value: 'wizard',
                                         bonus: 1
                                     },
@@ -340,7 +340,7 @@
                 var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');              
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                 self.game.character.currentHitpoints -= damage;            
-                self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+                setTimeout(self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!'), 300)               
                 self.game.logToCombatLog(combatText);
             });
         }

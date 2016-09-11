@@ -1,7 +1,7 @@
 ﻿module QuestForTheKing.Locations {
-    export function Quest1map1(): StoryScript.ILocation {
+    export function Quest1map2(): StoryScript.ILocation {
         return {
-            name: 'The Forest of Myrr',
+            name: 'The Northern Forest',
             destinations: [
                 {
                     text: 'Go to the Tent',
@@ -23,10 +23,6 @@
                     text: 'Go to the Merchant',
                     target: Locations.MerchantDay
                 },
-                {
-                    text: 'Go to the Northern Forest',
-                    target: Locations.Quest1map2
-                }
             
             ]    
            
