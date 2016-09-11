@@ -12,12 +12,19 @@
             self.game = game;
 
             return {
+                getSheetAttributes: self.getSheetAttributes,
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 fight: self.fight,
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange
             };
+        }
+
+        getSheetAttributes = () => {
+            return [
+                // Add character sheet property names here
+            ];
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {

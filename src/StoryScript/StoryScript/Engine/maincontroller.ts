@@ -10,6 +10,7 @@
         modalSettings: IModalSettings;
         game: IGame;
         texts: any;
+        displayCharacterAttributes: string[];
     }
 
     export class MainController {
@@ -24,10 +25,6 @@
         private texts: IInterfaceTexts;
         private encounters: ICollection<IEnemy>;
         private modalSettings: IModalSettings;
-
-        // Todo: can this be done differently?
-        private nonDisplayAttributes: string[] = ['name', 'items', 'equipment', 'hitpoints', 'currentHitpoints', 'level', 'score', 'currency'];
-        private characterAttributes: string[];
 
         // Todo: can this be done differently?
         public reset(): void { };
@@ -55,7 +52,7 @@
 
             self.$scope.texts = self.texts;
 
-            self.getCharacterAttributesToShow();
+            self.$scope.displayCharacterAttributes = self.ruleService.getSheetAttributes();
 
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
@@ -74,7 +71,7 @@
         startNewGame = () => {
             var self = this;
             self.gameService.startNewGame(self.game.createCharacterSheet);
-            self.getCharacterAttributesToShow();
+            self.$scope.displayCharacterAttributes = self.ruleService.getSheetAttributes();
             self.game.state = StoryScript.GameState.Play;
         }
 
@@ -347,19 +344,6 @@
 
                 (<any>scope).controller.gameService.changeGameState(newValue);
             }
-        }
-
-        private getCharacterAttributesToShow() {
-            var self = this;
-            self.characterAttributes = [];
-
-            for (var n in self.game.character) {
-                if (self.game.character.hasOwnProperty(n) && self.nonDisplayAttributes.indexOf(n) == -1) {
-                    self.characterAttributes.push(n);
-                }
-            }
-
-            self.characterAttributes.sort();
         }
 
         private setDisplayTexts() {
