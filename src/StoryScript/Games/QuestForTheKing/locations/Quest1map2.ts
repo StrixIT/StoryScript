@@ -4,25 +4,21 @@
             name: 'The Northern Forest',
             destinations: [
                 {
-                    text: 'Go to the Tent',
-                    target: Locations.BrennusDay
+                    text: 'Go to the Magic Flower',
+                    target: Locations.MagicflowersDay
                 },
                 {
-                    text: 'Go to the Woodcutters Lodge',
-                    target: Locations.WoodcutterDay
+                    text: 'Go to the Fishermans Cottage',
+                    target: Locations.FishermanDay
                 },
                 {
-                    text: 'Go to the Forest Lake',
-                    target: Locations.ForestLakeDay
+                    text: 'Go to the Mermaid',
+                    target: Locations.MermaidDay
                 },       
                 {
-                    text: 'Go to the Stone Mount',
-                    target: Locations.StonemountDay
-                },
-                {
-                    text: 'Go to the Merchant',
-                    target: Locations.MerchantDay
-                },
+                    text: 'Go to the Forest Pond',
+                    target: Locations.ForestPondDay
+                },              
             
             ]    
            
