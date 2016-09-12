@@ -1,13 +1,16 @@
 ﻿module QuestForTheKing.Locations {
-    export function LeaveShadow(): StoryScript.ILocation {
+    export function Castlequestdone(): StoryScript.ILocation {
         return {
-            name: 'Leaving the shadow alone',
+            name: 'Returned with the Flower',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map2
-                }              
-            ],                     
+                }
+            ],
+            items: [
+                Items.Beesting,
+            ]
         }
     }
-}    
+}

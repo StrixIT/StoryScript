@@ -18,7 +18,16 @@
                 {
                     text: 'Go to the Forest Pond',
                     target: Locations.ForestPondDay
-                },              
+                },  
+                {
+                    text: 'Go to the Honeycom Castle',
+                    target: Locations.HoneycastleDay
+                },      
+                {
+                    text: 'Go to the Octopus',
+                    target: Locations.OctopusDay
+                },
+
             
             ]    
            

@@ -5,7 +5,7 @@
             destinations: [
                 {
                     text: 'Back to the Map',
-                    target: Locations.Quest1map1
+                    target: Locations.Quest1map2
                 }              
             ],
                 enemies: [

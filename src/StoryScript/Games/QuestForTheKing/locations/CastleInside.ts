@@ -1,13 +1,13 @@
 ﻿module QuestForTheKing.Locations {
-    export function LeaveShadow(): StoryScript.ILocation {
+    export function CastleInside(): StoryScript.ILocation {
         return {
-            name: 'Leaving the shadow alone',
+            name: 'Entering the Castle',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map2
                 }              
-            ],                     
+            ],             
         }
     }
 }    
