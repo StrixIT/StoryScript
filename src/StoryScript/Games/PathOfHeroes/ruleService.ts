@@ -12,12 +12,31 @@
             self.game = game;
 
             return {
+                getSheetAttributes: self.getSheetAttributes,
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 fight: self.fight,
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange
             };
+        }
+
+        getSheetAttributes = () => {
+            return [
+                'currency',
+                'strength',
+                'melee',
+                'armor',
+                'agility',
+                'ranged',
+                'stealth',
+                'intelligence',
+                'creation',
+                'destruction',
+                'charisma',
+                'body',
+                'spirit'
+            ];
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {

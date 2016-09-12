@@ -1,5 +1,6 @@
 ﻿module StoryScript {
     export interface IRuleService {
+        getSheetAttributes(): string[];
         setupGame?(game: IGame): void;
         getCreateCharacterSheet(): ICreateCharacter
         createCharacter(characterData: ICreateCharacter): ICharacter;

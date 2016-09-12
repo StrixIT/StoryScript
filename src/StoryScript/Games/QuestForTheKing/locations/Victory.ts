@@ -9,7 +9,8 @@
                 },
                 {
                     text: 'Start your first Quest',
-                    target: Locations.Quest1
+                    target: Locations.Quest1,
+                    style: 'location-danger'
                 }
             ]           
         }

@@ -12,6 +12,7 @@
             self.game = game;
 
             return {
+                getSheetAttributes: self.getSheetAttributes,
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 enterLocation: self.enterLocation,
@@ -20,6 +21,15 @@
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange
             };
+        }
+
+        getSheetAttributes = () => {
+            return [
+                'kracht',
+                'vlugheid',
+                'oplettendheid',
+                'defense'
+            ];
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {

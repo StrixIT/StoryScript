@@ -12,12 +12,23 @@
             self.game = game;
 
             return {
+                getSheetAttributes: self.getSheetAttributes,
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 fight: self.fight,
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange
             };
+        }
+
+        getSheetAttributes = () => {
+            return [
+                'vechten',
+                'sluipen',
+                'zoeken',
+                'toveren',
+                'snelheid'
+            ];
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {

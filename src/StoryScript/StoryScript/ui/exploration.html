@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td ng-repeat="destination in controller.game.currentLocation.destinations">
-                    <button type="button" class="btn btn-info" ng-click="controller.changeLocation(destination.target)" ng-disabled="destination.barrier || controller.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ texts.back }}</span> {{ destination.text }}</button>
+                    <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="controller.changeLocation(destination.target)" ng-disabled="destination.barrier || controller.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ texts.back }}</span> {{ destination.text }}</button>
                 </td>
             </tr>
         </tbody>

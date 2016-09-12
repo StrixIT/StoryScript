@@ -1,7 +1,7 @@
 ﻿<fieldset>
     <legend>{{ game.character.name }}</legend>
     <ul>
-        <li ng-repeat="attribute in controller.characterAttributes">
+        <li ng-repeat="attribute in displayCharacterAttributes">
             {{ texts.titleCase(texts.format(attribute)) }} {{ game.character[attribute] }}
         </li>
         <li>{{ texts.hitpoints }} {{ game.character.currentHitpoints }} / {{ game.character.hitpoints }}</li>

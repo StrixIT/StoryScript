@@ -12,6 +12,7 @@
             self.game = game;
 
             return {
+                getSheetAttributes: self.getSheetAttributes,
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 fight: self.fight,
@@ -19,6 +20,15 @@
                 scoreChange: self.scoreChange,
                 setupGame: self.setupGame
             };
+        }
+
+        getSheetAttributes = () => {
+            return [
+                'strength',
+                'agility',
+                'intelligence',
+                'charisma',
+            ];
         }
 
         setupGame = (game: IGame) => {
