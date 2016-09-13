@@ -25,7 +25,8 @@
                 },
                 {
                     text: 'Go to the Northern Forest',
-                    target: Locations.Quest1map2
+                    target: Locations.Quest1map2,
+                    style: 'location-danger'
                 }
             
             ]    
