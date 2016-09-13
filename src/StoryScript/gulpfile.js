@@ -1,6 +1,7 @@
 ﻿var gulp = require("gulp"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
+    flatten = require('gulp-flatten'),
     ts = require('gulp-typescript'),
     merge = require('merge'),
     sourcemaps = require('gulp-sourcemaps'),
@@ -53,8 +54,13 @@ function copyCss(nameSpace) {
 }
 
 function copyHtml(nameSpace) {
-    gulp.src([paths.root + 'StoryScript/**/*.html', paths.root + 'Games/' + nameSpace + '/**/*.html'])
-      .pipe(gulp.dest(paths.webroot));
+    gulp.src([paths.root + 'StoryScript/ui/**/*.html', paths.root + 'Games/' + nameSpace + '/ui/**/*.html'])
+        .pipe(flatten())
+        .pipe(gulp.dest(paths.webroot + 'ui'));
+
+    gulp.src([paths.root + 'Games/' + nameSpace + '/locations/**/*.html'])
+        .pipe(flatten())
+        .pipe(gulp.dest(paths.webroot + 'locations'));
 }
 
 function copyConfig(nameSpace) {
