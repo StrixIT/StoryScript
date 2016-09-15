@@ -106,10 +106,10 @@ module StoryScript {
                 }
                 else if (typeof value === "object") {
                     if (Array.isArray(clone)) {
-                        clone.push(angular.copy(value));
+                        clone.push({});
                     }
                     else {
-                        clone[key] = angular.copy(value);
+                        clone[key] = {};
                     }
 
                     self.buildClone(value, pristineValue, clone[key]);
