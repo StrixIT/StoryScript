@@ -64,25 +64,6 @@ module StoryScript {
 
             self.getDefinitions();
 
-            self.game.createCharacterSheet = self.ruleService.getCreateCharacterSheet();
-            self.game.createCharacterSheet.currentStep = 0;
-            self.game.createCharacterSheet.nextStep = (data: ICreateCharacter) => {
-                var selector = data.steps[data.currentStep].nextStepSelector;
-                var previousStep = data.currentStep;
-
-                if (selector) {
-                    var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
-                    data.currentStep = nextStep;
-                }
-                else {
-                    data.currentStep++;
-                }
-
-                if (data.steps[data.currentStep].initStep) {
-                    data.steps[data.currentStep].initStep(data, previousStep, data.steps[data.currentStep]);
-                }
-            };
-
             if (self.ruleService.setupGame) {
                 self.ruleService.setupGame(self.game);
             }

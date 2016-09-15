@@ -1,18 +1,20 @@
-﻿<h1>{{ texts.newGame }}</h1>
-<div class="row" ng-repeat="step in game.createCharacterSheet.steps" ng-show="game.createCharacterSheet.currentStep == $index">
-    <div class="row question-row" ng-repeat="question in step.questions">
-        <span class="col-md-4 question-label">{{ question.question }}</span>
-        <select strix-drop-down class="col-md-8 question-select" ng-model="question.selectedEntry" source="question.entries" option-label="text"></select>
-    </div>
-    <div class="row attribute-row" ng-repeat="attribute in step.attributes">
-        <div class="attribute-label" ng-show="attribute.entries.length > 1">{{ attribute.question }}</div>
-        <div class="row" ng-repeat="entry in attribute.entries" ng-init="parentAttribute = attribute">
-            <span class="col-md-4 question-label" ng-hide="parentAttribute.entries.length == 1">{{ texts.titleCase(entry.attribute) }}</span>
-            <span class="col-md-4 question-label" ng-show="parentAttribute.entries.length == 1">{{ parentAttribute.question }}</span>
-            <input class="col-md-8 question-input" type="text" ng-if="!entry.min && !entry.max" ng-model="entry.value" />
-            <input class="col-md-8 question-input" type="number" ng-if="entry.min || entry.max" min="{{ entry.min }}" max="{{ entry.max }}" ng-model="entry.value" />
+﻿<div ng-controller="CreateCharacterController as createCharacterController">
+    <h1>{{ texts.newGame }}</h1>
+    <div class="row" ng-repeat="step in sheet.steps" ng-show="sheet.currentStep == $index">
+        <div class="row question-row" ng-repeat="question in step.questions">
+            <span class="col-md-4 question-label">{{ question.question }}</span>
+            <select strix-drop-down class="col-md-8 question-select" ng-model="question.selectedEntry" source="question.entries" option-label="text"></select>
         </div>
+        <div class="row attribute-row" ng-repeat="attribute in step.attributes">
+            <div class="attribute-label" ng-show="attribute.entries.length > 1">{{ attribute.question }}</div>
+            <div class="row" ng-repeat="entry in attribute.entries" ng-init="parentAttribute = attribute">
+                <span class="col-md-4 question-label" ng-hide="parentAttribute.entries.length == 1">{{ texts.titleCase(entry.attribute) }}</span>
+                <span class="col-md-4 question-label" ng-show="parentAttribute.entries.length == 1">{{ parentAttribute.question }}</span>
+                <input class="col-md-8 question-input" type="text" ng-if="!entry.min && !entry.max" ng-model="entry.value" />
+                <input class="col-md-8 question-input" type="number" ng-if="entry.min || entry.max" min="{{ entry.min }}" max="{{ entry.max }}" ng-model="entry.value" />
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="sheet.nextStep(sheet)" ng-show="sheet.currentStep < sheet.steps.length - 1">{{ texts.nextQuestion }}</button>
     </div>
-    <button type="button" class="btn btn-primary" ng-click="game.createCharacterSheet.nextStep(game.createCharacterSheet)" ng-show="game.createCharacterSheet.currentStep < game.createCharacterSheet.steps.length - 1">{{ texts.nextQuestion }}</button>
+    <button type="button" class="btn btn-primary" ng-click="createCharacterController.startNewGame()" ng-show="sheet.currentStep >= sheet.steps.length - 1">{{ texts.startAdventure }}</button>
 </div>
-<button type="button" class="btn btn-primary" ng-click="controller.startNewGame()" ng-show="game.createCharacterSheet.currentStep >= game.createCharacterSheet.steps.length - 1">{{ texts.startAdventure }}</button>

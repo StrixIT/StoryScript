@@ -10,7 +10,6 @@
         modalSettings: IModalSettings;
         game: IGame;
         texts: any;
-        displayCharacterAttributes: string[];
     }
 
     export class MainController {
@@ -52,8 +51,6 @@
 
             self.$scope.texts = self.texts;
 
-            self.$scope.displayCharacterAttributes = self.ruleService.getSheetAttributes();
-
             // Watch functions.
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
@@ -69,17 +66,11 @@
             }
         }
 
-        startNewGame = () => {
-            var self = this;
-            self.gameService.startNewGame(self.game.createCharacterSheet);
-            self.$scope.displayCharacterAttributes = self.ruleService.getSheetAttributes();
-            self.game.state = StoryScript.GameState.Play;
-        }
-
         restart = () => {
             var self = this;
             self.gameService.restart();
             self.init();
+            self.$scope.$broadcast('restart');
         }
 
         getDescription() {
@@ -87,14 +78,6 @@
 
             if (self.game.currentLocation && self.game.currentLocation.text) {
                 return self.$sce.trustAsHtml(self.game.currentLocation.text);
-            }
-        }
-
-        isSlotUsed(slot: string) {
-            var self = this;
-
-            if (self.game.character) {
-                return self.game.character.equipment[slot] !== undefined;
             }
         }
 
@@ -205,50 +188,6 @@
             var self = this;
             self.game.character.items.push(item);
             self.game.currentLocation.items.remove(item);
-        }
-
-        dropItem = (item: IItem): void => {
-            var self = this;
-            self.game.character.items.remove(item);
-            self.game.currentLocation.items.push(item);
-        }
-
-        useItem = (item: IItem): void => {
-            var self = this;
-            item.use(self.game, item);
-        }
-
-        canEquip = (item: IItem): boolean => {
-            return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
-        }
-
-        equipItem = (item: IItem) => {
-            var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
-
-            var equippedItem = self.game.character.equipment[type];
-
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
-            }
-
-            self.game.character.equipment[type] = item;
-            self.game.character.items.remove(item);
-        }
-
-        unequipItem = (item: IItem) => {
-            var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
-
-            var equippedItem = self.game.character.equipment[type];
-
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
-            }
-
-            self.game.character.equipment[type] = null;
         }
 
         initCombat = (newValue: IEnemy[]) => {
