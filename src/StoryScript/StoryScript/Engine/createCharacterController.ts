@@ -1,6 +1,5 @@
 ﻿module StoryScript {
     export interface ICreateCharacterControllerScope extends ng.IScope {
-        game: IGame;
         texts: IInterfaceTexts;
         sheet: ICreateCharacter;
     }
@@ -8,24 +7,21 @@
     export class CreateCharacterController {
         private $scope: ICreateCharacterControllerScope;
         private gameService: IGameService;
-        private ruleService: IRuleService;
+        private characterService: ICharacterService;
         private game: IGame;
-        private texts: IInterfaceTexts;
 
-        constructor($scope: ICreateCharacterControllerScope, gameService: IGameService, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: ICreateCharacterControllerScope, gameService: IGameService, characterService: ICharacterService, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.gameService = gameService;
-            self.ruleService = ruleService;
+            self.characterService = characterService;
             self.game = game;
-            self.texts = texts;
+            self.$scope.texts = texts;
             self.init();
         }
 
         private init() {
             var self = this;
-            self.$scope.game = self.game;
-            self.$scope.texts = self.texts;
             self.setupCharacter(self, self.$scope);
             self.$scope.$on('restart', function (event: ng.IAngularEvent) {
                 self.setupCharacter(self, event.currentScope as ICreateCharacterControllerScope);
@@ -33,9 +29,7 @@
         }
 
         private setupCharacter(controller: CreateCharacterController, scope: ICreateCharacterControllerScope) {
-            controller.game.createCharacterSheet = controller.ruleService.getCreateCharacterSheet();
-            controller.game.createCharacterSheet.currentStep = 0;
-            scope.sheet = controller.game.createCharacterSheet;
+            scope.sheet = controller.characterService.getCreateCharacterSheet();
             scope.sheet.currentStep = 0;
             scope.sheet.nextStep = (data: ICreateCharacter) => {
                 var selector = data.steps[data.currentStep].nextStepSelector;
@@ -53,6 +47,8 @@
                     data.steps[data.currentStep].initStep(data, previousStep, data.steps[data.currentStep]);
                 }
             };
+
+            controller.game.createCharacterSheet = scope.sheet;
         }
 
         startNewGame = () => {
@@ -62,5 +58,5 @@
         }
     }
 
-    CreateCharacterController.$inject = ['$scope', 'gameService', 'ruleService', 'game', 'customTexts'];
+    CreateCharacterController.$inject = ['$scope', 'gameService', 'characterService', 'game', 'customTexts'];
 }

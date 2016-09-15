@@ -1,13 +1,8 @@
 ﻿module StoryScript {
     export interface ICharacterService {
         getSheetAttributes(): string[];
+        getCreateCharacterSheet(): ICreateCharacter;
         createCharacter(characterData: any): ICharacter;
-        canEquip(item: IItem): boolean;
-        equipItem(item: IItem): void;
-        unequipItem(item: IItem): void;
-        isSlotUsed(slot: string): boolean;
-        dropItem(item: IItem): void;
-        useItem(item: IItem): void;
     }
 }
 
@@ -15,13 +10,11 @@ module StoryScript {
     export class CharacterService implements ng.IServiceProvider, ICharacterService {
         private dataService: IDataService;
         private ruleService: IRuleService;
-        private game: IGame
 
-        constructor(dataService: IDataService, ruleService: IRuleService, game: IGame) {
+        constructor(dataService: IDataService, ruleService: IRuleService) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
-            self.game = game;
         }
 
         public $get(dataService: IDataService, ruleService: IRuleService): ICharacterService {
@@ -31,19 +24,19 @@ module StoryScript {
 
             return {
                 getSheetAttributes: self.getSheetAttributes,
-                createCharacter: self.createCharacter,
-                canEquip: self.canEquip,
-                equipItem: self.equipItem,
-                unequipItem: self.unequipItem,
-                isSlotUsed: self.isSlotUsed,
-                dropItem: self.dropItem,
-                useItem: self.useItem
+                getCreateCharacterSheet: self.getCreateCharacterSheet,
+                createCharacter: self.createCharacter
             };
         }
 
         getSheetAttributes = (): string[] => {
             var self = this;
             return self.ruleService.getSheetAttributes();
+        }
+
+        getCreateCharacterSheet = (): ICreateCharacter => {
+            var self = this;
+            return self.ruleService.getCreateCharacterSheet();
         }
 
         createCharacter = (characterData: ICreateCharacter): ICharacter => {
@@ -86,59 +79,7 @@ module StoryScript {
 
             return character;
         }
-
-        canEquip = (item: IItem): boolean => {
-            return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
-        }
-
-        equipItem = (item: IItem) => {
-            var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
-
-            var equippedItem = self.game.character.equipment[type];
-
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
-            }
-
-            self.game.character.equipment[type] = item;
-            self.game.character.items.remove(item);
-        }
-
-        unequipItem = (item: IItem) => {
-            var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
-
-            var equippedItem = self.game.character.equipment[type];
-
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
-            }
-
-            self.game.character.equipment[type] = null;
-        }
-
-        isSlotUsed = (slot: string) => {
-            var self = this;
-
-            if (self.game.character) {
-                return self.game.character.equipment[slot] !== undefined;
-            }
-        }
-
-        dropItem = (item: IItem): void => {
-            var self = this;
-            self.game.character.items.remove(item);
-            self.game.currentLocation.items.push(item);
-        }
-
-        useItem = (item: IItem): void => {
-            var self = this;
-            item.use(self.game, item);
-        }
     }
 
-    CharacterService.$inject = ['dataService', 'ruleService', 'game'];
+    CharacterService.$inject = ['dataService', 'ruleService'];
 }
