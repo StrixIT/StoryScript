@@ -37,7 +37,6 @@
                     target: Locations.Quest1map3,
                     style: 'location-danger'
                 }
-
             
             ]    
            

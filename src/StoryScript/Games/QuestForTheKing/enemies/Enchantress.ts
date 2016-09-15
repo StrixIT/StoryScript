@@ -1,10 +1,10 @@
 ﻿module QuestForTheKing.Enemies {
-    export function Twoheadedwolf(): IEnemy {
+    export function Enchantress(): IEnemy {
         return {
-            name: 'Two-Headed Wolf',
+            name: 'The Enchantress',
             hitpoints: 20,
             attack: '1d8',
-            reward: 4
+            reward: 5
         }
     }
 }
