@@ -58,6 +58,7 @@
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
+            self.$scope.$watch('game.currentLocation', self.watchLocation);
             self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
 
             self.reset = () => { self.gameService.reset.call(self.gameService); };
@@ -177,6 +178,10 @@
             var self = this;
 
             // improve, use selected action as object.
+            if (!barrier.actions.length) {
+                return;
+            }
+
             var action = barrier.actions.filter((item: IBarrier) => { return item.text == barrier.selectedAction.text; })[0];
             var result = action.action(self.game, destination, barrier, action);
 
@@ -343,6 +348,12 @@
                 }
 
                 (<any>scope).controller.gameService.changeGameState(newValue);
+            }
+        }
+
+        private watchLocation(newValue: ICompiledLocation, oldValue: ICompiledLocation, scope: IMainControllerScope) {
+            if (oldValue != undefined && newValue != undefined) {
+                scope.game.state = GameState.Play;
             }
         }
 
