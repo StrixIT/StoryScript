@@ -8,6 +8,11 @@
                     target: Locations.Quest1map2,
                     style: 'location-danger'
                 },
+                {
+                    text: 'Go to the Southern Forest',
+                    target: Locations.Quest1map4,
+                    style: 'location-danger'
+                },
                  {                          
                     text: 'The Ocean Shrine',
                     target: Locations.OceanshrineDay                  
