@@ -1,80 +1,53 @@
 ﻿module StoryScript {
     export interface ICharacterControllerScope extends ng.IScope {
-        game: IGame;
+        character: ICharacter;
         texts: IInterfaceTexts;
-        sheet: ICreateCharacter;
         displayCharacterAttributes: string[];
     }
 
     export class CharacterController {
         private $scope: ICharacterControllerScope;
-        private ruleService: IRuleService;
-        private game: IGame;
-        private texts: IInterfaceTexts;
+        private characterService: ICharacterService;
 
-        constructor($scope: ICharacterControllerScope, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: ICharacterControllerScope, characterService: ICharacterService, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
-            self.ruleService = ruleService;
-            self.game = game;
-            self.texts = texts;
-            self.$scope.game = self.game;
-            self.$scope.texts = self.texts;
-            self.$scope.displayCharacterAttributes = self.ruleService.getSheetAttributes();
+            self.characterService = characterService;
+            self.$scope.character = game.character;
+            self.$scope.texts = texts;
+            self.$scope.displayCharacterAttributes = self.characterService.getSheetAttributes();
         }
 
         canEquip = (item: IItem): boolean => {
-            return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
+            var self = this;
+            return self.characterService.canEquip(item);
         }
 
         equipItem = (item: IItem) => {
             var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
-
-            var equippedItem = self.game.character.equipment[type];
-
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
-            }
-
-            self.game.character.equipment[type] = item;
-            self.game.character.items.remove(item);
+            return self.characterService.equipItem(item);
         }
 
         unequipItem = (item: IItem) => {
             var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
-
-            var equippedItem = self.game.character.equipment[type];
-
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
-            }
-
-            self.game.character.equipment[type] = null;
+            return self.characterService.unequipItem(item);
         }
 
         isSlotUsed(slot: string) {
             var self = this;
-
-            if (self.game.character) {
-                return self.game.character.equipment[slot] !== undefined;
-            }
+            return self.characterService.isSlotUsed(slot);
         }
 
         dropItem = (item: IItem): void => {
             var self = this;
-            self.game.character.items.remove(item);
-            self.game.currentLocation.items.push(item);
+            return self.characterService.dropItem(item);
         }
 
         useItem = (item: IItem): void => {
             var self = this;
-            item.use(self.game, item);
+            return self.characterService.useItem(item);
         }
     }
 
-    CharacterController.$inject = ['$scope', 'ruleService', 'game', 'customTexts'];
+    CharacterController.$inject = ['$scope', 'characterService', 'game', 'customTexts'];
 }
