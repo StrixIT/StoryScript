@@ -31,6 +31,11 @@
                     text: 'Go to the Western Forest',
                     target: Locations.Quest1map1,
                     style: 'location-danger'
+                },
+                 {
+                    text: 'Go to the Eastern Forest',
+                    target: Locations.Quest1map3,
+                    style: 'location-danger'
                 }
 
             
