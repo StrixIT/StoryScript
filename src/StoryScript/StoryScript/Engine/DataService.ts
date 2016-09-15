@@ -83,7 +83,7 @@ module StoryScript {
             var self = this;
 
             if (!clone) {
-                clone = Array.isArray(values) ? [] : typeof value === "object" ? {} : values;
+                clone = Array.isArray(values) ? [] : typeof values === "object" ? {} : values;
                 if (clone == values) {
                     return clone;
                 }
@@ -97,7 +97,7 @@ module StoryScript {
                 var value = values[key];
                 var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
 
-                if (!value) {
+                if (value === undefined) {
                     continue;
                 }
                 else if (Array.isArray(value)) {
@@ -123,6 +123,9 @@ module StoryScript {
                             else {
                                 clone[key] = '_function_' + value.functionId;
                             }
+                        }
+                        else if (value.functionId){
+                            clone[key] = '_function_' + value.functionId;
                         }
                         else {
                             clone[key] = value.toString();
