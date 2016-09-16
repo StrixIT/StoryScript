@@ -45,6 +45,7 @@ function copyLibraries() {
 
 function copyResources(nameSpace) {
     gulp.src([paths.root + 'Games/' + nameSpace + '/resources/**/*.*'])
+        .pipe(flatten())
         .pipe(gulp.dest(paths.webroot + 'resources'));
 }
 
