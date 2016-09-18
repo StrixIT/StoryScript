@@ -377,9 +377,7 @@ module StoryScript {
                     var htmlDoc = parser.parseFromString(conversations, "text/html");
                     var conversationNodes = htmlDoc.getElementsByTagName("node");
 
-                    person.conversation = {
-                        nodes: []
-                    };
+                    person.conversation.nodes = [];
 
                     for (var i = 0; i < conversationNodes.length; i++) {
                         var node = conversationNodes[i];

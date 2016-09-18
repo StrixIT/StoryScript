@@ -26,17 +26,18 @@
         init = () => {
             var self = this;
             var person = self.game.currentLocation.activePerson;
-            var activeNode = person.conversation.activeNode;
+            var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : person.conversation.activeNode;
 
             if (!activeNode) {
                 activeNode = person.conversation.nodes.some((node) => { return node.active; })[0];
 
                 if (!activeNode) {
-                    person.conversation.nodes[0].active = true;
-                    person.conversation.activeNode = person.conversation.nodes[0];
-                    activeNode = person.conversation.activeNode;
+                    activeNode = person.conversation.nodes[0];
                 }
             }
+
+            activeNode.active = true;
+            person.conversation.activeNode = activeNode;
 
             for (var n in activeNode.replies) {
                 var reply = activeNode.replies[n];

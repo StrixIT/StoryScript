@@ -31,7 +31,7 @@
                     description: 'Sell to Siri',
                     emptyText: 'There is nothing for you to trade',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return item.arcane;
+                        return item.arcane;// && item.class == game.character.class;
                     },
                     maxItems: 5
                 },

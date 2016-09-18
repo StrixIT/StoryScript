@@ -9,8 +9,8 @@
                 }
             ],
             enemies: [
-                Enemies.Assassin,
-                Enemies.Assassin
+                custom(Enemies.Assassin, { name: 'Female Assassin'}),
+                custom(Enemies.Assassin, { name: 'Male Assassin' })
             ]
         }
     }

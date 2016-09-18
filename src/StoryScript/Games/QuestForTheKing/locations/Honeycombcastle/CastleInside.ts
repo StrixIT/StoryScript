@@ -6,8 +6,11 @@
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map2
-                }              
-            ],             
+                }
+            ],
+            persons: [
+                Persons.QueenBee
+            ]
         }
     }
 }    

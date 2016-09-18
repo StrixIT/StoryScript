@@ -1,12 +1,13 @@
 ﻿module StoryScript {
     export interface IConversation {
         title?: string;
-        nodes?: ICollection<IConversationNode>;
-        activeNode?: IConversationNode;
-        conversationLog?: IConversationLogEntry[];
+        selectActiveNode?: (game: IGame, person: IPerson) => IConversationNode;
         showUnavailableReplies?: boolean;
         prepareReplies?(game: IGame, person: IPerson, node: IConversationNode): void;
         handleReply?(game: IGame, person: IPerson, node: IConversationNode, reply: IConversationReply): void;
+        nodes?: ICollection<IConversationNode>;
+        activeNode?: IConversationNode;
+        conversationLog?: IConversationLogEntry[];
     }
 
     export interface IConversationNode {

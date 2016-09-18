@@ -323,6 +323,7 @@
 
         fight = (enemy:IEnemy) => {
             var self = this;
+            self.game.combatLog = [];
             var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
             var combatText = self.game.character.equipment.rightHand ? self.game.character.equipment.rightHand.attackText : '';
             combatText = self.game.character.equipment.leftHand ? (combatText ? combatText + '. ' : '') + self.game.character.equipment.leftHand.attackText : combatText;          
@@ -337,11 +338,14 @@
             }
 
             self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');              
-                self.game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
-                self.game.character.currentHitpoints -= damage;            
-                setTimeout(self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!'), 300)               
-                self.game.logToCombatLog(combatText);
+                var enemyDamage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');              
+                self.game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
+                self.game.character.currentHitpoints -= enemyDamage;            
+                setTimeout(self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!'), 300);
+
+                if (combatText) {
+                    self.game.logToCombatLog(combatText);
+                }
             });
         }
 
