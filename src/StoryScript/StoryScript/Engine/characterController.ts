@@ -26,31 +26,42 @@
 
         equipItem = (item: IItem) => {
             var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
 
-            var equippedItem = self.game.character.equipment[type];
+            var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType ];
 
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
+            for (var n in equipmentTypes) {
+                var type = EquipmentType[equipmentTypes[n]];
+                type = type.substring(0, 1).toLowerCase() + type.substring(1);
+
+                var equippedItem = self.game.character.equipment[type];
+
+                if (equippedItem && self.game.character.items.indexOf(equippedItem) === -1) {
+                    self.game.character.items.push(equippedItem);
+                }
+
+                self.game.character.equipment[type] = item;
             }
 
-            self.game.character.equipment[type] = item;
             self.game.character.items.remove(item);
         }
 
         unequipItem = (item: IItem) => {
             var self = this;
-            var type = StoryScript.EquipmentType[item.equipmentType];
-            type = type.substring(0, 1).toLowerCase() + type.substring(1);
 
-            var equippedItem = self.game.character.equipment[type];
+            var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
-            if (equippedItem) {
-                self.game.character.items.push(equippedItem);
+            for (var n in equipmentTypes) {
+                var type = StoryScript.EquipmentType[equipmentTypes[n]];
+                type = type.substring(0, 1).toLowerCase() + type.substring(1);
+
+                var equippedItem = self.game.character.equipment[type];
+
+                if (equippedItem && self.game.character.items.indexOf(equippedItem) === -1) {
+                    self.game.character.items.push(equippedItem);
+                }
+
+                self.game.character.equipment[type] = null;
             }
-
-            self.game.character.equipment[type] = null;
         }
 
         isSlotUsed = (slot: string) => {

@@ -3,7 +3,7 @@
         id?: string;
         name: string;
         pictureFileName?: string;
-        equipmentType: EquipmentType;
+        equipmentType: EquipmentType | EquipmentType[];
         description?: string;
         damage?: string;
         defense?: number;
