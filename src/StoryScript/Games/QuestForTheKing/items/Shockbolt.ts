@@ -7,7 +7,8 @@
             dayAvailable: 2,
             arcane: true,
             value: 15,
-            attackText: 'You cast your shockbolt'
+            attackText: 'You cast your shockbolt',
+            class: Class.Wizard
         }
     }
 }

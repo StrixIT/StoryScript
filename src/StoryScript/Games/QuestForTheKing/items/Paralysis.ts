@@ -7,7 +7,8 @@
             dayAvailable: 3,
             arcane: true,
             value: 30,
-            attackText: 'You cast your Paralysis spell'
+            attackText: 'You cast your Paralysis spell',
+            class: Class.Wizard
         }
     }
 }

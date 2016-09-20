@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             dayAvailable: 2,
             arcane: true,
-            value: 15
+            value: 15,
+            class: Class.Wizard
         }
     }
 }
