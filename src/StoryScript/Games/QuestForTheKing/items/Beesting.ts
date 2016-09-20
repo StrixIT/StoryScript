@@ -4,7 +4,8 @@
             name: 'Beesting',
             damage: '4',
             equipmentType: StoryScript.EquipmentType.LeftHand,
-            value: 20,            
+            value: 20,       
+            class: Class.Warrior     
         }
     }
 }

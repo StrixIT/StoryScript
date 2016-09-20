@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             dayAvailable: 1,
             arcane: true,
-            value: 5
+            value: 5,
+            class: Class.Warrior
         }
     }
 }

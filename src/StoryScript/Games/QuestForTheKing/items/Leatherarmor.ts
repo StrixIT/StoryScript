@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.Body,
             dayAvailable: 1,
             arcane: false,
-            value: 10
+            value: 10,
+            class: Class.Rogue
         }
     }
 }

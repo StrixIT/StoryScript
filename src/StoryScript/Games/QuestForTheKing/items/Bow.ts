@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.LeftHand,
             arcane: false,
             value: 3,
-            attackText: 'You fire your bow'
+            attackText: 'You fire your bow',
+            class: Class.Warrior    
         }
     }
 }

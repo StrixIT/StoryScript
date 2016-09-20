@@ -7,7 +7,8 @@
             dayAvailable: 3,
             arcane: false,
             value: 25,
-            attackText: 'You swing your heavy mace'
+            attackText: 'You swing your heavy mace',
+            class: Class.Warrior
         }
     }
 }

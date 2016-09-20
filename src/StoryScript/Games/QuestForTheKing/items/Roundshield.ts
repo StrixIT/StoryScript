@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.RightHand,
             dayAvailable: 2,
             arcane: false,
-            value: 10
+            value: 10,
+            class: Class.Warrior
         }
     }
 }

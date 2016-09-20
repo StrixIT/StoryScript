@@ -7,7 +7,8 @@
             dayAvailable: 3,
             arcane: false,
             value: 30,
-            attackText: 'You swing your claymore'
+            attackText: 'You swing your claymore',
+            class: Class.Warrior
         }
     }
 }
