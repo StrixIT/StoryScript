@@ -5,7 +5,7 @@
             damage: '0',
             equipmentType: StoryScript.EquipmentType.LeftRing,
             value: 5,            
-            class: Class.Wizard
+            itemClass: Class.Wizard
         }
     }
 }

@@ -7,7 +7,7 @@
             arcane: false,
             value: 15,
             attackText: 'You swing your shortsword',
-            class: Class.Rogue
+            itemClass: [ Class.Rogue, Class.Warrior ]
         }
     }
 }

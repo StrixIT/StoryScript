@@ -38,7 +38,7 @@
                     description: 'Buy from Bjarni',
                     emptyText: 'Bjarni has nothing to trade',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return game.currentDay == item.dayAvailable && !item.arcane;
+                        return game.currentDay == item.dayAvailable && !item.arcane && (item.itemClass == game.character.class || (Array.isArray(item.itemClass) && (<Class[]>item.itemClass).indexOf(game.character.class) > -1));
                     },
                     maxItems: 5
                 }

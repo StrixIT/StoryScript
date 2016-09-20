@@ -6,7 +6,7 @@
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,
             attackText: 'You swing your longsword',
-            class: Class.Warrior
+            itemClass: Class.Warrior
         }
     }
 }

@@ -8,7 +8,7 @@
             arcane: true,
             value: 15,
             attackText: 'You cast your shockbolt',
-            class: Class.Wizard
+            itemClass: Class.Wizard
         }
     }
 }

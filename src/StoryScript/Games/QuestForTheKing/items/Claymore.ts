@@ -8,7 +8,7 @@
             arcane: false,
             value: 30,
             attackText: 'You swing your claymore',
-            class: Class.Warrior
+            itemClass: Class.Warrior
         }
     }
 }

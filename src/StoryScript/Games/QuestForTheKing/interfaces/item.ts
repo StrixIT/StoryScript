@@ -4,7 +4,7 @@
         defense?: number;
         dayAvailable?: number;
         arcane?: boolean;
-        class?: Class;
+        itemClass?: Class | Class[];
         attackText?: string;
     }
 }

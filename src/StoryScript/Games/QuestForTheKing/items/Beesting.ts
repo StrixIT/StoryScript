@@ -5,7 +5,7 @@
             damage: '4',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 20,       
-            class: Class.Warrior     
+            itemClass: Class.Warrior     
         }
     }
 }

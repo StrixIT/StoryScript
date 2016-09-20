@@ -7,7 +7,7 @@
             dayAvailable: 2,
             arcane: false,
             value: 15,
-            class: Class.Warrior,    
+            itemClass: Class.Warrior,    
         }
     }
 }

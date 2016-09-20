@@ -6,7 +6,8 @@
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,
             attackText: 'You cast your fireball',
-            class: Class.Wizard 
+            itemClass: Class.Wizard,
+            arcane: true
         }
     }
 }

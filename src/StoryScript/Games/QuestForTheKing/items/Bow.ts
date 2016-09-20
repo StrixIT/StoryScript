@@ -7,7 +7,7 @@
             arcane: false,
             value: 3,
             attackText: 'You fire your bow',
-            class: Class.Warrior    
+            itemClass: Class.Warrior    
         }
     }
 }

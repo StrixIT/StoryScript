@@ -7,7 +7,7 @@
             dayAvailable: 1,
             arcane: false,
             value: 10,
-            class: Class.Rogue
+            itemClass: Class.Rogue
         }
     }
 }

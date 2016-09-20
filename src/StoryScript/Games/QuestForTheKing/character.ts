@@ -11,6 +11,8 @@
         intelligence: number = 1;
         charisma: number = 1;
 
+        class: Class;
+
         items: StoryScript.ICollection<StoryScript.IItem> = [];
 
         equipment: {

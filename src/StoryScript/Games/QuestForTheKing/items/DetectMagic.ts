@@ -7,7 +7,7 @@
             dayAvailable: 1,
             arcane: true,
             value: 7,
-            class: Class.Wizard    
+            itemClass: Class.Wizard    
         }
     }
 }

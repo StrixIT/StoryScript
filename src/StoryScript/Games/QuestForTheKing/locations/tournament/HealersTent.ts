@@ -31,7 +31,7 @@
                     description: 'Sell to Siri',
                     emptyText: 'There is nothing for you to trade',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return item.arcane;// && item.class == game.character.class;
+                        return item.arcane;
                     },
                     maxItems: 5
                 },
@@ -39,7 +39,7 @@
                     description: 'Buy from Siri',
                     emptyText: 'Siri has nothing to trade',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return game.currentDay == item.dayAvailable && item.arcane;
+                        return game.currentDay == item.dayAvailable && item.arcane && (item.itemClass == game.character.class || (Array.isArray(item.itemClass) && (<Class[]>item.itemClass).indexOf(game.character.class) > -1));
                     },
                     maxItems: 5
                 }

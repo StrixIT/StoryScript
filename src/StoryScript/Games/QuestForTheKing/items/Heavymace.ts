@@ -8,7 +8,7 @@
             arcane: false,
             value: 25,
             attackText: 'You swing your heavy mace',
-            class: Class.Warrior
+            itemClass: Class.Warrior
         }
     }
 }

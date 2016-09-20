@@ -6,7 +6,7 @@
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,
             attackText: 'You thrust your rapier',
-            class: Class.Rogue
+            itemClass: Class.Rogue
         }
     }
 }

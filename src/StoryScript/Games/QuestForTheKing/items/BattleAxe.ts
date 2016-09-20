@@ -6,6 +6,7 @@
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,
             attackText: 'You swing your battle axe',
-            class: Class.Warrior,         
+            itemClass: Class.Warrior
+        }
     }
 }

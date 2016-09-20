@@ -299,18 +299,21 @@
                     character.agility = 1;
                     character.intelligence = 1;
                     character.charisma = 1;
+                    character.class = Class.Warrior;
                 }; break;
                 case 'rogue': {
                     character.strength = 1;
                     character.agility = 3;
                     character.intelligence = 1;
                     character.charisma = 1;
+                    character.class = Class.Rogue;
                 }; break;
                 case 'wizard': {
                     character.strength = 1;
                     character.agility = 1;
                     character.intelligence = 3;
                     character.charisma = 1;
+                    character.class = Class.Wizard;
                 }; break;
             }
 
