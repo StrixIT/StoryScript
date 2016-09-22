@@ -22,7 +22,7 @@
                     description: 'I\'m willing to part with these items...',
                     emptyText: 'I have nothing left to sell to you...',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return true;
+                        return item.value != undefined;
                     },
                     maxItems: 5
                 }
