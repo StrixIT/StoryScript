@@ -29,8 +29,7 @@
             },
             conversation: {
                 showUnavailableReplies: true
-            },
-            disposition: StoryScript.Disposition.Friendly
+            }
         }
     }
 }

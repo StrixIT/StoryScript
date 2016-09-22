@@ -1,6 +1,6 @@
 ﻿module StoryScript {
     export interface IPerson extends IEnemy {
-        disposition: Disposition;
+        canAttack?: boolean;
         trade?: ITrade;
         conversation?: IConversation;
     }

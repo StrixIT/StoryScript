@@ -25,8 +25,7 @@
                         game.character.items.remove(Items.Magicflower);
                     }
                 }
-            },
-            disposition: StoryScript.Disposition.Friendly
+            }
         }
     }
 }

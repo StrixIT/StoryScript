@@ -6,7 +6,6 @@
             hitpoints: 1000,
             attack: '10d6',
             reward: 100 ,
-            disposition: StoryScript.Disposition.Friendly,
             currency: 1000
         }
     }
