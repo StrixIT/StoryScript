@@ -3,7 +3,7 @@
         return {
             name: 'Heavy Mace',
             damage: '2',
-            equipmentType: StoryScript.EquipmentType.LeftHand,
+            equipmentType: [StoryScript.EquipmentType.LeftHand, StoryScript.EquipmentType.RightHand],
             dayAvailable: 3,
             arcane: false,
             value: 25,

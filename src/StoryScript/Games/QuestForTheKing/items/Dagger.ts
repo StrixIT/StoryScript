@@ -6,7 +6,7 @@
             equipmentType: StoryScript.EquipmentType.LeftHand,           
             value: 5,
             attackText: 'You thrust your dagger',
-             itemClass: Class.Rogue              
+            itemClass: [Class.Rogue, Class.Warrior]       
         }
     }
 }
