@@ -1,17 +1,17 @@
 ﻿<div ng-controller="TradeController as tradeController">
     <div ng-if="trade">
-        <div ng-if="trade.sell">{{ trade.sell.description }}</div>
-        <div ng-hide="trade.sell.items && trade.sell.items.length > 0">{{ trade.sell.emptyText }}</div>
-        <ul class="button-row" ng-show="trade.sell.items && trade.sell.items.length > 0">
-            <li ng-repeat="item in trade.sell.items">
-                <button type="button" class="btn btn-success" ng-click="tradeController.buy(item, trade)" ng-disabled="!tradeController.canPay(game.character.currency, tradeController.actualPrice(item, trade.sell.priceModifier))">{{ tradeController.displayPrice(item, trade.sell.priceModifier) }}</button>
-            </li>
-        </ul>
         <div ng-if="trade.buy">{{ trade.buy.description }}</div>
         <div ng-hide="trade.buy.items && trade.buy.items.length > 0">{{ trade.buy.emptyText }}</div>
         <ul class="button-row" ng-show="trade.buy.items && trade.buy.items.length > 0">
             <li ng-repeat="item in trade.buy.items">
-                <button type="button" class="btn btn-warning" ng-click="tradeController.sell(item, trade)" ng-disabled="!tradeController.canPay(trade.currency, tradeController.actualPrice(item, trade.sell.priceModifier))">{{ tradeController.displayPrice(item, trade.buy.priceModifier) }}</button>
+                <button type="button" class="btn btn-success" ng-click="tradeController.buy(item, trade)" ng-disabled="!tradeController.canPay(game.character.currency, tradeController.actualPrice(item, trade.buy.priceModifier))">{{ tradeController.displayPrice(item, trade.buy.priceModifier) }}</button>
+            </li>
+        </ul>
+        <div ng-if="trade.sell">{{ trade.sell.description }}</div>
+        <div ng-hide="trade.sell.items && trade.sell.items.length > 0">{{ trade.sell.emptyText }}</div>
+        <ul class="button-row" ng-show="trade.sell.items && trade.sell.items.length > 0">
+            <li ng-repeat="item in trade.sell.items">
+                <button type="button" class="btn btn-warning" ng-click="tradeController.sell(item, trade)" ng-disabled="!tradeController.canPay(trade.currency, tradeController.actualPrice(item, trade.sell.priceModifier))">{{ tradeController.displayPrice(item, trade.sell.priceModifier) }}</button>
             </li>
         </ul>
         <p ng-if="trade.currency != undefined">{{ texts.format(texts.traderCurrency, [trade.currency, texts.currency]) }}</p>

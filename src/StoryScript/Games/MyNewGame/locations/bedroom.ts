@@ -12,8 +12,8 @@
                 title: 'Your personal closet',
                 description: 'Do you want to take something out of your closet or put it back in?',
                 buy: {
-                    description: 'Put back in closet',
-                    emptyText: 'You have nothing to put in the your closet',
+                    description: 'Take out of closet',
+                    emptyText: 'The closet is empty',
                     itemSelector: (game: IGame, item: IItem) => {
                         return item.value != undefined;
                     },
@@ -21,8 +21,8 @@
                     priceModifier: 0
                 },
                 sell: {
-                    description: 'Take out of closet',
-                    emptyText: 'The closet is empty',
+                    description: 'Put back in closet',
+                    emptyText: 'You have nothing to put in the your closet',
                     itemSelector: (game: IGame, item: IItem) => {
                         return item.value != undefined;
                     },

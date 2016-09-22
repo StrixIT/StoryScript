@@ -25,22 +25,22 @@
             var self = this;
             var trader = self.$scope.trade;
 
-            var itemsForSale = trader.sell.items;
-
-            var sellSelector = (item: IItem) => {
-                return trader.sell.itemSelector(self.game, item);
-            };
-
-            if ((trader.initCollection && trader.initCollection(self.game, trader) || !itemsForSale)) {
-                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.sell.maxItems, sellSelector);
-            }
+            var itemsForSale = trader.buy.items;
 
             var buySelector = (item: IItem) => {
                 return trader.buy.itemSelector(self.game, item);
             };
 
-            trader.sell.items = itemsForSale;
-            trader.buy.items = StoryScript.randomList<IItem>(self.game.character.items, trader.buy.maxItems, buySelector);
+            if ((trader.initCollection && trader.initCollection(self.game, trader) || !itemsForSale)) {
+                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.buy.maxItems, buySelector);
+            }
+
+            var sellSelector = (item: IItem) => {
+                return trader.sell.itemSelector(self.game, item);
+            };
+
+            trader.buy.items = itemsForSale;
+            trader.sell.items = StoryScript.randomList<IItem>(self.game.character.items, trader.sell.maxItems, sellSelector);
         }
 
         canPay = (currency: number, value: number) => {
@@ -60,45 +60,35 @@
 
         buy = (item: IItem, trade: ITrade) => {
             var self = this;
-            var price = item.value;
-
-            if (trade.buy.priceModifier != undefined) {
-                var modifier = typeof trade.buy.priceModifier === 'function' ? (<any>trade.buy).priceModifier(self.game) : trade.buy.priceModifier;
-                price = Math.round(item.value * modifier);
-            }
-
-            self.game.character.currency = self.game.character.currency || 0;
-            self.game.character.currency -= price;
-
+            self.pay(item, trade, trade.buy, self.game.character, false);
             self.game.character.items.push(item);
-
-            if (trade.currency != undefined) {
-                trade.currency += price;
-            }
-
-            trade.sell.items.remove(item);
+            trade.buy.items.remove(item);
         }
 
         sell = (item: IItem, trade: ITrade) => {
             var self = this;
+            self.pay(item, trade, trade.sell, self.game.character, true);
+            self.game.character.items.remove(item);
+            trade.sell.items.remove(item);
+            trade.buy.items.push(item);
+        }
+
+        private pay(item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean) {
+            var self = this;
+
             var price = item.value;
 
-            if (trade.sell.priceModifier != undefined) {
-                var modifier = typeof trade.sell.priceModifier === 'function' ? (<any>trade.sell).priceModifier(self.game) : trade.sell.priceModifier;
+            if (stock.priceModifier != undefined) {
+                var modifier = typeof stock.priceModifier === 'function' ? (<any>stock).priceModifier(self.game) : stock.priceModifier;
                 price = Math.round(item.value * modifier);
             }
 
-            self.game.character.currency = self.game.character.currency || 0;
-            self.game.character.currency += price;
+            character.currency = character.currency || 0;
+            character.currency = characterSells ? character.currency + price : character.currency - price;
 
-            self.game.character.items.remove(item);
-            trade.buy.items.remove(item);
-
-            if (trade.currency != undefined) {
-                trade.currency -= price;
+            if (trader.currency != undefined) {
+                trader.currency = characterSells ? trader.currency - price : trader.currency + price;
             }
-
-            trade.sell.items.push(item);
         }
     }
 

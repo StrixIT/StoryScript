@@ -10,13 +10,13 @@
             trade: {
                 buy: {
                     itemSelector: (game: IGame, item: IItem) => {
-                        return item.damage != undefined;
+                        return item.damage != undefined && item.value <= 10;
                     },
                     maxItems: 3
                 },
                 sell: {
                     itemSelector: (game: IGame, item: IItem) => {
-                        return item.damage != undefined && item.value <= 10;
+                        return item.damage != undefined;
                     },
                     maxItems: 5
                 }
