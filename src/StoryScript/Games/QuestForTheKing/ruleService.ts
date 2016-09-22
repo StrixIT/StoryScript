@@ -332,6 +332,12 @@
             combatText = self.game.character.equipment.leftHand ? (combatText ? combatText + '. ' : '') + self.game.character.equipment.leftHand.attackText : combatText;          
             enemy.hitpoints -= damage;
 
+            if (combatText) {
+                self.game.logToCombatLog(combatText);
+            }
+
+            self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+
             if (enemy.hitpoints <= 0) {
                 self.game.logToCombatLog('You defeat the ' + enemy.name + '!');
 
@@ -344,11 +350,6 @@
                 var enemyDamage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');              
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
                 self.game.character.currentHitpoints -= enemyDamage;            
-                setTimeout(self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!'), 300);
-
-                if (combatText) {
-                    self.game.logToCombatLog(combatText);
-                }
             });
         }
 
