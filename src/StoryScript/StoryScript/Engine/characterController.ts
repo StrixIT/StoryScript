@@ -27,18 +27,15 @@
         equipItem = (item: IItem) => {
             var self = this;
 
-            var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType ];
+            var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
             for (var n in equipmentTypes) {
-                var type = EquipmentType[equipmentTypes[n]];
-                type = type.substring(0, 1).toLowerCase() + type.substring(1);
+                var type = self.getEquipmentType(equipmentTypes[n]);
+                self.unequip(type);
+            }
 
-                var equippedItem = self.game.character.equipment[type];
-
-                if (equippedItem && self.game.character.items.indexOf(equippedItem) === -1) {
-                    self.game.character.items.push(equippedItem);
-                }
-
+            for (var n in equipmentTypes) {
+                var type = self.getEquipmentType(equipmentTypes[n]);
                 self.game.character.equipment[type] = item;
             }
 
@@ -47,21 +44,37 @@
 
         unequipItem = (item: IItem) => {
             var self = this;
-
             var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
             for (var n in equipmentTypes) {
-                var type = StoryScript.EquipmentType[equipmentTypes[n]];
-                type = type.substring(0, 1).toLowerCase() + type.substring(1);
+                var type = self.getEquipmentType(equipmentTypes[n]);
+                self.unequip(type);
+            }
+        }
 
-                var equippedItem = self.game.character.equipment[type];
+        private unequip(type: string, currentItem?: IItem) {
+            var self = this;
+            var equippedItem = self.game.character.equipment[type];
 
-                if (equippedItem && self.game.character.items.indexOf(equippedItem) === -1) {
+            if (equippedItem) {
+                if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
+                    for (var n in equippedItem.equipmentType) {
+                        var type = self.getEquipmentType(equippedItem.equipmentType[n]);
+                        self.unequip(type, equippedItem);
+                    }
+                }
+
+                if (equippedItem && equippedItem.equipmentType && self.game.character.items.indexOf(equippedItem) === -1) {
                     self.game.character.items.push(equippedItem);
                 }
 
                 self.game.character.equipment[type] = null;
             }
+        }
+
+        private getEquipmentType = (slot: StoryScript.EquipmentType) => {
+            var type = StoryScript.EquipmentType[slot];
+            return type.substring(0, 1).toLowerCase() + type.substring(1);
         }
 
         isSlotUsed = (slot: string) => {
