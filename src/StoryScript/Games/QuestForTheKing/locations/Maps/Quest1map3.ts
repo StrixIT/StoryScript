@@ -24,10 +24,11 @@
                    {                          
                       text: 'The Tree Stump',
                       target: Locations.Treestump
-                   {                          
+                  },   
+                   {                       
                        text: 'The Troll',
                        target: Locations.TrollDay
-                   }           
+                   },           
             ]    
            
         }

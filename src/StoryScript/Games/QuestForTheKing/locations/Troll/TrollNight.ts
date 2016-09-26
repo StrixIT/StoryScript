@@ -9,7 +9,7 @@
                 },
                 {
                     text: 'Open the Cage',
-                    target: Locations.OpencageNight
+                    target: Locations.Opencage
                 }
             ],
             enemies: [
