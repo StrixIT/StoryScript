@@ -1,13 +1,14 @@
 ﻿module QuestForTheKing.Locations {
-    export function SnaketreeNight(): StoryScript.ILocation {
+    export function Resistmusicfailed(): StoryScript.ILocation {
         return {
-            name: 'The Snake Tree',
+            name: 'Failed to resist the music',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map3
-                }                                       
-            ]
+                },                                           
+                    
+                ]
         }
     }
 }    

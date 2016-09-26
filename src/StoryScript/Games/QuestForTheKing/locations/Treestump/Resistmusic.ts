@@ -1,16 +1,14 @@
 ﻿module QuestForTheKing.Locations {
-    export function TakingdaggerNight(): StoryScript.ILocation {
+    export function Resistmusic(): StoryScript.ILocation {
         return {
-            name: 'The Snake Tree',
+            name: 'Resisted the Music',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map3
-                }
-            ],
-            items: [
-                Items.Poisondagger
-            ]
+                },                                           
+                    
+                ]
         }
     }
-}
+}    
