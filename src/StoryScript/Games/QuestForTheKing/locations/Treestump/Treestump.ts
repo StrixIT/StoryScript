@@ -1,16 +1,14 @@
 ﻿module QuestForTheKing.Locations {
-    export function Takingdagger(): StoryScript.ILocation {
+    export function Treestump(): StoryScript.ILocation {
         return {
-            name: 'The Snake Tree',
+            name: 'The Satyr',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map3
-                }
-            ],
-            items: [
-                Items.Poisondagger
-            ]
+                },                                        
+                    
+                ]
         }
     }
-}
+}    

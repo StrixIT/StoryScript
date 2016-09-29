@@ -1,13 +1,14 @@
 ﻿module QuestForTheKing.Locations {
-    export function OpencageNight(): StoryScript.ILocation {
+    export function Resistmusic(): StoryScript.ILocation {
         return {
-            name: 'Opening the Cage',
+            name: 'Resisted the Music',
             destinations: [
                 {
                     text: 'Back to the Map',
                     target: Locations.Quest1map3
-                }                   
-            ]
+                },                                           
+                    
+                ]
         }
     }
 }    
