@@ -8,24 +8,14 @@
 </fieldset>
 <fieldset ng-if="!controller.enemiesPresent()">
     <legend>{{ texts.destinations }}</legend>
-    <table>
-        <tbody>
-            <tr ng-if="controller.barriersPresent()">
-                <td ng-repeat="destination in controller.game.currentLocation.destinations">
-                    <div ng-if="destination.barrier">
-                        <button type="button" class="btn btn-info" ng-click="controller.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.text }}</button>
-                        <select strix-drop-down class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" source="destination.barrier.actions" option-label="text">
-                        </select>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td ng-repeat="destination in controller.game.currentLocation.destinations">
-                    <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="controller.changeLocation(destination.target)" ng-disabled="destination.barrier || controller.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ texts.back }}</span> {{ destination.text }}</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="destination-button" ng-repeat="destination in controller.game.currentLocation.destinations">
+        <div ng-if="destination.barrier">
+            <button type="button" class="btn btn-info" ng-click="controller.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.text }}</button>
+            <select strix-drop-down class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" source="destination.barrier.actions" option-label="text"></select>
+        </div>
+        <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="controller.changeLocation(destination.target)" ng-disabled="destination.barrier || controller.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ texts.back }}</span> {{ destination.text }}</button>
+    </div>
+    <div class="clearfix"></div>
 </fieldset>
 <fieldset ng-if="!controller.enemiesPresent()">
     <legend>{{ texts.onTheGround }}</legend>

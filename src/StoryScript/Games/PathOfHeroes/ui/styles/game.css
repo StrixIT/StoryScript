@@ -101,3 +101,8 @@ table td {
             border-top: none;
             border-bottom: 0;
         }
+
+.destination-button {
+    float: left;
+    margin: 0 15px 10px 0;
+}
