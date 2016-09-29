@@ -176,6 +176,31 @@
                     {
                         questions: [
                             {
+                                question: 'Your village holds the yearly Harvest festival, which has many games. Do you:',
+                                entries: [
+                                    {
+                                        text: 'Participate in the Wrestling contest? ',
+                                        value: 'warrior',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Participate in the Archery contest?',
+                                        value: 'rogue',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Participate in the Puzzle contest?',
+                                        value: 'wizard',
+                                        bonus: 1
+                                    },
+
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        questions: [
+                            {
                                 question: 'You are in love with the most beautiful girl in the village. But you are not the only one. One of your competitors has written a striking poem, and you know the girl loves poetry. Do you:',
                                 entries: [
                                     {
@@ -196,7 +221,7 @@
                                 ]
                             }
                         ],
-                        nextStepSelector: 7
+                        nextStepSelector: 8
                     },
                     {
                         initStep: (character, previousStep, currentStep) => {

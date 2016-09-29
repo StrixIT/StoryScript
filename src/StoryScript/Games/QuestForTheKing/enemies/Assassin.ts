@@ -4,7 +4,7 @@
             name: 'Assassin',
             hitpoints: 16,
             attack: '1d6',
-            reward: 1
+            reward: 1,       
         }
     }
 }
