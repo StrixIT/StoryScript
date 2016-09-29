@@ -141,6 +141,9 @@
 
                 if (typeof action.execute !== 'function') {
                     action.execute = self[<string>action.execute];
+                }
+
+                if (action.arguments && action.arguments.length) {
                     args = args.concat(action.arguments);
                 }
 
@@ -242,6 +245,9 @@
             self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<IPerson>trade).name]);
             self.$scope.modalSettings.canClose = true;
             self.game.state = GameState.Trade;
+
+            // Return true to keep the action button for trade locations.
+            return true;
         }
 
         closeModal = () => {
