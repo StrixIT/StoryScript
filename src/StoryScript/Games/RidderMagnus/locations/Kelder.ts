@@ -25,8 +25,7 @@
                         result = check + game.character.zoeken;
 
                         if (result > 5) {
-                            var ring = game.getItem(Items.GoudenRing);
-                            game.character.items.push(ring);
+                            game.character.items.push(Items.GoudenRing);
                             game.logToActionLog('Onder een stoffig wijnvat zie je iets glinsteren. Ja! Het is de ring!');
                             game.logToActionLog('Breng de ring snel terug naar de koningin.');
                         }
@@ -38,8 +37,7 @@
                         else {
                             game.logToActionLog('Waar is die ring toch? Niet onder dit wijnvat, hier is alleen een... rat!');
                             game.logToActionLog('Een enorme rat bespringt je!');
-                            var enormeRat = game.getEnemy(Enemies.EnormeRat);
-                            game.currentLocation.enemies.push(enormeRat);
+                            game.currentLocation.enemies.push(Enemies.EnormeRat);
                             return true
 
                            //dit moet makkelijker zijn als je licht hebt, dan nauwelijks kans op ratten (via betere zoeken skill of via functie?)

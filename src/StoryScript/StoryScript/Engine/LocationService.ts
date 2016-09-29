@@ -1,7 +1,6 @@
 ﻿module StoryScript {
     export interface ILocationService {
         init(game: IGame): void;
-        loadWorld(): ICollection<ICompiledLocation>;
         saveWorld(locations: ICollection<ICompiledLocation>): void;
         changeLocation(location: any, game: IGame): void;
     }
@@ -32,7 +31,6 @@ module StoryScript {
             self.definitions = definitions;
 
             return {
-                loadWorld: self.loadWorld,
                 saveWorld: self.saveWorld,
                 changeLocation: self.changeLocation,
                 init: self.init
@@ -47,7 +45,7 @@ module StoryScript {
             game.locations = self.loadWorld();
         }
 
-        public loadWorld(): ICollection<ICompiledLocation> {
+        private loadWorld(): ICollection<ICompiledLocation> {
             var self = this;
             self.pristineLocations = self.buildWorld();
             var locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
@@ -57,21 +55,14 @@ module StoryScript {
                 locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
             }
 
-            // Add a proxy to the destination collection push function, to replace the target function pointer
-            // with the target id when adding destinations and enemies at runtime.
             locations.forEach(function (location) {
                 location.destinations = location.destinations || [];
+
+                // Add a proxy to the destination collection push function, to replace the target function pointer
+                // with the target id when adding destinations and enemies at runtime.
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
+
                 location.enemies = location.enemies || [];
-
-                location.enemies.push = (<any>location.enemies.push).proxy((function (): Function {
-                    return function () {
-                        var args = [].slice.apply(arguments);
-                        args.splice(0, 0, this);
-                        self.addEnemy(self, args);
-                    }
-                })());
-
                 location.combatActions = location.combatActions || [];
             });
 
@@ -193,9 +184,9 @@ module StoryScript {
                 }
 
                 self.setDestinations(location);
-                self.buildEnemies(location);
-                self.buildPersons(location);
-                self.buildItems(location);
+                self.buildEntries(location, 'enemies', self.game.getEnemy);
+                self.buildEntries(location, 'persons', self.game.getNonPlayerCharacter);
+                self.buildEntries(location, 'items', self.game.getItem);
                 self.getFunctions(location, null);
                 compiledLocations.push(location);
             }
@@ -216,6 +207,17 @@ module StoryScript {
             return compiledLocations;
         }
 
+        private buildEntries(location: ICompiledLocation, collectionName: string, instantiateFunction: Function) {
+            var self = this;
+            var collection = [];
+
+            for (var n in location[collectionName]) {
+                collection.push(instantiateFunction(location[collectionName][n]));
+            }
+
+            location[collectionName] = collection;
+        }
+
         private setDestinations(location: ICompiledLocation) {
             var self = this;
 
@@ -234,62 +236,6 @@ module StoryScript {
                         }
                     }
                 });
-            }
-        }
-
-        private buildEnemies(location: ICompiledLocation) {
-            var self = this;
-
-            if (location.enemies) {
-                var enemies: IEnemy[] = [];
-
-                location.enemies.forEach((enDef) => {
-                    var enemy = definitionToObject<IEnemy>(<any>enDef);
-                    self.buildItems(enemy);
-                    enemies.push(enemy);
-                });
-
-                (<any>location).enemies = enemies;
-            }
-            else {
-                location.enemies = [];
-            }
-        }
-
-        private buildPersons(location: ICompiledLocation) {
-            var self = this;
-
-            if (location.persons) {
-                var persons: IPerson[] = [];
-
-                location.persons.forEach((enDef) => {
-                    var person = definitionToObject<IPerson>(<any>enDef);
-                    self.buildItems(person);
-                    persons.push(person);
-                });
-
-                (<any>location).persons = persons;
-            }
-            else {
-                location.persons = [];
-            }
-        }
-
-        private buildItems(entry: any) {
-            var self = this;
-
-            if (entry.items) {
-                var items: IItem[] = [];
-
-                entry.items.forEach((itemDef) => {
-                    var item = definitionToObject<IItem>(itemDef);
-                    items.push(item);
-                });
-
-                (<any>entry).items = items;
-            }
-            else {
-                entry.items = [];
             }
         }
 
@@ -337,18 +283,6 @@ module StoryScript {
             addKeyAction(args[1], param);
             args.splice(1, 1);
             originalFunction.apply(this, args);
-        }
-
-        private addEnemy(scope: any, args: any) {
-            var array = args[0];
-            var originalFunction = args[1];
-            var enemy = args[2];
-            originalFunction.call(array, enemy);
-            var ruleService = <IRuleService>scope.ruleService;
-
-            if (ruleService.addEnemyToLocation) {
-                ruleService.addEnemyToLocation((<IGame>scope.game).currentLocation, enemy);
-            }
         }
 
         private playEvents(game: IGame) {

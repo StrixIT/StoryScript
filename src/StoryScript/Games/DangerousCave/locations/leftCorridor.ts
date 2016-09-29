@@ -22,23 +22,21 @@
 
                         game.logToActionLog('Je klimt uit de kuil.');
 
-                        game.currentLocation.destinations.push(
-                            {
-                                text: 'Dieper de grot in',
-                                target: Locations.DoorOne
-                            },
-                            {
-                                text: 'Richting ingang',
-                                target: Locations.Entry
-                            }
-                        );
+                        game.currentLocation.destinations.push({
+                            text: 'Dieper de grot in',
+                            target: Locations.DoorOne
+                        });
+                        game.currentLocation.destinations.push({
+                            text: 'Richting ingang',
+                            target: Locations.Entry
+                        });
                     }
                 },
                 Actions.Search({
                     text: 'Doorzoek de kuil',
                     difficulty: 9,
                     success: (game) => {
-                        game.currentLocation.items.push(game.getItem(Items.LeatherHelmet));
+                        game.currentLocation.items.push(Items.LeatherHelmet);
                         game.logToLocationLog('In de kuil voel je botten, spinrag en de resten van kleding. Ook vind je er een nog bruikbare helm!')
                     },
                     fail: (game) => {

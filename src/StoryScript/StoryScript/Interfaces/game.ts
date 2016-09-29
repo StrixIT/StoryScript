@@ -31,6 +31,7 @@
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
         getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
+        getNonPlayerCharacter: (selector: string | (() => IPerson)) => IPerson;
 
         equals<T>(entity: T, definition: () => T): boolean;
 

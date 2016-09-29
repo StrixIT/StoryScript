@@ -1,7 +1,7 @@
 ﻿module StoryScript {
     export interface ICollection<T> extends Array<T> {
-        all?(id: string | ((...params) => T) | T): T[];
         get?(id?: string | ((...params) => T) | T): T;
+        push(id?: string | (() => T) | T): number;
         remove?(id: string | ((...params) => T) | T): void;
     }
 }

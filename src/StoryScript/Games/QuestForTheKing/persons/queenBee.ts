@@ -21,7 +21,7 @@
                 },
                 handleReply: (game, person, node, reply) => {
                     if (reply.linkToNode === 'giveflower') {
-                        game.character.items.push(game.getItem(Items.Beesting));
+                        game.character.items.push(Items.Beesting);
                         game.character.items.remove(Items.Magicflower);
                     }
                 }

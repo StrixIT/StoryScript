@@ -58,7 +58,7 @@
 
 
                         var randomItem = game.randomItem((item: IItem) => {
-                            return game.equals(item, Items.GoudenRing) && item.value < 30;
+                            return !game.equals(item, Items.GoudenRing) && item.value < 30;
                             
                         });
                         game.character.items.push(randomItem);

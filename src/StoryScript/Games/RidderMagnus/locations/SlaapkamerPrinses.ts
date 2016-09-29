@@ -24,18 +24,17 @@
                                 text: 'Besluip het monster',
                                 type: StoryScript.ActionType.Combat,
                                 execute: (game: IGame) => {
-                                    var ratMan = game.getEnemy(Enemies.RatMan);
-                                    game.currentLocation.enemies.push(ratMan);
+                                    var ratman = game.getEnemy(Enemies.RatMan);
+                                    game.currentLocation.enemies.push(ratman);
                                     var damage = game.character.sluipen * game.character.vechten;
-                                    ratMan.hitpoints -= damage;
+                                    ratman.hitpoints -= damage;
                                     game.logToLocationLog('Je valt onverhoeds aan en doet ' + damage + ' schade.');
                                 }
                             });
                         }
                         else {
                             game.logToActionLog('Opeens word je aangevallen door een monster! Het lijkt op een gigantische rat die op zijn achterpoten loopt.');
-                            var ratMan = game.getEnemy(Enemies.RatMan);
-                            game.currentLocation.enemies.push(ratMan);
+                            game.currentLocation.enemies.push(Enemies.RatMan);
                         }
                     }
                 }

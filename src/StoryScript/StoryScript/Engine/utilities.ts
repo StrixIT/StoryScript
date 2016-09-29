@@ -52,8 +52,6 @@
             return null;
         }
 
-        var collectionToFilter = <T[]>[];
-
         // Are we working with a definition collection?
         if (typeof collection[0] === 'function') {
 

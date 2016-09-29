@@ -4,6 +4,6 @@
         type?: ActionType;
         status?: ActionStatus | ((game: IGame, ...params) => ActionStatus);
         execute: ((game: IGame, ...params) => void) | string;
-        arguments?: [any];
+        arguments?: any[];
     }
 }

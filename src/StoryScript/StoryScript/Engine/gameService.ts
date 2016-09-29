@@ -94,6 +94,11 @@ module StoryScript {
                 return StoryScript.find<IItem>(self.game.definitions.items, selector);
             }
 
+            self.game.getNonPlayerCharacter = (selector: string | (() => IPerson)) => {
+                var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector);
+                return self.instantiateEnemy(instance);
+            }
+
             self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
                 var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, <(enemy: IEnemy) => boolean>selector);
                 return self.instantiateEnemy(instance);
@@ -123,6 +128,11 @@ module StoryScript {
             // Game setup end
 
             self.locationService.init(self.game);
+
+            self.game.locations.forEach((location: ICompiledLocation) => {
+                self.addProxy(location, 'enemy');
+            });
+
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
             self.game.statistics = self.dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || {};
@@ -139,6 +149,7 @@ module StoryScript {
 
                 self.locationService.changeLocation(lastLocation, self.game);
                 self.game.state = StoryScript.GameState.Play;
+                self.addProxy(self.game.character, 'item');
             }
             else {
                 self.game.state = StoryScript.GameState.CreateCharacter;
@@ -162,6 +173,7 @@ module StoryScript {
             var self = this;
             self.game.character = self.characterService.createCharacter(characterData);
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
+            self.addProxy(self.game.character, 'item');
             self.game.changeLocation('Start');
         }
 
@@ -361,6 +373,8 @@ module StoryScript {
         }
 
         private instantiateEnemy = (enemy: IEnemy): IEnemy => {
+            var self = this;
+
             if (!enemy) {
                 return null;
             }
@@ -374,7 +388,47 @@ module StoryScript {
             }
 
             (<any>enemy).items = items;
+
+            self.addProxy(enemy, 'item');
+
             return enemy;
+        }
+
+        private addProxy(entry, collectionType?: string) {
+            var self = this;
+
+            if (collectionType === 'enemy') {
+                entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
+                    var enemy = null;
+
+                    if (typeof selector !== 'object') {
+                        enemy = self.game.getEnemy(selector);
+                    }
+                    else {
+                        enemy = <any>selector;
+                    }
+
+                    push.call(this, enemy);
+
+                    if (self.ruleService.addEnemyToLocation) {
+                        self.ruleService.addEnemyToLocation(self.game.currentLocation, enemy);
+                    }
+                });
+            }
+            if (collectionType === 'item') {
+                entry.items.push = (<any>entry.items.push).proxy(function (push: Function, selector: string | (() => IItem)) {
+                    var item = null;
+
+                    if (typeof selector !== 'object') {
+                        item = self.game.getItem(selector);
+                    }
+                    else {
+                        item = <any>selector;
+                    }
+
+                    push.call(this, item);
+                });
+            }
         }
     }
 

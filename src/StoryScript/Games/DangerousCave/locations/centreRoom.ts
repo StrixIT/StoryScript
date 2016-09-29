@@ -13,8 +13,7 @@
                     difficulty: 9,
                     success: function (game) {
                         game.logToLocationLog('Je vindt een schild!');
-                        var item = game.getItem(Items.SmallShield);
-                        game.character.items.push(item);
+                        game.character.items.push(Items.SmallShield);
                     },
                     fail: function (game) {
                         game.logToLocationLog('Je vindt niets.');
