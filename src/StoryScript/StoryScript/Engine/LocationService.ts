@@ -270,23 +270,12 @@ module StoryScript {
 
                     self.functionList[functionId] = {
                         function: value,
-                        hash: self.createHash(value.toString())
+                        hash: createFunctionHash(value)
                     }
 
                     value.functionId = functionId;
                 }
             }
-        }
-
-        private createHash(functionString: string): number {
-            var hash = 0;
-            if (functionString.length == 0) return hash;
-            for (var i = 0; i < functionString.length; i++) {
-                var char = functionString.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // Convert to 32bit integer
-            }
-            return hash;
         }
 
         private addDestination() {

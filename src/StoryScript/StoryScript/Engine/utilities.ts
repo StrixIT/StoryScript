@@ -101,4 +101,21 @@
 
         return selector ? collectionToFilter.filter(selector) : collectionToFilter;
     }
+
+    export function createFunctionHash(func: Function): number {
+        var hash = 0;
+        var functionString = func.toString();
+
+        if (functionString.length == 0) {
+            return hash;
+        }
+
+        for (var i = 0; i < functionString.length; i++) {
+            var char = functionString.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+
+        return hash;
+    }
 }

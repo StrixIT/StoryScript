@@ -75,7 +75,7 @@ module StoryScript {
                 return data;
             }
             catch (exception) {
-                console.log('No data loaded for key ' + key);
+                console.log('No data loaded for key ' + key + '. Error: ' + exception.message);
             }
         }
 
@@ -116,7 +116,7 @@ module StoryScript {
                 }
                 else if (typeof value == 'function') {
                     if (!value.isProxy) {
-                        var idAndHash = '_function_' + value.functionId;
+                        var idAndHash = 'function#' + value.functionId + '#' + createFunctionHash(value);
 
                         if (pristineValues && pristineValues[key]) {
                             if (Array.isArray(clone)) {
@@ -159,11 +159,16 @@ module StoryScript {
                     self.restore(loaded[key]);
                 }
                 else if (typeof value === 'string') {
-                    if (value.indexOf('_function_') > -1) {
-                        var functionId = value.replace('_function_', '');
+                    if (value.indexOf('function#') > -1) {
+                        var parts = value.split('#');
+                        var functionId = parts[1];
+                        var hash = parseInt(parts[2]);
 
                         if (!self.functionList[functionId]) {
                             console.log('Function with key: ' + functionId + ' could not be found!');
+                        }
+                        else if (self.functionList[functionId].hash != hash) {
+                            console.log('Function with key: ' + functionId + ' was found but the hash does not match the stored hash!');
                         }
 
                         loaded[key] = self.functionList[functionId].function;
