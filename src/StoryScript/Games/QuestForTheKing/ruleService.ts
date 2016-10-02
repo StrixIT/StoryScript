@@ -97,7 +97,7 @@
                                 ]
                             }
                         ],
-                        nextStepSelector: 8
+                        nextStepSelector: 9
                     },
                     {
                         questions: [
@@ -173,6 +173,7 @@
                             }
                         ]
                     },
+                    
                     {
                         questions: [
                             {
@@ -190,6 +191,31 @@
                                     },
                                     {
                                         text: 'Participate in the Puzzle contest?',
+                                        value: 'wizard',
+                                        bonus: 1
+                                    },
+
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        questions: [
+                            {
+                                question: 'An item of great importance to your village has been stolen from the house of the mayor. The local magistrate has identified several suspects, but his questioning so far has led to no results. You think you could do better, and if it where up to you, would you:',
+                                entries: [
+                                    {
+                                        text: 'Use strength and intimidation to get some answers.',
+                                        value: 'warrior',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Use stealth to follow the movements of the suspects, and agility to enter their houses undetected and search for clues.',
+                                        value: 'rogue',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Use deduction and reasoning to get to the truth.',
                                         value: 'wizard',
                                         bonus: 1
                                     },
@@ -221,7 +247,7 @@
                                 ]
                             }
                         ],
-                        nextStepSelector: 8
+                        nextStepSelector: 9
                     },
                     {
                         initStep: (character, previousStep, currentStep) => {
