@@ -1,6 +1,6 @@
 ﻿module StoryScript {
     export interface IDataService {
-        functionList: { [id: number]: Function };
+        functionList: { [id: string]: { function: Function, hash: number } };
         getDescription(folder: string, descriptionid: string);
         save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
@@ -14,7 +14,7 @@ module StoryScript {
         private $localStorage: any; // Todo: type;
         private gameSpaceName: string;
 
-        public functionList: { [id: string]: Function };
+        public functionList: { [id: string]: { function: Function, hash: number } };
 
         constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, gameSpaceName: string) {
             var self = this;
@@ -116,16 +116,18 @@ module StoryScript {
                 }
                 else if (typeof value == 'function') {
                     if (!value.isProxy) {
+                        var idAndHash = '_function_' + value.functionId;
+
                         if (pristineValues && pristineValues[key]) {
                             if (Array.isArray(clone)) {
-                                clone.push('_function_' + value.functionId);
+                                clone.push(idAndHash);
                             }
                             else {
-                                clone[key] = '_function_' + value.functionId;
+                                clone[key] = idAndHash;
                             }
                         }
-                        else if (value.functionId){
-                            clone[key] = '_function_' + value.functionId;
+                        else if (value.functionId) {
+                            clone[key] = idAndHash;
                         }
                         else {
                             clone[key] = value.toString();
@@ -164,7 +166,7 @@ module StoryScript {
                             console.log('Function with key: ' + functionId + ' could not be found!');
                         }
 
-                        loaded[key] = self.functionList[functionId];
+                        loaded[key] = self.functionList[functionId].function;
                     }
                     else if (typeof value === 'string' && value.indexOf('function ') > -1) {
                         // Todo: create a new function instead of using eval.

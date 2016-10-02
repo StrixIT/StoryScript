@@ -13,7 +13,7 @@ module StoryScript {
         private game: IGame;
         private definitions: any;
         private pristineLocations: ICollection<ICompiledLocation>;
-        private functionList: { [id: string]: Function };
+        private functionList: { [id: string]: { function: Function, hash: number } };
 
         constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
             var self = this;
@@ -212,7 +212,9 @@ module StoryScript {
             var collection = [];
 
             for (var n in location[collectionName]) {
-                collection.push(instantiateFunction(location[collectionName][n]));
+                var name = location[collectionName][n].name;
+                var entry = name ? instantiateFunction(location[collectionName][n]) : location[collectionName][n]();
+                collection.push(entry);
             }
 
             location[collectionName] = collection;
@@ -259,17 +261,32 @@ module StoryScript {
                 else if (typeof value === "object") {
                     self.getFunctions(location[key], parentId + '_' + key);
                 }
-                else if (typeof value == 'function') {
+                else if (typeof value == 'function' && !value.isProxy) {
                     var functionId = parentId + '_' + key;
 
                     if (self.functionList[functionId]) {
                         throw new Error('Trying to register a duplicate function key: ' + functionId);
                     }
 
-                    self.functionList[functionId] = value;
+                    self.functionList[functionId] = {
+                        function: value,
+                        hash: self.createHash(value.toString())
+                    }
+
                     value.functionId = functionId;
                 }
             }
+        }
+
+        private createHash(functionString: string): number {
+            var hash = 0;
+            if (functionString.length == 0) return hash;
+            for (var i = 0; i < functionString.length; i++) {
+                var char = functionString.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return hash;
         }
 
         private addDestination() {

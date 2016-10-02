@@ -97,7 +97,7 @@
                                 ]
                             }
                         ],
-                        nextStepSelector: 7
+                        nextStepSelector: 8
                     },
                     {
                         questions: [

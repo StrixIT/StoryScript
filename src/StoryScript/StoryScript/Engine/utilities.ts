@@ -80,7 +80,7 @@
         return results[0] ? results[0] : null;
     }
 
-    export function custom<T>(definition: () => T, customData: {}) {
+    export function custom<T>(definition: () => T, customData: {}) : () => T {
         return (): T => {
             var instance = definition();
             return angular.extend(instance, customData);
