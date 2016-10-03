@@ -8,12 +8,14 @@
     export class CharacterController {
         private $scope: ICharacterControllerScope;
         private characterService: ICharacterService;
+        private ruleService: IRuleService;
         private game: IGame;
 
-        constructor($scope: ICharacterControllerScope, characterService: ICharacterService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: ICharacterControllerScope, characterService: ICharacterService, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.characterService = characterService;
+            self.ruleService = ruleService;
             self.game = game;
             self.$scope.game = self.game;
             self.$scope.texts = texts;
@@ -32,6 +34,12 @@
             for (var n in equipmentTypes) {
                 var type = self.getEquipmentType(equipmentTypes[n]);
                 self.unequip(type);
+            }
+
+            if (self.ruleService.beforeEquip) {
+                if (!self.ruleService.beforeEquip(self.game.character, item)) {
+                    return;
+                }
             }
 
             for (var n in equipmentTypes) {
@@ -61,6 +69,12 @@
                     for (var n in equippedItem.equipmentType) {
                         var type = self.getEquipmentType(equippedItem.equipmentType[n]);
                         self.unequip(type, equippedItem);
+                    }
+                }
+
+                if (self.ruleService.beforeUnequip) {
+                    if (!self.ruleService.beforeUnequip(self.game.character, equippedItem)) {
+                        return;
                     }
                 }
 
@@ -97,5 +111,5 @@
         }
     }
 
-    CharacterController.$inject = ['$scope', 'characterService', 'game', 'customTexts'];
+    CharacterController.$inject = ['$scope', 'characterService', 'ruleService', 'game', 'customTexts'];
 }

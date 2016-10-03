@@ -12,5 +12,7 @@
         hitpointsChange(change: number): boolean;
         scoreChange(change: number): boolean;
         determineFinalScore?(): void;
+        beforeEquip?(character: ICharacter, item: IItem): boolean;
+        beforeUnequip?(character: ICharacter, item: IItem): boolean;
     }
 }
