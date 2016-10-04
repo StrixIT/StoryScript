@@ -2,8 +2,8 @@
     export function Nobleman(): IEnemy {
         return {
             name: 'Nobleman',
-            hitpoints: 15,
-            attack: '1d6',
+            hitpoints: 14,
+            attack: '1d4',
             reward: 1,
             currency: 15
         }

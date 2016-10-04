@@ -2,8 +2,8 @@
     export function Assassin(): IEnemy {
         return {
             name: 'Assassin',
-            hitpoints: 16,
-            attack: '1d6',
+            hitpoints: 12,
+            attack: '1d4',
             reward: 1,       
         }
     }
