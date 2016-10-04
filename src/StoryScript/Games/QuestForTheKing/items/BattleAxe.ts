@@ -2,7 +2,7 @@
     export function Battleaxe(): IItem {
         return {
             name: 'Battle Axe',
-            damage: '2',
+            damage: '1D8',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,
             attackText: 'You swing your battle axe',
