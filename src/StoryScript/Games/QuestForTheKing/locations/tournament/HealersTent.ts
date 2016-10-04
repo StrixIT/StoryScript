@@ -3,7 +3,7 @@
         return {
             name: 'Healers Tent',
             descriptionSelector: (game: IGame) => {
-                return 'day' + game.currentDay;
+                return 'day' + game.worldProperties.currentDay;
             },
             destinations: [
                 {
@@ -20,8 +20,8 @@
                     var reset = false;
                     trade.currentDay = trade.currentDay || 0;
 
-                    if (game.currentDay != trade.currentDay) {
-                        trade.currentDay = game.currentDay;
+                    if (game.worldProperties.currentDay != trade.currentDay) {
+                        trade.currentDay = game.worldProperties.currentDay;
                         reset = true;
                     }
 
@@ -31,7 +31,7 @@
                     description: 'Buy from Siri',
                     emptyText: 'Siri has nothing to trade',
                     itemSelector: (game: IGame, item: IItem) => {
-                        return game.currentDay == item.dayAvailable && item.arcane && (item.itemClass == game.character.class || (Array.isArray(item.itemClass) && (<Class[]>item.itemClass).indexOf(game.character.class) > -1));
+                        return game.worldProperties.currentDay == item.dayAvailable && item.arcane && (item.itemClass == game.character.class || (Array.isArray(item.itemClass) && (<Class[]>item.itemClass).indexOf(game.character.class) > -1));
                     },
                     maxItems: 5
                 },

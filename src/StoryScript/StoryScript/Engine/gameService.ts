@@ -136,6 +136,7 @@ module StoryScript {
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
             self.game.statistics = self.dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || {};
+            self.game.worldProperties = self.dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || {};
 
             var locationName = self.dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
@@ -162,6 +163,7 @@ module StoryScript {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.WORLD, {});
             self.locationService.init(self.game);
+            self.game.worldProperties = self.dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
             var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
 
             if (location) {
@@ -183,6 +185,7 @@ module StoryScript {
             self.dataService.save(StoryScript.DataKeys.STATISTICS, {});
             self.dataService.save(StoryScript.DataKeys.LOCATION, '');
             self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
+            self.dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, {});
             self.dataService.save(StoryScript.DataKeys.WORLD, {});
             self.init();
         }
@@ -191,6 +194,7 @@ module StoryScript {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
             self.dataService.save(StoryScript.DataKeys.STATISTICS, self.game.statistics);
+            self.dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self.game.worldProperties);
             self.locationService.saveWorld(self.game.locations);
         }
 

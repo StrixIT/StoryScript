@@ -6,7 +6,12 @@
                 {
                     text: 'Begin your Quest',
                     target: Locations.Quest1map1
-                }             
+                }
+            ],
+            events: [
+                (game: IGame) => {
+                    game.worldProperties.travelCounter = 0;
+                }
             ]
         }
     }

@@ -18,7 +18,8 @@
                 fight: self.fight,
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange,
-                setupGame: self.setupGame
+                setupGame: self.setupGame,
+                enterLocation: self.enterLocation
             };
         }
 
@@ -32,7 +33,11 @@
         }
 
         setupGame = (game: IGame) => {
-            game.currentDay = 0;
+            game.worldProperties = {
+                currentDay: 0,
+                isDay: true,
+                isNight: false
+            }
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
@@ -416,6 +421,18 @@
 
             // Implement logic to occur when the score changes. Return true when the character gains a level.
             return false;
+        }
+
+        enterLocation(location: ICompiledLocation) {
+            var self = this;
+
+            if (self.game.worldProperties.travelCounter !== undefined) {
+                self.game.worldProperties.travelCounter++;
+
+                var isDay = Math.floor(self.game.worldProperties.travelCounter / 3 + 1) % 2 !== 0;
+                self.game.worldProperties.isDay = isDay;
+                self.game.worldProperties.isNight = !isDay;
+            }
         }
     }
 

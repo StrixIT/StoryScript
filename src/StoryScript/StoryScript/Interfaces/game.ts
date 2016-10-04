@@ -18,6 +18,8 @@
         combatLog: string[];
         state: StoryScript.GameState;
 
+        worldProperties: any;
+
         statistics: IStatistics;
 
         changeLocation(location?: string | (() => ILocation)): void;

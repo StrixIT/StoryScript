@@ -71,6 +71,7 @@
         static LOCATION: string = 'location';
         static PREVIOUSLOCATION: string = 'previousLocation';
         static WORLD: string = 'world';
+        static WORLDPROPERTIES: string = 'worldProperties';
     }
 
     function find(id: any, array: any[]): any[] {

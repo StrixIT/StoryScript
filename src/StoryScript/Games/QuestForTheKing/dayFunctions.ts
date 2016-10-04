@@ -1,9 +1,9 @@
 ﻿module QuestForTheKing {
     export function changeDay(game: IGame) {
-        game.currentDay = game.currentDay || 0;
-        game.currentDay++;
-        updateDestination(game, game.locations.get(Locations.WeaponSmith), game.currentDay);
-        updateDestination(game, game.locations.get(Locations.HealersTent), game.currentDay);
+        game.worldProperties.currentDay = game.worldProperties.currentDay || 0;
+        game.worldProperties.currentDay++;
+        updateDestination(game, game.locations.get(Locations.WeaponSmith), game.worldProperties.currentDay);
+        updateDestination(game, game.locations.get(Locations.HealersTent), game.worldProperties.currentDay);
     }
 
     function updateDestination(game: IGame, location: ICompiledLocation, day: number) {

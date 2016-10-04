@@ -11,7 +11,7 @@
         getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
 
-        currentDay?: number;
+        worldProperties: IWorldProperties
     }
 
     var storyScriptModule = angular.module("storyscript");
