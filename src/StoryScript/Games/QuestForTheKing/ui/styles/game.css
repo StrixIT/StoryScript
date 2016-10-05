@@ -3,7 +3,7 @@
     padding-bottom: 20px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, Papyrus, sans-serif;
     color: #483D8B;  
-    background-image: url("resources/parchment.jpg"),       
+    background-image: url("/resources/parchment.jpg");       
 }
 
 /* Set padding to keep content from hitting the edges */
