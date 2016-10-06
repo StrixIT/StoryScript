@@ -10,17 +10,20 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    font-family: Papyrus;
+    font-size: medium;
+    font-weight:bold;    
 }
 
 h2 {
-    font-family: 'Trebuchet MS';
+    font-family: Papyrus;
     color: #483D8B;
 }
 
 legend {
     padding-left: 10px;
     padding-right: 10px;
-    font-family: Andalus;
+    font-family: Papyrus;
     color: #8FBC8F;
     background-color: #FFFACD;
 }
@@ -33,6 +36,7 @@ textarea {
     max-width: 280px;
     padding-left: 10px;
     padding-right: 10px;
+    font-family: Papyrus;        
 }
 
 .name-input {
