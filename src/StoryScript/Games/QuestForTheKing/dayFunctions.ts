@@ -7,7 +7,7 @@
     }
 
     function updateDestination(game: IGame, location: ICompiledLocation, day: number) {
-        var dayLocation = <any>Locations['Day' + day];
+        var dayLocation = <any>Locations['Day' + (day + 1)];
 
         var dayDestinations = location.destinations.filter(d => (<any>d.target).indexOf('Day') > -1);
 
