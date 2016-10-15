@@ -151,6 +151,12 @@ module StoryScript {
                 self.locationService.changeLocation(lastLocation, false, self.game);
                 self.game.state = StoryScript.GameState.Play;
                 self.addProxy(self.game.character, 'item');
+
+                Object.defineProperty(self.game.character, 'combatItems', {
+                    get: function () {
+                        return self.game.character.items.filter(e => { return e.useInCombat; });
+                    }
+                });
             }
             else {
                 self.game.state = StoryScript.GameState.CreateCharacter;
@@ -163,6 +169,11 @@ module StoryScript {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.WORLD, {});
             self.locationService.init(self.game);
+
+            self.game.locations.forEach((location: ICompiledLocation) => {
+                self.addProxy(location, 'enemy');
+            });
+
             self.game.worldProperties = self.dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
             var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
 
@@ -176,6 +187,13 @@ module StoryScript {
             self.game.character = self.characterService.createCharacter(characterData);
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
             self.addProxy(self.game.character, 'item');
+
+            Object.defineProperty(self.game.character, 'combatItems', {
+                get: function () {
+                    return self.game.character.items.filter(e => { return e.useInCombat; });
+                }
+            });
+
             self.game.changeLocation('Start');
         }
 

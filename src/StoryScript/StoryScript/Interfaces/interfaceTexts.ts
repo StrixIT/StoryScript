@@ -51,6 +51,7 @@
         startCombat?: string;
         combatWin?: string;
         enemiesToFight?: string;
+        useInCombat?: string;
 
         format?: (template: string, tokens: string[]) => string;
         titleCase?: (text: string) => string;

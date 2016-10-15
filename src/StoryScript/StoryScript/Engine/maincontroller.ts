@@ -191,6 +191,11 @@
             self.game.currentLocation.items.remove(item);
         }
 
+        useItem = (item: IItem): void => {
+            var self = this;
+            item.use(self.game, item);
+        }
+
         initCombat = (newValue: IEnemy[]) => {
             var self = this;
 

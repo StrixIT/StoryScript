@@ -3,7 +3,8 @@
         return {
             name: 'Toverdrank',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
-            use: Actions.Heal('1d8')
+            use: Actions.Heal('1d8'),
+            useInCombat: true
         }
     }
 }

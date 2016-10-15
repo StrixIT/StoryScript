@@ -104,11 +104,6 @@
             self.game.character.items.remove(item);
             self.game.currentLocation.items.push(item);
         }
-
-        useItem = (item: IItem): void => {
-            var self = this;
-            item.use(self.game, item);
-        }
     }
 
     CharacterController.$inject = ['$scope', 'characterService', 'ruleService', 'game', 'customTexts'];
