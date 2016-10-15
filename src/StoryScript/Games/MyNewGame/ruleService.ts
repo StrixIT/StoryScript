@@ -112,7 +112,7 @@
                 self.game.logToCombatLog('You defeat the ' + enemy.name + '!');
             }
 
-            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 var damage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                 self.game.character.currentHitpoints -= damage;

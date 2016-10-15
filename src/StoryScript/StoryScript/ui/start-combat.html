@@ -1,8 +1,8 @@
-﻿<fieldset ng-if="game.currentLocation.enemies && game.currentLocation.enemies.length">
+﻿<fieldset ng-if="game.currentLocation.activeEnemies && game.currentLocation.activeEnemies.length">
     <legend>{{ texts.encounters }}</legend>
     <p>{{ texts.enemiesToFight }}</p>
     <ul>
-        <li ng-repeat="enemy in game.currentLocation.enemies">
+        <li ng-repeat="enemy in game.currentLocation.activeEnemies">
             {{ enemy.name }}
         </li>
     </ul>

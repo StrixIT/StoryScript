@@ -5,7 +5,7 @@
         getCreateCharacterSheet(): ICreateCharacter
         createCharacter(characterData: ICreateCharacter): ICharacter;
         addEnemyToLocation?(location: ICompiledLocation, enemy: IEnemy): void;
-        enterLocation?(location: ICompiledLocation): void;
+        enterLocation?(location: ICompiledLocation, travel?: boolean): void;
         initCombat?(location: ICompiledLocation): void;
         fight(enemy: IEnemy, retaliate?: boolean): void;
         enemyDefeated?(enemy: IEnemy): void;

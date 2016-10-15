@@ -118,7 +118,7 @@
         public initCombat(location: StoryScript.ICompiledLocation) {
             var self = this;
 
-            location.enemies.forEach(function (enemy) {
+            location.activeEnemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
 
@@ -137,7 +137,7 @@
                 self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
             }
 
-            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 var check = self.game.rollDice(enemy.attack);
                 var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
                 self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
@@ -198,7 +198,7 @@
 
         private addFleeAction(location: StoryScript.ICompiledLocation): void {
             var self = this;
-            var numberOfEnemies = location.enemies.length;
+            var numberOfEnemies = location.activeEnemies.length;
             var fleeAction = location.combatActions.get(Actions.Flee);
 
             if (fleeAction) {

@@ -2,7 +2,7 @@
     export interface ILocationService {
         init(game: IGame): void;
         saveWorld(locations: ICollection<ICompiledLocation>): void;
-        changeLocation(location: any, game: IGame): void;
+        changeLocation(location: any, travel: boolean, game: IGame): void;
     }
 }
 
@@ -39,7 +39,7 @@ module StoryScript {
 
         init = (game: IGame) => {
             var self = this;
-            game.changeLocation = (location) => { self.changeLocation.call(self, location, game); };
+            game.changeLocation = (location, travel) => { self.changeLocation.call(self, location, travel, game); };
             game.currentLocation = null;
             game.previousLocation = null;
             game.locations = self.loadWorld();
@@ -64,6 +64,12 @@ module StoryScript {
 
                 location.enemies = location.enemies || [];
                 location.combatActions = location.combatActions || [];
+
+                Object.defineProperty(location, 'activeEnemies', {
+                    get: function () {
+                        return location.enemies.filter(e => { return !e.inactive; });
+                    }
+                });
             });
 
             return locations;
@@ -74,7 +80,7 @@ module StoryScript {
             self.dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
-        public changeLocation(location: ILocation | ICompiledLocation, game: IGame) {
+        public changeLocation(location: ILocation | ICompiledLocation, travel: boolean, game: IGame) {
             var self = this;
 
             // If no location is specified, go to the previous location.
@@ -139,7 +145,7 @@ module StoryScript {
             self.loadLocationDescriptions(game);
 
             if (self.ruleService.enterLocation) {
-                self.ruleService.enterLocation(game.currentLocation);
+                self.ruleService.enterLocation(game.currentLocation, travel);
             }
 
             self.initTrade(game);

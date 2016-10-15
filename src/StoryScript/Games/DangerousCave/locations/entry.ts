@@ -8,7 +8,7 @@
             //},
             //navigationDisabled: true,
             items: [
-                Items.Lantern,
+                Items.Lantern
             ],
             events: [
                 (game: IGame) => {

@@ -7,6 +7,7 @@
         currency: number;
 
         items: StoryScript.ICollection<StoryScript.IItem>;
+        combatItems?: StoryScript.ICollection<StoryScript.IItem>;
 
         equipment: {
             head?: IItem,

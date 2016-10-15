@@ -22,7 +22,7 @@
 
         statistics: IStatistics;
 
-        changeLocation(location?: string | (() => ILocation)): void;
+        changeLocation(location?: string | (() => ILocation), travel?: boolean): void;
         rollDice(dice: string): number;
         calculateBonus(person: { items: ICollection<IItem>, equipment?: {} }, type: string): number;
         logToLocationLog(message: string): void;

@@ -119,7 +119,7 @@
         public initCombat(location: ICompiledLocation) {
             var self = this;
 
-            location.enemies.forEach(function (enemy) {
+            location.activeEnemies.forEach(function (enemy) {
                 self.game.logToActionLog('Er is hier een ' + enemy.name);
             });
 
@@ -131,7 +131,7 @@
 
                     var sneakActions = <IAction[]>[];
 
-                    self.game.currentLocation.enemies.forEach((enemy: IEnemy) => {
+                    self.game.currentLocation.activeEnemies.forEach((enemy: IEnemy) => {
                         sneakActions.push({
                             isSneakAction: true,
                             text: 'Besluip ' + enemy.name,
@@ -160,7 +160,7 @@
         }
 
         addFleeAction = (game: IGame) => {
-            if (game.currentLocation.enemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
+            if (game.currentLocation.activeEnemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
                 game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
             }
         }
@@ -180,7 +180,7 @@
             }
 
             if (retaliate) {
-                self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
                     self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');

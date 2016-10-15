@@ -48,7 +48,7 @@
             // Implement character attack here.
 
             if (retaliate) {
-                self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     // Implement monster attack here
                 });
             }
