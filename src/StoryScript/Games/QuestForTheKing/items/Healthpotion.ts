@@ -8,7 +8,11 @@
             arcane: true,
             value: 5,
             useInCombat: true,
-            itemClass: [Class.Rogue, Class.Warrior, Class.Wizard]
+            itemClass: [Class.Rogue, Class.Warrior, Class.Wizard],
+            use: (game, item) => {
+                game.character.currentHitpoints += 5;
+                game.character.items.remove(item);
+            }
         }
     }
 }
