@@ -7,14 +7,14 @@
 
     export class ConversationController {
         private $scope: IConversationControllerScope;
-        private $sce: ng.ISCEService;
+        private ruleService: IRuleService;
         private game: IGame;
         private texts: IInterfaceTexts;
 
-        constructor($scope: IConversationControllerScope, $sce: ng.ISCEService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: IConversationControllerScope, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
-            self.$sce = $sce;
+            self.ruleService = ruleService;
             self.game = game;
             self.texts = texts;
             self.$scope.game = self.game;
@@ -136,11 +136,11 @@
             }
         }
 
-        getLines = (lines: string) => {
+        getLines = (nodeOrReply: IConversationNode | IConversationReply) => {
             var self = this;
 
-            if (lines) {
-                return self.$sce.trustAsHtml(lines);
+            if (nodeOrReply && nodeOrReply.lines) {
+                return self.ruleService.processDescription ? self.ruleService.processDescription(nodeOrReply, 'lines') : nodeOrReply.lines;
             }
         }
 
@@ -156,5 +156,5 @@
         }
     }
 
-    ConversationController.$inject = ['$scope', '$sce', 'game', 'customTexts'];
+    ConversationController.$inject = ['$scope', 'ruleService', 'game', 'customTexts'];
 }

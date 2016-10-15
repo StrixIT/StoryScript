@@ -1,9 +1,9 @@
 ﻿<div ng-controller="ConversationController as conversationController">
     <div ng-show="conversation.activeNode">
-        <div ng-bind-html="conversationController.getLines(conversation.activeNode.lines)"></div>
+        <div ng-bind-html="conversationController.getLines(activeNode)"></div>
         <div ng-repeat="reply in conversation.activeNode.replies">
             <div ng-hide="!reply.available && !reply.showWhenUnavailable">
-                <input type="radio" ng-disabled="!reply.available" ng-click="conversationController.answer(conversation.activeNode, reply)" /><span ng-bind-html="conversationController.getLines(reply.lines)"></span>
+                <input type="radio" ng-disabled="!reply.available" ng-click="conversationController.answer(conversation.activeNode, reply)" /><span ng-bind-html="conversationController.getLines(reply)"></span>
             </div>
         </div>
     </div>

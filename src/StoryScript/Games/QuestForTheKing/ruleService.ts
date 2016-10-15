@@ -1,14 +1,17 @@
 ﻿module QuestForTheKing {
     export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
+        private $sce: ng.ISCEService;
         private game: IGame;
 
-        constructor(game: IGame) {
+        constructor($sce: ng.ISCEService, game: IGame) {
             var self = this;
+            self.$sce = $sce;
             self.game = game;
         }
 
-        public $get(game: IGame): StoryScript.IRuleService {
+        public $get($sce: ng.ISCEService, game: IGame): StoryScript.IRuleService {
             var self = this;
+            self.$sce = $sce;
             self.game = game;
 
             return {
@@ -19,7 +22,8 @@
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange,
                 setupGame: self.setupGame,
-                enterLocation: self.enterLocation
+                enterLocation: self.enterLocation,
+                processDescription: self.processDescription
             };
         }
 
@@ -37,7 +41,40 @@
                 currentDay: 0,
                 isDay: true,
                 isNight: false
+            };
+        }
+
+        processDescription(parent: any, key: string) {
+            var self = this;
+            var description = parent[key] as string;
+
+            if (parent === self.game.currentLocation) {
+                var descriptionKey = null;
+
+                for (var n in self.game.currentLocation.descriptions) {
+                    if (self.game.currentLocation.descriptions[n] === self.game.currentLocation.text) {
+                        descriptionKey = n;
+                        break;
+                    }
+                }
+
+                if (descriptionKey != null) {
+                    if (self.game.currentLocation.text.indexOf('autoplay="autoplay"') > -1) {
+                        self.game.currentLocation.descriptions[n] = self.game.currentLocation.text.replace('autoplay="autoplay"', '');
+                    }
+                }
             }
+
+            if (description.indexOf('autoplay="autoplay"') > -1) {
+                parent[key] = description.replace('autoplay="autoplay"', '');
+
+                setTimeout(function () {
+                    var audioElement = $('audio', 'body')[0] as HTMLAudioElement;
+                    audioElement.play();
+                }, 0);
+            }
+
+            return self.$sce.trustAsHtml(description);
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
@@ -178,7 +215,7 @@
                             }
                         ]
                     },
-                    
+
                     {
                         questions: [
                             {
@@ -380,12 +417,12 @@
             return character;
         }
 
-        fight = (enemy:IEnemy) => {
+        fight = (enemy: IEnemy) => {
             var self = this;
             self.game.combatLog = [];
             var damage = self.game.rollDice('1d6') + self.game.character.strength + self.game.calculateBonus(self.game.character, 'damage');
             var combatText = self.game.character.equipment.rightHand ? self.game.character.equipment.rightHand.attackText : '';
-            combatText = self.game.character.equipment.leftHand ? (combatText ? combatText + '. ' : '') + self.game.character.equipment.leftHand.attackText : combatText;          
+            combatText = self.game.character.equipment.leftHand ? (combatText ? combatText + '. ' : '') + self.game.character.equipment.leftHand.attackText : combatText;
             enemy.hitpoints -= damage;
 
             if (combatText) {
@@ -403,9 +440,9 @@
             }
 
             self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                var enemyDamage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');              
+                var enemyDamage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
-                self.game.character.currentHitpoints -= enemyDamage;            
+                self.game.character.currentHitpoints -= enemyDamage;
             });
         }
 
@@ -436,5 +473,5 @@
         }
     }
 
-    RuleService.$inject = ['game'];
+    RuleService.$inject = ['$sce', 'game'];
 }

@@ -14,5 +14,6 @@
         determineFinalScore?(): void;
         beforeEquip?(character: ICharacter, item: IItem): boolean;
         beforeUnequip?(character: ICharacter, item: IItem): boolean;
+        processDescription?(parent: any, key: string);
     }
 }
