@@ -26,6 +26,7 @@
             }
 
         function onDefeat(game: IGame) {
+            game.state = StoryScript.GameState.Play;
             var randomEnemy = game.randomEnemy();
             game.currentLocation.enemies.push(randomEnemy);
             randomEnemy.onDefeat = this.onDefeat;
