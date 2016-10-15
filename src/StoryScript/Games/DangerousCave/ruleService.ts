@@ -175,8 +175,6 @@
                 self.game.logToActionLog('Pas op! Je bent zwaar gewond!');
                 self.game.logToCombatLog('Pas op! Je bent zwaar gewond!');
             }
-
-            return self.game.character.currentHitpoints <= 0;
         }
 
         scoreChange(change: number): boolean {

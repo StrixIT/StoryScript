@@ -292,6 +292,10 @@ module StoryScript {
                     enemy.onDefeat(self.game);
                 }
             }
+
+            if (self.game.character.currentHitpoints <= 0) {
+                self.game.state = StoryScript.GameState.GameOver;
+            }
         }
 
         scoreChange = (change: number): void => {
@@ -310,11 +314,7 @@ module StoryScript {
 
         hitpointsChange = (change: number): void => {
             var self = this;
-            var defeat = self.ruleService.hitpointsChange(change);
-
-            if (defeat) {
-                self.game.state = StoryScript.GameState.GameOver;
-            }
+            self.ruleService.hitpointsChange(change);
         }
 
         changeGameState = (state: StoryScript.GameState) => {

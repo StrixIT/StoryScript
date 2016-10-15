@@ -16,7 +16,6 @@
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange
             };
         }
@@ -195,14 +194,6 @@
             if (enemy.reward) {
                 self.game.character.score += enemy.reward;
             }
-        }
-
-
-        hitpointsChange(change: number) {
-            var self = this;
-
-            // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
-            return false;
         }
 
         scoreChange(change: number): boolean {

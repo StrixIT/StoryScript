@@ -16,7 +16,6 @@
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 fight: self.fight,
-                hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange
             };
         }
@@ -117,13 +116,6 @@
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                 self.game.character.currentHitpoints -= damage;
             });
-        }
-
-        hitpointsChange(change: number) {
-            var self = this;
-
-            // Implement additional logic to occur when hitpoints are lost. Return true when the character has been defeated.
-            return self.game.character.currentHitpoints <= 0;
         }
 
         scoreChange(change: number): boolean {

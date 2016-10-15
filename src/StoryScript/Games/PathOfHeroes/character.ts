@@ -1,6 +1,6 @@
 ﻿module PathOfHeroes {
     export class Character implements StoryScript.ICharacter {
-        name: string;
+        name: string = "";
         currency: number = 0;
         hitpoints: number = 20;
         currentHitpoints: number = 20;

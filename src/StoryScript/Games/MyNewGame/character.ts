@@ -1,6 +1,6 @@
 ﻿module MyNewGame {
     export class Character implements StoryScript.ICharacter {
-        name: string;
+        name: string = "";
         score: number = 0;
         currency: number = 0;
         level: number = 1;

@@ -9,7 +9,7 @@
         initCombat?(location: ICompiledLocation): void;
         fight(enemy: IEnemy, retaliate?: boolean): void;
         enemyDefeated?(enemy: IEnemy): void;
-        hitpointsChange(change: number): boolean;
+        hitpointsChange?(change: number): void;
         scoreChange(change: number): boolean;
         determineFinalScore?(): void;
         beforeEquip?(character: ICharacter, item: IItem): boolean;

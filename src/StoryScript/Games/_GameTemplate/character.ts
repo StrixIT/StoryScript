@@ -1,6 +1,6 @@
 ﻿module GameTemplate {
     export class Character implements StoryScript.ICharacter {
-        name: string;
+        name: string = "";
         score: number = 0;
         hitpoints: number = 10;
         currentHitpoints: number = 10;
