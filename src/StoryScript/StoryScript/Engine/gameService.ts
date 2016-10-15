@@ -148,7 +148,7 @@ module StoryScript {
                     self.game.previousLocation = self.game.locations.get(previousLocationName);
                 }
 
-                self.locationService.changeLocation(lastLocation, self.game);
+                self.locationService.changeLocation(lastLocation, false, self.game);
                 self.game.state = StoryScript.GameState.Play;
                 self.addProxy(self.game.character, 'item');
             }
@@ -167,7 +167,7 @@ module StoryScript {
             var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
 
             if (location) {
-                self.locationService.changeLocation(location, self.game);
+                self.locationService.changeLocation(location, false, self.game);
             }
         }
 

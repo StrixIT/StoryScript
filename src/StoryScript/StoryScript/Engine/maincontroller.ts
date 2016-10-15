@@ -100,7 +100,7 @@
 
         enemiesPresent = () => {
             var self = this;
-            return self.game.currentLocation && self.game.currentLocation.enemies.length;
+            return self.game.currentLocation && self.game.currentLocation.activeEnemies.length;
         }
 
         personsPresent = () => {
@@ -180,7 +180,7 @@
             var self = this;
 
             // Call changeLocation without using the execute action as the game parameter is not needed.
-            self.game.changeLocation(location);
+            self.game.changeLocation(location, true);
 
             self.gameService.saveGame();
         }
@@ -194,7 +194,7 @@
         initCombat = (newValue: IEnemy[]) => {
             var self = this;
 
-            if (newValue && newValue.length > 0 && self.game.state !== GameState.Combat) {
+            if (newValue && newValue.length > 0 && newValue.some(e => !e.inactive) && self.game.state !== GameState.Combat) {
 
                 self.$scope.modalSettings.title = self.texts.combatTitle;
                 self.$scope.modalSettings.canClose = false;
@@ -205,7 +205,7 @@
                     self.ruleService.initCombat(self.game.currentLocation);
                 }
             }
-            else if (newValue && newValue.length == 0) {
+            else if (newValue && !newValue.some(e => !e.inactive)) {
                 self.$scope.modalSettings.canClose = true;
             }
         }

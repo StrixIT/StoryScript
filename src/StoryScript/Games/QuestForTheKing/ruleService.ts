@@ -434,12 +434,12 @@
             if (enemy.hitpoints <= 0) {
                 self.game.logToCombatLog('You defeat the ' + enemy.name + '!');
 
-                if (!self.game.currentLocation.enemies.some(enemy => enemy.hitpoints > 0)) {
+                if (!self.game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
                     self.game.currentLocation.text = self.game.currentLocation.descriptions['after'];
                 }
             }
 
-            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 var enemyDamage = self.game.rollDice(enemy.attack) + self.game.calculateBonus(<any>enemy, 'damage');
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
                 self.game.character.currentHitpoints -= enemyDamage;
@@ -460,15 +460,21 @@
             return false;
         }
 
-        enterLocation(location: ICompiledLocation) {
+        enterLocation(location: ICompiledLocation, travel: boolean) {
             var self = this;
 
-            if (self.game.worldProperties.travelCounter !== undefined) {
-                self.game.worldProperties.travelCounter++;
+            if (travel) {
+                if (self.game.worldProperties.travelCounter !== undefined) {
+                    self.game.worldProperties.travelCounter++;
 
-                var isDay = Math.floor(self.game.worldProperties.travelCounter / 3 + 1) % 2 !== 0;
-                self.game.worldProperties.isDay = isDay;
-                self.game.worldProperties.isNight = !isDay;
+                    var isDay = Math.floor(self.game.worldProperties.travelCounter / 3 + 1) % 2 !== 0;
+                    self.game.worldProperties.isDay = isDay;
+                    self.game.worldProperties.isNight = !isDay;
+                }
+            }
+
+            if (location.enemies && location.enemies.length > 0) {
+                location.enemies.forEach(enemy => { enemy.inactive = (enemy.nightEncounter && self.game.worldProperties.isDay) || (!enemy.nightEncounter && self.game.worldProperties.isNight) });
             }
         }
     }

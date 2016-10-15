@@ -10,7 +10,8 @@
             ],
             enemies: [
                 Enemies.Bandit,
-                Enemies.Bandit
+                Enemies.Bandit,
+                Enemies.Ghost
             ]
         }
     }

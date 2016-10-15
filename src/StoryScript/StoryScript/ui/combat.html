@@ -1,6 +1,6 @@
 ﻿<div ng-if="controller.enemiesPresent()">
-    <ul ng-show="controller.game.currentLocation.enemies.length > 0" class="inline button-row">
-        <li ng-repeat="enemy in controller.game.currentLocation.enemies">
+    <ul ng-show="controller.game.currentLocation.activeEnemies.length > 0" class="inline button-row">
+        <li ng-repeat="enemy in controller.game.currentLocation.activeEnemies">
             <button type="button" class="btn btn-danger" ng-click="controller.fight(enemy)">{{ texts.format(texts.attack, [enemy.name]) }}</button>
             <img ng-src="{{ 'resources/' + enemy.pictureFileName }}" ng-if="enemy.pictureFileName" />
         </li>

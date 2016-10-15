@@ -4,6 +4,7 @@
         name: string;
         descriptionSelector?: (game: IGame) => string;
         enemies?: ICollection<IEnemy>;
+        activeEnemies?: ICollection<IEnemy>;
         persons?: ICollection<IPerson>;
         items?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
