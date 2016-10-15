@@ -7,6 +7,7 @@
             dayAvailable: 1,
             arcane: true,
             value: 5,
+            useInCombat: true,
             itemClass: [Class.Rogue, Class.Warrior, Class.Wizard]
         }
     }
