@@ -318,7 +318,7 @@
                                     currentStep.questions[0].entries = [
                                         {
                                             text: Items.LongSword().name,
-                                            value: (<any>Items.LongSword).name
+                                            value: (<any>Items.LongSword).name                                          
                                         },
                                         {
                                             text: Items.Battleaxe().name,
