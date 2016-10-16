@@ -234,6 +234,10 @@
             if (newValue && !newValue.some(e => !e.inactive)) {
                 self.$scope.modalSettings.canClose = true;
             }
+
+            if (self.ruleService.initCombat) {
+                self.ruleService.initCombat(self.game.currentLocation);
+            }
         }
 
         startCombat = () => {
@@ -243,10 +247,6 @@
             self.$scope.modalSettings.canClose = false;
 
             self.game.combatLog = [];
-
-            if (self.ruleService.initCombat) {
-                self.ruleService.initCombat(self.game.currentLocation);
-            }
 
             self.game.state = GameState.Combat;
         }

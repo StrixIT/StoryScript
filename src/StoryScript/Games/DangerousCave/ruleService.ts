@@ -113,14 +113,16 @@
             if (location.id != 'start' && !location.hasVisited) {
                 self.game.character.score += 1;
             }
+
+            if (location.activeEnemies) {
+                location.activeEnemies.forEach(function (enemy) {
+                    self.game.logToActionLog('Er is hier een ' + enemy.name);
+                });
+            }
         }
 
         public initCombat(location: StoryScript.ICompiledLocation) {
             var self = this;
-
-            location.activeEnemies.forEach(function (enemy) {
-                self.game.logToActionLog('Er is hier een ' + enemy.name);
-            });
 
             self.addFleeAction(location);
         }

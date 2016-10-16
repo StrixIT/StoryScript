@@ -16,7 +16,8 @@
                 getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
                 fight: self.fight,
-                scoreChange: self.scoreChange
+                scoreChange: self.scoreChange,
+                initCombat: self.initCombat
             };
         }
 
@@ -113,16 +114,18 @@
             if (location.id != 'start' && !location.hasVisited) {
                 self.game.character.score += 1;
             }
+
+            if (location.activeEnemies) {
+                location.activeEnemies.forEach(function (enemy) {
+                    self.game.logToActionLog('Er is hier een ' + enemy.name);
+                });
+            }
         }
 
         public initCombat(location: ICompiledLocation) {
             var self = this;
 
-            location.activeEnemies.forEach(function (enemy) {
-                self.game.logToActionLog('Er is hier een ' + enemy.name);
-            });
-
-            if (self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited) {
+            if (self.game.currentLocation && self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited) {
                 // check stats
                 var roll = self.game.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
 
@@ -159,7 +162,7 @@
         }
 
         addFleeAction = (game: IGame) => {
-            if (game.currentLocation.activeEnemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
+            if (game.currentLocation && game.currentLocation.activeEnemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
                 game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
             }
         }

@@ -362,10 +362,10 @@ module StoryScript {
                                 }
 
                                 node.removeChild(replies);
-                                newNode.lines = node.innerHTML;
                             }
                         }
 
+                        newNode.lines = node.innerHTML;
                         person.conversation.nodes.push(newNode);
                     }
                 });
