@@ -11,5 +11,6 @@
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
         trade?: ITrade;
+        complete?: (game: IGame, location: ICompiledLocation) => boolean;
     }
 }

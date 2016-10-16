@@ -13,7 +13,7 @@
                 },
                 {
                     text: 'Go to the Forest Lake',
-                    target: Locations.ForestLakeDay
+                    target: Locations.ForestLake
                 },       
                 {
                     text: 'Go to the Stone Mount',

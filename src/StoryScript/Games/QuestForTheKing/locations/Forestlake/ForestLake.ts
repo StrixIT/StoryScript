@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function ForestLakeDay(): StoryScript.ILocation {
+    export function ForestLake(): StoryScript.ILocation {
         return {
             name: 'Forest Lake',
             destinations: [
@@ -12,7 +12,10 @@
                 Enemies.Bandit,
                 Enemies.Bandit,
                 Enemies.Ghost
-            ]
+            ],
+            complete: (game, location) => {
+                return locationComplete(game, location, () => location.activeEnemies.length == 0, () => location.items.length == 0);
+            }
         }
     }
 }    

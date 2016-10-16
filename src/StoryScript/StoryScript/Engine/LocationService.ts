@@ -136,6 +136,10 @@ module StoryScript {
                     self.game.statistics.LocationsVisited += 1;
                 }
 
+                if (game.previousLocation.complete) {
+                    game.previousLocation.complete(game, game.previousLocation);
+                }
+
                 self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
 

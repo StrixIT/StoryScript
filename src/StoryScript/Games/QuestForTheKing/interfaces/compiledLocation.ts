@@ -3,6 +3,7 @@
         activeEnemies?: StoryScript.ICollection<IEnemy>;
         enemies?: StoryScript.ICollection<IEnemy>;
         items?: StoryScript.ICollection<IItem>;
-        completed?: boolean;
+        completedDay?: boolean;
+        completedNight?: boolean;
     }
 }

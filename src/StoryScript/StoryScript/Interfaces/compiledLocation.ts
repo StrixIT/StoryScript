@@ -18,5 +18,6 @@
         activePerson?: IPerson;
         activeTrade?: ITrade;
         log: string[];
+        complete?: (game: IGame, location: ICompiledLocation) => boolean;
     }
 }

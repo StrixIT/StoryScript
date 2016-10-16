@@ -435,7 +435,9 @@
                 self.game.logToCombatLog('You defeat the ' + enemy.name + '!');
 
                 if (!self.game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
-                    self.game.currentLocation.text = self.game.currentLocation.descriptions['after'];
+                    var currentSelector = self.descriptionSelector(self.game);
+                    var selector = currentSelector ? currentSelector + 'after' : 'after';
+                    self.game.currentLocation.text = self.game.currentLocation.descriptions[selector];
                 }
             }
 
@@ -473,11 +475,12 @@
 
         descriptionSelector(game: IGame) {
             var self = this;
+
             return game.worldProperties.travelCounter ?
-                game.currentLocation.completed ?
-                    'completed' :
-                    game.worldProperties.isNight ?
+                game.worldProperties.isNight ?
+                    game.currentLocation.completedNight ? 'completednight' :
                         'night' :
+                    game.currentLocation.completedDay ? 'completedday' :
                         'day' :
                 null;
         }
