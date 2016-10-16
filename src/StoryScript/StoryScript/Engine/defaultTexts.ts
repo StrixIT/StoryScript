@@ -48,7 +48,9 @@
             startCombat: "Start combat",
             combatWin: "You are victorious!",
             enemiesToFight: "You face these foes: ",
-            useInCombat: "Use {0}"
+            useInCombat: "Use {0}",
+            defaultDescription: "(no description available)",
+            view: "View"
         }
 
         format = (template: string, tokens: string[]): string => {

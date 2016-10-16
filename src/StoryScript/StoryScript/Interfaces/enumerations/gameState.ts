@@ -5,8 +5,9 @@
         Combat,
         Trade,
         Conversation,
+        Description,
         LevelUp,
         GameOver,
-        Victory
+        Victory,
     }
 }

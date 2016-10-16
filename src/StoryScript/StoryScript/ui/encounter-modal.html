@@ -10,7 +10,8 @@
             <div class="modal-body">
                 <div ng-if="game.stateString == 'Combat'" class="combat" ng-include="'ui/combat.html'"></div>
                 <div ng-if="game.stateString == 'Trade'" class="trade" ng-include="'ui/trade.html'"></div>
-                <div ng-if="game.stateString == 'Conversation'" class="trade" ng-include="'ui/conversation.html'"></div>
+                <div ng-if="game.stateString == 'Conversation'" class="conversation" ng-include="'ui/conversation.html'"></div>
+                <div ng-if="game.stateString == 'Description'" class="description" ng-bind-html="controller.getDescription(modalSettings.descriptionEntity, 'description')"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" ng-click="controller.closeModal()" ng-show="modalSettings.canClose">{{ modalSettings.closeText }}</button>

@@ -73,7 +73,7 @@
                 }, 0);
             }
 
-            return self.$sce.trustAsHtml(description);
+            return self.$sce.trustAsHtml(parent[key]);
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {

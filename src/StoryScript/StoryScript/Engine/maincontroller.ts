@@ -1,9 +1,10 @@
 ﻿module StoryScript {
     export interface IModalSettings {
         title: string;
-        closeText: string;
-        canClose: boolean;
-        closeAction: (game: IGame) => void;
+        closeText?: string;
+        canClose?: boolean;
+        closeAction?: (game: IGame) => void;
+        descriptionEntity?: {};
     }
 
     export interface IMainControllerScope extends ng.IScope {
@@ -18,6 +19,7 @@
         private locationService: ILocationService;
         private ruleService: IRuleService;
         private gameService: IGameService;
+        private dataService: IDataService;
         private game: IGame;
         private customTexts: IInterfaceTexts;
         private texts: IInterfaceTexts;
@@ -27,13 +29,14 @@
         // Todo: can this be done differently?
         public reset(): void { };
 
-        constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, game: IGame, customTexts: IInterfaceTexts) {
+        constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, dataService: IDataService, game: IGame, customTexts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
             self.locationService = locationService;
             self.ruleService = ruleService;
             self.gameService = gameService;
+            self.dataService = dataService;
             self.game = game;
             self.customTexts = customTexts;
             self.init();
@@ -60,6 +63,7 @@
 
             self.$scope.modalSettings = <IModalSettings>{
                 title: '',
+                canClose: false,
                 closeText: self.texts.closeModal
             }
         }
@@ -71,12 +75,40 @@
             self.$scope.$broadcast('restart');
         }
 
-        getDescription() {
+        showDescription(type: string, item: any, title: string) {
+            var self = this;
+            var description = item.description;
+
+            if (!item.description) {
+                self.dataService.getDescription(type, item.id).then((result: string) => {
+                    item.description = result;
+                    self.showDescriptionModal(title, item);
+                }, () => {
+                    item.description = self.texts.defaultDescription;
+                    self.showDescriptionModal(title, item);
+                });
+            }
+            else {
+                self.showDescriptionModal(title, item);
+            }
+        }
+
+        private showDescriptionModal(title: string, item: any) {
             var self = this;
 
-            if (self.game.currentLocation && self.game.currentLocation.text) {
-                return self.ruleService.processDescription ? self.ruleService.processDescription(self.game.currentLocation, 'text') : self.game.currentLocation.text;
+            self.$scope.modalSettings = <IModalSettings>{
+                title: title,
+                closeText: self.texts.closeModal,
+                canClose: true,
+                descriptionEntity: item
             }
+
+            self.game.state = GameState.Description;
+        }
+
+        getDescription(entity: any, key: string) {
+            var self = this;
+            return entity && entity[key] ? self.ruleService.processDescription ? self.ruleService.processDescription(entity, key) : entity[key] : self.texts.defaultDescription;
         }
 
         getButtonClass = (action: IAction) => {
@@ -199,24 +231,23 @@
         initCombat = (newValue: IEnemy[]) => {
             var self = this;
 
-            if (newValue && newValue.length > 0 && newValue.some(e => !e.inactive) && self.game.state !== GameState.Combat) {
-
-                self.$scope.modalSettings.title = self.texts.combatTitle;
-                self.$scope.modalSettings.canClose = false;
-
-                self.game.combatLog = [];
-
-                if (self.ruleService.initCombat) {
-                    self.ruleService.initCombat(self.game.currentLocation);
-                }
-            }
-            else if (newValue && !newValue.some(e => !e.inactive)) {
+            if (newValue && !newValue.some(e => !e.inactive)) {
                 self.$scope.modalSettings.canClose = true;
             }
         }
 
         startCombat = () => {
             var self = this;
+
+            self.$scope.modalSettings.title = self.texts.combatTitle;
+            self.$scope.modalSettings.canClose = false;
+
+            self.game.combatLog = [];
+
+            if (self.ruleService.initCombat) {
+                self.ruleService.initCombat(self.game.currentLocation);
+            }
+
             self.game.state = GameState.Combat;
         }
 
@@ -288,7 +319,7 @@
             }
 
             if (newValue != undefined) {
-                if (newValue == GameState.Combat || newValue == GameState.Trade || newValue == GameState.Conversation) {
+                if (newValue == GameState.Combat || newValue == GameState.Trade || newValue == GameState.Conversation || newValue == GameState.Description) {
                     $('#encounters').modal('show');
                 }
                 else {
@@ -320,5 +351,5 @@
         }
     }
 
-    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'dataService', 'game', 'customTexts'];
 }

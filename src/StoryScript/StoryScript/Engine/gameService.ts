@@ -314,7 +314,10 @@ module StoryScript {
 
         hitpointsChange = (change: number): void => {
             var self = this;
-            self.ruleService.hitpointsChange(change);
+
+            if (self.ruleService.hitpointsChange) {
+                self.ruleService.hitpointsChange(change);
+            }
         }
 
         changeGameState = (state: StoryScript.GameState) => {
