@@ -22,7 +22,8 @@
                 scoreChange: self.scoreChange,
                 setupGame: self.setupGame,
                 enterLocation: self.enterLocation,
-                processDescription: self.processDescription
+                processDescription: self.processDescription,
+                descriptionSelector: self.descriptionSelector
             };
         }
 
@@ -68,8 +69,8 @@
                 parent[key] = description.replace('autoplay="autoplay"', '');
 
                 setTimeout(function () {
-                    var audioElement = $('audio', 'body')[0] as HTMLAudioElement;
-                    audioElement.play();
+                    var audioElements = $('audio', 'body');
+                    audioElements.each(function () { this.play(); });
                 }, 0);
             }
 
@@ -468,6 +469,17 @@
             if (location.enemies && location.enemies.length > 0) {
                 location.enemies.forEach(enemy => { enemy.inactive = (enemy.nightEncounter && self.game.worldProperties.isDay) || (!enemy.nightEncounter && self.game.worldProperties.isNight) });
             }
+        }
+
+        descriptionSelector(game: IGame) {
+            var self = this;
+            return game.worldProperties.travelCounter ?
+                game.currentLocation.completed ?
+                    'completed' :
+                    game.worldProperties.isNight ?
+                        'night' :
+                        'day' :
+                null;
         }
     }
 

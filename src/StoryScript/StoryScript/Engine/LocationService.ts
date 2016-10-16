@@ -409,13 +409,17 @@ module StoryScript {
 
         private selectLocationDescription(game: IGame) {
             var self = this;
+            var selector = null;
 
             // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
             // use the default description selector function.
             if (game.currentLocation.descriptionSelector) {
                 // Use this casting to allow the description selector to be a function or a string.
-                var selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
+                selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
                 game.currentLocation.text = game.currentLocation.descriptions[selector];
+            }
+            else if (self.ruleService.descriptionSelector && (selector = self.ruleService.descriptionSelector(game))) {
+                game.currentLocation.text = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
             }
             else {
                 game.currentLocation.text = game.currentLocation.text || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
