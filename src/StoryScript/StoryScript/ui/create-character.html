@@ -11,7 +11,7 @@
                 <span class="col-md-4 question-label" ng-hide="parentAttribute.entries.length == 1">{{ texts.titleCase(entry.attribute) }}</span>
                 <span class="col-md-4 question-label" ng-show="parentAttribute.entries.length == 1">{{ parentAttribute.question }}</span>
                 <input class="col-md-8 question-input" type="text" ng-if="!entry.min && !entry.max" ng-model="entry.value" />
-                <input class="col-md-8 question-input" type="number" ng-if="entry.min || entry.max" min="{{ entry.min }}" max="{{ entry.max }}" ng-model="entry.value" />
+                <input class="col-md-8 question-input" type="number" ng-if="entry.min || entry.max" min="{{ entry.min }}" max="{{ entry.max }}" ng-model="entry.value" ng-blur="createCharacterController.limitInput($event, entry)" />
             </div>
         </div>
         <button type="button" class="btn btn-primary" ng-click="sheet.nextStep(sheet)" ng-show="sheet.currentStep < sheet.steps.length - 1">{{ texts.nextQuestion }}</button>

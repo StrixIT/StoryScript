@@ -56,6 +56,25 @@
             self.gameService.startNewGame(self.game.createCharacterSheet);
             self.game.state = StoryScript.GameState.Play;
         }
+
+        limitInput = (event: ng.IAngularEvent, entry: ICreateCharacterAttributeEntry) => {
+            var self = this;
+            var value = parseInt((<any>event).target.value);
+
+            if (!isNaN(value)) {
+                entry.value = value;
+
+                if (entry.value > entry.max) {
+                    entry.value = entry.max;
+                }
+                else if (entry.value < entry.min) {
+                    entry.value = entry.min;
+                }
+            }
+            else {
+                entry.value = entry.min;
+            }
+        }
     }
 
     CreateCharacterController.$inject = ['$scope', 'gameService', 'characterService', 'game', 'customTexts'];
