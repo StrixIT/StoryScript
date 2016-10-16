@@ -27,6 +27,7 @@
 
     export interface ICreateCharacterAttribute {
         question: string;
+        numberOfPointsToDistribute?: number;
         entries: ICreateCharacterAttributeEntry[];
     }
 

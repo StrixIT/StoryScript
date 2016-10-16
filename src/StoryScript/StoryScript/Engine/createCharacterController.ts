@@ -43,8 +43,20 @@
                     data.currentStep++;
                 }
 
-                if (data.steps[data.currentStep].initStep) {
-                    data.steps[data.currentStep].initStep(data, previousStep, data.steps[data.currentStep]);
+                var currentStep = data.steps[data.currentStep];
+
+                if (currentStep.initStep) {
+                    currentStep.initStep(data, previousStep, currentStep);
+                }
+
+                if (currentStep.attributes) {
+                    currentStep.attributes.forEach(attr => {
+                        attr.entries.forEach(entry => {
+                            if (entry.min) {
+                                entry.value = entry.min;
+                            }
+                        });
+                    });
                 }
             };
 
@@ -57,11 +69,23 @@
             self.game.state = StoryScript.GameState.Play;
         }
 
-        limitInput = (event: ng.IAngularEvent, entry: ICreateCharacterAttributeEntry) => {
+        limitInput = (event: ng.IAngularEvent, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry) => {
             var self = this;
             var value = parseInt((<any>event).target.value);
 
             if (!isNaN(value)) {
+                var totalAssigned = 0;
+
+                attribute.entries.forEach((innerEntry, index) => {
+                    if (index !== attribute.entries.indexOf(entry)) {
+                        totalAssigned += <number>innerEntry.value || 1;
+                    }
+                });
+
+                if (totalAssigned + value > attribute.numberOfPointsToDistribute) {
+                    value = attribute.numberOfPointsToDistribute - totalAssigned;
+                }
+
                 entry.value = value;
 
                 if (entry.value > entry.max) {
@@ -74,6 +98,50 @@
             else {
                 entry.value = entry.min;
             }
+        }
+
+        distributionDone = (step: ICreateCharacterStep) => {
+            var self = this;
+            var done = true;
+
+            if (step) {
+                done = self.checkStep(step);
+            }
+            else {
+                if (self.$scope.sheet && self.$scope.sheet.steps) {
+                    self.$scope.sheet.steps.forEach(step => {
+                        done = self.checkStep(step);
+                    });
+                }
+            }
+
+            return done;
+        }
+
+        private checkStep(step: ICreateCharacterStep) {
+            var done = true;
+
+            if (step.attributes) {
+                step.attributes.forEach(attr => {
+                    var totalAssigned = 0;
+                    var textChoicesFilled = 0;
+
+                    attr.entries.forEach((entry) => {
+                        if (!entry.max) {
+                            if (entry.value) {
+                                textChoicesFilled += 1;
+                            }
+                        }
+                        else {
+                            totalAssigned += <number>entry.value || 1;
+                        }
+                    });
+
+                    done = totalAssigned === attr.numberOfPointsToDistribute || textChoicesFilled === attr.entries.length;
+                });
+            }
+
+            return done;
         }
     }
 

@@ -134,6 +134,7 @@
                         attributes: [
                             {
                                 question: 'As a child, you were always...',
+                                numberOfPointsToDistribute: 10,
                                 entries: [
                                     {
                                         attribute: 'strength',
@@ -159,7 +160,16 @@
                             }
                         ],
                         nextStepSelector: 4
-                    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                    },
+                    {
+                        questions: [
+                            {
+                                question: 'Select your weapon...',
+                                entries: [
+                                ]
+                            }
+                        ]
+                    }
                 ]
             };
         }
