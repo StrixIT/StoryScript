@@ -62,9 +62,16 @@ module StoryScript {
                 // with the target id when adding destinations and enemies at runtime.
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
 
+                location.persons = location.persons || [];
                 location.enemies = location.enemies || [];
                 location.items = location.items || [];
                 location.combatActions = location.combatActions || [];
+
+                Object.defineProperty(location, 'activePersons', {
+                    get: function () {
+                        return location.persons.filter(e => { return !e.inactive; });
+                    }
+                });
 
                 Object.defineProperty(location, 'activeEnemies', {
                     get: function () {
