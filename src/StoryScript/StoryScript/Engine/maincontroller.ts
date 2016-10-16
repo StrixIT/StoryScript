@@ -137,7 +137,7 @@
 
         personsPresent = () => {
             var self = this;
-            return self.game.currentLocation && self.game.currentLocation.persons.length;
+            return self.game.currentLocation && self.game.currentLocation.activePersons.length;
         }
 
         barriersPresent = () => {

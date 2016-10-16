@@ -6,7 +6,9 @@
         enemies?: ICollection<IEnemy>;
         activeEnemies?: ICollection<IEnemy>;
         persons?: ICollection<IPerson>;
+        activePersons?: ICollection<IPerson>;
         items?: ICollection<IItem>;
+        activeItems?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
         events?: ICollection<(game: IGame) => void>;
         actions?: ICollection<IAction>;
