@@ -20,6 +20,6 @@
 <fieldset ng-if="!controller.enemiesPresent()">
     <legend>{{ texts.onTheGround }}</legend>
     <ul>
-        <li ng-repeat="item in controller.game.currentLocation.items track by $index" ng-click="controller.pickupItem(item)">{{ item.name }}</li>
+        <li ng-repeat="item in controller.game.currentLocation.activeItems track by $index" ng-click="controller.pickupItem(item)">{{ item.name }}</li>
     </ul>
 </fieldset>

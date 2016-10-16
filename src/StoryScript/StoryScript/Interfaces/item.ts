@@ -14,5 +14,6 @@
         use?: (game: IGame, item: IItem) => void
         //requirement?
         value?: number;
+        inactive?: boolean;
     }
 }

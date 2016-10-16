@@ -63,11 +63,18 @@ module StoryScript {
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
 
                 location.enemies = location.enemies || [];
+                location.items = location.items || [];
                 location.combatActions = location.combatActions || [];
 
                 Object.defineProperty(location, 'activeEnemies', {
                     get: function () {
                         return location.enemies.filter(e => { return !e.inactive; });
+                    }
+                });
+
+                Object.defineProperty(location, 'activeItems', {
+                    get: function () {
+                        return location.items.filter(e => { return !e.inactive; });
                     }
                 });
             });
@@ -146,11 +153,11 @@ module StoryScript {
             game.currentLocation.items = game.currentLocation.items || [];
             game.currentLocation.enemies = game.currentLocation.enemies || [];
 
-            self.loadLocationDescriptions(game);
-
             if (self.ruleService.enterLocation) {
                 self.ruleService.enterLocation(game.currentLocation, travel);
             }
+
+            self.loadLocationDescriptions(game);
 
             self.initTrade(game);
 

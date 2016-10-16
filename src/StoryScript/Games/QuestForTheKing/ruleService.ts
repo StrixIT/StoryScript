@@ -469,7 +469,11 @@
             }
 
             if (location.enemies && location.enemies.length > 0) {
-                location.enemies.forEach(enemy => { enemy.inactive = (enemy.nightEncounter && self.game.worldProperties.isDay) || (!enemy.nightEncounter && self.game.worldProperties.isNight) });
+                location.enemies.forEach(enemy => enemy.inactive = !self.isEntityActive(self.game, enemy));
+            }
+
+            if (location.items && location.items.length > 0) {
+                location.items.forEach(item => item.inactive = !self.isEntityActive(self.game, item));
             }
         }
 
@@ -483,6 +487,10 @@
                     game.currentLocation.completedDay ? 'completedday' :
                         'day' :
                 null;
+        }
+
+        private isEntityActive(game: IGame, entity: IItem | IEnemy) {
+            return (!entity.activeNight && !entity.activeDay) || (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay)
         }
     }
 

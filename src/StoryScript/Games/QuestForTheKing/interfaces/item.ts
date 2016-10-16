@@ -6,5 +6,7 @@
         arcane?: boolean;
         itemClass?: Class | Class[];
         attackText?: string;
+        activeNight?: boolean;
+        activeDay?: boolean;
     }
 }
