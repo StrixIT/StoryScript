@@ -59,6 +59,10 @@ function copyHtml(nameSpace) {
         .pipe(flatten())
         .pipe(gulp.dest(paths.webroot + 'ui'));
 
+    gulp.src([paths.root + 'Games/' + nameSpace + '/enemies/**/*.html'])
+        .pipe(flatten())
+        .pipe(gulp.dest(paths.webroot + 'enemies'));
+
     gulp.src([paths.root + 'Games/' + nameSpace + '/items/**/*.html'])
         .pipe(flatten())
         .pipe(gulp.dest(paths.webroot + 'items'));
