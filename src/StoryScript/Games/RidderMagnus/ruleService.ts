@@ -17,7 +17,8 @@
                 createCharacter: self.createCharacter,
                 fight: self.fight,
                 scoreChange: self.scoreChange,
-                initCombat: self.initCombat
+                initCombat: self.initCombat,
+                enterLocation: self.enterLocation
             };
         }
 

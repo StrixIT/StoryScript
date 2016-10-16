@@ -5,7 +5,7 @@
             hitpoints: 14,
             attack: '1d4',
             reward: 1,
-            nightEncounter: true
+            activeNight: true
         }
     }
 }
