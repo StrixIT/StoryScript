@@ -1,7 +1,7 @@
 ﻿module QuestForTheKing.Items {
     export function Goldnecklace(): IItem {
         return {
-            name: 'Bow',
+            name: 'Necklace',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.Amulet,
             arcane: true,
