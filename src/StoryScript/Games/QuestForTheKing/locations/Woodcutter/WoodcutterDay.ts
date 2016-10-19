@@ -13,9 +13,13 @@
                     target: Locations.Quest1map1                       
                 }
             ],
+            enemies: [
+                Enemies.Ghost
+
+            ],
             items: [
                 Items.Parchment,
-                Items.Bow,                   
+                Items.Bow,
             ]
         }
     }
