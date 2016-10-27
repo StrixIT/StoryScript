@@ -2,8 +2,8 @@
     padding-top: 50px;
     padding-bottom: 20px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, Papyrus, sans-serif;
-    color: #483D8B;  
-    background-image: url("/resources/parchment.jpg");   
+    color: #483D8B;
+    background-image: url("/resources/parchment.jpg");
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -12,7 +12,7 @@
     padding-right: 15px;
     font-family: Papyrus;
     font-size: medium;
-    font-weight:bold;    
+    font-weight: bold;
 }
 
 h2 {
@@ -36,11 +36,11 @@ textarea {
     max-width: 280px;
     padding-left: 10px;
     padding-right: 10px;
-    font-family: Papyrus;        
+    font-family: Papyrus;
 }
 
 .name-input {
-    margin: 0 20px;   
+    margin: 0 20px;
 }
 
 .action-log, #location-log, .button-row {
@@ -127,6 +127,26 @@ blockquote {
 }
 
 .destination-button {
-    float:left;
+    float: left;
     margin: 0 15px 10px 0;
 }
+
+#farmboyframe {
+    box-shadow: rgba(0,0,0,.2) 3px 5px 5px;
+}
+
+    #farmboyframe:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,255, 0.25);
+        transition: all .3s linear;
+    }
+
+    #farmboyframe:hover:before {
+        background: none;
+    }
