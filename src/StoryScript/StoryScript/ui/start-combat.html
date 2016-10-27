@@ -3,7 +3,7 @@
     <p>{{ texts.enemiesToFight }}</p>
     <ul>
         <li ng-repeat="enemy in game.currentLocation.activeEnemies">
-            {{ enemy.name }} <button type="button" class="btn btn-info" ng-click="controller.showDescription('enemies', enemy, enemy.name)">{{ texts.view }}</button>
+            {{ enemy.name }} <button type="button" class="btn btn-info" ng-if="controller.hasDescription('enemies', enemy)" ng-click="controller.showDescription(enemy, enemy.name)">{{ texts.view }}</button>
         </li>
     </ul>
 

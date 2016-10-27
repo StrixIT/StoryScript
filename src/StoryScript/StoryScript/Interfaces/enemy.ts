@@ -3,6 +3,7 @@
         id?: string;
         pictureFileName?: string;
         name: string;
+        description?: string;
         hitpoints: number;
         currency?: number;
         inactive?: boolean;

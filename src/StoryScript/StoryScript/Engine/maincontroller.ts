@@ -75,20 +75,15 @@
             self.$scope.$broadcast('restart');
         }
 
-        showDescription(type: string, item: any, title: string) {
+        hasDescription(type: string, item: { id?: string, description?: string }) {
             var self = this;
-            var description = item.description;
+            return self.dataService.hasDescription(type, item);
+        }
 
-            if (!item.description) {
-                self.dataService.getDescription(type, item.id).then((result: string) => {
-                    item.description = result;
-                    self.showDescriptionModal(title, item);
-                }, () => {
-                    item.description = self.texts.defaultDescription;
-                    self.showDescriptionModal(title, item);
-                });
-            }
-            else {
+        showDescription(item: any, title: string) {
+            var self = this;
+
+            if (item.description) {
                 self.showDescriptionModal(title, item);
             }
         }
@@ -108,7 +103,7 @@
 
         getDescription(entity: any, key: string) {
             var self = this;
-            return entity && entity[key] ? self.ruleService.processDescription ? self.ruleService.processDescription(entity, key) : entity[key] : self.texts.defaultDescription;
+            return entity && entity[key] ? self.ruleService.processDescription ? self.ruleService.processDescription(entity, key) : entity[key] : null;
         }
 
         getButtonClass = (action: IAction) => {

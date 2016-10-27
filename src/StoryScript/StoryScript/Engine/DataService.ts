@@ -1,7 +1,8 @@
 ﻿module StoryScript {
     export interface IDataService {
         functionList: { [id: string]: { function: Function, hash: number } };
-        getDescription(folder: string, descriptionid: string);
+        loadDescription(type: string, item: { id?: string, description?: string });
+        hasDescription(type: string, item: { id?: string, description?: string });
         save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
     }
@@ -15,6 +16,7 @@ module StoryScript {
         private gameSpaceName: string;
 
         public functionList: { [id: string]: { function: Function, hash: number } };
+        private descriptionPaths: { [id: string]: { loading: boolean, loaded: boolean, description: string } };
 
         constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, gameSpaceName: string) {
             var self = this;
@@ -33,26 +35,73 @@ module StoryScript {
 
             return {
                 functionList: self.functionList,
-                getDescription: self.getDescription,
+                loadDescription: self.loadDescription,
+                hasDescription: self.hasDescription,
                 save: self.save,
                 load: self.load
             };
         }
 
-        public getDescription(folder: string, descriptionId: string) {
+        public loadDescription(type: string, item: { id?: string, description?: string }) {
             var self = this;
             var deferred = self.$q.defer();
-            var url = folder + '/' + descriptionId + '.html';
+            var identifier = type + '/' + item.id;
 
-            self.$http.get(url)
-                .success(function (data, status, headers, config) {
-                    deferred.resolve(data);
-                }).
-                error(function (data, status, headers, config) {
+            if (!self.descriptionPaths) {
+                self.descriptionPaths = {};
+            }
+
+            var pathEntry = self.descriptionPaths[identifier];
+            var description = pathEntry ? pathEntry.description : null;
+
+            if (!pathEntry) {
+                pathEntry = { loading: false, loaded: false, description: null };
+                self.descriptionPaths[identifier] = pathEntry;
+            }
+
+            if (!pathEntry.loading && !pathEntry.loaded) {
+                pathEntry.loading = true;
+
+                self.$http.get(identifier + '.html').success((result: string) => {
+                    item.description = result;
+                    pathEntry.loading = false;
+                    pathEntry.loaded = true;
+                    pathEntry.description = result;
+                    deferred.resolve(result);
+                }).error(() => {
+                    pathEntry.loading = false;
+                    pathEntry.loaded = true;
+                    pathEntry.description = null;
                     deferred.reject();
                 });
+            }
+            else {
+                deferred.resolve(description);
+            }
 
             return deferred.promise;
+        }
+
+        public hasDescription(type: string, item: { id?: string, description?: string }) {
+            var self = this;
+            var result = false;
+            var identifier = type + '/' + item.id;
+
+            if (!self.descriptionPaths) {
+                self.descriptionPaths = {};
+            }
+
+            var pathEntry = self.descriptionPaths[identifier];
+
+            if (!pathEntry) {
+                self.loadDescription(type, item);
+            }
+
+            else if (pathEntry.loaded && pathEntry.description) {
+                result = true;
+            }
+
+            return result;
         }
 
         public save<T>(key: string, value: T, pristineValues?: T): void {

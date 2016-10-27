@@ -52,7 +52,6 @@
         combatWin?: string;
         enemiesToFight?: string;
         useInCombat?: string;
-        defaultDescription?: string;
         view?: string;
 
         format?: (template: string, tokens: string[]) => string;

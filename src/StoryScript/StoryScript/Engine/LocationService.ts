@@ -331,7 +331,7 @@ module StoryScript {
             }
 
             game.currentLocation.persons.filter(p => !p.conversation.nodes).forEach((person) => {
-                self.dataService.getDescription('persons', person.id).then(function (conversations) {
+                self.dataService.loadDescription('persons', person).then(function (conversations) {
                     var parser = new DOMParser();
 
                     if (conversations.indexOf('<conversation>') == -1) {
@@ -398,7 +398,7 @@ module StoryScript {
                 return;
             }
 
-            self.dataService.getDescription('locations', game.currentLocation.id).then(function (descriptions) {
+            self.dataService.loadDescription('locations', game.currentLocation).then(function (descriptions) {
                 var parser = new DOMParser();
 
                 if (descriptions.indexOf('<descriptions>') == -1) {
