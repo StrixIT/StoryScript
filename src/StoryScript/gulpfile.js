@@ -5,7 +5,7 @@
     ts = require('gulp-typescript'),
     merge = require('merge'),
     sourcemaps = require('gulp-sourcemaps'),
-    project = require("./project.json"),
+    project = require("./runtimeconfig.template.json"),
     del = require('del');
 
 var paths = {

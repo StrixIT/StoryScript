@@ -114,7 +114,7 @@ module StoryScript {
                 return;
             }
 
-            var key = typeof location == 'function' ? location.name : location.id ? location.id : location;
+            var key = typeof location == 'function' ? (<any>location).name : location.id ? location.id : location;
             game.currentLocation = game.locations.get(key);
 
             // remove the return message from the current location destinations.

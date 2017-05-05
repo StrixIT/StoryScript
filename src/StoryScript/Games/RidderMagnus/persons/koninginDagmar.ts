@@ -5,10 +5,13 @@
             //pictureFileName:
             hitpoints: 1000,
             attack: '10d6',
-            reward: 100 ,
+            reward: 100,
             currency: 1000,
             conversation: {
-            }
+            },
+            quests: [
+                Quests.RattenStaarten
+            ]
         }
     }
 }
