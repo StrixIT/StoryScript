@@ -31,7 +31,7 @@
             Ik wil dat u haar kamer doorzoekt.
         </p>
         <replies>
-            <reply node="accept">
+            <reply node="acceptquest2" quest-start="RattenStaarten">
                 Uiteraard, Hoogheid.
             </reply>
         </replies>
@@ -41,7 +41,10 @@
             En, was er een monster?
         </p>
         <replies>
-            <reply node="questcomplete">
+            <reply>
+                Ik heb nog niet gekeken.
+            </reply>
+            <reply node="questcomplete" requires="quest=RattenStaarten" quest-complete="RattenStaarten">
                 Ja! Er was een soort ratachtige man, maar ik heb hem verslagen. De prinses is weer veilig.
             </reply>
         </replies>
@@ -51,9 +54,19 @@
             Dankuwel en moge de goden u bijstaan!
         </p>
     </node>
+    <node name="acceptquest2" next="tweedequestklaar">
+        <p>
+            Dankuwel en moge de goden u bijstaan!
+        </p>
+    </node>
     <node name="questcomplete">
         <p>
             Gelukkig! Goed gedaan, Ridder Magnus. Hier is uw beloning.
         </p>
+        <replies>
+            <reply node="tweedequest">
+                Geen dank.
+            </reply>
+        </replies>
     </node>
 </conversation>

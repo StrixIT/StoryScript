@@ -4,12 +4,14 @@
             name: "Verzamel rattenstaarten",
             status: {
                 "Gestart": {
-                    description: "Verzamel 10 rattenstaarten",
-                    action: (game) => { }
-                },
-                "Onderweg": {
-                    description: (game) => { return "Je hebt nu " + game.character.items.get("rattenstaarten") + " rattenstaarten verzameld."; },
-                    action: (game) => { }
+                    description: (game) => {
+                        var quest = game.character.quests.get(Quests.RattenStaarten);
+                        return "Verzamel 10 rattenstaarten. Je hebt er nu " + (<any>quest).rattenStaarten + ".";
+                    },
+                    action: (game) => {
+                        var quest = game.character.quests.get(Quests.RattenStaarten);
+                        (<any>quest).rattenStaarten = 0;
+                    }
                 },
                 "Klaar": {
                     description: "Je hebt 10 rattenstaarten verzameld en aan de koningin gegeven.",

@@ -87,7 +87,8 @@
                             } break;
                             case 'quest': {
                                 // Check item available. Item list first, equipment second.
-                                isAvailable = self.game.character.quests.get(value) != undefined;
+                                var quest = self.game.character.quests.get(value);
+                                isAvailable = quest != undefined && quest.goalAchieved === true;
                             } break;
                             default: {
                                 // Check attributes
@@ -150,21 +151,20 @@
 
         questProgress = (type: string, person: IPerson, reply: IConversationReply) => {
             var self = this;
-            var quest;
+            var quest: IQuest;
             var status;
+            var completed = type === "questComplete";
 
-            if (type === "questStart")
-            {
+            if (type === "questStart") {
                 quest = <IQuest>person.quests.get(reply[type]);
                 self.game.character.quests.push(quest);
                 person.quests.remove(quest);
                 status = quest.status[Object.keys(quest.status)[0]];
             }
-            else
-            {
-                self.game.character.quests.get(reply[type]);
+            else {
+                quest = self.game.character.quests.get(reply[type]);
 
-                if (type === "questComplete") {
+                if (completed) {
                     var lastPropertyIndex = Object.keys(quest.status).length - 1;
                     status = quest.status[Object.keys(quest.status)[lastPropertyIndex]];
                 }
@@ -174,6 +174,10 @@
 
             if (status.action) {
                 status.action(self.game);
+            }
+
+            if (completed) {
+                quest.complete = true;
             }
         }
 

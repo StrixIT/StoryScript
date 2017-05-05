@@ -8,6 +8,7 @@
                 active?: boolean
             }
         };
+        goalAchieved?: boolean;
         complete?: boolean;
     }
 }
