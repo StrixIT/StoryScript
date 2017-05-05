@@ -26,6 +26,7 @@
         init = () => {
             var self = this;
             var person = self.game.currentLocation.activePerson;
+            person.conversation.ended = false;
             var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : person.conversation.activeNode;
 
             if (!activeNode) {
@@ -136,13 +137,9 @@
 
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
-            //else {
-            //    person.conversation.nodes.forEach((node) => {
-            //        node.active = false;
-            //    });
-
-            //    person.conversation.activeNode = null;
-            //}
+            else {
+                person.conversation.ended = true;
+            }
 
             var questProgress = reply.questStart || reply.questComplete;
 

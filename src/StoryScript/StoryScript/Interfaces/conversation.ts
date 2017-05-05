@@ -8,6 +8,7 @@
         nodes?: ICollection<IConversationNode>;
         activeNode?: IConversationNode;
         conversationLog?: IConversationLogEntry[];
+        ended?: boolean;
     }
 
     export interface IConversationNode {
