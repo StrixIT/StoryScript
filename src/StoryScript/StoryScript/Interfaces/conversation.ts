@@ -19,6 +19,7 @@
 
     export interface IConversationReply {
         requires?: string;
+        quest?: string;
         lines?: string;
         linkToNode?: string;
         available?: boolean;

@@ -7,7 +7,7 @@
         hitpoints: number;
         currency?: number;
         inactive?: boolean;
-        items?: [IItem | (() => IItem)];
+        items?: ICollection<IItem | (() => IItem)>;
         onDefeat?: (game: IGame) => void;
     }
 }

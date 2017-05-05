@@ -34,6 +34,7 @@
         getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
         getNonPlayerCharacter: (selector: string | (() => IPerson)) => IPerson;
+        getQuest: (selector: string | (() => IQuest)) => IQuest;
 
         equals<T>(entity: T, definition: () => T): boolean;
 

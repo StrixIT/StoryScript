@@ -114,14 +114,20 @@ module StoryScript {
             var self = this;
 
             try {
-                var data = JSON.parse(self.$localStorage[self.gameSpaceName + '_' + key]).data;
+                var jsonData = self.$localStorage[self.gameSpaceName + '_' + key];
 
-                if (isEmpty(data)) {
-                    return null;
+                if (jsonData) {
+                    var data = JSON.parse(jsonData).data;
+
+                    if (isEmpty(data)) {
+                        return null;
+                    }
+
+                    self.restore(data);
+                    return data;
                 }
 
-                self.restore(data);
-                return data;
+                return null;
             }
             catch (exception) {
                 console.log('No data loaded for key ' + key + '. Error: ' + exception.message);

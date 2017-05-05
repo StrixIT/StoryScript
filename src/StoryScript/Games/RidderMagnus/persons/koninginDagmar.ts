@@ -10,6 +10,7 @@
             conversation: {
             },
             quests: [
+                Quests.GoudenRing,
                 Quests.RattenStaarten
             ]
         }

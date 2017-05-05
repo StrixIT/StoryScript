@@ -371,6 +371,7 @@ module StoryScript {
                                     if (replyNode.nodeName.toLowerCase() == 'reply') {
                                         var reply = <IConversationReply>{
                                             requires: (replyNode.attributes['requires'] && replyNode.attributes['requires'].value) || null,
+                                            quest: (replyNode.attributes['quest'] && replyNode.attributes['quest'].value) || null,
                                             lines: (<any>replyNode).innerHTML,
                                             linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
                                         }

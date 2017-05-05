@@ -96,7 +96,7 @@ module StoryScript {
 
             self.game.getNonPlayerCharacter = (selector: string | (() => IPerson)) => {
                 var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector);
-                return self.instantiateEnemy(instance);
+                return self.instantiatePerson(instance);
             }
 
             self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
@@ -419,6 +419,30 @@ module StoryScript {
             return enemy;
         }
 
+        private instantiatePerson = (person: IPerson): IPerson => {
+            var self = this;
+
+            if (!person) {
+                return null;
+            }
+
+            person = self.instantiateEnemy(person);
+
+            var quests = <IQuest[]>[];
+
+            if (person.quests) {
+                person.quests.forEach((def: () => IQuest) => {
+                    quests.push(StoryScript.definitionToObject(def));
+                });
+            }
+
+            person.quests = quests;
+
+            self.addProxy(person, 'quest');
+
+            return person;
+        }
+
         private addProxy(entry, collectionType?: string) {
             var self = this;
 
@@ -452,6 +476,20 @@ module StoryScript {
                     }
 
                     push.call(this, item);
+                });
+            }
+            if (collectionType === 'quest') {
+                entry.quests.push = (<any>entry.quests.push).proxy(function (push: Function, selector: string | (() => IQuest)) {
+                    var quest = null;
+
+                    if (typeof selector !== 'object') {
+                        quest = self.game.getQuest(selector);
+                    }
+                    else {
+                        quest = <any>selector;
+                    }
+
+                    push.call(this, quest);
                 });
             }
         }

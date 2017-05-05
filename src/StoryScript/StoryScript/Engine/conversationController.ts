@@ -134,6 +134,18 @@
                 });
                 person.conversation.activeNode = null;
             }
+
+            if (reply.quest) {
+                var quest = <IQuest>person.quests.get(reply.quest);
+                self.game.character.quests.push(quest);
+                person.quests.remove(quest);
+                var status = quest.status[Object.keys(quest.status)[0]];
+                status.active = true;
+
+                if (status.action) {
+                    status.action(self.game);
+                }
+            }
         }
 
         getLines = (nodeOrReply: IConversationNode | IConversationReply) => {

@@ -6,8 +6,10 @@
         currentHitpoints: number;
         currency: number;
 
-        items: StoryScript.ICollection<StoryScript.IItem>;
-        combatItems?: StoryScript.ICollection<StoryScript.IItem>;
+        items: ICollection<StoryScript.IItem>;
+        combatItems?: ICollection<StoryScript.IItem>;
+
+        quests?: ICollection<StoryScript.IQuest>;
 
         equipment: {
             head?: IItem,

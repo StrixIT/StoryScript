@@ -68,14 +68,14 @@ module StoryScript {
                             });
                         });
                     }
-                });
-
-                return character; 
+                }); 
             }
 
             if (isEmpty(character.items)) {
                 character.items = [];
             }
+
+            character.quests = [];
 
             return character;
         }
