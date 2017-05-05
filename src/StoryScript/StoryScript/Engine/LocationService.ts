@@ -15,6 +15,11 @@ module StoryScript {
         private pristineLocations: ICollection<ICompiledLocation>;
         private functionList: { [id: string]: { function: Function, hash: number } };
 
+        private nodeOptions: { [prop: string]: string } = {
+            "name": "name",
+            "next": "next"
+        };
+
         private replyOptions: { [prop: string]: string } = {
             "requires": "requires",
             "node": "linkToNode",
@@ -360,6 +365,16 @@ module StoryScript {
 
                         if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
                             throw new Error('Duplicate nodes with name ' + name + ' for conversation ' + person.id + '.');
+                        }
+
+                        for (var n in node.attributes) {
+                            if (node.attributes.hasOwnProperty(n)) {
+                                var attributeName = node.attributes[n].name;
+
+                                if (!self.nodeOptions[attributeName]) {
+                                    console.log('node option ' + attributeName + ' not supported');
+                                }
+                            }
                         }
 
                         var nextAttribute = node.attributes['next'] ? node.attributes['next'].nodeValue : null;
