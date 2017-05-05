@@ -14,6 +14,7 @@
         snelheid: number = 1;
 
         items: StoryScript.ICollection<StoryScript.IItem> = [];
+        quests: StoryScript.ICollection<StoryScript.IQuest> = [];
 
         equipment: {
             head: StoryScript.IItem,

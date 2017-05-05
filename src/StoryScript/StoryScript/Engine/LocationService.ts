@@ -15,6 +15,13 @@ module StoryScript {
         private pristineLocations: ICollection<ICompiledLocation>;
         private functionList: { [id: string]: { function: Function, hash: number } };
 
+        private replyOptions: { [prop: string]: string } = {
+            "requires": "requires",
+            "node": "linkToNode",
+            "quest-start": "questStart",
+            "quest-complete": "questComplete"
+        };
+
         constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
             var self = this;
             self.dataService = dataService;
@@ -355,10 +362,14 @@ module StoryScript {
                             throw new Error('Duplicate nodes with name ' + name + ' for conversation ' + person.id + '.');
                         }
 
+                        var nextAttribute = node.attributes['next'] ? node.attributes['next'].nodeValue : null;
+
                         var newNode = <IConversationNode>{
+                            id: nameAttribute,
                             node: nameAttribute,
                             lines: '',
-                            replies: []
+                            replies: [],
+                            next: nextAttribute
                         };
 
                         for (var j = 0; j < node.childNodes.length; j++) {
@@ -369,12 +380,25 @@ module StoryScript {
                                     var replyNode = replies.childNodes[k];
 
                                     if (replyNode.nodeName.toLowerCase() == 'reply') {
-                                        var reply = <IConversationReply>{
-                                            requires: (replyNode.attributes['requires'] && replyNode.attributes['requires'].value) || null,
-                                            quest: (replyNode.attributes['quest'] && replyNode.attributes['quest'].value) || null,
-                                            lines: (<any>replyNode).innerHTML,
-                                            linkToNode: (replyNode.attributes['node'] && replyNode.attributes['node'].value) || null
+                                        var reply = <IConversationReply>{};
+
+                                        for (var n in replyNode.attributes)
+                                        {
+                                            if (replyNode.attributes.hasOwnProperty(n)) {
+                                                var attributeName = replyNode.attributes[n].name;
+
+                                                if (!self.replyOptions[attributeName]) {
+                                                    console.log('reply option ' + attributeName + ' not supported');
+                                                }
+                                            }
                                         }
+
+                                        for (var option in self.replyOptions)
+                                        {
+                                            reply[self.replyOptions[option]] = (replyNode.attributes[option] && replyNode.attributes[option].value) || null;
+                                        }
+
+                                        reply.lines = (<any>replyNode).innerHTML;
 
                                         newNode.replies.push(reply);
                                     }

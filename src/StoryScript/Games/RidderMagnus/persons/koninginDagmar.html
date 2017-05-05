@@ -7,7 +7,7 @@
             Bent u dapper genoeg om de ring voor haar te vinden?
         </p>
         <replies>
-            <reply node="accept" quest="GoudenRing">
+            <reply node="accept" quest-start="GoudenRing" test="">
                 Natuurlijk, Hoogheid!
             </reply>
         </replies>
@@ -17,7 +17,10 @@
             Hebt u de ring gevonden?
         </p>
         <replies>
-            <reply node="questcomplete">
+            <reply>
+                Nee, nog niet.
+            </reply>
+            <reply node="questcomplete" requires="item=GoudenRing" quest-complete="GoudenRing">
                 Ja, hier is hij.
             </reply>
         </replies>
@@ -43,7 +46,7 @@
             </reply>
         </replies>
     </node>
-    <node name="accept">
+    <node name="accept" next="eerstequestklaar">
         <p>
             Dankuwel en moge de goden u bijstaan!
         </p>

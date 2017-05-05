@@ -15,15 +15,17 @@
         node: string;
         lines: string;
         replies?: ICollection<IConversationReply>;
+        next?: string;
     }
 
     export interface IConversationReply {
         requires?: string;
-        quest?: string;
         lines?: string;
         linkToNode?: string;
         available?: boolean;
         showWhenUnavailable?: boolean;
+        questStart?: string;
+        questComplete?: string;
     }
 
     export interface IConversationLogEntry {

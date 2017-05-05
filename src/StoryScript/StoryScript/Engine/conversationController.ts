@@ -36,6 +36,10 @@
                 }
             }
 
+            if (activeNode.next) {
+                activeNode = person.conversation.nodes.filter((node: IConversationNode) => { return node.node === activeNode.next; })[0];
+            }
+
             activeNode.active = true;
             person.conversation.activeNode = activeNode;
 
@@ -79,6 +83,10 @@
                                 }
 
                                 isAvailable = location.hasVisited === true;
+                            } break;
+                            case 'quest': {
+                                // Check item available. Item list first, equipment second.
+                                isAvailable = self.game.character.quests.get(value) != undefined;
                             } break;
                             default: {
                                 // Check attributes
@@ -128,23 +136,47 @@
 
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
-            else {
-                person.conversation.nodes.forEach((node) => {
-                    node.active = false;
-                });
-                person.conversation.activeNode = null;
-            }
+            //else {
+            //    person.conversation.nodes.forEach((node) => {
+            //        node.active = false;
+            //    });
 
-            if (reply.quest) {
-                var quest = <IQuest>person.quests.get(reply.quest);
+            //    person.conversation.activeNode = null;
+            //}
+
+            var questProgress = reply.questStart || reply.questComplete;
+
+            if (questProgress) {
+                reply.questStart ? self.questProgress('questStart', person, reply) : self.questProgress('questComplete', person, reply);
+            }
+        }
+
+        questProgress = (type: string, person: IPerson, reply: IConversationReply) => {
+            var self = this;
+            var quest;
+            var status;
+
+            if (type === "questStart")
+            {
+                quest = <IQuest>person.quests.get(reply[type]);
                 self.game.character.quests.push(quest);
                 person.quests.remove(quest);
-                var status = quest.status[Object.keys(quest.status)[0]];
-                status.active = true;
+                status = quest.status[Object.keys(quest.status)[0]];
+            }
+            else
+            {
+                self.game.character.quests.get(reply[type]);
 
-                if (status.action) {
-                    status.action(self.game);
+                if (type === "questComplete") {
+                    var lastPropertyIndex = Object.keys(quest.status).length - 1;
+                    status = quest.status[Object.keys(quest.status)[lastPropertyIndex]];
                 }
+            }
+
+            status.active = true;
+
+            if (status.action) {
+                status.action(self.game);
             }
         }
 

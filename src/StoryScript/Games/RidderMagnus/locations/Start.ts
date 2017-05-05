@@ -22,7 +22,7 @@
             //elke destination is voor een quest en moeten dus 1 voor 1 zichtbaar worden
 
             descriptionSelector: (game: IGame) => {
-                if (game.character.items.get(Items.GoudenRing)) {
+                if (game.character.quests.get(Quests.GoudenRing)) {
                     return "een";
                 }
 
