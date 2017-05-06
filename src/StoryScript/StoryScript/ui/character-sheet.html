@@ -1,7 +1,7 @@
 ﻿<div ng-controller="CharacterController as characterController">
     <fieldset>
-        <legend>{{ game.character.name }}</legend>
-        <ul>
+        <legend data-toggle="collapse" data-target="#attributes-panel">{{ game.character.name }}</legend>
+        <ul id="attributes-panel" class="collapse in">
             <li ng-repeat="attribute in displayCharacterAttributes">
                 {{ texts.titleCase(texts.format(attribute)) }} {{ game.character[attribute] }}
             </li>
@@ -10,8 +10,8 @@
         </ul>
     </fieldset>
     <fieldset id="equipment">
-        <legend>{{ texts.equipmentHeader }}</legend>
-        <div>
+        <legend data-toggle="collapse" data-target="#equipment-panel">{{ texts.equipmentHeader }}</legend>
+        <div id="equipment-panel" class="collapse in">
             <div class="row" ng-show="characterController.isSlotUsed('head')">
                 <div class="col-md-12">
                     <div>
@@ -80,8 +80,8 @@
         </div>
     </fieldset>
     <fieldset>
-        <legend>{{ texts.backpack }}</legend>
-        <ul>
+        <legend data-toggle="collapse" data-target="#backpack-panel">{{ texts.backpack }}</legend>
+        <ul id="backpack-panel" class="collapse in">
             <li ng-repeat="item in game.character.items">
                 <div>
                     <span>{{ item.name }}</span>
@@ -94,23 +94,25 @@
         </ul>
     </fieldset>
     <fieldset>
-        <legend>{{ texts.quests }}</legend>
-        <h4>Current</h4>
-        <ul>
-            <li ng-repeat="quest in game.character.quests | filter:{ completed: false }">
-                <div>
-                    <span>{{ quest.name }}</span>
-                    <div ng-bind-html="characterController.questStatus(quest)"></div>
-                </div>
-            </li>
-        </ul>
-        <h4>Completed</h4>
-        <ul>
-            <li ng-repeat="quest in game.character.quests | filter:{ completed: true }">
-                <div>
-                    <div ng-bind-html="characterController.questStatus(quest)"></div>
-                </div>
-            </li>
-        </ul>
+        <legend data-toggle="collapse" data-target="#quest-panel">{{ texts.quests }}</legend>
+        <div id="quest-panel" class="collapse in">
+            <h4>Current</h4>
+            <ul>
+                <li ng-repeat="quest in game.character.quests | filter:{ completed: false }">
+                    <div>
+                        <span>{{ quest.name }}</span>
+                        <div ng-bind-html="characterController.questStatus(quest)"></div>
+                    </div>
+                </li>
+            </ul>
+            <h4>Completed</h4>
+            <ul>
+                <li ng-repeat="quest in game.character.quests | filter:{ completed: true }">
+                    <div>
+                        <div ng-bind-html="characterController.questStatus(quest)"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </fieldset>
 </div>
