@@ -53,6 +53,7 @@
         enemiesToFight?: string;
         useInCombat?: string;
         view?: string;
+        quests?: string;
 
         format?: (template: string, tokens: string[]) => string;
         titleCase?: (text: string) => string;

@@ -104,6 +104,11 @@
             self.game.character.items.remove(item);
             self.game.currentLocation.items.push(item);
         }
+
+        questStatus = (quest: IQuest): string => {
+            var self = this;
+            return typeof quest.status === 'function' ? (<any>quest).status(self.game, quest, quest.checkDone(self.game, quest)) : quest.status;
+        }
     }
 
     CharacterController.$inject = ['$scope', 'characterService', 'ruleService', 'game', 'customTexts'];

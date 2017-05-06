@@ -3,7 +3,7 @@
         return {
             name: "Zoek de gouden ring",
             status: (game, quest, done) => {
-                return 'Je hebt de ring' + (done ? '' : 'nog niet') + 'gevonden' + (done ? '!' : '.');
+                return 'Je hebt de ring ' + (done ? '' : 'nog niet ') + 'gevonden' + (done ? '!' : '.');
             },
             start: (game, quest) => {
                 var location = game.locations.get(Locations.Start);

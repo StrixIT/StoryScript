@@ -49,7 +49,8 @@
             combatWin: "You are victorious!",
             enemiesToFight: "You face these foes: ",
             useInCombat: "Use {0}",
-            view: "View"
+            view: "View",
+            quests: "Quests"
         }
 
         format = (template: string, tokens: string[]): string => {

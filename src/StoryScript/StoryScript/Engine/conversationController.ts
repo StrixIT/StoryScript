@@ -169,6 +169,8 @@
                 if (quest.start) {
                     quest.start(self.game, quest);
                 }
+
+                quest.completed = false;
             }
             else {
                 quest = self.game.character.quests.get(reply[type]);
