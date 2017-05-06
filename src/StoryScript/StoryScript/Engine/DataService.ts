@@ -155,6 +155,9 @@ module StoryScript {
                 if (value === undefined) {
                     continue;
                 }
+                else if (value === null) {
+                    clone[key] = null;
+                }
                 else if (Array.isArray(value)) {
                     clone[key] = [];
                     self.buildClone(value, pristineValue, clone[key]);

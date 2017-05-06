@@ -85,10 +85,14 @@
 
                                 isAvailable = location.hasVisited === true;
                             } break;
-                            case 'quest': {
+                            case 'quest-start':
+                            case 'quest-done':
+                            case 'quest-complete': {
                                 // Check item available. Item list first, equipment second.
                                 var quest = self.game.character.quests.get(value);
-                                isAvailable = quest != undefined && quest.goalAchieved === true;
+                                isAvailable = quest != undefined &&
+                                    (type === 'quest-start' ? true : type === 'quest-done' ?
+                                        quest.checkDone(self.game, quest) : quest.completed);
                             } break;
                             default: {
                                 // Check attributes
@@ -145,39 +149,35 @@
             var questProgress = reply.questStart || reply.questComplete;
 
             if (questProgress) {
-                reply.questStart ? self.questProgress('questStart', person, reply) : self.questProgress('questComplete', person, reply);
+                var status = reply.questStart ? 'questStart' : 'questComplete';
+                self.questProgress(status, person, reply);
             }
         }
 
         questProgress = (type: string, person: IPerson, reply: IConversationReply) => {
             var self = this;
             var quest: IQuest;
-            var status;
-            var completed = type === "questComplete";
+            var start = type === "questStart";
 
-            if (type === "questStart") {
+            if (start) {
                 quest = <IQuest>person.quests.get(reply[type]);
+                quest.issuedBy = person.id;
                 self.game.character.quests.push(quest);
                 person.quests.remove(quest);
-                status = quest.status[Object.keys(quest.status)[0]];
+                quest.progress = {};
+
+                if (quest.start) {
+                    quest.start(self.game, quest);
+                }
             }
             else {
                 quest = self.game.character.quests.get(reply[type]);
 
-                if (completed) {
-                    var lastPropertyIndex = Object.keys(quest.status).length - 1;
-                    status = quest.status[Object.keys(quest.status)[lastPropertyIndex]];
+                if (quest.complete) {
+                    quest.complete(self.game, quest);
                 }
-            }
 
-            status.active = true;
-
-            if (status.action) {
-                status.action(self.game);
-            }
-
-            if (completed) {
-                quest.complete = true;
+                quest.completed = true;
             }
         }
 

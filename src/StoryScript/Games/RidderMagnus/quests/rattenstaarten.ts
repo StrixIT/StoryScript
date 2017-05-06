@@ -2,21 +2,17 @@
     export function RattenStaarten(): StoryScript.IQuest {
         return {
             name: "Verzamel rattenstaarten",
-            status: {
-                "Gestart": {
-                    description: (game) => {
-                        var quest = game.character.quests.get(Quests.RattenStaarten);
-                        return "Verzamel 10 rattenstaarten. Je hebt er nu " + (<any>quest).rattenStaarten + ".";
-                    },
-                    action: (game) => {
-                        var quest = game.character.quests.get(Quests.RattenStaarten);
-                        (<any>quest).rattenStaarten = 0;
-                    }
-                },
-                "Klaar": {
-                    description: "Je hebt 10 rattenstaarten verzameld en aan de koningin gegeven.",
-                    action: (game) => { }
-                },
+            status: (game, quest, done) => {
+                return done ? "Je hebt genoeg rattenstaarten verzameld!" : "Verzamel 10 rattenstaarten. Je hebt er nu " + quest.progress.rattenStaarten + ".";
+            },
+            start: (game, quest) => {
+                quest.progress.rattenStaarten = 0;
+            },
+            checkDone: (game, quest) => {
+                return quest.progress.rattenStaarten >= 10;
+            },
+            complete: (game, quest) => {
+            
             }
         }
     }

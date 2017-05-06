@@ -215,3 +215,4 @@ ModelManifest.xml
 /src/StoryScript/wwwroot
 /src/StoryScript/game.js
 /src/StoryScript/Games/**/resources/*
+/src/StoryScript/Games/QuestForTheKing/**/*
