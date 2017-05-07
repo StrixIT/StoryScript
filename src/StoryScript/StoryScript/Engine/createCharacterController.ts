@@ -20,49 +20,6 @@
             self.init();
         }
 
-        private init() {
-            var self = this;
-            self.setupCharacter(self, self.$scope);
-            self.$scope.$on('restart', function (event: ng.IAngularEvent) {
-                self.setupCharacter(self, event.currentScope as ICreateCharacterControllerScope);
-            });
-        }
-
-        private setupCharacter(controller: CreateCharacterController, scope: ICreateCharacterControllerScope) {
-            scope.sheet = controller.characterService.getCreateCharacterSheet();
-            scope.sheet.currentStep = 0;
-            scope.sheet.nextStep = (data: ICreateCharacter) => {
-                var selector = data.steps[data.currentStep].nextStepSelector;
-                var previousStep = data.currentStep;
-
-                if (selector) {
-                    var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
-                    data.currentStep = nextStep;
-                }
-                else {
-                    data.currentStep++;
-                }
-
-                var currentStep = data.steps[data.currentStep];
-
-                if (currentStep.initStep) {
-                    currentStep.initStep(data, previousStep, currentStep);
-                }
-
-                if (currentStep.attributes) {
-                    currentStep.attributes.forEach(attr => {
-                        attr.entries.forEach(entry => {
-                            if (entry.min) {
-                                entry.value = entry.min;
-                            }
-                        });
-                    });
-                }
-            };
-
-            controller.game.createCharacterSheet = scope.sheet;
-        }
-
         startNewGame = () => {
             var self = this;
             self.gameService.startNewGame(self.game.createCharacterSheet);
@@ -116,6 +73,49 @@
             }
 
             return done;
+        }
+
+        private init() {
+            var self = this;
+            self.setupCharacter(self, self.$scope);
+            self.$scope.$on('restart', function (event: ng.IAngularEvent) {
+                self.setupCharacter(self, event.currentScope as ICreateCharacterControllerScope);
+            });
+        }
+
+        private setupCharacter(controller: CreateCharacterController, scope: ICreateCharacterControllerScope) {
+            scope.sheet = controller.characterService.getCreateCharacterSheet();
+            scope.sheet.currentStep = 0;
+            scope.sheet.nextStep = (data: ICreateCharacter) => {
+                var selector = data.steps[data.currentStep].nextStepSelector;
+                var previousStep = data.currentStep;
+
+                if (selector) {
+                    var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
+                    data.currentStep = nextStep;
+                }
+                else {
+                    data.currentStep++;
+                }
+
+                var currentStep = data.steps[data.currentStep];
+
+                if (currentStep.initStep) {
+                    currentStep.initStep(data, previousStep, currentStep);
+                }
+
+                if (currentStep.attributes) {
+                    currentStep.attributes.forEach(attr => {
+                        attr.entries.forEach(entry => {
+                            if (entry.min) {
+                                entry.value = entry.min;
+                            }
+                        });
+                    });
+                }
+            };
+
+            controller.game.createCharacterSheet = scope.sheet;
         }
 
         private checkStep(step: ICreateCharacterStep) {

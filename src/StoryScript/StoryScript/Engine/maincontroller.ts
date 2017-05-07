@@ -26,9 +26,6 @@
         private encounters: ICollection<IEnemy>;
         private modalSettings: IModalSettings;
 
-        // Todo: can this be done differently?
-        public reset(): void { };
-
         constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, dataService: IDataService, game: IGame, customTexts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
@@ -42,31 +39,8 @@
             self.init();
         }
 
-        private init() {
-            var self = this;
-            self.gameService.init();
-
-            self.$scope.game = self.game;
-
-            self.setDisplayTexts();
-
-            self.$scope.texts = self.texts;
-
-            // Watch functions.
-            self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
-            self.$scope.$watch('game.character.score', self.watchCharacterScore);
-            self.$scope.$watch('game.state', self.watchGameState);
-            self.$scope.$watch('game.currentLocation', self.watchLocation);
-            self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
-
-            self.reset = () => { self.gameService.reset.call(self.gameService); };
-
-            self.$scope.modalSettings = <IModalSettings>{
-                title: '',
-                canClose: false,
-                closeText: self.texts.closeModal
-            }
-        }
+        // This empty function exposes the reset of the game service to the controller scope. The implementation is added in the init function.
+        reset = (): void => { }
 
         restart = () => {
             var self = this;
@@ -86,19 +60,6 @@
             if (item.description) {
                 self.showDescriptionModal(title, item);
             }
-        }
-
-        private showDescriptionModal(title: string, item: any) {
-            var self = this;
-
-            self.$scope.modalSettings = <IModalSettings>{
-                title: title,
-                closeText: self.texts.closeModal,
-                canClose: true,
-                descriptionEntity: item
-            }
-
-            self.game.state = GameState.Description;
         }
 
         getDescription(entity: any, key: string) {
@@ -188,7 +149,7 @@
         executeBarrierAction = (destination, barrier: IBarrier) => {
             var self = this;
 
-            // improve, use selected action as object.
+            // Todo: improve, use selected action as object.
             if (!barrier.actions.length) {
                 return;
             }
@@ -283,6 +244,45 @@
             var self = this;
             self.gameService.saveGame();
             self.game.state = GameState.Play;
+        }
+
+        private init() {
+            var self = this;
+            self.gameService.init();
+
+            self.$scope.game = self.game;
+
+            self.setDisplayTexts();
+
+            self.$scope.texts = self.texts;
+
+            // Watch functions.
+            self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
+            self.$scope.$watch('game.character.score', self.watchCharacterScore);
+            self.$scope.$watch('game.state', self.watchGameState);
+            self.$scope.$watch('game.currentLocation', self.watchLocation);
+            self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
+
+            self.reset = () => { self.gameService.reset.call(self.gameService); };
+
+            self.$scope.modalSettings = <IModalSettings>{
+                title: '',
+                canClose: false,
+                closeText: self.texts.closeModal
+            }
+        }
+
+        private showDescriptionModal(title: string, item: any) {
+            var self = this;
+
+            self.$scope.modalSettings = <IModalSettings>{
+                title: title,
+                closeText: self.texts.closeModal,
+                canClose: true,
+                descriptionEntity: item
+            }
+
+            self.game.state = GameState.Description;
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {

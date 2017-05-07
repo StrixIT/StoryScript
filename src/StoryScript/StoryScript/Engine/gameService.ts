@@ -68,70 +68,7 @@ module StoryScript {
                 self.ruleService.setupGame(self.game);
             }
 
-            // Game setup start
-            self.game.actionLog = [];
-            self.game.combatLog = [];
-
-            self.game.logToLocationLog = (message: string) => {
-                self.game.currentLocation.log = self.game.currentLocation.log || [];
-                self.game.currentLocation.log.push(message);
-            }
-
-            self.game.logToActionLog = (message: string) => {
-                self.game.actionLog.splice(0, 0, message);
-            }
-
-            self.game.logToCombatLog = (message: string) => {
-                self.game.combatLog.splice(0, 0, message);
-            }
-
-            self.game.getEnemy = (selector: string | (() => IEnemy)) => {
-                var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector);
-                return self.instantiateEnemy(instance);
-            }
-
-            self.game.getItem = (selector: string | (() => IItem)) => {
-                return StoryScript.find<IItem>(self.game.definitions.items, selector);
-            }
-
-            self.game.getNonPlayerCharacter = (selector: string | (() => IPerson)) => {
-                var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector);
-                return self.instantiatePerson(instance);
-            }
-
-            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
-                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, <(enemy: IEnemy) => boolean>selector);
-                return self.instantiateEnemy(instance);
-            }
-
-            self.game.randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
-                return StoryScript.random<IItem>(self.game.definitions.items, <(item: IItem) => boolean>selector);
-            }
-
-            self.game.rollDice = self.rollDice;
-            self.game.fight = self.fight;
-
-            // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
-            if (!(<any>self.game).stateString) {
-                Object.defineProperty(self.game, 'stateString', {
-                    enumerable: true,
-                    get: function () {
-                        return GameState[self.game.state];
-                    }
-                });
-            }
-
-            self.game.equals = <T>(entity: T, definition: () => T): boolean => {
-                return (<any>entity).id === (<any>definition).name;
-            }
-
-            // Game setup end
-
-            self.locationService.init(self.game);
-
-            self.game.locations.forEach((location: ICompiledLocation) => {
-                self.addProxy(location, 'enemy');
-            });
+            self.setupGame();
 
             self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
@@ -141,6 +78,8 @@ module StoryScript {
             var locationName = self.dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
             if (self.game.character && locationName) {
+                self.setupCharacter();
+
                 var lastLocation = self.game.locations.get(locationName);
                 var previousLocationName = self.dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
 
@@ -150,30 +89,17 @@ module StoryScript {
 
                 self.locationService.changeLocation(lastLocation, false, self.game);
                 self.game.state = StoryScript.GameState.Play;
-                self.addProxy(self.game.character, 'item');
-
-                Object.defineProperty(self.game.character, 'combatItems', {
-                    get: function () {
-                        return self.game.character.items.filter(e => { return e.useInCombat; });
-                    }
-                });
             }
             else {
                 self.game.state = StoryScript.GameState.CreateCharacter;
             }
-
-            self.game.calculateBonus = (person: ICharacter, type: string) => { return self.calculateBonus(self.game, person, type); };
         }
 
         reset = () => {
             var self = this;
             self.dataService.save(StoryScript.DataKeys.WORLD, {});
             self.locationService.init(self.game);
-
-            self.game.locations.forEach((location: ICompiledLocation) => {
-                self.addProxy(location, 'enemy');
-            });
-
+            self.setupLocations();
             self.game.worldProperties = self.dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
             var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
 
@@ -186,14 +112,7 @@ module StoryScript {
             var self = this;
             self.game.character = self.characterService.createCharacter(characterData);
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-            self.addProxy(self.game.character, 'item');
-
-            Object.defineProperty(self.game.character, 'combatItems', {
-                get: function () {
-                    return self.game.character.items.filter(e => { return e.useInCombat; });
-                }
-            });
-
+            self.setupCharacter();
             self.game.changeLocation('Start');
         }
 
@@ -216,6 +135,7 @@ module StoryScript {
             self.locationService.saveWorld(self.game.locations);
         }
 
+        // Todo: keep this in engine?
         rollDice = (input: string): number => {
             //'xdy+/-z'
             var positiveModifier = input.indexOf('+') > -1;
@@ -236,6 +156,7 @@ module StoryScript {
             return result;
         }
 
+        // Todo: keep this in engine?
         calculateBonus = (game: IGame, person: { items: ICollection<IItem>, equipment?: {} }, type: string) => {
             var self = this;
             var bonus = 0;
@@ -331,6 +252,92 @@ module StoryScript {
                 self.updateHighScore();
                 self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
             }
+        }
+
+        private setupGame(): void {
+            var self = this;
+            self.game.actionLog = [];
+            self.game.combatLog = [];
+
+            self.game.logToLocationLog = (message: string) => {
+                self.game.currentLocation.log = self.game.currentLocation.log || [];
+                self.game.currentLocation.log.push(message);
+            }
+
+            self.game.logToActionLog = (message: string) => {
+                self.game.actionLog.splice(0, 0, message);
+            }
+
+            self.game.logToCombatLog = (message: string) => {
+                self.game.combatLog.splice(0, 0, message);
+            }
+
+            self.game.getEnemy = (selector: string | (() => IEnemy)) => {
+                var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector);
+                return self.instantiateEnemy(instance);
+            }
+
+            self.game.getItem = (selector: string | (() => IItem)) => {
+                return StoryScript.find<IItem>(self.game.definitions.items, selector);
+            }
+
+            self.game.getNonPlayerCharacter = (selector: string | (() => IPerson)) => {
+                var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector);
+                return self.instantiatePerson(instance);
+            }
+
+            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
+                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, <(enemy: IEnemy) => boolean>selector);
+                return self.instantiateEnemy(instance);
+            }
+
+            self.game.randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
+                return StoryScript.random<IItem>(self.game.definitions.items, <(item: IItem) => boolean>selector);
+            }
+
+            self.game.rollDice = self.rollDice;
+            self.game.fight = self.fight;
+
+            // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
+            if (!(<any>self.game).stateString) {
+                Object.defineProperty(self.game, 'stateString', {
+                    enumerable: true,
+                    get: function () {
+                        return GameState[self.game.state];
+                    }
+                });
+            }
+
+            self.game.equals = <T>(entity: T, definition: () => T): boolean => {
+                return (<any>entity).id === (<any>definition).name;
+            }
+
+            self.locationService.init(self.game);
+
+            self.setupLocations();
+
+            // Todo: keep this in engine?
+            self.game.calculateBonus = (person: ICharacter, type: string) => { return self.calculateBonus(self.game, person, type); };
+        }
+
+        private setupCharacter(): void {
+            var self = this;
+
+            self.addProxy(self.game.character, 'item');
+
+            Object.defineProperty(self.game.character, 'combatItems', {
+                get: function () {
+                    return self.game.character.items.filter(e => { return e.useInCombat; });
+                }
+            });
+        }
+
+        private setupLocations(): void {
+            var self = this;
+
+            self.game.locations.forEach((location: ICompiledLocation) => {
+                self.addProxy(location, 'enemy');
+            });
         }
 
         private updateHighScore(): void {
@@ -454,6 +461,7 @@ module StoryScript {
                         enemy = self.game.getEnemy(selector);
                     }
                     else {
+                        // Todo: should I not invoke the function here?
                         enemy = <any>selector;
                     }
 
@@ -472,6 +480,7 @@ module StoryScript {
                         item = self.game.getItem(selector);
                     }
                     else {
+                        // Todo: should I not invoke the function here?
                         item = <any>selector;
                     }
 
@@ -486,6 +495,7 @@ module StoryScript {
                         quest = self.game.getQuest(selector);
                     }
                     else {
+                        // Todo: should I not invoke the function here?
                         quest = <any>selector;
                     }
 

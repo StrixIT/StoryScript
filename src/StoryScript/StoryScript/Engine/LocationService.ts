@@ -264,9 +264,7 @@ module StoryScript {
             // Also set the barrier selected actions to the first one available for each barrier.
             if (location.destinations) {
                 location.destinations.forEach(destination => {
-                    //if (typeof destination.target == 'function') {
                     destination.target = (<any>destination.target).name;
-                    //}
 
                     if (destination.barrier) {
                         if (destination.barrier.actions && destination.barrier.actions.length > 0) {

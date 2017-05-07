@@ -75,7 +75,9 @@ module StoryScript {
                 character.items = [];
             }
 
-            character.quests = [];
+            if (isEmpty(character.quests)) {
+                character.quests = [];
+            }
 
             return character;
         }

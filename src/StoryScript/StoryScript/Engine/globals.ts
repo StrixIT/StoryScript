@@ -30,38 +30,44 @@
     }
 
     export function addArrayExtensions() {
-        Object.defineProperty(Array.prototype, 'get', {
-            enumerable: false,
-            value: function (id: any) {
-                if (id) {
-                    return find(id, this)[0];
+        if ((<any>Array.prototype).get === undefined) {
+            Object.defineProperty(Array.prototype, 'get', {
+                enumerable: false,
+                value: function (id: any) {
+                    if (id) {
+                        return find(id, this)[0];
+                    }
+                    else {
+                        return this[0];
+                    }
                 }
-                else {
-                    return this[0];
+            });
+        }
+
+        if ((<any>Array.prototype).all === undefined) {
+            Object.defineProperty(Array.prototype, 'all', {
+                enumerable: false,
+                value: function (id: any) {
+                    return find(id, this);
                 }
-            }
-        });
+            });
+        }
 
-        Object.defineProperty(Array.prototype, 'all', {
-            enumerable: false,
-            value: function (id: any) {
-                return find(id, this);
-            }
-        });
+        if ((<any>Array.prototype).remove === undefined) {
+            Object.defineProperty(Array.prototype, 'remove', {
+                enumerable: false,
+                value: function (item: any) {
+                    // Need to cast to any for ES5 and lower
+                    var index = (<any>Array.prototype).findIndex.call(this, function (x) {
+                        return x === item || (typeof item === 'function' && item.name === x.id) || (item.id && x.id && item.id === x.id);
+                    });
 
-        Object.defineProperty(Array.prototype, 'remove', {
-            enumerable: false,
-            value: function (item: any) {
-                // Need to cast to any for ES5 and lower
-                var index = (<any>Array.prototype).findIndex.call(this, function (x) {
-                    return x === item || (typeof item === 'function' && item.name === x.id) || (item.id && x.id && item.id === x.id);
-                });
-
-                if (index != -1) {
-                    Array.prototype.splice.call(this, index, 1);
+                    if (index != -1) {
+                        Array.prototype.splice.call(this, index, 1);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     export class DataKeys {

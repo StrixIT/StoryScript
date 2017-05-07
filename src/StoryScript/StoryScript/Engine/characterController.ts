@@ -86,11 +86,6 @@
             }
         }
 
-        private getEquipmentType = (slot: StoryScript.EquipmentType) => {
-            var type = StoryScript.EquipmentType[slot];
-            return type.substring(0, 1).toLowerCase() + type.substring(1);
-        }
-
         isSlotUsed = (slot: string) => {
             var self = this;
 
@@ -108,6 +103,11 @@
         questStatus = (quest: IQuest): string => {
             var self = this;
             return typeof quest.status === 'function' ? (<any>quest).status(self.game, quest, quest.checkDone(self.game, quest)) : quest.status;
+        }
+
+        private getEquipmentType = (slot: StoryScript.EquipmentType) => {
+            var type = StoryScript.EquipmentType[slot];
+            return type.substring(0, 1).toLowerCase() + type.substring(1);
         }
     }
 

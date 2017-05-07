@@ -23,10 +23,57 @@
             self.init();
         }
 
-        init = () => {
+        answer = (node: IConversationNode, reply: IConversationReply) => {
+            var self = this;
+            var person = self.game.currentLocation.activePerson;
+
+            person.conversation.conversationLog = person.conversation.conversationLog || [];
+
+            person.conversation.conversationLog.push({
+                lines: node.lines,
+                reply: reply.lines
+            });
+
+            if (person.conversation.handleReply) {
+                person.conversation.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
+            }
+
+            if (reply.linkToNode) {
+                person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
+
+                if (person.conversation.prepareReplies) {
+                    person.conversation.prepareReplies(self.game, self.game.currentLocation.activePerson, person.conversation.activeNode);
+                }
+
+                self.setReplyStatus(person.conversation, person.conversation.activeNode);
+            }
+            else {
+                person.conversation.ended = true;
+            }
+
+            var questProgress = reply.questStart || reply.questComplete;
+
+            if (questProgress) {
+                var status = reply.questStart ? 'questStart' : 'questComplete';
+                self.questProgress(status, person, reply);
+            }
+        }
+
+        getLines = (nodeOrReply: IConversationNode | IConversationReply) => {
+            var self = this;
+
+            if (nodeOrReply && nodeOrReply.lines) {
+                return self.ruleService.processDescription ? self.ruleService.processDescription(nodeOrReply, 'lines') : nodeOrReply.lines;
+            }
+        }
+
+        private init(): void {
             var self = this;
             var person = self.game.currentLocation.activePerson;
             person.conversation.ended = false;
+
+
+            // Determine active node in function? Can maybe remove next attribute and ended property.
             var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : person.conversation.activeNode;
 
             if (!activeNode) {
@@ -88,7 +135,7 @@
                             case 'quest-start':
                             case 'quest-done':
                             case 'quest-complete': {
-                                // Check item available. Item list first, equipment second.
+                                // Check quest start, quest done or quest complete.
                                 var quest = self.game.character.quests.get(value);
                                 isAvailable = quest != undefined &&
                                     (type === 'quest-start' ? true : type === 'quest-done' ?
@@ -118,43 +165,18 @@
             self.setReplyStatus(person.conversation, activeNode);
         }
 
-        answer = (node: IConversationNode, reply: IConversationReply) => {
-            var self = this;
-            var person = self.game.currentLocation.activePerson;
-
-            person.conversation.conversationLog = person.conversation.conversationLog || [];
-
-            person.conversation.conversationLog.push({
-                lines: node.lines,
-                reply: reply.lines
-            });
-
-            if (person.conversation.handleReply) {
-                person.conversation.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
-            }
-
-            if (reply.linkToNode) {
-                person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
-
-                if (person.conversation.prepareReplies) {
-                    person.conversation.prepareReplies(self.game, self.game.currentLocation.activePerson, person.conversation.activeNode);
+        private setReplyStatus(conversation: IConversation, node: IConversationNode) {
+            node.replies.forEach(reply => {
+                if (reply.available == undefined) {
+                    reply.available = true;
                 }
-
-                self.setReplyStatus(person.conversation, person.conversation.activeNode);
-            }
-            else {
-                person.conversation.ended = true;
-            }
-
-            var questProgress = reply.questStart || reply.questComplete;
-
-            if (questProgress) {
-                var status = reply.questStart ? 'questStart' : 'questComplete';
-                self.questProgress(status, person, reply);
-            }
+                if (reply.showWhenUnavailable == undefined) {
+                    reply.showWhenUnavailable = conversation.showUnavailableReplies;
+                }
+            });
         }
 
-        questProgress = (type: string, person: IPerson, reply: IConversationReply) => {
+        private questProgress(type: string, person: IPerson, reply: IConversationReply) {
             var self = this;
             var quest: IQuest;
             var start = type === "questStart";
@@ -181,25 +203,6 @@
 
                 quest.completed = true;
             }
-        }
-
-        getLines = (nodeOrReply: IConversationNode | IConversationReply) => {
-            var self = this;
-
-            if (nodeOrReply && nodeOrReply.lines) {
-                return self.ruleService.processDescription ? self.ruleService.processDescription(nodeOrReply, 'lines') : nodeOrReply.lines;
-            }
-        }
-
-        private setReplyStatus(conversation: IConversation, node: IConversationNode) {
-            node.replies.forEach(reply => {
-                if (reply.available == undefined) {
-                    reply.available = true;
-                }
-                if (reply.showWhenUnavailable == undefined) {
-                    reply.showWhenUnavailable = conversation.showUnavailableReplies;
-                }
-            });
         }
     }
 

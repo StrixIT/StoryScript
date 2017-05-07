@@ -21,28 +21,6 @@
             self.init();
         }
 
-        init = () => {
-            var self = this;
-            var trader = self.$scope.trade;
-
-            var itemsForSale = trader.buy.items;
-
-            var buySelector = (item: IItem) => {
-                return trader.buy.itemSelector(self.game, item);
-            };
-
-            if ((trader.initCollection && trader.initCollection(self.game, trader) || !itemsForSale)) {
-                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.buy.maxItems, buySelector);
-            }
-
-            var sellSelector = (item: IItem) => {
-                return trader.sell.itemSelector(self.game, item);
-            };
-
-            trader.buy.items = itemsForSale;
-            trader.sell.items = StoryScript.randomList<IItem>(self.game.character.items, trader.sell.maxItems, sellSelector);
-        }
-
         canPay = (currency: number, value: number) => {
             return (value != undefined && currency != undefined && currency >= value) || value == 0;
         }
@@ -73,7 +51,29 @@
             trade.buy.items.push(item);
         }
 
-        private pay(item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean) {
+        private init(): void {
+            var self = this;
+            var trader = self.$scope.trade;
+
+            var itemsForSale = trader.buy.items;
+
+            var buySelector = (item: IItem) => {
+                return trader.buy.itemSelector(self.game, item);
+            };
+
+            if ((trader.initCollection && trader.initCollection(self.game, trader) || !itemsForSale)) {
+                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.buy.maxItems, buySelector);
+            }
+
+            var sellSelector = (item: IItem) => {
+                return trader.sell.itemSelector(self.game, item);
+            };
+
+            trader.buy.items = itemsForSale;
+            trader.sell.items = StoryScript.randomList<IItem>(self.game.character.items, trader.sell.maxItems, sellSelector);
+        }
+
+        private pay(item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean): void {
             var self = this;
 
             var price = item.value;

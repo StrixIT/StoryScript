@@ -16,7 +16,7 @@
                 );
             },
             checkDone: (game, quest) => {
-                return game.character.items.get(Items.GoudenRing) != null;
+                return quest.completed || game.character.items.get(Items.GoudenRing) != null;
             },
             complete: (game, quest) => {
                 var ring = game.character.items.get(Items.GoudenRing);

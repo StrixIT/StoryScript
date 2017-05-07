@@ -12,7 +12,7 @@ module StoryScript {
     export class DataService implements ng.IServiceProvider, IDataService {
         private $q: ng.IQService;
         private $http: ng.IHttpService;
-        private $localStorage: any; // Todo: type;
+        private $localStorage: any;
         private gameSpaceName: string;
 
         public functionList: { [id: string]: { function: Function, hash: number } };
@@ -53,6 +53,8 @@ module StoryScript {
 
             var pathEntry = self.descriptionPaths[identifier];
             var description = pathEntry ? pathEntry.description : null;
+
+            // Todo: use special description text to load description as html.
 
             if (!pathEntry) {
                 pathEntry = { loading: false, loaded: false, description: null };

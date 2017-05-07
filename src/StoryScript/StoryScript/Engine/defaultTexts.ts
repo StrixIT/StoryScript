@@ -50,7 +50,11 @@
             enemiesToFight: "You face these foes: ",
             useInCombat: "Use {0}",
             view: "View",
-            quests: "Quests"
+            quests: "Quests",
+            hands: "Hands",
+            leftRing: "Left ring",
+            rightRing: "Right ring",
+            yourName: "Name"
         }
 
         format = (template: string, tokens: string[]): string => {

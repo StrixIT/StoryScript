@@ -87,21 +87,6 @@
         };
     }
 
-    function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), selector?: (item: T) => boolean) {
-        var collectionToFilter = <T[]>[]
-
-        if (typeof collection[0] === 'function') {
-            (<[() => T]>collection).forEach((def: () => T) => {
-                collectionToFilter.push(definitionToObject(def));
-            });
-        }
-        else {
-            collectionToFilter = <T[]>collection;
-        }
-
-        return selector ? collectionToFilter.filter(selector) : collectionToFilter;
-    }
-
     export function createFunctionHash(func: Function): number {
         var hash = 0;
         var functionString = func.toString();
@@ -117,5 +102,20 @@
         }
 
         return hash;
+    }
+
+    function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), selector?: (item: T) => boolean) {
+        var collectionToFilter = <T[]>[]
+
+        if (typeof collection[0] === 'function') {
+            (<[() => T]>collection).forEach((def: () => T) => {
+                collectionToFilter.push(definitionToObject(def));
+            });
+        }
+        else {
+            collectionToFilter = <T[]>collection;
+        }
+
+        return selector ? collectionToFilter.filter(selector) : collectionToFilter;
     }
 }
