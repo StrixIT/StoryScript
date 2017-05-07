@@ -48,7 +48,11 @@
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
             else {
-                person.conversation.ended = true;
+                person.conversation.nodes.forEach((node) => {
+                    node.active = false;
+                });
+
+                person.conversation.activeNode = null;
             }
 
             var questProgress = reply.questStart || reply.questComplete;
@@ -70,10 +74,7 @@
         private init(): void {
             var self = this;
             var person = self.game.currentLocation.activePerson;
-            person.conversation.ended = false;
 
-
-            // Determine active node in function? Can maybe remove next attribute and ended property.
             var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : person.conversation.activeNode;
 
             if (!activeNode) {
@@ -82,10 +83,6 @@
                 if (!activeNode) {
                     activeNode = person.conversation.nodes[0];
                 }
-            }
-
-            if (activeNode.next) {
-                activeNode = person.conversation.nodes.filter((node: IConversationNode) => { return node.node === activeNode.next; })[0];
             }
 
             activeNode.active = true;

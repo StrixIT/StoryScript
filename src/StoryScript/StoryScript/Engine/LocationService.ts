@@ -16,8 +16,7 @@ module StoryScript {
         private functionList: { [id: string]: { function: Function, hash: number } };
 
         private nodeOptions: { [prop: string]: string } = {
-            "name": "name",
-            "next": "next"
+            "name": "name"
         };
 
         private replyOptions: { [prop: string]: string } = {
@@ -375,14 +374,11 @@ module StoryScript {
                             }
                         }
 
-                        var nextAttribute = node.attributes['next'] ? node.attributes['next'].nodeValue : null;
-
                         var newNode = <IConversationNode>{
                             id: nameAttribute,
                             node: nameAttribute,
                             lines: '',
-                            replies: [],
-                            next: nextAttribute
+                            replies: []
                         };
 
                         for (var j = 0; j < node.childNodes.length; j++) {

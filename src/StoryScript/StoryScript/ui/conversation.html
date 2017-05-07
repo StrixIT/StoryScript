@@ -1,5 +1,5 @@
 ﻿<div ng-controller="ConversationController as conversationController">
-    <div ng-show="conversation.activeNode && !conversation.ended">
+    <div ng-show="conversation.activeNode">
         <div ng-bind-html="conversationController.getLines(conversation.activeNode)"></div>
         <div ng-repeat="reply in conversation.activeNode.replies">
             <div ng-hide="!reply.available && !reply.showWhenUnavailable">
@@ -7,7 +7,7 @@
             </div>
         </div>
     </div>
-    <div ng-hide="conversation.activeNode" ng-show="conversation.ended">
+    <div ng-hide="conversation.activeNode">
         Your conversation has ended.
     </div>
     <hr />

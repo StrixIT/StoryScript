@@ -8,7 +8,6 @@
         nodes?: ICollection<IConversationNode>;
         activeNode?: IConversationNode;
         conversationLog?: IConversationLogEntry[];
-        ended?: boolean;
     }
 
     export interface IConversationNode {
@@ -16,7 +15,6 @@
         node: string;
         lines: string;
         replies?: ICollection<IConversationReply>;
-        next?: string;
     }
 
     export interface IConversationReply {
