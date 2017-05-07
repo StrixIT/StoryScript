@@ -91,6 +91,12 @@
             for (var n in activeNode.replies) {
                 var reply = activeNode.replies[n];
 
+                if (reply.linkToNode) {
+                    if (!person.conversation.nodes.some((node) => { return node.node === reply.linkToNode; })) {
+                        console.log('No node ' + reply.linkToNode + ' found to link to for reply ' + reply.lines + '!');
+                    }
+                }
+
                 if (reply.requires) {
                     var isAvailable = true;
                     var requirements = reply.requires.split(',');
