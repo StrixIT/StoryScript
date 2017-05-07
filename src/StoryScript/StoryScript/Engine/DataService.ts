@@ -54,10 +54,9 @@ module StoryScript {
             var pathEntry = self.descriptionPaths[identifier];
             var description = pathEntry ? pathEntry.description : null;
 
-            // Todo: use special description text to load description as html.
-
             if (!pathEntry) {
-                pathEntry = { loading: false, loaded: false, description: null };
+                var loadDescription = (type === 'locations' || type === 'persons') || item.description === Constants.HTML;
+                pathEntry = { loading: false, loaded: !loadDescription, description: loadDescription ? null : item.description };
                 self.descriptionPaths[identifier] = pathEntry;
             }
 

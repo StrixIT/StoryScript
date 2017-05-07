@@ -6,13 +6,16 @@
                 return done ? "Je hebt genoeg rattenstaarten verzameld!" : "Verzamel 10 rattenstaarten. Je hebt er nu " + quest.progress.rattenStaarten + ".";
             },
             start: (game, quest) => {
-                quest.progress.rattenStaarten = 0;
+
             },
             checkDone: (game, quest) => {
                 return quest.progress.rattenStaarten >= 10;
             },
             complete: (game, quest) => {
             
+            },
+            progress: {
+                rattenStaarten: 0
             }
         }
     }
