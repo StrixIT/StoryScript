@@ -1,15 +1,13 @@
 ﻿module StoryScript {
     export interface IConversation {
         title?: string;
+        nodes?: ICollection<IConversationNode>;
         setStartNode?: (person: IPerson, nodeName: string) => void;
         selectActiveNode?: (game: IGame, person: IPerson) => IConversationNode;
         showUnavailableReplies?: boolean;
-        prepareReplies?(game: IGame, person: IPerson, node: IConversationNode): void;
-        handleReply?(game: IGame, person: IPerson, node: IConversationNode, reply: IConversationReply): void;
-        nodes?: ICollection<IConversationNode>;
-        defaultReply?: string;
-        activeNode?: IConversationNode;
+        actions?: { [name: string]: (game: IGame, person: IPerson) => void }
         conversationLog?: IConversationLogEntry[];
+        activeNode?: IConversationNode;
     }
 
     export interface IConversationNode {
@@ -17,8 +15,12 @@
         active?: boolean;
         node: string;
         lines: string;
-        replies?: ICollection<IConversationReply>;
+        replies: IConversationReplies;
+    }
+
+    export interface IConversationReplies {
         defaultReply?: boolean;
+        options?: ICollection<IConversationReply>;
     }
 
     export interface IConversationReply {
@@ -27,6 +29,7 @@
         linkToNode?: string;
         available?: boolean;
         showWhenUnavailable?: boolean;
+        trigger?: string;
         questStart?: string;
         questComplete?: string;
     }

@@ -70,6 +70,27 @@
         }
     }
 
+    export function getTypedValue(value: string): any {
+        if (value === undefined || value === null) {
+            return value;
+        }
+
+        if (value.toLowerCase() === 'false') {
+            return false;
+        }
+        else if (value.toLowerCase() === 'true') {
+            return true;
+        }
+
+        var number = parseFloat(value);
+
+        if (number !== NaN) {
+            return number;
+        }
+
+        return value;
+    }
+
     export class DataKeys {
         static HIGHSCORES: string = 'highScores';
         static CHARACTER: string = 'character';

@@ -337,6 +337,16 @@ module StoryScript {
                     }
 
                     var htmlDoc = parser.parseFromString(conversations, "text/html");
+                    var defaultReplyNodes = htmlDoc.getElementsByTagName("default-reply");
+                    var defaultReply = null;
+
+                    if (defaultReplyNodes.length > 1) {
+                        throw new Error('More than one default reply in conversation for person ' + person.id + '.');
+                    }
+                    else if (defaultReplyNodes.length === 1) {
+                        defaultReply = defaultReplyNodes[0].innerHTML.trim();
+                    }
+
                     var conversationNodes = htmlDoc.getElementsByTagName("node");
 
                     person.conversation.nodes = [];
@@ -346,60 +356,77 @@ module StoryScript {
                         var nameAttribute = <string>node.attributes['name'].nodeValue;
 
                         if (!nameAttribute) {
-                            throw new Error('Missing name attribute on node for conversation ' + person.id + '.');
+                            throw new Error('Missing name attribute on node for conversation for person ' + person.id + '.');
                         }
 
                         if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
-                            throw new Error('Duplicate nodes with name ' + name + ' for conversation ' + person.id + '.');
+                            throw new Error('Duplicate nodes with name ' + name + ' for conversation for person ' + person.id + '.');
                         }
-
-                        var defaultReplyNode = node.attributes['default-reply']
-                        var addDefaultReply = defaultReplyNode ? self.getTypedValue(defaultReplyNode.nodeValue) : true;
 
                         var newNode = <IConversationNode>{
                             node: nameAttribute,
                             lines: '',
-                            replies: <ICollection<IConversationReply>>[],
-                            defaultReply: addDefaultReply,
+                            replies: null,
                         };
 
                         for (var j = 0; j < node.childNodes.length; j++) {
                             var replies = node.childNodes[j];
 
                             if (replies.nodeName.toLowerCase() == 'replies') {
+                                var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
+                                var addDefaultReply = addDefaultValue ? getTypedValue(addDefaultValue) : true;
+
+                                newNode.replies = <IConversationReplies>{
+                                    defaultReply: <boolean>addDefaultReply,
+                                    options: <ICollection<IConversationReply>>[]
+                                };
+
                                 for (var k = 0; k < replies.childNodes.length; k++) {
                                     var replyNode = replies.childNodes[k];
 
                                     if (replyNode.nodeName.toLowerCase() == 'reply') {
-                                        var requires = replyNode.attributes['requires'] && replyNode.attributes['requires'].value;
-                                        var linkToNode = replyNode.attributes['node'] && replyNode.attributes['node'].value;
-                                        var questStart = replyNode.attributes['quest-start'] && replyNode.attributes['quest-start'].value;
-                                        var questComplete = replyNode.attributes['quest-complete'] && replyNode.attributes['quest-complete'].value;
+                                        var requires = self.GetNodeValue(replyNode, 'requires');
+                                        var linkToNode = self.GetNodeValue(replyNode, 'node');
+                                        var trigger = self.GetNodeValue(replyNode, 'trigger');
+                                        var questStart = self.GetNodeValue(replyNode, 'quest-start');
+                                        var questComplete = self.GetNodeValue(replyNode, 'quest-complete');
+
+                                        if (trigger && !person.conversation.actions[trigger]) {
+                                            console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
+                                        }
 
                                         var reply = <IConversationReply>{
                                             requires: requires,
                                             linkToNode: linkToNode,
+                                            trigger: trigger,
                                             questStart: questStart,
                                             questComplete: questComplete,
                                             lines: (<any>replyNode).innerHTML.trim(),
                                         };
 
-
-                                        newNode.replies.push(reply);
+                                        newNode.replies.options.push(reply);
                                     }
                                 }
 
                                 node.removeChild(replies);
+
+                                if (defaultReply && newNode.replies.defaultReply) {
+                                    newNode.replies.options.push(<IConversationReply>{
+                                        lines: defaultReply
+                                    });
+                                }
                             }
                         }
 
-                        if (person.conversation.defaultReply && newNode.defaultReply) {
-                            var defaultReply = <IConversationReply>{
-                                lines: person.conversation.defaultReply
-                            };
-
-                            newNode.replies = newNode.replies || [];
-                            newNode.replies.push(defaultReply);
+                        if (!newNode.replies && defaultReply) {
+                            newNode.replies = <IConversationReplies>{
+                                defaultReply: true,
+                                options: <ICollection<IConversationReply>>[
+                                    {
+                                        lines: defaultReply
+                                    }
+                                ]
+                            }
                         }
 
                         newNode.lines = node.innerHTML.trim();
@@ -409,25 +436,8 @@ module StoryScript {
             });
         }
 
-        private getTypedValue(value: string): any {
-            if (value === undefined || value === null) {
-                return value;
-            }
-
-            if (value.toLowerCase() === 'false') {
-                return false;
-            }
-            else if (value.toLowerCase() === 'true') {
-                return true;
-            }
-
-            var number = parseFloat(value);
-
-            if (number !== NaN) {
-                return number;
-            }
-
-            return value;
+        private GetNodeValue(node: Node, attribute: string): string {
+            return node.attributes[attribute] && node.attributes[attribute].value
         }
 
         private loadLocationDescriptions(game: IGame) {

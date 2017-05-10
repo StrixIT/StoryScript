@@ -34,17 +34,12 @@
                 reply: reply.lines
             });
 
-            if (person.conversation.handleReply) {
-                person.conversation.handleReply(self.game, self.game.currentLocation.activePerson, node, reply);
+            if (reply.trigger) {
+                person.conversation.actions[reply.trigger](self.game, person);
             }
 
             if (reply.linkToNode) {
                 person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
-
-                if (person.conversation.prepareReplies) {
-                    person.conversation.prepareReplies(self.game, self.game.currentLocation.activePerson, person.conversation.activeNode);
-                }
-
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
             else {
@@ -92,8 +87,8 @@
             activeNode.active = true;
             person.conversation.activeNode = activeNode;
 
-            for (var n in activeNode.replies) {
-                var reply = activeNode.replies[n];
+            for (var n in activeNode.replies.options) {
+                var reply = activeNode.replies.options[n];
 
                 if (reply.linkToNode) {
                     if (!person.conversation.nodes.some((node) => { return node.node === reply.linkToNode; })) {
@@ -165,15 +160,11 @@
                 }
             }
 
-            if (person.conversation.prepareReplies) {
-                person.conversation.prepareReplies(self.game, person, person.conversation.activeNode);
-            }
-
             self.setReplyStatus(person.conversation, activeNode);
         }
 
         private setReplyStatus(conversation: IConversation, node: IConversationNode) {
-            node.replies.forEach(reply => {
+            node.replies.options.forEach(reply => {
                 if (reply.available == undefined) {
                     reply.available = true;
                 }

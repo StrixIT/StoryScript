@@ -1,4 +1,7 @@
 ﻿<conversation>
+    <default-reply>
+        Ik kom snel terug, koningin!
+    </default-reply>
     <node name="eerstequest">
         <p>
             Mijn nobele jonge ridder, heer Magnus, ik heb voor u een taak.
@@ -12,12 +15,12 @@
             </reply>
         </replies>
     </node>
-    <node name="eerstequestklaar" default-reply="false">
+    <node name="eerstequestklaar">
         <p>
             Hebt u de ring gevonden?
         </p>
-        <replies>
-            <reply>
+        <replies default-reply="false">
+            <reply trigger="test">
                 Nee, nog niet.
             </reply>
             <reply node="questcomplete" requires="quest-done=GoudenRing" quest-complete="GoudenRing">
@@ -36,11 +39,11 @@
             </reply>
         </replies>
     </node>
-    <node name="tweedequestklaar" default-reply="false">
+    <node name="tweedequestklaar">
         <p>
             En, was er een monster?
         </p>
-        <replies>
+        <replies default-reply="false">
             <reply>
                 Ik heb nog niet gekeken.
             </reply>
