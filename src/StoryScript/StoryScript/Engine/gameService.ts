@@ -435,6 +435,12 @@ module StoryScript {
 
             person = self.instantiateEnemy(person);
 
+            if (person.conversation) {
+                person.conversation.setStartNode = (person: IPerson, nodeName: string) => {
+                    self.setStartNode(person, nodeName)
+                };
+            }
+
             var quests = <IQuest[]>[];
 
             if (person.quests) {
@@ -448,6 +454,17 @@ module StoryScript {
             self.addProxy(person, 'quest');
 
             return person;
+        }
+
+        private setStartNode(person: IPerson, nodeName: string): void {
+            var node = person.conversation.nodes.filter(n => n.node === nodeName)[0];
+
+            if (node == null) {
+                console.log("Cannot set conversation start node to node " + nodeName + ". A node with this name is not defined.");
+                return;
+            }
+
+            node.start = true;
         }
 
         private addProxy(entry, collectionType?: string) {

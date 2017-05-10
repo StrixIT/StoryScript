@@ -5,7 +5,7 @@
             status: (game, quest, done) => {
                 return 'Je hebt de ring ' + (done ? '' : 'nog niet ') + 'gevonden' + (done ? '!' : '.');
             },
-            start: (game, quest) => {
+            start: (game, quest, person) => {
                 var location = game.locations.get(Locations.Start);
 
                 location.destinations.push(
@@ -14,11 +14,13 @@
                         target: Locations.Kelder
                     }
                 );
+
+                person.conversation.setStartNode(person, "eerstequestklaar");
             },
             checkDone: (game, quest) => {
                 return quest.completed || game.character.items.get(Items.GoudenRing) != null;
             },
-            complete: (game, quest) => {
+            complete: (game, quest, person) => {
                 var ring = game.character.items.get(Items.GoudenRing);
                 game.character.items.remove(ring);
                 game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');

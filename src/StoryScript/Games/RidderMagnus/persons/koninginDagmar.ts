@@ -8,22 +8,7 @@
             reward: 100,
             currency: 1000,
             conversation: {
-                selectActiveNode: (game, person) => {
-                    var quest = game.character.quests.get(Quests.GoudenRing);
-                    var nodes = person.conversation.nodes;
-
-                    if (quest && !quest.completed) {
-                        return nodes.filter(n => n.node === "eerstequestklaar")[0];
-                    }
-
-                    quest = game.character.quests.get(Quests.RattenStaarten);
-
-                    if (quest && !quest.completed) {
-                        return nodes.filter(n => n.node === "tweedequestklaar")[0];
-                    }
-
-                    return nodes[0];
-                }
+                defaultReply: 'Ik kom snel terug, koningin!'
             },
             quests: [
                 Quests.GoudenRing,

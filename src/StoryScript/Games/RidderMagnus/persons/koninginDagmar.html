@@ -7,12 +7,12 @@
             Bent u dapper genoeg om de ring voor haar te vinden?
         </p>
         <replies>
-            <reply node="accept" quest-start="GoudenRing" test="">
+            <reply node="accept" quest-start="GoudenRing">
                 Natuurlijk, Hoogheid!
             </reply>
         </replies>
     </node>
-    <node name="eerstequestklaar" test="">
+    <node name="eerstequestklaar" default-reply="false">
         <p>
             Hebt u de ring gevonden?
         </p>
@@ -36,7 +36,7 @@
             </reply>
         </replies>
     </node>
-    <node name="tweedequestklaar">
+    <node name="tweedequestklaar" default-reply="false">
         <p>
             En, was er een monster?
         </p>
@@ -49,12 +49,12 @@
             </reply>
         </replies>
     </node>
-    <node name="accept" next="eerstequestklaar">
+    <node name="accept">
         <p>
             Dankuwel en moge de goden u bijstaan!
         </p>
     </node>
-    <node name="acceptquest2" next="tweedequestklaar">
+    <node name="acceptquest2">
         <p>
             Dankuwel en moge de goden u bijstaan!
         </p>

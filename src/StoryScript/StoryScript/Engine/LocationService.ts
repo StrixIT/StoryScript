@@ -15,17 +15,6 @@ module StoryScript {
         private pristineLocations: ICollection<ICompiledLocation>;
         private functionList: { [id: string]: { function: Function, hash: number } };
 
-        private nodeOptions: { [prop: string]: string } = {
-            "name": "name"
-        };
-
-        private replyOptions: { [prop: string]: string } = {
-            "requires": "requires",
-            "node": "linkToNode",
-            "quest-start": "questStart",
-            "quest-complete": "questComplete"
-        };
-
         constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
             var self = this;
             self.dataService = dataService;
@@ -354,7 +343,7 @@ module StoryScript {
 
                     for (var i = 0; i < conversationNodes.length; i++) {
                         var node = conversationNodes[i];
-                        var nameAttribute = node.attributes['name'].nodeValue;
+                        var nameAttribute = <string>node.attributes['name'].nodeValue;
 
                         if (!nameAttribute) {
                             throw new Error('Missing name attribute on node for conversation ' + person.id + '.');
@@ -364,21 +353,14 @@ module StoryScript {
                             throw new Error('Duplicate nodes with name ' + name + ' for conversation ' + person.id + '.');
                         }
 
-                        for (var n in node.attributes) {
-                            if (node.attributes.hasOwnProperty(n)) {
-                                var attributeName = node.attributes[n].name;
-
-                                if (!self.nodeOptions[attributeName]) {
-                                    console.log('node option ' + attributeName + ' not supported');
-                                }
-                            }
-                        }
+                        var defaultReplyNode = node.attributes['default-reply']
+                        var addDefaultReply = defaultReplyNode ? self.getTypedValue(defaultReplyNode.nodeValue) : true;
 
                         var newNode = <IConversationNode>{
-                            id: nameAttribute,
                             node: nameAttribute,
                             lines: '',
-                            replies: []
+                            replies: <ICollection<IConversationReply>>[],
+                            defaultReply: addDefaultReply,
                         };
 
                         for (var j = 0; j < node.childNodes.length; j++) {
@@ -389,25 +371,19 @@ module StoryScript {
                                     var replyNode = replies.childNodes[k];
 
                                     if (replyNode.nodeName.toLowerCase() == 'reply') {
-                                        var reply = <IConversationReply>{};
+                                        var requires = replyNode.attributes['requires'] && replyNode.attributes['requires'].value;
+                                        var linkToNode = replyNode.attributes['node'] && replyNode.attributes['node'].value;
+                                        var questStart = replyNode.attributes['quest-start'] && replyNode.attributes['quest-start'].value;
+                                        var questComplete = replyNode.attributes['quest-complete'] && replyNode.attributes['quest-complete'].value;
 
-                                        for (var n in replyNode.attributes)
-                                        {
-                                            if (replyNode.attributes.hasOwnProperty(n)) {
-                                                var attributeName = replyNode.attributes[n].name;
+                                        var reply = <IConversationReply>{
+                                            requires: requires,
+                                            linkToNode: linkToNode,
+                                            questStart: questStart,
+                                            questComplete: questComplete,
+                                            lines: (<any>replyNode).innerHTML.trim(),
+                                        };
 
-                                                if (!self.replyOptions[attributeName]) {
-                                                    console.log('reply option ' + attributeName + ' not supported');
-                                                }
-                                            }
-                                        }
-
-                                        for (var option in self.replyOptions)
-                                        {
-                                            reply[self.replyOptions[option]] = (replyNode.attributes[option] && replyNode.attributes[option].value) || null;
-                                        }
-
-                                        reply.lines = (<any>replyNode).innerHTML;
 
                                         newNode.replies.push(reply);
                                     }
@@ -417,11 +393,41 @@ module StoryScript {
                             }
                         }
 
-                        newNode.lines = node.innerHTML;
+                        if (person.conversation.defaultReply && newNode.defaultReply) {
+                            var defaultReply = <IConversationReply>{
+                                lines: person.conversation.defaultReply
+                            };
+
+                            newNode.replies = newNode.replies || [];
+                            newNode.replies.push(defaultReply);
+                        }
+
+                        newNode.lines = node.innerHTML.trim();
                         person.conversation.nodes.push(newNode);
                     }
                 });
             });
+        }
+
+        private getTypedValue(value: string): any {
+            if (value === undefined || value === null) {
+                return value;
+            }
+
+            if (value.toLowerCase() === 'false') {
+                return false;
+            }
+            else if (value.toLowerCase() === 'true') {
+                return true;
+            }
+
+            var number = parseFloat(value);
+
+            if (number !== NaN) {
+                return number;
+            }
+
+            return value;
         }
 
         private loadLocationDescriptions(game: IGame) {

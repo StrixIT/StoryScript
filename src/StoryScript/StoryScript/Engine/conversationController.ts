@@ -78,11 +78,15 @@
             var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : person.conversation.activeNode;
 
             if (!activeNode) {
-                activeNode = person.conversation.nodes.some((node) => { return node.active; })[0];
+                activeNode = person.conversation.nodes.filter((node) => { return node.active; })[0];
+            }
 
-                if (!activeNode) {
-                    activeNode = person.conversation.nodes[0];
-                }
+            if (!activeNode) {
+                activeNode = person.conversation.nodes.filter((node) => { return node.start; })[0];
+            }
+
+            if (!activeNode) {
+                activeNode = person.conversation.nodes[0];
             }
 
             activeNode.active = true;
@@ -192,7 +196,7 @@
                 quest.progress = {};
 
                 if (quest.start) {
-                    quest.start(self.game, quest);
+                    quest.start(self.game, quest, person);
                 }
 
                 quest.completed = false;
@@ -201,7 +205,7 @@
                 quest = self.game.character.quests.get(reply[type]);
 
                 if (quest.complete) {
-                    quest.complete(self.game, quest);
+                    quest.complete(self.game, quest, person);
                 }
 
                 quest.completed = true;

@@ -5,13 +5,13 @@
             status: (game, quest, done) => {
                 return done ? "Je hebt genoeg rattenstaarten verzameld!" : "Verzamel 10 rattenstaarten. Je hebt er nu " + quest.progress.rattenStaarten + ".";
             },
-            start: (game, quest) => {
-
+            start: (game, quest, person) => {
+                person.conversation.setStartNode(person, "tweedequestklaar");
             },
             checkDone: (game, quest) => {
                 return quest.progress.rattenStaarten >= 10;
             },
-            complete: (game, quest) => {
+            complete: (game, quest, person) => {
             
             },
             progress: {
