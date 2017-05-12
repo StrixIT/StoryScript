@@ -1,5 +1,7 @@
 ﻿module StoryScript {
-    export interface ICompiledCollection<T extends ICompiledLocation> extends ICollection<T> {
-        get?(id?: string | (() => T) | (() => ILocation) | ILocation | T): T;
+    export interface ICompiledCollection<T, U> extends Array<U> {
+        get?(id?: string | (() => T)): U;
+        push(id?: string | (() => T) | U): number;
+        remove?(id: string | ((...params) => U) | U): void;
     }
 }

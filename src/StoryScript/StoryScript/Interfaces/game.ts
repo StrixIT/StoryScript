@@ -9,7 +9,7 @@
         definitions: IDefinitions;
         createCharacterSheet?: ICreateCharacter;
         character: ICharacter;
-        locations: ICompiledCollection<ICompiledLocation>;
+        locations: ICompiledCollection<ILocation, ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
 

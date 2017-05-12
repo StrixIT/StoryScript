@@ -1,7 +1,7 @@
 ﻿module StoryScript {
     export interface ILocationService {
         init(game: IGame): void;
-        saveWorld(locations: ICollection<ICompiledLocation>): void;
+        saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>): void;
         changeLocation(location: any, travel: boolean, game: IGame): void;
     }
 }
@@ -12,7 +12,7 @@ module StoryScript {
         private ruleService: IRuleService;
         private game: IGame;
         private definitions: any;
-        private pristineLocations: ICollection<ICompiledLocation>;
+        private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
         private functionList: { [id: string]: { function: Function, hash: number } };
 
         constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
@@ -45,14 +45,14 @@ module StoryScript {
             game.locations = self.loadWorld();
         }
 
-        private loadWorld(): ICollection<ICompiledLocation> {
+        private loadWorld(): ICompiledCollection<ILocation, ICompiledLocation> {
             var self = this;
             self.pristineLocations = self.buildWorld();
-            var locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
+            var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
 
             if (isEmpty(locations)) {
                 self.dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                locations = <ICollection<ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
+                locations = <ICompiledCollection<ILocation, ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
             }
 
             locations.forEach(function (location) {
@@ -89,7 +89,7 @@ module StoryScript {
             return locations;
         }
 
-        public saveWorld(locations: ICollection<ICompiledLocation>) {
+        public saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>) {
             var self = this;
             self.dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }

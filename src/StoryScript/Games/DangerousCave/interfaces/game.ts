@@ -2,7 +2,7 @@
     export interface IGame extends StoryScript.IGame {
         definitions: IDefinitions;
         character: Character;
-        locations: StoryScript.ICompiledCollection<ICompiledLocation>;
+        locations: StoryScript.ICompiledCollection<ILocation, ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
 
