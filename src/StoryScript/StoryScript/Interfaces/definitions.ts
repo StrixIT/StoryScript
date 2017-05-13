@@ -5,5 +5,6 @@
         enemies: [() => IEnemy];
         persons: [() => IPerson];
         items: [() => IItem];
+        quests: [() => IQuest];
     }
 }

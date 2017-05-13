@@ -389,6 +389,9 @@ module StoryScript {
             self.definitions.items = <[() => IItem]>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Items'], self.definitions.items);
 
+            self.definitions.quests = <[() => IQuest]>[];
+            self.moveObjectPropertiesToArray(nameSpaceObject['Quests'], self.definitions.quests);
+
             self.definitions.actions = <[() => IAction]>[];
             self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], self.definitions.actions);
             self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], self.definitions.actions);
@@ -454,7 +457,8 @@ module StoryScript {
 
             compiledPerson.quests = quests;
 
-            self.addProxy(compiledPerson, 'quest');
+            // As far as I can tell right now, there is no reason to add quests to a person at run-time.
+            //self.addProxy(compiledPerson, 'quest');
 
             return compiledPerson;
         }
@@ -505,21 +509,6 @@ module StoryScript {
                     }
 
                     push.call(this, item);
-                });
-            }
-            if (collectionType === 'quest') {
-                entry.quests.push = (<any>entry.quests.push).proxy(function (push: Function, selector: string | (() => IQuest)) {
-                    var quest = null;
-
-                    if (typeof selector !== 'object') {
-                        quest = self.game.getQuest(selector);
-                    }
-                    else {
-                        // Todo: should I not invoke the function here?
-                        quest = <any>selector;
-                    }
-
-                    push.call(this, quest);
                 });
             }
         }
