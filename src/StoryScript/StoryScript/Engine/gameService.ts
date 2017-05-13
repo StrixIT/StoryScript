@@ -6,7 +6,7 @@
         restart(): void;
         saveGame(): void;
         rollDice(dice: string): number;
-        fight(enemy: IEnemy, retaliate?: boolean): void;
+        fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
@@ -183,7 +183,7 @@ module StoryScript {
             return bonus;
         }
 
-        fight = (enemy: IEnemy, retaliate?: boolean) => {
+        fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
             self.ruleService.fight(enemy, retaliate);
 
@@ -194,7 +194,7 @@ module StoryScript {
                         self.game.currentLocation.items.push(item);
                     });
 
-                    enemy.items = <[IItem | (() => IItem)]>[];
+                    enemy.items = <[IItem]>[];
                 }
 
                 self.game.character.currency = self.game.character.currency || 0;
@@ -272,7 +272,7 @@ module StoryScript {
                 self.game.combatLog.splice(0, 0, message);
             }
 
-            self.game.getEnemy = (selector: string | (() => IEnemy)) => {
+            self.game.getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
                 var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector);
                 return self.instantiateEnemy(instance);
             }
@@ -286,7 +286,7 @@ module StoryScript {
                 return self.instantiatePerson(instance);
             }
 
-            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
+            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
                 var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, <(enemy: IEnemy) => boolean>selector);
                 return self.instantiateEnemy(instance);
             }
@@ -404,7 +404,7 @@ module StoryScript {
             }
         }
 
-        private instantiateEnemy = (enemy: IEnemy): IEnemy => {
+        private instantiateEnemy = (enemy: IEnemy): ICompiledEnemy => {
             var self = this;
 
             if (!enemy) {
@@ -423,7 +423,7 @@ module StoryScript {
 
             self.addProxy(enemy, 'item');
 
-            return enemy;
+            return <ICompiledEnemy>enemy;
         }
 
         private instantiatePerson = (person: IPerson): IPerson => {

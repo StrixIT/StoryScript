@@ -1,7 +1,7 @@
 ﻿module PathOfHeroes {
     export interface ICompiledLocation extends StoryScript.ICompiledLocation {
-        activeEnemies?: StoryScript.ICollection<IEnemy>;
-        enemies?: StoryScript.ICollection<IEnemy>;
+        activeEnemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
+        enemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
         items?: StoryScript.ICollection<IItem>;
     }
 }

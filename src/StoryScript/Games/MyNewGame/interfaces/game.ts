@@ -6,9 +6,9 @@
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
 
-        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
+        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => ICompiledEnemy;
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-        getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
+        getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
     }
 

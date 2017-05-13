@@ -40,7 +40,7 @@
             return character;
         }
 
-        fight = (enemy: StoryScript.IEnemy, retaliate?: boolean) => {
+        fight = (enemy: IEnemy, retaliate?: boolean) => {
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
 

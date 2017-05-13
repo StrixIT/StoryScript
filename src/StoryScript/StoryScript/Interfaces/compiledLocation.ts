@@ -3,8 +3,8 @@
         id?: string;
         name: string;
         descriptionSelector?: (game: IGame) => string;
-        enemies?: ICollection<IEnemy>;
-        activeEnemies?: ICollection<IEnemy>;
+        enemies?: ICompiledCollection<IEnemy, ICompiledEnemy>;
+        activeEnemies?: ICompiledCollection<IEnemy, ICompiledEnemy>;
         persons?: ICollection<IPerson>;
         activePersons?: ICollection<IPerson>;
         items?: ICollection<IItem>;

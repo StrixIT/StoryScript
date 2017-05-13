@@ -134,7 +134,7 @@
 
                     var sneakActions = <IAction[]>[];
 
-                    self.game.currentLocation.activeEnemies.forEach((enemy: IEnemy) => {
+                    self.game.currentLocation.activeEnemies.forEach((enemy: ICompiledEnemy) => {
                         sneakActions.push({
                             isSneakAction: true,
                             text: 'Besluip ' + enemy.name,

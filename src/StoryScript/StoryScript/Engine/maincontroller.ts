@@ -23,7 +23,7 @@
         private game: IGame;
         private customTexts: IInterfaceTexts;
         private texts: IInterfaceTexts;
-        private encounters: ICollection<IEnemy>;
+        private encounters: ICompiledCollection<IEnemy, ICompiledEnemy>;
         private modalSettings: IModalSettings;
 
         constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, dataService: IDataService, game: IGame, customTexts: IInterfaceTexts) {
@@ -184,7 +184,7 @@
             item.use(self.game, item);
         }
 
-        initCombat = (newValue: IEnemy[]) => {
+        initCombat = (newValue: ICompiledEnemy[]) => {
             var self = this;
 
             if (newValue && !newValue.some(e => !e.inactive)) {
@@ -207,7 +207,7 @@
             self.game.state = GameState.Combat;
         }
 
-        fight = (enemy: IEnemy) => {
+        fight = (enemy: ICompiledEnemy) => {
             var self = this;
             self.gameService.fight(enemy);
             self.gameService.saveGame();

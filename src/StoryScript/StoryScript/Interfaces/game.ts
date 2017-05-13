@@ -29,15 +29,15 @@
         logToActionLog(message: string): void;
         logToCombatLog(message: string): void;
 
-        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
+        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => ICompiledEnemy;
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-        getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
+        getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
         getNonPlayerCharacter: (selector: string | (() => IPerson)) => IPerson;
         getQuest: (selector: string | (() => IQuest)) => IQuest;
 
         equals<T>(entity: T, definition: () => T): boolean;
 
-        fight: (enemy: IEnemy, retaliate?: boolean) => void;
+        fight: (enemy: ICompiledEnemy, retaliate?: boolean) => void;
     }
 }
