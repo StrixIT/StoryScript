@@ -40,14 +40,14 @@
             return character;
         }
 
-        fight = (enemy: IEnemy, retaliate?: boolean) => {
+        fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
 
             // Implement character attack here.
 
             if (retaliate) {
-                self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     // Implement monster attack here
                 });
             }

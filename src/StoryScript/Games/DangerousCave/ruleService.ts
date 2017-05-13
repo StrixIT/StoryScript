@@ -100,7 +100,7 @@
             return character;
         }
 
-        public addEnemyToLocation(location: StoryScript.ICompiledLocation, enemy: StoryScript.IEnemy) {
+        public addEnemyToLocation(location: StoryScript.ICompiledLocation, enemy: ICompiledEnemy) {
             var self = this;
             self.addFleeAction(location);
         }
@@ -127,7 +127,7 @@
             self.addFleeAction(location);
         }
 
-        fight = (enemy: StoryScript.IEnemy) => {
+        fight = (enemy: ICompiledEnemy) => {
             var self = this;
             var check = self.game.rollDice(self.game.character.kracht + 'd6');
             var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
@@ -139,7 +139,7 @@
                 self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
             }
 
-            self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 var check = self.game.rollDice(enemy.attack);
                 var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
                 self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
@@ -147,7 +147,7 @@
             });
         }
 
-        enemyDefeated(enemy: IEnemy) {
+        enemyDefeated(enemy: ICompiledEnemy) {
             var self = this;
 
             if (enemy.reward) {

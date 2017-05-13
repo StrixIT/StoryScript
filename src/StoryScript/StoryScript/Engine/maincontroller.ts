@@ -191,7 +191,7 @@
                 self.$scope.modalSettings.canClose = true;
             }
 
-            if (self.ruleService.initCombat) {
+            if (newValue && self.ruleService.initCombat) {
                 self.ruleService.initCombat(self.game.currentLocation);
             }
         }
@@ -213,7 +213,7 @@
             self.gameService.saveGame();
         }
 
-        talk = (person: IPerson) => {
+        talk = (person: ICompiledPerson) => {
             var self = this;
             self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
             self.$scope.modalSettings.canClose = true;
@@ -221,18 +221,18 @@
             self.game.state = GameState.Conversation;
         }
 
-        trade = (game: IGame, trade: IPerson | ITrade) => {
+        trade = (game: IGame, trade: ICompiledPerson | ITrade) => {
             var self = this;
 
-            self.game.currentLocation.activeTrade = (<IPerson>trade).trade ? (<IPerson>trade).trade : trade;
+            self.game.currentLocation.activeTrade = (<ICompiledPerson>trade).trade ? (<ICompiledPerson>trade).trade : trade;
             var trader = self.game.currentLocation.activeTrade;
 
-            if ((<IPerson>trade).trade) {
-                trader.currency = (<IPerson>trade).currency;
-                self.game.currentLocation.activePerson = <IPerson>trade;
+            if ((<ICompiledPerson>trade).trade) {
+                trader.currency = (<ICompiledPerson>trade).currency;
+                self.game.currentLocation.activePerson = <ICompiledPerson>trade;
             }
 
-            self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<IPerson>trade).name]);
+            self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<ICompiledPerson>trade).name]);
             self.$scope.modalSettings.canClose = true;
             self.game.state = GameState.Trade;
 

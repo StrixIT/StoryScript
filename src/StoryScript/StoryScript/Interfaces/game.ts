@@ -33,7 +33,7 @@
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
         getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
-        getNonPlayerCharacter: (selector: string | (() => IPerson)) => IPerson;
+        getNonPlayerCharacter: (selector: string | (() => IPerson)) => ICompiledPerson;
         getQuest: (selector: string | (() => IQuest)) => IQuest;
 
         equals<T>(entity: T, definition: () => T): boolean;

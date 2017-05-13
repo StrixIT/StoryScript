@@ -1,13 +1,16 @@
 ﻿module StoryScript {
-    export interface IConversation {
+    export interface IConversationOptions {
         title?: string;
-        nodes?: ICollection<IConversationNode>;
-        setStartNode?: (person: IPerson, nodeName: string) => void;
-        selectActiveNode?: (game: IGame, person: IPerson) => IConversationNode;
+        setStartNode?: (person: ICompiledPerson, nodeName: string) => void;
+        selectActiveNode?: (game: IGame, person: ICompiledPerson) => IConversationNode;
         showUnavailableReplies?: boolean;
-        actions?: { [name: string]: (game: IGame, person: IPerson) => void }
-        conversationLog?: IConversationLogEntry[];
+        actions?: { [name: string]: (game: IGame, person: ICompiledPerson) => void }
+    }
+
+    export interface IConversation extends IConversationOptions {
+        nodes?: ICollection<IConversationNode>;
         activeNode?: IConversationNode;
+        conversationLog?: IConversationLogEntry[];
     }
 
     export interface IConversationNode {

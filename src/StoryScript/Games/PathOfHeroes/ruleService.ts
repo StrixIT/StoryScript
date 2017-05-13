@@ -180,12 +180,12 @@
             return character;
         }
 
-        fight = (enemy: StoryScript.IEnemy) => {
+        fight = (enemy: ICompiledEnemy) => {
             var self = this;
 
             // Implement character attack here.
 
-            self.game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            self.game.currentLocation.enemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 // Implement monster attack here
             });
         }

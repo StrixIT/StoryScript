@@ -168,7 +168,7 @@
             }
         }
 
-        fight = (enemy: StoryScript.IEnemy, retaliate?: boolean) => {
+        fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
 
@@ -183,7 +183,7 @@
             }
 
             if (retaliate) {
-                self.game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = self.game.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
                     self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
@@ -192,7 +192,7 @@
             }
         }
 
-        enemyDefeated(enemy: IEnemy) {
+        enemyDefeated(enemy: ICompiledEnemy) {
             var self = this;
 
             if (enemy.reward) {
@@ -205,16 +205,6 @@
 
             // Implement logic to occur when the score changes. Return true when the character gains a level.
             return false;
-        }
-
-        prepareReplies = (game: IGame, person: IPerson, node: StoryScript.IConversationNode): void => {
-
-        }
-
-        handleReply = (game: IGame, person: IPerson, node: StoryScript.IConversationNode, reply: StoryScript.IConversationReply): void => {
-            if (person.id == (<any>Persons.KoninginDagmar).name && reply.linkToNode == 'accept') {
-                var test = 0;
-            }
         }
     }
 

@@ -1,13 +1,12 @@
 ﻿module StoryScript {
     export interface IEnemy {
-        id?: string;
         pictureFileName?: string;
         name: string;
         description?: string;
         hitpoints: number;
         currency?: number;
         inactive?: boolean;
-        items?: ICollection<IItem | (() => IItem)>;
+        items?: ICollection<() => IItem>;
         onDefeat?: (game: IGame) => void;
     }
 }

@@ -4,11 +4,11 @@
         setupGame?(game: IGame): void;
         getCreateCharacterSheet(): ICreateCharacter
         createCharacter(characterData: ICreateCharacter): ICharacter;
-        addEnemyToLocation?(location: ICompiledLocation, enemy: IEnemy): void;
+        addEnemyToLocation?(location: ICompiledLocation, enemy: ICompiledEnemy): void;
         enterLocation?(location: ICompiledLocation, travel?: boolean): void;
         initCombat?(location: ICompiledLocation): void;
-        fight(enemy: IEnemy, retaliate?: boolean): void;
-        enemyDefeated?(enemy: IEnemy): void;
+        fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
+        enemyDefeated?(enemy: ICompiledEnemy): void;
         hitpointsChange?(change: number): void;
         scoreChange(change: number): boolean;
         determineFinalScore?(): void;

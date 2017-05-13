@@ -1,6 +1,5 @@
 ﻿module StoryScript {
     export interface ILocation {
-        id?: string;
         name: string;
         descriptionSelector?: (game: IGame) => string;
         enemies?: ICollection<() => IEnemy>;

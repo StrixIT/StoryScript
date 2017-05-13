@@ -70,7 +70,7 @@
             var self = this;
             var person = self.game.currentLocation.activePerson;
 
-            var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : person.conversation.activeNode;
+            var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : null;
 
             if (!activeNode) {
                 activeNode = person.conversation.nodes.filter((node) => { return node.active; })[0];
@@ -174,13 +174,13 @@
             });
         }
 
-        private questProgress(type: string, person: IPerson, reply: IConversationReply) {
+        private questProgress(type: string, person: ICompiledPerson, reply: IConversationReply) {
             var self = this;
             var quest: IQuest;
             var start = type === "questStart";
 
             if (start) {
-                quest = <IQuest>person.quests.get(reply[type]);
+                quest = person.quests.get(reply[type]);
                 quest.issuedBy = person.id;
                 self.game.character.quests.push(quest);
                 person.quests.remove(quest);

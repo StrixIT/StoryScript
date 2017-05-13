@@ -87,7 +87,7 @@ module StoryScript {
                     self.game.previousLocation = self.game.locations.get(previousLocationName);
                 }
 
-                self.locationService.changeLocation(lastLocation, false, self.game);
+                self.locationService.changeLocation(lastLocation.id, false, self.game);
                 self.game.state = StoryScript.GameState.Play;
             }
             else {
@@ -101,7 +101,7 @@ module StoryScript {
             self.locationService.init(self.game);
             self.setupLocations();
             self.game.worldProperties = self.dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
-            var location = self.dataService.load(StoryScript.DataKeys.LOCATION);
+            var location = self.dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
             if (location) {
                 self.locationService.changeLocation(location, false, self.game);
@@ -281,7 +281,7 @@ module StoryScript {
                 return StoryScript.find<IItem>(self.game.definitions.items, selector);
             }
 
-            self.game.getNonPlayerCharacter = (selector: string | (() => IPerson)) => {
+            self.game.getNonPlayerCharacter = (selector: string | (() => IPerson)): ICompiledPerson => {
                 var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector);
                 return self.instantiatePerson(instance);
             }
@@ -411,6 +411,9 @@ module StoryScript {
                 return null;
             }
 
+            // A trick to work with a compiled enemy here as id is lacking in enemy and a direct cast is not possible.
+            var compiledEnemy = <ICompiledEnemy><any>enemy;
+
             var items = <IItem[]>[];
 
             if (enemy.items) {
@@ -419,24 +422,24 @@ module StoryScript {
                 });
             }
 
-            (<any>enemy).items = items;
+            compiledEnemy.items = items;
 
-            self.addProxy(enemy, 'item');
+            self.addProxy(compiledEnemy, 'item');
 
-            return <ICompiledEnemy>enemy;
+            return compiledEnemy;
         }
 
-        private instantiatePerson = (person: IPerson): IPerson => {
+        private instantiatePerson = (person: IPerson): ICompiledPerson => {
             var self = this;
 
             if (!person) {
                 return null;
             }
 
-            person = self.instantiateEnemy(person);
+            var compiledPerson = <ICompiledPerson>self.instantiateEnemy(person);
 
-            if (person.conversation) {
-                person.conversation.setStartNode = (person: IPerson, nodeName: string) => {
+            if (compiledPerson.conversation) {
+                compiledPerson.conversation.setStartNode = (person: ICompiledPerson, nodeName: string) => {
                     self.setStartNode(person, nodeName)
                 };
             }
@@ -449,14 +452,14 @@ module StoryScript {
                 });
             }
 
-            person.quests = quests;
+            compiledPerson.quests = quests;
 
-            self.addProxy(person, 'quest');
+            self.addProxy(compiledPerson, 'quest');
 
-            return person;
+            return compiledPerson;
         }
 
-        private setStartNode(person: IPerson, nodeName: string): void {
+        private setStartNode(person: ICompiledPerson, nodeName: string): void {
             var node = person.conversation.nodes.filter(n => n.node === nodeName)[0];
 
             if (node == null) {

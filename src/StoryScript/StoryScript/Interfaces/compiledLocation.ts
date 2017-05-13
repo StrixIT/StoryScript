@@ -1,12 +1,12 @@
 ﻿module StoryScript {
     export interface ICompiledLocation {
-        id?: string;
+        id: string;
         name: string;
         descriptionSelector?: (game: IGame) => string;
         enemies?: ICompiledCollection<IEnemy, ICompiledEnemy>;
         activeEnemies?: ICompiledCollection<IEnemy, ICompiledEnemy>;
-        persons?: ICollection<IPerson>;
-        activePersons?: ICollection<IPerson>;
+        persons?: ICompiledCollection<IPerson, ICompiledPerson>;
+        activePersons?: ICompiledCollection<IPerson, ICompiledPerson>;
         items?: ICollection<IItem>;
         activeItems?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
@@ -17,7 +17,7 @@
         hasVisited: boolean;
         descriptions: { [key: string] : string; };
         trade?: ITrade;
-        activePerson?: IPerson;
+        activePerson?: ICompiledPerson;
         activeTrade?: ITrade;
         log: string[];
         complete?: (game: IGame, location: ICompiledLocation) => boolean;

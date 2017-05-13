@@ -2,7 +2,7 @@
     export interface ILocationService {
         init(game: IGame): void;
         saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>): void;
-        changeLocation(location: any, travel: boolean, game: IGame): void;
+        changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame): void;
     }
 }
 
@@ -94,15 +94,16 @@ module StoryScript {
             self.dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
-        public changeLocation(location: ILocation | ICompiledLocation, travel: boolean, game: IGame) {
+        public changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame) {
             var self = this;
+            var presentLocation: ICompiledLocation;
 
             // If no location is specified, go to the previous location.
             if (!location) {
                 var tempLocation = game.currentLocation;
                 game.currentLocation = game.previousLocation;
                 game.previousLocation = tempLocation;
-                location = game.currentLocation;
+                presentLocation = game.currentLocation;
             }
             // If currently at a location, make this the previous location.
             else if (game.currentLocation) {
@@ -110,11 +111,11 @@ module StoryScript {
             }
 
             // If there is no location, we are starting a new game. Quit for now.
-            if (!location) {
+            if (!location && !presentLocation) {
                 return;
             }
 
-            var key = typeof location == 'function' ? (<any>location).name : location.id ? location.id : location;
+            var key = typeof location == 'function' ? <string>(<any>location).name : location ? location : presentLocation.id;
             game.currentLocation = game.locations.get(key);
 
             // remove the return message from the current location destinations.
