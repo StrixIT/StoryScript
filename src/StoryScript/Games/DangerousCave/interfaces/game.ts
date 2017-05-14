@@ -1,6 +1,6 @@
 ﻿module DangerousCave {
     export interface IGame extends StoryScript.IGame {
-        definitions: IDefinitions;
+        definitions: StoryScript.IDefinitions;
         character: Character;
         locations: StoryScript.ICompiledCollection<ILocation, ICompiledLocation>;
         currentLocation: ICompiledLocation;

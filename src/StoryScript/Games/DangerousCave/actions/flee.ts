@@ -1,5 +1,5 @@
 ﻿module DangerousCave.Actions {
-    export function Flee(text: string): IAction {
+    export function Flee(text: string): StoryScript.IAction {
         return {
             text: text || 'Vluchten!',
             type: StoryScript.ActionType.Check,

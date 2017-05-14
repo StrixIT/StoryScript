@@ -1,6 +1,5 @@
 ﻿module RidderMagnus {
     export interface IGame extends StoryScript.IGame {
-        definitions: IDefinitions;
         character: Character;
         locations: StoryScript.ICompiledCollection<ILocation, ICompiledLocation>;
         currentLocation: ICompiledLocation;
