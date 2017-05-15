@@ -26,7 +26,7 @@
                 game.logToLocationLog('Dankbaar neemt de koningin de ring aan. "Hier is uw beloning," spreekt ze met een glimlach.');
 
                 var randomItem = game.randomItem((item: IItem) => {
-                    return !game.equals(item, Items.GoudenRing) && item.value < 30;
+                    return !StoryScript.Functions.equals(item, Items.GoudenRing) && item.value < 30;
 
                 });
 

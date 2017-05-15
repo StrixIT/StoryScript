@@ -5,7 +5,6 @@
         reset(): void;
         restart(): void;
         saveGame(): void;
-        rollDice(dice: string): number;
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
@@ -50,7 +49,6 @@ module StoryScript {
                 reset: self.reset,
                 restart: self.restart,
                 saveGame: self.saveGame,
-                rollDice: self.rollDice,
                 fight: self.fight,
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange,
@@ -133,54 +131,6 @@ module StoryScript {
             self.dataService.save(StoryScript.DataKeys.STATISTICS, self.game.statistics);
             self.dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self.game.worldProperties);
             self.locationService.saveWorld(self.game.locations);
-        }
-
-        // Todo: keep this in engine?
-        rollDice = (input: string): number => {
-            //'xdy+/-z'
-            var positiveModifier = input.indexOf('+') > -1;
-            var splitResult = input.split('d');
-            var numberOfDice = parseInt(splitResult[0]);
-            splitResult = positiveModifier ? splitResult[1].split('+') : splitResult[1].split('-');
-            var dieCount = parseInt(splitResult[0]);
-            var bonus = parseInt(splitResult[1]);
-            bonus = isNaN(bonus) ? 0 : bonus;
-            bonus = positiveModifier ? bonus : bonus * -1;
-            var result = 0;
-
-            for (var i = 0; i < numberOfDice; i++) {
-                result += Math.floor(Math.random() * dieCount + 1);
-            }
-
-            result += bonus;
-            return result;
-        }
-
-        // Todo: keep this in engine?
-        calculateBonus = (game: IGame, person: { items: ICollection<IItem>, equipment?: {} }, type: string) => {
-            var self = this;
-            var bonus = 0;
-
-            if (game.character == person) {
-                for (var n in person.equipment) {
-                    var item = person.equipment[n];
-
-                    if (item && item.bonuses && item.bonuses[type]) {
-                        bonus += item.bonuses[type];
-                    }
-                };
-            }
-            else {
-                if (person.items) {
-                    person.items.forEach(function (item) {
-                        if (item && item.bonuses && item.bonuses[type]) {
-                            bonus += item.bonuses[type];
-                        }
-                    });
-                }
-            }
-
-            return bonus;
         }
 
         fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
@@ -281,7 +231,7 @@ module StoryScript {
                 return StoryScript.find<IItem>(self.game.definitions.items, selector);
             }
 
-            self.game.getNonPlayerCharacter = (selector: string | (() => IPerson)): ICompiledPerson => {
+            self.game.getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
                 var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector);
                 return self.instantiatePerson(instance);
             }
@@ -295,7 +245,6 @@ module StoryScript {
                 return StoryScript.random<IItem>(self.game.definitions.items, <(item: IItem) => boolean>selector);
             }
 
-            self.game.rollDice = self.rollDice;
             self.game.fight = self.fight;
 
             // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
@@ -308,16 +257,9 @@ module StoryScript {
                 });
             }
 
-            self.game.equals = <T>(entity: T, definition: () => T): boolean => {
-                return (<any>entity).id === (<any>definition).name;
-            }
-
             self.locationService.init(self.game);
 
             self.setupLocations();
-
-            // Todo: keep this in engine?
-            self.game.calculateBonus = (person: ICharacter, type: string) => { return self.calculateBonus(self.game, person, type); };
         }
 
         private setupCharacter(): void {

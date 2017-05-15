@@ -80,13 +80,6 @@
         return results[0] ? results[0] : null;
     }
 
-    export function custom<T>(definition: () => T, customData: {}) : () => T {
-        return (): T => {
-            var instance = definition();
-            return angular.extend(instance, customData);
-        };
-    }
-
     export function createFunctionHash(func: Function): number {
         var hash = 0;
         var functionString = func.toString();

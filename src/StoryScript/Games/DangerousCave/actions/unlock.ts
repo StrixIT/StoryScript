@@ -13,7 +13,7 @@ module DangerousCave.Actions {
             text: settings.text || 'Slot openen',
             type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
-                var check = game.rollDice(game.character.vlugheid + 'd6');
+                var check = StoryScript.Functions.rollDice(game.character.vlugheid + 'd6');
                 var result;
                 result = check * game.character.vlugheid;
 

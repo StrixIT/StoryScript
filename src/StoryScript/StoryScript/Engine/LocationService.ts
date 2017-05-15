@@ -210,7 +210,7 @@ module StoryScript {
 
                 self.setDestinations(location);
                 self.buildEntries(location, 'enemies', self.game.getEnemy);
-                self.buildEntries(location, 'persons', self.game.getNonPlayerCharacter);
+                self.buildEntries(location, 'persons', self.game.getPerson);
                 self.buildEntries(location, 'items', self.game.getItem);
                 self.getFunctions(location, null);
                 compiledLocations.push(location);

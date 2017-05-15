@@ -7,7 +7,7 @@
                 return StoryScript.isEmpty(game.currentLocation.activeEnemies) ? StoryScript.ActionStatus.Unavailable : StoryScript.ActionStatus.Available;
             },
             execute: function (game: IGame) {
-                var check = game.rollDice(game.character.snelheid + 'd6');
+                var check = StoryScript.Functions.rollDice(game.character.snelheid + 'd6');
                 var result = check * game.character.snelheid;
                 var totalHitpoints = 0;
 

@@ -23,8 +23,6 @@
         statistics: IStatistics;
 
         changeLocation(location?: string | (() => ILocation), travel?: boolean): void;
-        rollDice(dice: string): number;
-        calculateBonus(person: { items: ICollection<IItem>, equipment?: {} }, type: string): number;
         logToLocationLog(message: string): void;
         logToActionLog(message: string): void;
         logToCombatLog(message: string): void;
@@ -33,9 +31,7 @@
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
         getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
-        getNonPlayerCharacter: (selector: string | (() => IPerson)) => ICompiledPerson;
-
-        equals<T>(entity: T, definition: () => T): boolean;
+        getPerson: (selector: string | (() => IPerson)) => ICompiledPerson;
 
         fight: (enemy: ICompiledEnemy, retaliate?: boolean) => void;
     }

@@ -129,8 +129,8 @@
 
         fight = (enemy: ICompiledEnemy) => {
             var self = this;
-            var check = self.game.rollDice(self.game.character.kracht + 'd6');
-            var characterDamage = check + self.game.character.oplettendheid + self.game.calculateBonus(self.game.character, 'attack') - self.game.calculateBonus(<any>enemy, 'defense');
+            var check = StoryScript.Functions.rollDice(6, self.game.character.kracht);
+            var characterDamage = check + self.game.character.oplettendheid + StoryScript.Functions.calculateBonus(self.game.character, 'attack') - StoryScript.Functions.calculateBonus(enemy, 'defense');
             self.game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
             enemy.hitpoints -= characterDamage;
 
@@ -140,8 +140,8 @@
             }
 
             self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                var check = self.game.rollDice(enemy.attack);
-                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.calculateBonus(self.game.character, 'defense'))) + self.game.calculateBonus(<any>enemy, 'damage'));
+                var check = StoryScript.Functions.rollDice(enemy.attack);
+                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + StoryScript.Functions.calculateBonus(self.game.character, 'defense'))) + StoryScript.Functions.calculateBonus(enemy, 'damage'));
                 self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                 self.game.character.currentHitpoints -= enemyDamage;
             });
