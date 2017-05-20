@@ -140,7 +140,9 @@
                             text: 'Besluip ' + enemy.name,
                             type: StoryScript.ActionType.Combat,
                             execute: (game: IGame, actionIndex: number) => {
-                                var theEnemy = enemy !== undefined ? enemy : game.currentLocation.activeEnemies[actionIndex];
+                                var undef = typeof enemy === 'undefined';
+
+                                var theEnemy = undef ? game.currentLocation.activeEnemies[actionIndex] : enemy;
 
                                 // Do damage to sneaked enemy.
                                 game.fight(theEnemy, false);
@@ -150,7 +152,7 @@
                                     return !action.isSneakAction;
                                 });
 
-                                addFleeAction(self.game);
+                                addFleeAction(game);
                             }
                         });
                     });
