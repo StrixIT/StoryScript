@@ -6,4 +6,10 @@
             quest.progress.rattenStaarten++;
         }
     }
+
+    export function addFleeAction(game: IGame) {
+        if (game.currentLocation && game.currentLocation.activeEnemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
+            game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
+        }
+    }
 }

@@ -38,6 +38,12 @@
                 person.conversation.actions[reply.trigger](self.game, person);
             }
 
+            if (reply.setStart) {
+                person.conversation.nodes.forEach(n => n.start = false);
+                var startNode = person.conversation.nodes.filter((node) => { return node.node == reply.setStart; })[0];
+                startNode.start = true;
+            }
+
             if (reply.linkToNode) {
                 person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);

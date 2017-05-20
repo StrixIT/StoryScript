@@ -125,6 +125,10 @@
                 args.shift();
                 args.splice(0, 0, self.game);
 
+                var actionIndex = self.getActionIndex(self.game, action);
+
+                args.splice(1, 0, actionIndex)
+
                 if (typeof action.execute !== 'function') {
                     action.execute = self[<string>action.execute];
                 }
@@ -144,6 +148,29 @@
                 // After each action, save the game.
                 self.gameService.saveGame();
             }
+        }
+
+        private getActionIndex(game: IGame, action: IAction): number {
+            var index = -1;
+            var compare = (a: IAction) => a.type === action.type && a.text === action.text && a.status === action.status;
+
+            game.currentLocation.actions.forEach((a, i) => {
+                if (compare(a)) {
+                    index = i;
+                    return;
+                }
+            });
+
+            if (index == -1) {
+                game.currentLocation.combatActions.forEach((a, i) => {
+                    if (compare(a)) {
+                        index = i;
+                        return;
+                    }
+                });
+            }
+
+            return index;
         }
 
         executeBarrierAction = (destination, barrier: IBarrier) => {

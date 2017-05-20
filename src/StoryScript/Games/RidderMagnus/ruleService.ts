@@ -139,17 +139,18 @@
                             isSneakAction: true,
                             text: 'Besluip ' + enemy.name,
                             type: StoryScript.ActionType.Combat,
-                            execute: (game: IGame) => {
+                            execute: (game: IGame, actionIndex: number) => {
+                                var theEnemy = enemy !== undefined ? enemy : game.currentLocation.activeEnemies[actionIndex];
+
                                 // Do damage to sneaked enemy.
-                                self.game.fight(enemy, false);
+                                game.fight(theEnemy, false);
 
                                 // Remove the remaining sneak actions
                                 game.currentLocation.combatActions = game.currentLocation.combatActions.filter((action: IAction) => {
                                     return !action.isSneakAction;
                                 });
 
-                                // Add the flee action.
-                                self.addFleeAction(self.game);
+                                addFleeAction(self.game);
                             }
                         });
                     });
@@ -158,13 +159,7 @@
                 }
             }
             else {
-                self.addFleeAction(self.game);
-            }
-        }
-
-        addFleeAction = (game: IGame) => {
-            if (game.currentLocation && game.currentLocation.activeEnemies.length > 0 && !game.currentLocation.combatActions.some((action) => { return action.text == 'Vluchten!'; })) {
-                game.currentLocation.combatActions.push(Actions.Flee('Vluchten!'));
+                addFleeAction(self.game);
             }
         }
 

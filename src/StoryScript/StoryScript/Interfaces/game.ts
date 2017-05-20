@@ -5,7 +5,6 @@
     }
 
     export interface IGame {
-        nameSpace: string;
         definitions: IDefinitions;
         createCharacterSheet?: ICreateCharacter;
         character: ICharacter;

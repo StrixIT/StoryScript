@@ -1,7 +1,6 @@
 ﻿module StoryScript {
     export interface IConversationOptions {
         title?: string;
-        setStartNode?: (person: ICompiledPerson, nodeName: string) => void;
         selectActiveNode?: (game: IGame, person: ICompiledPerson) => IConversationNode;
         showUnavailableReplies?: boolean;
         actions?: { [name: string]: (game: IGame, person: ICompiledPerson) => void }
@@ -35,6 +34,7 @@
         trigger?: string;
         questStart?: string;
         questComplete?: string;
+        setStart?: string;
     }
 
     export interface IConversationLogEntry {

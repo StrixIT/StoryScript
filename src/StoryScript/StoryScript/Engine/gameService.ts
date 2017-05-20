@@ -22,26 +22,22 @@ module StoryScript {
         private gameNameSpace: string;
         private definitions: IDefinitions;
 
-        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: IDefinitions) {
+        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame) {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
             self.ruleService = ruleService;
             self.game = game;
-            self.gameNameSpace = gameNameSpace;
-            self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, gameNameSpace: string, definitions: IDefinitions): IGameService {
+        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame): IGameService {
             var self = this;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
             self.ruleService = ruleService;
             self.game = game;
-            self.gameNameSpace = gameNameSpace;
-            self.definitions = definitions;
 
             return {
                 init: self.init,
@@ -58,9 +54,6 @@ module StoryScript {
 
         init = (): void => {
             var self = this;
-            self.game.nameSpace = self.gameNameSpace;
-
-            self.getDefinitions();
 
             if (self.ruleService.setupGame) {
                 self.ruleService.setupGame(self.game);
@@ -223,26 +216,26 @@ module StoryScript {
             }
 
             self.game.getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
-                var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector);
+                var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector, 'enemies', self.definitions);
                 return self.instantiateEnemy(instance);
             }
 
             self.game.getItem = (selector: string | (() => IItem)) => {
-                return StoryScript.find<IItem>(self.game.definitions.items, selector);
+                return StoryScript.find<IItem>(self.game.definitions.items, selector, 'items', self.definitions);
             }
 
             self.game.getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
-                var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector);
+                var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector, 'persons', self.definitions);
                 return self.instantiatePerson(instance);
             }
 
             self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
-                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, <(enemy: IEnemy) => boolean>selector);
+                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, 'enemies', self.definitions, <(enemy: IEnemy) => boolean>selector);
                 return self.instantiateEnemy(instance);
             }
 
             self.game.randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
-                return StoryScript.random<IItem>(self.game.definitions.items, <(item: IItem) => boolean>selector);
+                return StoryScript.random<IItem>(self.game.definitions.items, 'items', self.definitions, <(item: IItem) => boolean>selector);
             }
 
             self.game.fight = self.fight;
@@ -315,40 +308,6 @@ module StoryScript {
             self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
         }
 
-        private getDefinitions() {
-            var self = this;
-            var nameSpaceObject = window[self.gameNameSpace];
-
-            self.definitions.locations = <[() => ILocation]>[];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], self.definitions.locations);
-
-            self.definitions.enemies = <[() => IEnemy]>[];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], self.definitions.enemies);
-
-            self.definitions.persons = <[() => IPerson]>[];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Persons'], self.definitions.persons);
-
-            self.definitions.items = <[() => IItem]>[];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Items'], self.definitions.items);
-
-            self.definitions.quests = <[() => IQuest]>[];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Quests'], self.definitions.quests);
-
-            self.definitions.actions = <[() => IAction]>[];
-            self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], self.definitions.actions);
-            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], self.definitions.actions);
-
-            self.game.definitions = self.definitions;
-        }
-
-        private moveObjectPropertiesToArray<T>(object: {}, collection: [() => T]) {
-            for (var n in object) {
-                if (object.hasOwnProperty(n)) {
-                    collection.push(object[n]);
-                }
-            }
-        }
-
         private instantiateEnemy = (enemy: IEnemy): ICompiledEnemy => {
             var self = this;
 
@@ -363,7 +322,7 @@ module StoryScript {
 
             if (enemy.items) {
                 enemy.items.forEach((def: () => IItem) => {
-                    items.push(StoryScript.definitionToObject(def));
+                    items.push(StoryScript.definitionToObject(def, 'items', self.definitions));
                 });
             }
 
@@ -383,17 +342,11 @@ module StoryScript {
 
             var compiledPerson = <ICompiledPerson>self.instantiateEnemy(person);
 
-            if (compiledPerson.conversation) {
-                compiledPerson.conversation.setStartNode = (person: ICompiledPerson, nodeName: string) => {
-                    self.setStartNode(person, nodeName)
-                };
-            }
-
             var quests = <IQuest[]>[];
 
             if (person.quests) {
                 person.quests.forEach((def: () => IQuest) => {
-                    quests.push(StoryScript.definitionToObject(def));
+                    quests.push(StoryScript.definitionToObject(def, 'quests', self.definitions));
                 });
             }
 
@@ -456,5 +409,5 @@ module StoryScript {
         }
     }
 
-    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game', 'gameNameSpace', 'definitions'];
+    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game'];
 }

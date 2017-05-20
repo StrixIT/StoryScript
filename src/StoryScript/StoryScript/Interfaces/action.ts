@@ -3,7 +3,7 @@
         text?: string;
         type?: ActionType;
         status?: ActionStatus | ((game: IGame, ...params) => ActionStatus);
-        execute: ((game: IGame, ...params) => void) | string;
+        execute: ((game: IGame, actionIndex: number, ...params) => void) | string;
         arguments?: any[];
     }
 }

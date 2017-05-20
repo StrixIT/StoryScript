@@ -14,8 +14,6 @@
                         target: Locations.Kelder
                     }
                 );
-
-                person.conversation.setStartNode(person, "eerstequestklaar");
             },
             checkDone: (game, quest) => {
                 return quest.completed || game.character.items.get(Items.GoudenRing) != null;

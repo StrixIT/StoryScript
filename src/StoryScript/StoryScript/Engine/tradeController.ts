@@ -62,7 +62,7 @@
             };
 
             if ((trader.initCollection && trader.initCollection(self.game, trader) || !itemsForSale)) {
-                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.buy.maxItems, buySelector);
+                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.buy.maxItems, 'items', self.game.definitions, buySelector);
             }
 
             var sellSelector = (item: IItem) => {
@@ -70,7 +70,7 @@
             };
 
             trader.buy.items = itemsForSale;
-            trader.sell.items = StoryScript.randomList<IItem>(self.game.character.items, trader.sell.maxItems, sellSelector);
+            trader.sell.items = StoryScript.randomList<IItem>(self.game.character.items, trader.sell.maxItems, 'items', self.game.definitions, sellSelector);
         }
 
         private pay(item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean): void {

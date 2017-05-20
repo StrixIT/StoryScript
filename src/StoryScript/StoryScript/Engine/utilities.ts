@@ -4,19 +4,79 @@
         return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
     }
 
-    export function definitionToObject<T>(definition: () => T): T {
+    export function definitionToObject<T>(definition: () => T, type: string, definitions: IDefinitions): T {
         var instance = definition();
         // Need to cast to any for ES5 and lower
         (<any>instance).id = (<any>definition).name;
+        (<any>instance).type = type;
+        addFunctionIds(instance, type, getDefinitionKeys(definitions));
+
         return instance;
     }
 
-    export function random<T>(collection: T[] | ([() => T]), selector?: (item: T) => boolean): T {
+    export function getDefinitionKeys(definitions: IDefinitions) {
+        var definitionKeys: string[] = [];
+
+        for (var i in definitions) {
+            definitionKeys.push(i);
+        }
+
+        return definitionKeys;
+    }
+
+    function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
+        if (!path) {
+            path = entity.id || entity.name;
+        }
+
+        for (var key in entity) {
+            if (!entity.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (definitionKeys.indexOf(key) != -1 || key === 'target') {
+                continue;
+            }
+
+            var value = entity[key];
+
+            if (value == undefined) {
+                return;
+            }
+            else if (typeof value === "object") {
+                addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
+            }
+            else if (typeof value == 'function' && !value.isProxy) {
+                var functionId = path + '_' + key;
+                value.functionId = 'function#' + type + '_' + functionId + '#' + createFunctionHash(value);
+            }
+        }
+    }
+
+    function getPath(value, key: string, path: string, definitionKeys: string[]): string {
+        if (definitionKeys.indexOf(key) != -1) {
+            path = key;
+        }
+        else if (definitionKeys.indexOf(path) != -1 && !isNaN(parseInt(key))) {
+
+        }
+        else {
+            path = path === undefined ? key : path + '_' + key;
+        }
+
+        if (value.id) {
+            path = path + '_' + value.id;
+        }
+
+        return path;
+    }
+
+    export function random<T>(collection: T[] | ([() => T]), type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
         if (!collection) {
             return null;
         }
 
-        var selection = getFilteredInstantiatedCollection<T>(collection, selector);
+        var selection = getFilteredInstantiatedCollection<T>(collection, type, definitions, selector);
 
         if (selection.length == 0) {
             return null;
@@ -26,8 +86,8 @@
         return selection[index];
     }
 
-    export function randomList<T>(collection: T[] | ([() => T]), count: number, selector?: (item: T) => boolean): ICollection<T> {
-        var selection = getFilteredInstantiatedCollection<T>(collection, selector);
+    export function randomList<T>(collection: T[] | ([() => T]), count: number, type: string, definitions: IDefinitions, selector?: (item: T) => boolean): ICollection<T> {
+        var selection = getFilteredInstantiatedCollection<T>(collection, type, definitions, selector);
         var results = <ICollection<T>>[];
 
         if (count === undefined) {
@@ -47,7 +107,7 @@
         return results;
     }
 
-    export function find<T>(collection: T[] | ([() => T]), selector: string | (() => T) | ((item: T) => boolean)): T {
+    export function find<T>(collection: T[] | ([() => T]), selector: string | (() => T) | ((item: T) => boolean), type: string, definitions: IDefinitions): T {
         if (!collection && !selector) {
             return null;
         }
@@ -67,11 +127,11 @@
                     return (<any>definition).name === <string>selector;
                 });
 
-                return match[0] ? definitionToObject(match[0]) : null;
+                return match[0] ? definitionToObject(match[0], type, definitions) : null;
             }
         }
 
-        var results = getFilteredInstantiatedCollection<T>(collection, <(item: T) => boolean>selector);
+        var results = getFilteredInstantiatedCollection<T>(collection, type, definitions, <(item: T) => boolean>selector);
 
         if (results.length > 1) {
             throw new Error('Collection contains more than one match!');
@@ -97,12 +157,12 @@
         return hash;
     }
 
-    function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), selector?: (item: T) => boolean) {
+    function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
         var collectionToFilter = <T[]>[]
 
         if (typeof collection[0] === 'function') {
             (<[() => T]>collection).forEach((def: () => T) => {
-                collectionToFilter.push(definitionToObject(def));
+                collectionToFilter.push(definitionToObject(def, type, definitions));
             });
         }
         else {

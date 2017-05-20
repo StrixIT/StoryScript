@@ -11,11 +11,10 @@ module StoryScript {
         private dataService: IDataService;
         private ruleService: IRuleService;
         private game: IGame;
-        private definitions: any;
+        private definitions: IDefinitions;
         private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
-        private functionList: { [id: string]: { function: Function, hash: number } };
 
-        constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any) {
+        constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: IDefinitions) {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
@@ -23,7 +22,7 @@ module StoryScript {
             self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: any): ILocationService {
+        public $get(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: IDefinitions): ILocationService {
             var self = this;
             self.dataService = dataService;
             self.ruleService = ruleService;
@@ -197,12 +196,10 @@ module StoryScript {
             var self = this;
             var locations = self.definitions.locations;
             var compiledLocations = [];
-            self.functionList = {};
 
             for (var n in locations) {
                 var definition = locations[n];
-                var location = definitionToObject<ICompiledLocation>(definition);
-                location.id = definition.name;
+                var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self.definitions);
 
                 if (!location.destinations) {
                     console.log('No destinations specified for location ' + location.id);
@@ -212,23 +209,9 @@ module StoryScript {
                 self.buildEntries(location, 'enemies', self.game.getEnemy);
                 self.buildEntries(location, 'persons', self.game.getPerson);
                 self.buildEntries(location, 'items', self.game.getItem);
-                self.getFunctions(location, null);
                 compiledLocations.push(location);
             }
 
-            // TODO
-            // Register all functions for enemies/persons/items that are added to the game later and are not
-            // referenced when loading the world.
-            //for (var n in self.definitions.enemies) {
-            //}
-
-            //for (var n in self.definitions.persons) {
-            //}
-
-            //for (var n in self.definitions.items) {
-            //}
-
-            self.dataService.functionList = self.functionList;
             return compiledLocations;
         }
 
@@ -261,43 +244,6 @@ module StoryScript {
                         }
                     }
                 });
-            }
-        }
-
-        private getFunctions(location: any, parentId: any) {
-            var self = this;
-
-            if (!parentId) {
-                parentId = location.id || location.name;
-            }
-
-            for (var key in location) {
-                if (!location.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                var value = location[key];
-
-                if (value == undefined) {
-                    return;
-                }
-                else if (typeof value === "object") {
-                    self.getFunctions(location[key], parentId + '_' + key);
-                }
-                else if (typeof value == 'function' && !value.isProxy) {
-                    var functionId = parentId + '_' + key;
-
-                    if (self.functionList[functionId]) {
-                        throw new Error('Trying to register a duplicate function key: ' + functionId);
-                    }
-
-                    self.functionList[functionId] = {
-                        function: value,
-                        hash: createFunctionHash(value)
-                    }
-
-                    value.functionId = functionId;
-                }
             }
         }
 
@@ -391,9 +337,14 @@ module StoryScript {
                                         var trigger = self.GetNodeValue(replyNode, 'trigger');
                                         var questStart = self.GetNodeValue(replyNode, 'quest-start');
                                         var questComplete = self.GetNodeValue(replyNode, 'quest-complete');
+                                        var setStart = self.GetNodeValue(replyNode, 'set-start');
 
                                         if (trigger && !person.conversation.actions[trigger]) {
                                             console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
+                                        }
+
+                                        if (setStart && !person.conversation.nodes.some(n => n.node === setStart)) {
+                                            console.log('No new start node ' + setStart + ' found for node ' + newNode.node + '.');
                                         }
 
                                         var reply = <IConversationReply>{
@@ -402,6 +353,7 @@ module StoryScript {
                                             trigger: trigger,
                                             questStart: questStart,
                                             questComplete: questComplete,
+                                            setStart: setStart,
                                             lines: (<any>replyNode).innerHTML.trim(),
                                         };
 
