@@ -248,6 +248,9 @@ module StoryScript {
                         if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                             destination.barrier.selectedAction = destination.barrier.actions[0];
                         }
+                        if (destination.barrier.key) {
+                            (<any>destination.barrier).key = definitionToObject(destination.barrier.key, 'items', self.definitions);
+                        }
                     }
                 });
             }

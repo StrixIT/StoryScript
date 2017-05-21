@@ -9,10 +9,8 @@
 
 module DangerousCave.Actions {
     export function Search(settings: SearchSettings): StoryScript.IAction {
-        var text = settings.text || 'Zoek';
-
         return {
-            text: text,
+            text: settings && settings.text || 'Zoek',
             type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
                 var result;

@@ -10,7 +10,7 @@
 module DangerousCave.Actions {
     export function Unlock(settings: UnlockSettings): StoryScript.IAction {
         return {
-            text: settings.text || 'Slot openen',
+            text: settings && settings.text || 'Slot openen',
             type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
                 var check = StoryScript.Functions.rollDice(game.character.vlugheid + 'd6');

@@ -335,7 +335,7 @@ module StoryScript {
                     continue;
                 }
 
-                if (definitionKeys.indexOf(key) != -1 || key === 'target') {
+                if (definitionKeys.indexOf(key) != -1 || key === 'target' || (parentId.indexOf('_barrier') != -1 && key === 'key')) {
                     continue;
                 }
 
