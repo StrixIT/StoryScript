@@ -126,16 +126,14 @@
         public initCombat(location: ICompiledLocation) {
             var self = this;
 
-            if (self.game.currentLocation && self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited) {
+            if (self.game.currentLocation && self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited && !self.game.currentLocation.combatActions.some(a => (<IAction>a).isSneakAction)) {
                 // check stats
                 var roll = StoryScript.Functions.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
 
                 if (roll >= self.game.currentLocation.sluipCheck) {
 
-                    var sneakActions = <IAction[]>[];
-
-                    self.game.currentLocation.activeEnemies.forEach((enemy: ICompiledEnemy) => {
-                        sneakActions.push({
+                    self.game.currentLocation.activeEnemies.forEach((enemy: ICompiledEnemy, index: number) => {
+                        var sneakAction = {
                             isSneakAction: true,
                             text: 'Besluip ' + enemy.name,
                             type: StoryScript.ActionType.Combat,
@@ -154,10 +152,10 @@
 
                                 addFleeAction(game);
                             }
-                        });
-                    });
+                        };
 
-                    self.game.currentLocation.combatActions = sneakActions.concat(self.game.currentLocation.combatActions);
+                        self.game.currentLocation.combatActions.splice(index, 0, sneakAction);
+                    });
                 }
             }
             else {

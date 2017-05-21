@@ -61,6 +61,12 @@ module StoryScript {
                 // with the target id when adding destinations and enemies at runtime.
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
 
+                location.actions = location.actions || [];
+                location.actions.push = (<any>location.actions.push).proxy(self.addAction, self.game);
+
+                location.combatActions = location.combatActions || [];
+                location.combatActions.push = (<any>location.combatActions.push).proxy(self.addAction, self.game);
+
                 location.persons = location.persons || [];
                 location.enemies = location.enemies || [];
                 location.items = location.items || [];
@@ -256,6 +262,17 @@ module StoryScript {
             var param = args[0];
             param.target = param.target.name;
             addKeyAction(args[1], param);
+            args.splice(1, 1);
+            originalFunction.apply(this, args);
+        }
+
+        private addAction() {
+            var self = this;
+            var args = [].slice.apply(arguments);
+            var originalFunction = args.shift();
+
+            // Add the action function ids.
+            addFunctionIds(args[0], 'actions', getDefinitionKeys(self.definitions));
             args.splice(1, 1);
             originalFunction.apply(this, args);
         }

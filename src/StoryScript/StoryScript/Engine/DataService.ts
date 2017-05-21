@@ -66,9 +66,9 @@ module StoryScript {
             definitions.quests = <[() => IQuest]>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Quests'], definitions.quests);
 
-            //definitions.actions = <[() => IAction]>[];
-            //self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], definitions.actions);
-            //self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], definitions.actions);
+            definitions.actions = <[() => IAction]>[];
+            self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], definitions.actions);
+            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], definitions.actions);
 
             return definitions;
         }
@@ -216,7 +216,36 @@ module StoryScript {
                 else if (typeof value == 'function') {
                     if (!value.isProxy) {
                         if (value.functionId) {
-                            clone[key] = value.functionId;
+                            var parts = value.functionId.split('#');
+                            var functionPart = parts[1];
+                            var functionParts = functionPart.split('_');
+                            var type = functionParts[0];
+                            functionParts.splice(0, 1);
+                            var functionId = functionParts.join('_');
+                            var hash = parseInt(parts[2]);
+
+                            if (type === 'actions' && !self.functionList[type][functionId]) {
+                                var match: string = null;
+
+                                for (var n in self.functionList[type]) {
+                                    var entry = self.functionList[type][n];
+
+                                    if (entry.hash === hash) {
+                                        match = n;
+                                        break;
+                                    }
+                                }
+
+                                if (match) {
+                                    clone[key] = 'function#' + type + '_' + match + '#' + hash;
+                                }
+                                else {
+                                    clone[key] = value.toString();
+                                }
+                            }
+                            else {
+                                clone[key] = value.functionId;
+                            }
                         }
                         else {
                             clone[key] = value.toString();
@@ -276,17 +305,12 @@ module StoryScript {
 
         private registerFunctions() {
             var self = this;
-            var definitionKeys: string[] = [];
-
-            for (var i in self.definitions) {
-                definitionKeys.push(i);
-            }
-
+            var definitionKeys = getDefinitionKeys(self.definitions);
             self.functionList = {};
             var index = 0;
 
             for (var i in self.definitions) {
-                var type = definitionKeys[index];
+                var type = definitionKeys[index] || 'actions';
                 var definitions = self.definitions[i];
                 self.functionList[type] = {};
 

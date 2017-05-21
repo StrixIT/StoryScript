@@ -8,7 +8,6 @@
         var instance = definition();
         // Need to cast to any for ES5 and lower
         (<any>instance).id = (<any>definition).name;
-        (<any>instance).type = type;
         addFunctionIds(instance, type, getDefinitionKeys(definitions));
 
         return instance;
@@ -18,13 +17,15 @@
         var definitionKeys: string[] = [];
 
         for (var i in definitions) {
-            definitionKeys.push(i);
+            if (i !== 'actions') {
+                definitionKeys.push(i);
+            }
         }
 
         return definitionKeys;
     }
 
-    function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
+    export function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
         if (!path) {
             path = entity.id || entity.name;
         }
@@ -47,7 +48,7 @@
                 addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
             }
             else if (typeof value == 'function' && !value.isProxy) {
-                var functionId = path + '_' + key;
+                var functionId = path ? path + '_' + key : key;
                 value.functionId = 'function#' + type + '_' + functionId + '#' + createFunctionHash(value);
             }
         }

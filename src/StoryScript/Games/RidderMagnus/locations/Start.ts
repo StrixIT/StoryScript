@@ -2,7 +2,9 @@
     export function Start(): ILocation {
         return {
             name: 'De Troonzaal',
-            items: [Items.LichtSpreuk ],
+            items: [
+                Items.LichtSpreuk
+            ],
             persons: [
                 //persons.Trader
                 //persons.Trainer
