@@ -105,6 +105,9 @@
         if (typeof id === 'function') {
             id = id.name;
         }
+        else if (typeof id === 'object') {
+            id = id.id;
+        }
 
         return Array.prototype.filter.call(array, matchById(id));
     }
