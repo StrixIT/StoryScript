@@ -470,18 +470,22 @@ module StoryScript {
 
     function addKeyAction(game: IGame, destination: IDestination) {
         if (destination.barrier && destination.barrier.key) {
+            var existingAction = null;
+            var keyActionHash = createFunctionHash((<any>destination.barrier.key).open.action);
+
+            destination.barrier.actions.forEach(x => {
+                if (createFunctionHash(x.action) === keyActionHash) {
+                    existingAction = x;
+                };
+            });
+
+            if (existingAction) {
+                destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
+            }
+
             var barrierKey = <IKey>game.character.items.get(destination.barrier.key);
-
+            
             if (barrierKey) {
-
-                // Todo: improve using find on barrier actions.
-                var existing = null;
-                destination.barrier.actions.forEach(x => { if (x.text == barrierKey.open.text) { existing = x; }; });
-
-                if (existing) {
-                    destination.barrier.actions.splice(destination.barrier.actions.indexOf(existing), 1);
-                }
-
                 destination.barrier.actions.push(barrierKey.open);
             }
         }
