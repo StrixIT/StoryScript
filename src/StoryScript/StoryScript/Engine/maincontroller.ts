@@ -284,10 +284,10 @@
             self.$scope.texts = self.texts;
 
             // Watch functions.
+            self.$scope.$watch('game.currentLocation', self.watchLocation);
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
-            self.$scope.$watch('game.currentLocation', self.watchLocation);
             self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
 
             self.reset = () => { self.gameService.reset.call(self.gameService); };

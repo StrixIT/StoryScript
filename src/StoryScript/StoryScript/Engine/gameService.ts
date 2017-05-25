@@ -14,6 +14,7 @@
 
 module StoryScript {
     export class GameService implements ng.IServiceProvider, IGameService {
+        private $timeout: ng.ITimeoutService;
         private dataService: IDataService;
         private locationService: ILocationService;
         private characterService: ICharacterService;
@@ -22,8 +23,9 @@ module StoryScript {
         private gameNameSpace: string;
         private definitions: IDefinitions;
 
-        constructor(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame) {
+        constructor($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame) {
             var self = this;
+            self.$timeout = $timeout;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
@@ -31,8 +33,9 @@ module StoryScript {
             self.game = game;
         }
 
-        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame): IGameService {
+        public $get($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame): IGameService {
             var self = this;
+            self.$timeout = $timeout;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
@@ -171,7 +174,12 @@ module StoryScript {
                 var levelUp = self.ruleService.scoreChange(change);
 
                 if (levelUp) {
-                    self.game.state = StoryScript.GameState.LevelUp;
+                    // Need a timeout here to prevent the change location game state change to 'play' to fire right after this one
+                    // when the score increases when moving from one location to the other and immediately changing the state back
+                    // to play.
+                    self.$timeout(() => {
+                        self.game.state = StoryScript.GameState.LevelUp;
+                    }, 0);
                 }
             }
         }
@@ -409,5 +417,5 @@ module StoryScript {
         }
     }
 
-    GameService.$inject = ['dataService', 'locationService', 'characterService', 'ruleService', 'game'];
+    GameService.$inject = ['$timeout', 'dataService', 'locationService', 'characterService', 'ruleService', 'game'];
 }

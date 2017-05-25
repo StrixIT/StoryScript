@@ -483,7 +483,7 @@ module StoryScript {
                 destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
             }
 
-            var barrierKey = <IKey>game.character.items.get(destination.barrier.key);
+            var barrierKey = <IKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
             
             if (barrierKey) {
                 destination.barrier.actions.push(barrierKey.open);
