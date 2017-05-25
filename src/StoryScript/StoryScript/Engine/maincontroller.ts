@@ -243,6 +243,12 @@
         talk = (person: ICompiledPerson) => {
             var self = this;
             self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
+
+            self.$scope.modalSettings.closeAction = (game: IGame) => {
+                var person = game.currentLocation.activePerson
+                clearConversationNodeActiveStatus(person);
+            };
+
             self.$scope.modalSettings.canClose = true;
             self.game.currentLocation.activePerson = person;
             self.game.state = GameState.Conversation;
@@ -269,6 +275,11 @@
 
         closeModal = () => {
             var self = this;
+
+            if (self.$scope.modalSettings.closeAction) {
+                self.$scope.modalSettings.closeAction(self.$scope.game);
+            }
+
             self.gameService.saveGame();
             self.game.state = GameState.Play;
         }
@@ -333,10 +344,6 @@
                     if (scope.game.currentLocation.activePerson && scope.game.currentLocation.activePerson.trade === scope.game.currentLocation.activeTrade) {
                         scope.game.currentLocation.activePerson.currency = scope.game.currentLocation.activeTrade.currency;
                     }
-                }
-
-                if ((oldValue == GameState.Combat || oldValue == GameState.Trade || oldValue == GameState.Conversation) && scope.modalSettings.closeAction) {
-                    scope.modalSettings.closeAction(scope.game);
                 }
             }
 

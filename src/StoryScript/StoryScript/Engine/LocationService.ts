@@ -363,10 +363,6 @@ module StoryScript {
                                             console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
                                         }
 
-                                        if (setStart && !person.conversation.nodes.some(n => n.node === setStart)) {
-                                            console.log('No new start node ' + setStart + ' found for node ' + newNode.node + '.');
-                                        }
-
                                         var reply = <IConversationReply>{
                                             requires: requires,
                                             linkToNode: linkToNode,
@@ -405,6 +401,14 @@ module StoryScript {
                         newNode.lines = node.innerHTML.trim();
                         person.conversation.nodes.push(newNode);
                     }
+
+                    person.conversation.nodes.forEach(n => {
+                        n.replies.options.forEach(r => {
+                            if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
+                                console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
+                            }
+                        });
+                    });
                 });
             });
         }
@@ -484,7 +488,7 @@ module StoryScript {
             }
 
             var barrierKey = <IKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
-            
+
             if (barrierKey) {
                 destination.barrier.actions.push(barrierKey.open);
             }

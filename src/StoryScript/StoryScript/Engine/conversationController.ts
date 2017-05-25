@@ -49,11 +49,7 @@
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
             else {
-                person.conversation.nodes.forEach((node) => {
-                    node.active = false;
-                });
-
-                person.conversation.activeNode = null;
+                clearConversationNodeActiveStatus(person);
             }
 
             var questProgress = reply.questStart || reply.questComplete;

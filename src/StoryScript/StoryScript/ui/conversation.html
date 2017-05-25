@@ -13,7 +13,7 @@
     <hr />
     <h4>Conversation history</h4>
     <ul>
-        <li ng-repeat="entry in conversation.conversationLog">
+        <li ng-repeat="entry in conversation.conversationLog track by $index">
             <div ng-bind-html="entry.lines"></div>
             <div ng-bind-html="entry.reply"></div>
         </li>

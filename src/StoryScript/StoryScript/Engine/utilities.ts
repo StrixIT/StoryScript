@@ -1,4 +1,12 @@
 ﻿module StoryScript {
+    export function clearConversationNodeActiveStatus(person: ICompiledPerson): void {
+        person.conversation.nodes.forEach((node) => {
+            node.active = false;
+        });
+
+        person.conversation.activeNode = null;
+    }
+
     export function isEmpty(object: any, property?: string) {
         var objectToCheck = property ? object[property] : object;
         return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
