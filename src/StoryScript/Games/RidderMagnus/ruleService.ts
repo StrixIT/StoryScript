@@ -146,8 +146,16 @@
                                 game.fight(theEnemy, false);
 
                                 // Remove the remaining sneak actions
-                                game.currentLocation.combatActions = game.currentLocation.combatActions.filter((action: IAction) => {
-                                    return !action.isSneakAction;
+                                var indexes = <number[]>[];
+
+                                game.currentLocation.combatActions.forEach((action: IAction, index: number) => {
+                                    if (action.isSneakAction) {
+                                        indexes.push(index - indexes.length);
+                                    }
+                                });
+
+                                indexes.forEach(i => {
+                                    self.game.currentLocation.combatActions.splice(i, 1);
                                 });
 
                                 addFleeAction(game);
