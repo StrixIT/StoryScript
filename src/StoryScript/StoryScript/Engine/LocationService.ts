@@ -190,10 +190,8 @@ module StoryScript {
                 game.currentLocation.actions.push({
                     text: game.currentLocation.trade.title,
                     type: ActionType.Trade,
-                    execute: 'trade',
-                    arguments: [
-                        game.currentLocation.trade
-                    ]
+                    execute: 'trade'
+                    // Arguments are ignored for now, are dealt with in the trade function on the main controller.
                 });
             }
         }
@@ -237,21 +235,9 @@ module StoryScript {
         private setDestinations(location: ICompiledLocation) {
             var self = this;
 
-            // Replace the function pointers for the destination targets with the function keys.
-            // That's all that is needed to navigate, and makes it easy to save these targets.
-            // Also set the barrier selected actions to the first one available for each barrier.
             if (location.destinations) {
                 location.destinations.forEach(destination => {
-                    destination.target = (<any>destination.target).name;
-
-                    if (destination.barrier) {
-                        if (destination.barrier.actions && destination.barrier.actions.length > 0) {
-                            destination.barrier.selectedAction = destination.barrier.actions[0];
-                        }
-                        if (destination.barrier.key) {
-                            (<any>destination.barrier).key = definitionToObject(destination.barrier.key, 'items', self.definitions);
-                        }
-                    }
+                    setDestination(destination);
                 });
             }
         }
@@ -262,9 +248,9 @@ module StoryScript {
             var originalFunction = args.shift();
 
             // Replace the target function pointer with the target id.
-            var param = args[0];
-            param.target = param.target.name;
-            addKeyAction(args[1], param);
+            var destination = <IDestination>args[0];
+            setDestination(destination);
+            addKeyAction(args[1], destination);
             args.splice(1, 1);
             originalFunction.apply(this, args);
         }
@@ -404,6 +390,10 @@ module StoryScript {
 
                     person.conversation.nodes.forEach(n => {
                         n.replies.options.forEach(r => {
+                            if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
+                                console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
+                            }
+
                             if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
                                 console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
                             }
@@ -491,6 +481,24 @@ module StoryScript {
 
             if (barrierKey) {
                 destination.barrier.actions.push(barrierKey.open);
+            }
+        }
+    }
+
+    function setDestination(destination: IDestination) {
+        var self = this;
+
+        // Replace the function pointers for the destination targets with the function keys.
+        // That's all that is needed to navigate, and makes it easy to save these targets.
+        // Also set the barrier selected actions to the first one available for each barrier.
+        destination.target = (<any>destination.target).name;
+
+        if (destination.barrier) {
+            if (destination.barrier.actions && destination.barrier.actions.length > 0) {
+                destination.barrier.selectedAction = destination.barrier.actions[0];
+            }
+            if (destination.barrier.key) {
+                (<any>destination.barrier).key = definitionToObject(destination.barrier.key, 'items', self.definitions);
             }
         }
     }

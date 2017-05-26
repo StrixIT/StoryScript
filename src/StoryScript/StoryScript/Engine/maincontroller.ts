@@ -129,16 +129,13 @@
 
                 args.splice(1, 0, actionIndex)
 
-                if (typeof action.execute !== 'function') {
-                    action.execute = self[<string>action.execute];
-                }
-
                 if (action.arguments && action.arguments.length) {
                     args = args.concat(action.arguments);
                 }
 
                 // Execute the action and when nothing or false is returned, remove it from the current location.
-                var result = (<(game: IGame, ...params) => void>action.execute).apply(this, args);
+                var executeFunc = typeof action.execute !== 'function' ? self[<string>action.execute] : action.execute;
+                var result = executeFunc.apply(this, args);
 
                 // Todo: combat actions will never be removed this way.
                 if (!result && self.game.currentLocation.actions) {
@@ -248,13 +245,14 @@
             self.game.state = GameState.Conversation;
         }
 
-        trade = (game: IGame, trade: ICompiledPerson | ITrade) => {
+        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade) => {
             var self = this;
+            var isPerson = !!trade;
 
-            self.game.currentLocation.activeTrade = (<ICompiledPerson>trade).trade ? (<ICompiledPerson>trade).trade : trade;
+            self.game.currentLocation.activeTrade = isPerson ? (<ICompiledPerson>trade).trade : self.game.currentLocation.trade;
             var trader = self.game.currentLocation.activeTrade;
 
-            if ((<ICompiledPerson>trade).trade) {
+            if (isPerson) {
                 trader.currency = (<ICompiledPerson>trade).currency;
                 self.game.currentLocation.activePerson = <ICompiledPerson>trade;
             }
