@@ -49,7 +49,11 @@
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
             else {
-                clearConversationNodeActiveStatus(person);
+                person.conversation.nodes.forEach((node) => {
+                    node.active = false;
+                });
+
+                person.conversation.activeNode = null;
             }
 
             var questProgress = reply.questStart || reply.questComplete;
@@ -72,7 +76,11 @@
             var self = this;
             var person = self.game.currentLocation.activePerson;
 
-            var activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : null;
+            var activeNode = person.conversation.activeNode;
+
+            if (!activeNode) {
+                activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : null;
+            }
 
             if (!activeNode) {
                 activeNode = person.conversation.nodes.filter((node) => { return node.active; })[0];
