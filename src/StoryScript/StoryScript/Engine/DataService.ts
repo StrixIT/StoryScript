@@ -216,28 +216,22 @@ module StoryScript {
                 else if (typeof value == 'function') {
                     if (!value.isProxy) {
                         if (value.functionId) {
-                            var parts = value.functionId.split('#');
-                            var functionPart = parts[1];
-                            var functionParts = functionPart.split('_');
-                            var type = functionParts[0];
-                            functionParts.splice(0, 1);
-                            var functionId = functionParts.join('_');
-                            var hash = parseInt(parts[2]);
+                            var parts = self.GetFunctionIdParts(value);
 
-                            if (type === 'actions' && !self.functionList[type][functionId]) {
+                            if (parts.type === 'actions' && !self.functionList[parts.type][parts.functionId]) {
                                 var match: string = null;
 
-                                for (var n in self.functionList[type]) {
-                                    var entry = self.functionList[type][n];
+                                for (var n in self.functionList[parts.type]) {
+                                    var entry = self.functionList[parts.type][n];
 
-                                    if (entry.hash === hash) {
+                                    if (entry.hash === parts.hash) {
                                         match = n;
                                         break;
                                     }
                                 }
 
                                 if (match) {
-                                    clone[key] = 'function#' + type + '_' + match + '#' + hash;
+                                    clone[key] = 'function#' + parts.type + '_' + match + '#' + parts.hash;
                                 }
                                 else {
                                     clone[key] = value.toString();
@@ -278,28 +272,39 @@ module StoryScript {
                 }
                 else if (typeof value === 'string') {
                     if (value.indexOf('function#') > -1) {
-                        var parts = value.split('#');
-                        var functionPart = parts[1];
-                        var functionParts = functionPart.split('_');
-                        var type = functionParts[0];
-                        functionParts.splice(0, 1);
-                        var functionId = functionParts.join('_');
-                        var hash = parseInt(parts[2]);
+                        var parts = self.GetFunctionIdParts(value);
+                        var typeList = self.functionList[parts.type];
 
-                        if (!self.functionList[type][functionId]) {
-                            console.log('Function with key: ' + functionId + ' could not be found!');
+                        if (!typeList[parts.functionId]) {
+                            console.log('Function with key: ' + parts.functionId + ' could not be found!');
                         }
-                        else if (self.functionList[type][functionId].hash != hash) {
-                            console.log('Function with key: ' + functionId + ' was found but the hash does not match the stored hash!');
+                        else if (typeList[parts.functionId].hash != parts.hash) {
+                            console.log('Function with key: ' + parts.functionId + ' was found but the hash does not match the stored hash!');
                         }
 
-                        loaded[key] = self.functionList[type][functionId].function;
+                        loaded[key] = typeList[parts.functionId].function;
                     }
                     else if (typeof value === 'string' && value.indexOf('function ') > -1) {
                         // Todo: create a new function instead of using eval.
                         loaded[key] = eval('(' + value + ')');
                     }
                 }
+            }
+        }
+
+        private GetFunctionIdParts(value: string): IFunctionIdParts {
+            var parts = value.split('#');
+            var functionPart = parts[1];
+            var functionParts = functionPart.split('_');
+            var type = functionParts[0];
+            functionParts.splice(0, 1);
+            var functionId = functionParts.join('_');
+            var hash = parseInt(parts[2]);
+
+            return {
+                type: type,
+                functionId: functionId,
+                hash: hash
             }
         }
 
@@ -323,15 +328,15 @@ module StoryScript {
             }
         }
 
-        private getFunctions(type: string, definitionKeys: string[], location: any, parentId: any) {
+        private getFunctions(type: string, definitionKeys: string[], entity: any, parentId: any) {
             var self = this;
 
             if (!parentId) {
-                parentId = location.id || location.name;
+                parentId = entity.id || entity.name;
             }
 
-            for (var key in location) {
-                if (!location.hasOwnProperty(key)) {
+            for (var key in entity) {
+                if (!entity.hasOwnProperty(key)) {
                     continue;
                 }
 
@@ -339,13 +344,13 @@ module StoryScript {
                     continue;
                 }
 
-                var value = location[key];
+                var value = entity[key];
 
                 if (value == undefined) {
                     return;
                 }
                 else if (typeof value === "object") {
-                    self.getFunctions(type, definitionKeys, location[key], parentId + '_' + key);
+                    self.getFunctions(type, definitionKeys, entity[key], parentId + '_' + key);
                 }
                 else if (typeof value == 'function' && !value.isProxy) {
                     var functionId = parentId + '_' + key;

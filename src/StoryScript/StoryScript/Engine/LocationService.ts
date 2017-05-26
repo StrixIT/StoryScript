@@ -327,7 +327,7 @@ module StoryScript {
 
                             if (replies.nodeName.toLowerCase() == 'replies') {
                                 var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
-                                var addDefaultReply = addDefaultValue ? getTypedValue(addDefaultValue) : true;
+                                var addDefaultReply = addDefaultValue && addDefaultValue.toLowerCase() === 'false' ? false : true;
 
                                 newNode.replies = <IConversationReplies>{
                                     defaultReply: <boolean>addDefaultReply,

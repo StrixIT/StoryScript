@@ -1,6 +1,6 @@
 ﻿module StoryScript {
-    // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
     if ((<any>Function.prototype).proxy === undefined) {
+        // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
         (<any>Function.prototype).proxy = function (proxyFunction: Function, ...params) {
             var self = this;
 
@@ -70,25 +70,21 @@
         }
     }
 
-    export function getTypedValue(value: string): any {
-        if (value === undefined || value === null) {
-            return value;
+    export function createFunctionHash(func: Function): number {
+        var hash = 0;
+        var functionString = func.toString();
+
+        if (functionString.length == 0) {
+            return hash;
         }
 
-        if (value.toLowerCase() === 'false') {
-            return false;
-        }
-        else if (value.toLowerCase() === 'true') {
-            return true;
-        }
-
-        var number = parseFloat(value);
-
-        if (number !== NaN) {
-            return number;
+        for (var i = 0; i < functionString.length; i++) {
+            var char = functionString.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
         }
 
-        return value;
+        return hash;
     }
 
     export class DataKeys {

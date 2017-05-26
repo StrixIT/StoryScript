@@ -6,6 +6,7 @@
 
     export function definitionToObject<T>(definition: () => T, type: string, definitions: IDefinitions): T {
         var instance = definition();
+
         // Need to cast to any for ES5 and lower
         (<any>instance).id = (<any>definition).name;
         addFunctionIds(instance, type, getDefinitionKeys(definitions));
@@ -139,23 +140,6 @@
         }
 
         return results[0] ? results[0] : null;
-    }
-
-    export function createFunctionHash(func: Function): number {
-        var hash = 0;
-        var functionString = func.toString();
-
-        if (functionString.length == 0) {
-            return hash;
-        }
-
-        for (var i = 0; i < functionString.length; i++) {
-            var char = functionString.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-
-        return hash;
     }
 
     function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
