@@ -41,7 +41,10 @@
                         });
                     }
                 }
-            }
+            },
+            quests: [
+                Quests.Journal
+            ]
         }
     }
 }

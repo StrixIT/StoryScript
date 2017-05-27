@@ -26,6 +26,9 @@
             <reply node="key" requires="item=basementkey">
                 I found a key.
             </reply>
+            <reply node="lostjournal">
+                I noticed you seem a bit upset.
+            </reply>
         </replies>
     </node>
     <node name="fine">
@@ -52,5 +55,33 @@
         <p>
             Hm. I don't know what lock that's for.
         </p>
+    </node>
+    <node name="lostjournal">
+        <p>
+            I guess I am. I can't seem to find my personal journal. It is very important to me. Can you help me find it?
+        </p>
+        <replies>
+            <reply node="pleasefindit" quest-start="Journal" set-start="foundjournal">
+                Of course. I'll return it as soon as I see it.
+            </reply>
+        </replies>
+    </node>
+    <node name="pleasefindit">
+        <p>
+            I hope you have better luck than I searching.
+        </p>
+    </node>
+    <node name="foundjournal">
+        <p>
+            Have you found my journal?
+        </p>
+        <replies>
+            <reply>
+                Not yet, sorry.
+            </reply>
+            <reply requires="quest-done=Journal" quest-complete="Journal">
+                Yes I have. Here it is!
+            </reply>
+        </replies>
     </node>
 </conversation>

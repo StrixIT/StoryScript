@@ -7,6 +7,9 @@
                     text: 'To the garden',
                     target: Locations.Garden
                 }
+            ],
+            items: [
+                Items.Journal
             ]
         }
     }
