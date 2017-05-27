@@ -216,7 +216,7 @@ module StoryScript {
                 else if (typeof value == 'function') {
                     if (!value.isProxy) {
                         if (value.functionId) {
-                            var parts = self.GetFunctionIdParts(value);
+                            var parts = self.GetFunctionIdParts(value.functionId);
 
                             if (parts.type === 'actions' && !self.functionList[parts.type][parts.functionId]) {
                                 var match: string = null;

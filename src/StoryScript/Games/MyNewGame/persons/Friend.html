@@ -1,15 +1,25 @@
 ﻿<conversation>
+    <default-reply>
+        Never mind. See you later.
+    </default-reply>
     <node name="hello">
         <p>
             Hello there. How are you doing today?
         </p>
         <replies>
-            <reply node="fine">
+            <reply node="fine" set-start="return">
                 Fine, thanks.
             </reply>
             <reply node="workout" requires="strength=3">
                 Great. I have just completed my workout.
             </reply>
+        </replies>
+    </node>
+    <node name="return">
+        <p>
+            Back so soon?
+        </p>
+        <replies>
             <reply node="garden" requires="location=garden">
                 I just walked through the garden.
             </reply>
@@ -18,37 +28,29 @@
             </reply>
         </replies>
     </node>
-    <node name="back">
-        <p>
-            Back so soon?
-        </p>
-        <replies>
-            <reply requires="item=basementkey">
-                I found the key to the basement.
-            </reply>
-            <reply>
-                Never mind. See you later.
-            </reply>
-        </replies>
-    </node>
     <node name="fine">
         <p>
             Good. What are you up to today?
         </p>
-        <replies>
-            <reply>
-                Never mind. See you later.
-            </reply>
-        </replies>
     </node>
     <node name="workout">
         <p>
             I can see that.
         </p>
+    </node>
+    <node name="garden">
+        <p>
+            Did you see the hedgehog?
+        </p>
         <replies>
-            <reply>
-                Never mind. See you later.
+            <reply trigger="addHedgehog">
+                No I didn't. I'll pay attention next time.
             </reply>
         </replies>
+    </node>
+    <node name="key">
+        <p>
+            Hm. I don't know what lock that's for.
+        </p>
     </node>
 </conversation>

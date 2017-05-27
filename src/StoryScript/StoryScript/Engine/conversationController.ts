@@ -94,6 +94,10 @@
                 activeNode = person.conversation.nodes[0];
             }
 
+            if (!activeNode) {
+                return;
+            }
+
             activeNode.active = true;
             person.conversation.activeNode = activeNode;
 
