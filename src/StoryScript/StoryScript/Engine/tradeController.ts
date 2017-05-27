@@ -62,7 +62,9 @@
             };
 
             if ((trader.initCollection && trader.initCollection(self.game, trader) || !itemsForSale)) {
-                itemsForSale = StoryScript.randomList<IItem>(self.game.definitions.items, trader.buy.maxItems, 'items', self.game.definitions, buySelector);
+                // Todo: change this when more than one trade per location is allowed.
+                var collection = <any>(trader.ownItemsOnly ? self.game.currentLocation.activePerson.items : self.game.definitions.items);
+                itemsForSale = StoryScript.randomList<IItem>(collection, trader.buy.maxItems, 'items', self.game.definitions, buySelector);
             }
 
             var sellSelector = (item: IItem) => {

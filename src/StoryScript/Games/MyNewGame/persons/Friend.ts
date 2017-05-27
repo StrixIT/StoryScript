@@ -10,6 +10,7 @@
             ],
             currency: 10,
             trade: {
+                ownItemsOnly: true,
                 buy: {
                     description: 'I\'m willing to part with these items...',
                     emptyText: 'I have nothing left to sell to you...',
