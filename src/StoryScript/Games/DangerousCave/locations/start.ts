@@ -4,7 +4,7 @@
             name: 'De ingang van de Gevaarlijke Grot',
             destinations: [
                 {
-                    text: 'Ga de grot in',
+                    name: 'Ga de grot in',
                     target: Locations.Entry,
                 }
             ],

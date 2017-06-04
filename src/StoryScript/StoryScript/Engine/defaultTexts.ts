@@ -55,7 +55,9 @@
             leftRing: "Left ring",
             rightRing: "Right ring",
             yourName: "Name",
-            combinations: "Combinations"
+            combinations: "Combinations",
+            tryCombination: "Try",
+            noCombination: "You try to {2} {0} with {1}. Nothing happens."
         }
 
         format = (template: string, tokens: string[]): string => {

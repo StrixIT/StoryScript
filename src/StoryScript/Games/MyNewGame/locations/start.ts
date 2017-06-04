@@ -14,15 +14,15 @@
             },
             destinations: [
                 {
-                    text: 'To the bedroom',
+                    name: 'To the bedroom',
                     target: Locations.Bedroom
                 },
                 {
-                    text: 'To the garden',
+                    name: 'To the garden',
                     target: Locations.Garden
                 },
                 {
-                    text: 'Out the front door',
+                    name: 'Out the front door',
                     target: Locations.DirtRoad
                 }
             ],

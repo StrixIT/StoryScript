@@ -7,25 +7,25 @@
             ],
             destinations: [
                 {
-                    text: 'Richting kruispunt (oost)',
+                    name: 'Richting kruispunt (oost)',
                     target: Locations.CrossRoads
                 },
                 {
-                    text: 'Deur (west)',
+                    name: 'Deur (west)',
                     target: Locations.Arena,
                     barrier: {
-                        text: 'Metalen deur',
+                        name: 'Metalen deur',
                         key: Items.BlackKey,
                         actions: [
                             {
-                                text: 'Onderzoek de deur',
+                                name: 'Onderzoek de deur',
                                 action: Actions.Inspect('Een deur van een dof grijs metaal, met een rode deurknop. Op de deur staat een grote afbeelding: een rood zwaard. Zodra je het handvat aanraakt, gloeit het zwaard op met een rood licht. De deur is niet op slot.')
                             },
                             {
-                                text: 'Open de deur',
+                                name: 'Open de deur',
                                 action: StoryScript.Actions.Open(function (game, destination) {
                                     game.logToLocationLog('Je opent de deur.');
-                                    destination.text = 'Donkere kamer';
+                                    destination.name = 'Donkere kamer';
                                 })
                             }
                         ]

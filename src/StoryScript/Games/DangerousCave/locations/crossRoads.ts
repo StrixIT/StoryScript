@@ -14,19 +14,19 @@
             ],
             destinations: [
                 {
-                    text: 'Donkere tunnel (oost)',
+                    name: 'Donkere tunnel (oost)',
                     target: Locations.DarkCorridor
                 },
                 {
-                    text: 'Nog niet! Gang (noord)',
+                    name: 'Nog niet! Gang (noord)',
                     target: Locations.Temp
                 },
                 {
-                    text: 'Donkere tunnel (west)',
+                    name: 'Donkere tunnel (west)',
                     target: Locations.WestCrossing
                 },
                 {
-                    text: 'Gang (zuid)',
+                    name: 'Gang (zuid)',
                     target: Locations.RightCorridor
                 }
             ],

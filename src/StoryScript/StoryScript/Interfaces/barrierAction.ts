@@ -1,6 +1,6 @@
 ﻿module StoryScript {
     export interface IBarrierAction {
-        text: string;
+        name: string;
         action: (game: IGame, ...params) => void;
     }
 }

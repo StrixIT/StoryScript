@@ -4,15 +4,15 @@
             name: 'Een grot met kaarslicht',
             destinations: [
                 {
-                    text: 'Onderzoek het kaarslicht',
+                    name: 'Onderzoek het kaarslicht',
                     target: Locations.Arena
                 },
                 {
-                    text: 'Sluip naar de donkere gang',
+                    name: 'Sluip naar de donkere gang',
                     target: Locations.DarkCorridor
                 },
                 {
-                    text: 'Richting ingang',
+                    name: 'Richting ingang',
                     target: Locations.RightCorridor
                 }
             ],

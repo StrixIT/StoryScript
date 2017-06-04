@@ -4,11 +4,11 @@
             name: 'Een gemetselde gang',
             destinations: [
                 {
-                    text: 'Naar het kruispunt (noord)',
+                    name: 'Naar het kruispunt (noord)',
                     target: Locations.CrossRoads
                 },
                 {
-                    text: 'Door de houten deur (zuid)',
+                    name: 'Door de houten deur (zuid)',
                     target: Locations.RoomOne
                 }
             ]

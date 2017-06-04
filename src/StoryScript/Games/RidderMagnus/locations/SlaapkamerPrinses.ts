@@ -5,7 +5,7 @@
 
             destinations: [
                 {
-                    text: 'Naar beneden',
+                    name: 'Naar beneden',
                     target: Locations.Start
                 }
             ],

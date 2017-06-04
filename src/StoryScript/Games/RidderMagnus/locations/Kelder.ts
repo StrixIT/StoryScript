@@ -11,7 +11,7 @@
             ],
             destinations: [
                 {
-                    text: 'Naar boven',
+                    name: 'Naar boven',
                     target: Locations.Start
                 }
             ],

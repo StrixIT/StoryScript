@@ -4,7 +4,7 @@
             name: 'Basement',
             destinations: [
                 {
-                    text: 'To the garden',
+                    name: 'To the garden',
                     target: Locations.Garden
                 }
             ],

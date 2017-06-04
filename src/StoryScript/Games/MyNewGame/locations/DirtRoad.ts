@@ -4,7 +4,7 @@
             name: 'Dirt road',
             destinations: [
                 {
-                    text: 'Enter your home',
+                    name: 'Enter your home',
                     target: Locations.Start
                 }
             ],

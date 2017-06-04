@@ -7,11 +7,11 @@
             ],
             destinations: [
                 {
-                    text: 'Richting grote grot (oost)',
+                    name: 'Richting grote grot (oost)',
                     target: Locations.CandleLitCave
                 },
                 {
-                    text: 'Richting kruispunt (west)',
+                    name: 'Richting kruispunt (west)',
                     target: Locations.CrossRoads
                 }
             ],

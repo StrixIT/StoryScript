@@ -487,14 +487,23 @@ module StoryScript {
         // Replace the function pointers for the destination targets with the function keys.
         // That's all that is needed to navigate, and makes it easy to save these targets.
         // Also set the barrier selected actions to the first one available for each barrier.
+        // Further, instantiate any keys present and replace combine functions with their target ids.
         destination.target = (<any>destination.target).name;
 
         if (destination.barrier) {
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                 destination.barrier.selectedAction = destination.barrier.actions[0];
             }
+
             if (destination.barrier.key) {
                 (<any>destination.barrier).key = definitionToObject(destination.barrier.key, 'items', self.definitions);
+            }
+
+            if (destination.barrier.combinations) {
+                for (var n in destination.barrier.combinations) {
+                    var combination = destination.barrier.combinations[n];
+                    combination.target = combination.target.name;
+                }
             }
         }
     }

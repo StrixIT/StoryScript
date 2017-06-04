@@ -4,7 +4,7 @@
             name: 'Bedroom',
             destinations: [
                 {
-                    text: 'Back to the living room',
+                    name: 'Back to the living room',
                     target: Locations.Start
                 }
             ],

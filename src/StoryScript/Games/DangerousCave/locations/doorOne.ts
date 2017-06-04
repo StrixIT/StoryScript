@@ -4,11 +4,11 @@
             name: 'Een donkere gang met een deur',
             destinations: [
                 {
-                    text: 'De kamer in',
+                    name: 'De kamer in',
                     target: Locations.RoomOne
                 },
                 {
-                    text: 'Donkere gang',
+                    name: 'Donkere gang',
                     target: Locations.LeftCorridor
                 }
             ],

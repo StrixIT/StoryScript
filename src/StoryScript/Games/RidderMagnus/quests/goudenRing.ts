@@ -10,7 +10,7 @@
 
                 location.destinations.push(
                     {
-                        text: 'Naar de kelder!',
+                        name: 'Naar de kelder!',
                         target: Locations.Kelder
                     }
                 );

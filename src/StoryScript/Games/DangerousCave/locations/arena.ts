@@ -7,7 +7,7 @@
                 ],
                 destinations: [
                     {
-                        text: 'De grote grot in',
+                        name: 'De grote grot in',
                         target: Locations.CandleLitCave
                     }
                 ],

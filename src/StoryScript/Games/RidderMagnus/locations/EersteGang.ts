@@ -5,7 +5,7 @@
 
             destinations: [
                 {
-                    text: 'Naar de tunnel',
+                    name: 'Naar de tunnel',
                     target: Locations.Tunnel
                 }
             ],

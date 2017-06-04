@@ -19,11 +19,11 @@
             ],
             destinations: [
                 {
-                    text: 'Donkere gang (west)',
+                    name: 'Donkere gang (west)',
                     target: Locations.LeftCorridor
                 },
                 {
-                    text: 'Schemerige gang (oost)',
+                    name: 'Schemerige gang (oost)',
                     target: Locations.RightCorridor
                 }
             ],

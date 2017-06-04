@@ -1,8 +1,9 @@
 ﻿module StoryScript {
     export interface IBarrier {
-        text: string;
+        name: string;
         actions?: ICollection<IBarrierAction>;
         selectedAction?: IBarrierAction;
         key?: () => IKey;
+        combinations?: ICombine[];
     }
 }

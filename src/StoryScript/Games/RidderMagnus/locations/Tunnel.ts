@@ -5,11 +5,11 @@
 
             destinations: [
                 {
-                    text: 'Naar beneden',
+                    name: 'Naar beneden',
                     target: Locations.EersteGang
                 },
                 {
-                    text: 'Naar boven',
+                    name: 'Naar boven',
                     target: Locations.Kelder
                 }
             ],

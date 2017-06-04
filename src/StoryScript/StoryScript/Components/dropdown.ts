@@ -82,12 +82,13 @@ module Strix {
 
         function buildSelect(select, scope, optionLabel, optionValue, defaultFlag) {
             var selectedValue, options = [];
+            var label = getOptionLabel(scope, optionLabel);
 
             select.empty();
 
             for (var n in scope.data) {
                 var entry = scope.data[n];
-                var entryValue = optionValue && entry[optionValue] || entry[optionLabel];
+                var entryValue = optionValue && entry[optionValue] || entry[optionLabel] || entry;
 
                 if (scope.model == entryValue || scope.oldModelValue == entryValue || (entry[defaultFlag] && !selectedValue)) {
                     selectedValue = entryValue;
@@ -115,7 +116,12 @@ module Strix {
 
         function onChange(value, scope, optionLabel, optionValue, ngModel) {
             if (!optionValue) {
-                value = typeof value === 'object' ? value : scope.data.filter(x => { return x[optionLabel] == value; })[0];
+                if (typeof value === 'object') {
+                    value = value
+                } else {
+                    var label = getOptionLabel(scope, optionLabel);
+                    value = scope.data.filter(x => { return label ? x[label] === value : x === value; })[0];
+                }
             }
 
             // Do the callback before updating the view value. This order is important, which has something
@@ -125,6 +131,10 @@ module Strix {
             }
 
             ngModel.$setViewValue(value);
+        }
+
+        function getOptionLabel(scope, optionLabel) {
+            return scope.data && scope.data.length > 0 && scope.data[0][optionLabel] ? optionLabel : null;
         }
     }
 }

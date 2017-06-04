@@ -4,7 +4,7 @@
             name: 'Deze locatie bestaat nog niet',
             destinations: [
                 {
-                    text: 'Ga terug naar de ingang',
+                    name: 'Ga terug naar de ingang',
                     target: Locations.Entry,
                 }
             ]

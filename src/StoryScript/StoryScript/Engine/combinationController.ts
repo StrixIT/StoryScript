@@ -23,12 +23,25 @@
             self.$scope.game = self.game;
             self.$scope.texts = self.texts;
             self.init();
+            self.$scope.$on('refreshCombine', (event, args) => self.refreshCombine(self));
         }
 
         private init() {
             var self = this;
-            self.$scope.combineSources = self.game.character.items.length > 0 ? self.game.character.items : [];
-            self.$scope.combineTargets = self.game.currentLocation.activeItems.concat(<any[]>self.game.currentLocation.activeEnemies).concat(<any[]>self.game.currentLocation.activePersons);
+            self.refreshCombine(self);
+        }
+
+        private refreshCombine(self: CombinationController) {
+            var equipment = [];
+
+            for (var n in self.game.character.equipment) {
+                if (self.game.character.equipment[n]) {
+                    equipment.push(self.game.character.equipment[n]);
+                }
+            }
+
+            self.$scope.combineSources = equipment.concat(self.game.character.items);
+            self.$scope.combineTargets = <any[]>self.game.currentLocation.activeEnemies.concat(<any[]>self.game.currentLocation.activePersons).concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier));
             self.$scope.combineActions = self.ruleService.getCombinationActions();
 
             self.$scope.combination = {
@@ -38,8 +51,17 @@
             };
         }
 
-        combine = () => {
-            return;
+        tryCombination = (source: { id: string }, target: { id: string, name: string, combinations: [ICombine] }, type: string) => {
+            var self = this;
+
+            var combination = target.combinations && target.combinations.filter(c => target.id === target.id && c.type === type)[0];
+
+            if (combination) {
+                combination.combine(self.game);
+            }
+            else {
+                self.game.logToActionLog(self.texts.format(self.texts.noCombination, [source.id, target.name, type]))
+            };
         }
     }
 

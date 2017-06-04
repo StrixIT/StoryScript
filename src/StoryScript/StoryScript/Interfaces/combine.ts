@@ -1,13 +1,13 @@
 ﻿module StoryScript {
-    export interface ICombine<T> {
-        target: T;
+    export interface ICombine {
+        target: any;
         type: string,
         combine: (game: IGame) => void;
     }
 
     export interface ICombination {
-        source: any;
-        target: any;
+        source: { name };
+        target: { name };
         type: string;
     }
 }

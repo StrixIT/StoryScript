@@ -174,11 +174,11 @@
             var self = this;
 
             // Todo: improve, use selected action as object.
-            if (!barrier.actions.length) {
+            if (!barrier.actions || !barrier.actions.length) {
                 return;
             }
 
-            var action = barrier.actions.filter((item: IBarrier) => { return item.text == barrier.selectedAction.text; })[0];
+            var action = barrier.actions.filter((item: IBarrier) => { return item.name == barrier.selectedAction.name; })[0];
             var result = action.action(self.game, destination, barrier, action);
 
             if (!result) {
@@ -201,6 +201,7 @@
             var self = this;
             self.game.character.items.push(item);
             self.game.currentLocation.items.remove(item);
+            self.$scope.$broadcast('refreshCombine');
         }
 
         useItem = (item: IItem): void => {

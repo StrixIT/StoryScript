@@ -23,11 +23,11 @@
                         game.logToActionLog('Je klimt uit de kuil.');
 
                         game.currentLocation.destinations.push({
-                            text: 'Dieper de grot in',
+                            name: 'Dieper de grot in',
                             target: Locations.DoorOne
                         });
                         game.currentLocation.destinations.push({
-                            text: 'Richting ingang',
+                            name: 'Richting ingang',
                             target: Locations.Entry
                         });
                     }

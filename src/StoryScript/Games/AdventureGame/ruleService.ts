@@ -23,8 +23,8 @@
 
         getCombinationActions = () => {
             return [
-                'Use',
-                'View'
+                Constants.USE,
+                Constants.THROW
             ];
         }
 

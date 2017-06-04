@@ -7,11 +7,11 @@
             ],
             destinations: [
                 {
-                    text: 'Richting het licht',
+                    name: 'Richting het licht',
                     target: Locations.CandleLitCave
                 },
                 {
-                    text: 'Richting ingang',
+                    name: 'Richting ingang',
                     target: Locations.Entry
                 }
             ],

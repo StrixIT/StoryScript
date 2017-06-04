@@ -8,7 +8,7 @@
             ],
             destinations: [
                 {
-                    text: 'De kamer van de ork',
+                    name: 'De kamer van de ork',
                     target: Locations.RoomOne
                 }
             ]

@@ -10,35 +10,35 @@
             ],
             destinations: [
                 {
-                    text: 'Noord',
+                    name: 'Noord',
                     target: Locations.RightCorridor,
                     barrier: {
-                        text: 'Houten deur',
+                        name: 'Houten deur',
                         actions: [
                             {
-                                text: 'Onderzoek de deur',
+                                name: 'Onderzoek de deur',
                                 action: Actions.Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
                             },
                             {
-                                text: 'Open de deur',
+                                name: 'Open de deur',
                                 action: StoryScript.Actions.Open((game: IGame, destination: StoryScript.IDestination) => {
                                     game.logToLocationLog('Je opent de eikenhouten deur.');
-                                    destination.text = 'Gang (noord)';
+                                    destination.name = 'Gang (noord)';
                                 })
                             }
                         ]
                     }
                 },
                 {
-                    text: 'Tweede deur (west)',
+                    name: 'Tweede deur (west)',
                     target: Locations.CentreRoom,
                 },
                 {
-                    text: 'Derde deur (zuid)',
+                    name: 'Derde deur (zuid)',
                     target: Locations.LeftRoom
                 },
                 {
-                    text: 'Deuropening (oost); richting ingang',
+                    name: 'Deuropening (oost); richting ingang',
                     target: Locations.LeftCorridor
                 }
             ]

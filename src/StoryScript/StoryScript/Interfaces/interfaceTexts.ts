@@ -55,6 +55,8 @@
         view?: string;
         quests?: string;
         combinations?: string;
+        tryCombination?: string;
+        noCombination?: string;
 
         format?: (template: string, tokens: string[]) => string;
         titleCase?: (text: string) => string;

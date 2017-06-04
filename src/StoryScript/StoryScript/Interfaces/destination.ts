@@ -1,6 +1,6 @@
 ﻿module StoryScript {
     export interface IDestination {
-        text: string;
+        name: string;
         target: () => ILocation;
         barrier?: IBarrier;
         style?: string;

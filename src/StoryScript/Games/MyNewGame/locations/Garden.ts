@@ -4,7 +4,7 @@
             name: 'Garden',
             destinations: [
                 {
-                    text: 'Enter your home',
+                    name: 'Enter your home',
                     target: Locations.Start,
                 }
             ],
@@ -20,14 +20,14 @@
                         // Add a new destination.
                         // Todo: make sure the destination action function pointer is set correctly when storing the game.
                         game.currentLocation.destinations.push({
-                            text: 'Enter the basement',
+                            name: 'Enter the basement',
                             target: Locations.Basement,
                             barrier: {
                                 key: Items.BasementKey,
-                                text: 'Wooden trap door',
+                                name: 'Wooden trap door',
                                 actions: [
                                     {
-                                        text: 'Inspect',
+                                        name: 'Inspect',
                                         action: (game: IGame) => {
                                             game.logToLocationLog('The trap door looks old but still strong due to steel reinforcements. It is not locked.');
                                         }
