@@ -5,7 +5,7 @@
             <button type="button" class="btn btn-info talk" ng-if="person.conversation" ng-click="controller.talk(person)">{{ texts.format(texts.talk, [person.name]) }}</button>
             <button type="button" class="btn btn-info trade" ng-if="person.trade" ng-click="controller.trade(game, 1, person)">{{ texts.format(texts.trade, [person.name]) }}</button>
             <button type="button" class="btn btn-danger" ng-if="person.canAttack === undefined || person.canAttack === true" ng-click="controller.combat(person)">{{ texts.format(texts.attack, [person.name]) }}</button>
-            <img ng-src="{{ 'resources/' + person.pictureFileName }}" ng-if="person.pictureFileName" />
+            <img ng-src="{{ person.pictureFileName }}" ng-if="person.pictureFileName" />
         </li>
     </ul>
 </fieldset>

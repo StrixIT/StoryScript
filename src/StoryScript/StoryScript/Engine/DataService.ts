@@ -81,7 +81,7 @@ module StoryScript {
             }
         }
 
-        public loadDescription(type: string, item: { id?: string, description?: string }) {
+        public loadDescription(type: string, item: { id?: string, description?: string, pictureFileName?: string }) {
             var self = this;
             var deferred = self.$q.defer();
             var identifier = type + '/' + item.id;
@@ -103,6 +103,15 @@ module StoryScript {
                 pathEntry.loading = true;
 
                 self.$http.get(identifier + '.html').success((result: string) => {
+                    var parser = new DOMParser();
+                    var htmlDoc = parser.parseFromString(result, "text/html");
+
+                    var pictureSrc = angular.element(htmlDoc.getElementsByClassName("picture")).attr('src');
+
+                    if (pictureSrc) {
+                        item.pictureFileName = pictureSrc;
+                    }
+
                     item.description = result;
                     pathEntry.loading = false;
                     pathEntry.loaded = true;
