@@ -19,4 +19,5 @@
     storyScriptModule.controller("TradeController", TradeController);
     storyScriptModule.controller("CharacterController", CharacterController);
     storyScriptModule.controller("CreateCharacterController", CreateCharacterController);
+    storyScriptModule.controller("CombinationController", CombinationController);
 }

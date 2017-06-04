@@ -1,0 +1,10 @@
+﻿<div ng-controller="CombinationController as combinationController">
+    <fieldset>
+        <legend>{{ texts.combinations }}</legend>
+        <div>
+            <select strix-drop-down class="combine-select" ng-model="combination.source" source="combineSources" option-label="name"></select>
+            <select strix-drop-down class="combine-select" ng-model="combination.target" source="combineTargets" option-label="name"></select>
+            <select strix-drop-down class="combine-select" ng-model="combination.action" source="combineActions"></select>
+        </div>
+    </fieldset>
+</div>

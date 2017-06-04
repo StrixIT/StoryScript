@@ -136,11 +136,10 @@ module StoryScript {
             if (enemy.hitpoints <= 0) {
                 if (enemy.items) {
                     enemy.items.forEach((item: IItem) => {
-                        self.game.currentLocation.items = self.game.currentLocation.items || [];
                         self.game.currentLocation.items.push(item);
                     });
 
-                    enemy.items = <[IItem]>[];
+                    enemy.items.length = 0;
                 }
 
                 self.game.character.currency = self.game.character.currency || 0;
@@ -209,6 +208,8 @@ module StoryScript {
             var self = this;
             self.game.actionLog = [];
             self.game.combatLog = [];
+
+            self.game.useCombinations = self.ruleService.getCombinationActions && self.ruleService.getCombinationActions().length > 0;
 
             self.game.logToLocationLog = (message: string) => {
                 self.game.currentLocation.log = self.game.currentLocation.log || [];
@@ -334,8 +335,7 @@ module StoryScript {
                 });
             }
 
-            compiledEnemy.items = items;
-
+            createReadOnlyCollection(compiledEnemy, 'items', items);
             self.addProxy(compiledEnemy, 'item');
 
             return compiledEnemy;
@@ -358,8 +358,7 @@ module StoryScript {
                 });
             }
 
-            compiledPerson.quests = quests;
-
+            createReadOnlyCollection(compiledPerson, 'quests', quests);
             // As far as I can tell right now, there is no reason to add quests to a person at run-time.
             //self.addProxy(compiledPerson, 'quest');
 

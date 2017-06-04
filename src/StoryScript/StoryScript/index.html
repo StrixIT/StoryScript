@@ -36,6 +36,7 @@
                     <div ng-if="game.stateString == 'Play'">
                         <div class="combat" ng-include="'ui/encounters.html'"></div>
                         <div class="location" ng-include="'ui/location.html'"></div>
+                        <div class="combination" ng-include="'ui/combination.html'" ng-if="game.useCombinations"></div>
                         <div class="exploration" ng-include="'ui/exploration.html'"></div>
                         <div class="startcombat" ng-include="'ui/start-combat.html'"></div>
                         <div class="actionlog" ng-include="'ui/action-log.html'"></div>

@@ -18,6 +18,7 @@
         state: StoryScript.GameState;
 
         worldProperties: any;
+        useCombinations?: boolean;
 
         statistics: IStatistics;
 

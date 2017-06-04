@@ -9,9 +9,27 @@
 
         // Need to cast to any for ES5 and lower
         (<any>instance).id = (<any>definition).name;
+
+        // Add the type to the object so we can distinguish between them in the combine functionality.
+        (<any>instance).type = type.charAt(type.length - 1) === 's' ? type.substring(type.length - 3) === 'ies' ? type.substring(0, type.length - 3) + 'y' : type.substring(0, type.length - 1) : type;
+
         addFunctionIds(instance, type, getDefinitionKeys(definitions));
 
         return instance;
+    }
+
+    export function createReadOnlyCollection(entity: any, propertyName: string, collection: { id?: string, type?: string }[]) {
+        Object.defineProperty(entity, propertyName, {
+            get: function () {
+                return collection;
+            },
+            set: function () {
+                var type = entity.type ? entity.type : null;
+                var messageStart = 'Cannot set collection ' + propertyName;
+                var message = type ? messageStart + ' on type ' + type : messageStart + '.';
+                throw new Error(message);
+            }
+        });
     }
 
     export function getDefinitionKeys(definitions: IDefinitions) {

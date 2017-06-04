@@ -19,9 +19,10 @@ gulp.task('build-dangerous-cave', ['delete-files'], buildGame('DangerousCave'));
 gulp.task('build-quest-for-the-king', ['delete-files'], buildGame('QuestForTheKing'));
 gulp.task('build-path-of-heroes', ['delete-files'], buildGame('PathOfHeroes'));
 gulp.task('build-ridder-magnus', ['delete-files'], buildGame('RidderMagnus'));
+gulp.task('build-adventure-game', ['delete-files'], buildGame('AdventureGame'));
 
 gulp.task('delete-files', function () {
-    del([paths.webroot + 'locations/**/*', paths.webroot + 'resources/**/*', paths.webroot + 'ui/**/*']);
+    del([paths.webroot + 'locations/**/*', paths.webroot + 'resources/**/*', paths.webroot + 'ui/**/*', paths.webroot + 'index.html']);
 });
 
 function buildGame(nameSpace) {
@@ -55,6 +56,10 @@ function copyCss(nameSpace) {
 }
 
 function copyHtml(nameSpace) {
+    gulp.src([paths.root + 'StoryScript/index.html'])
+        .pipe(flatten())
+        .pipe(gulp.dest(paths.webroot));
+
     gulp.src([paths.root + 'StoryScript/ui/**/*.html', paths.root + 'Games/' + nameSpace + '/ui/**/*.html'])
         .pipe(flatten())
         .pipe(gulp.dest(paths.webroot + 'ui'));

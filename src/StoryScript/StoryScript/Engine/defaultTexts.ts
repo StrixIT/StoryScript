@@ -54,7 +54,8 @@
             hands: "Hands",
             leftRing: "Left ring",
             rightRing: "Right ring",
-            yourName: "Name"
+            yourName: "Name",
+            combinations: "Combinations"
         }
 
         format = (template: string, tokens: string[]): string => {

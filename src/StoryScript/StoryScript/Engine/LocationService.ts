@@ -55,22 +55,21 @@ module StoryScript {
             }
 
             locations.forEach(function (location) {
-                location.destinations = location.destinations || [];
+                createReadOnlyCollection(location, 'destinations', location.destinations || []);
 
                 // Add a proxy to the destination collection push function, to replace the target function pointer
                 // with the target id when adding destinations and enemies at runtime.
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
 
-                location.actions = location.actions || [];
+                createReadOnlyCollection(location, 'actions', <any>location.actions || []);
                 location.actions.push = (<any>location.actions.push).proxy(self.addAction, self.game);
 
-                location.combatActions = location.combatActions || [];
+                createReadOnlyCollection(location, 'combatActions', <any>location.combatActions || []);
                 location.combatActions.push = (<any>location.combatActions.push).proxy(self.addAction, self.game);
 
-                location.persons = location.persons || [];
-                location.enemies = location.enemies || [];
-                location.items = location.items || [];
-                location.combatActions = location.combatActions || [];
+                createReadOnlyCollection(location, 'persons', location.persons || []);
+                createReadOnlyCollection(location, 'enemies', location.enemies || []);
+                createReadOnlyCollection(location, 'items', location.items || []);
 
                 Object.defineProperty(location, 'activePersons', {
                     get: function () {
@@ -162,9 +161,6 @@ module StoryScript {
 
                 self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
-
-            game.currentLocation.items = game.currentLocation.items || [];
-            game.currentLocation.enemies = game.currentLocation.enemies || [];
 
             if (self.ruleService.enterLocation) {
                 self.ruleService.enterLocation(game.currentLocation, travel);

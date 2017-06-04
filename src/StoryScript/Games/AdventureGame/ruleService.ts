@@ -1,4 +1,4 @@
-﻿module GameTemplate {
+﻿module AdventureGame {
     export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
         private game: IGame;
 
@@ -23,9 +23,11 @@
 
         getCombinationActions = () => {
             return [
-                // Add combination action names here if you want to use this feature.
+                'Use',
+                'View'
             ];
         }
+
         getSheetAttributes = () => {
             return [
                 // Add character sheet property names here
