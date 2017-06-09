@@ -1,7 +1,7 @@
 ﻿module StoryScript {
     export function isEmpty(object: any, property?: string) {
         var objectToCheck = property ? object[property] : object;
-        return objectToCheck ? Object.keys(objectToCheck).length === 0 : true;
+        return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
     }
 
     export function definitionToObject<T>(definition: () => T, type: string, definitions: IDefinitions): T {

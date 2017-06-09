@@ -1,5 +1,5 @@
 ﻿<div ng-controller="CombinationController as combinationController">
-    <fieldset>
+    <fieldset ng-if="combination.source && combination.target && combination.type">
         <legend>{{ texts.combinations }}</legend>
         <div>
             <select strix-drop-down class="combine-select" ng-model="combination.source" source="combineSources" option-label="name"></select>

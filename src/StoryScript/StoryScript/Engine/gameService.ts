@@ -209,8 +209,6 @@ module StoryScript {
             self.game.actionLog = [];
             self.game.combatLog = [];
 
-            self.game.useCombinations = self.ruleService.getCombinationActions && self.ruleService.getCombinationActions().length > 0;
-
             self.game.logToLocationLog = (message: string) => {
                 self.game.currentLocation.log = self.game.currentLocation.log || [];
                 self.game.currentLocation.log.push(message);
