@@ -2,6 +2,7 @@
     export interface ILocation {
         name: string;
         descriptionSelector?: (game: IGame) => string;
+        features?: IFeature[];
         enemies?: ICollection<() => IEnemy>;
         persons?: ICollection<() => IPerson>;
         items?: ICollection<() => IItem>;

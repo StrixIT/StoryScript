@@ -7,6 +7,7 @@
         currency?: number;
         inactive?: boolean;
         items?: ICollection<() => IItem>;
+        combinations?: ICombinations<() => IItem | IFeature>;
         onDefeat?: (game: IGame) => void;
     }
 }

@@ -56,6 +56,7 @@ module StoryScript {
 
             locations.forEach(function (location) {
                 createReadOnlyCollection(location, 'destinations', location.destinations || []);
+                createReadOnlyCollection(location, 'features', location.features || []);
 
                 // Add a proxy to the destination collection push function, to replace the target function pointer
                 // with the target id when adding destinations and enemies at runtime.
@@ -101,6 +102,10 @@ module StoryScript {
         public changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame) {
             var self = this;
             var presentLocation: ICompiledLocation;
+
+            if (game.previousLocation && game.previousLocation.leaveEvents) {
+                self.playEvents(game, game.previousLocation.leaveEvents);
+            }
 
             // If no location is specified, go to the previous location.
             if (!location) {
@@ -171,8 +176,8 @@ module StoryScript {
             self.initTrade(game);
 
             // If the player hasn't been here before, play the location events.
-            if (!game.currentLocation.hasVisited) {
-                self.playEvents(game);
+            if (!game.currentLocation.hasVisited && game.currentLocation.enterEvents) {
+                self.playEvents(game, game.currentLocation.enterEvents);
             }
 
             self.loadConversations(game);
@@ -206,6 +211,7 @@ module StoryScript {
                 }
 
                 self.setDestinations(location);
+                self.compileFeatures(location);
                 self.buildEntries(location, 'enemies', self.game.getEnemy);
                 self.buildEntries(location, 'persons', self.game.getPerson);
                 self.buildEntries(location, 'items', self.game.getItem);
@@ -238,6 +244,24 @@ module StoryScript {
             }
         }
 
+        private compileFeatures(location: ICompiledLocation) {
+            var self = this;
+
+            if (!isEmpty(location.features)) {
+
+                for (var i in location.features) {
+                    var feature = location.features[i];
+
+                    if (feature.combinations && feature.combinations.combine) {
+                        for (var j in feature.combinations.combine) {
+                            var combination = feature.combinations.combine[j];
+                            combination.target = (<any>combination.target).name;
+                        }
+                    }
+                }
+            }
+        }
+
         private addDestination() {
             var self = this;
             var args = [].slice.apply(arguments);
@@ -262,11 +286,11 @@ module StoryScript {
             originalFunction.apply(this, args);
         }
 
-        private playEvents(game: IGame) {
+        private playEvents(game: IGame, events: [(game: IGame) => void]) {
             var self = this;
 
-            for (var n in game.currentLocation.events) {
-                game.currentLocation.events[n](game);
+            for (var n in events) {
+                events[n](game);
             }
         }
 
@@ -499,10 +523,10 @@ module StoryScript {
                 (<any>destination.barrier).key = definitionToObject(destination.barrier.key, 'items', self.definitions);
             }
 
-            if (destination.barrier.combinations) {
-                for (var n in destination.barrier.combinations) {
-                    var combination = destination.barrier.combinations[n];
-                    combination.target = combination.target.name;
+            if (destination.barrier.combinations && destination.barrier.combinations.combine) {
+                for (var n in destination.barrier.combinations.combine) {
+                    var combination = destination.barrier.combinations.combine[n];
+                    combination.target = (<any>combination.target).name;
                 }
             }
         }

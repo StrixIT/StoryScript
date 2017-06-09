@@ -11,9 +11,11 @@
         bonuses?: any;
         actions?: ICollection<IAction>;
         useInCombat?: boolean;
-        use?: (game: IGame, item: IItem) => void
-        //requirement?
         value?: number;
         inactive?: boolean;
+
+        equip?: (item: IItem, game: IGame) => boolean;
+        unequip?: (item: IItem, game: IGame) => boolean;
+        use?: (game: IGame, item: IItem) => void
     }
 }

@@ -33,9 +33,9 @@
                         var garden = game.locations.get(Locations.Garden);
 
                         garden.hasVisited = false;
-                        garden.events = [];
+                        garden.enterEvents = <[(game: IGame) => void]>[];
 
-                        garden.events.push((game: IGame) => {
+                        garden.enterEvents.push((game: IGame) => {
                             game.logToLocationLog('Ah! There is the hedgehog Joe was talking about.');
                         });
                     }

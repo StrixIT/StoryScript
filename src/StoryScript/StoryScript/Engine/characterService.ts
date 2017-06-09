@@ -71,9 +71,6 @@ module StoryScript {
                 }); 
             }
 
-            createReadOnlyCollection(character, 'items', isEmpty(character.items) ? [] : character.items);
-            createReadOnlyCollection(character, 'quests', isEmpty(character.quests) ? [] : character.quests);
-
             return character;
         }
     }

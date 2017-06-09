@@ -3,6 +3,7 @@
         id: string;
         name: string;
         descriptionSelector?: (game: IGame) => string;
+        features?: IFeature[];
         enemies?: ICompiledCollection<IEnemy, ICompiledEnemy>;
         activeEnemies?: ICompiledCollection<IEnemy, ICompiledEnemy>;
         persons?: ICompiledCollection<IPerson, ICompiledPerson>;
@@ -10,7 +11,8 @@
         items?: ICollection<IItem>;
         activeItems?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
-        events?: ICollection<(game: IGame) => void>;
+        enterEvents?: [(game: IGame) => void];
+        leaveEvents?: [(game: IGame) => void];
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
         text: string;

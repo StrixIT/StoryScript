@@ -267,6 +267,9 @@ module StoryScript {
         private setupCharacter(): void {
             var self = this;
 
+            createReadOnlyCollection(self.game.character, 'items', isEmpty(self.game.character.items) ? [] : self.game.character.items);
+            createReadOnlyCollection(self.game.character, 'quests', isEmpty(self.game.character.quests) ? [] : self.game.character.quests);
+
             self.addProxy(self.game.character, 'item');
 
             Object.defineProperty(self.game.character, 'combatItems', {
@@ -336,6 +339,19 @@ module StoryScript {
             }
 
             createReadOnlyCollection(compiledEnemy, 'items', items);
+
+            var combines = <ICombine<IItem | IFeature>[]>[];
+
+            if (enemy.combinations) {
+                enemy.combinations.combine.forEach((combine: ICombine<() => IItem | IFeature>) => {
+                    var compiled = <ICombine<IItem | IFeature>><any>combine;
+                    compiled.target = (<any>compiled.target).name;
+                    combines.push(compiled);
+                });
+            }
+
+            createReadOnlyCollection(compiledEnemy, 'combinations', combines);
+
             self.addProxy(compiledEnemy, 'item');
 
             return compiledEnemy;

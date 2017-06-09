@@ -4,6 +4,6 @@
         actions?: ICollection<IBarrierAction>;
         selectedAction?: IBarrierAction;
         key?: () => IKey;
-        combinations?: ICombine[];
+        combinations?: ICombinations<() => IItem | IFeature>;
     }
 }

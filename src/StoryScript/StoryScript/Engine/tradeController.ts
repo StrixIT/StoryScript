@@ -41,6 +41,10 @@
             self.pay(item, trade, trade.buy, self.game.character, false);
             self.game.character.items.push(item);
             trade.buy.items.remove(item);
+
+            if (trade.onBuy) {
+                trade.onBuy(self.game, item);
+            }
         }
 
         sell = (item: IItem, trade: ITrade) => {
@@ -49,6 +53,10 @@
             self.game.character.items.remove(item);
             trade.sell.items.remove(item);
             trade.buy.items.push(item);
+
+            if (trade.onSell) {
+                trade.onSell(self.game, item);
+            }
         }
 
         private init(): void {

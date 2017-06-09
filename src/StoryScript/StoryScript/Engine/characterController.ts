@@ -42,6 +42,12 @@
                 }
             }
 
+            if (item.equip) {
+                if (!item.equip(item, self.game)) {
+                    return;
+                }
+            }
+
             for (var n in equipmentTypes) {
                 var type = self.getEquipmentType(equipmentTypes[n]);
                 self.game.character.equipment[type] = item;
@@ -74,6 +80,12 @@
 
                 if (self.ruleService.beforeUnequip) {
                     if (!self.ruleService.beforeUnequip(self.game.character, equippedItem)) {
+                        return;
+                    }
+                }
+
+                if (equippedItem.unequip) {
+                    if (!equippedItem.unequip(equippedItem, self.game)) {
                         return;
                     }
                 }

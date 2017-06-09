@@ -1,4 +1,10 @@
 ﻿module StoryScript {
+    export interface ICombination {
+        source: { name };
+        target: { name };
+        type: string;
+    }
+
     export interface ICombinationControllerScope extends ng.IScope {
         game: IGame;
         texts: IInterfaceTexts;
@@ -40,8 +46,11 @@
                 }
             }
 
-            self.$scope.combineSources = equipment.concat(self.game.character.items);
-            self.$scope.combineTargets = <any[]>self.game.currentLocation.activeEnemies.concat(<any[]>self.game.currentLocation.activePersons).concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier));
+            self.$scope.combineTargets = equipment.concat(self.game.character.items);
+            self.$scope.combineSources = <any[]>self.game.currentLocation.activeEnemies
+                .concat(<any[]>self.game.currentLocation.activePersons)
+                .concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier))
+                .concat(<any[]>self.game.currentLocation.features);
             self.$scope.combineActions = self.ruleService.getCombinationActions();
 
             self.$scope.combination = {
@@ -51,17 +60,30 @@
             };
         }
 
-        tryCombination = (source: { id: string }, target: { id: string, name: string, combinations: [ICombine] }, type: string) => {
+        tryCombination = (source: { id: string, name: string, combinations: ICombinations<any> }, target: { id: string }, type: string) => {
             var self = this;
 
-            var combination = target.combinations && target.combinations.filter(c => target.id === target.id && c.type === type)[0];
-
-            if (combination) {
-                combination.combine(self.game);
+            if (!source || !target) {
+                return;
             }
-            else {
-                self.game.logToActionLog(self.texts.format(self.texts.noCombination, [source.id, target.name, type]))
-            };
+
+            var combines = source.combinations && source.combinations.combine;
+
+            if (combines) {
+                var combination = combines.filter(c => target.id === c.target && c.type === type)[0];
+
+                if (combination) {
+                    combination.match(self.game, target, source);
+                }
+                else {
+                    if (source.combinations.combineFailText) {
+                        self.game.logToActionLog(source.combinations.combineFailText(self.game, target));
+                    }
+                    else {
+                        self.game.logToActionLog(self.texts.format(self.texts.noCombination, [target.id, source.name, type]));
+                    }
+                };
+            }
         }
     }
 

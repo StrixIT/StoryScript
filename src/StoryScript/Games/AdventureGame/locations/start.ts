@@ -11,12 +11,33 @@
                     target: Locations.Junction,
                     barrier: {
                         name: 'Fence',
-                        combinations: [
+                        combinations: {                            
+                            combine: [
+                                {
+                                    target: Items.Dagger,
+                                    type: Constants.THROW,
+                                    match: (game, target, self) => {
+                                        game.logToLocationLog('Threw dagger at fence!');
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            features: [
+                {
+                    name: 'Vine',
+                    combinations: {
+                        combineFailText: (game, target) => {
+                            return 'Cannot use vine in this way!';
+                        },
+                        combine: [
                             {
                                 target: Items.Dagger,
-                                type: Constants.THROW,
-                                combine: (game) => {
-                                    game.logToLocationLog('Threw dagger at fence!');
+                                type: Constants.USE,
+                                match: (game, target, self) => {
+                                    game.logToLocationLog('Used dagger on vine!');
                                 }
                             }
                         ]
