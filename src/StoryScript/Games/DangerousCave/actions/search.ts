@@ -14,7 +14,7 @@ module DangerousCave.Actions {
             type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
                 var result;
-                var check = StoryScript.Functions.rollDice(game.character.oplettendheid + 'd6');
+                var check = game.helpers.rollDice(game.character.oplettendheid + 'd6');
                 result = check * game.character.oplettendheid;
 
                 if (result >= settings.difficulty) {

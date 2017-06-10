@@ -103,7 +103,7 @@
 
         fight = (enemy: ICompiledEnemy) => {
             var self = this;
-            var damage = StoryScript.Functions.rollDice('1d6') + self.game.character.strength + StoryScript.Functions.calculateBonus(self.game.character, 'damage');
+            var damage = self.game.helpers.rollDice('1d6') + self.game.character.strength + self.game.helpers.calculateBonus(self.game.character, 'damage');
             self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
             enemy.hitpoints -= damage;
 
@@ -112,7 +112,7 @@
             }
 
             self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                var damage = StoryScript.Functions.rollDice(enemy.attack) + StoryScript.Functions.calculateBonus(enemy, 'damage');
+                var damage = self.game.helpers.rollDice(enemy.attack) + self.game.helpers.calculateBonus(enemy, 'damage');
                 self.game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                 self.game.character.currentHitpoints -= damage;
             });

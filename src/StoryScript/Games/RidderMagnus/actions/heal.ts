@@ -1,7 +1,7 @@
 ﻿module RidderMagnus.Actions {
     export function Heal(potency: string): (...params) => void {
         return function (game: IGame, item: IItem) {
-            var healed = StoryScript.Functions.rollDice(potency);
+            var healed = game.helpers.rollDice(potency);
             game.character.currentHitpoints = Math.min(game.character.hitpoints, game.character.currentHitpoints += healed);
 
             if (item.charges) {

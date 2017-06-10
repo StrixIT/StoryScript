@@ -128,7 +128,7 @@
 
             if (self.game.currentLocation && self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited && !self.game.currentLocation.combatActions.some(a => (<IAction>a).isSneakAction)) {
                 // check stats
-                var roll = StoryScript.Functions.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
+                var roll = self.game.helpers.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
 
                 if (roll >= self.game.currentLocation.sluipCheck) {
 
@@ -175,8 +175,8 @@
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
 
-            var check = StoryScript.Functions.rollDice('1d6+' + self.game.character.vechten);
-            var characterDamage = check + self.game.character.vechten + StoryScript.Functions.calculateBonus(self.game.character, 'attack') - StoryScript.Functions.calculateBonus(enemy, 'defense');
+            var check = self.game.helpers.rollDice('1d6+' + self.game.character.vechten);
+            var characterDamage = check + self.game.character.vechten + self.game.helpers.calculateBonus(self.game.character, 'attack') - self.game.helpers.calculateBonus(enemy, 'defense');
             self.game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
             enemy.hitpoints -= characterDamage;
 
@@ -187,8 +187,8 @@
 
             if (retaliate) {
                 self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                    var check = StoryScript.Functions.rollDice(enemy.attack);
-                    var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + StoryScript.Functions.calculateBonus(self.game.character, 'defense'))) + StoryScript.Functions.calculateBonus(enemy, 'damage'));
+                    var check = self.game.helpers.rollDice(enemy.attack);
+                    var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.helpers.calculateBonus(self.game.character, 'defense'))) + self.game.helpers.calculateBonus(enemy, 'damage'));
                     self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                     self.game.character.currentHitpoints -= enemyDamage;
                 });

@@ -13,6 +13,7 @@
     storyScriptModule.service("locationService", LocationService);
     storyScriptModule.service("characterService", CharacterService);
     storyScriptModule.service("gameService", GameService);
+    storyScriptModule.service("helperService", HelperService);
 
     storyScriptModule.controller("MainController", MainController);
     storyScriptModule.controller("ConversationController", ConversationController);

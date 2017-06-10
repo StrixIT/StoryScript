@@ -160,6 +160,113 @@
         return results[0] ? results[0] : null;
     }
 
+    export function instantiateEnemy(enemy: IEnemy, definitions: IDefinitions): ICompiledEnemy {
+        if (!enemy) {
+            return null;
+        }
+
+        // A trick to work with a compiled enemy here as id is lacking in enemy and a direct cast is not possible.
+        var compiledEnemy = <ICompiledEnemy><any>enemy;
+
+        var items = <IItem[]>[];
+
+        if (enemy.items) {
+            enemy.items.forEach((def: () => IItem) => {
+                items.push(StoryScript.definitionToObject(def, 'items', definitions));
+            });
+        }
+
+        createReadOnlyCollection(compiledEnemy, 'items', items);
+
+        var combines = <ICombine<IItem | IFeature>[]>[];
+
+        if (enemy.combinations) {
+            enemy.combinations.combine.forEach((combine: ICombine<() => IItem | IFeature>) => {
+                var compiled = <ICombine<IItem | IFeature>><any>combine;
+                compiled.target = (<any>compiled.target).name;
+                combines.push(compiled);
+            });
+        }
+
+        createReadOnlyCollection(compiledEnemy, 'combinations', combines);
+
+        addProxy(compiledEnemy, 'item');
+
+        return compiledEnemy;
+    }
+
+    export function instantiatePerson(person: IPerson, definitions: IDefinitions): ICompiledPerson {
+        if (!person) {
+            return null;
+        }
+
+        var compiledPerson = <ICompiledPerson>instantiateEnemy(person, definitions);
+
+        var quests = <IQuest[]>[];
+
+        if (person.quests) {
+            person.quests.forEach((def: () => IQuest) => {
+                quests.push(StoryScript.definitionToObject(def, 'quests', definitions));
+            });
+        }
+
+        createReadOnlyCollection(compiledPerson, 'quests', quests);
+        // As far as I can tell right now, there is no reason to add quests to a person at run-time.
+        //self.addProxy(compiledPerson, 'quest');
+
+        return compiledPerson;
+    }
+
+    export function addProxy(entry, collectionType?: string) {
+        var self = this;
+
+        if (collectionType === 'enemy') {
+            entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
+                var enemy = null;
+
+                if (typeof selector !== 'object') {
+                    enemy = self.getEnemy(selector);
+                }
+                else {
+                    // Todo: should I not invoke the function here?
+                    enemy = <any>selector;
+                }
+
+                push.call(this, enemy);
+
+                if (self.ruleService.addEnemyToLocation) {
+                    self.ruleService.addEnemyToLocation(self.game.currentLocation, enemy);
+                }
+            });
+        }
+        if (collectionType === 'item') {
+            entry.items.push = (<any>entry.items.push).proxy(function (push: Function, selector: string | (() => IItem)) {
+                var item = null;
+
+                if (typeof selector !== 'object') {
+                    item = self.getItem(selector);
+                }
+                else {
+                    // Todo: should I not invoke the function here?
+                    item = <any>selector;
+                }
+
+                push.call(this, item);
+            });
+        }
+    }
+
+    export function custom<T>(definition: () => T, customData: {}): () => T {
+        return (): T => {
+            var instance = definition();
+            return angular.extend(instance, customData);
+        };
+    }
+
+    export function equals<T>(entity: T, definition: () => T): boolean {
+        return (<any>entity).id === (<any>definition).name;
+    }
+
     function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
         var collectionToFilter = <T[]>[]
 

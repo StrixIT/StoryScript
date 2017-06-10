@@ -212,9 +212,9 @@ module StoryScript {
 
                 self.setDestinations(location);
                 self.compileFeatures(location);
-                self.buildEntries(location, 'enemies', self.game.getEnemy);
-                self.buildEntries(location, 'persons', self.game.getPerson);
-                self.buildEntries(location, 'items', self.game.getItem);
+                self.buildEntries(location, 'enemies', self.game.helpers.getEnemy);
+                self.buildEntries(location, 'persons', self.game.helpers.getPerson);
+                self.buildEntries(location, 'items', self.game.helpers.getItem);
                 compiledLocations.push(location);
             }
 

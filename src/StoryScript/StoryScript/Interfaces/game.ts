@@ -26,12 +26,8 @@
         logToActionLog(message: string): void;
         logToCombatLog(message: string): void;
 
-        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => ICompiledEnemy;
-        randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-        getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
-        getItem: (selector: string | (() => IItem)) => IItem;
-        getPerson: (selector: string | (() => IPerson)) => ICompiledPerson;
-
         fight: (enemy: ICompiledEnemy, retaliate?: boolean) => void;
+
+        helpers: IHelperService;
     }
 }

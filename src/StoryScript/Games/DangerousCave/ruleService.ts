@@ -96,7 +96,7 @@
             var self = this;
             var character = new Character();
             var chosenItem = characterData.steps[1].questions[1].selectedEntry;
-            character.items.push(self.game.getItem(chosenItem.value));
+            character.items.push(self.game.helpers.getItem(chosenItem.value));
             return character;
         }
 
@@ -129,8 +129,8 @@
 
         fight = (enemy: ICompiledEnemy) => {
             var self = this;
-            var check = StoryScript.Functions.rollDice(6, self.game.character.kracht);
-            var characterDamage = check + self.game.character.oplettendheid + StoryScript.Functions.calculateBonus(self.game.character, 'attack') - StoryScript.Functions.calculateBonus(enemy, 'defense');
+            var check = self.game.helpers.rollDice(6, self.game.character.kracht);
+            var characterDamage = check + self.game.character.oplettendheid + self.game.helpers.calculateBonus(self.game.character, 'attack') - self.game.helpers.calculateBonus(enemy, 'defense');
             self.game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
             enemy.hitpoints -= characterDamage;
 
@@ -140,8 +140,8 @@
             }
 
             self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                var check = StoryScript.Functions.rollDice(enemy.attack);
-                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + StoryScript.Functions.calculateBonus(self.game.character, 'defense'))) + StoryScript.Functions.calculateBonus(enemy, 'damage'));
+                var check = self.game.helpers.rollDice(enemy.attack);
+                var enemyDamage = Math.max(0, (check - (self.game.character.vlugheid + self.game.helpers.calculateBonus(self.game.character, 'defense'))) + self.game.helpers.calculateBonus(enemy, 'damage'));
                 self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                 self.game.character.currentHitpoints -= enemyDamage;
             });

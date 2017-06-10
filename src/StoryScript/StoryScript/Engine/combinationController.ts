@@ -51,7 +51,7 @@
                 .concat(<any[]>self.game.currentLocation.activePersons)
                 .concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier))
                 .concat(<any[]>self.game.currentLocation.features);
-            self.$scope.combineActions = self.ruleService.getCombinationActions();
+            self.$scope.combineActions = self.ruleService.getCombinationActions ? self.ruleService.getCombinationActions() : [];
 
             self.$scope.combination = {
                 type: self.$scope.combineActions[0],

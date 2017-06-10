@@ -19,27 +19,30 @@ module StoryScript {
         private locationService: ILocationService;
         private characterService: ICharacterService;
         private ruleService: IRuleService;
+        private helperService: IHelperService;
         private game: IGame;
         private gameNameSpace: string;
         private definitions: IDefinitions;
 
-        constructor($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame) {
+        constructor($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, helperService: IHelperService, game: IGame) {
             var self = this;
             self.$timeout = $timeout;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
             self.ruleService = ruleService;
+            self.helperService = helperService;
             self.game = game;
         }
 
-        public $get($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, game: IGame): IGameService {
+        public $get($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, helperService: IHelperService, game: IGame): IGameService {
             var self = this;
             self.$timeout = $timeout;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
             self.ruleService = ruleService;
+            self.helperService = helperService;
             self.game = game;
 
             return {
@@ -57,6 +60,7 @@ module StoryScript {
 
         init = (): void => {
             var self = this;
+            self.game.helpers = self.helperService;
 
             if (self.ruleService.setupGame) {
                 self.ruleService.setupGame(self.game);
@@ -222,29 +226,6 @@ module StoryScript {
                 self.game.combatLog.splice(0, 0, message);
             }
 
-            self.game.getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
-                var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector, 'enemies', self.definitions);
-                return self.instantiateEnemy(instance);
-            }
-
-            self.game.getItem = (selector: string | (() => IItem)) => {
-                return StoryScript.find<IItem>(self.game.definitions.items, selector, 'items', self.definitions);
-            }
-
-            self.game.getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
-                var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector, 'persons', self.definitions);
-                return self.instantiatePerson(instance);
-            }
-
-            self.game.randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
-                var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, 'enemies', self.definitions, <(enemy: IEnemy) => boolean>selector);
-                return self.instantiateEnemy(instance);
-            }
-
-            self.game.randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
-                return StoryScript.random<IItem>(self.game.definitions.items, 'items', self.definitions, <(item: IItem) => boolean>selector);
-            }
-
             self.game.fight = self.fight;
 
             // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
@@ -268,7 +249,7 @@ module StoryScript {
             createReadOnlyCollection(self.game.character, 'items', isEmpty(self.game.character.items) ? [] : self.game.character.items);
             createReadOnlyCollection(self.game.character, 'quests', isEmpty(self.game.character.quests) ? [] : self.game.character.quests);
 
-            self.addProxy(self.game.character, 'item');
+            addProxy(self.game.character, 'item');
 
             Object.defineProperty(self.game.character, 'combatItems', {
                 get: function () {
@@ -281,7 +262,7 @@ module StoryScript {
             var self = this;
 
             self.game.locations.forEach((location: ICompiledLocation) => {
-                self.addProxy(location, 'enemy');
+                addProxy(location, 'enemy');
             });
         }
 
@@ -318,67 +299,6 @@ module StoryScript {
             self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
         }
 
-        private instantiateEnemy = (enemy: IEnemy): ICompiledEnemy => {
-            var self = this;
-
-            if (!enemy) {
-                return null;
-            }
-
-            // A trick to work with a compiled enemy here as id is lacking in enemy and a direct cast is not possible.
-            var compiledEnemy = <ICompiledEnemy><any>enemy;
-
-            var items = <IItem[]>[];
-
-            if (enemy.items) {
-                enemy.items.forEach((def: () => IItem) => {
-                    items.push(StoryScript.definitionToObject(def, 'items', self.definitions));
-                });
-            }
-
-            createReadOnlyCollection(compiledEnemy, 'items', items);
-
-            var combines = <ICombine<IItem | IFeature>[]>[];
-
-            if (enemy.combinations) {
-                enemy.combinations.combine.forEach((combine: ICombine<() => IItem | IFeature>) => {
-                    var compiled = <ICombine<IItem | IFeature>><any>combine;
-                    compiled.target = (<any>compiled.target).name;
-                    combines.push(compiled);
-                });
-            }
-
-            createReadOnlyCollection(compiledEnemy, 'combinations', combines);
-
-            self.addProxy(compiledEnemy, 'item');
-
-            return compiledEnemy;
-        }
-
-        private instantiatePerson = (person: IPerson): ICompiledPerson => {
-            var self = this;
-
-            if (!person) {
-                return null;
-            }
-
-            var compiledPerson = <ICompiledPerson>self.instantiateEnemy(person);
-
-            var quests = <IQuest[]>[];
-
-            if (person.quests) {
-                person.quests.forEach((def: () => IQuest) => {
-                    quests.push(StoryScript.definitionToObject(def, 'quests', self.definitions));
-                });
-            }
-
-            createReadOnlyCollection(compiledPerson, 'quests', quests);
-            // As far as I can tell right now, there is no reason to add quests to a person at run-time.
-            //self.addProxy(compiledPerson, 'quest');
-
-            return compiledPerson;
-        }
-
         private setStartNode(person: ICompiledPerson, nodeName: string): void {
             var node = person.conversation.nodes.filter(n => n.node === nodeName)[0];
 
@@ -389,46 +309,7 @@ module StoryScript {
 
             node.start = true;
         }
-
-        private addProxy(entry, collectionType?: string) {
-            var self = this;
-
-            if (collectionType === 'enemy') {
-                entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
-                    var enemy = null;
-
-                    if (typeof selector !== 'object') {
-                        enemy = self.game.getEnemy(selector);
-                    }
-                    else {
-                        // Todo: should I not invoke the function here?
-                        enemy = <any>selector;
-                    }
-
-                    push.call(this, enemy);
-
-                    if (self.ruleService.addEnemyToLocation) {
-                        self.ruleService.addEnemyToLocation(self.game.currentLocation, enemy);
-                    }
-                });
-            }
-            if (collectionType === 'item') {
-                entry.items.push = (<any>entry.items.push).proxy(function (push: Function, selector: string | (() => IItem)) {
-                    var item = null;
-
-                    if (typeof selector !== 'object') {
-                        item = self.game.getItem(selector);
-                    }
-                    else {
-                        // Todo: should I not invoke the function here?
-                        item = <any>selector;
-                    }
-
-                    push.call(this, item);
-                });
-            }
-        }
     }
 
-    GameService.$inject = ['$timeout', 'dataService', 'locationService', 'characterService', 'ruleService', 'game'];
+    GameService.$inject = ['$timeout', 'dataService', 'locationService', 'characterService', 'ruleService', 'helperService', 'game'];
 }
