@@ -23,8 +23,19 @@
 
         getCombinationActions = () => {
             return [
-                Constants.USE,
-                Constants.THROW
+                {
+                    text: Constants.USE,
+                    preposition: 'on'
+                },
+                {
+                    text: Constants.THROW,
+                    preposition: 'at'
+                },
+                {
+                    text: Constants.LOOKAT,
+                    preposition: 'at',
+                    requiresTarget: false
+                }
             ];
         }
 

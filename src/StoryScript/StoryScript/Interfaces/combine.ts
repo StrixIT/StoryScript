@@ -7,6 +7,6 @@
     export interface ICombine<T> {
         target: T;
         type: string,
-        match: (game: IGame, target: T, self: { combinations: ICombinations<T> }) => void;
+        match: (game: IGame, self: { combinations: ICombinations<T> }, target: T) => void;
     }
 }

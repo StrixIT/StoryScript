@@ -7,13 +7,15 @@
 
     export class CharacterController {
         private $scope: ICharacterControllerScope;
+        private $rootScope: ng.IRootScopeService;
         private characterService: ICharacterService;
         private ruleService: IRuleService;
         private game: IGame;
 
-        constructor($scope: ICharacterControllerScope, characterService: ICharacterService, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: ICharacterControllerScope, $rootScope: ng.IRootScopeService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
+            self.$rootScope = $rootScope;
             self.characterService = characterService;
             self.ruleService = ruleService;
             self.game = game;
@@ -110,6 +112,7 @@
             var self = this;
             self.game.character.items.remove(item);
             self.game.currentLocation.items.push(item);
+            self.$rootScope.$broadcast('refreshCombine');
         }
 
         questStatus = (quest: IQuest): string => {
@@ -123,5 +126,5 @@
         }
     }
 
-    CharacterController.$inject = ['$scope', 'characterService', 'ruleService', 'game', 'customTexts'];
+    CharacterController.$inject = ['$scope', '$rootScope', 'characterService', 'ruleService', 'game', 'customTexts'];
 }

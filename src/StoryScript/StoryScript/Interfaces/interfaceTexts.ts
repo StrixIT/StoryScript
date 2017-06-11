@@ -57,6 +57,7 @@
         combinations?: string;
         tryCombination?: string;
         noCombination?: string;
+        noCombinationNoTarget?: string;
 
         format?: (template: string, tokens: string[]) => string;
         titleCase?: (text: string) => string;

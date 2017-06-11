@@ -72,6 +72,11 @@ textarea {
     margin: 0 20px 20px 0;
 }
 
+.combine-label {
+    display: inline-block;
+    margin-right: 20px;
+}
+
 fieldset {
     padding-left: 15px;
 }

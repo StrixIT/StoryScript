@@ -1,10 +1,13 @@
 ﻿<div ng-controller="CombinationController as combinationController">
-    <fieldset ng-if="combination.source && combination.target && combination.type">
+    <fieldset ng-if="combinationController.showCombinations">
         <legend>{{ texts.combinations }}</legend>
         <div>
+            <select strix-drop-down class="combine-select" ng-model="combination.type" source="combineActions" option-label="text"></select>
+            <div class="inline" ng-if="combination.type.requiresTarget && combineTargets.length > 0">
+                <select strix-drop-down class="combine-select" ng-model="combination.target" source="combineTargets" option-label="name"></select>
+                <span class="combine-label">{{ combination.type.preposition }}</span>
+            </div>
             <select strix-drop-down class="combine-select" ng-model="combination.source" source="combineSources" option-label="name"></select>
-            <select strix-drop-down class="combine-select" ng-model="combination.target" source="combineTargets" option-label="name"></select>
-            <select strix-drop-down class="combine-select" ng-model="combination.type" source="combineActions"></select>
             <button type="button" class="btn btn-info" ng-click="combinationController.tryCombination(combination.source, combination.target, combination.type)">{{ texts.tryCombination }}</button>
         </div>
     </fieldset>

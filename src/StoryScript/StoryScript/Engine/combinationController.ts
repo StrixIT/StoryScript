@@ -2,7 +2,7 @@
     export interface ICombination {
         source: { name };
         target: { name };
-        type: string;
+        type: ICombinationAction;
     }
 
     export interface ICombinationControllerScope extends ng.IScope {
@@ -11,18 +11,20 @@
         combination: ICombination;
         combineSources: any[];
         combineTargets: any[];
-        combineActions: string[];
+        combineActions: ICombinationAction[];
     }
 
     export class CombinationController {
         private $scope: ICombinationControllerScope;
+        private $timeout: ng.ITimeoutService;
         private ruleService: IRuleService;
         private game: IGame;
         private texts: IInterfaceTexts;
 
-        constructor($scope: ICombinationControllerScope, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: ICombinationControllerScope, $timeout: ng.ITimeoutService, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
+            self.$timeout = $timeout;
             self.ruleService = ruleService;
             self.game = game;
             self.texts = texts;
@@ -47,45 +49,57 @@
             }
 
             self.$scope.combineTargets = equipment.concat(self.game.character.items);
+
             self.$scope.combineSources = <any[]>self.game.currentLocation.activeEnemies
                 .concat(<any[]>self.game.currentLocation.activePersons)
                 .concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier))
                 .concat(<any[]>self.game.currentLocation.features);
-            self.$scope.combineActions = self.ruleService.getCombinationActions ? self.ruleService.getCombinationActions() : [];
 
-            self.$scope.combination = {
-                type: self.$scope.combineActions[0],
-                source: self.$scope.combineSources[0],
-                target: self.$scope.combineTargets[0]
-            };
+            self.$scope.combineActions = self.ruleService.getCombinationActions ? self.ruleService.getCombinationActions()
+                .filter(a => self.$scope.combineTargets.length > 0 || a.requiresTarget === false)
+                .map(a => { a.requiresTarget = a.requiresTarget === false ? false : true; return a; }) : [];
+
+            self.$timeout(() => {
+                self.$scope.combination = {
+                    type: self.$scope.combineActions[0],
+                    source: self.$scope.combineSources[0],
+                    target: self.$scope.combineTargets[0]
+                };
+            }, 0);
         }
 
-        tryCombination = (source: { id: string, name: string, combinations: ICombinations<any> }, target: { id: string }, type: string) => {
+        showCombinations = () => {
+            var self = this;
+            return self.$scope.combination.source && ((self.$scope.combination.type && !self.$scope.combination.type.requiresTarget) || (self.$scope.combination.target && self.$scope.combination.type));
+        }
+
+        tryCombination = (source: { id: string, name: string, combinations: ICombinations<any> }, target: { id: string }, type: ICombinationAction) => {
             var self = this;
 
-            if (!source || !target) {
+            if (!source) {
                 return;
             }
 
             var combines = source.combinations && source.combinations.combine;
 
             if (combines) {
-                var combination = combines.filter(c => target.id === c.target && c.type === type)[0];
+                var combination = combines.filter(c => c.type === type.text && (!type.requiresTarget || target.id === c.target))[0];
 
                 if (combination) {
-                    combination.match(self.game, target, source);
+                    combination.match(self.game, source, target);
                 }
                 else {
                     if (source.combinations.combineFailText) {
                         self.game.logToActionLog(source.combinations.combineFailText(self.game, target));
                     }
                     else {
-                        self.game.logToActionLog(self.texts.format(self.texts.noCombination, [target.id, source.name, type]));
+                        var message = target ? self.texts.format(self.texts.noCombination, [target.id, source.name, type.text, type.preposition]) : self.texts.format(self.texts.noCombinationNoTarget, [source.name, type.text]);
+                        self.game.logToActionLog(message);
                     }
                 };
             }
         }
     }
 
-    CombinationController.$inject = ['$scope', 'ruleService', 'game', 'customTexts'];
+    CombinationController.$inject = ['$scope', '$timeout', 'ruleService', 'game', 'customTexts'];
 }
