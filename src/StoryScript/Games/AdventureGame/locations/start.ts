@@ -22,7 +22,11 @@
                                 }
                             ]
                         }
-                    }
+                    },
+                },
+                {
+                    name: 'To Second',
+                    target: Locations.Second
                 }
             ],
             features: [

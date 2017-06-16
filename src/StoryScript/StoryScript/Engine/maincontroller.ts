@@ -179,11 +179,10 @@
             }
 
             var action = barrier.actions.filter((item: IBarrier) => { return item.name == barrier.selectedAction.name; })[0];
-            var result = action.action(self.game, destination, barrier, action);
+            action.action(self.game, destination, barrier, action);
+            barrier.actions.remove(action);
 
-            if (!result) {
-                barrier.actions.remove(action);
-            }
+            self.$scope.$broadcast('refreshCombine');
 
             self.gameService.saveGame();
         }
@@ -193,6 +192,8 @@
 
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location, true);
+
+            self.$scope.$broadcast('refreshCombine');
 
             self.gameService.saveGame();
         }
@@ -207,6 +208,7 @@
         useItem = (item: IItem): void => {
             var self = this;
             item.use(self.game, item);
+            self.$scope.$broadcast('refreshCombine');
         }
 
         initCombat = (newValue: ICompiledEnemy[]) => {
@@ -274,6 +276,9 @@
             }
 
             self.gameService.saveGame();
+
+            self.$scope.$broadcast('refreshCombine');
+
             self.game.state = GameState.Play;
         }
 

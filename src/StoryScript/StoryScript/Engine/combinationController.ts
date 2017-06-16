@@ -52,7 +52,7 @@
 
             self.$scope.combineSources = <any[]>self.game.currentLocation.activeEnemies
                 .concat(<any[]>self.game.currentLocation.activePersons)
-                .concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier))
+                .concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier).filter(d => d !== undefined))
                 .concat(<any[]>self.game.currentLocation.features);
 
             self.$scope.combineActions = self.ruleService.getCombinationActions ? self.ruleService.getCombinationActions()
@@ -70,7 +70,9 @@
 
         showCombinations = () => {
             var self = this;
-            return self.$scope.combination.source && ((self.$scope.combination.type && !self.$scope.combination.type.requiresTarget) || (self.$scope.combination.target && self.$scope.combination.type));
+            return self.$scope.combination && self.$scope.combination.source &&
+                ((self.$scope.combination.type && !self.$scope.combination.type.requiresTarget)
+                    || (self.$scope.combination.target && self.$scope.combination.type));
         }
 
         tryCombination = (source: { id: string, name: string, combinations: ICombinations<any> }, target: { id: string }, type: ICombinationAction) => {
