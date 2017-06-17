@@ -56,11 +56,13 @@ module StoryScript {
 
             locations.forEach(function (location) {
                 createReadOnlyCollection(location, 'destinations', location.destinations || []);
-                createReadOnlyCollection(location, 'features', location.features || []);
 
                 // Add a proxy to the destination collection push function, to replace the target function pointer
                 // with the target id when adding destinations and enemies at runtime.
                 location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
+
+                createReadOnlyCollection(location, 'features', location.features || []);
+                location.features.push = (<any>location.features.push).proxy(self.addFeature, self.game);
 
                 createReadOnlyCollection(location, 'actions', <any>location.actions || []);
                 location.actions.push = (<any>location.actions.push).proxy(self.addAction, self.game);
@@ -267,10 +269,22 @@ module StoryScript {
             var args = [].slice.apply(arguments);
             var originalFunction = args.shift();
 
-            // Replace the target function pointer with the target id.
             var destination = <IDestination>args[0];
             setDestination(destination);
             addKeyAction(args[1], destination);
+            args.splice(1, 1);
+            originalFunction.apply(this, args);
+        }
+
+        private addFeature() {
+            var self = this;
+            var args = [].slice.apply(arguments);
+            var originalFunction = args.shift();
+
+            // Replace the target function pointer with the target id.
+            var feature = <IFeature>args[0];
+            feature.combinations.combine.forEach(c => c.target = (<any>c.target).name);
+
             args.splice(1, 1);
             originalFunction.apply(this, args);
         }

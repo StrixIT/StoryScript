@@ -58,7 +58,7 @@
             combinations: "Combinations",
             tryCombination: "Try",
             noCombination: "You {2} the {0} {3} the {1}. Nothing happens.",
-            noCombinationNoTarget: "You {1} the {0}. Nothing happens."
+            noCombinationNoTarget: "You {1} {2} the {0}. Nothing happens."
         }
 
         format = (template: string, tokens: string[]): string => {

@@ -221,6 +221,23 @@
             if (newValue && self.ruleService.initCombat) {
                 self.ruleService.initCombat(self.game.currentLocation);
             }
+
+            self.$scope.$broadcast('refreshCombine');
+        }
+
+        watchPersons = (newValue: ICompiledPerson[]) => {
+            var self = this;
+            self.$scope.$broadcast('refreshCombine');
+        }
+
+        watchDestinations = (newValue: IDestination[]) => {
+            var self = this;
+            self.$scope.$broadcast('refreshCombine');
+        }
+
+        watchFeatures = (newValue: IDestination[]) => {
+            var self = this;
+            self.$scope.$broadcast('refreshCombine');
         }
 
         startCombat = () => {
@@ -298,6 +315,9 @@
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
             self.$scope.$watch('game.state', self.watchGameState);
             self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
+            self.$scope.$watchCollection('game.currentLocation.persons', self.watchPersons);
+            self.$scope.$watchCollection('game.currentLocation.destinations', self.watchDestinations);
+            self.$scope.$watchCollection('game.currentLocation.features', self.watchFeatures);
 
             self.reset = () => { self.gameService.reset.call(self.gameService); };
 

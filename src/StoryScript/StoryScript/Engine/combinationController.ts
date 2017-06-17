@@ -95,7 +95,7 @@
                         self.game.logToActionLog(source.combinations.combineFailText(self.game, target));
                     }
                     else {
-                        var message = target ? self.texts.format(self.texts.noCombination, [target.id, source.name, type.text, type.preposition]) : self.texts.format(self.texts.noCombinationNoTarget, [source.name, type.text]);
+                        var message = target ? self.texts.format(self.texts.noCombination, [target.id, source.name, type.text, type.preposition]) : self.texts.format(self.texts.noCombinationNoTarget, [source.name, type.text, type.preposition]);
                         self.game.logToActionLog(message);
                     }
                 };

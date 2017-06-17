@@ -6,5 +6,6 @@
         persons: [() => IPerson];
         items: [() => IItem];
         quests: [() => IQuest];
+        features: [() => IFeature];
     }
 }
