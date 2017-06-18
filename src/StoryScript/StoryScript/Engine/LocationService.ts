@@ -188,7 +188,6 @@ module StoryScript {
         private initTrade(game: IGame) {
             // Todo: better way to get action. Use action function name from function list?
             if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(a => a.type == ActionType.Trade))) {
-                game.currentLocation.actions = game.currentLocation.actions || [];
 
                 game.currentLocation.actions.push({
                     text: game.currentLocation.trade.title,
