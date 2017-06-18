@@ -68,6 +68,41 @@
             }
         }
 
+        isSlotUsed = (slot: string) => {
+            var self = this;
+
+            if (self.game.character) {
+                return self.game.character.equipment[slot] !== undefined;
+            }
+        }
+
+        dropItem = (item: IItem): void => {
+            var self = this;
+            self.game.character.items.remove(item);
+            self.game.currentLocation.items.push(item);
+            self.$rootScope.$broadcast('refreshCombine');
+        }
+
+        showQuests = (): boolean => {
+            var self = this;
+            return self.game.character && !isEmpty(self.game.character.quests);
+        }
+
+        showActiveQuests = (): boolean => {
+            var self = this;
+            return self.game.character.quests.filter(q => !q.completed).length > 0;
+        }
+
+        showCompletedQuests = (): boolean => {
+            var self = this;
+            return self.game.character.quests.filter(q => q.completed).length > 0;
+        }
+
+        questStatus = (quest: IQuest): string => {
+            var self = this;
+            return typeof quest.status === 'function' ? (<any>quest).status(self.game, quest, quest.checkDone(self.game, quest)) : quest.status;
+        }
+
         private unequip(type: string, currentItem?: IItem) {
             var self = this;
             var equippedItem = self.game.character.equipment[type];
@@ -98,26 +133,6 @@
 
                 self.game.character.equipment[type] = null;
             }
-        }
-
-        isSlotUsed = (slot: string) => {
-            var self = this;
-
-            if (self.game.character) {
-                return self.game.character.equipment[slot] !== undefined;
-            }
-        }
-
-        dropItem = (item: IItem): void => {
-            var self = this;
-            self.game.character.items.remove(item);
-            self.game.currentLocation.items.push(item);
-            self.$rootScope.$broadcast('refreshCombine');
-        }
-
-        questStatus = (quest: IQuest): string => {
-            var self = this;
-            return typeof quest.status === 'function' ? (<any>quest).status(self.game, quest, quest.checkDone(self.game, quest)) : quest.status;
         }
 
         private getEquipmentType = (slot: StoryScript.EquipmentType) => {

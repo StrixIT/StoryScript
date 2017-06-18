@@ -160,7 +160,7 @@
         return results[0] ? results[0] : null;
     }
 
-    export function instantiateEnemy(enemy: IEnemy, definitions: IDefinitions): ICompiledEnemy {
+    export function instantiateEnemy(enemy: IEnemy, definitions: IDefinitions, game: IGame, ruleService: IRuleService): ICompiledEnemy {
         if (!enemy) {
             return null;
         }
@@ -190,17 +190,17 @@
 
         createReadOnlyCollection(compiledEnemy, 'combinations', combines);
 
-        addProxy(compiledEnemy, 'item');
+        addProxy(compiledEnemy, 'item', game, ruleService);
 
         return compiledEnemy;
     }
 
-    export function instantiatePerson(person: IPerson, definitions: IDefinitions): ICompiledPerson {
+    export function instantiatePerson(person: IPerson, definitions: IDefinitions, game: IGame, ruleService: IRuleService): ICompiledPerson {
         if (!person) {
             return null;
         }
 
-        var compiledPerson = <ICompiledPerson>instantiateEnemy(person, definitions);
+        var compiledPerson = <ICompiledPerson>instantiateEnemy(person, definitions, game, ruleService);
 
         var quests = <IQuest[]>[];
 
@@ -212,20 +212,18 @@
 
         createReadOnlyCollection(compiledPerson, 'quests', quests);
         // As far as I can tell right now, there is no reason to add quests to a person at run-time.
-        //self.addProxy(compiledPerson, 'quest');
+        //addProxy(compiledPerson, 'quest', game, ruleService);
 
         return compiledPerson;
     }
 
-    export function addProxy(entry, collectionType?: string) {
-        var self = this;
-
+    export function addProxy(entry, collectionType: string, game: IGame, ruleService: IRuleService) {
         if (collectionType === 'enemy') {
             entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
                 var enemy = null;
 
                 if (typeof selector !== 'object') {
-                    enemy = self.getEnemy(selector);
+                    enemy = game.helpers.getEnemy(selector);
                 }
                 else {
                     // Todo: should I not invoke the function here?
@@ -234,8 +232,8 @@
 
                 push.call(this, enemy);
 
-                if (self.ruleService.addEnemyToLocation) {
-                    self.ruleService.addEnemyToLocation(self.game.currentLocation, enemy);
+                if (ruleService.addEnemyToLocation) {
+                    ruleService.addEnemyToLocation(game.currentLocation, enemy);
                 }
             });
         }
@@ -244,7 +242,7 @@
                 var item = null;
 
                 if (typeof selector !== 'object') {
-                    item = self.getItem(selector);
+                    item = game.helpers.getItem(selector);
                 }
                 else {
                     // Todo: should I not invoke the function here?

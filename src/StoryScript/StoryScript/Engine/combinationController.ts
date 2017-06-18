@@ -40,6 +40,10 @@
         }
 
         private refreshCombine(self: CombinationController) {
+            if (!self.game.character) {
+                return;
+            }
+
             var equipment = [];
 
             for (var n in self.game.character.equipment) {

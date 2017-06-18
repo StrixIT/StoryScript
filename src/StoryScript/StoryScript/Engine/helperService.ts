@@ -41,7 +41,7 @@ module StoryScript {
         getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
             var self = this;
             var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector, 'enemies', self.game.definitions);
-            return instantiateEnemy(instance, self.game.definitions);
+            return instantiateEnemy(instance, self.game.definitions, self.game, self.ruleService);
         }
 
         getItem = (selector: string | (() => IItem)) => {
@@ -52,13 +52,13 @@ module StoryScript {
         getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
             var self = this;
             var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector, 'persons', self.game.definitions);
-            return instantiatePerson(instance, self.game.definitions);
+            return instantiatePerson(instance, self.game.definitions, self.game, self.ruleService);
         }
 
         randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
             var self = this;
             var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, 'enemies', self.game.definitions, <(enemy: IEnemy) => boolean>selector);
-            return instantiateEnemy(instance, self.game.definitions);
+            return instantiateEnemy(instance, self.game.definitions, self.game, self.ruleService);
         }
 
         randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {

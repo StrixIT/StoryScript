@@ -249,7 +249,7 @@ module StoryScript {
             createReadOnlyCollection(self.game.character, 'items', isEmpty(self.game.character.items) ? [] : self.game.character.items);
             createReadOnlyCollection(self.game.character, 'quests', isEmpty(self.game.character.quests) ? [] : self.game.character.quests);
 
-            addProxy(self.game.character, 'item');
+            addProxy(self.game.character, 'item', self.game, self.ruleService);
 
             Object.defineProperty(self.game.character, 'combatItems', {
                 get: function () {
@@ -262,7 +262,7 @@ module StoryScript {
             var self = this;
 
             self.game.locations.forEach((location: ICompiledLocation) => {
-                addProxy(location, 'enemy');
+                addProxy(location, 'enemy', self.game, self.ruleService);
             });
         }
 
