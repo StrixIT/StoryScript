@@ -6,8 +6,14 @@
         "target": "es5",
         "outFile": "game.js"
     },
-  "exclude": [
-    "node_modules",
-    "wwwroot"
-  ]
+    "include": [
+        "Libraries/**/*",
+        "Types/**/*",
+        "StoryScript/**/!(app)*.ts",
+        "StoryScript/app.js"
+    ],
+    "exclude": [
+        "node_modules",
+        "wwwroot"
+    ]
 }
