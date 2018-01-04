@@ -17,15 +17,15 @@
     export class CombinationController {
         private $scope: ICombinationControllerScope;
         private $timeout: ng.ITimeoutService;
-        private ruleService: IRuleService;
+        private rules: IRules;
         private game: IGame;
         private texts: IInterfaceTexts;
 
-        constructor($scope: ICombinationControllerScope, $timeout: ng.ITimeoutService, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: ICombinationControllerScope, $timeout: ng.ITimeoutService, rules: IRules, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.$timeout = $timeout;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.game = game;
             self.texts = texts;
             self.$scope.game = self.game;
@@ -59,7 +59,7 @@
                 .concat(<any[]>self.game.currentLocation.destinations.map(d => d.barrier).filter(d => d !== undefined))
                 .concat(<any[]>self.game.currentLocation.features);
 
-            self.$scope.combineActions = self.ruleService.getCombinationActions ? self.ruleService.getCombinationActions()
+            self.$scope.combineActions = self.rules.getCombinationActions ? self.rules.getCombinationActions()
                 .filter(a => self.$scope.combineTargets.length > 0 || a.requiresTarget === false)
                 .map(a => { a.requiresTarget = a.requiresTarget === false ? false : true; return a; }) : [];
 
@@ -107,5 +107,5 @@
         }
     }
 
-    CombinationController.$inject = ['$scope', '$timeout', 'ruleService', 'game', 'customTexts'];
+    CombinationController.$inject = ['$scope', '$timeout', 'rules', 'game', 'customTexts'];
 }

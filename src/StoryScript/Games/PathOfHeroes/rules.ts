@@ -1,24 +1,5 @@
 ﻿module PathOfHeroes {
-    export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
-        private game: IGame;
-
-        constructor(game: IGame) {
-            var self = this;
-            self.game = game;
-        }
-
-        public $get(game: IGame): StoryScript.IRuleService {
-            var self = this;
-            self.game = game;
-
-            return {
-                getSheetAttributes: self.getSheetAttributes,
-                getCreateCharacterSheet: self.getCreateCharacterSheet,
-                createCharacter: self.createCharacter,
-                fight: self.fight,
-                scoreChange: self.scoreChange
-            };
-        }
+    export class Rules implements StoryScript.IRules {
 
         getSheetAttributes = () => {
             return [
@@ -174,29 +155,27 @@
             };
         }
 
-        public createCharacter(characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
+        public createCharacter(game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
             return character;
         }
 
-        fight = (enemy: ICompiledEnemy) => {
+        fight = (game: IGame, enemy: ICompiledEnemy) => {
             var self = this;
 
             // Implement character attack here.
 
-            self.game.currentLocation.enemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            game.currentLocation.enemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 // Implement monster attack here
             });
         }
 
-        scoreChange(change: number): boolean {
+        scoreChange(game: IGame, change: number): boolean {
             var self = this;
 
             // Implement logic to occur when the score changes. Return true when the character gains a level.
             return false;
         }
     }
-
-    RuleService.$inject = ['game'];
 }

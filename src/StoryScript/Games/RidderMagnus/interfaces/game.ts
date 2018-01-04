@@ -13,6 +13,6 @@
 
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.value("gameNameSpace", 'RidderMagnus');
-    storyScriptModule.service("ruleService", RuleService);
+    storyScriptModule.value("rules", new Rules());
     storyScriptModule.value("customTexts", new CustomTexts().texts);
 }

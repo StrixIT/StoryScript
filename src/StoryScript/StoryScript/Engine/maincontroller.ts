@@ -17,7 +17,7 @@
         private $scope: IMainControllerScope;
         private $window: ng.IWindowService;
         private locationService: ILocationService;
-        private ruleService: IRuleService;
+        private rules: IRules;
         private gameService: IGameService;
         private dataService: IDataService;
         private game: IGame;
@@ -26,12 +26,12 @@
         private encounters: ICompiledCollection<IEnemy, ICompiledEnemy>;
         private modalSettings: IModalSettings;
 
-        constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, ruleService: IRuleService, gameService: IGameService, dataService: IDataService, game: IGame, customTexts: IInterfaceTexts) {
+        constructor($scope: IMainControllerScope, $window: ng.IWindowService, locationService: ILocationService, rules: IRules, gameService: IGameService, dataService: IDataService, game: IGame, customTexts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.$window = $window;
             self.locationService = locationService;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.gameService = gameService;
             self.dataService = dataService;
             self.game = game;
@@ -64,7 +64,7 @@
 
         getDescription(entity: any, key: string) {
             var self = this;
-            return entity && entity[key] ? self.ruleService.processDescription ? self.ruleService.processDescription(entity, key) : entity[key] : null;
+            return entity && entity[key] ? self.rules.processDescription ? self.rules.processDescription(self.game, entity, key) : entity[key] : null;
         }
 
         getButtonClass = (action: IAction) => {
@@ -218,8 +218,8 @@
                 self.$scope.modalSettings.canClose = true;
             }
 
-            if (newValue && self.ruleService.initCombat) {
-                self.ruleService.initCombat(self.game.currentLocation);
+            if (newValue && self.rules.initCombat) {
+                self.rules.initCombat(self.game, self.game.currentLocation);
             }
 
             self.$scope.$broadcast('refreshCombine');
@@ -398,5 +398,5 @@
         }
     }
 
-    MainController.$inject = ['$scope', '$window', 'locationService', 'ruleService', 'gameService', 'dataService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', '$window', 'locationService', 'rules', 'gameService', 'dataService', 'game', 'customTexts'];
 }

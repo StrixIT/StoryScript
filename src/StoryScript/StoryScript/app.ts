@@ -8,6 +8,8 @@
     storyScriptModule.value('game', game);
     var definitions = {};
     storyScriptModule.value('definitions', definitions);
+    var rules = {};
+    storyScriptModule.value('rules', rules);
 
     storyScriptModule.service("dataService", DataService);
     storyScriptModule.service("locationService", LocationService);

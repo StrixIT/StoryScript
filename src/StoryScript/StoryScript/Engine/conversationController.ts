@@ -7,14 +7,14 @@
 
     export class ConversationController {
         private $scope: IConversationControllerScope;
-        private ruleService: IRuleService;
+        private rules: IRules;
         private game: IGame;
         private texts: IInterfaceTexts;
 
-        constructor($scope: IConversationControllerScope, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: IConversationControllerScope, rules: IRules, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.game = game;
             self.texts = texts;
             self.$scope.game = self.game;
@@ -68,7 +68,7 @@
             var self = this;
 
             if (nodeOrReply && nodeOrReply.lines) {
-                return self.ruleService.processDescription ? self.ruleService.processDescription(nodeOrReply, 'lines') : nodeOrReply.lines;
+                return self.rules.processDescription ? self.rules.processDescription(self.game, nodeOrReply, 'lines') : nodeOrReply.lines;
             }
         }
 
@@ -218,5 +218,5 @@
         }
     }
 
-    ConversationController.$inject = ['$scope', 'ruleService', 'game', 'customTexts'];
+    ConversationController.$inject = ['$scope', 'rules', 'game', 'customTexts'];
 }

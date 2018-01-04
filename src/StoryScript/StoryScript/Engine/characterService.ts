@@ -2,25 +2,25 @@
     export interface ICharacterService {
         getSheetAttributes(): string[];
         getCreateCharacterSheet(): ICreateCharacter;
-        createCharacter(characterData: any): ICharacter;
+        createCharacter(game: IGame, characterData: any): ICharacter;
     }
 }
 
 module StoryScript {
     export class CharacterService implements ng.IServiceProvider, ICharacterService {
         private dataService: IDataService;
-        private ruleService: IRuleService;
+        private rules: IRules;
 
-        constructor(dataService: IDataService, ruleService: IRuleService) {
+        constructor(dataService: IDataService, rules: IRules) {
             var self = this;
             self.dataService = dataService;
-            self.ruleService = ruleService;
+            self.rules = rules;
         }
 
-        public $get(dataService: IDataService, ruleService: IRuleService): ICharacterService {
+        public $get(dataService: IDataService, rules: IRules): ICharacterService {
             var self = this;
             self.dataService = dataService;
-            self.ruleService = ruleService;
+            self.rules = rules;
 
             return {
                 getSheetAttributes: self.getSheetAttributes,
@@ -31,22 +31,22 @@ module StoryScript {
 
         getSheetAttributes = (): string[] => {
             var self = this;
-            return self.ruleService.getSheetAttributes();
+            return self.rules.getSheetAttributes();
         }
 
         getCreateCharacterSheet = (): ICreateCharacter => {
             var self = this;
-            return self.ruleService.getCreateCharacterSheet();
+            return self.rules.getCreateCharacterSheet();
         }
 
-        createCharacter = (characterData: ICreateCharacter): ICharacter => {
+        createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
             var self = this;
             var character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
 
             if (isEmpty(character)) {
 
                 var self = this;
-                character = self.ruleService.createCharacter(characterData);
+                character = self.rules.createCharacter(game, characterData);
 
                 characterData.steps.forEach(function (step) {
                     if (step.questions) {
@@ -75,5 +75,5 @@ module StoryScript {
         }
     }
 
-    CharacterService.$inject = ['dataService', 'ruleService'];
+    CharacterService.$inject = ['dataService', 'rules'];
 }

@@ -18,30 +18,30 @@ module StoryScript {
         private dataService: IDataService;
         private locationService: ILocationService;
         private characterService: ICharacterService;
-        private ruleService: IRuleService;
+        private rules: IRules;
         private helperService: IHelperService;
         private game: IGame;
         private gameNameSpace: string;
         private definitions: IDefinitions;
 
-        constructor($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, helperService: IHelperService, game: IGame) {
+        constructor($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, rules: IRules, helperService: IHelperService, game: IGame) {
             var self = this;
             self.$timeout = $timeout;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.helperService = helperService;
             self.game = game;
         }
 
-        public $get($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, ruleService: IRuleService, helperService: IHelperService, game: IGame): IGameService {
+        public $get($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, rules: IRules, helperService: IHelperService, game: IGame): IGameService {
             var self = this;
             self.$timeout = $timeout;
             self.dataService = dataService;
             self.locationService = locationService;
             self.characterService = characterService;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.helperService = helperService;
             self.game = game;
 
@@ -62,8 +62,8 @@ module StoryScript {
             var self = this;
             self.game.helpers = self.helperService;
 
-            if (self.ruleService.setupGame) {
-                self.ruleService.setupGame(self.game);
+            if (self.rules.setupGame) {
+                self.rules.setupGame(self.game);
             }
 
             self.setupGame();
@@ -108,7 +108,7 @@ module StoryScript {
 
         startNewGame = (characterData: any): void => {
             var self = this;
-            self.game.character = self.characterService.createCharacter(characterData);
+            self.game.character = self.characterService.createCharacter(self.game, characterData);
             self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
             self.setupCharacter();
             self.game.changeLocation('Start');
@@ -135,7 +135,7 @@ module StoryScript {
 
         fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
-            self.ruleService.fight(enemy, retaliate);
+            self.rules.fight(self.game, enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
                 if (enemy.items) {
@@ -154,8 +154,8 @@ module StoryScript {
 
                 self.game.currentLocation.enemies.remove(enemy);
 
-                if (self.ruleService.enemyDefeated) {
-                    self.ruleService.enemyDefeated(enemy);
+                if (self.rules.enemyDefeated) {
+                    self.rules.enemyDefeated(self.game, enemy);
                 }
 
                 if (enemy.onDefeat) {
@@ -174,7 +174,7 @@ module StoryScript {
             // Todo: change if xp can be lost.
             if (change > 0) {
                 var character = self.game.character;
-                var levelUp = self.ruleService.scoreChange(change);
+                var levelUp = self.rules.scoreChange(self.game, change);
 
                 if (levelUp) {
                     // Need a timeout here to prevent the change location game state change to 'play' to fire right after this one
@@ -190,8 +190,8 @@ module StoryScript {
         hitpointsChange = (change: number): void => {
             var self = this;
 
-            if (self.ruleService.hitpointsChange) {
-                self.ruleService.hitpointsChange(change);
+            if (self.rules.hitpointsChange) {
+                self.rules.hitpointsChange(self.game, change);
             }
         }
 
@@ -199,10 +199,9 @@ module StoryScript {
             var self = this;
 
             if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
-                if (self.ruleService.determineFinalScore) {
-                    self.ruleService.determineFinalScore();
+                if (self.rules.determineFinalScore) {
+                    self.rules.determineFinalScore(self.game);
                 }
-
                 self.updateHighScore();
                 self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
             }
@@ -249,7 +248,7 @@ module StoryScript {
             createReadOnlyCollection(self.game.character, 'items', isEmpty(self.game.character.items) ? [] : self.game.character.items);
             createReadOnlyCollection(self.game.character, 'quests', isEmpty(self.game.character.quests) ? [] : self.game.character.quests);
 
-            addProxy(self.game.character, 'item', self.game, self.ruleService);
+            addProxy(self.game.character, 'item', self.game, self.rules);
 
             Object.defineProperty(self.game.character, 'combatItems', {
                 get: function () {
@@ -262,7 +261,7 @@ module StoryScript {
             var self = this;
 
             self.game.locations.forEach((location: ICompiledLocation) => {
-                addProxy(location, 'enemy', self.game, self.ruleService);
+                addProxy(location, 'enemy', self.game, self.rules);
             });
         }
 
@@ -311,5 +310,5 @@ module StoryScript {
         }
     }
 
-    GameService.$inject = ['$timeout', 'dataService', 'locationService', 'characterService', 'ruleService', 'helperService', 'game'];
+    GameService.$inject = ['$timeout', 'dataService', 'locationService', 'characterService', 'rules', 'helperService', 'game'];
 }

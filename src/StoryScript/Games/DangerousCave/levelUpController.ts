@@ -1,7 +1,7 @@
 ﻿module DangerousCave {
     export class LevelUpController {
         private $scope: ng.IScope;
-        private ruleService: RuleService;
+        private rules: Rules;
         private game: IGame;
 
         public selectedReward: {
@@ -12,10 +12,10 @@
         // Todo: type
         public rewards: any;
 
-        constructor($scope: ng.IScope, ruleService: RuleService, game: IGame) {
+        constructor($scope: ng.IScope, rules: Rules, game: IGame) {
             var self = this;
             self.$scope = $scope;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.game = game;
             self.init();
         }
@@ -47,11 +47,11 @@
 
         claimReward = () => {
             var self = this;
-            self.ruleService.levelUp(self.selectedReward.name);
+            self.rules.levelUp(self.game, self.selectedReward.name);
         }
     }
 
-    LevelUpController.$inject = ['$scope', 'ruleService', 'game'];
+    LevelUpController.$inject = ['$scope', 'rules', 'game'];
 
     var storyScriptModule = angular.module("storyscript");
     storyScriptModule.controller("LevelUpController", LevelUpController);

@@ -160,7 +160,7 @@
         return results[0] ? results[0] : null;
     }
 
-    export function instantiateEnemy(enemy: IEnemy, definitions: IDefinitions, game: IGame, ruleService: IRuleService): ICompiledEnemy {
+    export function instantiateEnemy(enemy: IEnemy, definitions: IDefinitions, game: IGame, rules: IRules): ICompiledEnemy {
         if (!enemy) {
             return null;
         }
@@ -190,17 +190,17 @@
 
         createReadOnlyCollection(compiledEnemy, 'combinations', combines);
 
-        addProxy(compiledEnemy, 'item', game, ruleService);
+        addProxy(compiledEnemy, 'item', game, rules);
 
         return compiledEnemy;
     }
 
-    export function instantiatePerson(person: IPerson, definitions: IDefinitions, game: IGame, ruleService: IRuleService): ICompiledPerson {
+    export function instantiatePerson(person: IPerson, definitions: IDefinitions, game: IGame, rules: IRules): ICompiledPerson {
         if (!person) {
             return null;
         }
 
-        var compiledPerson = <ICompiledPerson>instantiateEnemy(person, definitions, game, ruleService);
+        var compiledPerson = <ICompiledPerson>instantiateEnemy(person, definitions, game, rules);
 
         var quests = <IQuest[]>[];
 
@@ -217,7 +217,7 @@
         return compiledPerson;
     }
 
-    export function addProxy(entry, collectionType: string, game: IGame, ruleService: IRuleService) {
+    export function addProxy(entry, collectionType: string, game: IGame, rules: IRules) {
         if (collectionType === 'enemy') {
             entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
                 var enemy = null;
@@ -232,8 +232,8 @@
 
                 push.call(this, enemy);
 
-                if (ruleService.addEnemyToLocation) {
-                    ruleService.addEnemyToLocation(game.currentLocation, enemy);
+                if (rules.addEnemyToLocation) {
+                    rules.addEnemyToLocation(game, game.currentLocation, enemy);
                 }
             });
         }

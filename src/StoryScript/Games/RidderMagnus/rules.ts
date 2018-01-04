@@ -1,27 +1,5 @@
 ﻿module RidderMagnus {
-    export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
-        private game: IGame;
-
-        constructor(game: IGame) {
-            var self = this;
-            self.game = game;
-        }
-
-        public $get(game: IGame): StoryScript.IRuleService {
-            var self = this;
-            self.game = game;
-
-            return {
-                getSheetAttributes: self.getSheetAttributes,
-                getCreateCharacterSheet: self.getCreateCharacterSheet,
-                createCharacter: self.createCharacter,
-                fight: self.fight,
-                scoreChange: self.scoreChange,
-                initCombat: self.initCombat,
-                enterLocation: self.enterLocation
-            };
-        }
-
+    export class Rules implements StoryScript.IRules {
         getSheetAttributes = () => {
             return [
                 'vechten',
@@ -98,41 +76,41 @@
             };
         }
 
-        public createCharacter(characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
+        public createCharacter(game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
             return character;
         }
 
-        public enterLocation(location: StoryScript.ICompiledLocation): void {
+        public enterLocation(game: IGame, location: StoryScript.ICompiledLocation): void {
             var self = this;
 
             //I want to erase actionlog first
-            self.game.actionLog = [];
+            game.actionLog = [];
 
-            self.game.logToActionLog('Je komt aan in ' + location.name);
+            game.logToActionLog('Je komt aan in ' + location.name);
 
             if (location.id != 'start' && !location.hasVisited) {
-                self.game.character.score += 1;
+                game.character.score += 1;
             }
 
             if (location.activeEnemies) {
                 location.activeEnemies.forEach(function (enemy) {
-                    self.game.logToActionLog('Er is hier een ' + enemy.name);
+                    game.logToActionLog('Er is hier een ' + enemy.name);
                 });
             }
         }
 
-        public initCombat(location: ICompiledLocation) {
+        public initCombat(game: IGame, location: ICompiledLocation) {
             var self = this;
 
-            if (self.game.currentLocation && self.game.currentLocation.sluipCheck && !self.game.currentLocation.hasVisited && !self.game.currentLocation.combatActions.some(a => (<IAction>a).isSneakAction)) {
+            if (game.currentLocation && game.currentLocation.sluipCheck && !game.currentLocation.hasVisited && !game.currentLocation.combatActions.some(a => (<IAction>a).isSneakAction)) {
                 // check stats
-                var roll = self.game.helpers.rollDice('1d6+' + (self.game.character.zoeken + self.game.character.sluipen));
+                var roll = game.helpers.rollDice('1d6+' + (game.character.zoeken + game.character.sluipen));
 
-                if (roll >= self.game.currentLocation.sluipCheck) {
+                if (roll >= game.currentLocation.sluipCheck) {
 
-                    self.game.currentLocation.activeEnemies.forEach((enemy: ICompiledEnemy, index: number) => {
+                    game.currentLocation.activeEnemies.forEach((enemy: ICompiledEnemy, index: number) => {
                         var sneakAction = {
                             isSneakAction: true,
                             text: 'Besluip ' + enemy.name,
@@ -155,61 +133,59 @@
                                 });
 
                                 indexes.forEach(i => {
-                                    self.game.currentLocation.combatActions.splice(i, 1);
+                                    game.currentLocation.combatActions.splice(i, 1);
                                 });
 
                                 addFleeAction(game);
                             }
                         };
 
-                        self.game.currentLocation.combatActions.splice(index, 0, sneakAction);
+                        game.currentLocation.combatActions.splice(index, 0, sneakAction);
                     });
                 }
             }
             else {
-                addFleeAction(self.game);
+                addFleeAction(game);
             }
         }
 
-        fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
+        fight = (game: IGame, enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
 
-            var check = self.game.helpers.rollDice('1d6+' + self.game.character.vechten);
-            var characterDamage = check + self.game.character.vechten + self.game.helpers.calculateBonus(self.game.character, 'attack') - self.game.helpers.calculateBonus(enemy, 'defense');
-            self.game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
+            var check = game.helpers.rollDice('1d6+' + game.character.vechten);
+            var characterDamage = check + game.character.vechten + game.helpers.calculateBonus(game.character, 'attack') - game.helpers.calculateBonus(enemy, 'defense');
+            game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
             enemy.hitpoints -= characterDamage;
 
             if (enemy.hitpoints <= 0) {
-                self.game.logToCombatLog('Je verslaat de ' + enemy.name + '!');
-                self.game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
+                game.logToCombatLog('Je verslaat de ' + enemy.name + '!');
+                game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
             }
 
             if (retaliate) {
-                self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                    var check = self.game.helpers.rollDice(enemy.attack);
-                    var enemyDamage = Math.max(0, (check - (self.game.character.snelheid + self.game.helpers.calculateBonus(self.game.character, 'defense'))) + self.game.helpers.calculateBonus(enemy, 'damage'));
-                    self.game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
-                    self.game.character.currentHitpoints -= enemyDamage;
+                game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                    var check = game.helpers.rollDice(enemy.attack);
+                    var enemyDamage = Math.max(0, (check - (game.character.snelheid + game.helpers.calculateBonus(game.character, 'defense'))) + game.helpers.calculateBonus(enemy, 'damage'));
+                    game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                    game.character.currentHitpoints -= enemyDamage;
                 });
             }
         }
 
-        enemyDefeated(enemy: ICompiledEnemy) {
+        enemyDefeated(game: IGame, enemy: ICompiledEnemy) {
             var self = this;
 
             if (enemy.reward) {
-                self.game.character.score += enemy.reward;
+                game.character.score += enemy.reward;
             }
         }
 
-        scoreChange(change: number): boolean {
+        scoreChange(game: IGame, change: number): boolean {
             var self = this;
 
             // Implement logic to occur when the score changes. Return true when the character gains a level.
             return false;
         }
     }
-
-    RuleService.$inject = ['game'];
 }

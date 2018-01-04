@@ -1,25 +1,5 @@
 ﻿module MyNewGame {
-    export class RuleService implements ng.IServiceProvider, StoryScript.IRuleService {
-        private game: IGame;
-
-        constructor(game: IGame) {
-            var self = this;
-            self.game = game;
-        }
-
-        public $get(game: IGame): StoryScript.IRuleService {
-            var self = this;
-            self.game = game;
-
-            return {
-                getSheetAttributes: self.getSheetAttributes,
-                getCreateCharacterSheet: self.getCreateCharacterSheet,
-                createCharacter: self.createCharacter,
-                fight: self.fight,
-                scoreChange: self.scoreChange
-            };
-        }
-
+    export class Rules implements StoryScript.IRules {
         getSheetAttributes = () => {
             return [
                 'strength',
@@ -95,36 +75,34 @@
             };
         }
 
-        public createCharacter(characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
+        public createCharacter(game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
             return character;
         }
 
-        fight = (enemy: ICompiledEnemy) => {
+        fight = (game: IGame, enemy: ICompiledEnemy) => {
             var self = this;
-            var damage = self.game.helpers.rollDice('1d6') + self.game.character.strength + self.game.helpers.calculateBonus(self.game.character, 'damage');
-            self.game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+            var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
+            game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
             enemy.hitpoints -= damage;
 
             if (enemy.hitpoints <= 0) {
-                self.game.logToCombatLog('You defeat the ' + enemy.name + '!');
+                game.logToCombatLog('You defeat the ' + enemy.name + '!');
             }
 
-            self.game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                var damage = self.game.helpers.rollDice(enemy.attack) + self.game.helpers.calculateBonus(enemy, 'damage');
-                self.game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
-                self.game.character.currentHitpoints -= damage;
+            game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
+                game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
+                game.character.currentHitpoints -= damage;
             });
         }
 
-        scoreChange(change: number): boolean {
+        scoreChange(game: IGame, change: number): boolean {
             var self = this;
 
             // Implement logic to occur when the score changes. Return true when the character gains a level.
             return false;
         }
     }
-
-    RuleService.$inject = ['game'];
 }

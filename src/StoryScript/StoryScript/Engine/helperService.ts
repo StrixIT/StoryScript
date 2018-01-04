@@ -14,18 +14,18 @@
 module StoryScript {
     export class HelperService implements ng.IServiceProvider, IHelperService {
         private game: IGame;
-        private ruleService: IRuleService;
+        private rules: IRules;
 
-        constructor(game: IGame, ruleService: IRuleService) {
+        constructor(game: IGame, rules: IRules) {
             var self = this;
             self.game = game;
-            self.ruleService = ruleService;
+            self.rules = rules;
         }
 
-        public $get(game: IGame, ruleService: IRuleService): IHelperService {
+        public $get(game: IGame, rules: IRules): IHelperService {
             var self = this;
             self.game = game;
-            self.ruleService = ruleService;
+            self.rules = rules;
 
             return {
                 rollDice: self.rollDice,
@@ -41,7 +41,7 @@ module StoryScript {
         getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
             var self = this;
             var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector, 'enemies', self.game.definitions);
-            return instantiateEnemy(instance, self.game.definitions, self.game, self.ruleService);
+            return instantiateEnemy(instance, self.game.definitions, self.game, self.rules);
         }
 
         getItem = (selector: string | (() => IItem)) => {
@@ -52,13 +52,13 @@ module StoryScript {
         getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
             var self = this;
             var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector, 'persons', self.game.definitions);
-            return instantiatePerson(instance, self.game.definitions, self.game, self.ruleService);
+            return instantiatePerson(instance, self.game.definitions, self.game, self.rules);
         }
 
         randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
             var self = this;
             var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, 'enemies', self.game.definitions, <(enemy: IEnemy) => boolean>selector);
-            return instantiateEnemy(instance, self.game.definitions, self.game, self.ruleService);
+            return instantiateEnemy(instance, self.game.definitions, self.game, self.rules);
         }
 
         randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {

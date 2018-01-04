@@ -9,23 +9,23 @@
 module StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
         private dataService: IDataService;
-        private ruleService: IRuleService;
+        private rules: IRules;
         private game: IGame;
         private definitions: IDefinitions;
         private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
 
-        constructor(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: IDefinitions) {
+        constructor(dataService: IDataService, rules: IRules, game: IGame, definitions: IDefinitions) {
             var self = this;
             self.dataService = dataService;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.game = game;
             self.definitions = definitions;
         }
 
-        public $get(dataService: IDataService, ruleService: IRuleService, game: IGame, definitions: IDefinitions): ILocationService {
+        public $get(dataService: IDataService, rules: IRules, game: IGame, definitions: IDefinitions): ILocationService {
             var self = this;
             self.dataService = dataService;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.game = game;
             self.definitions = definitions;
 
@@ -169,8 +169,8 @@ module StoryScript {
                 self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
 
-            if (self.ruleService.enterLocation) {
-                self.ruleService.enterLocation(game.currentLocation, travel);
+            if (self.rules.enterLocation) {
+                self.rules.enterLocation(game, game.currentLocation, travel);
             }
 
             self.loadLocationDescriptions(game);
@@ -486,7 +486,7 @@ module StoryScript {
                 selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
                 game.currentLocation.text = game.currentLocation.descriptions[selector];
             }
-            else if (self.ruleService.descriptionSelector && (selector = self.ruleService.descriptionSelector(game))) {
+            else if (self.rules.descriptionSelector && (selector = self.rules.descriptionSelector(game))) {
                 game.currentLocation.text = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
             }
             else {
@@ -545,5 +545,5 @@ module StoryScript {
         }
     }
 
-    LocationService.$inject = ['dataService', 'ruleService', 'game', 'definitions'];
+    LocationService.$inject = ['dataService', 'rules', 'game', 'definitions'];
 }

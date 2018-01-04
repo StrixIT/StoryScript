@@ -9,15 +9,15 @@
         private $scope: ICharacterControllerScope;
         private $rootScope: ng.IRootScopeService;
         private characterService: ICharacterService;
-        private ruleService: IRuleService;
+        private rules: IRules;
         private game: IGame;
 
-        constructor($scope: ICharacterControllerScope, $rootScope: ng.IRootScopeService, characterService: ICharacterService, ruleService: IRuleService, game: IGame, texts: IInterfaceTexts) {
+        constructor($scope: ICharacterControllerScope, $rootScope: ng.IRootScopeService, characterService: ICharacterService, rules: IRules, game: IGame, texts: IInterfaceTexts) {
             var self = this;
             self.$scope = $scope;
             self.$rootScope = $rootScope;
             self.characterService = characterService;
-            self.ruleService = ruleService;
+            self.rules = rules;
             self.game = game;
             self.$scope.game = self.game;
             self.$scope.texts = texts;
@@ -38,8 +38,8 @@
                 self.unequip(type);
             }
 
-            if (self.ruleService.beforeEquip) {
-                if (!self.ruleService.beforeEquip(self.game.character, item)) {
+            if (self.rules.beforeEquip) {
+                if (!self.rules.beforeEquip(self.game, self.game.character, item)) {
                     return;
                 }
             }
@@ -115,8 +115,8 @@
                     }
                 }
 
-                if (self.ruleService.beforeUnequip) {
-                    if (!self.ruleService.beforeUnequip(self.game.character, equippedItem)) {
+                if (self.rules.beforeUnequip) {
+                    if (!self.rules.beforeUnequip(self.game, self.game.character, equippedItem)) {
                         return;
                     }
                 }
@@ -141,5 +141,5 @@
         }
     }
 
-    CharacterController.$inject = ['$scope', '$rootScope', 'characterService', 'ruleService', 'game', 'customTexts'];
+    CharacterController.$inject = ['$scope', '$rootScope', 'characterService', 'rules', 'game', 'customTexts'];
 }
