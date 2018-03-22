@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface ILocation {
         name: string;
         descriptionSelector?: (game: IGame) => string;

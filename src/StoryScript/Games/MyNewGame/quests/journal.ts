@@ -1,4 +1,4 @@
-﻿module MyNewGame.Quests {
+﻿namespace MyNewGame.Quests {
     export function Journal(): StoryScript.IQuest {
         return {
             name: "Find Joe's journal",

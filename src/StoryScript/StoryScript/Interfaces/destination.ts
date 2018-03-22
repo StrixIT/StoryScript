@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IDestination {
         name: string;
         target: () => ILocation;

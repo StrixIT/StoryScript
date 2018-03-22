@@ -1,4 +1,4 @@
-﻿module AdventureGame {
+﻿namespace AdventureGame {
     export interface IPerson extends StoryScript.IPerson {
     }
 }

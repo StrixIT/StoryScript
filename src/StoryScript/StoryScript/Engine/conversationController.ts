@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IConversationControllerScope extends ng.IScope {
         game: IGame;
         texts: IInterfaceTexts;

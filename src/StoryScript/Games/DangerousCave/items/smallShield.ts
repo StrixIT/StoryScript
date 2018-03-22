@@ -1,4 +1,4 @@
-﻿module DangerousCave.Items {
+﻿namespace DangerousCave.Items {
     export function SmallShield(): IItem {
         return {
             name: 'Klein schild',

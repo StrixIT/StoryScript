@@ -1,4 +1,4 @@
-﻿module GameTemplate {
+﻿namespace GameTemplate {
     export interface ICompiledLocation extends StoryScript.ICompiledLocation {
         activeEnemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
         enemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;

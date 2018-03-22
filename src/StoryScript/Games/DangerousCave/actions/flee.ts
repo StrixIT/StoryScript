@@ -1,4 +1,4 @@
-﻿module DangerousCave.Actions {
+﻿namespace DangerousCave.Actions {
     export function Flee(text: string): StoryScript.IAction {
         return {
             text: text || 'Vluchten!',

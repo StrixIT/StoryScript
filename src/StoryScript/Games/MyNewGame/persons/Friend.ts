@@ -1,4 +1,4 @@
-﻿module MyNewGame.Persons {
+﻿namespace MyNewGame.Persons {
     export function Friend(): IPerson {
         return {
             name: 'Joe',

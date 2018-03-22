@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IEnemy {
         pictureFileName?: string;
         name: string;

@@ -1,4 +1,4 @@
-﻿module MyNewGame.Locations {
+﻿namespace MyNewGame.Locations {
     export function DirtRoad(): StoryScript.ILocation {
         return {
             name: 'Dirt road',

@@ -1,4 +1,4 @@
-﻿module AdventureGame.Enemies {
+﻿namespace AdventureGame.Enemies {
     export function Goblin(): IEnemy {
         return {
             name: 'Goblin',

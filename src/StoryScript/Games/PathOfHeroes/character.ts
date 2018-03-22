@@ -1,4 +1,4 @@
-﻿module PathOfHeroes {
+﻿namespace PathOfHeroes {
     export class Character implements StoryScript.ICharacter {
         name: string = "";
         currency: number = 0;

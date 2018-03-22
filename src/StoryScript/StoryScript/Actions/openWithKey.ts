@@ -1,4 +1,4 @@
-﻿module StoryScript.Actions {
+﻿namespace StoryScript.Actions {
     export function OpenWithKey(callBack: (game: IGame, destination: StoryScript.IDestination) => void) {
         return function (game: IGame, destination: StoryScript.IDestination) {
             var key = destination.barrier.key;

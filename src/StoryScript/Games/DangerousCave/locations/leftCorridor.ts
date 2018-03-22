@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function LeftCorridor(): StoryScript.ILocation {
         return {
             name: 'Een pikdonkere gang',

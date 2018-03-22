@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function Entry(): StoryScript.ILocation {
         return {
             name: 'De grot',

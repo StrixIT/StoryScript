@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IDefinitions {
         locations: [() => ILocation];
         actions: [() => IAction];

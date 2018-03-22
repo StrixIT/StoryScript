@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IQuest {
         name: string;
         issuedBy?: string;

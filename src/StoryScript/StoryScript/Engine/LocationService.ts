@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface ILocationService {
         init(game: IGame): void;
         saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>): void;
@@ -6,7 +6,7 @@
     }
 }
 
-module StoryScript {
+namespace StoryScript {
     export class LocationService implements ng.IServiceProvider, ILocationService {
         private dataService: IDataService;
         private rules: IRules;

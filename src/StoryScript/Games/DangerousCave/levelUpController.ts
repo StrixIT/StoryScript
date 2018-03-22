@@ -1,4 +1,4 @@
-﻿module DangerousCave {
+﻿namespace DangerousCave {
     export class LevelUpController {
         private $scope: ng.IScope;
         private rules: Rules;

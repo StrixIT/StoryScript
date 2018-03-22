@@ -1,4 +1,4 @@
-﻿module PathOfHeroes {
+﻿namespace PathOfHeroes {
     export class Rules implements StoryScript.IRules {
 
         getSheetAttributes = () => {

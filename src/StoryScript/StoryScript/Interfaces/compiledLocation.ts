@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface ICompiledLocation {
         id: string;
         name: string;

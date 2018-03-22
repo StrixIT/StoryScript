@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     if ((<any>Function.prototype).proxy === undefined) {
         // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
         (<any>Function.prototype).proxy = function (proxyFunction: Function, ...params) {

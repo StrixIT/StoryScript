@@ -1,4 +1,4 @@
-﻿module RidderMagnus {
+﻿namespace RidderMagnus {
     export interface ICompiledLocation extends StoryScript.ICompiledLocation {
         actions?: StoryScript.ICollection<IAction>;
         combatActions?: StoryScript.ICollection<IAction>;

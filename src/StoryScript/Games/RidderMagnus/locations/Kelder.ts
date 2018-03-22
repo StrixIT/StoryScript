@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Locations {
+﻿namespace RidderMagnus.Locations {
     export function Kelder(): ILocation {
         return {
             name: 'De Kelder',

@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IInterfaceTexts {
         equipmentHeader?: string;
         head?: string;

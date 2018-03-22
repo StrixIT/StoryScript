@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Locations {
+﻿namespace RidderMagnus.Locations {
     export function Tunnel(): ILocation {
         return {
             name: 'Een tunnel onder het paleis',

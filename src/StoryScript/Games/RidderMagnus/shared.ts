@@ -1,4 +1,4 @@
-﻿module RidderMagnus {
+﻿namespace RidderMagnus {
     export function defeatRat(game: IGame) {
         var quest = game.character.quests.get(Quests.RattenStaarten);
 

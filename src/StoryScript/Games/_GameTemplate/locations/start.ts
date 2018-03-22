@@ -1,4 +1,4 @@
-﻿module GameTemplate.Locations {
+﻿namespace GameTemplate.Locations {
     export function Start(): StoryScript.ILocation {
         return {
             name: 'Start'

@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Items {
+﻿namespace RidderMagnus.Items {
     export function KleinSchild(): IItem {
         return {
             name: 'Klein schild',

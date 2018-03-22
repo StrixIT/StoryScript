@@ -1,4 +1,4 @@
-﻿module GameTemplate {
+﻿namespace GameTemplate {
     export class Rules implements StoryScript.IRules {
         getCombinationActions = () => {
             return [

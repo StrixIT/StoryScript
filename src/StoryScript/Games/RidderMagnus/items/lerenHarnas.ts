@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Items {
+﻿namespace RidderMagnus.Items {
     export function LerenHarnas(): IItem {
         return {
             name: 'Leren harnas',

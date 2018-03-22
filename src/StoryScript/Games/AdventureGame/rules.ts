@@ -1,4 +1,4 @@
-﻿module AdventureGame {
+﻿namespace AdventureGame {
     export class Rules implements StoryScript.IRules {
         getCombinationActions = () => {
             return [

@@ -1,4 +1,4 @@
-﻿module PathOfHeroes {
+﻿namespace PathOfHeroes {
     export interface IEnemy extends StoryScript.IEnemy {
     }
 }

@@ -1,16 +1,23 @@
 {
     "compilerOptions": {
-        "noImplicitAny": false,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
         "noEmitOnError": true,
         "removeComments": false,
         "target": "es5",
-        "outFile": "game.js"
+        "outFile": "game.js",
+        "module": "commonjs"
     },
     "include": [
-        "Libraries/**/*",
         "Types/**/*",
         "StoryScript/**/!(app)*.ts",
-        "StoryScript/app.js"
+        "Games/**/*.ts",
+        "StoryScript/app.ts"
     ],
     "exclude": [
         "node_modules",

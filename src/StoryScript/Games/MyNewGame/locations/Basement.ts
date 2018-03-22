@@ -1,4 +1,4 @@
-﻿module MyNewGame.Locations {
+﻿namespace MyNewGame.Locations {
     export function Basement(): StoryScript.ILocation {
         return {
             name: 'Basement',

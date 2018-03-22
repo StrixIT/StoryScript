@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Actions {
+﻿namespace RidderMagnus.Actions {
     export function Flee(text: string): StoryScript.IAction {
         return {
             text: text || 'Vluchten!',

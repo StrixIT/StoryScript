@@ -1,4 +1,4 @@
-﻿module DangerousCave.Items {
+﻿namespace DangerousCave.Items {
     export function Sword(): IItem {
         return {
             name: 'Zwaard',

@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function Arena(): StoryScript.ILocation {
         return {
                 name: 'Een hoek van de grot waar kaarsen branden',

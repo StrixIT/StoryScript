@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export class DefaultTexts {
         texts: StoryScript.IInterfaceTexts = {
             equipmentHeader: "Equipment",

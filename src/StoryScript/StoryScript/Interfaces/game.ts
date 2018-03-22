@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export class ScoreEntry {
         name: string;
         score: number;

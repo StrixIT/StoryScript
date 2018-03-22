@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Actions {
+﻿namespace RidderMagnus.Actions {
     export function Heal(potency: string): (...params) => void {
         return function (game: IGame, item: IItem) {
             var healed = game.helpers.rollDice(potency);

@@ -1,4 +1,4 @@
-﻿module RidderMagnus {
+﻿namespace RidderMagnus {
     export class CustomTexts {
         texts: StoryScript.IInterfaceTexts = {
             actions: "Dit kan je doen",

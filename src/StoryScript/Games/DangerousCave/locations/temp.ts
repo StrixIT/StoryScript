@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function Temp(): StoryScript.ILocation {
         return {
             name: 'Deze locatie bestaat nog niet',

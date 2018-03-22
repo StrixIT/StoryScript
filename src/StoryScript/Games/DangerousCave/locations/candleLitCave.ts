@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function CandleLitCave(): StoryScript.ILocation {
         return {
             name: 'Een grot met kaarslicht',

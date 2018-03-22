@@ -1,4 +1,4 @@
-﻿module DangerousCave.Items {
+﻿namespace DangerousCave.Items {
     export function LeatherArmor(): IItem {
         return {
             name: 'Harnas van leer',

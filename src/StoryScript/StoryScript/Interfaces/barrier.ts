@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IBarrier {
         name: string;
         actions?: ICollection<IBarrierAction>;

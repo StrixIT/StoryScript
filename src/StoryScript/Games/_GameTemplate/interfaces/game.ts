@@ -1,4 +1,4 @@
-﻿module GameTemplate {
+﻿namespace GameTemplate {
     export interface IGame extends StoryScript.IGame {
         character: Character;
         locations: StoryScript.ICompiledCollection<ILocation, ICompiledLocation>;

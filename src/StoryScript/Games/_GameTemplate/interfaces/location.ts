@@ -1,4 +1,4 @@
-﻿module GameTemplate {
+﻿namespace GameTemplate {
     export interface ILocation extends StoryScript.ILocation {
     }
 }

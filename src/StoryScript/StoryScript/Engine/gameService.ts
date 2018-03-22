@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IGameService {
         init(): void;
         startNewGame(characterData: any): void;
@@ -12,7 +12,7 @@
     }
 }
 
-module StoryScript {
+namespace StoryScript {
     export class GameService implements ng.IServiceProvider, IGameService {
         private $timeout: ng.ITimeoutService;
         private dataService: IDataService;

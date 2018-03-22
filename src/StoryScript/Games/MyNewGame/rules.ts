@@ -1,4 +1,4 @@
-﻿module MyNewGame {
+﻿namespace MyNewGame {
     export class Rules implements StoryScript.IRules {
         getSheetAttributes = () => {
             return [

@@ -1,4 +1,4 @@
-﻿module DangerousCave {
+﻿namespace DangerousCave {
     export class Rules implements StoryScript.IRules {
         getSheetAttributes = () => {
             return [

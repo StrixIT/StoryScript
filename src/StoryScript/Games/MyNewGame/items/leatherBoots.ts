@@ -1,4 +1,4 @@
-﻿module MyNewGame.Items {
+﻿namespace MyNewGame.Items {
     export function LeatherBoots(): IItem {
         return {
             name: 'Leather boots',

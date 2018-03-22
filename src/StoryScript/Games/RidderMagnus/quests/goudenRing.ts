@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Quests {
+﻿namespace RidderMagnus.Quests {
     export function GoudenRing(): StoryScript.IQuest {
         return {
             name: "Zoek de gouden ring",

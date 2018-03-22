@@ -1,4 +1,4 @@
-﻿module DangerousCave {
+﻿namespace DangerousCave {
     export class CustomTexts {
         texts: StoryScript.IInterfaceTexts = {
             newGame: "Nieuw spel",

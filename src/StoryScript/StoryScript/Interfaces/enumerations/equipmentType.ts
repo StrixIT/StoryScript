@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export enum EquipmentType {
         Head,
         Amulet,

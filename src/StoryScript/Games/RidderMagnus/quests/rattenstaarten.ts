@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Quests {
+﻿namespace RidderMagnus.Quests {
     export function RattenStaarten(): StoryScript.IQuest {
         return {
             name: "Verzamel rattenstaarten",

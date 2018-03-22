@@ -1,4 +1,4 @@
-﻿module MyNewGame.Enemies {
+﻿namespace MyNewGame.Enemies {
     export function Bandit(): IEnemy {
         return {
             name: 'Bandit',

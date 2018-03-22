@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface ICreateCharacter {
         steps: ICreateCharacterStep[];
         currentStep?: number;

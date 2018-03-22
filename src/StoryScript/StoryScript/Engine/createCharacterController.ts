@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface ICreateCharacterControllerScope extends ng.IScope {
         texts: IInterfaceTexts;
         sheet: ICreateCharacter;

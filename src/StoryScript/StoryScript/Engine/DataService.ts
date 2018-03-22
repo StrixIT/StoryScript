@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IDataService {
         functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
         loadDescription(type: string, item: { id?: string, description?: string });
@@ -8,7 +8,7 @@
     }
 }
 
-module StoryScript {
+namespace StoryScript {
     export class DataService implements ng.IServiceProvider, IDataService {
         private $q: ng.IQService;
         private $http: ng.IHttpService;

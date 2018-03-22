@@ -1,4 +1,4 @@
-﻿module MyNewGame.Items {
+﻿namespace MyNewGame.Items {
     export function BasementKey(): StoryScript.IKey {
         return {
             name: 'Basement key',

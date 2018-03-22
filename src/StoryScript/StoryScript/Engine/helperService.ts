@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IHelperService {
         rollDice: (compositeOrSides: string | number, dieNumber?: number, bonus?: number) => number;
         calculateBonus: (person: { items?: ICollection<IItem>, equipment?: {} }, type: string) => number;
@@ -11,7 +11,7 @@
     }
 }
 
-module StoryScript {
+namespace StoryScript {
     export class HelperService implements ng.IServiceProvider, IHelperService {
         private game: IGame;
         private rules: IRules;

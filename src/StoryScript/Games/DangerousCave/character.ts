@@ -1,4 +1,4 @@
-﻿module DangerousCave {
+﻿namespace DangerousCave {
     export class Character implements StoryScript.ICharacter {
         name: string = "";
         score: number = 0;

@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface ICharacterService {
         getSheetAttributes(): string[];
         getCreateCharacterSheet(): ICreateCharacter;
@@ -6,7 +6,7 @@
     }
 }
 
-module StoryScript {
+namespace StoryScript {
     export class CharacterService implements ng.IServiceProvider, ICharacterService {
         private dataService: IDataService;
         private rules: IRules;

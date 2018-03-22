@@ -1,4 +1,4 @@
-﻿module DangerousCave {
+﻿namespace DangerousCave {
     export interface SearchSettings {
         text?: string;
         difficulty: number;
@@ -7,7 +7,7 @@
     }
 }
 
-module DangerousCave.Actions {
+namespace DangerousCave.Actions {
     export function Search(settings: SearchSettings): StoryScript.IAction {
         return {
             text: settings && settings.text || 'Zoek',

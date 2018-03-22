@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Enemies {
+﻿namespace RidderMagnus.Enemies {
     export function ReusachtigeRat(): IEnemy {
         return {
             name: 'Reusachtige rat',

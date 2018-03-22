@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function RightCorridor(): StoryScript.ILocation {
         return {
             name: 'Een gemetselde gang',

@@ -1,4 +1,4 @@
-﻿module DangerousCave.Enemies {
+﻿namespace DangerousCave.Enemies {
     export function Goblin(): IEnemy {
         return {
             name: 'Goblin',

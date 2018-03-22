@@ -1,4 +1,4 @@
-﻿module DangerousCave {
+﻿namespace DangerousCave {
     export interface ICompiledPerson extends StoryScript.ICompiledPerson {
     }
 }

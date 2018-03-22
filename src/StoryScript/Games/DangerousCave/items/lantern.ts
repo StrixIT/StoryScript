@@ -1,4 +1,4 @@
-﻿module DangerousCave.Items {
+﻿namespace DangerousCave.Items {
     export function Lantern(): StoryScript.IItem {
         return {
             name: 'Lantaren',

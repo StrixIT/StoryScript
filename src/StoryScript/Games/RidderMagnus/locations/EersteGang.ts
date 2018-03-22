@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Locations {
+﻿namespace RidderMagnus.Locations {
     export function EersteGang(): ILocation {
         return {
             name: 'Een lange, rechte gang',

@@ -1,4 +1,4 @@
-﻿module RidderMagnus {
+﻿namespace RidderMagnus {
     export interface IEnemy extends StoryScript.IEnemy {
         attack: string;
         defense?: number;

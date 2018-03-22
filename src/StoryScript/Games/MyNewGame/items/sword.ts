@@ -1,4 +1,4 @@
-﻿module MyNewGame.Items {
+﻿namespace MyNewGame.Items {
     export function Sword(): IItem {
         return {
             name: 'Sword',

@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IAction {
         text?: string;
         type?: ActionType;

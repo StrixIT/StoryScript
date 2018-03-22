@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     addFunctionExtensions();
     addArrayExtensions();
 

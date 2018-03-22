@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Persons {
+﻿namespace RidderMagnus.Persons {
     export function KoninginDagmar(): IPerson {
         return {
             name: 'Koningin Dagmar',

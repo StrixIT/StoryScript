@@ -1,4 +1,4 @@
-﻿module RidderMagnus {
+﻿namespace RidderMagnus {
     export class Rules implements StoryScript.IRules {
         getSheetAttributes = () => {
             return [

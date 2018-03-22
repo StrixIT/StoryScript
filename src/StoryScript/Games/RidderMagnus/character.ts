@@ -1,4 +1,4 @@
-﻿module RidderMagnus {
+﻿namespace RidderMagnus {
     export class Character implements StoryScript.ICharacter {
         name: string = 'Magnus';
         score: number = 0;

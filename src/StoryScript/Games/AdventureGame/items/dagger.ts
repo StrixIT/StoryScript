@@ -1,4 +1,4 @@
-﻿module AdventureGame.Items {
+﻿namespace AdventureGame.Items {
     export function Dagger(): IItem {
         return {
             name: 'Dolk',

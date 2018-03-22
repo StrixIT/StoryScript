@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function WestCrossing(): StoryScript.ILocation {
         return {
             name: 'Een donkere gemetselde gang',

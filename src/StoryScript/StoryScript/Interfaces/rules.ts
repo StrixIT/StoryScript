@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IRules {
         setupGame?(game: IGame): void;
         getCombinationActions?(): ICombinationAction[];

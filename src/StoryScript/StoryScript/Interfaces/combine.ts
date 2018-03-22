@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface ICombinations<T> {
         combine: ICombine<T>[];
         combineFailText?: (game: IGame, target: T) => string;

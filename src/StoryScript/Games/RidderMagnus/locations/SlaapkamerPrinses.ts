@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Locations {
+﻿namespace RidderMagnus.Locations {
     export function SlaapkamerPrinses(): ILocation {
         return {
             name: 'De Slaapkamer van de Prinses',

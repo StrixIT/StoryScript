@@ -1,4 +1,4 @@
-﻿module DangerousCave.Items {
+﻿namespace DangerousCave.Items {
     export function BlackKey(): StoryScript.IKey {
         return {
             name: 'Black key',

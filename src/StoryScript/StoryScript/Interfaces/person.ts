@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IPerson extends IEnemy {
         canAttack?: boolean;
         trade?: ITrade;

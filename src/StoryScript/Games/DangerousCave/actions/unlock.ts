@@ -1,4 +1,4 @@
-﻿module DangerousCave {
+﻿namespace DangerousCave {
     export interface UnlockSettings {
         text?: string;
         difficulty: number;
@@ -7,7 +7,7 @@
     }
 }
 
-module DangerousCave.Actions {
+namespace DangerousCave.Actions {
     export function Unlock(settings: UnlockSettings): StoryScript.IAction {
         return {
             text: settings && settings.text || 'Slot openen',

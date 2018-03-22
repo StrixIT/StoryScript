@@ -1,4 +1,4 @@
-﻿module RidderMagnus.Enemies {
+﻿namespace RidderMagnus.Enemies {
     export function Trader(): IPerson {
         return {
             name: 'Trader',

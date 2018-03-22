@@ -1,4 +1,4 @@
-﻿module StoryScript {
+﻿namespace StoryScript {
     export interface IConversationOptions {
         title?: string;
         selectActiveNode?: (game: IGame, person: ICompiledPerson) => IConversationNode;

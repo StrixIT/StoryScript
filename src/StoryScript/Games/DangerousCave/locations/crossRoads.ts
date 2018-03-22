@@ -1,4 +1,4 @@
-﻿module DangerousCave.Locations {
+﻿namespace DangerousCave.Locations {
     export function CrossRoads(): StoryScript.ILocation {
         return {
             name: 'Een kruispunt',

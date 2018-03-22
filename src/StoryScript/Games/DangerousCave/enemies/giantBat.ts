@@ -1,4 +1,4 @@
-﻿module DangerousCave.Enemies {
+﻿namespace DangerousCave.Enemies {
     export function GiantBat(): IEnemy {
         return {
             name: 'Reuzenvleermuis',

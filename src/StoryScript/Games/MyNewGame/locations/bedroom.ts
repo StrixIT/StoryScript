@@ -1,4 +1,4 @@
-﻿module MyNewGame.Locations {
+﻿namespace MyNewGame.Locations {
     export function Bedroom(): StoryScript.ILocation {
         return {
             name: 'Bedroom',

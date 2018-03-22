@@ -1,4 +1,4 @@
-﻿module AdventureGame.Locations {
+﻿namespace AdventureGame.Locations {
     export function Second(): StoryScript.ILocation {
         return {
             name: 'Second',
