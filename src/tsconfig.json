@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noEmitOnError": true,
+        "removeComments": false,
+        "strictNullChecks": false,
+        "target": "es5",
+        "outFile": "./wwwroot/js/game.js",
+        "typeRoots": [
+            "../node_modules/@types"
+        ],
+        "types": [
+            "jquery",
+            "angular",
+            "bootstrap"
+        ],
+        "sourceMap": true
+    },
+    "include": [
+        "./wwwroot/source/Engine/**/*.ts",
+        "./wwwroot/source/UI/Components/*.ts",
+        "./wwwroot/source/UI/Controllers/*.ts",
+        "./wwwroot/source/UI/app.ts",
+        "./wwwroot/source/Games/DangerousCave/**/*.ts"
+    ]
+}

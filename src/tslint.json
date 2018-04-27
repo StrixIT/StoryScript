@@ -1,0 +1,6 @@
+﻿{
+    "rules": {
+        "indent": [ false, "tabs" ],
+        "quotemark": [ true, "single"]
+    }
+}
