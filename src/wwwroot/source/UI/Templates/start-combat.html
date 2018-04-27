@@ -1,0 +1,13 @@
+﻿<fieldset ng-if="game.currentLocation.activeEnemies && game.currentLocation.activeEnemies.length">
+    <legend>{{ texts.encounters }}</legend>
+    <p>{{ texts.enemiesToFight }}</p>
+    <ul>
+        <li ng-repeat="enemy in game.currentLocation.activeEnemies">
+            {{ enemy.name }} <button type="button" class="btn btn-info" ng-if="controller.hasDescription('enemies', enemy)" ng-click="controller.showDescription(enemy, enemy.name)">{{ texts.view }}</button>
+        </li>
+    </ul>
+
+    <div class="button-row">
+        <button type="button" class="btn btn-danger" ng-click="controller.startCombat()">{{ texts.startCombat }}</button>
+    </div>
+</fieldset>

@@ -5,6 +5,12 @@
 /node_modules
 
 # Copied and generated files for StoryScript, resource files that should not be checked in
-/src/wwwroot
-/src/Games/**/resources/*
-/src/Games/QuestForTheKing/**/*
+/src/wwwroot/css
+/src/wwwroot/enemies
+/src/wwwroot/js
+/src/wwwroot/locations
+/src/wwwroot/ui
+/src/wwwroot/bs-config.json
+/src/wwwroot/index.html
+/src/wwwroot/source/Games/**/resources/*
+/src/wwwroot/source/Games/QuestForTheKing/**/*

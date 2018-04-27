@@ -1,0 +1,25 @@
+﻿<fieldset ng-if="controller.actionsPresent()">
+    <legend>{{ texts.actions }}</legend>
+    <ul class="button-row">
+        <li ng-repeat="action in controller.game.currentLocation.actions">
+            <button type="button" class="btn" ng-class="controller.getButtonClass(action)" ng-click="controller.executeAction(action)" ng-disabled="controller.disableActionButton(action)" ng-hide="controller.hideActionButton(action)">{{ action.text }}</button>
+        </li>
+    </ul>
+</fieldset>
+<fieldset ng-if="!controller.enemiesPresent()">
+    <legend>{{ texts.destinations }}</legend>
+    <div class="destination-button" ng-repeat="destination in controller.game.currentLocation.destinations">
+        <div ng-if="destination.barrier">
+            <button type="button" class="btn btn-info" ng-click="controller.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.name }}</button>
+            <select strix-drop-down class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" source="destination.barrier.actions" option-label="name"></select>
+        </div>
+        <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="controller.changeLocation(destination.target)" ng-disabled="destination.barrier || controller.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ texts.back }}</span> {{ destination.name }}</button>
+    </div>
+    <div class="clearfix"></div>
+</fieldset>
+<fieldset ng-if="!controller.enemiesPresent()">
+    <legend>{{ texts.onTheGround }}</legend>
+    <ul>
+        <li ng-repeat="item in controller.game.currentLocation.activeItems track by $index" ng-click="controller.pickupItem(item)">{{ item.name }}</li>
+    </ul>
+</fieldset>

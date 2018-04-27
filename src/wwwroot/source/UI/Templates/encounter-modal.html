@@ -1,0 +1,21 @@
+﻿<div class="modal" id="encounters" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" ng-click="controller.closeModal()" ng-show="modalSettings.canClose">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">{{ modalSettings.title }}</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-if="game.stateString == 'Combat'" class="combat" ng-include="'ui/combat.html'"></div>
+                <div ng-if="game.stateString == 'Trade'" class="trade" ng-include="'ui/trade.html'"></div>
+                <div ng-if="game.stateString == 'Conversation'" class="conversation" ng-include="'ui/conversation.html'"></div>
+                <div ng-if="game.stateString == 'Description'" class="description" ng-bind-html="controller.getDescription(modalSettings.descriptionEntity, 'description')"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="controller.closeModal()" ng-show="modalSettings.canClose">{{ modalSettings.closeText }}</button>
+            </div>
+        </div>
+    </div>
+</div>
