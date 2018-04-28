@@ -1,4 +1,4 @@
-﻿/* namespace StoryScript {
+namespace StoryScript {
     export interface IModalSettings {
         title: string;
         closeText?: string;
@@ -53,34 +53,7 @@
             }
         }
 
-        getDescription(entity: any, key: string) {
-            var self = this;
-            return entity && entity[key] ? self.rules.processDescription ? self.rules.processDescription(self.game, entity, key) : entity[key] : null;
-        }
 
-        getButtonClass = (action: IAction) => {
-            var type = action.type || ActionType.Regular;
-            var buttonClass = 'btn-';
-
-            switch (type) {
-                case ActionType.Regular: {
-                    buttonClass += 'info'
-                } break;
-                case ActionType.Check: {
-                    buttonClass += 'warning';
-                } break;
-                case ActionType.Combat: {
-                    buttonClass += 'danger';
-                } break;
-            }
-
-            return buttonClass;
-        }
-
-        enemiesPresent = () => {
-            var self = this;
-            return self.game.currentLocation && self.game.currentLocation.activeEnemies.length;
-        }
 
         personsPresent = () => {
             var self = this;
@@ -90,110 +63,6 @@
         barriersPresent = () => {
             var self = this;
             return self.game.currentLocation.destinations && self.game.currentLocation.destinations.some(function (destination) { return !isEmpty(destination.barrier); });
-        }
-
-        actionsPresent = () => {
-            var self = this;
-            return !self.enemiesPresent() && !isEmpty(self.game.currentLocation.actions);
-        }
-
-        disableActionButton = (action: IAction) => {
-            var self = this;
-            return typeof action.status === "function" ? (<any>action).status(self.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
-        }
-
-        hideActionButton = (action: IAction) => {
-            var self = this;
-            return typeof action.status === "function" ? (<any>action).status(self.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
-        }
-
-        public executeAction(action: IAction) {
-            var self = this;
-
-            if (action && action.execute) {
-                // Modify the arguments collection to add the game to the collection before calling the function specified.
-                var args = [].slice.call(arguments);
-                args.shift();
-                args.splice(0, 0, self.game);
-
-                var actionIndex = self.getActionIndex(self.game, action);
-
-                args.splice(1, 0, actionIndex)
-
-                if (action.arguments && action.arguments.length) {
-                    args = args.concat(action.arguments);
-                }
-
-                // Execute the action and when nothing or false is returned, remove it from the current location.
-                var executeFunc = typeof action.execute !== 'function' ? self[<string>action.execute] : action.execute;
-                var result = executeFunc.apply(this, args);
-
-                // Todo: combat actions will never be removed this way.
-                if (!result && self.game.currentLocation.actions) {
-                    self.game.currentLocation.actions.remove(action);
-                }
-
-                // After each action, save the game.
-                self.gameService.saveGame();
-            }
-        }
-
-        private getActionIndex(game: IGame, action: IAction): number {
-            var index = -1;
-            var compare = (a: IAction) => a.type === action.type && a.text === action.text && a.status === action.status;
-
-            game.currentLocation.actions.forEach((a, i) => {
-                if (compare(a)) {
-                    index = i;
-                    return;
-                }
-            });
-
-            if (index == -1) {
-                game.currentLocation.combatActions.forEach((a, i) => {
-                    if (compare(a)) {
-                        index = i;
-                        return;
-                    }
-                });
-            }
-
-            return index;
-        }
-
-        executeBarrierAction = (destination, barrier: IBarrier) => {
-            var self = this;
-
-            // Todo: improve, use selected action as object.
-            if (!barrier.actions || !barrier.actions.length) {
-                return;
-            }
-
-            var action = barrier.actions.filter((item: IBarrier) => { return item.name == barrier.selectedAction.name; })[0];
-            action.action(self.game, destination, barrier, action);
-            barrier.actions.remove(action);
-
-            self.$scope.$broadcast('refreshCombine');
-
-            self.gameService.saveGame();
-        }
-
-        changeLocation = (location: string) => {
-            var self = this;
-
-            // Call changeLocation without using the execute action as the game parameter is not needed.
-            self.game.changeLocation(location, true);
-
-            self.$scope.$broadcast('refreshCombine');
-
-            self.gameService.saveGame();
-        }
-
-        pickupItem = (item: IItem): void => {
-            var self = this;
-            self.game.character.items.push(item);
-            self.game.currentLocation.items.remove(item);
-            self.$scope.$broadcast('refreshCombine');
         }
 
         useItem = (item: IItem): void => {
@@ -333,14 +202,14 @@
         private watchCharacterHitpoints(newValue, oldValue, scope) {
             if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                 var change = newValue - oldValue;
-                scope.controller.gameService.hitpointsChange(change);
+                scope.$ctrl.gameService.hitpointsChange(change);
             }
         }
 
         private watchCharacterScore(newValue, oldValue, scope) {
             if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                 var increase = newValue - oldValue;
-                scope.controller.gameService.scoreChange(increase);
+                scope.$ctrl.gameService.scoreChange(increase);
             }
         }
 
@@ -362,7 +231,7 @@
                     $('#encounters').modal('hide');
                 }
 
-                (<any>scope).controller.gameService.changeGameState(newValue);
+                (<any>scope).$ctrl.gameService.changeGameState(newValue);
             }
         }
 
@@ -388,4 +257,4 @@
     }
 
     MainController.$inject = ['$scope', '$window', 'locationService', 'rules', 'gameService', 'dataService', 'game', 'customTexts'];
-} */
+}

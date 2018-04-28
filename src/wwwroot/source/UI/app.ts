@@ -19,10 +19,29 @@
     storyScriptModule.service("gameService", GameService);
     storyScriptModule.service("helperService", HelperService);
 
-    storyScriptModule.controller("MainController", MainController);
     storyScriptModule.controller("ConversationController", ConversationController);
     storyScriptModule.controller("TradeController", TradeController);
     storyScriptModule.controller("CharacterController", CharacterController);
     storyScriptModule.controller("CreateCharacterController", CreateCharacterController);
     storyScriptModule.controller("CombinationController", CombinationController);
+
+    storyScriptModule.component('main', {
+        templateUrl: 'ui/MainComponent.html',
+        controller: MainController
+    });
+
+    storyScriptModule.component('navigation', {
+        templateUrl: 'ui/NavigationComponent.html',
+        controller: NavigationController
+    });
+
+    storyScriptModule.component('location', {
+        templateUrl: 'ui/LocationComponent.html',
+        controller: LocationController
+    });
+
+    storyScriptModule.component('exploration', {
+        templateUrl: 'ui/ExplorationComponent.html',
+        controller: ExplorationController
+    });
 }

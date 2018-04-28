@@ -19,7 +19,7 @@
     },
     "include": [
         "./wwwroot/source/Engine/**/*.ts",
-        "./wwwroot/source/UI/Components/*.ts",
+        "./wwwroot/source/UI/Components/**/*.ts",
         "./wwwroot/source/UI/Controllers/*.ts",
         "./wwwroot/source/UI/app.ts",
         "./wwwroot/source/Games/DangerousCave/**/*.ts"
