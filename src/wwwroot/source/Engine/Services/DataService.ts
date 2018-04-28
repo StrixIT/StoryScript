@@ -10,31 +10,28 @@
 
 namespace StoryScript {
     export class DataService implements ng.IServiceProvider, IDataService {
-        private $q: ng.IQService;
-        private $http: ng.IHttpService;
-        private $localStorage: any;
+        private http: IHttpService;
+        private localStorage: ILocalStorageService;
         private gameNameSpace: string;
         private definitions: IDefinitions;
 
         public functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
         private descriptionPaths: { [id: string]: { loading: boolean, loaded: boolean, description: string } };
 
-        constructor($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, game: IGame, gameNameSpace: string, definitions: IDefinitions) {
+        constructor(http: IHttpService, localStorage: ILocalStorageService, game: IGame, gameNameSpace: string, definitions: IDefinitions) {
             var self = this;
-            self.$http = $http;
-            self.$q = $q;
-            self.$localStorage = $localStorage;
+            self.http = http;
+            self.localStorage = localStorage;
             self.gameNameSpace = gameNameSpace;
             self.definitions = self.getDefinitions(definitions);
             game.definitions = self.definitions;
             self.registerFunctions();
         }
 
-        public $get($q: ng.IQService, $http: ng.IHttpService, $localStorage: any, game: IGame, gameNameSpace: string, definitions: IDefinitions): IDataService {
+        public $get(http: IHttpService, localStorage: ILocalStorageService, game: IGame, gameNameSpace: string, definitions: IDefinitions): IDataService {
             var self = this;
-            self.$http = $http;
-            self.$q = $q;
-            self.$localStorage = $localStorage;
+            self.http = http;
+            self.localStorage = localStorage;
             self.gameNameSpace = gameNameSpace;
             game.definitions = self.getDefinitions(definitions);
 
@@ -86,7 +83,6 @@ namespace StoryScript {
 
         public loadDescription(type: string, item: { id?: string, description?: string, pictureFileName?: string }) {
             var self = this;
-            var deferred = self.$q.defer();
             var identifier = type + '/' + item.id;
 
             if (!self.descriptionPaths) {
@@ -102,36 +98,45 @@ namespace StoryScript {
                 self.descriptionPaths[identifier] = pathEntry;
             }
 
-            if (!pathEntry.loading && !pathEntry.loaded) {
-                pathEntry.loading = true;
+            var promise = new Promise<any>(function (resolve, reject) {
 
-                self.$http.get<string>(identifier + '.html').then((result: any) => {
-                    var parser = new DOMParser();
-                    var htmlDoc = parser.parseFromString(result, 'text/html');
+                if (!pathEntry.loading && !pathEntry.loaded) {
+                    pathEntry.loading = true;
 
-                    var pictureSrc = angular.element(htmlDoc.getElementsByClassName('picture')).attr('src');
+                    var serv = new HttpService();
+                    serv.get(identifier + '.html');
 
-                    if (pictureSrc) {
-                        item.pictureFileName = pictureSrc;
-                    }
+                    self.http.get(identifier + '.html').then((result: any) => {
+                        var parser = new DOMParser();
+                        var htmlDoc = parser.parseFromString(result, 'text/html');
+                        var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
 
-                    item.description = result;
-                    pathEntry.loading = false;
-                    pathEntry.loaded = true;
-                    pathEntry.description = result;
-                    deferred.resolve(result);
-                }).catch(() => {
-                    pathEntry.loading = false;
-                    pathEntry.loaded = true;
-                    pathEntry.description = null;
-                    deferred.reject();
-                });
-            }
-            else {
-                deferred.resolve(description);
-            }
+                        // Todo: test whether this implementation works.
+                        var pictureSrc = pictureElement && pictureElement.getAttribute('src');
+                        //var pictureSrc = angular.element(htmlDoc.getElementsByClassName('picture')).attr('src');
 
-            return deferred.promise;
+                        if (pictureSrc) {
+                            item.pictureFileName = pictureSrc;
+                        }
+
+                        item.description = result;
+                        pathEntry.loading = false;
+                        pathEntry.loaded = true;
+                        pathEntry.description = result;
+                        resolve(result);
+                    }).catch(() => {
+                        pathEntry.loading = false;
+                        pathEntry.loaded = true;
+                        pathEntry.description = null;
+                        reject();
+                    });
+                }
+                else {
+                    resolve(description);
+                }
+            });
+
+            return promise;
         }
 
         public hasDescription(type: string, item: { id?: string, description?: string }) {
@@ -159,14 +164,14 @@ namespace StoryScript {
         public save<T>(key: string, value: T, pristineValues?: T): void {
             var self = this;
             var clone = self.buildClone(value, pristineValues);
-            self.$localStorage[self.gameNameSpace + '_' + key] = JSON.stringify({ data: clone });
+            self.localStorage.set(self.gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
         }
 
         public load<T>(key: string): T {
             var self = this;
 
             try {
-                var jsonData = self.$localStorage[self.gameNameSpace + '_' + key];
+                var jsonData = self.localStorage.get(self.gameNameSpace + '_' + key);
 
                 if (jsonData) {
                     var data = JSON.parse(jsonData).data;
@@ -382,5 +387,5 @@ namespace StoryScript {
         }
     }
 
-    DataService.$inject = ['$q', '$http', '$localStorage', 'game', 'gameNameSpace', 'definitions'];
+    DataService.$inject = ['httpService', 'localStorageService', 'game', 'gameNameSpace', 'definitions'];
 }

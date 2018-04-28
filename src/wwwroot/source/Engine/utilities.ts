@@ -257,7 +257,8 @@
     export function custom<T>(definition: () => T, customData: {}): () => T {
         return (): T => {
             var instance = definition();
-            return angular.extend(instance, customData);
+            return extend(instance, customData);
+            //return angular.extend(instance, customData);
         };
     }
 
@@ -278,5 +279,27 @@
         }
 
         return selector ? collectionToFilter.filter(selector) : collectionToFilter;
+    }
+
+    // Todo: test whether this implementation works.
+    function extend(target, source) {
+        for (var i = 0, ii = source.length; i < ii; ++i) {
+            var obj = source[i];
+
+            if (!(obj !== null && typeof obj === 'object') && typeof obj !== 'function')
+            {
+                continue;
+            }
+
+            var keys = Object.keys(obj);
+            
+            for (var j = 0, jj = keys.length; j < jj; j++) {
+                var key = keys[j];
+                var src = obj[key];
+                target[key] = src;
+            }
+        }
+
+        return target;
     }
 }

@@ -315,9 +315,8 @@ namespace StoryScript {
             }
 
             game.currentLocation.persons.filter(p => !p.conversation.nodes).forEach((person) => {
-                self.dataService.loadDescription('persons', person).then(function (data) {
+                self.dataService.loadDescription('persons', person).then(function (conversations) {
                     var parser = new DOMParser();
-                    var conversations = data.data;
 
                     if (conversations.indexOf('<conversation>') == -1) {
                         conversations = '<conversation>' + conversations + '</conversation>';
@@ -449,9 +448,8 @@ namespace StoryScript {
                 return;
             }
 
-            self.dataService.loadDescription('locations', game.currentLocation).then(function (data) {
+            self.dataService.loadDescription('locations', game.currentLocation).then(function (descriptions) {
                 var parser = new DOMParser();
-                var descriptions = data.data;
 
                 if (descriptions.indexOf('<descriptions>') == -1) {
                     descriptions = '<descriptions>' + descriptions + '</descriptions>';

@@ -5,7 +5,7 @@
         "noEmitOnError": true,
         "removeComments": false,
         "strictNullChecks": false,
-        "target": "es5",
+        "target": "es6",
         "outFile": "./wwwroot/js/game.js",
         "typeRoots": [
             "../node_modules/@types"

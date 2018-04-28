@@ -5,6 +5,7 @@
         "@types/jquery": "^3.3.1",
         "@types/angular": "^1.6.43",
         "@types/bootstrap": "^4.1.0",
+        "popper.js": "^1.14.3",
         "del": "3.0.0",
         "gulp": "^3.9.1",
         "gulp-concat": "^2.6.1",

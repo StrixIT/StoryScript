@@ -6,7 +6,6 @@
     merge = require('merge'),
     sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
-    log = require('fancy-log'),
     jf = require('jsonfile');
 
 var config = jf.readFileSync('./src/tsconfig.json');
