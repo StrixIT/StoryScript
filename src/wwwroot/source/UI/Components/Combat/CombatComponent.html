@@ -1,33 +1,35 @@
-<div ng-if="$ctrl.game.stateString == 'Combat'" class="combat" >
-    <div ng-if="$ctrl.enemiesPresent()">
+<div ng-if="$ctrl.game.stateString == 'Combat'">
+    <div class="combat" >
+        <div ng-if="$ctrl.enemiesPresent()">
+            <div>
+                <ul ng-show="$ctrl.game.currentLocation.activeEnemies.length > 0" class="inline button-row">
+                    <li ng-repeat="enemy in $ctrl.game.currentLocation.activeEnemies">
+                        <button type="button" class="btn btn-danger" ng-click="$ctrl.fight(enemy)">{{ $ctrl.texts.format($ctrl.texts.attack, [enemy.name]) }}</button>
+                        <img ng-src="{{ enemy.pictureFileName }}" ng-if="enemy.pictureFileName" />
+                    </li>
+                </ul>
+                <ul class="inline button-row">
+                    <li ng-repeat="action in $ctrl.game.currentLocation.combatActions">
+                        <button type="button" class="btn" ng-class="$ctrl.getButtonClass(action)" ng-click="$ctrl.executeAction(action)">{{ action.text }}</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div>
-            <ul ng-show="$ctrl.game.currentLocation.activeEnemies.length > 0" class="inline button-row">
-                <li ng-repeat="enemy in $ctrl.game.currentLocation.activeEnemies">
-                    <button type="button" class="btn btn-danger" ng-click="$ctrl.fight(enemy)">{{ $ctrl.texts.format($ctrl.texts.attack, [enemy.name]) }}</button>
-                    <img ng-src="{{ enemy.pictureFileName }}" ng-if="enemy.pictureFileName" />
-                </li>
-            </ul>
             <ul class="inline button-row">
-                <li ng-repeat="action in $ctrl.game.currentLocation.combatActions">
-                    <button type="button" class="btn" ng-class="$ctrl.getButtonClass(action)" ng-click="$ctrl.executeAction(action)">{{ action.text }}</button>
+                <li ng-repeat="item in $ctrl.game.character.combatItems">
+                    <button type="button" class="btn btn-info" ng-click="$ctrl.useItem(item)">{{ $ctrl.texts.format($ctrl.texts.useInCombat, [item.name]) }}</button>
                 </li>
             </ul>
         </div>
     </div>
-    <div>
-        <ul class="inline button-row">
-            <li ng-repeat="item in $ctrl.game.character.combatItems">
-                <button type="button" class="btn btn-info" ng-click="$ctrl.useItem(item)">{{ $ctrl.texts.format($ctrl.texts.useInCombat, [item.name]) }}</button>
-            </li>
-        </ul>
+    <div ng-if="!$ctrl.enemiesPresent()">
+        {{ $ctrl.texts.combatWin }}
     </div>
+    <fieldset>
+        <legend>{{ texts.messages }}</legend>
+        <ul class="action-log">
+            <li ng-repeat="message in $ctrl.game.combatLog track by $index">{{ message }}</li>
+        </ul>
+    </fieldset>
 </div>
-<div ng-if="!$ctrl.enemiesPresent()">
-    {{ $ctrl.texts.combatWin }}
-</div>
-<fieldset>
-    <legend>{{ texts.messages }}</legend>
-    <ul class="action-log">
-        <li ng-repeat="message in $ctrl.game.combatLog track by $index">{{ message }}</li>
-    </ul>
-</fieldset>

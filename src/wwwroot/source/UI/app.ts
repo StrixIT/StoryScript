@@ -36,9 +36,9 @@
         controller: NavigationController
     });
 
-    storyScriptModule.component('enemy', {
-        templateUrl: 'ui/EnemyComponent.html',
-        controller: EnemyController
+    storyScriptModule.component('encounter', {
+        templateUrl: 'ui/EncounterComponent.html',
+        controller: EncounterController
     });
 
     storyScriptModule.component('location', {
@@ -49,6 +49,21 @@
     storyScriptModule.component('exploration', {
         templateUrl: 'ui/ExplorationComponent.html',
         controller: ExplorationController
+    });
+
+    storyScriptModule.component('enemy', {
+        templateUrl: 'ui/EnemyComponent.html',
+        controller: EnemyController
+    });
+
+    storyScriptModule.component('actionLog', {
+        templateUrl: 'ui/ActionLogComponent.html',
+        controller: ActionLogController
+    });
+
+    storyScriptModule.component('createCharacter', {
+        templateUrl: 'ui/CreateCharacterComponent.html',
+        controller: CreateCharacterController
     });
 
     storyScriptModule.component('encounterModal', {

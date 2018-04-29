@@ -1,24 +1,20 @@
 ﻿namespace DangerousCave {
     export class LevelUpController {
-        private $scope: ng.IScope;
-        private rules: Rules;
-        private game: IGame;
+        constructor(private _scope: ng.IScope, private _rules: Rules, private _game: IGame) {
+            var self = this;
+            self.game = _game;
+            self.init();
+        }
 
-        public selectedReward: {
+        game: IGame;
+
+        selectedReward: {
             name: string,
             value: string
         }
 
         // Todo: type
-        public rewards: any;
-
-        constructor($scope: ng.IScope, rules: Rules, game: IGame) {
-            var self = this;
-            self.$scope = $scope;
-            self.rules = rules;
-            self.game = game;
-            self.init();
-        }
+        rewards: any;
 
         private init() {
             var self = this;
@@ -47,12 +43,16 @@
 
         claimReward = () => {
             var self = this;
-            self.rules.levelUp(self.game, self.selectedReward.name);
+            self._rules.levelUp(self.game, self.selectedReward.name);
         }
     }
 
     LevelUpController.$inject = ['$scope', 'rules', 'game'];
 
     var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.controller("LevelUpController", LevelUpController);
+
+    storyScriptModule.component('levelUp', {
+        templateUrl: 'ui/LevelUpComponent.html',
+        controller: LevelUpController
+    });
 }

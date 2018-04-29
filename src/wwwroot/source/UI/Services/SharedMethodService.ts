@@ -4,6 +4,7 @@ namespace StoryScript
         enemiesPresent(): boolean;
         getButtonClass(action: IAction): string;
         executeAction(action: IAction): void;
+        startCombat(): void;
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
@@ -17,7 +18,8 @@ namespace StoryScript
             return {
                 enemiesPresent: self.enemiesPresent,
                 getButtonClass: self.getButtonClass,
-                executeAction: self.executeAction
+                executeAction: self.executeAction,
+                startCombat: self.startCombat
             };
         }
 
@@ -74,6 +76,12 @@ namespace StoryScript
                 // After each action, save the game.
                 self._gameService.saveGame();
             }
+        }
+
+        startCombat = (): void => {
+            var self = this;
+            self._game.combatLog = [];
+            self._game.state = GameState.Combat;
         }
 
         private getActionIndex(game: IGame, action: IAction): number {

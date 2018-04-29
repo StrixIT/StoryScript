@@ -40,10 +40,7 @@ namespace StoryScript {
             self.init();
         }
 
-        personsPresent = () => {
-            var self = this;
-            return self.game.currentLocation && self.game.currentLocation.activePersons.length;
-        }
+
 
         barriersPresent = () => {
             var self = this;
@@ -63,34 +60,6 @@ namespace StoryScript {
         watchFeatures = (newValue: IDestination[]) => {
             var self = this;
             self.$scope.$broadcast('refreshCombine');
-        }
-
-        talk = (person: ICompiledPerson) => {
-            var self = this;
-            self.$scope.modalSettings.title = person.conversation.title || self.texts.format(self.texts.talk, [person.name]);
-            self.$scope.modalSettings.canClose = true;
-            self.game.currentLocation.activePerson = person;
-            self.game.state = GameState.Conversation;
-        }
-
-        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade) => {
-            var self = this;
-            var isPerson = !!trade;
-
-            self.game.currentLocation.activeTrade = isPerson ? (<ICompiledPerson>trade).trade : self.game.currentLocation.trade;
-            var trader = self.game.currentLocation.activeTrade;
-
-            if (isPerson) {
-                trader.currency = (<ICompiledPerson>trade).currency;
-                self.game.currentLocation.activePerson = <ICompiledPerson>trade;
-            }
-
-            self.$scope.modalSettings.title = trader.title || self.texts.format(self.texts.trade, [(<ICompiledPerson>trade).name]);
-            self.$scope.modalSettings.canClose = true;
-            self.game.state = GameState.Trade;
-
-            // Return true to keep the action button for trade locations.
-            return true;
         }
 
         private init() {
@@ -113,11 +82,7 @@ namespace StoryScript {
             self.$scope.$watchCollection('game.currentLocation.destinations', self.watchDestinations);
             self.$scope.$watchCollection('game.currentLocation.features', self.watchFeatures);
 
-            self.$scope.modalSettings = <IModalSettings>{
-                title: '',
-                canClose: false,
-                closeText: self.texts.closeModal
-            }
+            self.$scope.$broadcast('createCharacter');
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {

@@ -1,29 +1,23 @@
-﻿namespace StoryScript {
-    export interface ICreateCharacterControllerScope extends ng.IScope {
-        texts: IInterfaceTexts;
-        sheet: ICreateCharacter;
-    }
-
-    export class CreateCharacterController {
-        private $scope: ICreateCharacterControllerScope;
-        private gameService: IGameService;
-        private characterService: ICharacterService;
-        private game: IGame;
-
-        constructor($scope: ICreateCharacterControllerScope, gameService: IGameService, characterService: ICharacterService, game: IGame, texts: IInterfaceTexts) {
+namespace StoryScript {
+    export class CreateCharacterController implements ng.IComponentController {
+        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
-            self.$scope = $scope;
-            self.gameService = gameService;
-            self.characterService = characterService;
-            self.game = game;
-            self.$scope.texts = texts;
-            self.init();
+            self.game = _game;
+            self.texts = _texts;
+
+            self._scope.$on('createCharacter', function (event: ng.IAngularEvent) {
+                self.setupCharacter();
+            });
         }
+
+        sheet: ICreateCharacter;
+        game: IGame;
+        texts: IInterfaceTexts;
 
         startNewGame = () => {
             var self = this;
-            self.gameService.startNewGame(self.game.createCharacterSheet);
-            self.game.state = StoryScript.GameState.Play;
+            self._gameService.startNewGame(self._game.createCharacterSheet);
+            self._game.state = StoryScript.GameState.Play;
         }
 
         limitInput = (event: ng.IAngularEvent, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry) => {
@@ -65,8 +59,8 @@
                 done = self.checkStep(step);
             }
             else {
-                if (self.$scope.sheet && self.$scope.sheet.steps) {
-                    self.$scope.sheet.steps.forEach(step => {
+                if (self.sheet && self.sheet.steps) {
+                    self.sheet.steps.forEach(step => {
                         done = self.checkStep(step);
                     });
                 }
@@ -75,18 +69,12 @@
             return done;
         }
 
-        private init() {
+        private setupCharacter() {
             var self = this;
-            self.setupCharacter(self, self.$scope);
-            self.$scope.$on('restart', function (event: ng.IAngularEvent) {
-                self.setupCharacter(self, event.currentScope as ICreateCharacterControllerScope);
-            });
-        }
+            self.sheet = self._characterService.getCreateCharacterSheet();
+            self.sheet.currentStep = 0;
 
-        private setupCharacter(controller: CreateCharacterController, scope: ICreateCharacterControllerScope) {
-            scope.sheet = controller.characterService.getCreateCharacterSheet();
-            scope.sheet.currentStep = 0;
-            scope.sheet.nextStep = (data: ICreateCharacter) => {
+            self.sheet.nextStep = (data: ICreateCharacter) => {
                 var selector = data.steps[data.currentStep].nextStepSelector;
                 var previousStep = data.currentStep;
 
@@ -115,7 +103,7 @@
                 }
             };
 
-            controller.game.createCharacterSheet = scope.sheet;
+            self._game.createCharacterSheet = self.sheet;
         }
 
         private checkStep(step: ICreateCharacterStep) {
@@ -145,5 +133,5 @@
         }
     }
 
-    CreateCharacterController.$inject = ['$scope', 'gameService', 'characterService', 'game', 'customTexts'];
+    CreateCharacterController.$inject = ['$scope', 'characterService', 'gameService', 'game', 'customTexts'];
 }

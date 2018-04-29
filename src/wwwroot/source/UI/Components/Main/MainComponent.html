@@ -11,15 +11,15 @@
                     {{ texts.loading }}
                 </div>
                 <div ng-if="game.stateString == 'Play'">
-                    <div class="combat" ng-include="'ui/encounters.html'"></div>
+                    <encounter></encounter>
                     <location></location>
                     <div class="combination" ng-include="'ui/combination.html'"></div>
                     <exploration></exploration>
                     <enemy></enemy>
-                    <div class="actionlog" ng-include="'ui/action-log.html'"></div>
+                    <action-log></action-log>
                 </div>
-                <div ng-if="game.stateString == 'CreateCharacter'" ng-include="'ui/create-character.html'"></div>
-                <div ng-if="game.stateString == 'LevelUp'" ng-include="'ui/level-up.html'"></div>
+                <create-character></create-character>
+                <level-up></level-up>
                 <div ng-if="game.stateString == 'GameOver'" ng-include="'ui/game-over.html'"></div>
                 <div ng-if="game.stateString == 'Victory'" ng-include="'ui/victory.html'"></div>
             </div>

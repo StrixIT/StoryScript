@@ -1,10 +1,6 @@
 namespace StoryScript {
-    interface INavigationControllerScope extends ng.IScope {
-        texts: IInterfaceTexts;
-    }
-    
     export class NavigationController implements ng.IComponentController {
-        constructor(private _scope: INavigationControllerScope, private _gameService: IGameService, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _texts: IInterfaceTexts) {
             var self = this;
             self.texts = _texts;
         }
@@ -19,7 +15,7 @@ namespace StoryScript {
         restart = (): void => {
             var self = this;
             self._gameService.restart();
-            self._scope.$broadcast('restart');
+            self._scope.$emit('restart');
         }
     }
 
