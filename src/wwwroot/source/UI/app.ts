@@ -18,6 +18,7 @@
     storyScriptModule.service("characterService", CharacterService);
     storyScriptModule.service("gameService", GameService);
     storyScriptModule.service("helperService", HelperService);
+    storyScriptModule.service("sharedMethodService", SharedMethodService);
 
     storyScriptModule.controller("ConversationController", ConversationController);
     storyScriptModule.controller("TradeController", TradeController);
@@ -35,6 +36,11 @@
         controller: NavigationController
     });
 
+    storyScriptModule.component('enemy', {
+        templateUrl: 'ui/EnemyComponent.html',
+        controller: EnemyController
+    });
+
     storyScriptModule.component('location', {
         templateUrl: 'ui/LocationComponent.html',
         controller: LocationController
@@ -43,5 +49,15 @@
     storyScriptModule.component('exploration', {
         templateUrl: 'ui/ExplorationComponent.html',
         controller: ExplorationController
+    });
+
+    storyScriptModule.component('encounterModal', {
+        templateUrl: 'ui/EncounterModalComponent.html',
+        controller: EncounterModalController
+    });
+
+    storyScriptModule.component('combat', {
+        templateUrl: 'ui/CombatComponent.html',
+        controller: CombatController
     });
 }

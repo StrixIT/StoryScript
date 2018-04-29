@@ -1,25 +1,27 @@
-<fieldset ng-if="$ctrl.actionsPresent()">
-    <legend>{{ $ctrl.texts.actions }}</legend>
-    <ul class="button-row">
-        <li ng-repeat="action in $ctrl.game.currentLocation.actions">
-            <button type="button" class="btn" ng-class="$ctrl.getButtonClass(action)" ng-click="$ctrl.executeAction(action)" ng-disabled="$ctrl.disableActionButton(action)" ng-hide="$ctrl.hideActionButton(action)">{{ action.text }}</button>
-        </li>
-    </ul>
-</fieldset>
-<fieldset ng-if="!$ctrl.enemiesPresent()">
-    <legend>{{ $ctrl.texts.destinations }}</legend>
-    <div class="destination-button" ng-repeat="destination in $ctrl.game.currentLocation.destinations">
-        <div ng-if="destination.barrier">
-            <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.name }}</button>
-            <select strix-drop-down class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" source="destination.barrier.actions" option-label="name"></select>
+<div class="exploration">
+    <fieldset ng-if="$ctrl.actionsPresent()">
+        <legend>{{ $ctrl.texts.actions }}</legend>
+        <ul class="button-row">
+            <li ng-repeat="action in $ctrl.game.currentLocation.actions">
+                <button type="button" class="btn" ng-class="$ctrl.getButtonClass(action)" ng-click="$ctrl.executeAction(action)" ng-disabled="$ctrl.disableActionButton(action)" ng-hide="$ctrl.hideActionButton(action)">{{ action.text }}</button>
+            </li>
+        </ul>
+    </fieldset>
+    <fieldset ng-if="!$ctrl.enemiesPresent()">
+        <legend>{{ $ctrl.texts.destinations }}</legend>
+        <div class="destination-button" ng-repeat="destination in $ctrl.game.currentLocation.destinations">
+            <div ng-if="destination.barrier">
+                <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.name }}</button>
+                <select strix-drop-down class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" source="destination.barrier.actions" option-label="name"></select>
+            </div>
+            <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="$ctrl.changeLocation(destination.target)" ng-disabled="destination.barrier || $ctrl.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ $ctrl.texts.back }}</span> {{ destination.name }}</button>
         </div>
-        <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="$ctrl.changeLocation(destination.target)" ng-disabled="destination.barrier || $ctrl.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ $ctrl.texts.back }}</span> {{ destination.name }}</button>
-    </div>
-    <div class="clearfix"></div>
-</fieldset>
-<fieldset ng-if="!$ctrl.enemiesPresent()">
-    <legend>{{ $ctrl.texts.onTheGround }}</legend>
-    <ul>
-        <li ng-repeat="item in $ctrl.game.currentLocation.activeItems track by $index" ng-click="$ctrl.pickupItem(item)">{{ item.name }}</li>
-    </ul>
-</fieldset>
+        <div class="clearfix"></div>
+    </fieldset>
+    <fieldset ng-if="!$ctrl.enemiesPresent()">
+        <legend>{{ $ctrl.texts.onTheGround }}</legend>
+        <ul>
+            <li ng-repeat="item in $ctrl.game.currentLocation.activeItems track by $index" ng-click="$ctrl.pickupItem(item)">{{ item.name }}</li>
+        </ul>
+    </fieldset>
+</div>

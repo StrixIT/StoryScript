@@ -15,7 +15,7 @@
                     <location></location>
                     <div class="combination" ng-include="'ui/combination.html'"></div>
                     <exploration></exploration>
-                    <div class="startcombat" ng-include="'ui/start-combat.html'"></div>
+                    <enemy></enemy>
                     <div class="actionlog" ng-include="'ui/action-log.html'"></div>
                 </div>
                 <div ng-if="game.stateString == 'CreateCharacter'" ng-include="'ui/create-character.html'"></div>
@@ -28,5 +28,5 @@
         <footer>
         </footer>
     </div>
-    <div ng-include="'ui/encounter-modal.html'"></div>
+    <encounter-modal></encounter-modal>
 </div>

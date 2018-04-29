@@ -40,21 +40,6 @@ namespace StoryScript {
             self.init();
         }
 
-        hasDescription(type: string, item: { id?: string, description?: string }) {
-            var self = this;
-            return self.dataService.hasDescription(type, item);
-        }
-
-        showDescription(item: any, title: string) {
-            var self = this;
-
-            if (item.description) {
-                self.showDescriptionModal(title, item);
-            }
-        }
-
-
-
         personsPresent = () => {
             var self = this;
             return self.game.currentLocation && self.game.currentLocation.activePersons.length;
@@ -63,26 +48,6 @@ namespace StoryScript {
         barriersPresent = () => {
             var self = this;
             return self.game.currentLocation.destinations && self.game.currentLocation.destinations.some(function (destination) { return !isEmpty(destination.barrier); });
-        }
-
-        useItem = (item: IItem): void => {
-            var self = this;
-            item.use(self.game, item);
-            self.$scope.$broadcast('refreshCombine');
-        }
-
-        initCombat = (newValue: ICompiledEnemy[]) => {
-            var self = this;
-
-            if (newValue && !newValue.some(e => !e.inactive)) {
-                self.$scope.modalSettings.canClose = true;
-            }
-
-            if (newValue && self.rules.initCombat) {
-                self.rules.initCombat(self.game, self.game.currentLocation);
-            }
-
-            self.$scope.$broadcast('refreshCombine');
         }
 
         watchPersons = (newValue: ICompiledPerson[]) => {
@@ -98,23 +63,6 @@ namespace StoryScript {
         watchFeatures = (newValue: IDestination[]) => {
             var self = this;
             self.$scope.$broadcast('refreshCombine');
-        }
-
-        startCombat = () => {
-            var self = this;
-
-            self.$scope.modalSettings.title = self.texts.combatTitle;
-            self.$scope.modalSettings.canClose = false;
-
-            self.game.combatLog = [];
-
-            self.game.state = GameState.Combat;
-        }
-
-        fight = (enemy: ICompiledEnemy) => {
-            var self = this;
-            self.gameService.fight(enemy);
-            self.gameService.saveGame();
         }
 
         talk = (person: ICompiledPerson) => {
@@ -145,20 +93,6 @@ namespace StoryScript {
             return true;
         }
 
-        closeModal = () => {
-            var self = this;
-
-            if (self.$scope.modalSettings.closeAction) {
-                self.$scope.modalSettings.closeAction(self.$scope.game);
-            }
-
-            self.gameService.saveGame();
-
-            self.$scope.$broadcast('refreshCombine');
-
-            self.game.state = GameState.Play;
-        }
-
         private init() {
             var self = this;
             self.gameService.init();
@@ -173,8 +107,8 @@ namespace StoryScript {
             self.$scope.$watch('game.currentLocation', self.watchLocation);
             self.$scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self.$scope.$watch('game.character.score', self.watchCharacterScore);
-            self.$scope.$watch('game.state', self.watchGameState);
-            self.$scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
+ 
+            
             self.$scope.$watchCollection('game.currentLocation.persons', self.watchPersons);
             self.$scope.$watchCollection('game.currentLocation.destinations', self.watchDestinations);
             self.$scope.$watchCollection('game.currentLocation.features', self.watchFeatures);
@@ -184,19 +118,6 @@ namespace StoryScript {
                 canClose: false,
                 closeText: self.texts.closeModal
             }
-        }
-
-        private showDescriptionModal(title: string, item: any) {
-            var self = this;
-
-            self.$scope.modalSettings = <IModalSettings>{
-                title: title,
-                closeText: self.texts.closeModal,
-                canClose: true,
-                descriptionEntity: item
-            }
-
-            self.game.state = GameState.Description;
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {
@@ -210,28 +131,6 @@ namespace StoryScript {
             if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                 var increase = newValue - oldValue;
                 scope.$ctrl.gameService.scoreChange(increase);
-            }
-        }
-
-        private watchGameState(newValue: GameState, oldValue, scope: IMainControllerScope) {
-            if (oldValue != undefined) {
-                // If there is a person trader, sync the money between him and the shop on trade end.
-                if (oldValue == GameState.Trade) {
-                    if (scope.game.currentLocation.activePerson && scope.game.currentLocation.activePerson.trade === scope.game.currentLocation.activeTrade) {
-                        scope.game.currentLocation.activePerson.currency = scope.game.currentLocation.activeTrade.currency;
-                    }
-                }
-            }
-
-            if (newValue != undefined) {
-                if (newValue == GameState.Combat || newValue == GameState.Trade || newValue == GameState.Conversation || newValue == GameState.Description) {
-                    $('#encounters').modal('show');
-                }
-                else {
-                    $('#encounters').modal('hide');
-                }
-
-                (<any>scope).$ctrl.gameService.changeGameState(newValue);
             }
         }
 

@@ -1,14 +1,12 @@
 namespace StoryScript {   
     export class ExplorationController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
             var self = this;
-            self.gameService = _gameService;
             self.game = _game;
             self.rules = _rules;
             self.texts = _texts;
         }
 
-        gameService: IGameService;
         game: IGame;
         rules: IRules;
         texts: IInterfaceTexts;
@@ -20,26 +18,12 @@ namespace StoryScript {
 
         enemiesPresent = () => {
             var self = this;
-            return self.game.currentLocation && self.game.currentLocation.activeEnemies.length;
+            return self._sharedMethodService.enemiesPresent();
         }
 
-        getButtonClass = (action: IAction) => {
-            var type = action.type || ActionType.Regular;
-            var buttonClass = 'btn-';
-
-            switch (type) {
-                case ActionType.Regular: {
-                    buttonClass += 'info'
-                } break;
-                case ActionType.Check: {
-                    buttonClass += 'warning';
-                } break;
-                case ActionType.Combat: {
-                    buttonClass += 'danger';
-                } break;
-            }
-
-            return buttonClass;
+        getButtonClass = (action: IAction): string => {
+            var self = this;
+            return self._sharedMethodService.getButtonClass(action);
         }
 
         disableActionButton = (action: IAction) => {
@@ -52,35 +36,9 @@ namespace StoryScript {
             return typeof action.status === "function" ? (<any>action).status(self.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
         }
 
-        public executeAction(action: IAction) {
+        executeAction = (action: IAction): void => {
             var self = this;
-
-            if (action && action.execute) {
-                // Modify the arguments collection to add the game to the collection before calling the function specified.
-                var args = [].slice.call(arguments);
-                args.shift();
-                args.splice(0, 0, self.game);
-
-                var actionIndex = self.getActionIndex(self.game, action);
-
-                args.splice(1, 0, actionIndex)
-
-                if (action.arguments && action.arguments.length) {
-                    args = args.concat(action.arguments);
-                }
-
-                // Execute the action and when nothing or false is returned, remove it from the current location.
-                var executeFunc = typeof action.execute !== 'function' ? self[<string>action.execute] : action.execute;
-                var result = executeFunc.apply(this, args);
-
-                // Todo: combat actions will never be removed this way.
-                if (!result && self.game.currentLocation.actions) {
-                    self.game.currentLocation.actions.remove(action);
-                }
-
-                // After each action, save the game.
-                self.gameService.saveGame();
-            }
+            self._sharedMethodService.executeAction(action);
         }
 
         executeBarrierAction = (destination, barrier: IBarrier) => {
@@ -97,7 +55,7 @@ namespace StoryScript {
 
             self._scope.$broadcast('refreshCombine');
 
-            self.gameService.saveGame();
+            self._gameService.saveGame();
         }
 
         changeLocation = (location: string) => {
@@ -106,7 +64,7 @@ namespace StoryScript {
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location, true);
             self._scope.$broadcast('refreshCombine');
-            self.gameService.saveGame();
+            self._gameService.saveGame();
         }
 
         pickupItem = (item: IItem): void => {
@@ -115,30 +73,7 @@ namespace StoryScript {
             self.game.currentLocation.items.remove(item);
             self._scope.$broadcast('refreshCombine');
         }
-
-        private getActionIndex(game: IGame, action: IAction): number {
-            var index = -1;
-            var compare = (a: IAction) => a.type === action.type && a.text === action.text && a.status === action.status;
-
-            game.currentLocation.actions.forEach((a, i) => {
-                if (compare(a)) {
-                    index = i;
-                    return;
-                }
-            });
-
-            if (index == -1) {
-                game.currentLocation.combatActions.forEach((a, i) => {
-                    if (compare(a)) {
-                        index = i;
-                        return;
-                    }
-                });
-            }
-
-            return index;
-        }
     }
 
-    ExplorationController.$inject = ['$scope', 'gameService', 'game', 'rules', 'customTexts'];
+    ExplorationController.$inject = ['$scope', 'gameService', 'sharedMethodService', 'game', 'rules', 'customTexts'];
 }
