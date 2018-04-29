@@ -38,7 +38,7 @@ namespace StoryScript {
             }
 
             self._gameService.saveGame();
-            self._scope.$broadcast('refreshCombine');
+            self._scope.$emit('refreshCombine');
             self._game.state = GameState.Play;
         }
 

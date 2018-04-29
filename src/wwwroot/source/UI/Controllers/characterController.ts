@@ -82,7 +82,7 @@
             var self = this;
             self.game.character.items.remove(item);
             self.game.currentLocation.items.push(item);
-            self.$rootScope.$broadcast('refreshCombine');
+            self.$rootScope.$broadcast('buildCombine');
         }
 
         showQuests = (): boolean => {

@@ -1,0 +1,15 @@
+<div>
+    <fieldset ng-if="$ctrl.showCombinations()">
+        <legend>{{ $ctrl.texts.combinations }}</legend>
+        <div>
+            <select strix-drop-down class="combine-select" ng-model="$ctrl.combination.type" source="$ctrl.combineActions" option-label="text"></select>
+            <span class="combine-label" ng-if="!($ctrl.combination.type.requiresTarget && $ctrl.combineTargets.length > 0)">{{ $ctrl.combination.type.preposition }}</span>
+            <div class="inline" ng-if="$ctrl.combination.type.requiresTarget && $ctrl.combineTargets.length > 0">
+                <select strix-drop-down class="combine-select" ng-model="$ctrl.combination.target" source="$ctrl.combineTargets" option-label="name"></select>
+                <span class="combine-label">{{ $ctrl.combination.type.preposition }}</span>
+            </div>
+            <select strix-drop-down class="combine-select" ng-model="$ctrl.combination.source" source="$ctrl.combineSources" option-label="name"></select>
+            <button type="button" class="btn btn-info" ng-click="$ctrl.tryCombination($ctrl.combination.source, $ctrl.combination.target, $ctrl.combination.type)">{{ $ctrl.texts.tryCombination }}</button>
+        </div>
+    </fieldset>
+</div>

@@ -33,7 +33,7 @@ namespace StoryScript {
         useItem = (item: IItem): void => {
             var self = this;
             item.use(self.game, item);
-            self._scope.$broadcast('refreshCombine');
+            self._scope.$emit('refreshCombine');
         }
     }
 

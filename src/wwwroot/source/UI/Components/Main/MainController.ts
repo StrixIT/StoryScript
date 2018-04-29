@@ -37,6 +37,7 @@ namespace StoryScript {
             self.game = game;
             self.customTexts = customTexts;
             self.$scope.$on('restart', () => self.init());
+            self.$scope.$on('refreshCombine', () => self.$scope.$broadcast('buildCombine'));
             self.init();
         }
 
@@ -49,17 +50,17 @@ namespace StoryScript {
 
         watchPersons = (newValue: ICompiledPerson[]) => {
             var self = this;
-            self.$scope.$broadcast('refreshCombine');
+            self.$scope.$broadcast('buildCombine');
         }
 
         watchDestinations = (newValue: IDestination[]) => {
             var self = this;
-            self.$scope.$broadcast('refreshCombine');
+            self.$scope.$broadcast('buildCombine');
         }
 
         watchFeatures = (newValue: IDestination[]) => {
             var self = this;
-            self.$scope.$broadcast('refreshCombine');
+            self.$scope.$broadcast('buildCombine');
         }
 
         private init() {

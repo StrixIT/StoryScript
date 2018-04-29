@@ -46,6 +46,11 @@
         controller: LocationController
     });
 
+    storyScriptModule.component('combination', {
+        templateUrl: 'ui/CombinationComponent.html',
+        controller: CombinationController
+    });
+
     storyScriptModule.component('exploration', {
         templateUrl: 'ui/ExplorationComponent.html',
         controller: ExplorationController

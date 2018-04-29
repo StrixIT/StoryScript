@@ -53,7 +53,7 @@ namespace StoryScript {
             action.action(self.game, destination, barrier, action);
             barrier.actions.remove(action);
 
-            self._scope.$broadcast('refreshCombine');
+            self._scope.$emit('refreshCombine');
 
             self._gameService.saveGame();
         }
@@ -63,7 +63,7 @@ namespace StoryScript {
 
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location, true);
-            self._scope.$broadcast('refreshCombine');
+            self._scope.$emit('refreshCombine');
             self._gameService.saveGame();
         }
 
@@ -71,7 +71,7 @@ namespace StoryScript {
             var self = this;
             self.game.character.items.push(item);
             self.game.currentLocation.items.remove(item);
-            self._scope.$broadcast('refreshCombine');
+            self._scope.$emit('refreshCombine');
         }
     }
 
