@@ -20,8 +20,8 @@
                 </div>
                 <create-character></create-character>
                 <level-up></level-up>
-                <div ng-if="game.stateString == 'GameOver'" ng-include="'ui/game-over.html'"></div>
-                <div ng-if="game.stateString == 'Victory'" ng-include="'ui/victory.html'"></div>
+                <game-over></game-over>
+                <victory></victory>
             </div>
         </div>
         <hr />

@@ -66,6 +66,21 @@
         controller: CreateCharacterController
     });
 
+    storyScriptModule.component('gameOver', {
+        templateUrl: 'ui/GameOverComponent.html',
+        controller: GameOverController
+    });
+
+    storyScriptModule.component('victory', {
+        templateUrl: 'ui/VictoryComponent.html',
+        controller: VictoryController
+    });
+
+    storyScriptModule.component('highScores', {
+        templateUrl: 'ui/HighScoresComponent.html',
+        controller: HighScoresController
+    });
+
     storyScriptModule.component('encounterModal', {
         templateUrl: 'ui/EncounterModalComponent.html',
         controller: EncounterModalController

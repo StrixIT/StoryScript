@@ -1,0 +1,7 @@
+<div ng-if="$ctrl.game.stateString == 'GameOver'">
+    <h1>{{ $ctrl.texts.youLost }}</h1>
+    <div><span>{{ $ctrl.texts.questFailed }}</span></div>
+    <div><span>{{ $ctrl.texts.finalScore }}{{ $ctrl.game.character.score }}</span></div>
+    <button type="button" class="btn btn-primary" ng-click="$ctrl.restart()">{{ $ctrl.texts.tryAgain }}</button>
+    <high-scores></high-scores>
+</div>
