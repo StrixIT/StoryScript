@@ -41,8 +41,6 @@ namespace StoryScript {
             self.init();
         }
 
-
-
         barriersPresent = () => {
             var self = this;
             return self.game.currentLocation.destinations && self.game.currentLocation.destinations.some(function (destination) { return !isEmpty(destination.barrier); });

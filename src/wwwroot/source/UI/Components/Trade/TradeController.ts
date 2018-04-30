@@ -1,42 +1,32 @@
-﻿namespace StoryScript {
-    export interface ITradeControllerScope extends ng.IScope {
-        game: IGame;
-        texts: IInterfaceTexts;
-        trade: ITrade;
-    }
-
+namespace StoryScript {
     export class TradeController {
-        private $scope: ITradeControllerScope;
-        private game: IGame;
-        private texts: IInterfaceTexts;
-
-        constructor($scope: ITradeControllerScope, game: IGame, texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
-            self.$scope = $scope;
-            self.game = game;
-            self.texts = texts;
-            self.$scope.game = self.game;
-            self.$scope.texts = self.texts;
-            self.$scope.trade = self.game.currentLocation.activeTrade;
-            self.init();
+            self.game = _game;
+            self.texts = _texts;
+            self._scope.$on('init', () => self.init());
         }
 
-        canPay = (currency: number, value: number) => {
+        trade: ITrade;
+        game: IGame;
+        texts: IInterfaceTexts;
+
+        canPay = (currency: number, value: number): boolean => {
             return (value != undefined && currency != undefined && currency >= value) || value == 0;
         }
 
-        actualPrice = (item: IItem, modifier: number | (() => number)) => {
+        actualPrice = (item: IItem, modifier: number | (() => number)): number => {
             var self = this;
             modifier = modifier == undefined ? 1 : typeof modifier === 'function' ? (<any>modifier)(self.game) : modifier;
             return Math.round(item.value * <number>modifier);
         }
 
-        displayPrice = (item: IItem, actualPrice: number) => {
+        displayPrice = (item: IItem, actualPrice: number): string => {
             var self = this;
             return actualPrice > 0 ? (item.name + ': ' + actualPrice + ' ' + self.texts.currency) : item.name;
         }
 
-        buy = (item: IItem, trade: ITrade) => {
+        buy = (item: IItem, trade: ITrade): void => {
             var self = this;
             self.pay(item, trade, trade.buy, self.game.character, false);
             self.game.character.items.push(item);
@@ -47,7 +37,7 @@
             }
         }
 
-        sell = (item: IItem, trade: ITrade) => {
+        sell = (item: IItem, trade: ITrade): void => {
             var self = this;
             self.pay(item, trade, trade.sell, self.game.character, true);
             self.game.character.items.remove(item);
@@ -61,7 +51,12 @@
 
         private init(): void {
             var self = this;
-            var trader = self.$scope.trade;
+            self.trade = self._game.currentLocation.activeTrade;
+            var trader = self.trade;
+
+            if (!trader) {
+                return;
+            }
 
             var itemsForSale = trader.buy.items;
 

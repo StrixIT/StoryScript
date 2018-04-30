@@ -95,4 +95,9 @@
         templateUrl: 'ui/CombatComponent.html',
         controller: CombatController
     });
+
+    storyScriptModule.component('trade', {
+        templateUrl: 'ui/TradeComponent.html',
+        controller: TradeController
+    });
 }

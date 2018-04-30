@@ -16,7 +16,7 @@ namespace StoryScript {
                 closeText: self.texts.closeModal
             }
 
-            self._scope.$watch('game.state', (newValue: GameState, oldValue: GameState) => self.watchGameState(newValue, oldValue, self.modalSettings, self._texts, self._game, self._gameService));
+            self._scope.$watch('game.state', (newValue: GameState, oldValue: GameState) => self.watchGameState(newValue, oldValue, self));
             self._scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
         }
 
@@ -47,30 +47,30 @@ namespace StoryScript {
             return entity && entity[key] ? self._rules.processDescription ? self._rules.processDescription(self._game, entity, key) : entity[key] : null;
         }
 
-        private watchGameState(newValue: GameState, oldValue: GameState, settings: IModalSettings, texts: IInterfaceTexts, game: IGame, gameService: IGameService) {
+        private watchGameState(newValue: GameState, oldValue: GameState, controller: EncounterModalController) {
             if (oldValue != undefined) {
                 // If there is a person trader, sync the money between him and the shop on trade end.
                 if (oldValue == GameState.Trade) {
-                    if (game.currentLocation.activePerson && game.currentLocation.activePerson.trade === game.currentLocation.activeTrade) {
-                        game.currentLocation.activePerson.currency = game.currentLocation.activeTrade.currency;
+                    if (controller._game.currentLocation.activePerson && controller._game.currentLocation.activePerson.trade === controller._game.currentLocation.activeTrade) {
+                        controller._game.currentLocation.activePerson.currency = controller._game.currentLocation.activeTrade.currency;
                     }
                 }
             }
             
             switch (newValue) {
                 case GameState.Combat: {
-                    settings.title = texts.combatTitle;
-                    settings.canClose = false;
+                    controller.modalSettings.title = controller._texts.combatTitle;
+                    controller.modalSettings.canClose = false;
                 } break;
                 case GameState.Conversation: {
-                    var person = game.currentLocation.activePerson;
-                    settings.title = person.conversation.title || texts.format(texts.talk, [person.name]);
-                    settings.canClose = true;
+                    var person = controller._game.currentLocation.activePerson;
+                    controller.modalSettings.title = person.conversation.title || controller._texts.format(controller._texts.talk, [person.name]);
+                    controller.modalSettings.canClose = true;
                 } break;
                 case GameState.Trade: {
-                    var trader = game.currentLocation.activeTrade;
-                    settings.title = trader.title || texts.format(texts.trade, [(<ICompiledPerson>trader).name]);
-                    settings.canClose = true;
+                    var trader = controller._game.currentLocation.activeTrade;
+                    controller.modalSettings.title = trader.title;
+                    controller.modalSettings.canClose = true;
                 } break;
                 case GameState.Conversation: {
                     // Todo
@@ -83,12 +83,13 @@ namespace StoryScript {
             if (newValue != undefined) {
                 if (newValue == GameState.Combat || newValue == GameState.Trade || newValue == GameState.Conversation || newValue == GameState.Description) {
                     $('#encounters').modal('show');
+                    controller._scope.$broadcast('init');
                 }
                 else {
                     $('#encounters').modal('hide');
                 }
 
-                gameService.changeGameState(newValue);
+                controller._gameService.changeGameState(newValue);
             }
         }
 

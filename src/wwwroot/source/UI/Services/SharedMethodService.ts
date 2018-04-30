@@ -3,12 +3,13 @@ namespace StoryScript
     export interface ISharedMethodService {
         enemiesPresent(): boolean;
         getButtonClass(action: IAction): string;
-        executeAction(action: IAction): void;
+        executeAction(action: IAction, controller: ng.IComponentController): void;
         startCombat(): void;
+        trade(game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade): boolean;
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
-        constructor(private _gameService: IGameService, private _game: IGame) {
+        constructor(private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
 
         }
 
@@ -19,7 +20,8 @@ namespace StoryScript
                 enemiesPresent: self.enemiesPresent,
                 getButtonClass: self.getButtonClass,
                 executeAction: self.executeAction,
-                startCombat: self.startCombat
+                startCombat: self.startCombat,
+                trade: self.trade
             };
         }
 
@@ -47,17 +49,13 @@ namespace StoryScript
             return buttonClass;
         }
 
-        executeAction = (action: IAction): void => {
+        executeAction = (action: IAction, controller: ng.IComponentController): void => {
             var self = this;
 
             if (action && action.execute) {
                 // Modify the arguments collection to add the game to the collection before calling the function specified.
-                var args = [].slice.call(arguments);
-                args.shift();
-                args.splice(0, 0, self._game);
-
+                var args = <any[]>[self._game, action];
                 var actionIndex = self.getActionIndex(self._game, action);
-
                 args.splice(1, 0, actionIndex)
 
                 if (action.arguments && action.arguments.length) {
@@ -65,8 +63,8 @@ namespace StoryScript
                 }
 
                 // Execute the action and when nothing or false is returned, remove it from the current location.
-                var executeFunc = typeof action.execute !== 'function' ? self[<string>action.execute] : action.execute;
-                var result = executeFunc.apply(this, args);
+                var executeFunc = typeof action.execute !== 'function' ? controller[<string>action.execute] : action.execute;
+                var result = executeFunc.apply(controller, args);
 
                 // Todo: combat actions will never be removed this way.
                 if (!result && self._game.currentLocation.actions) {
@@ -82,6 +80,28 @@ namespace StoryScript
             var self = this;
             self._game.combatLog = [];
             self._game.state = GameState.Combat;
+        }
+
+        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade): boolean => {
+            var self = this;
+            var isPerson = trade['type'] === 'person';
+
+            self._game.currentLocation.activeTrade = isPerson ? (<ICompiledPerson>trade).trade : self._game.currentLocation.trade;
+            var trader = self._game.currentLocation.activeTrade;
+
+            if (isPerson) {
+                trader.currency = (<ICompiledPerson>trade).currency;
+                self._game.currentLocation.activePerson = <ICompiledPerson>trade;
+
+                if (!trader.title) {
+                    trader.title = self._texts.format(self._texts.trade, [(<ICompiledPerson>trade).name]);
+                }
+            }
+
+            self._game.state = GameState.Trade;
+
+            // Return true to keep the action button for trade locations.
+            return true;
         }
 
         private getActionIndex(game: IGame, action: IAction): number {
@@ -108,5 +128,5 @@ namespace StoryScript
         }
     }
 
-    SharedMethodService.$inject = ['gameService', 'game'];
+    SharedMethodService.$inject = ['gameService', 'game', 'customTexts'];
 }

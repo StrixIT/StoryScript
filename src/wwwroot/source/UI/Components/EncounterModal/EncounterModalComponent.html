@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 <combat></combat>
-                <div ng-if="$ctrl.game.stateString == 'Trade'" class="trade" ng-include="'ui/trade.html'"></div>
+                <trade></trade>
                 <div ng-if="$ctrl.game.stateString == 'Conversation'" class="conversation" ng-include="'ui/conversation.html'"></div>
                 <div ng-if="$ctrl.game.stateString == 'Description'" class="description" ng-bind-html="$ctrl.getDescription($ctrl.modalSettings.descriptionEntity, 'description')"></div>
             </div>

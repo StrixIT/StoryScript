@@ -6,6 +6,7 @@
 
 # Copied and generated files for StoryScript, resource files that should not be checked in
 /src/wwwroot/css
+/src/wwwroot/persons
 /src/wwwroot/enemies
 /src/wwwroot/js
 /src/wwwroot/locations

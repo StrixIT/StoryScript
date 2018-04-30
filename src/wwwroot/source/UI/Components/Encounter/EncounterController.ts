@@ -27,20 +27,7 @@ namespace StoryScript {
 
         trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade) => {
             var self = this;
-            var isPerson = !!trade;
-
-            self._game.currentLocation.activeTrade = isPerson ? (<ICompiledPerson>trade).trade : self._game.currentLocation.trade;
-            var trader = self.game.currentLocation.activeTrade;
-
-            if (isPerson) {
-                trader.currency = (<ICompiledPerson>trade).currency;
-                self._game.currentLocation.activePerson = <ICompiledPerson>trade;
-            }
-
-            self.game.state = GameState.Trade;
-
-            // Return true to keep the action button for trade locations.
-            return true;
+            return self._sharedMethodService.trade(self._game, actionIndex, trade);
         }
 
         startCombat = (person: ICompiledPerson) => {

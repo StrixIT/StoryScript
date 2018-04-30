@@ -38,7 +38,7 @@ namespace StoryScript {
 
         executeAction = (action: IAction): void => {
             var self = this;
-            self._sharedMethodService.executeAction(action);
+            self._sharedMethodService.executeAction(action, self);
         }
 
         executeBarrierAction = (destination, barrier: IBarrier) => {
@@ -56,6 +56,11 @@ namespace StoryScript {
             self._scope.$emit('refreshCombine');
 
             self._gameService.saveGame();
+        }
+
+        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade) => {
+            var self = this;
+            return self._sharedMethodService.trade(game, actionIndex, trade);
         }
 
         changeLocation = (location: string) => {
