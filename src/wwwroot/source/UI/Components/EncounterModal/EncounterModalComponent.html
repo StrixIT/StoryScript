@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <combat></combat>
                 <trade></trade>
-                <div ng-if="$ctrl.game.stateString == 'Conversation'" class="conversation" ng-include="'ui/conversation.html'"></div>
+                <conversation></conversation>
                 <div ng-if="$ctrl.game.stateString == 'Description'" class="description" ng-bind-html="$ctrl.getDescription($ctrl.modalSettings.descriptionEntity, 'description')"></div>
             </div>
             <div class="modal-footer">

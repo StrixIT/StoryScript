@@ -1,31 +1,17 @@
-﻿namespace StoryScript {
-    export interface IConversationControllerScope extends ng.IScope {
-        game: IGame;
-        texts: IInterfaceTexts;
-        conversation: IConversation;
-    }
-
+namespace StoryScript {
     export class ConversationController {
-        private $scope: IConversationControllerScope;
-        private rules: IRules;
-        private game: IGame;
-        private texts: IInterfaceTexts;
-
-        constructor($scope: IConversationControllerScope, rules: IRules, game: IGame, texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
             var self = this;
-            self.$scope = $scope;
-            self.rules = rules;
-            self.game = game;
-            self.texts = texts;
-            self.$scope.game = self.game;
-            self.$scope.texts = self.texts;
-            self.$scope.conversation = self.game.currentLocation.activePerson.conversation;
-            self.init();
+            self.game = _game;
+            self._scope.$on('init', () => self.init());
         }
+
+        conversation: IConversation;
+        game: IGame;
 
         answer = (node: IConversationNode, reply: IConversationReply) => {
             var self = this;
-            var person = self.game.currentLocation.activePerson;
+            var person = self._game.currentLocation.activePerson;
 
             person.conversation.conversationLog = person.conversation.conversationLog || [];
 
@@ -35,7 +21,7 @@
             });
 
             if (reply.trigger) {
-                person.conversation.actions[reply.trigger](self.game, person);
+                person.conversation.actions[reply.trigger](self._game, person);
             }
 
             if (reply.setStart) {
@@ -68,18 +54,18 @@
             var self = this;
 
             if (nodeOrReply && nodeOrReply.lines) {
-                return self.rules.processDescription ? self.rules.processDescription(self.game, nodeOrReply, 'lines') : nodeOrReply.lines;
+                return self._rules.processDescription ? self._rules.processDescription(self._game, nodeOrReply, 'lines') : nodeOrReply.lines;
             }
         }
 
         private init(): void {
             var self = this;
-            var person = self.game.currentLocation.activePerson;
+            var person = self._game.currentLocation.activePerson;
 
             var activeNode = person.conversation.activeNode;
 
             if (!activeNode) {
-                activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self.game, person) : null;
+                activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self._game, person) : null;
             }
 
             if (!activeNode) {
@@ -127,11 +113,11 @@
                         switch (type) {
                             case 'item': {
                                 // Check item available. Item list first, equipment second.
-                                var hasItem = self.game.character.items.get(value) != undefined;
+                                var hasItem = self._game.character.items.get(value) != undefined;
 
                                 if (!hasItem) {
-                                    for (var i in self.game.character.equipment) {
-                                        var slotItem = <IItem>self.game.character.equipment[i];
+                                    for (var i in self._game.character.equipment) {
+                                        var slotItem = <IItem>self._game.character.equipment[i];
                                         hasItem = slotItem != undefined && slotItem != null && slotItem.id != undefined && slotItem.id.toLowerCase() === value;
                                     }
                                 }
@@ -140,7 +126,7 @@
                             } break;
                             case 'location': {
                                 // Check location visited
-                                var location = self.game.locations.get(value);
+                                var location = self._game.locations.get(value);
 
                                 if (!location) {
                                     console.log('Invalid location ' + value + ' for reply requirement for node ' + activeNode.node + '!');
@@ -152,20 +138,20 @@
                             case 'quest-done':
                             case 'quest-complete': {
                                 // Check quest start, quest done or quest complete.
-                                var quest = self.game.character.quests.get(value);
+                                var quest = self._game.character.quests.get(value);
                                 isAvailable = quest != undefined &&
                                     (type === 'quest-start' ? true : type === 'quest-done' ?
-                                        quest.checkDone(self.game, quest) : quest.completed);
+                                        quest.checkDone(self._game, quest) : quest.completed);
                             } break;
                             default: {
                                 // Check attributes
-                                var attribute = self.game.character[type];
+                                var attribute = self._game.character[type];
 
                                 if (!attribute) {
                                     console.log('Invalid attribute ' + type + ' for reply requirement for node ' + activeNode.node + '!');
                                 }
 
-                                isAvailable = isNaN(self.game.character[type]) ? self.game.character[type] === value : parseInt(self.game.character[type]) >= parseInt(value);
+                                isAvailable = isNaN(self._game.character[type]) ? self._game.character[type] === value : parseInt(self._game.character[type]) >= parseInt(value);
                             } break;
                         }
                     }
@@ -175,6 +161,7 @@
             }
 
             self.setReplyStatus(person.conversation, activeNode);
+            self.conversation = self._game.currentLocation.activePerson.conversation;
         }
 
         private setReplyStatus(conversation: IConversation, node: IConversationNode) {
@@ -196,21 +183,21 @@
             if (start) {
                 quest = person.quests.get(reply[type]);
                 quest.issuedBy = person.id;
-                self.game.character.quests.push(quest);
+                self._game.character.quests.push(quest);
                 person.quests.remove(quest);
                 quest.progress = {};
 
                 if (quest.start) {
-                    quest.start(self.game, quest, person);
+                    quest.start(self._game, quest, person);
                 }
 
                 quest.completed = false;
             }
             else {
-                quest = self.game.character.quests.get(reply[type]);
+                quest = self._game.character.quests.get(reply[type]);
 
                 if (quest.complete) {
-                    quest.complete(self.game, quest, person);
+                    quest.complete(self._game, quest, person);
                 }
 
                 quest.completed = true;
@@ -218,5 +205,5 @@
         }
     }
 
-    ConversationController.$inject = ['$scope', 'rules', 'game', 'customTexts'];
+    ConversationController.$inject = ['$scope', 'game', 'rules', 'customTexts'];
 }

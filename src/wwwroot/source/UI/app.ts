@@ -20,11 +20,7 @@
     storyScriptModule.service("helperService", HelperService);
     storyScriptModule.service("sharedMethodService", SharedMethodService);
 
-    storyScriptModule.controller("ConversationController", ConversationController);
-    storyScriptModule.controller("TradeController", TradeController);
     storyScriptModule.controller("CharacterController", CharacterController);
-    storyScriptModule.controller("CreateCharacterController", CreateCharacterController);
-    storyScriptModule.controller("CombinationController", CombinationController);
 
     storyScriptModule.component('main', {
         templateUrl: 'ui/MainComponent.html',
@@ -99,5 +95,10 @@
     storyScriptModule.component('trade', {
         templateUrl: 'ui/TradeComponent.html',
         controller: TradeController
+    });
+
+    storyScriptModule.component('conversation', {
+        templateUrl: 'ui/ConversationComponent.html',
+        controller: ConversationController
     });
 }

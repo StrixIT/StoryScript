@@ -1,14 +1,18 @@
 namespace StoryScript {   
-    export interface IEncounterModalController extends ng.IScope {
-        game: IGame;
+    export interface IModalSettings {
+        title: string;
+        closeText?: string;
+        canClose?: boolean;
+        closeAction?: (game: IGame) => void;
+        descriptionEntity?: {};
     }
 
     export class EncounterModalController implements ng.IComponentController {
-        constructor(private _scope: IEncounterModalController, private _gameService: IGameService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
-            self._scope.game = self.game;
+            (<any>self._scope).game = self._game;
 
             self.modalSettings = <IModalSettings>{
                 title: '',
@@ -16,7 +20,9 @@ namespace StoryScript {
                 closeText: self.texts.closeModal
             }
 
-            self._scope.$watch('game.state', (newValue: GameState, oldValue: GameState) => self.watchGameState(newValue, oldValue, self));
+            self._scope.$watch('game.state', (newValue: GameState, oldValue: GameState) => {
+                self.watchGameState(newValue, oldValue, self);
+            });
             self._scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
         }
 
@@ -72,7 +78,7 @@ namespace StoryScript {
                     controller.modalSettings.title = trader.title;
                     controller.modalSettings.canClose = true;
                 } break;
-                case GameState.Conversation: {
+                case GameState.Description: {
                     // Todo
                 } break;
                 default: {

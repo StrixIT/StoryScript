@@ -1,16 +1,16 @@
 <div ng-init="init()">
     <navigation></navigation>
     <div class="container body-content">
-        <h2>{{ texts.gameName }}</h2>
+        <h2>{{ $ctrl.texts.gameName }}</h2>
         <div class="row">
             <div id="character-container" class="col-md-4">
                 <div class="charactersheet" ng-include="'ui/character-sheet.html'"></div>
             </div>
             <div id="location-container" class="col-md-8">
-                <div ng-if="!game.stateString">
-                    {{ texts.loading }}
+                <div ng-if="!$ctrl.game.stateString">
+                    {{ $ctrl.texts.loading }}
                 </div>
-                <div ng-if="game.stateString == 'Play'">
+                <div ng-if="$ctrl.game.stateString == 'Play'">
                     <encounter></encounter>
                     <location></location>
                     <combination></combination>
