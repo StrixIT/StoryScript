@@ -3,7 +3,8 @@
     <div class="row" ng-repeat="step in $ctrl.sheet.steps" ng-show="$ctrl.sheet.currentStep == $index">
         <div class="row question-row" ng-repeat="question in step.questions">
             <span class="col-md-4 question-label">{{ question.question }}</span>
-            <select strix-drop-down class="col-md-8 question-select" ng-model="question.selectedEntry" source="question.entries" option-label="text"></select>
+            <select class="col-md-8 question-select" ng-model="question.selectedEntry" ng-options="q.text for q in question.entries">
+            </select>
         </div>
         <div class="row attribute-row" ng-repeat="attribute in step.attributes">
             <div class="attribute-label" ng-show="attribute.entries.length > 1">{{ attribute.question }}</div>

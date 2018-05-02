@@ -4,7 +4,7 @@
         <h2>{{ $ctrl.texts.gameName }}</h2>
         <div class="row">
             <div id="character-container" class="col-md-4">
-                <div class="charactersheet" ng-include="'ui/character-sheet.html'"></div>
+                <character-sheet></character-sheet>
             </div>
             <div id="location-container" class="col-md-8">
                 <div ng-if="!$ctrl.game.stateString">

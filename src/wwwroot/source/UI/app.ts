@@ -2,7 +2,7 @@
     addFunctionExtensions();
     addArrayExtensions();
 
-    var storyScriptModule = angular.module("storyscript", ['ngSanitize', 'strixIT']);
+    var storyScriptModule = angular.module("storyscript", ['ngSanitize']);
 
     var game = {};
     storyScriptModule.value('game', game);
@@ -20,11 +20,16 @@
     storyScriptModule.service("helperService", HelperService);
     storyScriptModule.service("sharedMethodService", SharedMethodService);
 
-    storyScriptModule.controller("CharacterController", CharacterController);
+    storyScriptModule.controller("CharacterController", CharacterSheetController);
 
     storyScriptModule.component('main', {
         templateUrl: 'ui/MainComponent.html',
         controller: MainController
+    });
+
+    storyScriptModule.component('characterSheet', {
+        templateUrl: 'ui/CharacterSheetComponent.html',
+        controller: CharacterSheetController
     });
 
     storyScriptModule.component('navigation', {

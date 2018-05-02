@@ -1,28 +1,15 @@
-﻿namespace StoryScript {
-    export interface ICharacterControllerScope extends ng.IScope {
-        game: IGame;
+namespace StoryScript {
+    export class CharacterSheetController {
+        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _rules: IRules, private _game: IGame, private _texts: IInterfaceTexts) {
+            var self = this;
+            self.character = self._game.character;
+            self.texts = self._texts;
+            self.displayCharacterAttributes = self._characterService.getSheetAttributes();
+        }
+
+        character: ICharacter;
         texts: IInterfaceTexts;
         displayCharacterAttributes: string[];
-    }
-
-    export class CharacterController {
-        private $scope: ICharacterControllerScope;
-        private $rootScope: ng.IRootScopeService;
-        private characterService: ICharacterService;
-        private rules: IRules;
-        private game: IGame;
-
-        constructor($scope: ICharacterControllerScope, $rootScope: ng.IRootScopeService, characterService: ICharacterService, rules: IRules, game: IGame, texts: IInterfaceTexts) {
-            var self = this;
-            self.$scope = $scope;
-            self.$rootScope = $rootScope;
-            self.characterService = characterService;
-            self.rules = rules;
-            self.game = game;
-            self.$scope.game = self.game;
-            self.$scope.texts = texts;
-            self.$scope.displayCharacterAttributes = self.characterService.getSheetAttributes();
-        }
 
         canEquip = (item: IItem): boolean => {
             return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
@@ -38,24 +25,24 @@
                 self.unequip(type);
             }
 
-            if (self.rules.beforeEquip) {
-                if (!self.rules.beforeEquip(self.game, self.game.character, item)) {
+            if (self._rules.beforeEquip) {
+                if (!self._rules.beforeEquip(self._game, self._game.character, item)) {
                     return;
                 }
             }
 
             if (item.equip) {
-                if (!item.equip(item, self.game)) {
+                if (!item.equip(item, self._game)) {
                     return;
                 }
             }
 
             for (var n in equipmentTypes) {
                 var type = self.getEquipmentType(equipmentTypes[n]);
-                self.game.character.equipment[type] = item;
+                self._game.character.equipment[type] = item;
             }
 
-            self.game.character.items.remove(item);
+            self._game.character.items.remove(item);
         }
 
         unequipItem = (item: IItem) => {
@@ -71,8 +58,8 @@
         isSlotUsed = (slot: string) => {
             var self = this;
 
-            if (self.game.character) {
-                return self.game.character.equipment[slot] !== undefined;
+            if (self._game.character) {
+                return self._game.character.equipment[slot] !== undefined;
             }
 
             return false;
@@ -80,34 +67,34 @@
 
         dropItem = (item: IItem): void => {
             var self = this;
-            self.game.character.items.remove(item);
-            self.game.currentLocation.items.push(item);
-            self.$rootScope.$broadcast('buildCombine');
+            self._game.character.items.remove(item);
+            self._game.currentLocation.items.push(item);
+            self._scope.$emit('refreshCombine');
         }
 
         showQuests = (): boolean => {
             var self = this;
-            return self.game.character && !isEmpty(self.game.character.quests);
+            return self._game.character && !isEmpty(self._game.character.quests);
         }
 
         showActiveQuests = (): boolean => {
             var self = this;
-            return self.game.character.quests.filter(q => !q.completed).length > 0;
+            return self._game.character.quests.filter(q => !q.completed).length > 0;
         }
 
         showCompletedQuests = (): boolean => {
             var self = this;
-            return self.game.character.quests.filter(q => q.completed).length > 0;
+            return self._game.character.quests.filter(q => q.completed).length > 0;
         }
 
         questStatus = (quest: IQuest): string => {
             var self = this;
-            return typeof quest.status === 'function' ? (<any>quest).status(self.game, quest, quest.checkDone(self.game, quest)) : quest.status;
+            return typeof quest.status === 'function' ? (<any>quest).status(self._game, quest, quest.checkDone(self._game, quest)) : quest.status;
         }
 
         private unequip(type: string, currentItem?: IItem) {
             var self = this;
-            var equippedItem = self.game.character.equipment[type];
+            var equippedItem = self._game.character.equipment[type];
 
             if (equippedItem) {
                 if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
@@ -117,23 +104,23 @@
                     }
                 }
 
-                if (self.rules.beforeUnequip) {
-                    if (!self.rules.beforeUnequip(self.game, self.game.character, equippedItem)) {
+                if (self._rules.beforeUnequip) {
+                    if (!self._rules.beforeUnequip(self._game, self._game.character, equippedItem)) {
                         return;
                     }
                 }
 
                 if (equippedItem.unequip) {
-                    if (!equippedItem.unequip(equippedItem, self.game)) {
+                    if (!equippedItem.unequip(equippedItem, self._game)) {
                         return;
                     }
                 }
 
-                if (equippedItem && equippedItem.equipmentType && self.game.character.items.indexOf(equippedItem) === -1) {
-                    self.game.character.items.push(equippedItem);
+                if (equippedItem && equippedItem.equipmentType && self._game.character.items.indexOf(equippedItem) === -1) {
+                    self._game.character.items.push(equippedItem);
                 }
 
-                self.game.character.equipment[type] = null;
+                self._game.character.equipment[type] = null;
             }
         }
 
@@ -143,5 +130,5 @@
         }
     }
 
-    CharacterController.$inject = ['$scope', '$rootScope', 'characterService', 'rules', 'game', 'customTexts'];
+    CharacterSheetController.$inject = ['$scope', 'characterService', 'rules', 'game', 'customTexts'];
 }
