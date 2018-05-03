@@ -18,6 +18,7 @@
     storyScriptModule.service("characterService", CharacterService);
     storyScriptModule.service("gameService", GameService);
     storyScriptModule.service("helperService", HelperService);
+    storyScriptModule.service("tradeService", TradeService);
     storyScriptModule.service("sharedMethodService", SharedMethodService);
 
     storyScriptModule.controller("CharacterController", CharacterSheetController);
