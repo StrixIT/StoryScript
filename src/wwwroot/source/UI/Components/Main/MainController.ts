@@ -67,7 +67,11 @@ namespace StoryScript {
 
         private watchLocation(newValue: ICompiledLocation, oldValue: ICompiledLocation, scope) {
             if (oldValue != undefined && newValue != undefined) {
-                scope.$ctrl._game.state = GameState.Play;
+                // Don't change the game state change to 'play' when a level-up is in progress. This level-up
+                // can be triggered on location change.
+                if (scope.$ctrl._game.state != StoryScript.GameState.LevelUp) {
+                    scope.$ctrl._game.state = GameState.Play;
+                }
             }
         }
     }

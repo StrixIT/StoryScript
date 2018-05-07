@@ -28,12 +28,11 @@ namespace StoryScript {
         fight = (enemy: ICompiledEnemy): void => {
             var self = this;
             self._gameService.fight(enemy);
-            self._gameService.saveGame();
         }
 
         useItem = (item: IItem): void => {
             var self = this;
-            item.use(self.game, item);
+            self._gameService.useItem(item);
             self._scope.$emit('refreshCombine');
         }
     }

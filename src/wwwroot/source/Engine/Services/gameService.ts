@@ -6,6 +6,7 @@
         restart(): void;
         saveGame(): void;
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
+        useItem(item: IItem): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
@@ -14,36 +15,17 @@
 
 namespace StoryScript {
     export class GameService implements ng.IServiceProvider, IGameService {
-        private $timeout: ng.ITimeoutService;
-        private dataService: IDataService;
-        private locationService: ILocationService;
-        private characterService: ICharacterService;
-        private rules: IRules;
-        private helperService: IHelperService;
-        private game: IGame;
-        private gameNameSpace: string;
-        private definitions: IDefinitions;
-
-        constructor($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, rules: IRules, helperService: IHelperService, game: IGame) {
-            var self = this;
-            self.$timeout = $timeout;
-            self.dataService = dataService;
-            self.locationService = locationService;
-            self.characterService = characterService;
-            self.rules = rules;
-            self.helperService = helperService;
-            self.game = game;
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
         }
 
-        public $get($timeout: ng.ITimeoutService, dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, rules: IRules, helperService: IHelperService, game: IGame): IGameService {
+        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, rules: IRules, helperService: IHelperService, game: IGame): IGameService {
             var self = this;
-            self.$timeout = $timeout;
-            self.dataService = dataService;
-            self.locationService = locationService;
-            self.characterService = characterService;
-            self.rules = rules;
-            self.helperService = helperService;
-            self.game = game;
+            self._dataService = dataService;
+            self._locationService = locationService;
+            self._characterService = characterService;
+            self._rules = rules;
+            self._helperService = helperService;
+            self._game = game;
 
             return {
                 init: self.init,
@@ -52,6 +34,7 @@ namespace StoryScript {
                 restart: self.restart,
                 saveGame: self.saveGame,
                 fight: self.fight,
+                useItem: self.useItem,
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange,
                 changeGameState: self.changeGameState
@@ -60,112 +43,119 @@ namespace StoryScript {
 
         init = (): void => {
             var self = this;
-            self.game.helpers = self.helperService;
+            self._game.helpers = self._helperService;
 
-            if (self.rules.setupGame) {
-                self.rules.setupGame(self.game);
+            if (self._rules.setupGame) {
+                self._rules.setupGame(self._game);
             }
 
             self.setupGame();
 
-            self.game.highScores = self.dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
-            self.game.character = self.dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
-            self.game.statistics = self.dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || {};
-            self.game.worldProperties = self.dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || {};
+            self._game.highScores = self._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
+            self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
+            self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || {};
+            self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || {};
 
-            var locationName = self.dataService.load<string>(StoryScript.DataKeys.LOCATION);
+            var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
-            if (self.game.character && locationName) {
+            if (self._game.character && locationName) {
                 self.setupCharacter();
 
-                var lastLocation = self.game.locations.get(locationName);
-                var previousLocationName = self.dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
+                var lastLocation = self._game.locations.get(locationName);
+                var previousLocationName = self._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
 
                 if (previousLocationName) {
-                    self.game.previousLocation = self.game.locations.get(previousLocationName);
+                    self._game.previousLocation = self._game.locations.get(previousLocationName);
                 }
 
-                self.locationService.changeLocation(lastLocation.id, false, self.game);
-                self.game.state = StoryScript.GameState.Play;
+                self._locationService.changeLocation(lastLocation.id, false, self._game);
+                self._game.state = StoryScript.GameState.Play;
             }
             else {
-                self.game.state = StoryScript.GameState.CreateCharacter;
+                self._game.state = StoryScript.GameState.CreateCharacter;
             }
         }
 
         reset = () => {
             var self = this;
-            self.dataService.save(StoryScript.DataKeys.WORLD, {});
-            self.locationService.init(self.game);
+            self._dataService.save(StoryScript.DataKeys.WORLD, {});
+            self._locationService.init(self._game);
             self.setupLocations();
-            self.game.worldProperties = self.dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
-            var location = self.dataService.load<string>(StoryScript.DataKeys.LOCATION);
+            self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
+            var location = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
             if (location) {
-                self.locationService.changeLocation(location, false, self.game);
+                self._locationService.changeLocation(location, false, self._game);
             }
         }
 
         startNewGame = (characterData: any): void => {
             var self = this;
-            self.game.character = self.characterService.createCharacter(self.game, characterData);
-            self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
+            self._game.character = self._characterService.createCharacter(self._game, characterData);
+            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
             self.setupCharacter();
-            self.game.changeLocation('Start');
+            self._game.changeLocation('Start');
         }
 
         restart = (): void => {
             var self = this;
-            self.dataService.save(StoryScript.DataKeys.CHARACTER, {});
-            self.dataService.save(StoryScript.DataKeys.STATISTICS, {});
-            self.dataService.save(StoryScript.DataKeys.LOCATION, '');
-            self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
-            self.dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, {});
-            self.dataService.save(StoryScript.DataKeys.WORLD, {});
+            self._dataService.save(StoryScript.DataKeys.CHARACTER, {});
+            self._dataService.save(StoryScript.DataKeys.STATISTICS, {});
+            self._dataService.save(StoryScript.DataKeys.LOCATION, '');
+            self._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
+            self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, {});
+            self._dataService.save(StoryScript.DataKeys.WORLD, {});
             self.init();
         }
 
         saveGame = (): void => {
             var self = this;
-            self.dataService.save(StoryScript.DataKeys.CHARACTER, self.game.character);
-            self.dataService.save(StoryScript.DataKeys.STATISTICS, self.game.statistics);
-            self.dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self.game.worldProperties);
-            self.locationService.saveWorld(self.game.locations);
+            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
+            self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
+            self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
+            self._locationService.saveWorld(self._game.locations);
         }
 
         fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
-            self.rules.fight(self.game, enemy, retaliate);
+            self._rules.fight(self._game, enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
                 if (enemy.items) {
                     enemy.items.forEach((item: IItem) => {
-                        self.game.currentLocation.items.push(item);
+                        self._game.currentLocation.items.push(item);
                     });
 
                     enemy.items.length = 0;
                 }
 
-                self.game.character.currency = self.game.character.currency || 0;
-                self.game.character.currency += enemy.currency || 0;
+                self._game.character.currency = self._game.character.currency || 0;
+                self._game.character.currency += enemy.currency || 0;
 
-                self.game.statistics.enemiesDefeated = self.game.statistics.enemiesDefeated || 0;
-                self.game.statistics.enemiesDefeated += 1;
+                self._game.statistics.enemiesDefeated = self._game.statistics.enemiesDefeated || 0;
+                self._game.statistics.enemiesDefeated += 1;
 
-                self.game.currentLocation.enemies.remove(enemy);
+                self._game.currentLocation.enemies.remove(enemy);
 
-                if (self.rules.enemyDefeated) {
-                    self.rules.enemyDefeated(self.game, enemy);
+                if (self._rules.enemyDefeated) {
+                    self._rules.enemyDefeated(self._game, enemy);
                 }
 
                 if (enemy.onDefeat) {
-                    enemy.onDefeat(self.game);
+                    enemy.onDefeat(self._game);
                 }
             }
 
-            if (self.game.character.currentHitpoints <= 0) {
-                self.game.state = StoryScript.GameState.GameOver;
+            if (self._game.character.currentHitpoints <= 0) {
+                self._game.state = StoryScript.GameState.GameOver;
             }
+
+            self.saveGame();
+        }
+
+        useItem = (item: IItem): void => {
+            var self = this;
+            item.use(self._game, item);
         }
 
         scoreChange = (change: number): void => {
@@ -173,16 +163,11 @@ namespace StoryScript {
 
             // Todo: change if xp can be lost.
             if (change > 0) {
-                var character = self.game.character;
-                var levelUp = self.rules.scoreChange(self.game, change);
+                var character = self._game.character;
+                var levelUp = self._rules.scoreChange(self._game, change);
 
                 if (levelUp) {
-                    // Need a timeout here to prevent the change location game state change to 'play' to fire right after this one
-                    // when the score increases when moving from one location to the other and immediately changing the state back
-                    // to play.
-                    self.$timeout(() => {
-                        self.game.state = StoryScript.GameState.LevelUp;
-                    }, 0);
+                    self._game.state = StoryScript.GameState.LevelUp;
                 }
             }
         }
@@ -190,8 +175,8 @@ namespace StoryScript {
         hitpointsChange = (change: number): void => {
             var self = this;
 
-            if (self.rules.hitpointsChange) {
-                self.rules.hitpointsChange(self.game, change);
+            if (self._rules.hitpointsChange) {
+                self._rules.hitpointsChange(self._game, change);
             }
         }
 
@@ -199,45 +184,45 @@ namespace StoryScript {
             var self = this;
 
             if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
-                if (self.rules.determineFinalScore) {
-                    self.rules.determineFinalScore(self.game);
+                if (self._rules.determineFinalScore) {
+                    self._rules.determineFinalScore(self._game);
                 }
                 self.updateHighScore();
-                self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
+                self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
         }
 
         private setupGame(): void {
             var self = this;
-            self.game.actionLog = [];
-            self.game.combatLog = [];
+            self._game.actionLog = [];
+            self._game.combatLog = [];
 
-            self.game.logToLocationLog = (message: string) => {
-                self.game.currentLocation.log = self.game.currentLocation.log || [];
-                self.game.currentLocation.log.push(message);
+            self._game.logToLocationLog = (message: string) => {
+                self._game.currentLocation.log = self._game.currentLocation.log || [];
+                self._game.currentLocation.log.push(message);
             }
 
-            self.game.logToActionLog = (message: string) => {
-                self.game.actionLog.splice(0, 0, message);
+            self._game.logToActionLog = (message: string) => {
+                self._game.actionLog.splice(0, 0, message);
             }
 
-            self.game.logToCombatLog = (message: string) => {
-                self.game.combatLog.splice(0, 0, message);
+            self._game.logToCombatLog = (message: string) => {
+                self._game.combatLog.splice(0, 0, message);
             }
 
-            self.game.fight = self.fight;
+            self._game.fight = self.fight;
 
             // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
-            if (!(<any>self.game).stateString) {
-                Object.defineProperty(self.game, 'stateString', {
+            if (!(<any>self._game).stateString) {
+                Object.defineProperty(self._game, 'stateString', {
                     enumerable: true,
                     get: function () {
-                        return GameState[self.game.state];
+                        return GameState[self._game.state];
                     }
                 });
             }
 
-            self.locationService.init(self.game);
+            self._locationService.init(self._game);
 
             self.setupLocations();
         }
@@ -245,14 +230,14 @@ namespace StoryScript {
         private setupCharacter(): void {
             var self = this;
 
-            createReadOnlyCollection(self.game.character, 'items', isEmpty(self.game.character.items) ? [] : <any>self.game.character.items);
-            createReadOnlyCollection(self.game.character, 'quests', isEmpty(self.game.character.quests) ? [] : <any>self.game.character.quests);
+            createReadOnlyCollection(self._game.character, 'items', isEmpty(self._game.character.items) ? [] : <any>self._game.character.items);
+            createReadOnlyCollection(self._game.character, 'quests', isEmpty(self._game.character.quests) ? [] : <any>self._game.character.quests);
 
-            addProxy(self.game.character, 'item', self.game, self.rules);
+            addProxy(self._game.character, 'item', self._game, self._rules);
 
-            Object.defineProperty(self.game.character, 'combatItems', {
+            Object.defineProperty(self._game.character, 'combatItems', {
                 get: function () {
-                    return self.game.character.items.filter(e => { return e.useInCombat; });
+                    return self._game.character.items.filter(e => { return e.useInCombat; });
                 }
             });
         }
@@ -260,42 +245,42 @@ namespace StoryScript {
         private setupLocations(): void {
             var self = this;
 
-            self.game.locations.forEach((location: ICompiledLocation) => {
-                addProxy(location, 'enemy', self.game, self.rules);
+            self._game.locations.forEach((location: ICompiledLocation) => {
+                addProxy(location, 'enemy', self._game, self._rules);
             });
         }
 
         private updateHighScore(): void {
             var self = this;
 
-            var scoreEntry = { name: self.game.character.name, score: self.game.character.score };
+            var scoreEntry = { name: self._game.character.name, score: self._game.character.score };
 
-            if (!self.game.highScores || !self.game.highScores.length) {
-                self.game.highScores = [];
+            if (!self._game.highScores || !self._game.highScores.length) {
+                self._game.highScores = [];
             }
 
             var scoreAdded = false;
 
-            self.game.highScores.forEach((entry) => {
-                if (self.game.character.score > entry.score && !scoreAdded) {
-                    var index = self.game.highScores.indexOf(entry);
+            self._game.highScores.forEach((entry) => {
+                if (self._game.character.score > entry.score && !scoreAdded) {
+                    var index = self._game.highScores.indexOf(entry);
 
-                    if (self.game.highScores.length >= 5) {
-                        self.game.highScores.splice(index, 1, scoreEntry);
+                    if (self._game.highScores.length >= 5) {
+                        self._game.highScores.splice(index, 1, scoreEntry);
                     }
                     else {
-                        self.game.highScores.splice(index, 0, scoreEntry);
+                        self._game.highScores.splice(index, 0, scoreEntry);
                     }
 
                     scoreAdded = true;
                 }
             });
 
-            if (self.game.highScores.length < 5 && !scoreAdded) {
-                self.game.highScores.push(scoreEntry);
+            if (self._game.highScores.length < 5 && !scoreAdded) {
+                self._game.highScores.push(scoreEntry);
             }
 
-            self.dataService.save(StoryScript.DataKeys.HIGHSCORES, self.game.highScores);
+            self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
         }
 
         private setStartNode(person: ICompiledPerson, nodeName: string): void {
@@ -310,5 +295,5 @@ namespace StoryScript {
         }
     }
 
-    GameService.$inject = ['$timeout', 'dataService', 'locationService', 'characterService', 'rules', 'helperService', 'game'];
+    GameService.$inject = ['dataService', 'locationService', 'characterService', 'rules', 'helperService', 'game'];
 }
