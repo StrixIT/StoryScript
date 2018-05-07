@@ -1,6 +1,7 @@
 namespace StoryScript {
     export interface ITradeService {
         initTrade(): ITrade;
+        trade(trade: ICompiledPerson | ITrade): void;
         canPay(currency: number, value: number): boolean;
         actualPrice(item: IItem, modifier: number | (() => number)): number;
         displayPrice(item: IItem, actualPrice: number): string;
@@ -19,12 +20,32 @@ namespace StoryScript {
 
             return {
                 initTrade: self.initTrade,
+                trade: self.trade,
                 canPay: self.canPay,
                 actualPrice: self.actualPrice,
                 displayPrice: self.displayPrice,
                 buy: self.buy,
                 sell: self.sell
             };
+        }
+
+        trade = (trade: ICompiledPerson | ITrade): void => {
+            var self = this;
+            var isPerson = trade['type'] === 'person';
+
+            self._game.currentLocation.activeTrade = isPerson ? (<ICompiledPerson>trade).trade : self._game.currentLocation.trade;
+            var trader = self._game.currentLocation.activeTrade;
+
+            if (isPerson) {
+                trader.currency = (<ICompiledPerson>trade).currency;
+                self._game.currentLocation.activePerson = <ICompiledPerson>trade;
+
+                if (!trader.title) {
+                    trader.title = self._texts.format(self._texts.trade, [(<ICompiledPerson>trade).name]);
+                }
+            }
+
+            self._game.state = GameState.Trade;
         }
 
         initTrade = (): ITrade => {

@@ -21,7 +21,10 @@ namespace StoryScript {
         private init(): void {
             var self = this;
             self._conversationService.initConversation();
-            self.conversation = self._game.currentLocation.activePerson.conversation;
+
+            if (self._game.currentLocation.activePerson) {
+                self.conversation = self._game.currentLocation.activePerson.conversation;
+            }
         }
     }
 

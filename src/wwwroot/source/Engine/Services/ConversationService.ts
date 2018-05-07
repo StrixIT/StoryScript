@@ -28,6 +28,10 @@ namespace StoryScript {
             var self = this;
             var person = self._game.currentLocation.activePerson;
 
+            if (!person || !person.conversation) {
+                return;
+            }
+
             var activeNode = person.conversation.activeNode;
 
             if (!activeNode) {

@@ -9,12 +9,16 @@ namespace StoryScript
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
-        constructor(private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _gameService: IGameService, private _tradeService: ITradeService, private _game: IGame, private _texts: IInterfaceTexts) {
 
         }
 
-        public $get(): ISharedMethodService {
+        public $get(gameService: IGameService, tradeService: ITradeService, game: IGame, texts: IInterfaceTexts): ISharedMethodService {
             var self = this;
+            self._gameService = gameService;
+            self._tradeService = tradeService;
+            self._game = game;
+            self._texts = texts;
 
             return {
                 enemiesPresent: self.enemiesPresent,
@@ -84,21 +88,7 @@ namespace StoryScript
 
         trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade): boolean => {
             var self = this;
-            var isPerson = trade['type'] === 'person';
-
-            self._game.currentLocation.activeTrade = isPerson ? (<ICompiledPerson>trade).trade : self._game.currentLocation.trade;
-            var trader = self._game.currentLocation.activeTrade;
-
-            if (isPerson) {
-                trader.currency = (<ICompiledPerson>trade).currency;
-                self._game.currentLocation.activePerson = <ICompiledPerson>trade;
-
-                if (!trader.title) {
-                    trader.title = self._texts.format(self._texts.trade, [(<ICompiledPerson>trade).name]);
-                }
-            }
-
-            self._game.state = GameState.Trade;
+            self._tradeService.trade(trade);
 
             // Return true to keep the action button for trade locations.
             return true;
@@ -128,5 +118,5 @@ namespace StoryScript
         }
     }
 
-    SharedMethodService.$inject = ['gameService', 'game', 'customTexts'];
+    SharedMethodService.$inject = ['gameService', 'tradeService', 'game', 'customTexts'];
 }

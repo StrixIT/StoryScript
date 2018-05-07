@@ -21,17 +21,8 @@ namespace StoryScript {
 
         private init() {
             var self = this;
-
-            var defaultTexts = new DefaultTexts();
-
-            for (var n in defaultTexts.texts) {
-                self._texts[n] = self._texts[n] ? self._texts[n] : defaultTexts.texts[n];
-            }
-
-            self._texts.format = defaultTexts.format;
-            self._texts.titleCase = defaultTexts.titleCase;
-
             self._gameService.init();
+            self._gameService.initTexts(self._texts);
             self._scope.$broadcast('createCharacter');
         }
 

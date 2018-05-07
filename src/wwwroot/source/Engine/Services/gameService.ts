@@ -1,6 +1,7 @@
 ﻿namespace StoryScript {
     export interface IGameService {
         init(): void;
+        initTexts(customTexts: IInterfaceTexts): IInterfaceTexts;
         startNewGame(characterData: any): void;
         reset(): void;
         restart(): void;
@@ -29,6 +30,7 @@ namespace StoryScript {
 
             return {
                 init: self.init,
+                initTexts: self.initTexts,
                 startNewGame: self.startNewGame,
                 reset: self.reset,
                 restart: self.restart,
@@ -74,6 +76,19 @@ namespace StoryScript {
             else {
                 self._game.state = StoryScript.GameState.CreateCharacter;
             }
+        }
+
+        initTexts = (customTexts: IInterfaceTexts): IInterfaceTexts => {
+            var self = this;
+            var defaultTexts = new DefaultTexts();
+
+            for (var n in defaultTexts.texts) {
+                customTexts[n] = customTexts[n] ? customTexts[n] : defaultTexts.texts[n];
+            }
+
+            customTexts.format = defaultTexts.format;
+            customTexts.titleCase = defaultTexts.titleCase;
+            return customTexts;
         }
 
         reset = () => {
