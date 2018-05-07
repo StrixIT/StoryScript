@@ -129,26 +129,31 @@ namespace StoryScript {
             var key = typeof location == 'function' ? <string>(<any>location).name : location ? location : presentLocation.id;
             game.currentLocation = game.locations.get(key);
 
-            // remove the return message from the current location destinations.
             if (game.currentLocation.destinations) {
+
+                // remove the return message from the current location destinations.
                 game.currentLocation.destinations.forEach(function (destination) {
                     if ((<any>destination).isPreviousLocation) {
                         (<any>destination).isPreviousLocation = false;
                     }
                 });
-            }
 
-            // Mark the previous location in the current location's destinations to allow
-            // the player to more easily backtrack his last step. Also, check if the user
-            // has the key for one or more barriers at this location, and add the key actions
-            // if that is the case.
-            if (game.currentLocation.destinations) {
+                // Mark the previous location in the current location's destinations to allow
+                // the player to more easily backtrack his last step. Also, check if the user
+                // has the key for one or more barriers at this location, and add the key actions
+                // if that is the case.
                 game.currentLocation.destinations.forEach(destination => {
                     if (game.previousLocation && destination.target && (<any>destination.target) == game.previousLocation.id) {
                         (<any>destination).isPreviousLocation = true;
                     }
 
                     addKeyAction(self.game, destination);
+                });
+
+                game.currentLocation.destinations.forEach(destination => {
+                    if (destination.barrier && destination.barrier.actions) {
+                        destination.barrier.selectedAction = destination.barrier.actions[0];
+                    }
                 });
             }
 

@@ -41,21 +41,10 @@ namespace StoryScript {
             self._sharedMethodService.executeAction(action, self);
         }
 
-        executeBarrierAction = (destination, barrier: IBarrier) => {
+        executeBarrierAction = (destination: IDestination, barrier: IBarrier) => {
             var self = this;
-
-            // Todo: improve, use selected action as object.
-            if (!barrier.actions || !barrier.actions.length) {
-                return;
-            }
-
-            var action = barrier.actions.filter((item: IBarrier) => { return item.name == barrier.selectedAction.name; })[0];
-            action.action(self.game, destination, barrier, action);
-            barrier.actions.remove(action);
-
+            self._gameService.executeBarrierAction(destination, barrier);
             self._scope.$emit('refreshCombine');
-
-            self._gameService.saveGame();
         }
 
         trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade) => {

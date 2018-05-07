@@ -8,6 +8,7 @@
         saveGame(): void;
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
         useItem(item: IItem): void;
+        executeBarrierAction(destination: IDestination, barrier: IBarrier): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
@@ -37,6 +38,7 @@ namespace StoryScript {
                 saveGame: self.saveGame,
                 fight: self.fight,
                 useItem: self.useItem,
+                executeBarrierAction: self.executeBarrierAction,
                 hitpointsChange: self.hitpointsChange,
                 scoreChange: self.scoreChange,
                 changeGameState: self.changeGameState
@@ -172,6 +174,25 @@ namespace StoryScript {
         useItem = (item: IItem): void => {
             var self = this;
             item.use(self._game, item);
+        }
+
+        executeBarrierAction = (destination: IDestination, barrier: IBarrier): void => {
+            var self = this;
+
+            // Todo: improve, use selected action as object.
+            if (!barrier.actions || !barrier.actions.length) {
+                return;
+            }
+
+            var action = barrier.actions.filter((item: IBarrier) => { return item.name == barrier.selectedAction.name; })[0];
+            action.action(self._game, destination, barrier, action);
+            barrier.actions.remove(action);
+
+            if (barrier.actions.length) {
+                barrier.selectedAction = barrier.actions[0];
+            }
+
+            self.saveGame();
         }
 
         scoreChange = (change: number): void => {
