@@ -63,9 +63,6 @@ namespace StoryScript {
             definitions.quests = <[() => IQuest]>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Quests'], definitions.quests);
 
-            definitions.features = <[() => IFeature]>[];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Features'], definitions.features);
-
             definitions.actions = <[() => IAction]>[];
             self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], definitions.actions);
             self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], definitions.actions);
