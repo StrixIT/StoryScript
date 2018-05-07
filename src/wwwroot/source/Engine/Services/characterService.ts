@@ -1,8 +1,10 @@
 ﻿namespace StoryScript {
     export interface ICharacterService {
         getSheetAttributes(): string[];
-        getCreateCharacterSheet(): ICreateCharacter;
+        setupCharacter(): ICreateCharacter;
         createCharacter(game: IGame, characterData: any): ICharacter;
+        limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
+        distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
         canEquip(item: IItem): boolean;
         equipItem(item: IItem): void;
         unequipItem(item: IItem): void;
@@ -25,9 +27,11 @@ namespace StoryScript {
             self._rules = rules;
 
             return {
+                setupCharacter: self.setupCharacter,
                 getSheetAttributes: self.getSheetAttributes,
-                getCreateCharacterSheet: self.getCreateCharacterSheet,
                 createCharacter: self.createCharacter,
+                limitSheetInput: self.limitSheetInput,
+                distributionDone: self.distributionDone,
                 canEquip: self.canEquip,
                 equipItem: self.equipItem,
                 unequipItem: self.unequipItem,
@@ -42,9 +46,90 @@ namespace StoryScript {
             return self._rules.getSheetAttributes();
         }
 
-        getCreateCharacterSheet = (): ICreateCharacter => {
+        setupCharacter = (): ICreateCharacter => {
             var self = this;
-            return self._rules.getCreateCharacterSheet();
+            var sheet = self._rules.getCreateCharacterSheet();
+            sheet.currentStep = 0;
+
+            sheet.nextStep = (data: ICreateCharacter) => {
+                var selector = data.steps[data.currentStep].nextStepSelector;
+                var previousStep = data.currentStep;
+
+                if (selector) {
+                    var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
+                    data.currentStep = nextStep;
+                }
+                else {
+                    data.currentStep++;
+                }
+
+                var currentStep = data.steps[data.currentStep];
+
+                if (currentStep.initStep) {
+                    currentStep.initStep(data, previousStep, currentStep);
+                }
+
+                if (currentStep.attributes) {
+                    currentStep.attributes.forEach(attr => {
+                        attr.entries.forEach(entry => {
+                            if (entry.min) {
+                                entry.value = entry.min;
+                            }
+                        });
+                    });
+                }
+            };
+
+            self._game.createCharacterSheet = sheet;
+            return sheet;
+        }
+
+        limitSheetInput = (value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
+            var self = this;
+
+            if (!isNaN(value)) {
+                var totalAssigned = 0;
+
+                attribute.entries.forEach((innerEntry, index) => {
+                    if (index !== attribute.entries.indexOf(entry)) {
+                        totalAssigned += <number>innerEntry.value || 1;
+                    }
+                });
+
+                if (totalAssigned + value > attribute.numberOfPointsToDistribute) {
+                    value = attribute.numberOfPointsToDistribute - totalAssigned;
+                }
+
+                entry.value = value;
+
+                if (entry.value > entry.max) {
+                    entry.value = entry.max;
+                }
+                else if (entry.value < entry.min) {
+                    entry.value = entry.min;
+                }
+            }
+            else {
+                entry.value = entry.min;
+            }
+        }
+
+        distributionDone = (sheet: ICreateCharacter, step: ICreateCharacterStep): boolean => {
+            var self = this;
+            var done = true;
+
+            if (step) {
+                done = self.checkStep(step);
+            }
+            else {
+                if (sheet && sheet.steps) {
+                    sheet.steps.forEach(step => {
+                        done = self.checkStep(step);
+                    });
+                }
+            }
+
+            return done;
         }
 
         createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
@@ -145,6 +230,32 @@ namespace StoryScript {
         questStatus = (quest: IQuest): string => {
             var self = this;
             return typeof quest.status === 'function' ? (<any>quest).status(self._game, quest, quest.checkDone(self._game, quest)) : quest.status;
+        }
+
+        private checkStep(step: ICreateCharacterStep) {
+            var done = true;
+
+            if (step.attributes) {
+                step.attributes.forEach(attr => {
+                    var totalAssigned = 0;
+                    var textChoicesFilled = 0;
+
+                    attr.entries.forEach((entry) => {
+                        if (!entry.max) {
+                            if (entry.value) {
+                                textChoicesFilled += 1;
+                            }
+                        }
+                        else {
+                            totalAssigned += <number>entry.value || 1;
+                        }
+                    });
+
+                    done = totalAssigned === attr.numberOfPointsToDistribute || textChoicesFilled === attr.entries.length;
+                });
+            }
+
+            return done;
         }
 
         private unequip(type: string, currentItem?: IItem) {

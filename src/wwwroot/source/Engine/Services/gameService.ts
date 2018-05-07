@@ -95,6 +95,7 @@ namespace StoryScript {
             self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
             self.setupCharacter();
             self._game.changeLocation('Start');
+            self._game.state = StoryScript.GameState.Play;
         }
 
         restart = (): void => {

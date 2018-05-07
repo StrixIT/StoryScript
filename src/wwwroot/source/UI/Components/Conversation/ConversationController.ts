@@ -1,8 +1,7 @@
 namespace StoryScript {
     export class ConversationController {
-        constructor(private _scope: ng.IScope, private _conversationService: IConversationService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _conversationService: IConversationService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
-            self.game = _game;
             self._scope.$on('init', () => self.init());
         }
 
@@ -26,5 +25,5 @@ namespace StoryScript {
         }
     }
 
-    ConversationController.$inject = ['$scope', 'conversationService', 'game', 'rules', 'customTexts'];
+    ConversationController.$inject = ['$scope', 'conversationService', 'game', 'customTexts'];
 }
