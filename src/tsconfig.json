@@ -23,6 +23,6 @@
         "./wwwroot/source/UI/Components/**/*.ts",
         "./wwwroot/source/UI/Controllers/*.ts",
         "./wwwroot/source/UI/app.ts",
-        "./wwwroot/source/Games/DangerousCave/**/*.ts"
+        "./wwwroot/source/Games/RidderMagnus/**/*.ts"
     ]
 }
