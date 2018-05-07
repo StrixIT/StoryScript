@@ -20,6 +20,10 @@
             var self = this;
             self.rewards = [
                 {
+                    name: '',
+                    value: '-- Kies een beloning --'
+                },
+                {
                     name: 'kracht',
                     value: 'Kracht'
                 },
@@ -37,8 +41,7 @@
                 }
             ];
 
-            // Todo: type
-            self.selectedReward = <any>{};
+            self.selectedReward = self.rewards[0];
         }
 
         claimReward = () => {

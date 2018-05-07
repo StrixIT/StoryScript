@@ -4,8 +4,7 @@
     <div>
         <span>Wat wil je verbeteren?</span>
         <select class="reward-select" ng-options="reward.value for reward in $ctrl.rewards" ng-model="$ctrl.selectedReward">
-            <option value="">-- Kies een beloning --</option>
         </select>
     </div>
-    <button type="button" class="btn btn-primary" ng-click="$ctrl.claimReward()">Ok</button>
+    <button type="button" class="btn btn-primary" ng-disabled="$ctrl.selectedReward.name === ''" ng-click="$ctrl.claimReward()">Ok</button>
 </div>
