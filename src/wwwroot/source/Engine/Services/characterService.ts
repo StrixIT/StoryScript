@@ -51,6 +51,10 @@ namespace StoryScript {
             var sheet = self._rules.getCreateCharacterSheet();
             sheet.currentStep = 0;
 
+            if (sheet.steps[0].questions && sheet.steps[0].questions[0].entries) {
+                sheet.steps[0].questions[0].selectedEntry = sheet.steps[0].questions[0].entries[0];
+            }
+
             sheet.nextStep = (data: ICreateCharacter) => {
                 var selector = data.steps[data.currentStep].nextStepSelector;
                 var previousStep = data.currentStep;

@@ -10,9 +10,4 @@
         getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
     }
-
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.value("gameNameSpace", 'RidderMagnus');
-    storyScriptModule.value("rules", new Rules());
-    storyScriptModule.value("customTexts", new CustomTexts().texts);
 }

@@ -5,9 +5,4 @@
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
     }
-
-    var storyScriptModule = angular.module("storyscript");
-    storyScriptModule.value("gameNameSpace", 'AdventureGame');
-    storyScriptModule.value("rules", new Rules());
-    storyScriptModule.value("customTexts", new CustomTexts().texts);
 }
