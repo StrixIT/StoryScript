@@ -6,6 +6,9 @@
         reset(): void;
         restart(): void;
         saveGame(): void;
+        hasDescription(type: string, item: { id?: string, description?: string }): boolean;
+        getDescription(entity: any, key: string): string;
+        initCombat(): void;
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
         useItem(item: IItem): void;
         executeBarrierAction(destination: IDestination, barrier: IBarrier): void;
@@ -36,6 +39,9 @@ namespace StoryScript {
                 reset: self.reset,
                 restart: self.restart,
                 saveGame: self.saveGame,
+                hasDescription: self.hasDescription,
+                getDescription: self.getDescription,
+                initCombat: self.initCombat,
                 fight: self.fight,
                 useItem: self.useItem,
                 executeBarrierAction: self.executeBarrierAction,
@@ -132,6 +138,24 @@ namespace StoryScript {
             self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
             self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
             self._locationService.saveWorld(self._game.locations);
+        }
+
+        hasDescription = (type: string, item: { id?: string, description?: string }): boolean => {
+            var self = this;
+            return self._dataService.hasDescription(type, item);
+        }
+
+        getDescription = (entity: any, key: string): string => {
+            var self = this;
+            return entity && entity[key] ? self._rules.processDescription ? self._rules.processDescription(self._game, entity, key) : entity[key] : null;
+        }
+
+        initCombat = (): void => {
+            var self = this;
+
+            if (self._rules.initCombat) {
+                self._rules.initCombat(self._game, self._game.currentLocation);
+            }
         }
 
         fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {

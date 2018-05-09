@@ -19,10 +19,10 @@
     },
     "include": [
         "./wwwroot/source/Engine/**/*.ts",
+        "./wwwroot/source/Games/RidderMagnus/**/*.ts",
         "./wwwroot/source/UI/Services/**/*.ts",
         "./wwwroot/source/UI/Components/**/*.ts",
         "./wwwroot/source/UI/Controllers/*.ts",
-        "./wwwroot/source/UI/app.ts",
-        "./wwwroot/source/Games/RidderMagnus/**/*.ts"
+        "./wwwroot/source/UI/app.ts"
     ]
 }

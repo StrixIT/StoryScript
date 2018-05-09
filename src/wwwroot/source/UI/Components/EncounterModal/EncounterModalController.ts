@@ -8,7 +8,7 @@ namespace StoryScript {
     }
 
     export class EncounterModalController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
@@ -50,7 +50,7 @@ namespace StoryScript {
 
         getDescription(entity: any, key: string) {
             var self = this;
-            return entity && entity[key] ? self._rules.processDescription ? self._rules.processDescription(self._game, entity, key) : entity[key] : null;
+            return self._gameService.getDescription(entity, key);
         }
 
         private watchGameState(newValue: GameState, oldValue: GameState, controller: EncounterModalController) {
@@ -102,17 +102,17 @@ namespace StoryScript {
         private initCombat = (newValue: ICompiledEnemy[]): void => {
             var self = this;
 
-            if (newValue && !newValue.some(e => !e.inactive)) {
-                self.modalSettings.canClose = true;
-            }
+            if (newValue) {
+                self._gameService.initCombat();
 
-            if (newValue && self._rules.initCombat) {
-                self._rules.initCombat(self.game, self.game.currentLocation);
+                if (!newValue.some(e => !e.inactive)) {
+                    self.modalSettings.canClose = true;
+                }
             }
 
             self._scope.$broadcast('refreshCombine');
         }
     }
 
-    EncounterModalController.$inject = ['$scope', 'gameService', 'game', 'rules', 'customTexts'];
+    EncounterModalController.$inject = ['$scope', 'gameService', 'game', 'customTexts'];
 }

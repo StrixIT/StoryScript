@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class CharacterSheetController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _characterService: ICharacterService, private _rules: IRules, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
@@ -63,5 +63,5 @@ namespace StoryScript {
         }
     }
 
-    CharacterSheetController.$inject = ['$scope', 'gameService', 'characterService', 'rules', 'game', 'customTexts'];
+    CharacterSheetController.$inject = ['$scope', 'gameService', 'characterService', 'game', 'customTexts'];
 }

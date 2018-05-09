@@ -1,14 +1,12 @@
 namespace StoryScript {   
     export class ExplorationController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
-            self.rules = _rules;
             self.texts = _texts;
         }
 
         game: IGame;
-        rules: IRules;
         texts: IInterfaceTexts;
 
         actionsPresent = () => {
@@ -69,5 +67,5 @@ namespace StoryScript {
         }
     }
 
-    ExplorationController.$inject = ['$scope', 'gameService', 'sharedMethodService', 'game', 'rules', 'customTexts'];
+    ExplorationController.$inject = ['$scope', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
 }

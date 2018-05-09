@@ -1,7 +1,7 @@
 namespace StoryScript {
    
     export class EnemyController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _dataService: IDataService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
@@ -12,7 +12,7 @@ namespace StoryScript {
 
         hasDescription(type: string, item: { id?: string, description?: string }) {
             var self = this;
-            return self._dataService.hasDescription(type, item);
+            return self._gameService.hasDescription(type, item);
         }
 
         showDescription(item: any, title: string) {
@@ -37,5 +37,5 @@ namespace StoryScript {
         }
     }
 
-    EnemyController.$inject = ['$scope', 'dataService', 'sharedMethodService', 'game', 'customTexts'];
+    EnemyController.$inject = ['$scope', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
 }

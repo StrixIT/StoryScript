@@ -1,29 +1,16 @@
 ﻿namespace StoryScript {
-    addFunctionExtensions();
-    addArrayExtensions();
-
     var storyScriptModule = angular.module("storyscript", ['ngSanitize']);
+    var objectFactory = window.StoryScript.ObjectFactory;
+    
+    storyScriptModule.value('game', objectFactory.GetGame());
+    storyScriptModule.value('customTexts', objectFactory.GetTexts());
+    storyScriptModule.value("tradeService", objectFactory.GetTradeService());
+    storyScriptModule.value("conversationService", objectFactory.GetConversationService());
+    storyScriptModule.value("gameService", objectFactory.GetGameService());
+    storyScriptModule.value("characterService", objectFactory.GetCharacterService());
+    storyScriptModule.value("combinationService", objectFactory.GetCombinationService());
 
-    var game = {};
-    storyScriptModule.value('game', game);
-    var definitions = {};
-    storyScriptModule.value('definitions', definitions);
-    var rules = {};
-    storyScriptModule.value('rules', rules);
-
-    storyScriptModule.service("httpService", HttpService);
-    storyScriptModule.service("localStorageService", LocalStorageService);
-    storyScriptModule.service("dataService", DataService);
-    storyScriptModule.service("locationService", LocationService);
-    storyScriptModule.service("characterService", CharacterService);
-    storyScriptModule.service("gameService", GameService);
-    storyScriptModule.service("helperService", HelperService);
-    storyScriptModule.service("combinationService", CombinationService);
-    storyScriptModule.service("conversationService", ConversationService);
-    storyScriptModule.service("tradeService", TradeService);
     storyScriptModule.service("sharedMethodService", SharedMethodService);
-
-    storyScriptModule.controller("CharacterController", CharacterSheetController);
 
     storyScriptModule.component('main', {
         templateUrl: 'ui/MainComponent.html',
