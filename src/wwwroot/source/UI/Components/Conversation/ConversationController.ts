@@ -2,6 +2,7 @@ namespace StoryScript {
     export class ConversationController {
         constructor(private _scope: ng.IScope, private _conversationService: IConversationService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
+            self.game = self._game;
             self._scope.$on('init', () => self.init());
         }
 
