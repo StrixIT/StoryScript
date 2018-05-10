@@ -18,7 +18,7 @@ var paths = {
     sourceroot: "./src/wwwroot/source/"
 };
 
-var gameNameSpace = config.include[config.include.length - 1].split('/')[4];
+var gameNameSpace = config.include[1].split('/')[4];
 
 gulp.task('build-game', ['delete-files'], buildGame(gameNameSpace));
 

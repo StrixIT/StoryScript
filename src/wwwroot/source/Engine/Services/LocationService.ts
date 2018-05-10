@@ -7,33 +7,10 @@
 }
 
 namespace StoryScript {
-    export class LocationService implements ng.IServiceProvider, ILocationService {
-        private dataService: IDataService;
-        private rules: IRules;
-        private game: IGame;
-        private definitions: IDefinitions;
+    export class LocationService implements ILocationService {
         private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
 
-        constructor(dataService: IDataService, rules: IRules, game: IGame, definitions: IDefinitions) {
-            var self = this;
-            self.dataService = dataService;
-            self.rules = rules;
-            self.game = game;
-            self.definitions = definitions;
-        }
-
-        public $get(dataService: IDataService, rules: IRules, game: IGame, definitions: IDefinitions): ILocationService {
-            var self = this;
-            self.dataService = dataService;
-            self.rules = rules;
-            self.game = game;
-            self.definitions = definitions;
-
-            return {
-                saveWorld: self.saveWorld,
-                changeLocation: self.changeLocation,
-                init: self.init
-            };
+        constructor(private _dataService: IDataService, private _events: EventTarget, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
 
         init = (game: IGame) => {
@@ -47,11 +24,11 @@ namespace StoryScript {
         private loadWorld(): ICompiledCollection<ILocation, ICompiledLocation> {
             var self = this;
             self.pristineLocations = self.buildWorld();
-            var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
+            var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
 
             if (isEmpty(locations)) {
-                self.dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                locations = <ICompiledCollection<ILocation, ICompiledLocation>>self.dataService.load(DataKeys.WORLD);
+                self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
+                locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
             }
 
             locations.forEach(function (location) {
@@ -59,16 +36,16 @@ namespace StoryScript {
 
                 // Add a proxy to the destination collection push function, to replace the target function pointer
                 // with the target id when adding destinations and enemies at runtime.
-                location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self.game);
+                location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self._game);
 
                 createReadOnlyCollection(location, 'features', location.features || <any>[]);
-                location.features.push = (<any>location.features.push).proxy(self.addFeature, self.game);
+                location.features.push = (<any>location.features.push).proxy(self.addFeature, self._game);
 
                 createReadOnlyCollection(location, 'actions', <any>location.actions || []);
-                location.actions.push = (<any>location.actions.push).proxy(self.addAction, self.game);
+                location.actions.push = (<any>location.actions.push).proxy(self.addAction, self._game);
 
                 createReadOnlyCollection(location, 'combatActions', <any>location.combatActions || []);
-                location.combatActions.push = (<any>location.combatActions.push).proxy(self.addAction, self.game);
+                location.combatActions.push = (<any>location.combatActions.push).proxy(self.addAction, self._game);
 
                 createReadOnlyCollection(location, 'persons', location.persons || <any>[]);
                 createReadOnlyCollection(location, 'enemies', location.enemies || <any>[]);
@@ -98,7 +75,7 @@ namespace StoryScript {
 
         public saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>) {
             var self = this;
-            self.dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
+            self._dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
         public changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame) {
@@ -147,7 +124,7 @@ namespace StoryScript {
                         (<any>destination).isPreviousLocation = true;
                     }
 
-                    addKeyAction(self.game, destination);
+                    addKeyAction(self._game, destination);
                 });
 
                 game.currentLocation.destinations.forEach(destination => {
@@ -158,24 +135,24 @@ namespace StoryScript {
             }
 
             // Save the previous and current location, then get the location text.
-            self.dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
+            self._dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
 
             if (game.previousLocation) {
                 if (!game.previousLocation.hasVisited) {
                     game.previousLocation.hasVisited = true;
-                    self.game.statistics.LocationsVisited = self.game.statistics.LocationsVisited || 0;
-                    self.game.statistics.LocationsVisited += 1;
+                    self._game.statistics.LocationsVisited = self._game.statistics.LocationsVisited || 0;
+                    self._game.statistics.LocationsVisited += 1;
                 }
 
                 if (game.previousLocation.complete) {
                     game.previousLocation.complete(game, game.previousLocation);
                 }
 
-                self.dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+                self._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
 
-            if (self.rules.enterLocation) {
-                self.rules.enterLocation(game, game.currentLocation, travel);
+            if (self._rules.enterLocation) {
+                self._rules.enterLocation(game, game.currentLocation, travel);
             }
 
             self.loadLocationDescriptions(game);
@@ -205,12 +182,12 @@ namespace StoryScript {
 
         private buildWorld(): ICompiledLocation[] {
             var self = this;
-            var locations = self.definitions.locations;
+            var locations = self._definitions.locations;
             var compiledLocations = [];
 
             for (var n in locations) {
                 var definition = locations[n];
-                var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self.definitions);
+                var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self._definitions);
 
                 if (!location.destinations) {
                     console.log('No destinations specified for location ' + location.id);
@@ -218,9 +195,9 @@ namespace StoryScript {
 
                 self.setDestinations(location);
                 self.compileFeatures(location);
-                self.buildEntries(location, 'enemies', self.game.helpers.getEnemy);
-                self.buildEntries(location, 'persons', self.game.helpers.getPerson);
-                self.buildEntries(location, 'items', self.game.helpers.getItem);
+                self.buildEntries(location, 'enemies', self._game.helpers.getEnemy);
+                self.buildEntries(location, 'persons', self._game.helpers.getPerson);
+                self.buildEntries(location, 'items', self._game.helpers.getItem);
                 compiledLocations.push(location);
             }
 
@@ -299,7 +276,7 @@ namespace StoryScript {
             var originalFunction = args.shift();
 
             // Add the action function ids.
-            addFunctionIds(args[0], 'actions', getDefinitionKeys(self.definitions));
+            addFunctionIds(args[0], 'actions', getDefinitionKeys(self._definitions));
             args.splice(1, 1);
             originalFunction.apply(this, args);
         }
@@ -320,7 +297,7 @@ namespace StoryScript {
             }
 
             game.currentLocation.persons.filter(p => !p.conversation.nodes).forEach((person) => {
-                self.dataService.loadDescription('persons', person).then(function (conversations) {
+                self._dataService.loadDescription('persons', person).then(function (conversations) {
                     var parser = new DOMParser();
 
                     if (conversations.indexOf('<conversation>') == -1) {
@@ -437,6 +414,8 @@ namespace StoryScript {
                             }
                         });
                     });
+
+                    self.RaiseResourceLoadedEvent();
                 });
             });
         }
@@ -453,7 +432,7 @@ namespace StoryScript {
                 return;
             }
 
-            self.dataService.loadDescription('locations', game.currentLocation).then(function (descriptions) {
+            self._dataService.loadDescription('locations', game.currentLocation).then(function (descriptions) {
                 var parser = new DOMParser();
 
                 if (descriptions.indexOf('<descriptions>') == -1) {
@@ -477,7 +456,14 @@ namespace StoryScript {
                 }
 
                 self.selectLocationDescription(game);
+                self.RaiseResourceLoadedEvent();
             });
+        }
+
+        private RaiseResourceLoadedEvent = (): void => {
+            var self = this;
+            var evt = new Event('resourceLoaded');
+            self._events.dispatchEvent(evt);
         }
 
         private selectLocationDescription(game: IGame) {
@@ -491,7 +477,7 @@ namespace StoryScript {
                 selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
                 game.currentLocation.text = game.currentLocation.descriptions[selector];
             }
-            else if (self.rules.descriptionSelector && (selector = self.rules.descriptionSelector(game))) {
+            else if (self._rules.descriptionSelector && (selector = self._rules.descriptionSelector(game))) {
                 game.currentLocation.text = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
             }
             else {
@@ -549,6 +535,4 @@ namespace StoryScript {
             }
         }
     }
-
-    LocationService.$inject = ['dataService', 'rules', 'game', 'definitions'];
 }

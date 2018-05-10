@@ -2,6 +2,7 @@
     var storyScriptModule = angular.module("storyscript", ['ngSanitize']);
     var objectFactory = window.StoryScript.ObjectFactory;
     
+    storyScriptModule.value('eventListener', objectFactory.GetEventListener());
     storyScriptModule.value('game', objectFactory.GetGame());
     storyScriptModule.value('customTexts', objectFactory.GetTexts());
     storyScriptModule.value("tradeService", objectFactory.GetTradeService());

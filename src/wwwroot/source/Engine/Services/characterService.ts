@@ -154,7 +154,7 @@ namespace StoryScript {
                 characterData.steps.forEach(function (step) {
                     if (step.questions) {
                         step.questions.forEach(function (question) {
-                            if (character.hasOwnProperty(question.selectedEntry.value)) {
+                            if (question.selectedEntry && character.hasOwnProperty(question.selectedEntry.value)) {
                                 character[question.selectedEntry.value] += question.selectedEntry.bonus;
                             }
                         });

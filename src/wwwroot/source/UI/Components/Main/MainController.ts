@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class MainController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _eventListener: EventTarget, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self._scope.$on('restart', () => self.init());
@@ -14,6 +14,11 @@ namespace StoryScript {
             self._scope.$watchCollection('game.currentLocation.destinations', self.watchDestinations);
             self._scope.$watchCollection('game.currentLocation.features', self.watchFeatures);
             
+            // Add an event listener to your event target
+            _eventListener.addEventListener('resourceLoaded', function() {
+                self._scope.$apply();
+            });
+
             self.init();
         }
 
@@ -67,5 +72,5 @@ namespace StoryScript {
         }
     }
 
-    MainController.$inject = ['$scope', 'gameService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', 'eventListener', 'gameService', 'game', 'customTexts'];
 }
