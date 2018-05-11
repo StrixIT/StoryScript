@@ -293,8 +293,11 @@
         return selector ? collectionToFilter.filter(selector) : collectionToFilter;
     }
 
-    // Todo: test whether this implementation works.
     function extend(target, source) {
+        if (!source.length) {
+            source = [source];
+        }
+
         for (var i = 0, ii = source.length; i < ii; ++i) {
             var obj = source[i];
 
