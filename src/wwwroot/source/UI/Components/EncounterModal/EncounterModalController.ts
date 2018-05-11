@@ -95,6 +95,10 @@ namespace StoryScript {
                     $('#encounters').modal('hide');
                 }
 
+                if (newValue == GameState.LevelUp) {
+                    controller._scope.$emit('levelUp');
+                }
+
                 controller._gameService.changeGameState(newValue);
             }
         }

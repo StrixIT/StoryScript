@@ -69,6 +69,58 @@
             };
         }
 
+        getLevelUpSheet = (): StoryScript.ICreateCharacter => {
+            return {
+                steps: [
+                    {
+                        questions: [
+                            {
+                                question: 'Wat wil je verbeteren?',
+                                entries: [
+                                    {
+                                        text: 'Kracht',
+                                        value: 'kracht',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Vlugheid',
+                                        value: 'vlugheid',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Oplettendheid',
+                                        value: 'oplettendheid',
+                                        bonus: 1
+                                    },
+                                    {
+                                        text: 'Gezondheid',
+                                        value: 'gezondheid',
+                                        bonus: 1
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        levelUp = (character: StoryScript.ICharacter, characterData: StoryScript.ICreateCharacter): boolean => {
+            var self = this;
+            var question = characterData.steps[0].questions[0];
+            var reward = question.entries.filter(entry => entry.value === question.selectedEntry.value)[0].value;
+
+            if (reward != 'gezondheid') {
+                character[reward]++;
+            }
+            else {
+                character.hitpoints += 10;
+                character.currentHitpoints += 10;
+            }
+
+            return false;
+        }
+
         public createCharacter(game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
@@ -131,21 +183,6 @@
                 game.character.score += enemy.reward;
             }
         }
-
-        levelUp = (game: IGame, reward: string) => {
-            var self = this;
-
-            if (reward != 'gezondheid') {
-                game.character[reward]++;
-            }
-            else {
-                game.character.hitpoints += 10;
-                game.character.currentHitpoints += 10;
-            }
-
-            game.state = StoryScript.GameState.Play;
-        }
-
 
         hitpointsChange(game: IGame, change: number) {
             var self = this;

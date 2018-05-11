@@ -22,5 +22,7 @@
             legs?: IItem,
             feet?: IItem
         }
+
+        level?: number;
     }
 }

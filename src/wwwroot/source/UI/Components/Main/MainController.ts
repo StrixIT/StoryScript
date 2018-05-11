@@ -5,6 +5,7 @@ namespace StoryScript {
             self.game = self._game;
             self._scope.$on('restart', () => self.init());
             self._scope.$on('refreshCombine', () => self._scope.$broadcast('buildCombine'));
+            self._scope.$on('levelUp', () => self._scope.$broadcast('initLevelUp'));
             (<any>self._scope).game = self._game;
 
             self._scope.$watch('game.currentLocation', self.watchLocation);

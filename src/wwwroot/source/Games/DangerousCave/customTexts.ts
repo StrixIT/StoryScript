@@ -21,7 +21,10 @@
             loading: "Laden...",
             equip: "Ter hand nemen",
             use: "Gebruiken",
-            drop: "Laten vallen"
+            drop: "Laten vallen",
+            levelUp: "Je wordt hier beter in!",
+            completeLevelUp: "Ok",
+            levelUpDescription: "Je hebt niveau {0} bereikt."
         }
     }
 }

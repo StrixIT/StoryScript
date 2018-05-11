@@ -2,7 +2,9 @@
     export interface ICharacterService {
         getSheetAttributes(): string[];
         setupCharacter(): ICreateCharacter;
+        setupLevelUp(): ICreateCharacter;
         createCharacter(game: IGame, characterData: any): ICharacter;
+        levelUp(game: IGame, characterData: any): ICharacter;
         limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
         distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
         canEquip(item: IItem): boolean;
@@ -15,30 +17,9 @@
 }
 
 namespace StoryScript {
-    export class CharacterService implements ng.IServiceProvider, ICharacterService {
+    export class CharacterService implements ICharacterService {
         constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
             var self = this;
-        }
-
-        public $get(dataService: IDataService, game: IGame, rules: IRules): ICharacterService {
-            var self = this;
-            self._dataService = dataService;
-            self._game = game;
-            self._rules = rules;
-
-            return {
-                setupCharacter: self.setupCharacter,
-                getSheetAttributes: self.getSheetAttributes,
-                createCharacter: self.createCharacter,
-                limitSheetInput: self.limitSheetInput,
-                distributionDone: self.distributionDone,
-                canEquip: self.canEquip,
-                equipItem: self.equipItem,
-                unequipItem: self.unequipItem,
-                isSlotUsed: self.isSlotUsed,
-                dropItem: self.dropItem,
-                questStatus: self.questStatus
-            };
         }
 
         getSheetAttributes = (): string[] => {
@@ -49,47 +30,7 @@ namespace StoryScript {
         setupCharacter = (): ICreateCharacter => {
             var self = this;
             var sheet = self._rules.getCreateCharacterSheet();
-            sheet.currentStep = 0;
-
-            if (sheet.steps[0].questions && sheet.steps[0].questions[0].entries) {
-                sheet.steps[0].questions[0].selectedEntry = sheet.steps[0].questions[0].entries[0];
-            }
-
-            sheet.nextStep = (data: ICreateCharacter) => {
-                var selector = data.steps[data.currentStep].nextStepSelector;
-                var previousStep = data.currentStep;
-
-                if (selector) {
-                    var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
-                    data.currentStep = nextStep;
-                }
-                else {
-                    data.currentStep++;
-                }
-
-                var currentStep = data.steps[data.currentStep];
-
-                if (currentStep.initStep) {
-                    currentStep.initStep(data, previousStep, currentStep);
-                }
-
-                if (currentStep.attributes) {
-                    currentStep.attributes.forEach(attr => {
-                        attr.entries.forEach(entry => {
-                            if (entry.min) {
-                                entry.value = entry.min;
-                            }
-                        });
-                    });
-                }
-
-                currentStep.questions.forEach(question => {
-                    if (question.entries && question.entries.length) {
-                        question.selectedEntry = question.entries[0];
-                    }
-                });
-            };
-
+            self.prepareSheet(sheet);
             self._game.createCharacterSheet = sheet;
             return sheet;
         }
@@ -148,32 +89,30 @@ namespace StoryScript {
 
             if (isEmpty(character)) {
 
-                var self = this;
                 character = self._rules.createCharacter(game, characterData);
-
-                characterData.steps.forEach(function (step) {
-                    if (step.questions) {
-                        step.questions.forEach(function (question) {
-                            if (question.selectedEntry && character.hasOwnProperty(question.selectedEntry.value)) {
-                                character[question.selectedEntry.value] += question.selectedEntry.bonus;
-                            }
-                        });
-                    }
-                });
-
-                characterData.steps.forEach(function (step) {
-                    if (step.attributes) {
-                        step.attributes.forEach(function (attribute) {
-                            attribute.entries.forEach(function (entry) {
-                                if (character.hasOwnProperty(entry.attribute)) {
-                                    character[entry.attribute] = entry.value;
-                                }
-                            });
-                        });
-                    }
-                }); 
+                self.processDefaultSettings(character, characterData);
             }
 
+            return character;
+        }
+
+        setupLevelUp = (): ICreateCharacter => {
+            var self = this;
+            var sheet = self._rules.getLevelUpSheet();
+            self.prepareSheet(sheet);
+            self._game.createCharacterSheet = sheet;
+            return sheet;
+        }
+
+        levelUp = (game: IGame, characterData: ICreateCharacter): ICharacter => {
+            var self = this;
+            var character = self._game.character;
+
+            if (self._rules.levelUp(character, characterData)) {
+                self.processDefaultSettings(character, characterData);
+            }
+
+            game.state = StoryScript.GameState.Play;
             return character;
         }
 
@@ -242,6 +181,49 @@ namespace StoryScript {
             return typeof quest.status === 'function' ? (<any>quest).status(self._game, quest, quest.checkDone(self._game, quest)) : quest.status;
         }
 
+        private prepareSheet = (sheet: ICreateCharacter): void => {
+            sheet.currentStep = 0;
+
+            if (sheet.steps[0].questions && sheet.steps[0].questions[0].entries) {
+                sheet.steps[0].questions[0].selectedEntry = sheet.steps[0].questions[0].entries[0];
+            }
+
+            sheet.nextStep = (data: ICreateCharacter) => {
+                var selector = data.steps[data.currentStep].nextStepSelector;
+                var previousStep = data.currentStep;
+
+                if (selector) {
+                    var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
+                    data.currentStep = nextStep;
+                }
+                else {
+                    data.currentStep++;
+                }
+
+                var currentStep = data.steps[data.currentStep];
+
+                if (currentStep.initStep) {
+                    currentStep.initStep(data, previousStep, currentStep);
+                }
+
+                if (currentStep.attributes) {
+                    currentStep.attributes.forEach(attr => {
+                        attr.entries.forEach(entry => {
+                            if (entry.min) {
+                                entry.value = entry.min;
+                            }
+                        });
+                    });
+                }
+
+                currentStep.questions.forEach(question => {
+                    if (question.entries && question.entries.length) {
+                        question.selectedEntry = question.entries[0];
+                    }
+                });
+            };
+        }
+
         private checkStep(step: ICreateCharacterStep) {
             var done = true;
 
@@ -266,6 +248,30 @@ namespace StoryScript {
             }
 
             return done;
+        }
+
+        private processDefaultSettings = (character: ICharacter, characterData: ICreateCharacter): void => {
+            characterData.steps.forEach(function (step) {
+                if (step.questions) {
+                    step.questions.forEach(function (question) {
+                        if (question.selectedEntry && character.hasOwnProperty(question.selectedEntry.value)) {
+                            character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                        }
+                    });
+                }
+            });
+
+            characterData.steps.forEach(function (step) {
+                if (step.attributes) {
+                    step.attributes.forEach(function (attribute) {
+                        attribute.entries.forEach(function (entry) {
+                            if (character.hasOwnProperty(entry.attribute)) {
+                                character[entry.attribute] = entry.value;
+                            }
+                        });
+                    });
+                }
+            }); 
         }
 
         private unequip(type: string, currentItem?: IItem) {
@@ -305,6 +311,4 @@ namespace StoryScript {
             return type.substring(0, 1).toLowerCase() + type.substring(1);
         }
     }
-
-    CharacterService.$inject = ['dataService', 'game', 'rules'];
 }

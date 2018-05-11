@@ -18,9 +18,22 @@
         controller: MainController
     });
 
+    storyScriptModule.component('buildCharacter', {
+        templateUrl: 'ui/BuildCharacterComponent.html',
+        controller: BuildCharacterController,
+        bindings: {
+            sheet: '<'
+        }
+    });
+
     storyScriptModule.component('characterSheet', {
         templateUrl: 'ui/CharacterSheetComponent.html',
         controller: CharacterSheetController
+    });
+
+    storyScriptModule.component('levelUp', {
+        templateUrl: 'ui/LevelUpComponent.html',
+        controller: LevelUpController
     });
 
     storyScriptModule.component('navigation', {

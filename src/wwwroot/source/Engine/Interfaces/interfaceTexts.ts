@@ -58,6 +58,9 @@
         tryCombination?: string;
         noCombination?: string;
         noCombinationNoTarget?: string;
+        levelUp?: string;
+        levelUpDescription?: string;
+        completeLevelUp?: string;
 
         format?: (template: string, tokens: string[]) => string;
         titleCase?: (text: string) => string;
