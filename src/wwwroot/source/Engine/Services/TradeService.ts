@@ -11,22 +11,8 @@ namespace StoryScript {
 }
 
 namespace StoryScript {
-    export class TradeService implements ng.IServiceProvider, ITradeService {
+    export class TradeService implements ITradeService {
         constructor(private _game: IGame, private _texts: IInterfaceTexts) {
-        }
-
-        public $get(game: IGame, texts: IInterfaceTexts): ITradeService {
-            var self = this;
-
-            return {
-                initTrade: self.initTrade,
-                trade: self.trade,
-                canPay: self.canPay,
-                actualPrice: self.actualPrice,
-                displayPrice: self.displayPrice,
-                buy: self.buy,
-                sell: self.sell
-            };
         }
 
         trade = (trade: ICompiledPerson | ITrade): void => {
@@ -135,6 +121,4 @@ namespace StoryScript {
             }
         }
     }
-
-    TradeService.$inject = ['game', 'customTexts'];
 }

@@ -4,19 +4,8 @@ namespace StoryScript
         get(url: string): Promise<any>;
     }
 
-    export class HttpService implements ng.IServiceProvider, IHttpService
+    export class HttpService implements IHttpService
     {
-        constructor() {
-        }
-
-        public $get(): IHttpService {
-            var self = this;
-
-            return {
-                get: self.get
-            };
-        }
-
         get = (url: string): Promise<any> =>
         {
             var promise = new Promise<any>(function (resolve, reject) {

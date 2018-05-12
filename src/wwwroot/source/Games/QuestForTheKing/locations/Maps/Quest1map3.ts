@@ -1,0 +1,36 @@
+﻿module QuestForTheKing.Locations {
+    export function Quest1map3(): StoryScript.ILocation {
+        return {
+            name: 'The Eastern Forest',
+            destinations: [
+                {                          
+                    name: 'Go to the Northern Forest',
+                    target: Locations.Quest1map2,
+                    style: 'location-danger'
+                },
+                {
+                    name: 'Go to the Southern Forest',
+                    target: Locations.Quest1map4,
+                    style: 'location-danger'
+                },
+                 {                          
+                    name: 'The Ocean Shrine',
+                    target: Locations.OceanshrineDay                  
+                },
+                  {                          
+                     name: 'The Dryad Tree',
+                     target: Locations.DryadDay
+                 },
+                   {                          
+                      name: 'The Tree Stump',
+                      target: Locations.Treestump
+                  },   
+                   {                       
+                       name: 'The Troll',
+                       target: Locations.TrollDay
+                   },           
+            ]    
+           
+        }
+    }
+}

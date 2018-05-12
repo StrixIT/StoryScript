@@ -12,58 +12,36 @@
 }
 
 namespace StoryScript {
-    export class HelperService implements ng.IServiceProvider, IHelperService {
-        private game: IGame;
-        private rules: IRules;
-
-        constructor(game: IGame, rules: IRules) {
-            var self = this;
-            self.game = game;
-            self.rules = rules;
-        }
-
-        public $get(game: IGame, rules: IRules): IHelperService {
-            var self = this;
-            self.game = game;
-            self.rules = rules;
-
-            return {
-                rollDice: self.rollDice,
-                calculateBonus: self.calculateBonus,
-                randomEnemy: self.randomEnemy,
-                randomItem: self.randomItem,
-                getEnemy: self.getEnemy,
-                getItem: self.getItem,
-                getPerson: self.getPerson
-            };
+    export class HelperService implements IHelperService {
+        constructor(private _game: IGame, private _rules: IRules) {
         }
 
         getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
             var self = this;
-            var instance = StoryScript.find<IEnemy>(self.game.definitions.enemies, selector, 'enemies', self.game.definitions);
-            return instantiateEnemy(instance, self.game.definitions, self.game, self.rules);
+            var instance = StoryScript.find<IEnemy>(self._game.definitions.enemies, selector, 'enemies', self._game.definitions);
+            return instantiateEnemy(instance, self._game.definitions, self._game, self._rules);
         }
 
         getItem = (selector: string | (() => IItem)) => {
             var self = this;
-            return StoryScript.find<IItem>(self.game.definitions.items, selector, 'items', self.game.definitions);
+            return StoryScript.find<IItem>(self._game.definitions.items, selector, 'items', self._game.definitions);
         }
 
         getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
             var self = this;
-            var instance = StoryScript.find<IPerson>(self.game.definitions.persons, selector, 'persons', self.game.definitions);
-            return instantiatePerson(instance, self.game.definitions, self.game, self.rules);
+            var instance = StoryScript.find<IPerson>(self._game.definitions.persons, selector, 'persons', self._game.definitions);
+            return instantiatePerson(instance, self._game.definitions, self._game, self._rules);
         }
 
         randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
             var self = this;
-            var instance = StoryScript.random<IEnemy>(self.game.definitions.enemies, 'enemies', self.game.definitions, <(enemy: IEnemy) => boolean>selector);
-            return instantiateEnemy(instance, self.game.definitions, self.game, self.rules);
+            var instance = StoryScript.random<IEnemy>(self._game.definitions.enemies, 'enemies', self._game.definitions, <(enemy: IEnemy) => boolean>selector);
+            return instantiateEnemy(instance, self._game.definitions, self._game, self._rules);
         }
 
         randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
             var self = this;
-            return StoryScript.random<IItem>(self.game.definitions.items, 'items', self.game.definitions, <(item: IItem) => boolean>selector);
+            return StoryScript.random<IItem>(self._game.definitions.items, 'items', self._game.definitions, <(item: IItem) => boolean>selector);
         }
 
         rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {

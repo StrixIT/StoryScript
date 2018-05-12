@@ -16,4 +16,4 @@
 /src/wwwroot/bs-config.json
 /src/wwwroot/index.html
 /src/wwwroot/source/Games/**/resources/*
-/src/wwwroot/source/Games/QuestForTheKing/**/*
+/src/wwwroot/source/Games/QuestForTheKing/**/*.html
