@@ -66,6 +66,8 @@ namespace StoryScript {
             var description = pathEntry ? pathEntry.description : null;
 
             if (!pathEntry) {
+                // Note that items and enemies need to have a description equal to the HTML constant
+                // to have their description loaded from an html file.
                 var loadDescription = (type === 'locations' || type === 'persons') || item.description === Constants.HTML;
                 pathEntry = { loading: false, loaded: !loadDescription, description: loadDescription ? null : item.description };
                 self.descriptionPaths[identifier] = pathEntry;
@@ -75,9 +77,6 @@ namespace StoryScript {
 
                 if (!pathEntry.loading && !pathEntry.loaded) {
                     pathEntry.loading = true;
-
-                    var serv = new HttpService();
-                    serv.get(identifier + '.html');
 
                     self._httpService.get(identifier + '.html').then((result: any) => {
                         var parser = new DOMParser();
