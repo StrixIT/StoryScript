@@ -10,7 +10,7 @@ namespace StoryScript {
     export class LocationService implements ILocationService {
         private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
 
-        constructor(private _dataService: IDataService, private _events: EventTarget, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
+        constructor(private _dataService: IDataService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
 
         init = (game: IGame) => {
@@ -414,8 +414,6 @@ namespace StoryScript {
                             }
                         });
                     });
-
-                    self.RaiseResourceLoadedEvent();
                 });
             });
         }
@@ -456,14 +454,7 @@ namespace StoryScript {
                 }
 
                 self.selectLocationDescription(game);
-                self.RaiseResourceLoadedEvent();
             });
-        }
-
-        private RaiseResourceLoadedEvent = (): void => {
-            var self = this;
-            var evt = new Event('resourceLoaded');
-            self._events.dispatchEvent(evt);
         }
 
         private selectLocationDescription(game: IGame) {

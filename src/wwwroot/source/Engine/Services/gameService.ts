@@ -19,36 +19,8 @@
 }
 
 namespace StoryScript {
-    export class GameService implements ng.IServiceProvider, IGameService {
+    export class GameService implements IGameService {
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
-        }
-
-        public $get(dataService: IDataService, locationService: ILocationService, characterService: ICharacterService, rules: IRules, helperService: IHelperService, game: IGame): IGameService {
-            var self = this;
-            self._dataService = dataService;
-            self._locationService = locationService;
-            self._characterService = characterService;
-            self._rules = rules;
-            self._helperService = helperService;
-            self._game = game;
-
-            return {
-                init: self.init,
-                initTexts: self.initTexts,
-                startNewGame: self.startNewGame,
-                reset: self.reset,
-                restart: self.restart,
-                saveGame: self.saveGame,
-                hasDescription: self.hasDescription,
-                getDescription: self.getDescription,
-                initCombat: self.initCombat,
-                fight: self.fight,
-                useItem: self.useItem,
-                executeBarrierAction: self.executeBarrierAction,
-                hitpointsChange: self.hitpointsChange,
-                scoreChange: self.scoreChange,
-                changeGameState: self.changeGameState
-            };
         }
 
         init = (): void => {
@@ -355,6 +327,4 @@ namespace StoryScript {
             node.start = true;
         }
     }
-
-    GameService.$inject = ['dataService', 'locationService', 'characterService', 'rules', 'helperService', 'game'];
 }

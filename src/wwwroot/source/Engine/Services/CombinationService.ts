@@ -7,22 +7,8 @@ namespace StoryScript {
 }
 
 namespace StoryScript {
-    export class CombinationService implements ng.IServiceProvider, ICombinationService {
+    export class CombinationService implements ICombinationService {
         constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
-            
-        }
-
-        public $get(game: IGame, rules: IRules, texts: IInterfaceTexts): ICombinationService {
-            var self = this;
-            self._game = game;
-            self._rules = rules;
-            self._texts = texts;
-
-            return {
-                buildCombine: self.buildCombine,
-                tryCombination: self.tryCombination,
-                showCombinations: self.showCombinations
-            };
         }
 
         buildCombine = (): ICombinationSelector => {

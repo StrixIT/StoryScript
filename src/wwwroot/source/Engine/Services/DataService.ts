@@ -9,44 +9,20 @@
 }
 
 namespace StoryScript {
-    export class DataService implements ng.IServiceProvider, IDataService {
-        private http: IHttpService;
-        private localStorage: ILocalStorageService;
-        private gameNameSpace: string;
-        private definitions: IDefinitions;
-
+    export class DataService implements IDataService {
         public functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
         private descriptionPaths: { [id: string]: { loading: boolean, loaded: boolean, description: string } };
 
-        constructor(http: IHttpService, localStorage: ILocalStorageService, game: IGame, gameNameSpace: string, definitions: IDefinitions) {
+        constructor(private _httpService: IHttpService, private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string, private _definitions: IDefinitions) {
             var self = this;
-            self.http = http;
-            self.localStorage = localStorage;
-            self.gameNameSpace = gameNameSpace;
-            self.definitions = self.getDefinitions(definitions);
-            game.definitions = self.definitions;
+            self._definitions = self.getDefinitions(_definitions);
+            self._game.definitions = self._definitions;
             self.registerFunctions();
-        }
-
-        public $get(http: IHttpService, localStorage: ILocalStorageService, game: IGame, gameNameSpace: string, definitions: IDefinitions): IDataService {
-            var self = this;
-            self.http = http;
-            self.localStorage = localStorage;
-            self.gameNameSpace = gameNameSpace;
-            game.definitions = self.getDefinitions(definitions);
-
-            return {
-                functionList: self.functionList,
-                loadDescription: self.loadDescription,
-                hasDescription: self.hasDescription,
-                save: self.save,
-                load: self.load
-            };
         }
 
         private getDefinitions(definitions: IDefinitions) {
             var self = this;
-            var nameSpaceObject = window[self.gameNameSpace];
+            var nameSpaceObject = window[self._gameNameSpace];
 
             definitions.locations = <[() => ILocation]>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], definitions.locations);
@@ -103,7 +79,7 @@ namespace StoryScript {
                     var serv = new HttpService();
                     serv.get(identifier + '.html');
 
-                    self.http.get(identifier + '.html').then((result: any) => {
+                    self._httpService.get(identifier + '.html').then((result: any) => {
                         var parser = new DOMParser();
                         var htmlDoc = parser.parseFromString(result, 'text/html');
                         var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
@@ -120,11 +96,13 @@ namespace StoryScript {
                         pathEntry.loading = false;
                         pathEntry.loaded = true;
                         pathEntry.description = result;
+                        self.RaiseResourceLoadedEvent();
                         resolve(result);
                     }).catch(() => {
                         pathEntry.loading = false;
                         pathEntry.loaded = true;
                         pathEntry.description = null;
+                        self.RaiseResourceLoadedEvent();
                         reject();
                     });
                 }
@@ -161,14 +139,14 @@ namespace StoryScript {
         public save<T>(key: string, value: T, pristineValues?: T): void {
             var self = this;
             var clone = self.buildClone(value, pristineValues);
-            self.localStorage.set(self.gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
+            self._localStorageService.set(self._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
         }
 
         public load<T>(key: string): T {
             var self = this;
 
             try {
-                var jsonData = self.localStorage.get(self.gameNameSpace + '_' + key);
+                var jsonData = self._localStorageService.get(self._gameNameSpace + '_' + key);
 
                 if (jsonData) {
                     var data = JSON.parse(jsonData).data;
@@ -188,6 +166,12 @@ namespace StoryScript {
             }
 
             return null;
+        }
+
+        private RaiseResourceLoadedEvent = (): void => {
+            var self = this;
+            var evt = new Event('resourceLoaded');
+            self._events.dispatchEvent(evt);
         }
 
         private buildClone(values, pristineValues, clone?) {
@@ -326,18 +310,18 @@ namespace StoryScript {
 
         private registerFunctions() {
             var self = this;
-            var definitionKeys = getDefinitionKeys(self.definitions);
+            var definitionKeys = getDefinitionKeys(self._definitions);
             self.functionList = {};
             var index = 0;
 
-            for (var i in self.definitions) {
+            for (var i in self._definitions) {
                 var type = definitionKeys[index] || 'actions';
-                var definitions = self.definitions[i];
+                var definitions = self._definitions[i];
                 self.functionList[type] = {};
 
                 for (var j in definitions) {
                     var definition = <() => {}>definitions[j];
-                    self.getFunctions(type, definitionKeys, StoryScript.definitionToObject(definition, type, self.definitions), null);
+                    self.getFunctions(type, definitionKeys, StoryScript.definitionToObject(definition, type, self._definitions), null);
                 }
 
                 index++;
@@ -383,6 +367,4 @@ namespace StoryScript {
             }
         }
     }
-
-    DataService.$inject = ['httpService', 'localStorageService', 'game', 'gameNameSpace', 'definitions'];
 }

@@ -6,6 +6,7 @@ namespace StoryScript
         executeAction(action: IAction, controller: ng.IComponentController): void;
         startCombat(): void;
         trade(game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade): boolean;
+        showDescription(scope: ng.IScope, title: string, item: any): void;
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
@@ -25,7 +26,8 @@ namespace StoryScript
                 getButtonClass: self.getButtonClass,
                 executeAction: self.executeAction,
                 startCombat: self.startCombat,
-                trade: self.trade
+                trade: self.trade,
+                showDescription: self.showDescription
             };
         }
 
@@ -92,6 +94,15 @@ namespace StoryScript
 
             // Return true to keep the action button for trade locations.
             return true;
+        }
+
+        showDescription = (scope: ng.IScope, item: any, title: string): void => {
+            var self = this;
+
+            if (item.description) {
+                self._game.state = GameState.Description;
+                scope.$emit('showDescription', { title: title, item: item });
+            }
         }
 
         private getActionIndex(game: IGame, action: IAction): number {

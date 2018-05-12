@@ -17,23 +17,12 @@ namespace StoryScript {
 
         showDescription(item: any, title: string) {
             var self = this;
-
-            if (item.description) {
-                self.showDescriptionModal(title, item);
-            }
+            self._sharedMethodService.showDescription(self._scope, item, title);
         }
 
         startCombat = (enemy: ICompiledEnemy) => {
             var self = this;
             self._sharedMethodService.startCombat();
-        }
-
-        private showDescriptionModal(title: string, item: any) {
-            var self = this;
-
-            // Todo
-
-            self.game.state = GameState.Description;
         }
     }
 

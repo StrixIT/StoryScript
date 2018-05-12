@@ -23,6 +23,12 @@ namespace StoryScript {
             self._scope.$watch('game.state', (newValue: GameState, oldValue: GameState) => {
                 self.watchGameState(newValue, oldValue, self);
             });
+
+            self._scope.$on('initDescription', (event, args) => {
+                self.modalSettings.title = (<any>args).title;
+                self.modalSettings.descriptionEntity = (<any>args).item;
+            });
+
             self._scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
         }
 
@@ -79,7 +85,7 @@ namespace StoryScript {
                     controller.modalSettings.canClose = true;
                 } break;
                 case GameState.Description: {
-                    // Todo
+                    controller.modalSettings.canClose = true;
                 } break;
                 default: {
 

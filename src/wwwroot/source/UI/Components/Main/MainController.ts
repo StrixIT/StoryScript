@@ -4,6 +4,7 @@ namespace StoryScript {
             var self = this;
             self.game = self._game;
             self._scope.$on('restart', () => self.init());
+            self._scope.$on('showDescription', (event, args) => self._scope.$broadcast('initDescription', args));
             self._scope.$on('refreshCombine', () => self._scope.$broadcast('buildCombine'));
             self._scope.$on('levelUp', () => self._scope.$broadcast('initLevelUp'));
             (<any>self._scope).game = self._game;

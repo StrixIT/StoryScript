@@ -19,7 +19,6 @@
 namespace StoryScript {
     export class CharacterService implements ICharacterService {
         constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
-            var self = this;
         }
 
         getSheetAttributes = (): string[] => {
