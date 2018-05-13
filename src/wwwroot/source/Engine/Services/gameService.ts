@@ -6,6 +6,7 @@
         reset(): void;
         restart(): void;
         saveGame(): void;
+        getSaveGames(): string[];
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         getDescription(entity: any, key: string): string;
         initCombat(): void;
@@ -110,6 +111,11 @@ namespace StoryScript {
             self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
             self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
             self._locationService.saveWorld(self._game.locations);
+        }
+
+        getSaveGames = (): string[] => {
+            var self = this;
+            return self._dataService.getSaveKeys();
         }
 
         hasDescription = (type: string, item: { id?: string, description?: string }): boolean => {

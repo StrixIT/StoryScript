@@ -110,4 +110,9 @@
         templateUrl: 'ui/ConversationComponent.html',
         controller: ConversationController
     });
+
+    storyScriptModule.component('loadGameModal', {
+        templateUrl: 'ui/LoadGameModalComponent.html',
+        controller: LoadGameModalController
+    });
 }

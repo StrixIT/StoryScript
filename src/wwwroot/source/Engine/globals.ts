@@ -95,6 +95,7 @@
         static PREVIOUSLOCATION: string = 'previousLocation';
         static WORLD: string = 'world';
         static WORLDPROPERTIES: string = 'worldProperties';
+        static GAME = 'game';
     }
 
     function find(id: any, array: any[]): any[] {

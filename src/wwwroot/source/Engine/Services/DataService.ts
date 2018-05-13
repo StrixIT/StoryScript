@@ -5,6 +5,7 @@
         hasDescription(type: string, item: { id?: string, description?: string });
         save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
+        getSaveKeys(): string[];
     }
 }
 
@@ -18,6 +19,45 @@ namespace StoryScript {
             self._definitions = self.getDefinitions(_definitions);
             self._game.definitions = self._definitions;
             self.registerFunctions();
+        }
+        
+        save = <T>(key: string, value: T, pristineValues?: T): void => {
+            var self = this;
+            var clone = self.buildClone(value, pristineValues);
+            self._localStorageService.set(self._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
+        }
+
+        getSaveKeys = (): string[] => {
+            var self = this;
+            var keys = self._localStorageService.getKeys();
+            var keyPrefix = self._gameNameSpace + '_' + DataKeys.GAME + '_';
+            return keys.filter(key => key.startsWith(keyPrefix)).map(key => key.replace(keyPrefix, ''));
+        }
+
+        public load<T>(key: string): T {
+            var self = this;
+
+            try {
+                var jsonData = self._localStorageService.get(self._gameNameSpace + '_' + key);
+
+                if (jsonData) {
+                    var data = JSON.parse(jsonData).data;
+
+                    if (isEmpty(data)) {
+                        return null;
+                    }
+
+                    self.restore(data);
+                    return data;
+                }
+
+                return null;
+            }
+            catch (exception) {
+                console.log('No data loaded for key ' + key + '. Error: ' + exception.message);
+            }
+
+            return null;
         }
 
         private getDefinitions(definitions: IDefinitions) {
@@ -130,38 +170,6 @@ namespace StoryScript {
             }
 
             return result;
-        }
-
-        public save<T>(key: string, value: T, pristineValues?: T): void {
-            var self = this;
-            var clone = self.buildClone(value, pristineValues);
-            self._localStorageService.set(self._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
-        }
-
-        public load<T>(key: string): T {
-            var self = this;
-
-            try {
-                var jsonData = self._localStorageService.get(self._gameNameSpace + '_' + key);
-
-                if (jsonData) {
-                    var data = JSON.parse(jsonData).data;
-
-                    if (isEmpty(data)) {
-                        return null;
-                    }
-
-                    self.restore(data);
-                    return data;
-                }
-
-                return null;
-            }
-            catch (exception) {
-                console.log('No data loaded for key ' + key + '. Error: ' + exception.message);
-            }
-
-            return null;
         }
 
         private RaiseResourceLoadedEvent = (): void => {

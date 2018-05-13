@@ -20,7 +20,7 @@ namespace StoryScript {
 
         load = (): void => {
             var self = this;
-            // Todo
+            self._scope.$emit('loadGame');
         }
     }
 
