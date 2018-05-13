@@ -17,6 +17,11 @@ namespace StoryScript {
             self._gameService.restart();
             self._scope.$emit('restart');
         }
+
+        load = (): void => {
+            var self = this;
+            // Todo
+        }
     }
 
     NavigationController.$inject = ['$scope', 'gameService', 'customTexts'];

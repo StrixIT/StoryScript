@@ -93,7 +93,14 @@ namespace StoryScript {
             }
 
             if (newValue != undefined) {
-                if (newValue == GameState.Combat || newValue == GameState.Trade || newValue == GameState.Conversation || newValue == GameState.Description) {
+                var modalStates = [
+                    GameState.Combat,
+                    GameState.Trade,
+                    GameState.Conversation,
+                    GameState.Description
+                ];
+
+                if (modalStates.some(s => s == newValue)) {
                     $('#encounters').modal('show');
                     controller._scope.$broadcast('init');
                 }

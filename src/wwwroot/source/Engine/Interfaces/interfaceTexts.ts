@@ -36,6 +36,7 @@
         startOver?: string;
         resetWorld?: string;
         gameName?: string;
+        load?: string;
         loading?: string;
         youAreHere?: string;
         messages?: string;

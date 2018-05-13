@@ -8,6 +8,6 @@
         Description,
         LevelUp,
         GameOver,
-        Victory,
+        Victory
     }
 }

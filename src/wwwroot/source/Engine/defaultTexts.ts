@@ -33,6 +33,7 @@
             startOver: "Start over",
             resetWorld: "Reset world",
             gameName: "Game template",
+            load: "Load game",
             loading: "Loading...",
             youAreHere: "You are here",
             messages: "Messages",

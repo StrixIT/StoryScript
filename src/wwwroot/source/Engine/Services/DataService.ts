@@ -82,10 +82,7 @@ namespace StoryScript {
                         var parser = new DOMParser();
                         var htmlDoc = parser.parseFromString(result, 'text/html');
                         var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
-
-                        // Todo: test whether this implementation works.
                         var pictureSrc = pictureElement && pictureElement.getAttribute('src');
-                        //var pictureSrc = angular.element(htmlDoc.getElementsByClassName('picture')).attr('src');
 
                         if (pictureSrc) {
                             item.pictureFileName = pictureSrc;
