@@ -1,8 +1,9 @@
 ﻿namespace StoryScript {
     export interface ILocationService {
-        init(game: IGame): void;
+        init(game: IGame, buildWorld?: boolean): void;
         saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>): void;
         changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame): void;
+        copyWorld(): ICompiledCollection<ILocation, ICompiledLocation>;
     }
 }
 
@@ -13,22 +14,28 @@ namespace StoryScript {
         constructor(private _dataService: IDataService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
 
-        init = (game: IGame) => {
+        init = (game: IGame, buildWorld?: boolean) => {
             var self = this;
             game.changeLocation = (location, travel) => { self.changeLocation.call(self, location, travel, game); };
             game.currentLocation = null;
             game.previousLocation = null;
-            game.locations = self.loadWorld();
+            game.locations = self.loadWorld(buildWorld === undefined || buildWorld);
         }
 
-        private loadWorld(): ICompiledCollection<ILocation, ICompiledLocation> {
+        private loadWorld(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
             var self = this;
-            self.pristineLocations = self.buildWorld();
-            var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
 
-            if (isEmpty(locations)) {
-                self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+            if (buildWorld) {
+                self.pristineLocations = self.buildWorld();
+                var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+
+                if (isEmpty(locations)) {
+                    self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
+                    locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+                }
+            }
+            else {
+                locations = self._game.locations;
             }
 
             locations.forEach(function (location) {
@@ -165,6 +172,11 @@ namespace StoryScript {
             }
 
             self.loadConversations(game);
+        }
+
+        copyWorld = (): ICompiledCollection<ILocation, ICompiledLocation> => {
+            var self = this;
+            return self._dataService.copy(self._game.locations, self.pristineLocations);
         }
 
         private initTrade(game: IGame) {

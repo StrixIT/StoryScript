@@ -4,7 +4,7 @@ namespace StoryScript
 
     export interface ILocalStorageService {
         get(key: string): any;
-        getKeys(): string[];
+        getKeys(prefix: string): string[];
         set(key: string, value: any): void;
     }
 
@@ -13,12 +13,14 @@ namespace StoryScript
             return localStorage.getItem(STORYSCRIPTKEY + '_' + key);
         }
 
-        getKeys = (): string[] => {
+        getKeys = (prefix: string): string[] => {
             var result = [];
+            prefix = STORYSCRIPTKEY + '_' + prefix;
 
             for (var key in localStorage) {
-                if (localStorage.hasOwnProperty(key))
-                result.push(key);
+                if (localStorage.hasOwnProperty(key) && key.startsWith(prefix)) {
+                    result.push(key.replace(prefix, ''));
+                }
              }
 
             return result;

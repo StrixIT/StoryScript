@@ -7,5 +7,6 @@ namespace StoryScript {
         previousLocation: string;
         worldProperties: any;
         world: ICompiledCollection<ILocation, ICompiledLocation>;
+        state: GameState
     }
 }

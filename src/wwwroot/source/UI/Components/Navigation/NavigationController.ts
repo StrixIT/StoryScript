@@ -18,6 +18,11 @@ namespace StoryScript {
             self._scope.$emit('restart');
         }
 
+        save = (): void => {
+            var self = this;
+            self._scope.$emit('saveGame');
+        }
+
         load = (): void => {
             var self = this;
             self._scope.$emit('loadGame');

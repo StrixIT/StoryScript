@@ -5,8 +5,9 @@
         startNewGame(characterData: any): void;
         reset(): void;
         restart(): void;
-        saveGame(): void;
+        saveGame(name?: string): void;
         getSaveGames(): string[];
+        loadGame(name: string): void;
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         getDescription(entity: any, key: string): string;
         initCombat(): void;
@@ -21,7 +22,7 @@
 
 namespace StoryScript {
     export class GameService implements IGameService {
-        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
         }
 
         init = (): void => {
@@ -105,12 +106,56 @@ namespace StoryScript {
             self.init();
         }
 
-        saveGame = (): void => {
+        saveGame = (name?: string): void => {
             var self = this;
-            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
-            self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
-            self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
-            self._locationService.saveWorld(self._game.locations);
+
+            if (name) {
+                var saveGame = <ISaveGame>{
+                    name: name,
+                    character: self._game.character,
+                    world: self._locationService.copyWorld(),
+                    worldProperties: self._game.worldProperties,
+                    statistics: self._game.statistics,
+                    location: self._game.currentLocation.id,
+                    previousLocation: self._game.previousLocation ? self._game.previousLocation.id : null,
+                    state: self._game.state
+                };
+
+                self._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
+            }
+            else {
+                self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
+                self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
+                self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
+                self._locationService.saveWorld(self._game.locations);
+            }
+        }
+
+        loadGame = (name: string): void => {
+            var self = this;
+            var saveGame = self._dataService.load<ISaveGame>(StoryScript.DataKeys.GAME + '_' + name);
+
+            if (saveGame) {
+                self._game.loading = true;
+                self._game.character = saveGame.character;
+                self._game.locations = saveGame.world;
+                self._game.worldProperties = saveGame.worldProperties;
+            
+                self._locationService.init(self._game, false);
+
+                self._game.currentLocation = self._game.locations.get(saveGame.location);
+
+                if (saveGame.previousLocation) {
+                    self._game.previousLocation = self._game.locations.get(saveGame.previousLocation);
+                }
+
+                self._game.state = saveGame.state;
+
+                setTimeout(() => {
+                    var evt = new Event('resourceLoaded');
+                    self._events.dispatchEvent(evt);
+                }, 0);
+            }
         }
 
         getSaveGames = (): string[] => {

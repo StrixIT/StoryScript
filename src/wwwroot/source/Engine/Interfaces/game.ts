@@ -16,6 +16,7 @@
         actionLog: string[];
         combatLog: string[];
         state: StoryScript.GameState;
+        loading: boolean;
 
         worldProperties: any;
 

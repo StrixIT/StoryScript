@@ -36,6 +36,8 @@
         startOver?: string;
         resetWorld?: string;
         gameName?: string;
+        saveGame?: string;
+        save?: string;
         loadGame?: string;
         load?: string;
         loading?: string;

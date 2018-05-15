@@ -33,6 +33,8 @@
             startOver: "Start over",
             resetWorld: "Reset world",
             gameName: "Game template",
+            save: "Save",
+            saveGame: "Save game",
             load: "Load",
             loadGame: "Load game",
             loading: "Loading...",

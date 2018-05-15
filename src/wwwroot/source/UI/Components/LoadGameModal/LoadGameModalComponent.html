@@ -5,13 +5,22 @@
                 <button type="button" class="close" aria-label="Close" ng-click="$ctrl.closeModal()">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">{{ $ctrl.texts.loadGame }}</h4>
+                <h4 class="modal-title">
+                    <span ng-if="$ctrl.mode === 'save'">{{ $ctrl.texts.saveGame }}</span>
+                    <span ng-if="$ctrl.mode === 'load'">{{ $ctrl.texts.loadGame }}</span>
+                </h4>
             </div>
             <div class="modal-body">
-            <div ng-repeat="key in $ctrl.saveKeys">{{ key }}</div>
+                <div class="row">
+                    <div ng-repeat="key in $ctrl.saveKeys">
+                        <span ng-click="$ctrl.setSelected(key)">{{ key }}</span>
+                    </div>
+                    <input ng-if="$ctrl.mode === 'save'" class="col-md-8 question-input" type="text" ng-model="$ctrl.selectedGame" />
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="$ctrl.loadGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.load }}</button>
+                <button ng-if="$ctrl.mode === 'save'" type="button" class="btn btn-primary" ng-click="$ctrl.saveGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.save }}</button>
+                <button ng-if="$ctrl.mode === 'load'" type="button" class="btn btn-primary" ng-click="$ctrl.loadGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.load }}</button>
             </div>
         </div>
     </div>

@@ -6,6 +6,7 @@
         save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
         getSaveKeys(): string[];
+        copy<T>(value: T, pristineValue: T): T;
     }
 }
 
@@ -27,11 +28,14 @@ namespace StoryScript {
             self._localStorageService.set(self._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
         }
 
+        copy = <T>(value: T, pristineValue: T): T => {
+            var self = this;
+            return self.buildClone(value, pristineValue);
+        }
+
         getSaveKeys = (): string[] => {
             var self = this;
-            var keys = self._localStorageService.getKeys();
-            var keyPrefix = self._gameNameSpace + '_' + DataKeys.GAME + '_';
-            return keys.filter(key => key.startsWith(keyPrefix)).map(key => key.replace(keyPrefix, ''));
+            return self._localStorageService.getKeys(self._gameNameSpace + '_' + DataKeys.GAME + '_');
         }
 
         public load<T>(key: string): T {
@@ -143,6 +147,7 @@ namespace StoryScript {
                     });
                 }
                 else {
+                    self.RaiseResourceLoadedEvent();
                     resolve(description);
                 }
             });
