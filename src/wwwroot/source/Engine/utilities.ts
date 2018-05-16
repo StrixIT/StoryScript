@@ -20,6 +20,7 @@
 
     export function createReadOnlyCollection(entity: any, propertyName: string, collection: { id?: string, type?: string }[]) {
         Object.defineProperty(entity, propertyName, {
+            enumerable: true,
             get: function () {
                 return collection;
             },

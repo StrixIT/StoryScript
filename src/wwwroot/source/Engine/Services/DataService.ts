@@ -200,13 +200,18 @@ namespace StoryScript {
 
                 var value = values[key];
 
-                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
-
                 if (value === undefined) {
                     continue;
                 }
                 else if (value === null) {
                     clone[key] = null;
+                    continue;
+                }
+
+                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
+
+                if (value.isProxy) {
+                    continue;
                 }
                 else if (Array.isArray(value)) {
                     clone[key] = [];
