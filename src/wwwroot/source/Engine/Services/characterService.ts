@@ -31,6 +31,13 @@ namespace StoryScript {
             var sheet = self._rules.getCreateCharacterSheet();
             self.prepareSheet(sheet);
             self._game.createCharacterSheet = sheet;
+
+            if (sheet.steps.length === 0) {
+                self._game.character = self.createCharacter(self._game, sheet);
+                self._game.changeLocation('Start');
+                self._game.state = GameState.Play;
+            }
+
             return sheet;
         }
 
@@ -181,6 +188,10 @@ namespace StoryScript {
         }
 
         private prepareSheet = (sheet: ICreateCharacter): void => {
+            if (sheet.steps.length == 0) {
+                return;
+            }
+            
             sheet.currentStep = 0;
 
             if (sheet.steps[0].questions && sheet.steps[0].questions[0].entries) {
