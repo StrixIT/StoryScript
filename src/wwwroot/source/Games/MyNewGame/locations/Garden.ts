@@ -8,7 +8,7 @@
                     target: Locations.Start,
                 }
             ],
-            events: [
+            enterEvents: [
                 (game) => {
                     game.logToActionLog('You see a squirrel running off.');
                 }
@@ -29,7 +29,7 @@
                                     {
                                         name: 'Inspect',
                                         action: (game: IGame) => {
-                                            game.logToLocationLog('The trap door looks old but still strong due to steel reinforcements. It is not locked.');
+                                            game.logToLocationLog('The trap door looks old but still strong due to steel reinforcements. It is locked.');
                                         }
                                     }
                                 ]
