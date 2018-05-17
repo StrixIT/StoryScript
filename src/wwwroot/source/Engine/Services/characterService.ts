@@ -226,11 +226,13 @@ namespace StoryScript {
                     });
                 }
 
-                currentStep.questions.forEach(question => {
-                    if (question.entries && question.entries.length) {
-                        question.selectedEntry = question.entries[0];
-                    }
-                });
+                if (currentStep.questions) {
+                    currentStep.questions.forEach(question => {
+                        if (question.entries && question.entries.length) {
+                            question.selectedEntry = question.entries[0];
+                        }
+                    });
+                }
             };
         }
 

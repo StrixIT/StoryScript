@@ -122,20 +122,7 @@
 
                                 // Do damage to sneaked enemy.
                                 game.fight(theEnemy, false);
-
-                                // Remove the remaining sneak actions
-                                var indexes = <number[]>[];
-
-                                game.currentLocation.combatActions.forEach((action: IAction, index: number) => {
-                                    if (action.isSneakAction) {
-                                        indexes.push(index - indexes.length);
-                                    }
-                                });
-
-                                indexes.forEach(i => {
-                                    game.currentLocation.combatActions.splice(i, 1);
-                                });
-
+                                self.removeSneakAction(game);
                                 addFleeAction(game);
                             }
                         };
@@ -149,6 +136,21 @@
             }
         }
 
+        private removeSneakAction(game: IGame) {
+            // Remove the remaining sneak actions
+            var indexes = <number[]>[];
+
+            game.currentLocation.combatActions.forEach((action: IAction, index: number) => {
+                if (action.isSneakAction) {
+                    indexes.push(index - indexes.length);
+                }
+            });
+
+            indexes.forEach(i => {
+                game.currentLocation.combatActions.splice(i, 1);
+            });
+        }
+
         fight = (game: IGame, enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
@@ -157,6 +159,9 @@
             var characterDamage = check + game.character.vechten + game.helpers.calculateBonus(game.character, 'attack') - game.helpers.calculateBonus(enemy, 'defense');
             game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
             enemy.hitpoints -= characterDamage;
+
+            self.removeSneakAction(game);
+            addFleeAction(game);
 
             if (enemy.hitpoints <= 0) {
                 game.logToCombatLog('Je verslaat de ' + enemy.name + '!');
