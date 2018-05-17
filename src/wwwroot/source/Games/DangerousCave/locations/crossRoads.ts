@@ -2,7 +2,7 @@
     export function CrossRoads(): StoryScript.ILocation {
         return {
             name: 'Een kruispunt',
-            events: [
+            enterEvents: [
                 (game: IGame) => {
                     var orkCorridor = game.locations.get(Locations.DarkCorridor);
                     var orkPresent = !orkCorridor.hasVisited;

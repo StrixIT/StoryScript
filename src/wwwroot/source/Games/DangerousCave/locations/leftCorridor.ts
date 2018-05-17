@@ -2,7 +2,7 @@
     export function LeftCorridor(): StoryScript.ILocation {
         return {
             name: 'Een pikdonkere gang',
-            events: [
+            enterEvents: [
                 (game: IGame) => {
                     var damage = Math.floor(Math.random() * 6 + 1) - game.character.vlugheid;
                     game.character.currentHitpoints -= Math.max(0, damage);

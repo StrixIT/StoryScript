@@ -7,7 +7,8 @@
         persons?: ICollection<() => IPerson>;
         items?: ICollection<() => IItem>;
         destinations?: ICollection<IDestination>;
-        events?: ICollection<(game: IGame) => void>;
+        enterEvents?: [(game: IGame) => void];
+        leaveEvents?: [(game: IGame) => void];
         actions?: ICollection<IAction>;
         combatActions?: ICollection<IAction>;
         trade?: ITrade;
