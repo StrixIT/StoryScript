@@ -75,6 +75,8 @@ namespace StoryScript {
                         return location.items.filter(e => { return !e.inactive; });
                     }
                 });
+
+                addProxy(location, 'enemy', self._game, self._rules);
             });
 
             return locations;

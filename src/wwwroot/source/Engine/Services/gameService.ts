@@ -77,7 +77,6 @@ namespace StoryScript {
             var self = this;
             self._dataService.save(StoryScript.DataKeys.WORLD, {});
             self._locationService.init(self._game);
-            self.setupLocations();
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
             var location = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
@@ -307,8 +306,6 @@ namespace StoryScript {
             }
 
             self._locationService.init(self._game);
-
-            self.setupLocations();
         }
 
         private setupCharacter(): void {
@@ -323,14 +320,6 @@ namespace StoryScript {
                 get: function () {
                     return self._game.character.items.filter(e => { return e.useInCombat; });
                 }
-            });
-        }
-
-        private setupLocations(): void {
-            var self = this;
-
-            self._game.locations.forEach((location: ICompiledLocation) => {
-                addProxy(location, 'enemy', self._game, self._rules);
             });
         }
 
