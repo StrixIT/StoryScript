@@ -136,23 +136,30 @@ namespace StoryScript {
                         pathEntry.loading = false;
                         pathEntry.loaded = true;
                         pathEntry.description = result;
-                        self.RaiseResourceLoadedEvent();
+                        self.notify();
                         resolve(result);
                     }).catch(() => {
                         pathEntry.loading = false;
                         pathEntry.loaded = true;
                         pathEntry.description = null;
-                        self.RaiseResourceLoadedEvent();
+                        self.notify();
                         reject();
                     });
                 }
                 else {
-                    self.RaiseResourceLoadedEvent();
+                    self.notify();
                     resolve(description);
                 }
             });
 
             return promise;
+        }
+
+        private notify(): void {
+            var self = this;
+            setTimeout(() => {
+                self.RaiseResourceLoadedEvent();
+            }, 0);
         }
 
         public hasDescription(type: string, item: { id?: string, description?: string }) {
