@@ -6,7 +6,7 @@
                 
                  {                          
                     name: 'The Necromancer',
-                    target: Locations.NecromancerDay                
+                    target: Locations.Necromancer
                 },
                   {                          
                      name: 'Dark Magic',

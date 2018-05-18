@@ -15,11 +15,11 @@
                 },
                  {                          
                     name: 'The Ocean Shrine',
-                    target: Locations.OceanshrineDay                  
+                    target: Locations.Oceanshrine
                 },
                   {                          
                      name: 'The Dryad Tree',
-                     target: Locations.DryadDay
+                     target: Locations.Dryad
                  },
                    {                          
                       name: 'The Tree Stump',

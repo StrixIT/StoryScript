@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function DryadDay(): StoryScript.ILocation {
+    export function Dryad(): StoryScript.ILocation {
         return {
             name: 'The Dryad Tree',
             destinations: [

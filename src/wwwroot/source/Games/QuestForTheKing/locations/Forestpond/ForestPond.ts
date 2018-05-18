@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function ForestPondDay(): StoryScript.ILocation {
+    export function ForestPond(): StoryScript.ILocation {
         return {
             name: 'The Forest Pond',
             destinations: [

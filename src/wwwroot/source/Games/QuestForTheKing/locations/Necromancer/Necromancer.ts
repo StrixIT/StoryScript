@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function NecromancerDay(): StoryScript.ILocation {
+    export function Necromancer(): StoryScript.ILocation {
         return {
             name: 'The Necromancer',
             destinations: [

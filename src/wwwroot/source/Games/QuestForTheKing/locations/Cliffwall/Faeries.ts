@@ -1,7 +1,7 @@
 ﻿module QuestForTheKing.Locations {
     export function Faeries(): StoryScript.ILocation {
         return {
-            name: 'The Cliffwall',
+            name: 'The faeries',
             destinations: [
                 {
                     name: 'Back to the Map',

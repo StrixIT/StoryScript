@@ -5,11 +5,11 @@
             destinations: [
                 {
                     name: 'Go to the Magic Flower',
-                    target: Locations.MagicflowersDay
+                    target: Locations.Magicflowers
                 },
                 {
                     name: 'Go to the Fishermans Cottage',
-                    target: Locations.FishermanDay
+                    target: Locations.Fisherman
                 },
                 {
                     name: 'Go to the Mermaid',
@@ -17,11 +17,11 @@
                 },       
                 {
                     name: 'Go to the Forest Pond',
-                    target: Locations.ForestPondDay
+                    target: Locations.ForestPond
                 },  
                 {
                     name: 'Go to the Honeycom Castle',
-                    target: Locations.HoneycastleDay
+                    target: Locations.Honeycastle
                 },      
                 {
                     name: 'Go to the Octopus',

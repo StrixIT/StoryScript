@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function FishermanDay(): StoryScript.ILocation {
+    export function Fisherman(): StoryScript.ILocation {
         return {
             name: 'The Fishermans Cottage',
             destinations: [

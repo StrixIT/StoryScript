@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function MagicflowersDay(): StoryScript.ILocation {
+    export function Magicflowers(): StoryScript.ILocation {
         return {
             name: 'The Magic Flowers',
             destinations: [

@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function OceanshrineDay(): StoryScript.ILocation {
+    export function Oceanshrine(): StoryScript.ILocation {
         return {
             name: 'The Ocean Shrine',
             destinations: [

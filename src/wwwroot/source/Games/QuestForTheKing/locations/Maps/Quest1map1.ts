@@ -21,7 +21,7 @@
                 },
                 {
                     name: 'Go to the Merchant',
-                    target: Locations.MerchantDay
+                    target: Locations.Merchant
                 },
                 {
                     name: 'Go to the Northern Forest',

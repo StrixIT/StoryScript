@@ -9,7 +9,7 @@
                 },
                 {
                     name: 'To the Cliffwall',
-                    target: Locations.CliffwallDay
+                    target: Locations.Cliffwall
                 }                               
                     
                 ]

@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function MerchantDay(): StoryScript.ILocation {
+    export function Merchant(): StoryScript.ILocation {
         return {
             name: 'The Merchant',
             destinations: [

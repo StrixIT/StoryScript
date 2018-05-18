@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function HoneycastleDay(): StoryScript.ILocation {
+    export function Honeycastle(): StoryScript.ILocation {
         return {
             name: 'The Honeycomb Castle',
             destinations: [
