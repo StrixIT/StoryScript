@@ -27,7 +27,7 @@
                   },   
                    {                       
                        name: 'The Troll',
-                       target: Locations.TrollDay
+                       target: Locations.Troll
                    },           
             ]    
            

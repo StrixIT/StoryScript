@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function TrollDay(): StoryScript.ILocation {
+    export function Troll(): StoryScript.ILocation {
         return {
             name: 'The Troll',
             destinations: [

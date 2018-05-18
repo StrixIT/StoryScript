@@ -11,7 +11,7 @@
             enemies: [
                 Enemies.SirAyric
             ],
-            events: [
+            enterEvents: [
                 changeDay
             ]
         }

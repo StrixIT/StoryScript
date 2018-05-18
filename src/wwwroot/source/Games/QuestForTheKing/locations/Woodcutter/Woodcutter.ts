@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function WoodcutterDay(): StoryScript.ILocation {
+    export function Woodcutter(): StoryScript.ILocation {
         return {
             name: 'The Woodcutters Cottage',
             destinations: [

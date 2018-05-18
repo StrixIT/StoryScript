@@ -22,7 +22,7 @@
                 }
 
             ],
-            events: [
+            enterEvents: [
                 changeDay
             ]
         }

@@ -2,6 +2,7 @@
     export function Fireball(): IItem {
         return {
             name: 'Fireball Spell',
+            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,

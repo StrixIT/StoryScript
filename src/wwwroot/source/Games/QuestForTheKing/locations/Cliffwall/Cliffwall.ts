@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function CliffwallDay(): StoryScript.ILocation {
+    export function Cliffwall(): StoryScript.ILocation {
         return {
             name: 'The Cliffwall',
             destinations: [

@@ -2,6 +2,7 @@
     export function Frostbite(): IItem {
         return {
             name: 'Frostbite Spell',
+            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,

@@ -10,11 +10,11 @@
                 },
                   {                          
                      name: 'Dark Magic',
-                     target: Locations.DarkmagicDay
+                     target: Locations.Darkmagic
                  },
                    {                          
                       name: 'The Strange Trees',
-                      target: Locations.GuardiansDay
+                      target: Locations.Guardians
                   },
                    {                          
                        name: 'Go to the Eastern Forest',

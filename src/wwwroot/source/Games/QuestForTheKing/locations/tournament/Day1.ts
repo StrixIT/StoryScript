@@ -27,7 +27,7 @@
             enemies: [
                 Enemies.Farmboy
             ],
-            events: [
+            enterEvents: [
                 changeDay
             ]
         }

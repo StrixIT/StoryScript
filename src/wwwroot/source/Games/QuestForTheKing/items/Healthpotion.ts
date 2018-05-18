@@ -2,6 +2,7 @@
     export function Healthpotion(): IItem {
         return {
             name: 'Health Potion',
+            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             dayAvailable: 1,

@@ -2,6 +2,7 @@
     export function Paralysis(): IItem {
         return {
             name: 'Paralysis',
+            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Hands,
             dayAvailable: 3,

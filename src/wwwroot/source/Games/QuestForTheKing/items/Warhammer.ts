@@ -2,6 +2,7 @@
     export function Warhammer(): IItem {
         return {
             name: 'Warhammer',
+            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,

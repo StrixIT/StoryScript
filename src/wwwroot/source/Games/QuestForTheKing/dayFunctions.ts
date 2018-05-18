@@ -1,6 +1,7 @@
 ﻿module QuestForTheKing {
     export function changeDay(game: IGame) {
-        game.worldProperties.currentDay = parseInt(game.currentLocation.name.toLowerCase().replace('day', ''));
+        var day = parseInt(game.currentLocation.name.toLowerCase().replace('day', ''));
+        game.worldProperties.currentDay = isNaN(day) ? game.worldProperties.currentDay : day;
         updateDestination(game, game.locations.get(Locations.WeaponSmith), game.worldProperties.currentDay);
         updateDestination(game, game.locations.get(Locations.HealersTent), game.worldProperties.currentDay);
     }

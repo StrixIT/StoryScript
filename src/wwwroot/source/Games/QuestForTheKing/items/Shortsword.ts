@@ -2,6 +2,7 @@
     export function Shortsword(): IItem {
         return {
             name: 'Shortsword',
+            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             arcane: false,

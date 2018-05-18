@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function StonemountDay(): StoryScript.ILocation {
+    export function Stonemount(): StoryScript.ILocation {
         return {
             name: 'The Stone Mount',
             destinations: [

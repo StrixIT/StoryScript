@@ -21,7 +21,7 @@
             enemies: [
                 Enemies.Shieldmaiden
             ],
-            events: [
+            enterEvents: [
                 changeDay
             ]
         }

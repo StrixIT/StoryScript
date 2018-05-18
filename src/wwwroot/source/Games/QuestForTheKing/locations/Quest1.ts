@@ -8,7 +8,7 @@
                     target: Locations.Quest1map1
                 }
             ],
-            events: [
+            enterEvents: [
                 (game: IGame) => {
                     game.worldProperties.travelCounter = 0;
                 }

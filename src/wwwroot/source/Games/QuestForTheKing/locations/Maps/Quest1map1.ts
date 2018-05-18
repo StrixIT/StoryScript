@@ -5,11 +5,11 @@
             destinations: [
                 {
                     name: 'Go to the Tent',
-                    target: Locations.BrennusDay
+                    target: Locations.Brennus
                 },
                 {
                     name: 'Go to the Woodcutters Lodge',
-                    target: Locations.WoodcutterDay
+                    target: Locations.Woodcutter
                 },
                 {
                     name: 'Go to the Forest Lake',
@@ -17,7 +17,7 @@
                 },       
                 {
                     name: 'Go to the Stone Mount',
-                    target: Locations.StonemountDay
+                    target: Locations.Stonemount
                 },
                 {
                     name: 'Go to the Merchant',

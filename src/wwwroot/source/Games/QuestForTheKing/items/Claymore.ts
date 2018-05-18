@@ -2,6 +2,7 @@
     export function Claymore(): IItem {
         return {
             name: 'Claymore',
+            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: [StoryScript.EquipmentType.LeftHand, StoryScript.EquipmentType.RightHand],
             dayAvailable: 3,

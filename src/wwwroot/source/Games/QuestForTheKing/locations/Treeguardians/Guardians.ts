@@ -1,5 +1,5 @@
 ﻿module QuestForTheKing.Locations {
-    export function GuardiansDay(): StoryScript.ILocation {
+    export function Guardians(): StoryScript.ILocation {
         return {
             name: 'The Strange Trees',
             destinations: [

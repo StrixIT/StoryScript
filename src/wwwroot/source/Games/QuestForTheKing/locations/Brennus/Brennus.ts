@@ -1,15 +1,15 @@
 ﻿module QuestForTheKing.Locations {
-    export function DarkmagicDay(): StoryScript.ILocation {
+    export function Brennus(): StoryScript.ILocation {
         return {
-            name: 'Dark Magic',
+            name: 'Brennus',
             destinations: [
                 {
                     name: 'Back to the Map',
-                    target: Locations.Quest1map4
+                    target: Locations.Quest1map1
                 }              
             ],
                 enemies: [
-                    Enemies.Mirrorimage
+                    Enemies.Brennus
                     
                 ]
         }
