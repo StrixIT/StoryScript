@@ -502,11 +502,16 @@ namespace StoryScript {
             var existingAction = null;
             var keyActionHash = createFunctionHash((<any>destination.barrier.key).open.action);
 
-            destination.barrier.actions.forEach(x => {
-                if (createFunctionHash(x.action) === keyActionHash) {
-                    existingAction = x;
-                };
-            });
+            if (destination.barrier.actions) {
+                destination.barrier.actions.forEach(x => {
+                    if (createFunctionHash(x.action) === keyActionHash) {
+                        existingAction = x;
+                    };
+                });
+            }
+            else {
+                destination.barrier.actions = [];
+            }
 
             if (existingAction) {
                 destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);

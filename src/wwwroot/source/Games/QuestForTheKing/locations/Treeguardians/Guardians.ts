@@ -8,11 +8,14 @@
                     target: Locations.Quest1map4
                 },    
                 {
-                    name: 'You have the parchment',
-                    target: Locations.Gotparchment
-                }                      
-                    
-                ]
+                    name: 'To the Cliffwall',
+                    target: Locations.Cliffwall,
+                    barrier: {
+                        name: 'Wall of branches',
+                        key: Items.Parchment
+                    }
+                }                                     
+            ]
         }
     }
 }    

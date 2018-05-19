@@ -8,7 +8,7 @@ namespace StoryScript {
     }
 
     export class EncounterModalController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _sce: ng.ISCEService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
@@ -56,7 +56,7 @@ namespace StoryScript {
 
         getDescription(entity: any, key: string) {
             var self = this;
-            return self._gameService.getDescription(entity, key);
+            return self._sce.trustAsHtml( self._gameService.getDescription(entity, key));
         }
 
         private watchGameState(newValue: GameState, oldValue: GameState, controller: EncounterModalController) {
@@ -131,5 +131,5 @@ namespace StoryScript {
         }
     }
 
-    EncounterModalController.$inject = ['$scope', 'gameService', 'game', 'customTexts'];
+    EncounterModalController.$inject = ['$scope', '$sce', 'gameService', 'game', 'customTexts'];
 }

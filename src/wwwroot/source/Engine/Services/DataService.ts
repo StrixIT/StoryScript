@@ -98,7 +98,7 @@ namespace StoryScript {
             }
         }
 
-        public loadDescription(type: string, item: { id?: string, description?: string, pictureFileName?: string }) {
+        public loadDescription(type: string, item: { id?: string, description?: string, pictureFileName?: string }): Promise<any> {
             var self = this;
             var identifier = type + '/' + item.id;
 

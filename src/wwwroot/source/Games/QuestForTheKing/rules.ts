@@ -18,42 +18,7 @@
         }
 
         processDescription(game: IGame, parent: any, key: string) {
-            var self = this;
-            var description = parent[key] as string;
-
-            if (parent === game.currentLocation) {
-                var descriptionKey = null;
-
-                for (var n in game.currentLocation.descriptions) {
-                    if (game.currentLocation.descriptions[n] === game.currentLocation.text) {
-                        descriptionKey = n;
-                        break;
-                    }
-                }
-
-                if (descriptionKey != null) {
-                    if (game.currentLocation.text.indexOf('autoplay="autoplay"') > -1) {
-                        game.currentLocation.descriptions[n] = game.currentLocation.text.replace('autoplay="autoplay"', '');
-                    }
-                }
-            }
-
-            if (description.indexOf('autoplay="autoplay"') > -1) {
-                parent[key] = description.replace('autoplay="autoplay"', '');
-
-                setTimeout(function () {
-                    var audioElements = $(<any>'audio', <any>'body');
-
-                    for (var n in audioElements) {
-                        var element = (<HTMLAudioElement>audioElements[n]);
-
-                        if (element.play) {
-                            element.play();
-                        }
-                    }
-                }, 0);
-            }
-
+            playAudio(parent, key, game.currentLocation);
             return parent[key];
         }
 

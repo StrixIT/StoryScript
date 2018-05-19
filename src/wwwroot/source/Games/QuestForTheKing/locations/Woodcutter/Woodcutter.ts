@@ -4,11 +4,6 @@
             name: 'The Woodcutters Cottage',
             destinations: [
                 {
-                    name: 'Read the Parchment',
-                    target: Locations.ReadParchment
-                },
-                {
-
                     name: 'Back to the Map',
                     target: Locations.Quest1map1                       
                 }

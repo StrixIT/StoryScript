@@ -1,7 +1,7 @@
 ﻿module QuestForTheKing.Locations {
     export function Quest1map4(): StoryScript.ILocation {
         return {
-            name: 'The Eastern Forest',
+            name: 'The Southern Forest',
             destinations: [
                 
                  {                          
