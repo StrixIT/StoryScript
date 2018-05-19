@@ -11,6 +11,7 @@
         items?: ICollection<IItem>;
         activeItems?: ICollection<IItem>;
         destinations?: ICollection<IDestination>;
+        activeDestinations?: ICollection<IDestination>;
         enterEvents?: [(game: IGame) => void];
         leaveEvents?: [(game: IGame) => void];
         actions?: ICollection<IAction>;

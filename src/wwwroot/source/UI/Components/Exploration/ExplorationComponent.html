@@ -9,7 +9,7 @@
     </fieldset>
     <fieldset ng-if="!$ctrl.enemiesPresent()">
         <legend>{{ $ctrl.texts.destinations }}</legend>
-        <div class="destination-button" ng-repeat="destination in $ctrl.game.currentLocation.destinations">
+        <div class="destination-button" ng-repeat="destination in $ctrl.game.currentLocation.activeDestinations">
             <div ng-if="destination.barrier">
                 <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.name }}</button>
                 <select class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" ng-options="a.name for a in destination.barrier.actions">

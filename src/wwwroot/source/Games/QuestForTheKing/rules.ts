@@ -421,7 +421,7 @@
                 if (!game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
                     var currentSelector = self.descriptionSelector(game);
                     var selector = currentSelector ? currentSelector + 'after' : 'after';
-                   game.currentLocation.text =game.currentLocation.descriptions[selector];
+                   game.currentLocation.text = game.currentLocation.descriptions[selector] ? game.currentLocation.descriptions[selector] : game.currentLocation.descriptions['after'];
                 }
             }
 
@@ -460,6 +460,10 @@
                 location.items.forEach(item => item.inactive = !self.isEntityActive(game, item));
             }
 
+            if (location.destinations && location.destinations.length > 0) {
+                location.destinations.forEach(destination => destination.inactive = !self.isEntityActive(game, destination));
+            }
+
             changeDay(game);
         }
 
@@ -475,7 +479,7 @@
                 null;
         }
 
-        private isEntityActive = (game: IGame, entity: IItem | ICompiledEnemy): boolean => {
+        private isEntityActive = (game: IGame, entity: IItem | ICompiledEnemy | IDestination): boolean => {
             return (!entity.activeNight && !entity.activeDay) || (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay)
         }
     }

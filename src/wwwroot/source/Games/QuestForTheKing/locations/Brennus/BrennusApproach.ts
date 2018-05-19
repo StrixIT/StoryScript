@@ -10,7 +10,6 @@
             ],
             enemies: [
                 Enemies.Brennus
-
             ]
         }
     }

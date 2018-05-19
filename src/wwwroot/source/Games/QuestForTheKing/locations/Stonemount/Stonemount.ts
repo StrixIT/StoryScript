@@ -15,7 +15,6 @@
                 enemies: [
                     Enemies.Wolf,
                     Enemies.Wolf
-                    
                 ]
         }
     }

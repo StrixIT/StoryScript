@@ -4,5 +4,6 @@
         target: () => ILocation;
         barrier?: IBarrier;
         style?: string;
+        inactive?: boolean;
     }
 }

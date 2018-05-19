@@ -76,6 +76,12 @@ namespace StoryScript {
                     }
                 });
 
+                Object.defineProperty(location, 'activeDestinations', {
+                    get: function () {
+                        return location.destinations.filter(e => { return !e.inactive; });
+                    }
+                });
+
                 addProxy(location, 'enemy', self._game, self._rules);
             });
 
