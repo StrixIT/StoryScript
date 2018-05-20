@@ -1,43 +1,4 @@
 ﻿module QuestForTheKing {
-    export function playAudio(parent: any, key: string, location: ICompiledLocation, newOnly?: boolean) {
-        var description = parent[key] as string;
-        var descriptionEntry = parent;
-        var descriptionKey = key;
-
-        if (parent === location) {
-            descriptionEntry = location.descriptions;
-
-            for (let n in location.descriptions) {
-                if (location.descriptions[n] === location.text) {
-                    descriptionKey = n;
-                    break;
-                }
-            }
-        }
-
-        if (descriptionEntry[descriptionKey]) {
-            if (descriptionEntry[descriptionKey].indexOf('autoplay="autoplay"') > -1) {
-                descriptionEntry[descriptionKey] = descriptionEntry[descriptionKey].replace('autoplay="autoplay"', '');
-            }
-        }
-
-        if (description.indexOf('autoplay="autoplay"') > -1) {
-            parent[key] = parent[key].replace('autoplay="autoplay"', '');
-
-            setTimeout(function () {
-                var audioElements = $(<any>'audio', <any>'body');
-
-                for (var i = 0; i < audioElements.length; i++) {
-                    var element = (<HTMLAudioElement>audioElements[i]);
-
-                    if (element.play && (element.paused || element.currentTime) && (!newOnly || audioElements.length == i + 1)) {
-                        element.play();
-                    }
-                }
-            }, 0);
-        }
-    }
-
     export function changeDay(game: IGame) {
         var day = parseInt(game.currentLocation.name.toLowerCase().replace('day', ''));
         game.worldProperties.currentDay = isNaN(day) ? game.worldProperties.currentDay : day;

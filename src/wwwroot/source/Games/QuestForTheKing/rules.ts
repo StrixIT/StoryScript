@@ -13,7 +13,8 @@
             game.worldProperties = {
                 currentDay: 0,
                 isDay: true,
-                isNight: false
+                isNight: false,
+                timeOfDay: 'day'
             };
         }
 
@@ -409,6 +410,7 @@
                     var isDay = Math.floor(game.worldProperties.travelCounter / 3 + 1) % 2 !== 0;
                    game.worldProperties.isDay = isDay;
                    game.worldProperties.isNight = !isDay;
+                   game.worldProperties.timeOfDay = isDay ? 'day' : 'night';
                 }
             }
 

@@ -66,6 +66,8 @@
         levelUpDescription?: string;
         completeLevelUp?: string;
 
+        worldProperties?: {};
+
         format?: (template: string, tokens: string[]) => string;
         titleCase?: (text: string) => string;
     }

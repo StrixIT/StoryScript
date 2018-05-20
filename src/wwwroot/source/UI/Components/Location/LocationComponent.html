@@ -1,6 +1,9 @@
 <div class="location">
     <fieldset>
         <legend>{{ $ctrl.texts.youAreHere }}</legend>
+        <ul id="world-properties">
+            <li ng-repeat="property in $ctrl.getWorldProperties() track by $index" class="{{property.name}}">{{ property.value }}</li>
+        </ul>
         <h4 ng-bind-html="$ctrl.game.currentLocation.name"></h4>
         <p ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></p>
         <ul id="location-log">

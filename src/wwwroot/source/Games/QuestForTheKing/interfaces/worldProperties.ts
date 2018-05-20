@@ -4,5 +4,6 @@
         travelCounter?: number;
         isDay: boolean;
         isNight: boolean;
+        timeOfDay: string;
     }
 }

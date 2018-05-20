@@ -25,7 +25,7 @@
                 },      
                 {
                     name: 'Go to the Octopus',
-                    target: Locations.OctopusDay
+                    target: Locations.Octopus
                 },
                 {
                     name: 'Go to the Western Forest',

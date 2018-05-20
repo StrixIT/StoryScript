@@ -150,3 +150,7 @@ blockquote {
     #farmboyframe:hover:before {
         background: none;
     }
+
+#world-properties .timeOfDay {
+    display: block;
+}
