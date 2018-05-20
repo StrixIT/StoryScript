@@ -14,7 +14,6 @@
             ],
             enemies: [
                 Enemies.Twoheadedwolf
-
             ]
         }
     }
