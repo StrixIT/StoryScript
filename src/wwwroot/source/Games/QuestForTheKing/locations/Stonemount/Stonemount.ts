@@ -6,16 +6,21 @@
                 {
                     name: 'Back to the Map',
                     target: Locations.Quest1map1
-                },  
-                {
-                    name: 'Search the stone mount',
-                    target: Locations.Searchmount
-                }                   
+                },             
             ],
-                enemies: [
-                    Enemies.Wolf,
-                    Enemies.Wolf
-                ]
+            enemies: [
+                Enemies.Wolf,
+                Enemies.Wolf
+            ],
+            actions: [
+                {
+                    text: 'Search the stone mount',
+                    execute: (game: IGame) => {
+                        game.character.currency += 35;
+                        game.currentLocation.text += game.currentLocation.descriptions['search'];
+                    }
+                }
+            ]
         }
     }
 }    

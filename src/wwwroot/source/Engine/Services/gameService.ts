@@ -169,7 +169,17 @@ namespace StoryScript {
 
         getDescription = (entity: any, key: string): string => {
             var self = this;
-            return entity && entity[key] ? self._rules.processDescription ? self._rules.processDescription(self._game, entity, key) : entity[key] : null;
+            var description = entity && entity[key] ? entity[key] : null;
+
+            if (description) {
+                self.processAudioTags(entity, key);
+            }
+
+            if (self._rules.processDescription) {
+                description = self._rules.processDescription(self._game, entity, key);
+            }
+
+            return description;
         }
 
         initCombat = (): void => {
@@ -321,6 +331,62 @@ namespace StoryScript {
                     return self._game.character.items.filter(e => { return e.useInCombat; });
                 }
             });
+        }
+
+        private processAudioTags(parent: any, key: string, newOnly?: boolean) {
+            var self = this;
+            var description = parent[key] as string;
+            var descriptionEntry = parent;
+            var descriptionKey = key;
+    
+            // For locations, the descriptions collection must be updated as well as the text.
+            if (parent === self._game.currentLocation) {
+                var location = self._game.currentLocation;
+                descriptionEntry = location.descriptions;
+    
+                for (let n in location.descriptions) {
+                    if (location.descriptions[n] === location.text) {
+                        descriptionKey = n;
+                        break;
+                    }
+                }
+            }
+
+            if (descriptionKey !== key) {
+                self.updateAudioTags(descriptionEntry, descriptionKey, 'autoplay="autoplay"', '');
+            }
+
+            var startPlay = self.updateAudioTags(parent, key, 'autoplay="autoplay"', 'added="added"');
+    
+            if (startPlay)
+            {
+                setTimeout(function () {
+                    var audioElements = document.getElementsByTagName('audio');
+    
+                    for (var i = 0; i < audioElements.length; i++) {
+                        var element = (<HTMLAudioElement>audioElements[i]);
+                        var added = element.getAttribute('added');
+    
+                        if (element.play && added === 'added') {
+                            self.updateAudioTags(parent, key, 'added="added"', '');
+                            element.play();
+                        }
+                    }
+                }, 0);
+            }
+        }
+
+        private updateAudioTags(entity: any, key: string, tagToFind: string, tagToReplace: string): boolean {
+            let startPlay = false;
+
+            if (entity[key]) {
+                if (entity[key].indexOf(tagToFind) > -1) {
+                    entity[key] = entity[key].replace(tagToFind, tagToReplace);
+                    startPlay = true;
+                }
+            }
+
+            return startPlay;
         }
 
         private updateHighScore(): void {

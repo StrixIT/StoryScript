@@ -17,11 +17,6 @@
             };
         }
 
-        processDescription(game: IGame, parent: any, key: string) {
-            playAudio(parent, key, game.currentLocation);
-            return parent[key];
-        }
-
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
             return {
                 steps: [

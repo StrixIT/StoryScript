@@ -6,14 +6,18 @@
                 {
                     name: 'Back to the Map',
                     target: Locations.Quest1map3
-                },
-                {
-                    name: 'Open the Cage',
-                    target: Locations.Opencage
                 }
             ],
             enemies: [
                 Enemies.Troll             
+            ],
+            actions: [
+                {
+                    text: 'Open the cage',
+                    execute: (game: IGame) => {
+                        game.currentLocation.text += game.currentLocation.descriptions['opencage'];
+                    }
+                }
             ]
         }
     }
