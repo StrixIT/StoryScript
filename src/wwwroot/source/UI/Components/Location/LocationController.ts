@@ -6,12 +6,7 @@ namespace StoryScript {
             self.texts = _texts;
             self.worldProperties = [];
 
-            for (var n in self._game.worldProperties) {
-                if (self._game.worldProperties.hasOwnProperty(n)) {
-                    var value = self._game.worldProperties[n];
-                    self.worldProperties.push({ name: n, value: null});
-                }
-            }
+            self.initWorldProperties();
         }
 
         game: IGame;
@@ -25,7 +20,7 @@ namespace StoryScript {
 
         getWorldProperties = (): any[] => {
             var self = this;
-
+            
             for (var i = 0; i < self.worldProperties.length; i++) {
                 var property = self.worldProperties[i];
                 var value = self._game.worldProperties[property.name];
@@ -34,6 +29,17 @@ namespace StoryScript {
             }
 
             return self.worldProperties;
+        }
+
+        private initWorldProperties() {
+            var self = this;
+
+            for (var n in self._game.worldProperties) {
+                if (self._game.worldProperties.hasOwnProperty(n)) {
+                    var value = self._game.worldProperties[n];
+                    self.worldProperties.push({ name: n, value: null});
+                }
+            }
         }
     }
 

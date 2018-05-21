@@ -69,7 +69,7 @@
         }
 
         format = (template: string, tokens: string[]): string => {
-            if (tokens) {
+            if (template && tokens) {
                 for (var i = 0; i < tokens.length; i++) {
                     template = template.replace('{' + i + '}', tokens[i]);
                 }

@@ -37,8 +37,8 @@ namespace StoryScript {
 
             self._game.highScores = self._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
-            self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || {};
-            self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || {};
+            self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
+            self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
 
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
