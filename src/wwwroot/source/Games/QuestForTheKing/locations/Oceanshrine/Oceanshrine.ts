@@ -18,6 +18,22 @@
                     execute: (game: IGame) => {
                         var key = game.worldProperties.isDay ? 'touchday' : 'touchnight';
                         game.currentLocation.text += game.currentLocation.descriptions[key];
+
+                        // Fully heal the character.
+                        game.character.currentHitpoints = game.character.hitpoints;
+
+                        // Todo: should only the wizard be able to search the altar?
+                        var isWizard = false; //game.character.class === Class.Wizard
+
+                        if (isWizard) {
+                            game.currentLocation.actions.push({
+                                text: 'Search the altar',
+                                type: StoryScript.ActionType.Check,
+                                execute: (game: IGame) => {
+                                    game.currentLocation.items.map(i => i.inactive = false);
+                                }
+                            });
+                        }
                     }
                 }
             ]
