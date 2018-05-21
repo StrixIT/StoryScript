@@ -129,3 +129,7 @@ table td {
 #world-properties li {
     display: none;
 }
+
+.portraitFrame {
+    margin-bottom: 10px;
+}

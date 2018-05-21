@@ -154,3 +154,7 @@ blockquote {
 #world-properties .timeOfDay {
     display: block;
 }
+
+.portraitFrame {
+    color:#0000FF;
+}

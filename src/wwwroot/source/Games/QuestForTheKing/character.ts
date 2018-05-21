@@ -1,6 +1,7 @@
 ﻿module QuestForTheKing {
     export class Character implements StoryScript.ICharacter {
         name: string = "";
+        portraitFileName = "resources/Hero1.png";
         hitpoints: number = 200;
         currentHitpoints: number = 200;
         score: number = 0;

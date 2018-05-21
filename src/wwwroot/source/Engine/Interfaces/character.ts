@@ -1,6 +1,7 @@
 ﻿namespace StoryScript {
     export interface ICharacter {
         name: string;
+        portraitFileName?: string;
         score: number;
         hitpoints: number;
         currentHitpoints: number;

@@ -65,6 +65,7 @@
         levelUp?: string;
         levelUpDescription?: string;
         completeLevelUp?: string;
+        portrait?: string;
 
         worldProperties?: {};
 

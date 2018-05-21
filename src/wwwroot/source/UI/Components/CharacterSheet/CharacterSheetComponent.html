@@ -1,4 +1,10 @@
 <div class="charactersheet">
+    <fieldset ng-if="$ctrl.game.character.portraitFileName">
+        <legend ng-if="$ctrl.texts.portrait">{{ $ctrl.texts.portrait }}</legend>
+        <div class="portraitFrame">
+            <img class="portrait" ng-src="{{$ctrl.game.character.portraitFileName}}" />
+        </div>
+    </fieldset>
     <fieldset>
         <legend data-toggle="collapse" data-target="#attributes-panel">{{ $ctrl.game.character.name }}</legend>
         <ul id="attributes-panel" class="collapse in">
