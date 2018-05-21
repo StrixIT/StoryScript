@@ -205,7 +205,7 @@ namespace StoryScript {
                 quest.issuedBy = person.id;
                 self._game.character.quests.push(quest);
                 person.quests.remove(quest);
-                quest.progress = {};
+                quest.progress = quest.progress || {};
 
                 if (quest.start) {
                     quest.start(self._game, quest, person);
