@@ -427,6 +427,20 @@
                 location.destinations.forEach(destination => destination.inactive = !self.isEntityActive(game, destination));
             }
 
+            if (game.worldProperties.isNight) {
+                // Need timeout to do this after angular processes the location description.
+                setTimeout(() => {
+                     var images = document.getElementsByTagName('img');
+
+                     for (var i = 0; i < images.length; i++) {
+                         var element = images[i];
+                             if (element.getAttribute('src').toLowerCase().indexOf('resources/map') === 0) {
+                                 element.classList.add('night');
+                             }
+                     };
+                 }, 0);
+            }
+
             changeDay(game);
         }
 
