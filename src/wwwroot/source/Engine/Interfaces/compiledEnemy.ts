@@ -9,6 +9,7 @@
         inactive?: boolean;
         items?: ICollection<IItem>;
         combinations?: ICombinations<IItem | IFeature>;
+        onAttack?: (game: IGame) => void;
         onDefeat?: (game: IGame) => void;
     }
 }

@@ -188,6 +188,12 @@ namespace StoryScript {
             if (self._rules.initCombat) {
                 self._rules.initCombat(self._game, self._game.currentLocation);
             }
+
+            self._game.currentLocation.activeEnemies.forEach(enemy => {
+                if (enemy.onAttack) {
+                    enemy.onAttack(self._game);
+                }
+            });
         }
 
         fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {

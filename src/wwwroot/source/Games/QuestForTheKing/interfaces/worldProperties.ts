@@ -5,5 +5,6 @@
         isDay: boolean;
         isNight: boolean;
         timeOfDay: string;
+        freedFaeries: boolean;
     }
 }

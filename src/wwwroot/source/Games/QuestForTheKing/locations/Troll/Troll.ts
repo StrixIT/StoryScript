@@ -16,6 +16,7 @@
                     text: 'Open the cage',
                     execute: (game: IGame) => {
                         game.currentLocation.text += game.currentLocation.descriptions['opencage'];
+                        game.worldProperties.freedFaeries = true;
                     }
                 }
             ]
