@@ -1,4 +1,9 @@
 ﻿namespace StoryScript.Actions {
+    /**
+     * A basic function to remove a barrier using a key and then execute a callback function. When it is not specified that the player
+     * should keep the key after using it, it is removed from his item list.
+     * @param callBack 
+     */
     export function OpenWithKey(callBack: (game: IGame, destination: StoryScript.IDestination) => void) {
         return function (game: IGame, destination: StoryScript.IDestination) {
             var key = destination.barrier.key;
