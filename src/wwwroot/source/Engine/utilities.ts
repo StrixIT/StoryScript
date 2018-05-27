@@ -259,7 +259,6 @@
         return (): T => {
             var instance = definition();
             return extend(instance, customData);
-            //return angular.extend(instance, customData);
         };
     }
 
@@ -275,8 +274,6 @@
         this.addEventListener = target.addEventListener.bind(target);
         this.removeEventListener = target.removeEventListener.bind(target);
         this.dispatchEvent = target.dispatchEvent.bind(target);
-    
-        // Room your your constructor code 
     }
 
     function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {

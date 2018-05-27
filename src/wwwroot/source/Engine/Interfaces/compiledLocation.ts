@@ -1,4 +1,7 @@
 ﻿namespace StoryScript {
+    /**
+     * A location compiled for runtime.
+     */
     export interface ICompiledLocation {
         id: string;
         name: string;

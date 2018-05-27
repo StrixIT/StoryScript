@@ -1,4 +1,7 @@
 ﻿namespace StoryScript {
+    /**
+     * Defines an enemy for the game.
+     */
     export interface IEnemy {
         /**
          * The file name of the image to display for the enemy. The file name should be relative to the index.html file. Note that if you
