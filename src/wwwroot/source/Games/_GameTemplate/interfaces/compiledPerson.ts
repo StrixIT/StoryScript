@@ -1,4 +1,5 @@
 ﻿namespace GameTemplate {
     export interface ICompiledPerson extends StoryScript.ICompiledPerson {
+        // Add game-specific person properties here
     }
 }

@@ -7,14 +7,14 @@
         }
         getSheetAttributes = () => {
             return [
-                // Add character sheet property names here
+                // Add the character attributes that you want to show on the character sheet here
             ];
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
             return {
                 steps: [
-                    // Add the character creation steps here.
+                    // Add the character creation steps here, if you want to use character creation.
                 ]
             };
         }

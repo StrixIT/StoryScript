@@ -1,8 +1,8 @@
 ﻿namespace StoryScript {
     /**
-     * Used to specify what part of the player body the item is meant for, if any. You can specify the equipment slots used in your game via the
-     * getSheetAttributes function of your game rules. Note that items may belong to more than one type, e.g. two-handed weapons that require both
-     * the left and right hand to use.
+     * Used to specify what part of the player body the item is meant for, if any. You can specify the equipment slots used in your game as an object
+     * on the character class of your game. Note that items may belong to more than one type, e.g. two-handed weapons that require both the left and 
+     * right hand to use.
      */
     export enum EquipmentType {
         /**

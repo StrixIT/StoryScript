@@ -11,6 +11,7 @@
         items: StoryScript.ICollection<IItem> = [];
 
         equipment: {
+            // Remove the slots you don't want to use
             head: IItem,
             amulet: IItem,
             body: IItem,
@@ -25,6 +26,7 @@
 
         constructor() {
             this.equipment = {
+                // Remove the slots you don't want to use
                 head: null,
                 amulet: null,
                 body: null,
