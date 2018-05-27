@@ -1,4 +1,7 @@
 ﻿namespace StoryScript {
+    /**
+     * Barriers that block a player from moving between one world location to the next.
+     */
     export interface IBarrier {
         /**
          * The name of the barrier as shown to the player.

@@ -97,6 +97,7 @@ namespace StoryScript {
             var self = this;
             var presentLocation: ICompiledLocation;
 
+            // TODO: shouldn't these events be played only once?
             if (game.previousLocation && game.previousLocation.leaveEvents) {
                 self.playEvents(game, game.previousLocation.leaveEvents);
             }

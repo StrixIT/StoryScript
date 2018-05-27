@@ -67,9 +67,19 @@
         completeLevelUp?: string;
         portrait?: string;
 
+        // Todo: keep this, or solve showing world properties in another way?
         worldProperties?: {};
 
+        /**
+         * A function to build text replacing tokens in a template, e.g. 'it is {0}, {1}' with parameters 'day' and '12:00' becomes 'it is day, 12:00'.
+         * If no function is specified, a default implementation is used.
+         */
         format?: (template: string, tokens: string[]) => string;
+
+        /**
+         * A function to format a text using title case, e.g. 'world map' becomes 'World Map'.
+         * If no function is specified, a default implementation is used.
+         */
         titleCase?: (text: string) => string;
     }
 }

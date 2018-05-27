@@ -13,7 +13,8 @@
         name: string;
 
         /**
-         * The details about this enemy as displayed to the player.
+         * The details about this enemy as displayed to the player. If you use an HTML-page to describe the enemy, the contents of that HTM-page
+         * will be used to set this property at run-time.
          */
         description?: string;
 
@@ -29,6 +30,7 @@
 
         /**
          * When this flag is set to true, the enemy is not shown to the player, cannot be attacked and will not block the player from travelling.
+         * Useful to only conditionally make enemies present on a location.
          */
         inactive?: boolean;
 
