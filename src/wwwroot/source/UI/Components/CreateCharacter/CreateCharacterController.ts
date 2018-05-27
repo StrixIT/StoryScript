@@ -4,6 +4,7 @@ namespace StoryScript {
             var self = this;
             self.game = _game;
             self.texts = _texts;
+            self.sheet = self._characterService.setupCharacter();
 
             self._scope.$on('createCharacter', function (event: ng.IAngularEvent) {
                 self.sheet = self._characterService.setupCharacter();
