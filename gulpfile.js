@@ -38,7 +38,12 @@ gulp.task('watch', function () {
         console.log('Compilarion done.');
     });
     gulp.watch(["src/**/*.html", "src/**/*.css", "src/Games/**/resources/*.*"]).on('change', function (e) {
-        copyResource(e.path);
+        if (e.type === 'deleted') {
+            deleteResource(e.path)
+        }
+        else {
+            copyResource(e.path);
+        }
     });
 });
 
@@ -57,26 +62,45 @@ function buildGame(nameSpace) {
 }
 
 function copyResource(fullPath) {
-    var pathPart = fullPath.match(/[\w-]+\\+[\w-]+\.+[\w]{1,4}/g) + '';
+    var folderAndFile = getFolderAndFileName(fullPath);
+    console.log('Resource file ' + fullPath + ' has been changed. Updating ' + folderAndFile.folder + '/' + folderAndFile.file + ' (folder ' + folderAndFile.folder + ').');
+    gulp.src([fullPath]).pipe(gulp.dest(paths.webroot + folderAndFile.folder));
+}
+
+function deleteResource(fullPath) {
+    var folderAndFile = getFolderAndFileName(fullPath);
+    var path = folderAndFile.folder + '/' + folderAndFile.file;
+    console.log('Resource file ' + fullPath + ' has been deleted. Removing ' + path + '.');
+    del.sync([paths.webroot + path]);
+}
+
+function getFolderAndFileName(path) {
+    var pathPart = path.match(/[\w-]+\\+[\w-]+\.+[\w]{1,4}/g) + '';
     pathPart = pathPart.replace('\\', '/');
     var parts = pathPart.split('/');
 
-    var folder = parts[0]
+    if (parts.length <= 1) {
+        console.log('No file name found for path: ' + path);
+        return;
+    }
 
-    if (parts.length > 1 && parts[1].toLowerCase() == 'index.html') {
+    var folder = parts[0]
+    var file = parts[1]
+
+    if (file.toLowerCase() == 'index.html') {
         folder = '';
     }
     else if (folder.toLowerCase() == 'styles') {
         folder = 'css';
     }
-    else if (fullPath.toLowerCase().indexOf('\\ui\\') > -1) {
+    else if (path.toLowerCase().indexOf('\\ui\\') > -1) {
         folder = 'ui';
     }
 
-    console.log('Resource file ' + fullPath + ' has been changed. Updating ' + pathPart + ' (folder ' + folder + ').');
-    //console.log('source: ' + fullPath);
-    //console.log('destination: ' + paths.webroot + path);
-    gulp.src([fullPath]).pipe(gulp.dest(paths.webroot + folder));
+    return {
+        folder: folder,
+        file: file
+    };
 }
 
 function copyLibraries() {
