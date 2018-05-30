@@ -1,0 +1,6 @@
+{
+  "browser": "chrome",
+  "server": {
+    "baseDir": "./dist"
+  }
+}

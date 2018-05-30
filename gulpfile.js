@@ -1,6 +1,10 @@
 ﻿var gulp = require("gulp"),
-    cssmin = require("gulp-cssmin"),
-    uglify = require("gulp-uglify"),
+    shell = require('gulp-shell'),
+    //nodemon = require('gulp-nodemon');
+    //notify = require('gulp-notify');
+    //livereload = require('gulp-livereload');
+    //cssmin = require("gulp-cssmin"),
+    //uglify = require("gulp-uglify"),
     flatten = require('gulp-flatten'),
     ts = require('gulp-typescript'),
     merge = require('merge'),
@@ -8,40 +12,78 @@
     del = require('del'),
     jf = require('jsonfile');
 
-var config = jf.readFileSync('./src/tsconfig.json');
-
 var tsProject = ts.createProject("./src/tsconfig.json");
 
 var paths = {
-    root: "./src/",
-    webroot: "./src/wwwroot/",
-    sourceroot: "./src/wwwroot/source/"
+    webroot: "./dist/",
+    sourceroot: "./src/"
 };
 
-var gameNameSpace = config.include[1].split('/')[4];
+gulp.task('start', ['build-game', 'watch'], shell.task('lite-server'));
 
-gulp.task('build-game', ['delete-files'], buildGame(gameNameSpace));
-
-gulp.task('delete-files', function () {
-    del.sync([paths.webroot + 'enemies/**/*', paths.webroot + 'locations/**/*', paths.webroot + 'persons/**/*', paths.webroot + 'resources/**/*', paths.webroot + 'ui/**/*']);
+gulp.task('build-game', ['delete-files'], function() {
+    var namespace = getNameSpace();
+    buildGame(namespace);
 });
 
+gulp.task('delete-files', function () {
+    del.sync([paths.webroot + '**/*']);
+});
+
+gulp.task('watch', function () {
+    gulp.watch(["src/**/*.ts"]).on('change', function (e) {
+        console.log('TypeScript file ' + e.path + ' has been changed. Compiling...');
+        var gameNameSpace = getNameSpace();
+        compileTypeScript(gameNameSpace);
+        console.log('Compilarion done.');
+    });
+    gulp.watch(["src/**/*.html", "src/**/*.css", "src/Games/**/resources/*.*"]).on('change', function (e) {
+        copyResource(e.path);
+    });
+});
+
+function getNameSpace() {
+    var config = jf.readFileSync('./src/tsconfig.json');
+    return config.include[1].split('/')[2];
+}
+
 function buildGame(nameSpace) {
-    return function () {
-        copyLibraries();
-        copyResources(nameSpace);
-        copyCss(nameSpace);
-        copyHtml(nameSpace);
-        copyConfig(nameSpace);
-        compileTypeScript(nameSpace);
+    copyLibraries();
+    copyResources(nameSpace);
+    copyCss(nameSpace);
+    copyHtml(nameSpace);
+    copyConfig(nameSpace);
+    compileTypeScript(nameSpace);
+}
+
+function copyResource(fullPath) {
+    var pathPart = fullPath.match(/[\w-]+\\+[\w-]+\.+[\w]{1,4}/g) + '';
+    pathPart = pathPart.replace('\\', '/');
+    var parts = pathPart.split('/');
+
+    var folder = parts[0]
+
+    if (parts.length > 1 && parts[1].toLowerCase() == 'index.html') {
+        folder = '';
     }
+    else if (folder.toLowerCase() == 'styles') {
+        folder = 'css';
+    }
+    else if (fullPath.toLowerCase().indexOf('\\ui\\') > -1) {
+        folder = 'ui';
+    }
+
+    console.log('Resource file ' + fullPath + ' has been changed. Updating ' + pathPart + ' (folder ' + folder + ').');
+    //console.log('source: ' + fullPath);
+    //console.log('destination: ' + paths.webroot + path);
+    gulp.src([fullPath]).pipe(gulp.dest(paths.webroot + folder));
 }
 
 function copyLibraries() {
-    gulp.src([paths.root + 'Libraries/**/*.js'])
+    gulp.src([paths.sourceroot + 'Libraries/**/*.js'])
         .pipe(gulp.dest(paths.webroot + 'js/lib'));
 
-    gulp.src([paths.root + 'Libraries/bootstrap/bootstrap.css'])
+    gulp.src([paths.sourceroot + 'Libraries/bootstrap/bootstrap.css'])
         .pipe(gulp.dest(paths.webroot + 'css/lib'));
 }
 
@@ -83,7 +125,7 @@ function copyHtml(nameSpace) {
 }
 
 function copyConfig(nameSpace) {
-    gulp.src([paths.root + '/bs-config.json', paths.sourceroot + 'Games/' + nameSpace + '/bs-config.json'])
+    gulp.src([paths.sourceroot + '/bs-config.json', paths.sourceroot + 'Games/' + nameSpace + '/bs-config.json'])
       .pipe(gulp.dest(paths.webroot));
 }
 
@@ -91,6 +133,6 @@ function compileTypeScript(nameSpace) {
     var tsResult = tsProject.src().pipe(sourcemaps.init()).pipe(tsProject());
 
     return merge([
-        tsResult.js.pipe(sourcemaps.write('./')).pipe(gulp.dest('./src'))
+        tsResult.js.pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot))
     ]);
 }
