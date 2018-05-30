@@ -1,8 +1,6 @@
 ﻿var gulp = require("gulp"),
     shell = require('gulp-shell'),
-    //nodemon = require('gulp-nodemon');
-    //notify = require('gulp-notify');
-    //livereload = require('gulp-livereload');
+    exec = require('child_process').exec,
     //cssmin = require("gulp-cssmin"),
     //uglify = require("gulp-uglify"),
     flatten = require('gulp-flatten'),
@@ -19,7 +17,14 @@ var paths = {
     sourceroot: "./src/"
 };
 
-gulp.task('start', ['build-game', 'watch'], shell.task('lite-server'));
+gulp.task('start', ['build-game', 'watch'], function() {
+    console.log('Wait for js file');
+
+    setTimeout(() => {
+        console.log('start server');
+        exec('lite-server');
+    }, 500);
+});
 
 gulp.task('build-game', ['delete-files'], function() {
     var namespace = getNameSpace();
