@@ -435,6 +435,9 @@ namespace StoryScript {
                             }
                         });
                     });
+
+                    var nodeToSelect = person.conversation.nodes.filter(n => n.node === person.conversation.activeNode.node);
+                    person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
                 });
             });
         }

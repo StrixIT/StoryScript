@@ -19,7 +19,7 @@
     },
     "include": [
         "./Engine/**/*.ts",
-        "./Games/MyNewGame/**/*.ts",
+        "./Games/RidderMagnus/**/*.ts",
         "./UI/Services/**/*.ts",
         "./UI/Components/**/*.ts",
         "./UI/Controllers/*.ts",

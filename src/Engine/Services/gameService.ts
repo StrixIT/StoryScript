@@ -361,9 +361,14 @@ namespace StoryScript {
                     entity.descriptions = null;
                     entity.text = null;
                 }
-                else if (entity.description) {
+                
+                if (entity.description) {
                     // Reset item or enemy descriptions for re-load.
                     entity.description = Constants.HTML;
+                }
+
+                if (entity.conversation && entity.conversation.nodes) {
+                    entity.conversation.nodes = null;
                 }
             }
 

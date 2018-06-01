@@ -7,21 +7,8 @@ namespace StoryScript {
 }
 
 namespace StoryScript {
-    export class ConversationService implements ng.IServiceProvider, IConversationService {
+    export class ConversationService implements IConversationService {
         constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
-        }
-
-        public $get(game: IGame, rules: IRules, texts: IInterfaceTexts): IConversationService {
-            var self = this;
-            self._game = game;
-            self._rules = rules;
-            self._texts = texts;
-
-            return {
-                initConversation: self.initConversation,
-                answer: self.answer,
-                getLines: self.getLines
-            };
         }
 
         initConversation(): void {
@@ -224,6 +211,4 @@ namespace StoryScript {
             }
         }
     }
-
-    ConversationService.$inject = ['game', 'rules', 'customTexts'];
 }
