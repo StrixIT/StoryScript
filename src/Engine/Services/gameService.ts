@@ -9,7 +9,7 @@
         getSaveGames(): string[];
         loadGame(name: string): void;
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
-        getDescription(entity: any, key: string): string;
+        getDescription(type: string, entity: any, key: string): string;
         initCombat(): void;
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
         useItem(item: IItem): void;
@@ -52,7 +52,12 @@ namespace StoryScript {
                     self._game.previousLocation = self._game.locations.get(previousLocationName);
                 }
 
+                // Reset loading descriptions so changes to the descriptions are shown right away instead of requiring a world reset.
+                self.resetLoadedHtml(self._game.locations);
+                self.resetLoadedHtml(self._game.character);
+
                 self._locationService.changeLocation(lastLocation.id, false, self._game);
+
                 self._game.state = StoryScript.GameState.Play;
             }
             else {
@@ -167,9 +172,13 @@ namespace StoryScript {
             return self._dataService.hasDescription(type, item);
         }
 
-        getDescription = (entity: any, key: string): string => {
+        getDescription = (type: string, entity: any, key: string): string => {
             var self = this;
             var description = entity && entity[key] ? entity[key] : null;
+
+            if (description === Constants.HTML) {
+                self._dataService.loadDescription(type, entity);
+            }
 
             if (description) {
                 self.processAudioTags(entity, key);
@@ -337,6 +346,39 @@ namespace StoryScript {
                     return self._game.character.items.filter(e => { return e.useInCombat; });
                 }
             });
+        }
+
+        private resetLoadedHtml(entity: any): void {
+            var self = this;
+
+            if (entity === null) {
+                return;
+            }
+
+            if (entity.hasHtmlDescription) {
+                if (entity.descriptions) {
+                    // Clear location descriptions for re-load.
+                    entity.descriptions = null;
+                    entity.text = null;
+                }
+                else if (entity.description) {
+                    // Reset item or enemy descriptions for re-load.
+                    entity.description = Constants.HTML;
+                }
+            }
+
+            for (var i in Object.keys(entity))
+            {
+                var key = Object.keys(entity)[i];
+
+                if (entity.hasOwnProperty(key)) {
+                    var nestedEntity = entity[key];
+
+                    if (typeof nestedEntity === 'object') {
+                        this.resetLoadedHtml(entity[key]);
+                    }
+                }
+            }
         }
 
         private processAudioTags(parent: any, key: string, newOnly?: boolean) {

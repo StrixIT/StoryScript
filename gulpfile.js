@@ -23,7 +23,7 @@ gulp.task('start', ['build-game', 'watch'], function() {
     setTimeout(() => {
         console.log('start server');
         exec('lite-server');
-    }, 500);
+    }, 1000);
 });
 
 gulp.task('build-game', ['delete-files'], function() {
@@ -42,7 +42,7 @@ gulp.task('watch', function () {
         compileTypeScript(gameNameSpace);
         console.log('Compilarion done.');
     });
-    gulp.watch(["src/**/*.html", "src/**/*.css", "src/Games/**/resources/*.*"]).on('change', function (e) {
+    gulp.watch(["src/**/*.html", "src/**/*.css", "src/Games/**/resources/*.*"], function (e) {
         if (e.type === 'deleted') {
             deleteResource(e.path)
         }

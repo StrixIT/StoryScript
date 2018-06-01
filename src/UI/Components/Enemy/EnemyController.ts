@@ -17,7 +17,7 @@ namespace StoryScript {
 
         showDescription(item: any, title: string) {
             var self = this;
-            self._sharedMethodService.showDescription(self._scope, item, title);
+            self._sharedMethodService.showDescription(self._scope, 'enemies', item, title);
         }
 
         startCombat = (enemy: ICompiledEnemy) => {

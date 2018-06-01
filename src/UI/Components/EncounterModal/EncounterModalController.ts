@@ -26,7 +26,10 @@ namespace StoryScript {
 
             self._scope.$on('initDescription', (event, args) => {
                 self.modalSettings.title = (<any>args).title;
-                self.modalSettings.descriptionEntity = (<any>args).item;
+                self.modalSettings.descriptionEntity = {
+                    type: args.type,
+                    item: args.item
+                };
             });
 
             self._scope.$watchCollection('game.currentLocation.enemies', self.initCombat);
@@ -56,7 +59,7 @@ namespace StoryScript {
 
         getDescription(entity: any, key: string) {
             var self = this;
-            return self._sce.trustAsHtml( self._gameService.getDescription(entity, key));
+            return self._sce.trustAsHtml( self._gameService.getDescription(entity.type, entity.item, key));
         }
 
         private watchGameState(newValue: GameState, oldValue: GameState, controller: EncounterModalController) {

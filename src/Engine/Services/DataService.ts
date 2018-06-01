@@ -98,7 +98,7 @@ namespace StoryScript {
             }
         }
 
-        public loadDescription(type: string, item: { id?: string, description?: string, pictureFileName?: string }): Promise<any> {
+        public loadDescription(type: string, item: { id?: string, description?: string, pictureFileName?: string, hasHtmlDescription?: boolean }): Promise<any> {
             var self = this;
             var identifier = type + '/' + item.id;
 
@@ -132,6 +132,8 @@ namespace StoryScript {
                             item.pictureFileName = pictureSrc;
                         }
 
+                        // Track that this item had a HTML description so it can be re-loaded later.
+                        item.hasHtmlDescription = true;
                         item.description = result;
                         pathEntry.loading = false;
                         pathEntry.loaded = true;
@@ -147,6 +149,7 @@ namespace StoryScript {
                     });
                 }
                 else {
+                    item.description = description;
                     self.notify();
                     resolve(description);
                 }
