@@ -3,6 +3,7 @@ namespace StoryScript {
         constructor(private _scope: ng.IScope, private _eventListener: EventTarget, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
+            self.texts = self._texts;
             self._scope.$on('restart', () => self.init());
             self._scope.$on('showDescription', (event, args) => self._scope.$broadcast('initDescription', args));
             self._scope.$on('refreshCombine', () => self._scope.$broadcast('buildCombine'));
@@ -27,6 +28,7 @@ namespace StoryScript {
         }
 
         game: IGame;
+        texts: IInterfaceTexts;
 
         private init() {
             var self = this;
