@@ -26,7 +26,7 @@
     <div ng-if="!$ctrl.enemiesPresent()">
         {{ $ctrl.texts.combatWin }}
     </div>
-    <fieldset>
+    <fieldset class="combatlog">
         <legend>{{ texts.messages }}</legend>
         <ul class="action-log">
             <li ng-repeat="message in $ctrl.game.combatLog track by $index">{{ message }}</li>

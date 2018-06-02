@@ -87,6 +87,10 @@ fieldset {
         margin-bottom: 15px;
     }
 
+.combatlog {
+    margin-top: 25px;
+}
+
 table td {
     padding: 10px;
 }
@@ -134,4 +138,8 @@ table td {
 
 .portraitFrame {
     margin-bottom: 10px;
+}
+
+button.restart {
+    margin-top: 25px;
 }
