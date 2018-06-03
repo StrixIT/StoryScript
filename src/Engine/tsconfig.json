@@ -6,7 +6,7 @@
         "removeComments": false,
         "strictNullChecks": false,
         "target": "es6",
-        "outFile": "../dist/js/storyscript.js",
-        "sourceMap": true
+        "sourceMap": true,
+        "declaration": true,
     }
 }

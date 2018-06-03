@@ -10,7 +10,7 @@
         "sourceMap": true
     },
     "include": [
-        "../../types/**/*.ts",
+        "../types/**/*.ts",
         "./MyNewGame/**/*.ts"
     ]
 }

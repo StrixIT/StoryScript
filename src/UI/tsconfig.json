@@ -18,7 +18,7 @@
         "sourceMap": true
     },
     "include": [
-        "../../types/**/*.ts",
+        "../types/**/*.ts",
         "./Services/**/*.ts",
         "./Components/**/*.ts",
         "./Controllers/*.ts",
