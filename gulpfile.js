@@ -196,7 +196,7 @@ function compileGame() {
     var tsResult = tsGameProject.src().pipe(sourcemaps.init()).pipe(tsGameProject());
 
     return merge([
-        tsResult.js.pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot))
+        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js'))
     ]);
 }
 
@@ -204,6 +204,6 @@ function compileUI() {
     var tsResult = tsUIProject.src().pipe(sourcemaps.init()).pipe(tsUIProject());
 
     return merge([
-        tsResult.js.pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot))
+        tsResult.js.pipe(concat('ui.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js'))
     ]);
 }
