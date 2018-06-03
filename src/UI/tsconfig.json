@@ -6,7 +6,7 @@
         "removeComments": false,
         "strictNullChecks": false,
         "target": "es6",
-        "outFile": "../dist/js/game.js",
+        "outFile": "../dist/js/ui.js",
         "typeRoots": [
             "../node_modules/@types"
         ],
@@ -18,11 +18,10 @@
         "sourceMap": true
     },
     "include": [
-        "./Engine/**/*.ts",
-        "./Games/MyNewGame/**/*.ts",
-        "./UI/Services/**/*.ts",
-        "./UI/Components/**/*.ts",
-        "./UI/Controllers/*.ts",
-        "./UI/app.ts"
+        "../../types/**/*.ts",
+        "./Services/**/*.ts",
+        "./Components/**/*.ts",
+        "./Controllers/*.ts",
+        "./app.ts"
     ]
 }

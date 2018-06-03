@@ -6,5 +6,6 @@
 
 # Copied and generated files for StoryScript, resource files that should not be checked in
 /dist/*
+/types/*
 /src/Games/**/resources/*
 /src/Games/QuestForTheKing/**/*.html
