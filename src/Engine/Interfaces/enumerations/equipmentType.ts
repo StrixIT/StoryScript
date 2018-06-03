@@ -16,6 +16,11 @@
         Amulet,
 
         /**
+         * Items worn on the torso and upper arms.
+         */
+        Body,
+
+        /**
          * Items worn on the hands, like gloves.
          */
         Hands,
@@ -39,11 +44,6 @@
          * Small items worn around the finger on the dominant hand.
          */
         RightRing,
-
-        /**
-         * Items worn on the torso and upper arms.
-         */
-        Body,
 
         /**
          * Items worn on the legs.

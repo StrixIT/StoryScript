@@ -20,7 +20,7 @@
 
     export function addFunctionExtensions() {
         // Need to cast to any for ES5 and lower
-        if ((<any>Function.prototype).name === undefined) {
+        if (Function.prototype.name === undefined) {
             Object.defineProperty(Function.prototype, 'name', {
                 get: function () {
                     return /function ([^(]*)/.exec(this + '')[1];

@@ -36,7 +36,7 @@
         items?: ICollection<() => IItem>;
 
         /**
-         * The other locations tn the game world that can be reached from this one.
+         * The other locations in the game world that can be reached from this one.
          */
         destinations?: ICollection<IDestination>;
 
