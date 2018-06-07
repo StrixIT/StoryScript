@@ -76,13 +76,16 @@
         /**
          * A function to build text replacing tokens in a template, e.g. 'it is {0}, {1}' with parameters 'day' and '12:00' becomes 'it is day, 12:00'.
          * If no function is specified, a default implementation is used.
+         * @param template The text template to replace the tokens in
+         * @param tokens The tokens to add to the template
          */
-        format?: (template: string, tokens: string[]) => string;
+        format?(template: string, tokens: string[]): string;
 
         /**
          * A function to format a text using title case, e.g. 'world map' becomes 'World Map'.
          * If no function is specified, a default implementation is used.
+         * @param text The text to format
          */
-        titleCase?: (text: string) => string;
+        titleCase?(text: string): string;
     }
 }

@@ -12,8 +12,9 @@
          * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically
          * setting a location's description. If you want to have a description selector function for all locations, use the descriptionSelector
          * function of the game rules. Return the selector string.
+         * @param game The game object
          */
-        descriptionSelector?: (game: IGame) => string;
+        descriptionSelector?(game: IGame): string;
 
         /**
          * The features of this location that the player can interact with.
@@ -70,8 +71,10 @@
         /**
          * When specified, this function will be called on leaving a location to determine whether the player has done all
          * there is to do on this location.
+         * @param game The game object
+         * @param location The location to check for completion
          */
         // Todo: keep this on the general code or is this game specific?
-        complete?: (game: IGame, location: ICompiledLocation) => boolean;
+        complete?(game: IGame, location: ICompiledLocation): boolean;
     }
 }

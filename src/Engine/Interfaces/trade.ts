@@ -6,9 +6,9 @@
         buy?: IStock;
         currency?: number;
         ownItemsOnly?: boolean;
-        initCollection?: (game: IGame, trade: ITrade) => boolean;
-        onBuy?: (game: IGame, item: IItem) => void;
-        onSell?: (game: IGame, item: IItem) => void;
+        initCollection?(game: IGame, trade: ITrade): boolean;
+        onBuy?(game: IGame, item: IItem): void;
+        onSell?(game: IGame, item: IItem): void;
     }
 
     export interface IStock {
@@ -16,7 +16,7 @@
         emptyText?: string;
         items?: ICollection<IItem>;
         priceModifier?: number | ((game: IGame) => number);
-        itemSelector?: (game: IGame, item: IItem) => boolean;
+        itemSelector?(game: IGame, item: IItem): boolean;
         maxItems?: number;
     }
 }

@@ -113,7 +113,7 @@
          * @param enemy The enemy to attack
          * @param boolean True if the enemy can retaliate (default), false otherwise
          */
-        fight: (enemy: ICompiledEnemy, retaliate?: boolean) => void;
+        fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
 
         /**
          * Helper functions to make programming the game easier.

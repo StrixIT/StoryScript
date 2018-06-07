@@ -8,8 +8,22 @@
          */
         // Todo: is this used?
         title?: string;
+
+        /**
+         * When specified, this function will be used to determine what conversation node to set as the active node.
+         * @param game The game object
+         * @param person The person the player is having the conversation with
+         */
         selectActiveNode?(game: IGame, person: ICompiledPerson): IConversationNode;
+
+        /**
+         * True if reply options that the player cannot choose are to be displayed but unselectable, false to just hide them.
+         */
         showUnavailableReplies?: boolean;
+
+        /**
+         * The actions that can be triggered from the conversation.
+         */
         actions?: { [name: string]: (game: IGame, person: ICompiledPerson) => void }
     }
 

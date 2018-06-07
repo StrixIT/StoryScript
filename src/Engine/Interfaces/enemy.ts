@@ -49,12 +49,14 @@
 
         /**
          * When specified, this function will be called when the enemy is attacked by the player.
+         * @param game The game object
          */
-        onAttack?: (game: IGame) => void;
+        onAttack?(game: IGame): void;
 
         /**
          * When specified, this function will be called when the enemy's health is reduced to 0 or less.
+         * @param game The game object
          */
-        onDefeat?: (game: IGame) => void;
+        onDefeat?(game: IGame): void;
     }
 }
