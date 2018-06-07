@@ -1,7 +1,14 @@
 ﻿namespace StoryScript {
+    /**
+     * The conversation options to configure a conversation between the player and a person.
+     */
     export interface IConversationOptions {
+        /**
+         * The title of the conversation as shown to the player.
+         */
+        // Todo: is this used?
         title?: string;
-        selectActiveNode?: (game: IGame, person: ICompiledPerson) => IConversationNode;
+        selectActiveNode?(game: IGame, person: ICompiledPerson): IConversationNode;
         showUnavailableReplies?: boolean;
         actions?: { [name: string]: (game: IGame, person: ICompiledPerson) => void }
     }

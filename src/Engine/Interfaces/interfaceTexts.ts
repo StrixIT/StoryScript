@@ -1,4 +1,7 @@
 ﻿namespace StoryScript {
+    /**
+     * All game texts that can be customized.
+     */
     export interface IInterfaceTexts {
         equipmentHeader?: string;
         head?: string;

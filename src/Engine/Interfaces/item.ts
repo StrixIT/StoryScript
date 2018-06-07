@@ -1,6 +1,16 @@
 ﻿namespace StoryScript {
+    /**
+     * An item that can be found in the game and used by the character.
+     */
     export interface IItem {
+        /**
+         * The id of the item.
+         */
         id?: string;
+
+        /**
+         * The name of the item as shown to the player.
+         */
         name: string;
 
         /**
@@ -9,6 +19,10 @@
          * will then be used to set this property at run-time.
          */
         pictureFileName?: string;
+
+        /**
+         * One or more parts of the character body this item is for (or no part, in case of a miscellaneous item).
+         */
         equipmentType: EquipmentType | EquipmentType[];
 
         /**
@@ -16,11 +30,26 @@
          * will be used to set this property at run-time.
          */
         description?: string;
+
+        /**
+         * The damage done by this item when used in combat.
+         */
         damage?: string;
+
+        /**
+         * The defense offered by this item.
+         */
         defense?: number;
+
+        /**
+         * The number of times the item can be used before disappearing. If not specified, the item can be used indefinitely.
+         */
         charges?: number;
+
+        /**
+         * Any bonuses the item offers to the player.
+         */
         bonuses?: any;
-        actions?: ICollection<IAction>;
 
         /**
          * When this flag is set to true and the item has a use function specified, the use action will also be available during combat.

@@ -22,7 +22,7 @@
          * The function to execute when the player selects the action.
          */
         // Todo: it seems only the game parameter is used right now. Do we need the other arguments?
-        execute: ((game: IGame, actionIndex: number, ...params) => void) | string;
+        execute: string | ((game: IGame, actionIndex: number, ...params) => void);
 
         /**
          * Additional parameters to pass to the execute function.
