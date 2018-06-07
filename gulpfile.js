@@ -40,11 +40,7 @@ gulp.task('compile-engine', function() {
 
 gulp.task('watch', ['build-game'], function () {
     gulp.watch(["src/Engine/**/*.ts"], function (e) {
-        var engine = compileTs('StoryScript', e.path, compileStoryScript);
-        var game = compileTs('Game', null, compileGame);
-        var ui = compileTs('UI', null, compileUI);
-
-        return merge(engine, game, ui);
+        return compileTs('StoryScript', e.path, compileStoryScript);
     });
     gulp.watch(["src/Games/**/*.ts"], function (e) {
         return compileTs('Game', e.path, compileGame);

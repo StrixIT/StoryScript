@@ -1,13 +1,49 @@
 ﻿namespace StoryScript {
     export interface IHelperService {
-        rollDice: (compositeOrSides: string | number, dieNumber?: number, bonus?: number) => number;
-        calculateBonus: (person: { items?: ICollection<IItem>, equipment?: {} }, type: string) => number;
+        /**
+         * Roll a number of dice to get a number.
+         * @param compositeOrSides The number and type of dice (e.g. 3d6) or the number of sides of the dice (e.g.) 6
+         * @param dieNumber The number of dice, if not using the composite option
+         * @param bonus The bonus to add to the result.
+         */
+        rollDice(compositeOrSides: string | number, dieNumber?: number, bonus?: number): number;
 
-        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => ICompiledEnemy;
-        randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-        getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
-        getItem: (selector: string | (() => IItem)) => IItem;
-        getPerson: (selector: string | (() => IPerson)) => ICompiledPerson;
+        /**
+         * Calculate the bonus the character is granted by the items he is carrying.
+         * @param person The player character or the person to calculate the bonus for.
+         * @param type The player attribute to get the bonus for (e.g. attack)
+         */
+        calculateBonus(person: { items?: ICollection<IItem>, equipment?: {} }, type: string): number;
+
+        /**
+         * Get a random enemy to add to the game.
+         * @param selector A selector function to limit the list of enemies that can be returned at random (for example a function that excludes ghosts)
+         */
+        randomEnemy(selector?: (enemy: IEnemy) => boolean): ICompiledEnemy;
+
+        /**
+         * Get a random item to add to the game.
+         * @param selector A selector function to limit the list of items that can be returned at random (for example a function that excludes magic items)
+         */
+        randomItem(selector?: (enemy: IItem) => boolean): IItem;
+
+        /**
+         * Gets a specific type of enemy to add to the game.
+         * @param selector The type of the enemy to add, as a string or a function name (e.g. 'Orc' or MyNewGame.Orc)
+         */
+        getEnemy(selector: string | (() => IEnemy)): ICompiledEnemy;
+
+        /**
+         * Gets a specific type of item to add to the game.
+         * @param selector The type of the item to add, as a string or a function name (e.g. 'Dagger' or MyNewGame.Dagger)
+         */        
+        getItem(selector: string | (() => IItem)): IItem;
+
+        /**
+         * Gets a specific (type of) person to add to the game.
+         * @param selector The type of the person to add, as a string or a function name (e.g. 'Friend' or MyNewGame.Friend)
+         */
+        getPerson(selector: string | (() => IPerson)): ICompiledPerson;
     }
 }
 
