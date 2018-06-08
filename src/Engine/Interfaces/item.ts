@@ -71,7 +71,7 @@
          * @param item The item to be equipped
          * @param game The game object
          */
-        equip(item: IItem, game: IGame): boolean;
+        equip?(item: IItem, game: IGame): boolean;
 
          /**
          * When specified, this function will be executed when the item is unequipped by the player.

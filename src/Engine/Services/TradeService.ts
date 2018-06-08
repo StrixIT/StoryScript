@@ -80,6 +80,7 @@ namespace StoryScript {
             return actualPrice > 0 ? (item.name + ': ' + actualPrice + ' ' + self._texts.currency) : item.name;
         }
 
+        // Todo: check if the player can affort it!
         buy = (item: IItem, trade: ITrade): void => {
             var self = this;
             self.pay(item, trade, trade.buy, self._game.character, false);
@@ -91,6 +92,7 @@ namespace StoryScript {
             }
         }
 
+        // Todo: check if the trader can affort it!
         sell = (item: IItem, trade: ITrade): void => {
             var self = this;
             self.pay(item, trade, trade.sell, self._game.character, true);

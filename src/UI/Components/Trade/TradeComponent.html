@@ -1,5 +1,6 @@
 <div ng-if="$ctrl.game.stateString == 'Trade'" class="trade">
     <div ng-if="$ctrl.trade">
+        <p class="trade-description">{{ $ctrl.trade.description }}</p>
         <div ng-if="$ctrl.trade.buy">{{ $ctrl.trade.buy.description }}</div>
         <div ng-hide="$ctrl.trade.buy.items && $ctrl.trade.buy.items.length > 0">{{ $ctrl.trade.buy.emptyText }}</div>
         <ul class="button-row" ng-show="$ctrl.trade.buy.items && $ctrl.trade.buy.items.length > 0">

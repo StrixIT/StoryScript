@@ -6,7 +6,7 @@
     }
 
     export interface ICreateCharacterStep {
-        initStep?: (character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep) => void;
+        initStep?(character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep): void;
         questions?: ICreateCharacterQuestion[];
         attributes?: ICreateCharacterAttribute[];
         validation?: (character: ICreateCharacter) => string;
