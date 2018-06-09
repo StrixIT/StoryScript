@@ -37,10 +37,10 @@
         ownItemsOnly?: boolean;
 
         /**
-         * When specified, this function will be executed to create the list of items from which the items available
-         * to the trader are selected from using the itemSelector of the buy property.
+         * This function determines whether the list of items available for buying and selling should be refreshed using the itemSelector of the buy property.
+         * Return true to refresh the lists, false to keep them as they were.
          * @param game The game object
-         * @param trade The trader for which to initialize the collection to select items from
+         * @param trade The trader for which to refresh the item lists
          */
         initCollection?(game: IGame, trade: ITrade): boolean;
 
