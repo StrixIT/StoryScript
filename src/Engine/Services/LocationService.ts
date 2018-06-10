@@ -477,6 +477,27 @@ namespace StoryScript {
                     game.currentLocation.descriptions[name] = node.innerHTML;
                 }
 
+                var featureNodes = htmlDoc.getElementsByTagName("feature");
+
+                if (game.currentLocation.features) {
+                    for (var i = 0; i < featureNodes.length; i++) {
+                        var node = featureNodes[i];
+                        var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+
+                        if (!nameAttribute) {
+                            throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
+                        }
+
+                        nameAttribute = nameAttribute.toLowerCase();
+
+                        if (!game.currentLocation.features.some(f => f.name.toLowerCase() === nameAttribute)) {
+                            throw new Error('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
+                        }
+
+                        game.currentLocation.features.filter(f => f.name.toLowerCase() === nameAttribute)[0].description = node.innerHTML;
+                    }
+                }
+
                 self.selectLocationDescription(game);
             });
         }

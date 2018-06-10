@@ -19,9 +19,12 @@ namespace StoryScript {
             self._scope.$watchCollection('game.currentLocation.destinations', self.watchDestinations);
             self._scope.$watchCollection('game.currentLocation.features', self.watchFeatures);
             
-            // Add an event listener to your event target
             _eventListener.addEventListener('resourceLoaded', function() {
                 self._scope.$applyAsync();
+            });
+
+            _eventListener.addEventListener('combinationFinished', function(event) {
+                self._scope.$broadcast('showCombinationText', (<any>event).combineText);
             });
 
             self.init();

@@ -74,6 +74,27 @@
         loading: boolean;
 
         /**
+         * Holds the currently selected combination action during rum-time. This will be undefined or null when the player
+         * is not trying a combination.
+         */
+        activeCombination: {
+            /**
+             * The action type of the currently active combination.
+             */
+            selectedCombinationAction: ICombinationAction;
+
+            /**
+             * The currently selected tool of the combination.
+             */
+            selectedTool: ICombinable<any>;
+
+            /**
+             * The text displayed to the player for the current combine status.
+             */
+            combineText: string;
+        }
+
+        /**
          * The custom properties for the game world.
          */
         worldProperties: any;
@@ -82,6 +103,11 @@
          * The statistics for this game.
          */
         statistics: IStatistics;
+
+        /**
+         * Helper functions to make programming the game easier.
+         */
+        helpers: IHelperService;
 
         /**
          * The function executed to change from one location to the next.
@@ -116,8 +142,9 @@
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
 
         /**
-         * Helper functions to make programming the game easier.
+         * Try the combination the player has created.
+         * @param target The target of the combination
          */
-        helpers: IHelperService;
+        tryCombine(target: ICombinable<any>): void;
     }
 }

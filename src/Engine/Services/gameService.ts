@@ -22,7 +22,7 @@
 
 namespace StoryScript {
     export class GameService implements IGameService {
-        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
         }
 
         init = (): void => {
@@ -158,6 +158,7 @@ namespace StoryScript {
                 setTimeout(() => {
                     var evt = new Event('resourceLoaded');
                     self._events.dispatchEvent(evt);
+                    self._game.loading = false;
                 }, 0);
             }
         }
@@ -329,6 +330,16 @@ namespace StoryScript {
                     }
                 });
             }
+
+            self._game.tryCombine = (target: ICombinable<any>) => {
+                var result = self._combinationService.tryCombination(target);
+
+                if (result !== false && result !== true) {
+                    var evt = new Event('combinationFinished');
+                    (<any>evt).combineText = result;
+                    self._events.dispatchEvent(evt)
+                }
+            };
 
             self._locationService.init(self._game);
         }

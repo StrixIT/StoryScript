@@ -41,6 +41,12 @@ namespace StoryScript {
 
         executeBarrierAction = (destination: IDestination, barrier: IBarrier) => {
             var self = this;
+
+            if (self._game.tryCombine(barrier))
+            {
+                return;
+            }
+
             self._gameService.executeBarrierAction(destination, barrier);
             self._scope.$emit('refreshCombine');
         }
@@ -61,6 +67,12 @@ namespace StoryScript {
 
         pickupItem = (item: IItem): void => {
             var self = this;
+
+            if (self._game.tryCombine(item))
+            {
+                return;
+            }
+
             self.game.character.items.push(item);
             self.game.currentLocation.items.remove(item);
             self._scope.$emit('refreshCombine');

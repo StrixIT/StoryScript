@@ -169,7 +169,7 @@ namespace StoryScript {
         isSlotUsed = (slot: string): boolean => {
             var self = this;
 
-            if (self._game.character) {
+            if (self._game.character && self._game.character.equipment) {
                 return self._game.character.equipment[slot] !== undefined;
             }
 

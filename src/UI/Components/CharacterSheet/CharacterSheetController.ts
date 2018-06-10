@@ -11,6 +11,22 @@ namespace StoryScript {
         texts: IInterfaceTexts;
         displayCharacterAttributes: string[];
 
+        showEquipment = (): boolean => {
+            var self = this;
+
+            if (!self._game.character || !self._game.character.equipment)
+            {
+                return false;
+            }
+
+            return Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
+        }
+
+        tryCombine = (item: IItem) => {
+            var self = this;
+            self._game.tryCombine(item);
+        }
+        
         hasDescription(type: string, item: { id?: string, description?: string }) {
             var self = this;
             return self._gameService.hasDescription(type, item);

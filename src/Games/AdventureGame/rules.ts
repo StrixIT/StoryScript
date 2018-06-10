@@ -1,6 +1,6 @@
 ﻿namespace AdventureGame {
     export class Rules implements StoryScript.IRules {
-        getCombinationActions = () => {
+        getCombinationActions = (): StoryScript.ICombinationAction[] => {
             return [
                 {
                     text: Constants.USE,

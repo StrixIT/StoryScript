@@ -65,7 +65,7 @@
             /**
              * Items worn on the torso and upper arms.
              */
-            body: IItem,
+            body?: IItem,
             /**
              * Items worn on the hands, like gloves.
              */

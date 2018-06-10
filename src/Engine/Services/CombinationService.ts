@@ -1,7 +1,8 @@
 namespace StoryScript {
     export interface ICombinationService {
+        getCombinationActions(): ICombinationAction[];
         buildCombine(): ICombinationSelector;
-        tryCombination(source: { id: string, name: string, combinations: ICombinations<any> }, target: { id: string }, type: ICombinationAction): void;
+        tryCombination(target: ICombinable<any>): boolean | string;
         showCombinations(combination): boolean;
     }
 }
@@ -9,6 +10,11 @@ namespace StoryScript {
 namespace StoryScript {
     export class CombinationService implements ICombinationService {
         constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        }
+
+        getCombinationActions = (): ICombinationAction[] => {
+            var self = this;
+            return self._rules.getCombinationActions ? self._rules.getCombinationActions() : [];
         }
 
         buildCombine = (): ICombinationSelector => {
@@ -30,7 +36,7 @@ namespace StoryScript {
 
             combinationSelector.combineTargets = equipment.concat(self._game.character.items);
 
-            combinationSelector.combineSources = <any[]>self._game.currentLocation.activeEnemies
+            combinationSelector.combineTools = <any[]>self._game.currentLocation.activeEnemies
                 .concat(<any[]>self._game.currentLocation.activePersons)
                 .concat(<any[]>self._game.currentLocation.destinations.map(d => d.barrier).filter(d => d !== undefined))
                 .concat(<any[]>self._game.currentLocation.features);
@@ -41,38 +47,47 @@ namespace StoryScript {
 
             combinationSelector.combination = {
                 type: combinationSelector.combineActions[0],
-                source: combinationSelector.combineSources[0],
+                tool: combinationSelector.combineTools[0],
                 target: combinationSelector.combineTargets[0]
             };
 
             return combinationSelector;
         }
 
-        tryCombination = (source: { id: string, name: string, combinations: ICombinations<any> }, target: { id: string }, type: ICombinationAction): void => {
+        tryCombination = (target: ICombinable<any>): boolean | string => {
             var self = this;
+            var combo = self._game.activeCombination;
 
-            if (!source) {
-                return;
+            if (!target || !combo || !combo.selectedCombinationAction) {
+                return false;
             }
 
-            var combines = source.combinations && source.combinations.combine;
+            if (combo.selectedCombinationAction.requiresTarget && !combo.selectedTool) {
 
-            if (combines) {
-                var combination = combines.filter(c => c.type === type.text && (!type.requiresTarget || target.id === c.target))[0];
-
-                if (combination) {
-                    combination.match(self._game, source, target);
-                }
-                else {
-                    if (source.combinations.combineFailText) {
-                        self._game.logToActionLog(source.combinations.combineFailText(self._game, target));
-                    }
-                    else {
-                        var message = target ? self._texts.format(self._texts.noCombination, [target.id, source.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTarget, [source.name, type.text, type.preposition]);
-                        self._game.logToActionLog(message);
-                    }
-                };
+                combo.combineText = combo.selectedCombinationAction.text + ' ' + target.name + ' ' + combo.selectedCombinationAction.preposition;
+                combo.selectedTool = target;
+                return true;
             }
+
+            var tool = self._game.activeCombination.selectedTool;
+            var type = self._game.activeCombination.selectedCombinationAction;
+            var text = combo.selectedCombinationAction.requiresTarget ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
+                                                                        combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
+            self._game.activeCombination = null;
+            var combination = target.combinations ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === c.target))[0] : null;
+
+            if (combination) {
+                combination.match(self._game, target, tool);
+            }
+            else if (target.combinations.combineFailText) {
+                self._game.logToActionLog(target.combinations.combineFailText(self._game, tool));
+            }
+            else {
+                var message = tool ? self._texts.format(self._texts.noCombination, [tool.name, target.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTarget, [target.name, type.text, type.preposition]);
+                self._game.logToActionLog(message);
+            }
+
+            return text;
         }
 
         showCombinations = (combination): boolean => {

@@ -2,16 +2,11 @@
     /**
      * An item that can be found in the game and used by the character.
      */
-    export interface IItem {
+    export interface IItem extends ICombinable<IItem> {
         /**
          * The id of the item.
          */
         id?: string;
-
-        /**
-         * The name of the item as shown to the player.
-         */
-        name: string;
 
         /**
          * The file name of the image to display for the item. The file name should be relative to the index.html file. Note that if you

@@ -1,6 +1,6 @@
 ﻿namespace StoryScript {
     /**
-     * A list of combinations that can be used.
+     * A list of combinations that can be used on an object.
      */
     export interface ICombinations<T> {
         /**
@@ -9,7 +9,7 @@
         combine: ICombine<T>[];
 
         /**
-         * A function to execute when a combination attempt fails.
+         * A function to execute when a combination attempt on this object fails.
          * @param game The game object
          * @param target The target of the combination.
          */
@@ -26,7 +26,7 @@
         target: T;
 
         /**
-         * The type of the combination, which should match a ICombination text.
+         * The type of the combination, which should match an ICombination text.
          */
         type: string,
 
@@ -36,6 +36,6 @@
          * @param self The combinations collection
          * @param target The target of the combination
          */
-        match(game: IGame, self: { combinations: ICombinations<T> }, target: T): void;
+        match(game: IGame, self: ICombinable<T>, target: T): void;
     }
 }

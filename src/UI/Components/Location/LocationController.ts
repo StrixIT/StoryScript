@@ -31,6 +31,11 @@ namespace StoryScript {
             return self.worldProperties;
         }
 
+        tryCombine = (feature: IFeature): void => {
+            var self = this;
+            self._game.tryCombine(feature);
+        }
+
         private initWorldProperties() {
             var self = this;
 

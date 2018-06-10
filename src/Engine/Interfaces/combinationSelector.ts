@@ -9,12 +9,12 @@ namespace StoryScript {
         combination: ICombination;
 
         /**
-         * The list of available sources that combination targets can be used with.
+         * The list of available objects that can be used as left sides in a combination.
          */
-        combineSources: any[];
+        combineTools: any[];
 
         /**
-         * The combination targets available.
+         * The list of available objects that can be used as right sides in a combination.
          */
         combineTargets: any[];
 
@@ -29,9 +29,9 @@ namespace StoryScript {
      */
     export interface ICombination {
         /**
-         * The name of the source the combination target can be used with.
+         * The name of the combination tool.
          */
-        source: { name };
+        tool: { name };
         /**
          * The name of the combination target.
          */

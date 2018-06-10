@@ -2,12 +2,7 @@
     /**
      * Barriers that block a player from moving between one world location to the next.
      */
-    export interface IBarrier {
-        /**
-         * The name of the barrier as shown to the player.
-         */
-        name: string;
-
+    export interface IBarrier extends ICombinable<() => IItem | IFeature> {
         /**
          * The actions the player can perform on the barrier (e.g. inspect or open).
          */
@@ -22,10 +17,5 @@
          * The key used to remove this barrier. This is an item implementing the IKey interface.
          */
         key?: () => IKey;
-
-         /**
-         * The combinations this barrier can participate in.
-         */
-        combinations?: ICombinations<() => IItem | IFeature>;
     }
 }

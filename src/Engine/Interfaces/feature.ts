@@ -9,6 +9,11 @@
         name: string;
 
         /**
+         * The description of this feature as shown to the player.
+         */
+        description: string;
+
+        /**
          * The combinations available for this feature.
          */
         combinations: ICombinations<() => IItem | IFeature>;

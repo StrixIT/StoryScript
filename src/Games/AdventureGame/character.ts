@@ -11,31 +11,9 @@
         items: StoryScript.ICollection<IItem> = [];
 
         equipment: {
-            head: IItem,
-            amulet: IItem,
-            body: IItem,
-            hands: IItem,
-            leftHand: IItem,
-            leftRing: IItem,
-            rightHand: IItem,
-            rightRing: IItem,
-            legs: IItem,
-            feet: IItem
         };
 
         constructor() {
-            this.equipment = {
-                head: null,
-                amulet: null,
-                body: null,
-                hands: null,
-                leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
-                feet: null
-            }
         }
     }
 }
