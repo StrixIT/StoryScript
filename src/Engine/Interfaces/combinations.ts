@@ -32,11 +32,11 @@
         type: string,
 
         /**
-         * The function to execute when a combination is successful.
+         * The function to execute when a combination is successful. Return the success text.
          * @param game The game object
          * @param tool The tool for the combination
          * @param target The target of the combination
          */
-        match(game: IGame, tool: ICombinable, target: ICombinable): void;
+        match(game: IGame, tool: ICombinable, target: ICombinable): string;
     }
 }

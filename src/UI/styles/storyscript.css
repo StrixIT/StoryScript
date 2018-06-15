@@ -153,3 +153,8 @@ button.restart {
 .combine-selectable:hover {
     background-color: blueviolet;
 }
+
+.combination-text, .combination-result-text {
+    display: inline-block;
+    height: 20px;
+}

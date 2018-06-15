@@ -16,8 +16,8 @@
                                 {
                                     target: Items.Dagger,
                                     type: Constants.THROW,
-                                    match: (game, tool, target) => {
-                                        game.logToLocationLog('Threw dagger at fence!');
+                                    match: (game, tool, target): string => {
+                                        return 'Threw dagger at fence!';
                                     }
                                 }
                             ]
@@ -40,8 +40,8 @@
                             {
                                 target: Items.Dagger,
                                 type: Constants.USE,
-                                match: (game, tool, target) => {
-                                    game.logToLocationLog('Used dagger on vine!');
+                                match: (game, tool, target): string => {
+                                    return 'Used dagger on vine!';
                                 }
                             }
                         ]

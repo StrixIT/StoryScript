@@ -5,8 +5,8 @@
             <ul>
                 <button ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)" ng-class="$ctrl.getCombineClass(c)">{{c.text}}</button>
             </ul>
-            <p>{{$ctrl.game.combinations.activeCombination.combineText}}</p>
-            <p>{{$ctrl.combinationText}}</p>
+            <p class="combination-text">{{$ctrl.game.combinations.activeCombination.combineText}}</p>
+            <p class="combination-result-text">{{$ctrl.combinationText}}</p>
         </div>
     </fieldset>
 </div>
