@@ -13,7 +13,8 @@
                 {
                     text: Constants.LOOKAT,
                     preposition: 'at',
-                    requiresTarget: false
+                    requiresTarget: false,
+                    combineFailText: (game, tool, target): string => { return 'You look at the ' + target.name + '. There is nothing special about it';}
                 }
             ];
         }

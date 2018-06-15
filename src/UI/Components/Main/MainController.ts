@@ -6,7 +6,6 @@ namespace StoryScript {
             self.texts = self._texts;
             self._scope.$on('restart', () => self.init());
             self._scope.$on('showDescription', (event, args) => self._scope.$broadcast('initDescription', args));
-            self._scope.$on('refreshCombine', () => self._scope.$broadcast('buildCombine'));
             self._scope.$on('levelUp', () => self._scope.$broadcast('initLevelUp'));
             self._scope.$on('saveGame', () => self._scope.$broadcast('initSaveGame'));
             self._scope.$on('loadGame', () => self._scope.$broadcast('initLoadGame'));
@@ -15,9 +14,6 @@ namespace StoryScript {
             self._scope.$watch('game.currentLocation', self.watchLocation);
             self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self._scope.$watch('game.character.score', self.watchCharacterScore);
-            self._scope.$watchCollection('game.currentLocation.persons', self.watchPersons);
-            self._scope.$watchCollection('game.currentLocation.destinations', self.watchDestinations);
-            self._scope.$watchCollection('game.currentLocation.features', self.watchFeatures);
             
             _eventListener.addEventListener('resourceLoaded', function() {
                 self._scope.$applyAsync();
@@ -38,21 +34,6 @@ namespace StoryScript {
             self._gameService.init();
             self._gameService.initTexts(self._texts);
             self._scope.$broadcast('createCharacter');
-        }
-
-        private watchPersons = (newValue: ICompiledPerson[]) => {
-            var self = this;
-            self._scope.$broadcast('buildCombine');
-        }
-
-        private watchDestinations = (newValue: IDestination[]) => {
-            var self = this;
-            self._scope.$broadcast('buildCombine');
-        }
-
-        private watchFeatures = (newValue: IDestination[]) => {
-            var self = this;
-            self._scope.$broadcast('buildCombine');
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {

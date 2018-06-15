@@ -20,8 +20,9 @@
         /**
          * The text to show to the player, or a function returning this text, when a combination attempt for this action fails.
          * @param game The game object
+         * @param tool The tool for the combination
+         * @param target The target of the combination
          */
-        // Todo: use
-        combineFailText?: string | ((game: IGame) => string);
+        combineFailText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
     }
 }

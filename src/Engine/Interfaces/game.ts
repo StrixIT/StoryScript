@@ -86,7 +86,7 @@
             /**
              * The currently selected tool of the combination.
              */
-            selectedTool: ICombinable<any>;
+            selectedTool: ICombinable;
 
             /**
              * The text displayed to the player for the current combine status.
@@ -145,6 +145,6 @@
          * Try the combination the player has created.
          * @param target The target of the combination
          */
-        tryCombine(target: ICombinable<any>): void;
+        tryCombine(target: ICombinable): void;
     }
 }

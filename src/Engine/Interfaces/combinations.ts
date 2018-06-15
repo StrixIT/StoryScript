@@ -2,24 +2,25 @@
     /**
      * A list of combinations that can be used on an object.
      */
-    export interface ICombinations<T> {
+    export interface ICombinations<T extends () => ICombinable> {
         /**
          * The combinations available.
          */
         combine: ICombine<T>[];
 
         /**
-         * A function to execute when a combination attempt on this object fails.
+         * The text to show to the player, or a function returning this text, when a combination attempt on this object fails.
          * @param game The game object
+         * @param tool The tool for the combination.
          * @param target The target of the combination.
          */
-        combineFailText?(game: IGame, target: T): string;
+        combineFailText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
     }
 
     /**
      * A combination definition.
      */
-    export interface ICombine<T> {
+    export interface ICombine<T extends () => ICombinable> {
         /**
          * The target of this combination.
          */
@@ -33,9 +34,9 @@
         /**
          * The function to execute when a combination is successful.
          * @param game The game object
-         * @param self The combinations collection
+         * @param tool The tool for the combination
          * @param target The target of the combination
          */
-        match(game: IGame, self: ICombinable<T>, target: T): void;
+        match(game: IGame, tool: ICombinable, target: ICombinable): void;
     }
 }

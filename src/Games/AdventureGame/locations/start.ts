@@ -16,7 +16,7 @@
                                 {
                                     target: Items.Dagger,
                                     type: Constants.THROW,
-                                    match: (game, self, target) => {
+                                    match: (game, tool, target) => {
                                         game.logToLocationLog('Threw dagger at fence!');
                                     }
                                 }
@@ -33,20 +33,26 @@
                 {
                     name: 'Vine',
                     combinations: {
-                        combineFailText: (game, target) => {
+                        combineFailText: (game, tool, target) => {
                             return 'Cannot use vine in this way!';
                         },
                         combine: [
                             {
                                 target: Items.Dagger,
                                 type: Constants.USE,
-                                match: (game, self, target) => {
+                                match: (game, tool, target) => {
                                     game.logToLocationLog('Used dagger on vine!');
                                 }
                             }
                         ]
                     }
                 }
+            ],
+            persons: [
+                Persons.Friend
+            ],
+            enemies: [
+                //Enemies.Goblin
             ]
         }
     }

@@ -19,6 +19,11 @@ namespace StoryScript {
             return self._game.currentLocation && self._game.currentLocation.activePersons.length > 0;
         }
 
+        tryCombine = (person: ICompiledPerson) => {
+            var self = this;
+            self._game.tryCombine(person);
+        }
+
         talk = (person: ICompiledPerson) => {
             var self = this;
             self._game.currentLocation.activePerson = person;

@@ -48,7 +48,7 @@
         /**
          * The combinations this enemy can participate in.
          */
-        combinations?: ICombinations<IItem | IFeature>;
+        combinations?: ICombinations<() => ICombinable>;
 
         /**
          * When specified, this function will be called when the enemy is attacked by the player.

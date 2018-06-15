@@ -5,19 +5,12 @@ namespace StoryScript {
             self.game = self._game;
             self.texts = _texts;
             self.combineActions = self._combinationService.getCombinationActions();
-
-            self.buildCombine();
-            self._scope.$on('buildCombine', self.buildCombine);
             self._scope.$on('showCombinationText', (event, text) => { self.showCombinationText(text); });
         }
 
-        texts: IInterfaceTexts;
-        combination: ICombination;
-        combineSources: any[];
-        combineTargets: any[];
-        combineActions: ICombinationAction[];
-
         game: IGame;
+        texts: IInterfaceTexts;
+        combineActions: ICombinationAction[];
         combinationText: string;
 
         selectCombinationAction = (combination: ICombinationAction) => {
@@ -28,16 +21,12 @@ namespace StoryScript {
             }
 
             combination.requiresTarget = combination.requiresTarget === undefined || combination.requiresTarget === true ? true : false;
+
             self._game.activeCombination = {
                 selectedCombinationAction: combination,
                 selectedTool: null,
                 combineText: combination.requiresTarget ? combination.text : combination.text + ' ' + combination.preposition
             };
-        }
-
-        showCombinations = () => {
-            var self = this;
-            return self._combinationService.showCombinations(self.combination);
         }
 
         showCombinationText = (text: string): void => {
@@ -46,21 +35,9 @@ namespace StoryScript {
             self._timeout(() => self.combinationText = null, 2000);
         }
 
-        tryCombination = (source: ICombinable<any>, target: { name: string }, type: ICombinationAction) => {
+        tryCombination = (source: ICombinable, target: { name: string }, type: ICombinationAction) => {
             var self = this;
             self._combinationService.tryCombination(source);
-        }
-
-        private buildCombine = (): void => {
-            var self = this;
-            var combine = self._combinationService.buildCombine();
-
-            if (combine) {
-                //self.combineActions = combine.combineActions;
-                self.combineSources = combine.combineTools;
-                self.combineTargets = combine.combineTargets;
-                self.combination = combine.combination;
-            }
         }
     }
 

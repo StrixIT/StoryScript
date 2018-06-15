@@ -317,7 +317,7 @@ namespace StoryScript {
                 return;
             }
 
-            game.currentLocation.persons.filter(p => !p.conversation.nodes).forEach((person) => {
+            game.currentLocation.persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
                 self._dataService.loadDescription('persons', person).then(function (conversations) {
                     var parser = new DOMParser();
 
@@ -342,10 +342,11 @@ namespace StoryScript {
 
                     for (var i = 0; i < conversationNodes.length; i++) {
                         var node = conversationNodes[i];
-                        var nameAttribute = <string>node.attributes['name'].nodeValue;
+                        var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
 
-                        if (!nameAttribute) {
-                            throw new Error('Missing name attribute on node for conversation for person ' + person.id + '.');
+                        if (!nameAttribute && console) {
+                            console.log('Missing name attribute on node for conversation for person ' + person.id + '. Using \'default\' as default name');
+                            nameAttribute = 'default';
                         }
 
                         if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
@@ -425,18 +426,21 @@ namespace StoryScript {
                     }
 
                     person.conversation.nodes.forEach(n => {
-                        n.replies.options.forEach(r => {
-                            if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
-                                console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
-                            }
+                        if (n.replies && n.replies.options)
+                        {
+                            n.replies.options.forEach(r => {
+                                if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
+                                    console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
+                                }
 
-                            if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
-                                console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
-                            }
-                        });
+                                if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
+                                    console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
+                                }
+                            });
+                        }
                     });
 
-                    var nodeToSelect = person.conversation.nodes.filter(n => n.node === person.conversation.activeNode.node);
+                    var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
                     person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
                 });
             });

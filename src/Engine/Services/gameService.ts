@@ -331,7 +331,7 @@ namespace StoryScript {
                 });
             }
 
-            self._game.tryCombine = (target: ICombinable<any>) => {
+            self._game.tryCombine = (target: ICombinable) => {
                 var result = self._combinationService.tryCombination(target);
 
                 if (result !== false && result !== true) {

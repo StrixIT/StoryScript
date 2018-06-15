@@ -7,17 +7,6 @@
             </ul>
             <p>{{$ctrl.game.activeCombination.combineText}}</p>
             <p>{{$ctrl.combinationText}}</p>
-            <!-- <select class="combine-select" ng-model="$ctrl.combination.type" ng-options="c.text for c in $ctrl.combineActions">
-            </select>
-            <span class="combine-label" ng-if="!($ctrl.combination.type.requiresTarget && $ctrl.combineTargets.length > 0)">{{ $ctrl.combination.type.preposition }}</span>
-            <div class="inline" ng-if="$ctrl.combination.type.requiresTarget && $ctrl.combineTargets.length > 0">
-                <select class="combine-select" ng-model="$ctrl.combination.target" ng-options="c.name for c in $ctrl.combineTargets">
-                </select>
-                <span class="combine-label">{{ $ctrl.combination.type.preposition }}</span>
-            </div>
-            <select class="combine-select" ng-model="$ctrl.combination.source" ng-options="c.name for c in $ctrl.combineSources">
-            </select>
-            <button type="button" class="btn btn-info" ng-click="$ctrl.tryCombination($ctrl.combination.source, $ctrl.combination.target, $ctrl.combination.type)">{{ $ctrl.texts.tryCombination }}</button> -->
         </div>
     </fieldset>
 </div>

@@ -65,7 +65,6 @@ namespace StoryScript {
         dropItem = (item: IItem): void => {
             var self = this;
             self._characterService.dropItem(item);
-            self._scope.$emit('refreshCombine');
         }
 
         showQuests = (): boolean => {

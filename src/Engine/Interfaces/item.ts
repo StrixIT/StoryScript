@@ -2,7 +2,7 @@
     /**
      * An item that can be found in the game and used by the character.
      */
-    export interface IItem extends ICombinable<IItem> {
+    export interface IItem extends ICombinable {
         /**
          * The id of the item.
          */

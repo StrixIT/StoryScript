@@ -237,7 +237,7 @@ namespace StoryScript {
 
                     self.buildClone(value, pristineValue, clone[key]);
                 }
-                else if (typeof value == 'function') {
+                else if (typeof value === 'function') {
                     if (!value.isProxy) {
                         if (value.functionId) {
                             var parts = self.GetFunctionIdParts(value.functionId);

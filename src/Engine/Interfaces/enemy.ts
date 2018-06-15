@@ -2,7 +2,7 @@
     /**
      * Defines an enemy for the game.
      */
-    export interface IEnemy {
+    export interface IEnemy extends ICombinable {
         /**
          * The file name of the image to display for the enemy. The file name should be relative to the index.html file. Note that if you
          * use an HTML-page to describe the enemy, you can add an image-tag to it with the class 'picture'. The source of the image-tag
@@ -41,11 +41,6 @@
          * The items the enemy is carrying.
          */
         items?: ICollection<() => IItem>;
-
-        /**
-         * The combinations this enemy can participate in.
-         */
-        combinations?: ICombinations<() => IItem | IFeature>;
 
         /**
          * When specified, this function will be called when the enemy is attacked by the player.

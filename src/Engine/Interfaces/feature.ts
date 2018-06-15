@@ -2,20 +2,11 @@
     /**
      * A feature of a location, which can be anything the player can interact with using combinations.
      */
-    export interface IFeature {
+    export interface IFeature extends ICombinable {
         /**
-         * The name of the feature as shown to the player.
+         * The description of this feature as shown to the player. This can also be set in the location
+         * HTML file by adding a <feature name="{featureName}"> tag.
          */
-        name: string;
-
-        /**
-         * The description of this feature as shown to the player.
-         */
-        description: string;
-
-        /**
-         * The combinations available for this feature.
-         */
-        combinations: ICombinations<() => IItem | IFeature>;
+        description?: string;
     }
 }

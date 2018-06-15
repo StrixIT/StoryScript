@@ -53,7 +53,6 @@ namespace StoryScript {
             }
 
             self._gameService.saveGame();
-            self._scope.$emit('refreshCombine');
             self._game.state = GameState.Play;
         }
 
@@ -129,8 +128,6 @@ namespace StoryScript {
                     self.modalSettings.canClose = true;
                 }
             }
-
-            self._scope.$broadcast('refreshCombine');
         }
     }
 

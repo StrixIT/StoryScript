@@ -67,7 +67,7 @@
             else if (typeof value === "object") {
                 addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
             }
-            else if (typeof value == 'function' && !value.isProxy) {
+            else if (typeof value === 'function' && !value.isProxy) {
                 var functionId = path ? path + '_' + key : key;
                 value.functionId = 'function#' + type + '_' + functionId + '#' + createFunctionHash(value);
             }
@@ -179,17 +179,19 @@
 
         createReadOnlyCollection(compiledEnemy, 'items', items);
 
-        var combines = <ICombine<IItem | IFeature>[]>[];
-
         if (enemy.combinations) {
-            enemy.combinations.combine.forEach((combine: ICombine<() => IItem | IFeature>) => {
-                var compiled = <ICombine<IItem | IFeature>><any>combine;
+            var combines = <ICombine<() => ICombinable>[]>[];
+            var combineFailText = enemy.combinations.combineFailText;
+
+            enemy.combinations.combine.forEach((combine: ICombine<() => ICombinable>) => {
+                var compiled = combine;
                 compiled.target = (<any>compiled.target).name;
                 combines.push(compiled);
             });
-        }
 
-        createReadOnlyCollection(compiledEnemy, 'combinations', combines);
+            compiledEnemy.combinations.combineFailText = combineFailText;
+            createReadOnlyCollection(compiledEnemy.combinations, 'combine', combines);
+        }
 
         addProxy(compiledEnemy, 'item', game, rules);
 

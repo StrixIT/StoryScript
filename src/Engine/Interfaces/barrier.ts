@@ -2,7 +2,7 @@
     /**
      * Barriers that block a player from moving between one world location to the next.
      */
-    export interface IBarrier extends ICombinable<() => IItem | IFeature> {
+    export interface IBarrier extends ICombinable {
         /**
          * The actions the player can perform on the barrier (e.g. inspect or open).
          */

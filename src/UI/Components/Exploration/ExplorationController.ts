@@ -1,6 +1,6 @@
 namespace StoryScript {   
     export class ExplorationController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
@@ -48,7 +48,6 @@ namespace StoryScript {
             }
 
             self._gameService.executeBarrierAction(destination, barrier);
-            self._scope.$emit('refreshCombine');
         }
 
         trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade) => {
@@ -61,7 +60,6 @@ namespace StoryScript {
 
             // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location, true);
-            self._scope.$emit('refreshCombine');
             self._gameService.saveGame();
         }
 
@@ -75,9 +73,8 @@ namespace StoryScript {
 
             self.game.character.items.push(item);
             self.game.currentLocation.items.remove(item);
-            self._scope.$emit('refreshCombine');
         }
     }
 
-    ExplorationController.$inject = ['$scope', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
+    ExplorationController.$inject = ['gameService', 'sharedMethodService', 'game', 'customTexts'];
 }
