@@ -73,25 +73,40 @@
          */
         loading: boolean;
 
-        /**
-         * Holds the currently selected combination action during rum-time. This will be undefined or null when the player
-         * is not trying a combination.
-         */
-        activeCombination: {
+        combinations: {
             /**
-             * The action type of the currently active combination.
+             * Holds the currently selected combination action during rum-time. This will be undefined or null when the player
+             * is not trying a combination.
              */
-            selectedCombinationAction: ICombinationAction;
+            activeCombination: {
+                /**
+                 * The action type of the currently active combination.
+                 */
+                selectedCombinationAction: ICombinationAction;
+
+                /**
+                 * The currently selected tool of the combination.
+                 */
+                selectedTool: ICombinable;
+
+                /**
+                 * The text displayed to the player for the current combine status.
+                 */
+                combineText: string;
+            },
 
             /**
-             * The currently selected tool of the combination.
+             * Get the class name to use for the current combine state.
+             * @param tool The tool of the combination. Pass this in to get the class name for the tool element. Pass nothing to
+             * get the class name for the tool button bar.
              */
-            selectedTool: ICombinable;
+            getCombineClass(tool: ICombinable): void,
 
             /**
-             * The text displayed to the player for the current combine status.
+             * Try the combination the player has created.
+             * @param target The target of the combination
              */
-            combineText: string;
+            tryCombine(target: ICombinable): void;
         }
 
         /**
@@ -140,11 +155,5 @@
          * @param boolean True if the enemy can retaliate (default), false otherwise
          */
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
-
-        /**
-         * Try the combination the player has created.
-         * @param target The target of the combination
-         */
-        tryCombine(target: ICombinable): void;
     }
 }

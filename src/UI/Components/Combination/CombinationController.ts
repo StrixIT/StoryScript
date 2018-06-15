@@ -22,11 +22,16 @@ namespace StoryScript {
 
             combination.requiresTarget = combination.requiresTarget === undefined || combination.requiresTarget === true ? true : false;
 
-            self._game.activeCombination = {
+            self._game.combinations.activeCombination = {
                 selectedCombinationAction: combination,
                 selectedTool: null,
                 combineText: combination.requiresTarget ? combination.text : combination.text + ' ' + combination.preposition
             };
+        }
+
+        getCombineClass = (action: ICombinationAction) => {
+            var self = this;
+            return self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === action ? 'combine-active-selected' : '';
         }
 
         showCombinationText = (text: string): void => {

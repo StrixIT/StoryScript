@@ -3,9 +3,9 @@
         <legend>{{ $ctrl.texts.combinations }}</legend>
         <div>
             <ul>
-                <button ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)">{{c.text}}</button>
+                <button ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)" ng-class="$ctrl.getCombineClass(c)">{{c.text}}</button>
             </ul>
-            <p>{{$ctrl.game.activeCombination.combineText}}</p>
+            <p>{{$ctrl.game.combinations.activeCombination.combineText}}</p>
             <p>{{$ctrl.combinationText}}</p>
         </div>
     </fieldset>

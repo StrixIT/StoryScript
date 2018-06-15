@@ -1,6 +1,7 @@
 namespace StoryScript {
     export interface ICombinationService {
         getCombinationActions(): ICombinationAction[];
+        getCombineClass(tool: ICombinable): string;
         tryCombination(target: ICombinable): boolean | string;
     }
 }
@@ -15,9 +16,23 @@ namespace StoryScript {
             return self._rules.getCombinationActions ? self._rules.getCombinationActions() : [];
         }
 
+        getCombineClass = (tool: ICombinable): string => {
+            var self = this;
+            let className = '';
+
+            if (tool) {
+                className = self._game.combinations.activeCombination ? self._game.combinations.activeCombination.selectedTool && self._game.combinations.activeCombination.selectedTool.id === tool.id ? 'combine-active-selected' : 'combine-selectable' : null;
+            }
+            else {
+                className = self._game.combinations.activeCombination  ? 'combine-active-hide' : '';
+            }
+
+            return className;
+        }
+
         tryCombination = (target: ICombinable): boolean | string => {
             var self = this;
-            var combo = self._game.activeCombination;
+            var combo = self._game.combinations.activeCombination;
 
             if (!target || !combo || !combo.selectedCombinationAction) {
                 return false;
@@ -30,11 +45,11 @@ namespace StoryScript {
                 return true;
             }
 
-            var tool = self._game.activeCombination.selectedTool;
-            var type = self._game.activeCombination.selectedCombinationAction;
+            var tool = self._game.combinations.activeCombination.selectedTool;
+            var type = self._game.combinations.activeCombination.selectedCombinationAction;
             var text = combo.selectedCombinationAction.requiresTarget ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
-            self._game.activeCombination = null;
+            self._game.combinations.activeCombination = null;
             var combination = target.combinations ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === <any>c.target))[0] : null;
 
             if (combination) {

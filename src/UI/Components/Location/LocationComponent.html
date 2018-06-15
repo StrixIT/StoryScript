@@ -7,7 +7,7 @@
         <h4 ng-bind-html="$ctrl.game.currentLocation.name"></h4>
         <p ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></p>
         <ul id="location-features">
-            <li ng-repeat="feature in $ctrl.game.currentLocation.features">
+            <li ng-repeat="feature in $ctrl.game.currentLocation.features" ng-class="$ctrl.getCombineClass(feature)">
                 <div ng-click="$ctrl.tryCombine(feature)">
                     <!-- <p>
                         {{feature.name}}

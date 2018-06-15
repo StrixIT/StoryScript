@@ -255,6 +255,7 @@ namespace StoryScript {
 
                 for (var i in location.features) {
                     var feature = location.features[i];
+                    feature.id = feature.name;
 
                     if (feature.combinations && feature.combinations.combine) {
                         for (var j in feature.combinations.combine) {

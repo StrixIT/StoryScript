@@ -10,9 +10,14 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
+        getCombineClass = (item: IItem) => {
+            var self = this;
+            return self._game.combinations.getCombineClass(item);
+        }
+
         tryCombine = (enemy: ICompiledEnemy) => {
             var self = this;
-            self._game.tryCombine(enemy);
+            self._game.combinations.tryCombine(enemy);
         }
 
         hasDescription(type: string, item: { id?: string, description?: string }) {

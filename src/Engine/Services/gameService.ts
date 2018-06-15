@@ -331,13 +331,19 @@ namespace StoryScript {
                 });
             }
 
-            self._game.tryCombine = (target: ICombinable) => {
-                var result = self._combinationService.tryCombination(target);
+            self._game.combinations = {
+                activeCombination: null,
+                tryCombine: (target: ICombinable): void => {
+                    var result = self._combinationService.tryCombination(target);
 
-                if (result !== false && result !== true) {
-                    var evt = new Event('combinationFinished');
-                    (<any>evt).combineText = result;
-                    self._events.dispatchEvent(evt)
+                    if (result !== false && result !== true) {
+                        var evt = new Event('combinationFinished');
+                        (<any>evt).combineText = result;
+                        self._events.dispatchEvent(evt)
+                    }
+                },
+                getCombineClass: (tool: ICombinable): string => {
+                    return self._combinationService.getCombineClass(tool);
                 }
             };
 

@@ -11,7 +11,7 @@
         <legend>{{ $ctrl.texts.destinations }}</legend>
         <div class="destination-button" ng-repeat="destination in $ctrl.game.currentLocation.activeDestinations">
             <div ng-if="destination.barrier">
-                <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination, destination.barrier)">{{ destination.barrier.name }}</button>
+                <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination, destination.barrier)" ng-class="$ctrl.getCombineClass(destination.barrier)">{{ destination.barrier.name }}</button>
                 <select class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" ng-options="a.name for a in destination.barrier.actions">
                 </select>
             </div>
@@ -22,7 +22,9 @@
     <fieldset ng-if="!$ctrl.enemiesPresent()">
         <legend>{{ $ctrl.texts.onTheGround }}</legend>
         <ul>
-            <li ng-repeat="item in $ctrl.game.currentLocation.activeItems track by $index" ng-click="$ctrl.pickupItem(item)">{{ item.name }}</li>
+            <li ng-repeat="item in $ctrl.game.currentLocation.activeItems track by $index" ng-click="$ctrl.pickupItem(item)" ng-class="$ctrl.getCombineClass(item)">
+                {{ item.name }}
+            </li>
         </ul>
     </fieldset>
 </div>

@@ -22,9 +22,14 @@ namespace StoryScript {
             return Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
         }
 
+        getCombineClass = (item: IItem) => {
+            var self = this;
+            return self._game.combinations.getCombineClass(item);
+        }
+
         tryCombine = (item: IItem) => {
             var self = this;
-            self._game.tryCombine(item);
+            self._game.combinations.tryCombine(item);
         }
         
         hasDescription(type: string, item: { id?: string, description?: string }) {
