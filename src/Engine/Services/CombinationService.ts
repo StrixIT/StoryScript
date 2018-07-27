@@ -33,6 +33,7 @@ namespace StoryScript {
         tryCombination = (target: ICombinable): boolean | string => {
             var self = this;
             var combo = self._game.combinations.activeCombination;
+            combo.selectedCombinationAction.preposition = combo.selectedCombinationAction.preposition || '';
 
             if (!target || !combo || !combo.selectedCombinationAction) {
                 return false;
@@ -45,12 +46,12 @@ namespace StoryScript {
                 return true;
             }
 
-            var tool = self._game.combinations.activeCombination.selectedTool;
-            var type = self._game.combinations.activeCombination.selectedCombinationAction;
+            var tool = combo.selectedTool;
+            var type = combo.selectedCombinationAction;
             var text = combo.selectedCombinationAction.requiresTarget ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
             self._game.combinations.activeCombination = null;
-            var combination = target.combinations ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === <any>c.target))[0] : null;
+            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === <any>c.target))[0] : null;
             var resultText = null;
 
 
