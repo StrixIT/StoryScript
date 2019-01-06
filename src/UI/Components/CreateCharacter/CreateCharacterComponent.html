@@ -1,5 +1,7 @@
 <div ng-if="$ctrl.game.stateString == 'CreateCharacter'">
-    <h1>{{ $ctrl.texts.newGame }}</h1>
-    <build-character sheet="$ctrl.sheet"></build-character>
-    <button type="button" class="btn btn-primary" ng-disabled="!$ctrl.distributionDone()" ng-click="$ctrl.startNewGame()" ng-show="$ctrl.sheet.currentStep >= $ctrl.sheet.steps.length - 1">{{ $ctrl.texts.startAdventure }}</button>
+    <fieldset>
+        <legend>{{ $ctrl.texts.newGame }}</legend>
+        <build-character sheet="$ctrl.sheet"></build-character>
+        <button type="button" class="btn btn-primary start-adventure" ng-disabled="!$ctrl.distributionDone()" ng-click="$ctrl.startNewGame()" ng-show="$ctrl.sheet.currentStep >= $ctrl.sheet.steps.length - 1">{{ $ctrl.texts.startAdventure }}</button>
+    </fieldset>
 </div>

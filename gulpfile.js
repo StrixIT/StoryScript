@@ -128,7 +128,7 @@ function copyLibraries() {
     var libJs = gulp.src([paths.sourceroot + 'Libraries/**/*.js'])
         .pipe(gulp.dest(paths.webroot + 'js/lib'));
 
-    var libCss = gulp.src([paths.sourceroot + 'Libraries/bootstrap/bootstrap.css'])
+    var libCss = gulp.src([paths.sourceroot + 'Libraries/bootstrap/bootstrap.min.css'])
         .pipe(gulp.dest(paths.webroot + 'css/lib'));
 
     return merge([libJs, libCss]);

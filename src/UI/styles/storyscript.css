@@ -1,21 +1,19 @@
-﻿
-
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     color: #483D8B;
-}
-
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 h2 {
     font-family: 'Trebuchet MS';
     color: #483D8B;
+}
+
+.menu-bar {
+    padding: 10px 15px 20px 30px;
+}
+
+.list-unstyled {
+    padding-left: 10px
 }
 
 legend {
@@ -26,18 +24,8 @@ legend {
     background-color: #FFFACD;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-button,
-textarea {
-    max-width: 280px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.name-input {
-    margin: 0 20px;
+.start-adventure {
+    margin-left: 15px;
 }
 
 .action-log, #location-log, .button-row {
@@ -87,7 +75,6 @@ table td {
 
 #equipment {
     margin-bottom: 10px;
-    text-align: center;
 }
 
     #equipment legend {

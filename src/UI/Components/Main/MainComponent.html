@@ -1,22 +1,21 @@
 <div ng-init="init()">
     <navigation></navigation>
-    <div class="container body-content">
-        <h2>{{ $ctrl.texts.gameName }}</h2>
+    <div class="container-fluid body-content">
         <div class="row">
-            <div id="character-container" class="col-md-4">
+            <div ng-if="$ctrl.game.stateString !== 'CreateCharacter'" id="character-container" ng-class="{ 'col-4': game.stateString !== 'CreateCharacter' }">
                 <character-sheet></character-sheet>
             </div>
-            <div id="location-container" class="col-md-8">
+            <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter', 'col': game.stateString === 'CreateCharacter' }">
                 <div ng-if="!$ctrl.game.stateString">
                     {{ $ctrl.texts.loading }}
                 </div>
                 <div ng-if="$ctrl.game.stateString == 'Play'">
                     <encounter></encounter>
                     <location></location>
-                    <combination></combination>
                     <exploration></exploration>
                     <enemy></enemy>
                     <action-log></action-log>
+                    <combination></combination>
                 </div>
                 <create-character></create-character>
                 <level-up></level-up>
@@ -24,8 +23,6 @@
                 <victory></victory>
             </div>
         </div>
-        <hr />
-        <footer></footer>
     </div>
     <encounter-modal></encounter-modal>
     <load-game-modal></load-game-modal>

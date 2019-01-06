@@ -7,7 +7,7 @@
     </fieldset>
     <fieldset ng-if="$ctrl.displayCharacterAttributes.length > 0">
         <legend data-toggle="collapse" data-target="#attributes-panel">{{ $ctrl.game.character.name }}</legend>
-        <ul id="attributes-panel" class="collapse in">
+        <ul id="attributes-panel" class="collapse show list-unstyled">
             <li ng-repeat="attribute in $ctrl.displayCharacterAttributes">
                 {{ $ctrl.texts.titleCase($ctrl.texts.format(attribute)) }} {{ $ctrl.game.character[attribute] }}
             </li>
@@ -17,7 +17,7 @@
     </fieldset>
     <fieldset id="equipment" ng-show="$ctrl.showEquipment()">
         <legend data-toggle="collapse" data-target="#equipment-panel">{{ $ctrl.texts.equipmentHeader }}</legend>
-        <div id="equipment-panel" class="collapse in">
+        <div id="equipment-panel" class="collapse show">
             <div class="row" ng-show="$ctrl.isSlotUsed('head')">
                 <div class="col-md-12">
                     <div>
@@ -87,7 +87,7 @@
     </fieldset>
     <fieldset>
         <legend data-toggle="collapse" data-target="#backpack-panel">{{ $ctrl.texts.backpack }}</legend>
-        <ul id="backpack-panel" class="collapse in">
+        <ul id="backpack-panel" class="collapse show list-unstyled">
             <li ng-repeat="item in $ctrl.game.character.items">
                 <div ng-click="$ctrl.tryCombine(item)" ng-class="$ctrl.getCombineClass(item)">
                     <span>{{ item.name }}</span>

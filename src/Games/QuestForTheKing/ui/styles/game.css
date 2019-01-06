@@ -33,7 +33,7 @@ input,
 select,
 button,
 textarea {
-    max-width: 280px;
+    max-width: 500px;
     padding-left: 10px;
     padding-right: 10px;
     font-family: Papyrus;
