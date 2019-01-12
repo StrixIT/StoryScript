@@ -1,10 +1,9 @@
-<div class="container-fluid" ng-repeat="step in $ctrl.sheet.steps" ng-show="$ctrl.sheet.currentStep == $index">
+<div id="create-character" class="container-fluid" ng-repeat="step in $ctrl.sheet.steps" ng-show="$ctrl.sheet.currentStep == $index">
     <div class="input-group mb-3" ng-repeat="question in step.questions">
         <div class="input-group-prepend">
             <label class="input-group-text">{{ question.question }}</label>
         </div>
-        <select class="custom-select" ng-model="question.selectedEntry" ng-options="q.text for q in question.entries">
-        </select>
+        <select class="custom-select" ng-model="question.selectedEntry" ng-options="q.text for q in question.entries"></select>
     </div>
     <div ng-repeat="attribute in step.attributes">
         <div>

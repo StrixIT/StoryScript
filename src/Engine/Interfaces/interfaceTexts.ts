@@ -68,7 +68,6 @@
         levelUp?: string;
         levelUpDescription?: string;
         completeLevelUp?: string;
-        portrait?: string;
         newSaveGame?: string;
         existingSaveGames?: string;
         overwriteSaveGame?: string;

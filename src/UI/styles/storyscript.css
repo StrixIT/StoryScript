@@ -31,6 +31,14 @@ h2 {
     margin-right: 5px;
 }
 
+#create-character .input-group-prepend {
+    max-width: 70%;
+}
+
+#create-character .input-group-text {
+    white-space: normal;
+}
+
 #exploration-destinations .btn, #combinations .btn, #trade .btn {
     margin-right: 5px;
 }
@@ -132,7 +140,7 @@ h2 {
 }
 
 #portraitFrame {
-    margin-bottom: 10px;
+    float: right;
 }
 
 button.restart {
