@@ -8,9 +8,9 @@
          */
         text: string;
         /**
-         * The preposition to use for the action, e.g. 'at' for 'Look at'
+         * The preposition to use for the action, e.g. 'at' for 'Look at'. Some actions do not need a preposition, like pull.
          */
-        preposition: string;
+        preposition?: string;
         /**
          * True if the action requires a target, false otherwise. E.g. 'Look at' does not require a target
          * (you can just look at something) while 'Throw at' obviously does require a target.

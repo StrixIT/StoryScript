@@ -336,7 +336,7 @@ namespace StoryScript {
                 tryCombine: (target: ICombinable): void => {
                     var result = self._combinationService.tryCombination(target);
 
-                    if (result !== false && result !== true) {
+                    if (typeof result === 'string') {
                         var evt = new Event('combinationFinished');
                         (<any>evt).combineText = result;
                         self._events.dispatchEvent(evt)

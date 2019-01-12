@@ -73,12 +73,10 @@ namespace StoryScript {
 
         pickupItem = (item: IItem): void => {
             var self = this;
+            var isCombining = self._game.combinations.activeCombination;
 
-            if (self._game.combinations.tryCombine(item))
-            {
-                return;
-            }
-            else if (self._game.combinations.activeCombination) {
+            if (isCombining) {
+                self._game.combinations.tryCombine(item)
                 return;
             }
 

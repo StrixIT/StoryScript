@@ -104,5 +104,31 @@
             // Implement logic to occur when the score changes. Return true when the character gains a level.
             return false;
         }
+
+        getCombinationActions = (): StoryScript.ICombinationAction[] => {
+            return [
+                {
+                    text: 'Use',
+                    preposition: 'with',
+                    combineFailText: (game, tool, target): string => { return 'That is not going to work.'; }
+                },
+                {
+                    text: 'Look',
+                    preposition: 'at',
+                    requiresTarget: false,
+                    combineFailText: (game, tool, target): string => { return 'There is nothing special about ' + target.name; }
+                },
+                {
+                    text: 'Pull',
+                    requiresTarget: false,
+                    combineFailText: (game, tool, target): string => { return 'You can\'t pull that.'; }
+                },
+                {
+                    text: 'Push',
+                    requiresTarget: false,
+                    combineFailText: (game, tool, target): string => { return 'You can\'t push that.'; }
+                }
+            ];
+        }
     }
 }

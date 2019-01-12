@@ -20,18 +20,23 @@ namespace StoryScript {
                 return;
             }
 
+            if (self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === combination) {
+                self._game.combinations.activeCombination = null;
+                return;
+            }
+
             combination.requiresTarget = combination.requiresTarget === undefined || combination.requiresTarget === true ? true : false;
 
             self._game.combinations.activeCombination = {
                 selectedCombinationAction: combination,
                 selectedTool: null,
-                combineText: combination.requiresTarget ? combination.text : combination.text + ' ' + combination.preposition
+                combineText: combination.requiresTarget ? combination.text : combination.text + ' ' + (combination.preposition || '')
             };
         }
 
         getCombineClass = (action: ICombinationAction) => {
             var self = this;
-            return self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === action ? 'combine-active-selected' : '';
+            return self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
         }
 
         showCombinationText = (text: string): void => {

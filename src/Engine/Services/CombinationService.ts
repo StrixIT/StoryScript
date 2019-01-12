@@ -38,6 +38,8 @@ namespace StoryScript {
                 return false;
             }
 
+            combo.selectedCombinationAction.preposition = combo.selectedCombinationAction.preposition || '';
+
             if (combo.selectedCombinationAction.requiresTarget && !combo.selectedTool) {
 
                 combo.combineText = combo.selectedCombinationAction.text + ' ' + target.name + ' ' + combo.selectedCombinationAction.preposition;
@@ -45,12 +47,12 @@ namespace StoryScript {
                 return true;
             }
 
-            var tool = self._game.combinations.activeCombination.selectedTool;
-            var type = self._game.combinations.activeCombination.selectedCombinationAction;
+            var tool = combo.selectedTool;
+            var type = combo.selectedCombinationAction;
             var text = combo.selectedCombinationAction.requiresTarget ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
             self._game.combinations.activeCombination = null;
-            var combination = target.combinations ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === <any>c.target))[0] : null;
+            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === <any>c.target))[0] : null;
             var resultText = null;
 
 

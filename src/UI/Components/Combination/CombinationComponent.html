@@ -1,12 +1,8 @@
-<div>
-    <fieldset ng-if="$ctrl.combineActions.length > 0">
-        <legend>{{ $ctrl.texts.combinations }}</legend>
-        <div>
-            <ul>
-                <button ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)" ng-class="$ctrl.getCombineClass(c)">{{c.text}}</button>
-            </ul>
-            <p class="combination-text">{{$ctrl.game.combinations.activeCombination.combineText}}</p>
-            <p class="combination-result-text">{{$ctrl.combinationText}}</p>
-        </div>
-    </fieldset>
+<div class="box-container" id="combinations" ng-if="$ctrl.combineActions.length > 0">
+    <div class="box-title">{{ $ctrl.texts.combinations }}</div>
+    <ul class="list-unstyled">
+        <button type="button" class="btn" ng-class="$ctrl.getCombineClass(c)" ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)">{{c.text}}</button>
+    </ul>
+    <p class="combination-text" ng-show="$ctrl.game.combinations.activeCombination.combineText">{{$ctrl.game.combinations.activeCombination.combineText}}</p>
+    <p class="combination-result-text" ng-show="$ctrl.combinationText">{{$ctrl.combinationText}}</p>
 </div>

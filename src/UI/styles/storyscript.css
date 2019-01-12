@@ -1,16 +1,6 @@
-﻿
-
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     color: #483D8B;
-}
-
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 h2 {
@@ -18,143 +8,162 @@ h2 {
     color: #483D8B;
 }
 
-legend {
-    padding-left: 10px;
-    padding-right: 10px;
+.menu-bar {
+    padding: 10px 15px 20px 30px;
+}
+
+.box-container {
+    border: solid 1px rgb(72, 61, 139);
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.box-title {
+    font-size: 1.5rem;
     font-family: Andalus;
-    color: #8FBC8F;
-    background-color: #FFFACD;
+    color: white;
+    background-color: rgb(72, 61, 139);
+    padding: 0px 10px;
+    margin: -10px -10px 10px -10px;;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-button,
-textarea {
-    max-width: 280px;
-    padding-left: 10px;
-    padding-right: 10px;
+.box-container li .btn {
+    margin-right: 5px;
 }
 
-.name-input {
-    margin: 0 20px;
+#create-character .input-group-prepend {
+    max-width: 70%;
 }
 
-.action-log, #location-log, .button-row {
-    list-style: none;
+#create-character .input-group-text {
+    white-space: normal;
+}
+
+#exploration-destinations .btn, #combinations .btn, #trade .btn {
+    margin-right: 5px;
+}
+
+#backpack-panel li {
+    margin-bottom: 5px;
+}
+
+#conversation-options span {
+    margin-left: 10px;
+}
+
+.conversation-lines p {
+    margin: 5px 0 0 0;
+}
+
+.conversation-option {
+    font-style: italic;
+    margin: 5px 0 10px 10px;
+}
+
+#combat .btn {
+    margin: 5px 0;
+}
+
+.combat-win {
+    font-weight: bold;
+}
+
+#trade ul {
+    margin-top: 10px;
+}
+
+.trade-empty {
+    font-style: italic;
     margin: 10px 0;
-    padding: 0;
+    padding-left: 10px;
 }
 
-    .button-row li {
-        display: inline-block;
-        margin-right: 10px;
-    }
+#save-game p {
+    font-weight: bold;
+}
 
-    .button-row button {
-        display: inline-block;
-        margin-bottom: 10px;
-    }
+#save-game li {
+    margin-bottom: 5px;
+}
+
+.start-adventure {
+    margin-left: 15px;
+}
 
 .action-log {
     max-height: 300px;
     overflow-y: scroll;
 }
 
-.inline {
-    display: inline-block;
-}
-
 .action-select {
     display: block;
+    width: 100%;
+    margin: 5px 0;
 }
-
-fieldset {
-    padding-left: 15px;
-}
-
-    fieldset table {
-        margin-bottom: 15px;
-    }
 
 .combatlog {
     margin-top: 25px;
 }
 
-table td {
-    padding: 10px;
+#create-character {
+    padding-bottom: 10px;
 }
 
-#equipment {
-    margin-bottom: 10px;
-    text-align: center;
+#character-equipment .box-title {
+    margin-bottom: 0;
 }
 
-    #equipment legend {
-        margin-bottom: 0;
-    }
+#character-equipment .row {
+    margin-top: 5px;
+}
 
-    #equipment .row {
-        margin: 5px 0;
-    }
+#character-equipment .item-box {
+    border-top: 1px solid black;
+    min-height: 25px;
+    line-height: 25px;
+}
 
-    #equipment .item-box {
-        border: 1px solid black;
-        height: 25px;
-        line-height: 25px;
-    }
+#character-equipment .item-box.no-border {
+    border: none;
+}
 
-        #equipment .item-box.no-border {
-            border: none;
-        }
-
-        #equipment .item-box.side-borders {
-            border-top: none;
-            border-bottom: 0;
-        }
+#character-equipment .item-box.side-borders {
+    border-top: none;
+}
 
 .question-row, .attribute-row {
     margin: 10px 0;
-}
-
-.destination-button {
-    float:left;
-    margin: 0 15px 10px 0;
 }
 
 #world-properties li {
     display: none;
 }
 
-.portraitFrame {
-    margin-bottom: 10px;
+#portraitFrame {
+    float: right;
 }
 
 button.restart {
     margin-top: 25px;
 }
 
-.item-button-row, .person-button-row {
-    display: inline-block;
-}
-
 .combine-active-hide {
     display: none;
 }
 
-.combine-active-selected {
-    background-color: #8FBC8F;
-}
-
-.combine-active-selected:focus {
-    background-color: #8FBC8F;
-}
-
 .combine-selectable:hover {
-    background-color: blueviolet;
+    cursor: pointer;
 }
 
 .combination-text, .combination-result-text {
     display: inline-block;
     height: 20px;
+}
+
+#highscores {
+    margin-top: 20px;
+}
+
+table td {
+    padding: 10px;
 }
