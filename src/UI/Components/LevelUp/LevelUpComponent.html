@@ -1,6 +1,6 @@
 <div ng-if="$ctrl.game.stateString == 'LevelUp'">
-    <h1>{{ $ctrl.texts.levelUp }}</h1>
-    <div>{{ $ctrl.texts.format($ctrl.texts.levelUpDescription, [$ctrl.game.character.level]) }}</div>
+    <h2>{{ $ctrl.texts.levelUp }}</h1>
+    <p>{{ $ctrl.texts.format($ctrl.texts.levelUpDescription, [$ctrl.game.character.level]) }}</p>
     <build-character sheet="$ctrl.sheet"></build-character>
     <button type="button" class="btn btn-primary" ng-disabled="!$ctrl.distributionDone()" ng-click="$ctrl.levelUp()" ng-show="$ctrl.sheet.currentStep >= $ctrl.sheet.steps.length - 1">{{ $ctrl.texts.completeLevelUp }}</button>
 </div>

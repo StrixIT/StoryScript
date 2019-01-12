@@ -38,7 +38,7 @@
             load: "Load",
             loadGame: "Load game",
             loading: "Loading...",
-            youAreHere: "You are here",
+            youAreHere: "You are at {0}",
             messages: "Messages",
             hitpoints: "Health",
             currency: "Money",
@@ -65,7 +65,11 @@
             noCombinationNoTarget: "You {1} {2} the {0}. Nothing happens.",
             levelUp: "Level up",
             completeLevelUp: "Accept",
-            levelUpDescription: "You reached level {0}."
+            levelUpDescription: "You reached level {0}.",
+            newSaveGame: "New save game",
+            existingSaveGames: "Saved games",
+            overwriteSaveGame: "Overwrite saved game {0}?",
+            loadSaveGame: "Load saved game {0}?"
         }
 
         format = (template: string, tokens: string[]): string => {

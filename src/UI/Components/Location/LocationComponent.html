@@ -1,23 +1,20 @@
-<div class="location">
-    <fieldset>
-        <legend>{{ $ctrl.texts.youAreHere }}</legend>
-        <ul id="world-properties">
-            <li ng-repeat="property in $ctrl.getWorldProperties() track by $index" class="{{property.name}}">{{ property.value }}</li>
-        </ul>
-        <h4 ng-bind-html="$ctrl.game.currentLocation.name"></h4>
-        <p ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></p>
-        <ul id="location-features">
-            <li ng-repeat="feature in $ctrl.game.currentLocation.features" ng-class="$ctrl.getCombineClass(feature)">
-                <div ng-click="$ctrl.tryCombine(feature)">
-                    <!-- <p>
-                        {{feature.name}}
-                    </p> -->
-                    <p>{{feature.description}}</p>
-                </div>
-            </li>
-        </ul>
-        <ul id="location-log">
-            <li ng-repeat="message in $ctrl.game.currentLocation.log track by $index">{{ message }}</li>
-        </ul>
-    </fieldset>
+<div class="box-container" id="location">
+    <div class="box-title" ng-bind-html="$ctrl.texts.format($ctrl.texts.youAreHere, [$ctrl.game.currentLocation.name])"></div>
+    <ul id="world-properties">
+        <li ng-repeat="property in $ctrl.getWorldProperties() track by $index" class="{{property.name}}">{{ property.value }}</li>
+    </ul>
+    <p ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></p>
+    <ul id="location-features">
+        <li ng-repeat="feature in $ctrl.game.currentLocation.features" ng-class="$ctrl.getCombineClass(feature)">
+            <div ng-click="$ctrl.tryCombine(feature)">
+                <!-- <p>
+                    {{feature.name}}
+                </p> -->
+                <p>{{feature.description}}</p>
+            </div>
+        </li>
+    </ul>
+    <ul id="location-log" class="list-unstyled">
+        <li ng-repeat="message in $ctrl.game.currentLocation.log track by $index">{{ message }}</li>
+    </ul>
 </div>

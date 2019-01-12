@@ -37,6 +37,11 @@ namespace StoryScript {
             self.selectedGame = name;
         }
 
+        overwriteSelected = () => {
+            var self = this;
+            return self._gameService.getSaveGames().indexOf(this.selectedGame) > -1;
+        }
+
         saveGame = () => {
             var self = this;
             self._gameService.saveGame(self.selectedGame);

@@ -33,11 +33,12 @@ namespace StoryScript {
         tryCombination = (target: ICombinable): boolean | string => {
             var self = this;
             var combo = self._game.combinations.activeCombination;
-            combo.selectedCombinationAction.preposition = combo.selectedCombinationAction.preposition || '';
 
             if (!target || !combo || !combo.selectedCombinationAction) {
                 return false;
             }
+
+            combo.selectedCombinationAction.preposition = combo.selectedCombinationAction.preposition || '';
 
             if (combo.selectedCombinationAction.requiresTarget && !combo.selectedTool) {
 

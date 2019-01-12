@@ -1,18 +1,13 @@
-<div class="startcombat">
-    <fieldset ng-if="$ctrl.game.currentLocation.activeEnemies && $ctrl.game.currentLocation.activeEnemies.length">
-        <legend>{{ $ctrl.texts.encounters }}</legend>
-        <p>{{ $ctrl.texts.enemiesToFight }}</p>
-        <ul>
-            <li ng-repeat="enemy in $ctrl.game.currentLocation.activeEnemies" ng-click="$ctrl.tryCombine(enemy)" ng-class="$ctrl.getCombineClass(enemy)">
-                {{ enemy.name }}
-                <div ng-class="$ctrl.getCombineClass()">
-                    <button type="button" class="btn btn-info" ng-if="$ctrl.hasDescription('enemies', enemy)" ng-click="$ctrl.showDescription(enemy, enemy.name)">{{ $ctrl.texts.view }}</button>
-                </div>
-            </li>
-        </ul>
-
-        <div class="button-row">
-            <button type="button" class="btn btn-danger" ng-click="$ctrl.startCombat()">{{ $ctrl.texts.startCombat }}</button>
-        </div>
-    </fieldset>
+<div class="box-container" id="enemies" ng-if="$ctrl.game.currentLocation.activeEnemies && $ctrl.game.currentLocation.activeEnemies.length">
+    <div class="box-title">{{ $ctrl.texts.encounters }}</div>
+    <p>{{ $ctrl.texts.enemiesToFight }}</p>
+    <ul class="list-unstyled">
+        <li ng-repeat="enemy in $ctrl.game.currentLocation.activeEnemies" ng-click="$ctrl.tryCombine(enemy)" ng-class="$ctrl.getCombineClass(enemy)">
+            {{ enemy.name }}
+            <div class="d-inline-block" ng-class="$ctrl.getCombineClass()">
+                <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.hasDescription('enemies', enemy)" ng-click="$ctrl.showDescription(enemy, enemy.name)">{{ $ctrl.texts.view }}</button>
+            </div>
+        </li>
+    </ul>
+    <button type="button" class="btn btn-danger" ng-click="$ctrl.startCombat()">{{ $ctrl.texts.startCombat }}</button>
 </div>

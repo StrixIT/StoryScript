@@ -12,108 +12,126 @@ h2 {
     padding: 10px 15px 20px 30px;
 }
 
-.list-unstyled {
-    padding-left: 10px
+.box-container {
+    border: solid 1px rgb(72, 61, 139);
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
-legend {
-    padding-left: 10px;
-    padding-right: 10px;
+.box-title {
+    font-size: 1.5rem;
     font-family: Andalus;
-    color: #8FBC8F;
-    background-color: #FFFACD;
+    color: white;
+    background-color: rgb(72, 61, 139);
+    padding: 0px 10px;
+    margin: -10px -10px 10px -10px;;
+}
+
+.box-container li .btn {
+    margin-right: 5px;
+}
+
+#exploration-destinations .btn, #combinations .btn, #trade .btn {
+    margin-right: 5px;
+}
+
+#backpack-panel li {
+    margin-bottom: 5px;
+}
+
+#conversation-options span {
+    margin-left: 10px;
+}
+
+.conversation-lines p {
+    margin: 5px 0 0 0;
+}
+
+.conversation-option {
+    font-style: italic;
+    margin: 5px 0 10px 10px;
+}
+
+#combat .btn {
+    margin: 5px 0;
+}
+
+.combat-win {
+    font-weight: bold;
+}
+
+#trade ul {
+    margin-top: 10px;
+}
+
+.trade-empty {
+    font-style: italic;
+    margin: 10px 0;
+    padding-left: 10px;
+}
+
+#save-game p {
+    font-weight: bold;
+}
+
+#save-game li {
+    margin-bottom: 5px;
 }
 
 .start-adventure {
     margin-left: 15px;
 }
 
-.action-log, #location-log, .button-row {
-    list-style: none;
-    margin: 10px 0;
-    padding: 0;
-}
-
-    .button-row li {
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .button-row button {
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-
 .action-log {
     max-height: 300px;
     overflow-y: scroll;
 }
 
-.inline {
-    display: inline-block;
-}
-
 .action-select {
     display: block;
+    width: 100%;
+    margin: 5px 0;
 }
-
-fieldset {
-    padding-left: 15px;
-}
-
-    fieldset table {
-        margin-bottom: 15px;
-    }
 
 .combatlog {
     margin-top: 25px;
 }
 
-table td {
-    padding: 10px;
+#create-character {
+    padding-bottom: 10px;
 }
 
-#equipment {
-    margin-bottom: 10px;
+#character-equipment .box-title {
+    margin-bottom: 0;
 }
 
-    #equipment legend {
-        margin-bottom: 0;
-    }
+#character-equipment .row {
+    margin-top: 5px;
+}
 
-    #equipment .row {
-        margin: 5px 0;
-    }
+#character-equipment .item-box {
+    border-top: 1px solid black;
+    min-height: 25px;
+    line-height: 25px;
+}
 
-    #equipment .item-box {
-        border: 1px solid black;
-        height: 25px;
-        line-height: 25px;
-    }
+#character-equipment .item-box.no-border {
+    border: none;
+}
 
-        #equipment .item-box.no-border {
-            border: none;
-        }
-
-        #equipment .item-box.side-borders {
-            border-top: none;
-            border-bottom: 0;
-        }
+#character-equipment .item-box.side-borders {
+    border-top: none;
+}
 
 .question-row, .attribute-row {
     margin: 10px 0;
-}
-
-.destination-button {
-    float:left;
-    margin: 0 15px 10px 0;
 }
 
 #world-properties li {
     display: none;
 }
 
-.portraitFrame {
+#portraitFrame {
     margin-bottom: 10px;
 }
 
@@ -121,27 +139,23 @@ button.restart {
     margin-top: 25px;
 }
 
-.item-button-row, .person-button-row {
-    display: inline-block;
-}
-
 .combine-active-hide {
     display: none;
 }
 
-.combine-active-selected {
-    background-color: #8FBC8F;
-}
-
-.combine-active-selected:focus {
-    background-color: #8FBC8F;
-}
-
 .combine-selectable:hover {
-    background-color: blueviolet;
+    cursor: pointer;
 }
 
 .combination-text, .combination-result-text {
     display: inline-block;
     height: 20px;
+}
+
+#highscores {
+    margin-top: 20px;
+}
+
+table td {
+    padding: 10px;
 }

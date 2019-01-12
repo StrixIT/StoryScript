@@ -69,6 +69,10 @@
         levelUpDescription?: string;
         completeLevelUp?: string;
         portrait?: string;
+        newSaveGame?: string;
+        existingSaveGames?: string;
+        overwriteSaveGame?: string;
+        loadSaveGame?: string;
 
         // Todo: keep this, or solve showing world properties in another way?
         worldProperties?: {};

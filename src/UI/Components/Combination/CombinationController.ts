@@ -36,7 +36,7 @@ namespace StoryScript {
 
         getCombineClass = (action: ICombinationAction) => {
             var self = this;
-            return self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === action ? 'combine-active-selected' : '';
+            return self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
         }
 
         showCombinationText = (text: string): void => {
