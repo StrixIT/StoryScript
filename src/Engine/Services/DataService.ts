@@ -14,6 +14,7 @@ namespace StoryScript {
     export class DataService implements IDataService {
         public functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
         private descriptionPaths: { [id: string]: { loading: boolean, loaded: boolean, description: string } };
+        private functionArgumentRegex = /\([a-z-A-Z0-9: ]{1,}\)/;
 
         constructor(private _httpService: IHttpService, private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string, private _definitions: IDefinitions) {
             var self = this;
@@ -266,7 +267,17 @@ namespace StoryScript {
                             }
                         }
                         else {
-                            clone[key] = value.toString();
+                            // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
+                            // to a function. Convert values that have an arrow notation.
+                            let functionString = value.toString();
+
+                            if (functionString.indexOf('function') == -1) {
+                                var arrowIndex = functionString.indexOf('=>');
+
+                                functionString = 'function' + functionString.match(self.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
+                            }
+
+                            clone[key] = functionString;
                         }
                     }
                 }
@@ -308,9 +319,8 @@ namespace StoryScript {
 
                         loaded[key] = typeList[parts.functionId].function;
                     }
-                    else if (typeof value === 'string' && value.indexOf('function ') > -1) {
-                        // Todo: create a new function instead of using eval.
-                        loaded[key] = eval('(' + value + ')');
+                    else if (typeof value === 'string' && value.indexOf('function') > -1) {
+                        loaded[key] = (<any>value).parseFunction();
                     }
                 }
             }

@@ -31,6 +31,10 @@ h2 {
     margin-right: 5px;
 }
 
+.inline {
+    display: inline-block;
+}
+
 #create-character .input-group-prepend {
     max-width: 70%;
 }
@@ -85,7 +89,6 @@ h2 {
 #save-game li {
     margin-bottom: 5px;
 }
-
 .start-adventure {
     margin-left: 15px;
 }
@@ -95,10 +98,14 @@ h2 {
     overflow-y: scroll;
 }
 
+.barrier {
+    margin-bottom: 5px;
+}
+
 .action-select {
     display: block;
     width: 100%;
-    margin: 5px 0;
+    margin-top: 5px;
 }
 
 .combatlog {
@@ -153,6 +160,8 @@ button.restart {
 
 .combine-selectable:hover {
     cursor: pointer;
+    background-color: lightgray;
+    border-radius: 5px;
 }
 
 .combination-text, .combination-result-text {
