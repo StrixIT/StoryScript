@@ -1,7 +1,7 @@
 ﻿namespace StoryScript {
-    if ((<any>Function.prototype).proxy === undefined) {
+    if (Function.prototype.proxy === undefined) {
         // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
-        (<any>Function.prototype).proxy = function (proxyFunction: Function, ...params) {
+        Function.prototype.proxy = function (proxyFunction: Function, ...params) {
             var self = this;
 
             return (function () {
@@ -11,7 +11,7 @@
                     return proxyFunction.apply(this, args.concat(...params));
                 };
 
-                (<any>func).isProxy = true;
+                func.isProxy = true;
 
                 return func;
             })();
@@ -19,13 +19,27 @@
     }
 
     export function addFunctionExtensions() {
-        // Need to cast to any for ES5 and lower
         if (Function.prototype.name === undefined) {
             Object.defineProperty(Function.prototype, 'name', {
                 get: function () {
                     return /function ([^(]*)/.exec(this + '')[1];
                 }
             });
+        }
+
+        // This allows deserializing functions added at runtime without using eval.
+        // Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
+        if (typeof String.prototype.parseFunction != 'function') {
+            (String.prototype).parseFunction = function () {
+                var funcReg = /function *\(([^()]*)\)[ \n\t]*{(.*)}/gmi;
+                var match = funcReg.exec(this.replace(/\n/g, ' '));
+        
+                if (match) {
+                    return new Function(<any>(match[1].split(',')), match[2]);
+                }
+        
+                return null;
+            };
         }
     }
 

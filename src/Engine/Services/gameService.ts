@@ -439,7 +439,13 @@ namespace StoryScript {
     
                         if (element.play && added === 'added') {
                             self.updateAudioTags(parent, key, 'added="added"', '');
-                            element.play();
+
+                            // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
+                            const playPromise = element.play();
+
+                            if (playPromise !== null) {
+                                playPromise.catch(() => { element.play(); });
+                            }
                         }
                     }
                 }, 0);

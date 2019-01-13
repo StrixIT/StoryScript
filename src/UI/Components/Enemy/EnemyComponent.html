@@ -4,7 +4,7 @@
     <ul class="list-unstyled">
         <li ng-repeat="enemy in $ctrl.game.currentLocation.activeEnemies" ng-click="$ctrl.tryCombine(enemy)" ng-class="$ctrl.getCombineClass(enemy)">
             {{ enemy.name }}
-            <div class="d-inline-block" ng-class="$ctrl.getCombineClass()">
+            <div class="inline" ng-class="$ctrl.getCombineClass()">
                 <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.hasDescription('enemies', enemy)" ng-click="$ctrl.showDescription(enemy, enemy.name)">{{ $ctrl.texts.view }}</button>
             </div>
         </li>

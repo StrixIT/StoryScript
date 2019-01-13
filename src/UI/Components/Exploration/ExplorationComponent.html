@@ -10,7 +10,7 @@
     <div class="box-container" id="exploration-actions" ng-if="$ctrl.actionsPresent()">
         <div class="box-title">{{ $ctrl.texts.actions }}</div>
         <ul class="list-unstyled">
-            <li class="d-inline-block" ng-repeat="action in $ctrl.game.currentLocation.actions">
+            <li class="inline" ng-repeat="action in $ctrl.game.currentLocation.actions">
                 <button type="button" class="btn" ng-class="$ctrl.getButtonClass(action)" ng-click="$ctrl.executeAction(action)" ng-disabled="$ctrl.disableActionButton(action)" ng-hide="$ctrl.hideActionButton(action)">{{ action.text }}</button>
             </li>
         </ul>
@@ -18,8 +18,8 @@
     <div class="box-container" id="exploration-destinations" ng-if="!$ctrl.enemiesPresent()">
         <div class="box-title">{{ $ctrl.texts.destinations }}</div>
         <ul class="list-unstyled">
-            <li class="d-inline-block" ng-repeat="destination in $ctrl.game.currentLocation.activeDestinations">
-                <div ng-if="destination.barrier">
+            <li class="inline" ng-repeat="destination in $ctrl.game.currentLocation.activeDestinations">
+                <div class="barrier" ng-if="destination.barrier">
                     <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination, destination.barrier)" ng-class="$ctrl.getCombineClass(destination.barrier)">{{ destination.barrier.name }}</button>
                     <select class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" ng-options="a.name for a in destination.barrier.actions">
                     </select>
