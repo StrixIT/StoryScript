@@ -9,7 +9,9 @@
     concat = require('gulp-concat'),
     sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
-    jf = require('jsonfile');
+    jf = require('jsonfile'),
+    minifyHtml = require('gulp-minify-html'),
+    angularTemplateCache = require('gulp-angular-templatecache');
 
 var tsStoryScriptProject = ts.createProject("./src/Engine/tsconfig.json");
 var tsGameProject = ts.createProject("./src/Games/tsconfig.json");
@@ -48,7 +50,10 @@ gulp.task('watch', ['build-game'], function () {
     gulp.watch(["src/UI/**/*.ts"], function (e) {
         return compileTs('UI', e.path, compileUI);
     });
-    gulp.watch(["src/**/*.html", "src/**/*.css", "src/Games/**/resources/*.*"], function (e) {
+    gulp.watch(["src/UI/**/*.html"], function (e) {
+        return compileUITemplates();
+    });
+    gulp.watch(["src/Games/**/*.html", "src/**/*.css", "src/Games/**/resources/*.*"], function (e) {
         if (e.type === 'deleted') {
             return deleteResource(e.path)
         }
@@ -151,7 +156,7 @@ function copyHtml(nameSpace) {
         .pipe(flatten())
         .pipe(gulp.dest(paths.webroot));
 
-    var ui = gulp.src([paths.sourceroot + 'UI/**/*.html', paths.sourceroot + 'Games/' + nameSpace + '/ui/**/*.html'])
+    var ui = gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/ui/**/*.html'])
         .pipe(flatten())
         .pipe(gulp.dest(paths.webroot + 'ui'));
 
@@ -198,8 +203,29 @@ function compileGame() {
 
 function compileUI() {
     var tsResult = tsUIProject.src().pipe(sourcemaps.init()).pipe(tsUIProject());
+    var templateResult = compileUITemplates()
 
     return merge([
-        tsResult.js.pipe(concat('ui.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js'))
+        tsResult.js.pipe(concat('ui.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
+        templateResult
     ]);
+}
+
+function compileUITemplates() {
+    console.log('Compiling ui templates for angular.');
+
+    return gulp
+        .src('src/ui/**/*.html')
+        .pipe(minifyHtml({ empty: true }))
+        .pipe(angularTemplateCache({ 
+            filename: 'ui-templates.js', 
+            root: 'ui/',
+            transformUrl: function(url) {
+                var componentName = url.match(/\\\w{1,}\.html$/)[0].substring(1);
+                return 'ui/' + componentName;
+            },
+            module: 'storyscript', 
+            standAlone: false 
+        }))
+        .pipe(gulp.dest(paths.webroot + 'js/'));
 }
