@@ -29,8 +29,8 @@
             <div class="modal-footer">
                 <p class="alert alert-danger" ng-if="$ctrl.mode === 'save' && $ctrl.overwriteSelected()">{{ $ctrl.texts.format($ctrl.texts.overwriteSaveGame, [$ctrl.selectedGame]) }}</p>
                 <p class="alert alert-success" ng-if="$ctrl.mode === 'load' && $ctrl.selectedGame">{{ $ctrl.texts.format($ctrl.texts.loadSaveGame, [$ctrl.selectedGame]) }}</p>
-                <button ng-if="$ctrl.mode === 'save'" type="button" class="btn btn-primary" ng-click="$ctrl.saveGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.save }}</button>
-                <button ng-if="$ctrl.mode === 'load'" type="button" class="btn btn-primary" ng-click="$ctrl.loadGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.load }}</button>
+                <button ng-if="$ctrl.mode === 'save'" type="button" class="btn btn-primary save-button" ng-click="$ctrl.saveGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.save }}</button>
+                <button ng-if="$ctrl.mode === 'load'" type="button" class="btn btn-primary save-button" ng-click="$ctrl.loadGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.load }}</button>
             </div>
         </div>
     </div>

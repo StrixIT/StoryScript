@@ -9,26 +9,35 @@ h2 {
 }
 
 .menu-bar {
-    padding: 10px 15px 20px 30px;
+    padding: 10px 15px 5px 30px;
 }
 
 .box-container {
     border: solid 1px rgb(72, 61, 139);
     padding: 10px;
     margin-bottom: 10px;
+    border-radius: 5px 5px 0 0;
 }
 
 .box-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-family: Andalus;
     color: white;
     background-color: rgb(72, 61, 139);
     padding: 0px 10px;
-    margin: -10px -10px 10px -10px;;
+    margin: -10px -10px 10px -10px;
 }
 
 .box-container li .btn {
     margin-right: 5px;
+}
+
+.list-unstyled {
+    margin-bottom: 0;
+}
+
+.modal-body .list-unstyled {
+    margin-bottom: 10px;
 }
 
 .inline {
@@ -47,8 +56,16 @@ h2 {
     margin-right: 5px;
 }
 
+#exploration-destinations button span {
+    margin-right: 0;
+}
+
 #backpack-panel li {
     margin-bottom: 5px;
+}
+
+.box-container li span {
+    margin-right: 10px;
 }
 
 #conversation-options span {
@@ -89,8 +106,16 @@ h2 {
 #save-game li {
     margin-bottom: 5px;
 }
-.start-adventure {
-    margin-left: 15px;
+#start-adventure {
+    margin: -10px 0 0 15px;
+}
+
+#start-combat {
+    margin-top: 10px;
+}
+
+.save-button {
+    margin-bottom: 15px;
 }
 
 .action-log {
@@ -166,7 +191,7 @@ button.restart {
 
 .combination-text, .combination-result-text {
     display: inline-block;
-    height: 20px;
+    margin-left: 20px;
 }
 
 #highscores {
