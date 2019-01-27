@@ -14,10 +14,6 @@ namespace StoryScript {
             self._scope.$watch('game.currentLocation', self.watchLocation);
             self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self._scope.$watch('game.character.score', self.watchCharacterScore);
-            
-            _eventListener.addEventListener('resourceLoaded', function() {
-                self._scope.$applyAsync();
-            });
 
             _eventListener.addEventListener('combinationFinished', function(event) {
                 self._scope.$broadcast('showCombinationText', (<any>event).combineText);

@@ -11,7 +11,8 @@
     del = require('del'),
     jf = require('jsonfile'),
     minifyHtml = require('gulp-minify-html'),
-    angularTemplateCache = require('gulp-angular-templatecache');
+    angularTemplateCache = require('gulp-angular-templatecache'),
+    gameDescriptionBundler = require('./src/gameDescriptionBundler');
 
 var tsStoryScriptProject = ts.createProject("./src/Engine/tsconfig.json");
 var tsGameProject = ts.createProject("./src/Games/tsconfig.json");
@@ -53,7 +54,10 @@ gulp.task('watch', ['build-game'], function () {
     gulp.watch(["src/UI/**/*.html"], function (e) {
         return compileUITemplates();
     });
-    gulp.watch(["src/Games/**/*.html", "src/**/*.css", "src/Games/**/resources/*.*"], function (e) {
+    gulp.watch(["src/Games/**/*.html"], function (e) {
+        return compileGameDescriptions();
+    });
+    gulp.watch(["src/**/*.css", "src/Games/**/resources/*.*"], function (e) {
         if (e.type === 'deleted') {
             return deleteResource(e.path)
         }
@@ -80,7 +84,7 @@ function buildGame(nameSpace) {
     var libs = copyLibraries();
     var resources = copyResources(nameSpace);
     var css = copyCss(nameSpace);
-    var html = copyHtml(nameSpace);
+    var html = copyHtml();
     var config = copyConfig(nameSpace);
     var ui = compileUI();
     var game = compileGame();
@@ -151,32 +155,10 @@ function copyCss(nameSpace) {
         .pipe(gulp.dest(paths.webroot + 'css'));
 }
 
-function copyHtml(nameSpace) {
-    var index = gulp.src([paths.sourceroot + 'UI/index.html'])
+function copyHtml() {
+    return gulp.src([paths.sourceroot + 'UI/index.html'])
         .pipe(flatten())
         .pipe(gulp.dest(paths.webroot));
-
-    var ui = gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/ui/**/*.html'])
-        .pipe(flatten())
-        .pipe(gulp.dest(paths.webroot + 'ui'));
-
-    var enemies = gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/enemies/**/*.html'])
-        .pipe(flatten())
-        .pipe(gulp.dest(paths.webroot + 'enemies'));
-
-    var items = gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/items/**/*.html'])
-        .pipe(flatten())
-        .pipe(gulp.dest(paths.webroot + 'items'));
-
-    var locations = gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/locations/**/*.html'])
-        .pipe(flatten())
-        .pipe(gulp.dest(paths.webroot + 'locations'));
-
-    var persons  = gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/persons/**/*.html'])
-        .pipe(flatten())
-        .pipe(gulp.dest(paths.webroot + 'persons'));
-
-    return merge([index, ui, enemies, items, locations, persons]);
 }
 
 function copyConfig(nameSpace) {
@@ -195,15 +177,17 @@ function compileStoryScript() {
 
 function compileGame() {
     var tsResult = tsGameProject.src().pipe(sourcemaps.init()).pipe(tsGameProject());
+    var descriptionResult = compileGameDescriptions();
 
     return merge([
-        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js'))
+        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
+        descriptionResult
     ]);
 }
 
 function compileUI() {
     var tsResult = tsUIProject.src().pipe(sourcemaps.init()).pipe(tsUIProject());
-    var templateResult = compileUITemplates()
+    var templateResult = compileUITemplates();
 
     return merge([
         tsResult.js.pipe(concat('ui.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
@@ -212,8 +196,6 @@ function compileUI() {
 }
 
 function compileUITemplates() {
-    console.log('Compiling ui templates for angular.');
-
     return gulp
         .src('src/ui/**/*.html')
         .pipe(minifyHtml({ empty: true }))
@@ -227,5 +209,19 @@ function compileUITemplates() {
             module: 'storyscript', 
             standAlone: false 
         }))
+        .pipe(gulp.dest(paths.webroot + 'js/'));
+}
+
+
+function compileGameDescriptions() {
+    var nameSpace = getNameSpace();
+    var gameDir = 'src/games/' + nameSpace;
+
+    console.log(nameSpace);
+
+    return gulp
+        .src([gameDir + '/**/*.html', '!' + gameDir + '/ui' ])
+        .pipe(minifyHtml({ empty: true }))
+        .pipe(gameDescriptionBundler(nameSpace))
         .pipe(gulp.dest(paths.webroot + 'js/'));
 }

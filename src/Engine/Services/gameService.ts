@@ -154,12 +154,6 @@ namespace StoryScript {
                 }
 
                 self._game.state = saveGame.state;
-
-                setTimeout(() => {
-                    var evt = new Event('resourceLoaded');
-                    self._events.dispatchEvent(evt);
-                    self._game.loading = false;
-                }, 0);
             }
         }
 

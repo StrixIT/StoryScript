@@ -2,6 +2,7 @@
 interface Window {
     StoryScript: {
         ObjectFactory: StoryScript.ObjectFactory;
+        GetGameDescriptions(): Map<string, string>;
     }
 }
 
