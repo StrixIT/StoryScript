@@ -121,6 +121,11 @@ namespace StoryScript {
 
             if (!pathEntry.loaded) {
                 var html = self.descriptionBundle.get(identifier);
+
+                if (!html) {
+                    throw new Error('No file ' + identifier + '.html found. Did you create this file already?');
+                }
+
                 var parser = new DOMParser();
                 var htmlDoc = parser.parseFromString(html, 'text/html');
                 var pictureElement = htmlDoc.getElementsByClassName('picture')[0];

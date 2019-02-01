@@ -33,7 +33,7 @@ namespace StoryScript
 
         enemiesPresent = (): boolean => {
             var self = this;
-            return self._game.currentLocation && self._game.currentLocation.activeEnemies.length > 0;
+            return self._game.currentLocation && self._game.currentLocation.activeEnemies && self._game.currentLocation.activeEnemies.length > 0;
         }
 
         getButtonClass = (action: IAction): string => {

@@ -3,7 +3,7 @@
         texts: StoryScript.IInterfaceTexts = {
             // Add your custom texts here.
             gameName: 'My Interactive Story',
-            youAreHere: 'Chapter {0}',
+            youAreHere: 'Chapter {0}'
         }
     }
 }

@@ -481,6 +481,23 @@ namespace StoryScript {
                 game.currentLocation.descriptions[name] = node.innerHTML;
             }
 
+            var destinationsNodes = htmlDoc.getElementsByTagName("destination");
+
+            for (var i = 0; i < destinationsNodes.length; i++) {
+                var node = destinationsNodes[i];
+                var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+
+                if (!nameAttribute)
+                {
+                    throw new Error('There is a destination without a name for location ' + game.currentLocation.id + '.');
+                }
+
+                var locationToAdd = { id: nameAttribute, target: nameAttribute, name: node.innerHTML };
+
+                game.locations.push(locationToAdd);
+                game.currentLocation.destinations.push(locationToAdd);
+            }
+
             var featureNodes = htmlDoc.getElementsByTagName("feature");
 
             if (game.currentLocation.features) {
@@ -558,9 +575,10 @@ namespace StoryScript {
 
         // Replace the function pointers for the destination targets with the function keys.
         // That's all that is needed to navigate, and makes it easy to save these targets.
+        // Note that dynamically added destinations already have a string as target so use that one.
         // Also set the barrier selected actions to the first one available for each barrier.
         // Further, instantiate any keys present and replace combine functions with their target ids.
-        destination.target = (<any>destination.target).name;
+        destination.target = (<any>destination.target).name || destination.target;
 
         if (destination.barrier) {
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {

@@ -16,7 +16,7 @@ namespace StoryScript {
 
         personsPresent = (): boolean => {
             var self = this;
-            return self._game.currentLocation && self._game.currentLocation.activePersons.length > 0;
+            return self._game.currentLocation && self._game.currentLocation.activePersons && self._game.currentLocation.activePersons.length > 0;
         }
 
         getCombineClass = (item: IItem) => {

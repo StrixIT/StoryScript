@@ -88,17 +88,17 @@
         /**
          * The current description shown to the player for this location.
          */
-        text: string;
+        text?: string;
 
         /**
          * True if the player has visited this location, false otherwise.
          */
-        hasVisited: boolean;
+        hasVisited?: boolean;
 
         /**
          * All the descriptions available for this location, per description key.
          */
-        descriptions: { [key: string] : string; };
+        descriptions?: { [key: string] : string; };
 
          /**
          * Trade objects present at this location. If you don't want to use persons to trade with, you can use this object. Useful for
@@ -119,7 +119,7 @@
         /**
          * Messages logged to this location.
          */
-        log: string[];
+        log?: string[];
 
         /**
          * When specified, this function will be called on leaving a location to determine whether the player has done all
