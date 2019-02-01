@@ -123,7 +123,8 @@ namespace StoryScript {
                 var html = self.descriptionBundle.get(identifier);
 
                 if (!html) {
-                    throw new Error('No file ' + identifier + '.html found. Did you create this file already?');
+                    console.log('No file ' + identifier + '.html found. Did you create this file already?');
+                    return null;
                 }
 
                 var parser = new DOMParser();

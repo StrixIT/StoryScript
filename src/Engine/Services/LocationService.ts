@@ -492,7 +492,9 @@ namespace StoryScript {
                     throw new Error('There is a destination without a name for location ' + game.currentLocation.id + '.');
                 }
 
-                var locationToAdd = { id: nameAttribute, target: nameAttribute, name: node.innerHTML };
+                var targetExists = self._dataService.loadDescription('locations', { id: nameAttribute }) != null;
+
+                var locationToAdd = { id: nameAttribute, target: targetExists ? nameAttribute : null, name: node.innerHTML };
 
                 game.locations.push(locationToAdd);
                 game.currentLocation.destinations.push(locationToAdd);
@@ -578,7 +580,7 @@ namespace StoryScript {
         // Note that dynamically added destinations already have a string as target so use that one.
         // Also set the barrier selected actions to the first one available for each barrier.
         // Further, instantiate any keys present and replace combine functions with their target ids.
-        destination.target = (<any>destination.target).name || destination.target;
+        destination.target = (destination.target && (<any>destination.target).name) || destination.target;
 
         if (destination.barrier) {
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {
