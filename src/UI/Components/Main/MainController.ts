@@ -22,6 +22,18 @@ namespace StoryScript {
             self.init();
         }
 
+        showCharacterSheet = () => {
+            var self = this;
+
+            // Just check to see whether there are any character sheet elements active to determine
+            // whether or not it should be shown.
+            self._scope.$applyAsync(() =>
+            {
+                var sheetElement = angular.element('#character-sheet-container');
+                return sheetElement[0].clientHeight > 0;
+            });
+        }
+
         game: IGame;
         texts: IInterfaceTexts;
 

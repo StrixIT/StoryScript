@@ -1,7 +1,8 @@
 ﻿var gulp = require("gulp"),
     shell = require('gulp-shell'),
     exec = require('child_process').exec,
-    //cssmin = require("gulp-cssmin"),
+    cssmin = require("gulp-cssmin"),
+    rename = require('gulp-rename'),
     //uglify = require("gulp-uglify"),
     flatten = require('gulp-flatten'),
     ts = require('gulp-typescript'),
@@ -25,7 +26,7 @@ var paths = {
 };
 
 gulp.task('start', ['watch'], function() {
-    exec('lite-server');
+    exec('lite-server -c ' + paths.webroot + 'bs-config.json');
 });
 
 gulp.task('build-game', ['delete-files', 'compile-engine'], function() {
@@ -42,11 +43,13 @@ gulp.task('compile-engine', function() {
 });
 
 gulp.task('watch', ['build-game'], function () {
+    var nameSpace = getNameSpace();
+
     gulp.watch(["src/Engine/**/*.ts"], function (e) {
         return compileTs('StoryScript', e.path, compileStoryScript);
     });
     gulp.watch(["src/Games/**/*.ts"], function (e) {
-        return compileTs('Game', e.path, compileGame);
+        return compileTs('Game', e.path, compileGame, nameSpace);
     });
     gulp.watch(["src/UI/**/*.ts"], function (e) {
         return compileTs('UI', e.path, compileUI);
@@ -55,9 +58,12 @@ gulp.task('watch', ['build-game'], function () {
         return compileUITemplates();
     });
     gulp.watch(["src/Games/**/*.html"], function (e) {
-        return compileGameDescriptions();
+        return compileGameDescriptions(nameSpace);
     });
-    gulp.watch(["src/**/*.css", "src/Games/**/resources/*.*"], function (e) {
+    gulp.watch(["src/**/*.css"], function (e) {
+        return copyCss(nameSpace, e.path);
+    });
+    gulp.watch(["src/Games/**/resources/*.*"], function (e) {
         if (e.type === 'deleted') {
             return deleteResource(e.path)
         }
@@ -67,12 +73,12 @@ gulp.task('watch', ['build-game'], function () {
     });
 });
 
-function compileTs(type, path, compileFunc) {
+function compileTs(type, path, compileFunc, nameSpace) {
     if (path) {
         console.log('TypeScript file ' + path + ' has been changed. Compiling ' + type + '...');
     }
 
-    return compileFunc();
+    return compileFunc(nameSpace);
 }
 
 function getNameSpace() {
@@ -87,7 +93,7 @@ function buildGame(nameSpace) {
     var html = copyHtml();
     var config = copyConfig(nameSpace);
     var ui = compileUI();
-    var game = compileGame();
+    var game = compileGame(nameSpace);
     return merge(libs, resources, css, html, config, ui, game);
 }
 
@@ -149,9 +155,15 @@ function copyResources(nameSpace) {
         .pipe(gulp.dest(paths.webroot + 'resources'));
 }
 
-function copyCss(nameSpace) {
+function copyCss(nameSpace, path) {
+    if (path) {
+        console.log('Css file ' + path + ' has been changed. Compiling css...');
+    }
+
     return gulp.src([paths.sourceroot + 'UI/styles/*.css', paths.sourceroot + 'Games/' + nameSpace + '/ui/styles/*.css'])
         .pipe(flatten())
+        .pipe(cssmin())
+        .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(paths.webroot + 'css'));
 }
 
@@ -175,9 +187,9 @@ function compileStoryScript() {
     );
 }
 
-function compileGame() {
+function compileGame(nameSpace) {
     var tsResult = tsGameProject.src().pipe(sourcemaps.init()).pipe(tsGameProject());
-    var descriptionResult = compileGameDescriptions();
+    var descriptionResult = compileGameDescriptions(nameSpace);
 
     return merge([
         tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
@@ -213,11 +225,8 @@ function compileUITemplates() {
 }
 
 
-function compileGameDescriptions() {
-    var nameSpace = getNameSpace();
+function compileGameDescriptions(nameSpace) {
     var gameDir = 'src/games/' + nameSpace;
-
-    console.log(nameSpace);
 
     return gulp
         .src([gameDir + '/**/*.html', '!' + gameDir + '/ui' ])

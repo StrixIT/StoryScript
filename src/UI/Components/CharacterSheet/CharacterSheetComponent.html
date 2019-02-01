@@ -85,7 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="box-container" id="character-backpack">
+    <div class="box-container" id="character-backpack" ng-if="$ctrl.game.character.items.length > 0">
         <div class="box-title" data-toggle="collapse" data-target="#backpack-panel">{{ $ctrl.texts.backpack }}</div>
         <ul id="backpack-panel" class="collapse show list-unstyled">
             <li ng-repeat="item in $ctrl.game.character.items">
