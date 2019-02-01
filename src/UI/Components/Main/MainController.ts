@@ -30,7 +30,7 @@ namespace StoryScript {
             self._scope.$applyAsync(() =>
             {
                 var sheetElement = angular.element('#character-sheet-container');
-                return sheetElement[0].clientHeight > 0;
+                return sheetElement[0] && sheetElement[0].clientHeight > 0;
             });
         }
 

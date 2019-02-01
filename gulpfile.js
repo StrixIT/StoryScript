@@ -94,7 +94,8 @@ function buildGame(nameSpace) {
     var config = copyConfig(nameSpace);
     var ui = compileUI();
     var game = compileGame(nameSpace);
-    return merge(libs, resources, css, html, config, ui, game);
+    var descriptions = compileGameDescriptions(nameSpace);
+    return merge(libs, resources, css, html, config, ui, game, descriptions);
 }
 
 function copyResource(fullPath) {
@@ -189,11 +190,9 @@ function compileStoryScript() {
 
 function compileGame(nameSpace) {
     var tsResult = tsGameProject.src().pipe(sourcemaps.init()).pipe(tsGameProject());
-    var descriptionResult = compileGameDescriptions(nameSpace);
 
     return merge([
-        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
-        descriptionResult
+        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js'))
     ]);
 }
 

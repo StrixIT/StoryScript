@@ -3,6 +3,5 @@
   "server": {
     "baseDir": "./dist"
   },
-  "injectChanges": true,
-  "reloadDelay": 0
+  "injectChanges": true
 }
