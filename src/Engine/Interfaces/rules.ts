@@ -16,12 +16,12 @@
          * Use this function to determine what character attributes should be shown on the chaarcter sheet. Return the names
          * of the attributes (e.g. 'strength', 'currentcy').
          */
-        getSheetAttributes(): string[];
+        getSheetAttributes?(): string[];
 
         /**
          * Use this function to specify the steps in your character creation process. Return the character creation sheet.
          */
-        getCreateCharacterSheet(): ICreateCharacter;
+        getCreateCharacterSheet?(): ICreateCharacter;
 
         /**
          * Use this function to specify the steps in your character level up process. Return the level-up sheet.
@@ -34,7 +34,7 @@
          * @param game The game about to start
          * @param characterData The character sheet filled in
          */
-        createCharacter(game: IGame, characterData: ICreateCharacter): ICharacter;
+        createCharacter?(game: IGame, characterData: ICreateCharacter): ICharacter;
 
         /**
          * This function is called when the level-up sheet has been filled in and the game is about to continue.
@@ -77,7 +77,7 @@
          * @param enemy The enemy being attacked
          * @param retaliate True if the enemies present can fight back, false or undefined otherwise
          */
-        fight(game: IGame, enemy: ICompiledEnemy, retaliate?: boolean): void;
+        fight?(game: IGame, enemy: ICompiledEnemy, retaliate?: boolean): void;
 
         /**
          * This function will be called when an enemy is defeated.
@@ -99,7 +99,7 @@
          * @param game The active game
          * @param change The change in score.
          */
-        scoreChange(game: IGame, change: number): boolean;
+        scoreChange?(game: IGame, change: number): boolean;
 
         /**
          * Use this function if you want to run additonal logic when determining the player's final score on game end.

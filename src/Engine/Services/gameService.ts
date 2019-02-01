@@ -202,6 +202,12 @@ namespace StoryScript {
 
         fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
+
+            if (!self._rules || !self._rules.fight)
+            {
+                return;
+            }
+
             self._rules.fight(self._game, enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
@@ -267,7 +273,7 @@ namespace StoryScript {
             // Todo: change if xp can be lost.
             if (change > 0) {
                 var character = self._game.character;
-                var levelUp = self._rules.scoreChange(self._game, change);
+                var levelUp = self._rules && self._rules.scoreChange && self._rules.scoreChange(self._game, change);
 
                 if (levelUp) {
                     self._game.state = StoryScript.GameState.LevelUp;
