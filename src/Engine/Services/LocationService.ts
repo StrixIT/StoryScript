@@ -205,12 +205,23 @@ namespace StoryScript {
             var self = this;
             var locations = self._definitions.locations;
             var compiledLocations = [];
+            var dynamicLocations = false;
+
+            if (locations.length < 1)
+            {
+                dynamicLocations = true;
+                var dynamicStartLocation = function Start () { return { name: 'Start' } };
+
+                locations = [
+                    dynamicStartLocation
+                ];
+            }
 
             for (var n in locations) {
                 var definition = locations[n];
                 var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self._definitions);
 
-                if (!location.destinations) {
+                if (!dynamicLocations && !location.destinations) {
                     console.log('No destinations specified for location ' + location.id);
                 }
 
