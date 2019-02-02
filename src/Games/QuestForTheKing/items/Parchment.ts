@@ -2,7 +2,6 @@
     export function Parchment(): StoryScript.IKey {
         return {
             name: 'Old Parchment',
-            description: StoryScript.Constants.HTML,
             damage: '0',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             open: {

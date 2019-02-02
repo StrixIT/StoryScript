@@ -2,7 +2,6 @@
     export function Bow(): IItem {
         return {
             name: 'Bow',
-            description: StoryScript.Constants.HTML,
             damage: '1',
             equipmentType: StoryScript.EquipmentType.LeftHand,
             arcane: false,

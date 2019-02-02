@@ -126,16 +126,6 @@
         beforeUnequip?(game: IGame, character: ICharacter, item: IItem): boolean;
 
         /**
-         * Use this function if you want to run custom logic to process descriptions before showing them. Get the description using
-         * parent[key].
-         * @param game The active game
-         * @param parent The item containing the description, e.g. the location
-         * @param key The property of the item that is the description, e.g. location.description
-         */
-        // Todo: this seems to be unused. Keep it in?
-        processDescription?(game: IGame, parent: any, key: string);
-
-        /**
          * Specify this function if you want to run custom logic to set the description selector when selecting the description when
          * entering a location. Return the selector string. This is useful if you for example want to show different descriptions at
          * night.

@@ -171,16 +171,13 @@ namespace StoryScript {
             var self = this;
             var description = entity && entity[key] ? entity[key] : null;
 
-            if (description === Constants.HTML) {
+            if (!description) {
                 self._dataService.loadDescription(type, entity);
+                description = entity[key];
             }
 
             if (description) {
                 self.processAudioTags(entity, key);
-            }
-
-            if (self._rules.processDescription) {
-                description = self._rules.processDescription(self._game, entity, key);
             }
 
             return description;
@@ -374,14 +371,12 @@ namespace StoryScript {
 
             if (entity.hasHtmlDescription) {
                 if (entity.descriptions) {
-                    // Clear location descriptions for re-load.
                     entity.descriptions = null;
                     entity.text = null;
                 }
                 
                 if (entity.description) {
-                    // Reset item or enemy descriptions for re-load.
-                    entity.description = Constants.HTML;
+                    entity.description = null;
                 }
 
                 if (entity.conversation && entity.conversation.nodes) {
@@ -403,9 +398,8 @@ namespace StoryScript {
             }
         }
 
-        private processAudioTags(parent: any, key: string, newOnly?: boolean) {
+        private processAudioTags(parent: any, key: string) {
             var self = this;
-            var description = parent[key] as string;
             var descriptionEntry = parent;
             var descriptionKey = key;
     
@@ -423,10 +417,10 @@ namespace StoryScript {
             }
 
             if (descriptionKey !== key) {
-                self.updateAudioTags(descriptionEntry, descriptionKey, 'autoplay="autoplay"', '');
+                self.updateAudioTags(descriptionEntry, descriptionKey, ['autoplay="autoplay"', 'autoplay=""'], '');
             }
 
-            var startPlay = self.updateAudioTags(parent, key, 'autoplay="autoplay"', 'added="added"');
+            var startPlay = self.updateAudioTags(parent, key, ['autoplay="autoplay"', 'autoplay=""'], 'added="added"');
     
             if (startPlay)
             {
@@ -438,7 +432,7 @@ namespace StoryScript {
                         var added = element.getAttribute('added');
     
                         if (element.play && added === 'added') {
-                            self.updateAudioTags(parent, key, 'added="added"', '');
+                            self.updateAudioTags(parent, key, ['added="added"'], '');
 
                             // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
                             const playPromise = element.play();
@@ -452,13 +446,18 @@ namespace StoryScript {
             }
         }
 
-        private updateAudioTags(entity: any, key: string, tagToFind: string, tagToReplace: string): boolean {
+        private updateAudioTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
             let startPlay = false;
 
             if (entity[key]) {
-                if (entity[key].indexOf(tagToFind) > -1) {
-                    entity[key] = entity[key].replace(tagToFind, tagToReplace);
-                    startPlay = true;
+                for (var i in tagToFind)
+                {
+                    var tag = tagToFind[i];
+
+                    if (entity[key].indexOf(tag) > -1) {
+                        entity[key] = entity[key].replace(tag, tagToReplace);
+                        startPlay = true;
+                    }
                 }
             }
 

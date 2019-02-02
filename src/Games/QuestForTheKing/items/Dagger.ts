@@ -2,7 +2,6 @@
     export function Dagger(): IItem {
         return {
             name: 'Dagger',
-            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,           
             value: 5,

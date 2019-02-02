@@ -4,6 +4,6 @@
     },
     "include": [
         "../types/**/*.ts",
-        "./DangerousCave/**/*.ts"
+        "./QuestForTheKing/**/*.ts"
     ]
 }

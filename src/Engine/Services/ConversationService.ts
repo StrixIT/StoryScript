@@ -164,10 +164,8 @@ namespace StoryScript {
         }
 
         getLines = (nodeOrReply: IConversationNode | IConversationReply): string => {
-            var self = this;
-
             if (nodeOrReply && nodeOrReply.lines) {
-                return self._rules.processDescription ? self._rules.processDescription(self._game, nodeOrReply, 'lines') : nodeOrReply.lines;
+                return nodeOrReply.lines;
             }
 
             return null;
