@@ -383,7 +383,8 @@
                 if (!game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
                     var currentSelector = self.descriptionSelector(game);
                     var selector = currentSelector ? currentSelector + 'after' : 'after';
-                   game.currentLocation.text = game.currentLocation.descriptions[selector] ? game.currentLocation.descriptions[selector] : game.currentLocation.descriptions['after'];
+                    game.currentLocation.descriptionSelector = selector;
+                    game.currentLocation.text = game.currentLocation.descriptions[selector] ? game.currentLocation.descriptions[selector] : game.currentLocation.descriptions['after'];
                 }
             }
 

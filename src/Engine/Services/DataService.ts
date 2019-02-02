@@ -1,7 +1,7 @@
 ﻿namespace StoryScript {
     export interface IDataService {
         functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
-        loadDescription(type: string, item: { id?: string, description?: string }, logWhenNotFound?: boolean): string;
+        loadDescription(type: string, item: { id?: string, description?: string }): string;
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
@@ -67,7 +67,7 @@ namespace StoryScript {
             return null;
         }
 
-        loadDescription = (type: string, item: { id?: string, description?: string, pictureFileName?: string, hasHtmlDescription?: boolean }, logWhenNotFound?: boolean): string => {
+        loadDescription = (type: string, item: { id?: string, description?: string, pictureFileName?: string, hasHtmlDescription?: boolean }): string => {
             var self = this;
             var identifier = self.GetIdentifier(type, item);
 
@@ -84,10 +84,7 @@ namespace StoryScript {
             var html = self.descriptionBundle.get(identifier);
 
             if (!html) {
-                if (logWhenNotFound === undefined || logWhenNotFound) {
-                    console.log('No file ' + identifier + '.html found. Did you create this file already?');
-                }
-
+                console.log('No file ' + identifier + '.html found. Did you create this file already?');
                 self.loadedDescriptions[identifier] = null;
                 return null;
             }

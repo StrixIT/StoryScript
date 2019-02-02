@@ -14,11 +14,11 @@
         name: string;
 
         /**
-         * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically
-         * setting a location's description. If you want to have a description selector function for all locations, use the descriptionSelector
-         * function of the game rules. Return the selector string.
+         * You can specify a function to determine a description selector or use a string value. When specified, the selector is used for
+         * setting a location's description from a list of available alternatives. If you want to have a description selector function for 
+         * all locations, use the descriptionSelector function of the game rules.
          */
-        descriptionSelector?: (game: IGame) => string;
+        descriptionSelector?: ((game: IGame) => string) | string;
 
         /**
          * The features of this location that the player can interact with.

@@ -128,10 +128,7 @@ namespace StoryScript {
                 self._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
             }
             else {
-                self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
-                self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
-                self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
-                self._locationService.saveWorld(self._game.locations);
+                self.SaveWorldState();
             }
         }
 
@@ -152,6 +149,9 @@ namespace StoryScript {
                 if (saveGame.previousLocation) {
                     self._game.previousLocation = self._game.locations.get(saveGame.previousLocation);
                 }
+
+                self.SaveWorldState();
+                self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
 
                 self._game.state = saveGame.state;
             }
@@ -296,6 +296,14 @@ namespace StoryScript {
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
+        }
+
+        private SaveWorldState() {
+            var self = this;
+            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
+            self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
+            self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
+            self._locationService.saveWorld(self._game.locations);
         }
 
         private setupGame(): void {
