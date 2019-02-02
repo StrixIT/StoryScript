@@ -30,7 +30,7 @@ namespace StoryScript {
 
         dynamicLocations = (): boolean => {
             var self = this;
-            return self._gameService.dynamicLocations;
+            return self._gameService.dynamicLocations();
         }
     }
 

@@ -17,7 +17,7 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
-        dynamicLocations: boolean;
+        dynamicLocations(): boolean;
     }
 }
 
@@ -299,7 +299,10 @@ namespace StoryScript {
             }
         }
 
-        dynamicLocations = this._game.definitions.dynamicLocations;
+        dynamicLocations = (): boolean => {
+            var self = this;
+            return self._game.definitions.dynamicLocations;
+        }
 
         private SaveWorldState() {
             var self = this;
