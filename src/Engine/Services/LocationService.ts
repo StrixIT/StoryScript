@@ -205,12 +205,23 @@ namespace StoryScript {
             var self = this;
             var locations = self._definitions.locations;
             var compiledLocations = [];
+            var dynamicLocations = false;
+
+            if (locations.length < 1)
+            {
+                dynamicLocations = true;
+                var dynamicStartLocation = function Start () { return { name: 'Start' } };
+
+                locations = [
+                    dynamicStartLocation
+                ];
+            }
 
             for (var n in locations) {
                 var definition = locations[n];
                 var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self._definitions);
 
-                if (!location.destinations) {
+                if (!dynamicLocations && !location.destinations) {
                     console.log('No destinations specified for location ' + location.id);
                 }
 
@@ -319,131 +330,130 @@ namespace StoryScript {
             }
 
             game.currentLocation.persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
-                self._dataService.loadDescription('persons', person).then(function (conversations) {
-                    var parser = new DOMParser();
+                var conversations = self._dataService.loadDescription('persons', person);
+                var parser = new DOMParser();
 
-                    if (conversations.indexOf('<conversation>') == -1) {
-                        conversations = '<conversation>' + conversations + '</conversation>';
+                if (conversations.indexOf('<conversation>') == -1) {
+                    conversations = '<conversation>' + conversations + '</conversation>';
+                }
+
+                var htmlDoc = parser.parseFromString(conversations, "text/html");
+                var defaultReplyNodes = htmlDoc.getElementsByTagName("default-reply");
+                var defaultReply = null;
+
+                if (defaultReplyNodes.length > 1) {
+                    throw new Error('More than one default reply in conversation for person ' + person.id + '.');
+                }
+                else if (defaultReplyNodes.length === 1) {
+                    defaultReply = defaultReplyNodes[0].innerHTML.trim();
+                }
+
+                var conversationNodes = htmlDoc.getElementsByTagName("node");
+
+                person.conversation.nodes = [];
+
+                for (var i = 0; i < conversationNodes.length; i++) {
+                    var node = conversationNodes[i];
+                    var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
+
+                    if (!nameAttribute && console) {
+                        console.log('Missing name attribute on node for conversation for person ' + person.id + '. Using \'default\' as default name');
+                        nameAttribute = 'default';
                     }
 
-                    var htmlDoc = parser.parseFromString(conversations, "text/html");
-                    var defaultReplyNodes = htmlDoc.getElementsByTagName("default-reply");
-                    var defaultReply = null;
-
-                    if (defaultReplyNodes.length > 1) {
-                        throw new Error('More than one default reply in conversation for person ' + person.id + '.');
-                    }
-                    else if (defaultReplyNodes.length === 1) {
-                        defaultReply = defaultReplyNodes[0].innerHTML.trim();
+                    if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
+                        throw new Error('Duplicate nodes with name ' + name + ' for conversation for person ' + person.id + '.');
                     }
 
-                    var conversationNodes = htmlDoc.getElementsByTagName("node");
+                    var newNode = <IConversationNode>{
+                        node: nameAttribute,
+                        lines: '',
+                        replies: null,
+                    };
 
-                    person.conversation.nodes = [];
+                    for (var j = 0; j < node.childNodes.length; j++) {
+                        var replies = node.childNodes[j];
 
-                    for (var i = 0; i < conversationNodes.length; i++) {
-                        var node = conversationNodes[i];
-                        var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
+                        if (replies.nodeName.toLowerCase() == 'replies') {
+                            var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
+                            var addDefaultReply = addDefaultValue && addDefaultValue.toLowerCase() === 'false' ? false : true;
 
-                        if (!nameAttribute && console) {
-                            console.log('Missing name attribute on node for conversation for person ' + person.id + '. Using \'default\' as default name');
-                            nameAttribute = 'default';
-                        }
-
-                        if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
-                            throw new Error('Duplicate nodes with name ' + name + ' for conversation for person ' + person.id + '.');
-                        }
-
-                        var newNode = <IConversationNode>{
-                            node: nameAttribute,
-                            lines: '',
-                            replies: null,
-                        };
-
-                        for (var j = 0; j < node.childNodes.length; j++) {
-                            var replies = node.childNodes[j];
-
-                            if (replies.nodeName.toLowerCase() == 'replies') {
-                                var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
-                                var addDefaultReply = addDefaultValue && addDefaultValue.toLowerCase() === 'false' ? false : true;
-
-                                newNode.replies = <IConversationReplies>{
-                                    defaultReply: <boolean>addDefaultReply,
-                                    options: <ICollection<IConversationReply>>[]
-                                };
-
-                                for (var k = 0; k < replies.childNodes.length; k++) {
-                                    var replyNode = replies.childNodes[k];
-
-                                    if (replyNode.nodeName.toLowerCase() == 'reply') {
-                                        var requires = self.GetNodeValue(replyNode, 'requires');
-                                        var linkToNode = self.GetNodeValue(replyNode, 'node');
-                                        var trigger = self.GetNodeValue(replyNode, 'trigger');
-                                        var questStart = self.GetNodeValue(replyNode, 'quest-start');
-                                        var questComplete = self.GetNodeValue(replyNode, 'quest-complete');
-                                        var setStart = self.GetNodeValue(replyNode, 'set-start');
-
-                                        if (trigger && !person.conversation.actions[trigger]) {
-                                            console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
-                                        }
-
-                                        var reply = <IConversationReply>{
-                                            requires: requires,
-                                            linkToNode: linkToNode,
-                                            trigger: trigger,
-                                            questStart: questStart,
-                                            questComplete: questComplete,
-                                            setStart: setStart,
-                                            lines: (<any>replyNode).innerHTML.trim(),
-                                        };
-
-                                        newNode.replies.options.push(reply);
-                                    }
-                                }
-
-                                node.removeChild(replies);
-
-                                if (defaultReply && newNode.replies.defaultReply) {
-                                    newNode.replies.options.push(<IConversationReply>{
-                                        lines: defaultReply
-                                    });
-                                }
-                            }
-                        }
-
-                        if (!newNode.replies && defaultReply) {
                             newNode.replies = <IConversationReplies>{
-                                defaultReply: true,
-                                options: <ICollection<IConversationReply>>[
-                                    {
-                                        lines: defaultReply
+                                defaultReply: <boolean>addDefaultReply,
+                                options: <ICollection<IConversationReply>>[]
+                            };
+
+                            for (var k = 0; k < replies.childNodes.length; k++) {
+                                var replyNode = replies.childNodes[k];
+
+                                if (replyNode.nodeName.toLowerCase() == 'reply') {
+                                    var requires = self.GetNodeValue(replyNode, 'requires');
+                                    var linkToNode = self.GetNodeValue(replyNode, 'node');
+                                    var trigger = self.GetNodeValue(replyNode, 'trigger');
+                                    var questStart = self.GetNodeValue(replyNode, 'quest-start');
+                                    var questComplete = self.GetNodeValue(replyNode, 'quest-complete');
+                                    var setStart = self.GetNodeValue(replyNode, 'set-start');
+
+                                    if (trigger && !person.conversation.actions[trigger]) {
+                                        console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
                                     }
-                                ]
+
+                                    var reply = <IConversationReply>{
+                                        requires: requires,
+                                        linkToNode: linkToNode,
+                                        trigger: trigger,
+                                        questStart: questStart,
+                                        questComplete: questComplete,
+                                        setStart: setStart,
+                                        lines: (<any>replyNode).innerHTML.trim(),
+                                    };
+
+                                    newNode.replies.options.push(reply);
+                                }
+                            }
+
+                            node.removeChild(replies);
+
+                            if (defaultReply && newNode.replies.defaultReply) {
+                                newNode.replies.options.push(<IConversationReply>{
+                                    lines: defaultReply
+                                });
                             }
                         }
-
-                        newNode.lines = node.innerHTML.trim();
-                        person.conversation.nodes.push(newNode);
                     }
 
-                    person.conversation.nodes.forEach(n => {
-                        if (n.replies && n.replies.options)
-                        {
-                            n.replies.options.forEach(r => {
-                                if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
-                                    console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
+                    if (!newNode.replies && defaultReply) {
+                        newNode.replies = <IConversationReplies>{
+                            defaultReply: true,
+                            options: <ICollection<IConversationReply>>[
+                                {
+                                    lines: defaultReply
                                 }
-
-                                if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
-                                    console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
-                                }
-                            });
+                            ]
                         }
-                    });
+                    }
 
-                    var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
-                    person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
+                    newNode.lines = node.innerHTML.trim();
+                    person.conversation.nodes.push(newNode);
+                }
+
+                person.conversation.nodes.forEach(n => {
+                    if (n.replies && n.replies.options)
+                    {
+                        n.replies.options.forEach(r => {
+                            if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
+                                console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
+                            }
+
+                            if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
+                                console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
+                            }
+                        });
+                    }
                 });
+
+                var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
+                person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
             });
         }
 
@@ -459,52 +469,70 @@ namespace StoryScript {
                 return;
             }
 
-            self._dataService.loadDescription('locations', game.currentLocation).then(function (descriptions) {
-                var parser = new DOMParser();
+            var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
+            var parser = new DOMParser();
 
-                if (descriptions.indexOf('<descriptions>') == -1) {
-                    descriptions = '<descriptions>' + descriptions + '</descriptions>';
+            if (descriptions.indexOf('<descriptions>') == -1) {
+                descriptions = '<descriptions>' + descriptions + '</descriptions>';
+            }
+
+            var htmlDoc = parser.parseFromString(descriptions, "text/html");
+            var descriptionNodes = htmlDoc.getElementsByTagName("description");
+            game.currentLocation.descriptions = {};
+
+            for (var i = 0; i < descriptionNodes.length; i++) {
+                var node = descriptionNodes[i];
+                var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+                var name = nameAttribute ? nameAttribute : 'default';
+
+                if (game.currentLocation.descriptions[name]) {
+                    throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');
                 }
 
-                var htmlDoc = parser.parseFromString(descriptions, "text/html");
-                var descriptionNodes = htmlDoc.getElementsByTagName("description");
-                game.currentLocation.descriptions = {};
+                game.currentLocation.descriptions[name] = node.innerHTML;
+            }
 
-                for (var i = 0; i < descriptionNodes.length; i++) {
-                    var node = descriptionNodes[i];
+            var destinationsNodes = htmlDoc.getElementsByTagName("destination");
+
+            for (var i = 0; i < destinationsNodes.length; i++) {
+                var node = destinationsNodes[i];
+                var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+
+                if (!nameAttribute)
+                {
+                    throw new Error('There is a destination without a name for location ' + game.currentLocation.id + '.');
+                }
+
+                var targetExists = self._dataService.loadDescription('locations', { id: nameAttribute }) != null;
+
+                var locationToAdd = { id: nameAttribute, target: targetExists ? nameAttribute : null, name: node.innerHTML };
+
+                game.locations.push(locationToAdd);
+                game.currentLocation.destinations.push(locationToAdd);
+            }
+
+            var featureNodes = htmlDoc.getElementsByTagName("feature");
+
+            if (game.currentLocation.features) {
+                for (var i = 0; i < featureNodes.length; i++) {
+                    var node = featureNodes[i];
                     var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-                    var name = nameAttribute ? nameAttribute : 'default';
 
-                    if (game.currentLocation.descriptions[name]) {
-                        throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');
+                    if (!nameAttribute) {
+                        throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
                     }
 
-                    game.currentLocation.descriptions[name] = node.innerHTML;
-                }
+                    nameAttribute = nameAttribute.toLowerCase();
 
-                var featureNodes = htmlDoc.getElementsByTagName("feature");
-
-                if (game.currentLocation.features) {
-                    for (var i = 0; i < featureNodes.length; i++) {
-                        var node = featureNodes[i];
-                        var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-
-                        if (!nameAttribute) {
-                            throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
-                        }
-
-                        nameAttribute = nameAttribute.toLowerCase();
-
-                        if (!game.currentLocation.features.some(f => f.name.toLowerCase() === nameAttribute)) {
-                            throw new Error('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
-                        }
-
-                        game.currentLocation.features.filter(f => f.name.toLowerCase() === nameAttribute)[0].description = node.innerHTML;
+                    if (!game.currentLocation.features.some(f => f.name.toLowerCase() === nameAttribute)) {
+                        throw new Error('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
                     }
-                }
 
-                self.selectLocationDescription(game);
-            });
+                    game.currentLocation.features.filter(f => f.name.toLowerCase() === nameAttribute)[0].description = node.innerHTML;
+                }
+            }
+
+            self.selectLocationDescription(game);
         }
 
         private selectLocationDescription(game: IGame) {
@@ -560,9 +588,10 @@ namespace StoryScript {
 
         // Replace the function pointers for the destination targets with the function keys.
         // That's all that is needed to navigate, and makes it easy to save these targets.
+        // Note that dynamically added destinations already have a string as target so use that one.
         // Also set the barrier selected actions to the first one available for each barrier.
         // Further, instantiate any keys present and replace combine functions with their target ids.
-        destination.target = (<any>destination.target).name;
+        destination.target = (destination.target && (<any>destination.target).name) || destination.target;
 
         if (destination.barrier) {
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {

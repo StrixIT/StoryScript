@@ -14,11 +14,11 @@
         name: string;
 
         /**
-         * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically
-         * setting a location's description. If you want to have a description selector function for all locations, use the descriptionSelector
-         * function of the game rules. Return the selector string.
+         * You can specify a function to determine a description selector or use a string value. When specified, the selector is used for
+         * setting a location's description from a list of available alternatives. If you want to have a description selector function for 
+         * all locations, use the descriptionSelector function of the game rules.
          */
-        descriptionSelector?: (game: IGame) => string;
+        descriptionSelector?: ((game: IGame) => string) | string;
 
         /**
          * The features of this location that the player can interact with.
@@ -88,17 +88,17 @@
         /**
          * The current description shown to the player for this location.
          */
-        text: string;
+        text?: string;
 
         /**
          * True if the player has visited this location, false otherwise.
          */
-        hasVisited: boolean;
+        hasVisited?: boolean;
 
         /**
          * All the descriptions available for this location, per description key.
          */
-        descriptions: { [key: string] : string; };
+        descriptions?: { [key: string] : string; };
 
          /**
          * Trade objects present at this location. If you don't want to use persons to trade with, you can use this object. Useful for
@@ -119,7 +119,7 @@
         /**
          * Messages logged to this location.
          */
-        log: string[];
+        log?: string[];
 
         /**
          * When specified, this function will be called on leaving a location to determine whether the player has done all

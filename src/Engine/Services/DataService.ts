@@ -1,8 +1,8 @@
 ﻿namespace StoryScript {
     export interface IDataService {
         functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
-        loadDescription(type: string, item: { id?: string, description?: string });
-        hasDescription(type: string, item: { id?: string, description?: string });
+        loadDescription(type: string, item: { id?: string, description?: string }): string;
+        hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         save<T>(key: string, value: T, pristineValues?: T): void;
         load<T>(key: string): T;
         getSaveKeys(): string[];
@@ -13,14 +13,16 @@
 namespace StoryScript {
     export class DataService implements IDataService {
         public functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
-        private descriptionPaths: { [id: string]: { loading: boolean, loaded: boolean, description: string } };
+        private descriptionBundle: Map<string, string>;
+        private loadedDescriptions: { [id: string]: string };
         private functionArgumentRegex = /\([a-z-A-Z0-9: ]{1,}\)/;
 
-        constructor(private _httpService: IHttpService, private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string, private _definitions: IDefinitions) {
+        constructor(private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string, private _definitions: IDefinitions) {
             var self = this;
             self._definitions = self.getDefinitions(_definitions);
             self._game.definitions = self._definitions;
             self.registerFunctions();
+            self.descriptionBundle = window.StoryScript.GetGameDescriptions();
         }
         
         save = <T>(key: string, value: T, pristineValues?: T): void => {
@@ -39,7 +41,7 @@ namespace StoryScript {
             return self._localStorageService.getKeys(self._gameNameSpace + '_' + DataKeys.GAME + '_');
         }
 
-        public load<T>(key: string): T {
+        load = <T>(key: string): T => {
             var self = this;
 
             try {
@@ -63,6 +65,54 @@ namespace StoryScript {
             }
 
             return null;
+        }
+
+        loadDescription = (type: string, item: { id?: string, description?: string, pictureFileName?: string, hasHtmlDescription?: boolean }): string => {
+            var self = this;
+            var identifier = self.GetIdentifier(type, item);
+
+            if (!self.loadedDescriptions) {
+                self.loadedDescriptions = {};
+            }
+
+            var loadedDescription = self.loadedDescriptions[identifier];
+
+            if (loadedDescription) {
+                return loadedDescription;
+            }
+            
+            var html = self.descriptionBundle.get(identifier);
+
+            if (!html) {
+                console.log('No file ' + identifier + '.html found. Did you create this file already?');
+                self.loadedDescriptions[identifier] = null;
+                return null;
+            }
+
+            var parser = new DOMParser();
+            var htmlDoc = parser.parseFromString(html, 'text/html');
+            var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
+            var pictureSrc = pictureElement && pictureElement.getAttribute('src');
+
+            if (pictureSrc) {
+                item.pictureFileName = pictureSrc;
+            }
+
+            // Track that this item had a HTML description so it can be re-loaded later.
+            item.hasHtmlDescription = true;
+            item.description = html;
+            self.loadedDescriptions[identifier] = html;
+            return html;
+        }
+
+        hasDescription = (type: string, item: { id?: string, description?: string }): boolean => {
+            var self = this;
+            var identifier = self.GetIdentifier(type, item);
+            return self.descriptionBundle.get(identifier) != null;
+        }
+
+        private GetIdentifier(type: string, item: { id?: string; description?: string; pictureFileName?: string; hasHtmlDescription?: boolean; }) {
+            return (type + '/' + item.id).toLowerCase();
         }
 
         private getDefinitions(definitions: IDefinitions) {
@@ -97,101 +147,6 @@ namespace StoryScript {
                     collection.push(object[n]);
                 }
             }
-        }
-
-        public loadDescription(type: string, item: { id?: string, description?: string, pictureFileName?: string, hasHtmlDescription?: boolean }): Promise<any> {
-            var self = this;
-            var identifier = type + '/' + item.id;
-
-            if (!self.descriptionPaths) {
-                self.descriptionPaths = {};
-            }
-
-            var pathEntry = self.descriptionPaths[identifier];
-            var description = pathEntry ? pathEntry.description : null;
-
-            if (!pathEntry) {
-                // Note that items and enemies need to have a description equal to the HTML constant
-                // to have their description loaded from an html file.
-                var loadDescription = (type === 'locations' || type === 'persons') || item.description === Constants.HTML;
-                pathEntry = { loading: false, loaded: !loadDescription, description: loadDescription ? null : item.description };
-                self.descriptionPaths[identifier] = pathEntry;
-            }
-
-            var promise = new Promise<any>(function (resolve, reject) {
-
-                if (!pathEntry.loading && !pathEntry.loaded) {
-                    pathEntry.loading = true;
-
-                    self._httpService.get(identifier + '.html').then((result: any) => {
-                        var parser = new DOMParser();
-                        var htmlDoc = parser.parseFromString(result, 'text/html');
-                        var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
-                        var pictureSrc = pictureElement && pictureElement.getAttribute('src');
-
-                        if (pictureSrc) {
-                            item.pictureFileName = pictureSrc;
-                        }
-
-                        // Track that this item had a HTML description so it can be re-loaded later.
-                        item.hasHtmlDescription = true;
-                        item.description = result;
-                        pathEntry.loading = false;
-                        pathEntry.loaded = true;
-                        pathEntry.description = result;
-                        self.notify();
-                        resolve(result);
-                    }).catch(() => {
-                        pathEntry.loading = false;
-                        pathEntry.loaded = true;
-                        pathEntry.description = null;
-                        self.notify();
-                        reject();
-                    });
-                }
-                else {
-                    item.description = description;
-                    self.notify();
-                    resolve(description);
-                }
-            });
-
-            return promise;
-        }
-
-        private notify(): void {
-            var self = this;
-            setTimeout(() => {
-                self.RaiseResourceLoadedEvent();
-            }, 0);
-        }
-
-        public hasDescription(type: string, item: { id?: string, description?: string }) {
-            var self = this;
-            var result = false;
-            var identifier = type + '/' + item.id;
-
-            if (!self.descriptionPaths) {
-                self.descriptionPaths = {};
-            }
-
-            var pathEntry = self.descriptionPaths[identifier];
-
-            if (!pathEntry) {
-                self.loadDescription(type, item);
-            }
-
-            else if (pathEntry.loaded && pathEntry.description) {
-                result = true;
-            }
-
-            return result;
-        }
-
-        private RaiseResourceLoadedEvent = (): void => {
-            var self = this;
-            var evt = new Event('resourceLoaded');
-            self._events.dispatchEvent(evt);
         }
 
         private buildClone(values, pristineValues, clone?) {

@@ -10,6 +10,7 @@
         "gulp": "^3.9.1",
         "gulp-concat": "^2.6.1",
         "gulp-cssmin": "^0.2.0",
+        "gulp-rename": "^1.4.0",
         "gulp-flatten": "^0.4.0",
         "gulp-shell": "^0.6.5",
         "gulp-sourcemaps": "^2.6.4",
@@ -22,6 +23,8 @@
         "requirejs": "^2.3.5",
         "typescript": "^2.8.3",
         "lite-server": "^2.4.0",
-        "lodash": "^4.17.11"
+        "lodash": "^4.17.11",
+        "gulp-angular-templatecache": "^2.2.6",
+        "gulp-minify-html": "^1.0.6"
     }
 }

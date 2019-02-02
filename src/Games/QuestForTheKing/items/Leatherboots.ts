@@ -2,7 +2,6 @@
     export function Leatherboots(): IItem {
         return {
             name: 'Leather Boots',
-            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Feet,
             dayAvailable: 1,

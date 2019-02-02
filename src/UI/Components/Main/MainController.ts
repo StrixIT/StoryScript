@@ -14,16 +14,21 @@ namespace StoryScript {
             self._scope.$watch('game.currentLocation', self.watchLocation);
             self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self._scope.$watch('game.character.score', self.watchCharacterScore);
-            
-            _eventListener.addEventListener('resourceLoaded', function() {
-                self._scope.$applyAsync();
-            });
 
             _eventListener.addEventListener('combinationFinished', function(event) {
                 self._scope.$broadcast('showCombinationText', (<any>event).combineText);
             });
 
             self.init();
+        }
+
+        showCharacterSheet = () => {
+            var self = this;
+
+            // Just check to see whether there are any character sheet elements that display anything 
+            // to determine whether or not it should be shown.
+            var sheetElement = angular.element('#character-sheet-container');
+            return sheetElement[0] && sheetElement[0].innerText;
         }
 
         game: IGame;

@@ -128,10 +128,7 @@ namespace StoryScript {
                 self._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
             }
             else {
-                self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
-                self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
-                self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
-                self._locationService.saveWorld(self._game.locations);
+                self.SaveWorldState();
             }
         }
 
@@ -153,13 +150,10 @@ namespace StoryScript {
                     self._game.previousLocation = self._game.locations.get(saveGame.previousLocation);
                 }
 
-                self._game.state = saveGame.state;
+                self.SaveWorldState();
+                self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
 
-                setTimeout(() => {
-                    var evt = new Event('resourceLoaded');
-                    self._events.dispatchEvent(evt);
-                    self._game.loading = false;
-                }, 0);
+                self._game.state = saveGame.state;
             }
         }
 
@@ -177,16 +171,13 @@ namespace StoryScript {
             var self = this;
             var description = entity && entity[key] ? entity[key] : null;
 
-            if (description === Constants.HTML) {
+            if (!description) {
                 self._dataService.loadDescription(type, entity);
+                description = entity[key];
             }
 
             if (description) {
                 self.processAudioTags(entity, key);
-            }
-
-            if (self._rules.processDescription) {
-                description = self._rules.processDescription(self._game, entity, key);
             }
 
             return description;
@@ -208,6 +199,12 @@ namespace StoryScript {
 
         fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
             var self = this;
+
+            if (!self._rules || !self._rules.fight)
+            {
+                return;
+            }
+
             self._rules.fight(self._game, enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
@@ -273,7 +270,7 @@ namespace StoryScript {
             // Todo: change if xp can be lost.
             if (change > 0) {
                 var character = self._game.character;
-                var levelUp = self._rules.scoreChange(self._game, change);
+                var levelUp = self._rules && self._rules.scoreChange && self._rules.scoreChange(self._game, change);
 
                 if (levelUp) {
                     self._game.state = StoryScript.GameState.LevelUp;
@@ -299,6 +296,14 @@ namespace StoryScript {
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
+        }
+
+        private SaveWorldState() {
+            var self = this;
+            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
+            self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
+            self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
+            self._locationService.saveWorld(self._game.locations);
         }
 
         private setupGame(): void {
@@ -374,14 +379,12 @@ namespace StoryScript {
 
             if (entity.hasHtmlDescription) {
                 if (entity.descriptions) {
-                    // Clear location descriptions for re-load.
                     entity.descriptions = null;
                     entity.text = null;
                 }
                 
                 if (entity.description) {
-                    // Reset item or enemy descriptions for re-load.
-                    entity.description = Constants.HTML;
+                    entity.description = null;
                 }
 
                 if (entity.conversation && entity.conversation.nodes) {
@@ -403,9 +406,8 @@ namespace StoryScript {
             }
         }
 
-        private processAudioTags(parent: any, key: string, newOnly?: boolean) {
+        private processAudioTags(parent: any, key: string) {
             var self = this;
-            var description = parent[key] as string;
             var descriptionEntry = parent;
             var descriptionKey = key;
     
@@ -423,10 +425,10 @@ namespace StoryScript {
             }
 
             if (descriptionKey !== key) {
-                self.updateAudioTags(descriptionEntry, descriptionKey, 'autoplay="autoplay"', '');
+                self.updateAudioTags(descriptionEntry, descriptionKey, ['autoplay="autoplay"', 'autoplay=""'], '');
             }
 
-            var startPlay = self.updateAudioTags(parent, key, 'autoplay="autoplay"', 'added="added"');
+            var startPlay = self.updateAudioTags(parent, key, ['autoplay="autoplay"', 'autoplay=""'], 'added="added"');
     
             if (startPlay)
             {
@@ -438,7 +440,7 @@ namespace StoryScript {
                         var added = element.getAttribute('added');
     
                         if (element.play && added === 'added') {
-                            self.updateAudioTags(parent, key, 'added="added"', '');
+                            self.updateAudioTags(parent, key, ['added="added"'], '');
 
                             // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
                             const playPromise = element.play();
@@ -452,13 +454,18 @@ namespace StoryScript {
             }
         }
 
-        private updateAudioTags(entity: any, key: string, tagToFind: string, tagToReplace: string): boolean {
+        private updateAudioTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
             let startPlay = false;
 
             if (entity[key]) {
-                if (entity[key].indexOf(tagToFind) > -1) {
-                    entity[key] = entity[key].replace(tagToFind, tagToReplace);
-                    startPlay = true;
+                for (var i in tagToFind)
+                {
+                    var tag = tagToFind[i];
+
+                    if (entity[key].indexOf(tag) > -1) {
+                        entity[key] = entity[key].replace(tag, tagToReplace);
+                        startPlay = true;
+                    }
                 }
             }
 

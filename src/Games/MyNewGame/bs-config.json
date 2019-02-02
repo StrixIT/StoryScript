@@ -1,0 +1,7 @@
+{
+  "browser": "chrome",
+  "server": {
+    "baseDir": "./dist"
+  },
+  "injectChanges": true
+}

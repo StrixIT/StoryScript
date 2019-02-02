@@ -15,7 +15,7 @@
             <div class="clearfix"></div>
         </div>
     </div>
-    <div class="box-container" id="character-equipment" ng-show="$ctrl.showEquipment()">
+    <div class="box-container" id="character-equipment" ng-if="$ctrl.showEquipment()">
         <div class="box-title" data-toggle="collapse" data-target="#equipment-panel">{{ $ctrl.texts.equipmentHeader }}</div>
         <div id="equipment-panel" class="collapse show">
             <div class="row" ng-show="$ctrl.isSlotUsed('head')">
@@ -85,7 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="box-container" id="character-backpack">
+    <div class="box-container" id="character-backpack" ng-if="$ctrl.game.character.items.length > 0">
         <div class="box-title" data-toggle="collapse" data-target="#backpack-panel">{{ $ctrl.texts.backpack }}</div>
         <ul id="backpack-panel" class="collapse show list-unstyled">
             <li ng-repeat="item in $ctrl.game.character.items">
@@ -103,7 +103,7 @@
     </div>
     <div class="box-container" id="character-quests" ng-if="$ctrl.showQuests()">
         <div class="box-title" data-toggle="collapse" data-target="#quest-panel">{{ $ctrl.texts.quests }}</div>
-        <div id="quest-panel" class="collapse in">
+        <div id="quest-panel" class="collapse show">
             <div ng-if="$ctrl.showActiveQuests()">
                 <h4>Current</h4>
                 <ul>

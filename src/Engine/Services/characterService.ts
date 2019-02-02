@@ -23,12 +23,12 @@ namespace StoryScript {
 
         getSheetAttributes = (): string[] => {
             var self = this;
-            return self._rules.getSheetAttributes();
+            return self._rules && self._rules.getSheetAttributes && self._rules.getSheetAttributes() || [];
         }
 
         setupCharacter = (): ICreateCharacter => {
             var self = this;
-            var sheet = self._rules.getCreateCharacterSheet();
+            var sheet = (self._rules && self._rules.getCreateCharacterSheet && self._rules.getCreateCharacterSheet()) || { steps: []};
             self.prepareSheet(sheet);
             self._game.createCharacterSheet = sheet;
 
@@ -93,7 +93,7 @@ namespace StoryScript {
             var self = this;
             var character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
 
-            if (isEmpty(character)) {
+            if (isEmpty(character) && self._rules && self._rules.createCharacter) {
 
                 character = self._rules.createCharacter(game, characterData);
                 self.processDefaultSettings(character, characterData);

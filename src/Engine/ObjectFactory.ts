@@ -11,7 +11,6 @@ namespace StoryScript {
         private _rules: IRules;
 
         private _localStorageService: ILocalStorageService = new LocalStorageService();
-        private _httpService: IHttpService = new HttpService();
 
         private _dataService: IDataService;
         private _locationService: ILocationService;
@@ -86,7 +85,7 @@ namespace StoryScript {
                 self._tradeService = new TradeService(self._game, self._texts);
                 self._conversationService = new ConversationService(self._game, self._rules, self._texts);
                 self._combinationService = new CombinationService(self._game, self._rules, self._texts);
-                self._dataService = new DataService(self._httpService, self._localStorageService, self._eventTarget, self._game, self._nameSpace, self._definitions);
+                self._dataService = new DataService(self._localStorageService, self._eventTarget, self._game, self._nameSpace, self._definitions);
                 self._locationService = new LocationService(self._dataService, self._rules, self._game, self._definitions);
                 self._characterService = new CharacterService(self._dataService, self._game, self._rules);
                 self._gameService = new GameService(self._dataService, self._locationService, self._characterService, self._combinationService, self._eventTarget, self._rules, self._helperService, self._game);

@@ -5,7 +5,7 @@
             startAdventure: "Start avontuur",
             equipmentHeader: "Uitrusting",
             gameName: "Gevaarlijke grot",
-            youAreHere: "Je bent hier",
+            youAreHere: "Je bent hier: {0}",
             destinations: "Uitgangen",
             onTheGround: "Op de grond",
             messages: "Gebeurtenissen",

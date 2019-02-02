@@ -2,7 +2,6 @@
     export function Leatherarmor(): IItem {
         return {
             name: 'Leather Armor',
-            description: StoryScript.Constants.HTML,
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Body,
             dayAvailable: 1,

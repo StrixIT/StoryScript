@@ -3,11 +3,11 @@
     <p>{{ $ctrl.texts.enemiesToFight }}</p>
     <ul class="list-unstyled">
         <li ng-repeat="enemy in $ctrl.game.currentLocation.activeEnemies" ng-click="$ctrl.tryCombine(enemy)" ng-class="$ctrl.getCombineClass(enemy)">
-            {{ enemy.name }}
+            <span>{{ enemy.name }}</span>
             <div class="inline" ng-class="$ctrl.getCombineClass()">
                 <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.hasDescription('enemies', enemy)" ng-click="$ctrl.showDescription(enemy, enemy.name)">{{ $ctrl.texts.view }}</button>
             </div>
         </li>
     </ul>
-    <button type="button" class="btn btn-danger" ng-click="$ctrl.startCombat()">{{ $ctrl.texts.startCombat }}</button>
+    <button type="button" class="btn btn-danger" id="start-combat" ng-click="$ctrl.startCombat()">{{ $ctrl.texts.startCombat }}</button>
 </div>

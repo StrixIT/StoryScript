@@ -33,7 +33,7 @@ namespace StoryScript
 
         enemiesPresent = (): boolean => {
             var self = this;
-            return self._game.currentLocation && self._game.currentLocation.activeEnemies.length > 0;
+            return self._game.currentLocation && self._game.currentLocation.activeEnemies && self._game.currentLocation.activeEnemies.length > 0;
         }
 
         getButtonClass = (action: IAction): string => {
@@ -98,6 +98,10 @@ namespace StoryScript
 
         showDescription = (scope: ng.IScope, type: string, item: any, title: string): void => {
             var self = this;
+
+            if (item.description === undefined) {
+                item.description = self._gameService.getDescription(type, item, 'description');
+            }
 
             if (item.description) {
                 self._game.state = GameState.Description;

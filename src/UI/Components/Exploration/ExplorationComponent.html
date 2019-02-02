@@ -24,7 +24,7 @@
                     <select class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" ng-options="a.name for a in destination.barrier.actions">
                     </select>
                 </div>
-                <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="$ctrl.changeLocation(destination.target)" ng-disabled="destination.barrier || $ctrl.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ $ctrl.texts.back }}</span> {{ destination.name }}</button>
+                <button type="button" class="btn btn-info" ng-class="destination.style" ng-click="$ctrl.changeLocation(destination.target)" ng-disabled="!destination.target || destination.barrier || $ctrl.game.currentLocation.navigationDisabled"><span ng-if="destination.isPreviousLocation">{{ $ctrl.texts.back }}</span> {{ destination.name }}</button>
             </li>
         </ul>
     </div>
