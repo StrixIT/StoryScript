@@ -1,3 +1,3 @@
 namespace AdventureGame {
-    StoryScript.Run('AdventureGame', new Rules(), new CustomTexts().texts);
+    StoryScript.Run('AdventureGame', new CustomTexts().texts, new Rules());
 }

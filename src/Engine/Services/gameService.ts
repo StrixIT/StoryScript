@@ -17,6 +17,7 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
+        dynamicLocations: boolean;
     }
 }
 
@@ -297,6 +298,8 @@ namespace StoryScript {
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
         }
+
+        dynamicLocations = this._game.definitions.dynamicLocations;
 
         private SaveWorldState() {
             var self = this;

@@ -10,6 +10,7 @@
 namespace StoryScript {
     export class LocationService implements ILocationService {
         private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
+        private dynamicLocations: boolean = false;
 
         constructor(private _dataService: IDataService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
@@ -20,6 +21,7 @@ namespace StoryScript {
             game.currentLocation = null;
             game.previousLocation = null;
             game.locations = self.loadWorld(buildWorld === undefined || buildWorld);
+            game.definitions.dynamicLocations = self.dynamicLocations;
         }
 
         private loadWorld(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
@@ -205,11 +207,10 @@ namespace StoryScript {
             var self = this;
             var locations = self._definitions.locations;
             var compiledLocations = [];
-            var dynamicLocations = false;
 
             if (locations.length < 1)
             {
-                dynamicLocations = true;
+                self.dynamicLocations = true;
                 var dynamicStartLocation = function Start () { return { name: 'Start' } };
 
                 locations = [
@@ -221,7 +222,7 @@ namespace StoryScript {
                 var definition = locations[n];
                 var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self._definitions);
 
-                if (!dynamicLocations && !location.destinations) {
+                if (!self.dynamicLocations && !location.destinations) {
                     console.log('No destinations specified for location ' + location.id);
                 }
 
@@ -483,6 +484,7 @@ namespace StoryScript {
             for (var i = 0; i < descriptionNodes.length; i++) {
                 var node = descriptionNodes[i];
                 var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+                var displayNameAttribute = node.attributes['displayname'] && node.attributes['displayname'].nodeValue;
                 var name = nameAttribute ? nameAttribute : 'default';
 
                 if (game.currentLocation.descriptions[name]) {
@@ -490,6 +492,7 @@ namespace StoryScript {
                 }
 
                 game.currentLocation.descriptions[name] = node.innerHTML;
+                game.currentLocation.name = displayNameAttribute || game.currentLocation.name;
             }
 
             var destinationsNodes = htmlDoc.getElementsByTagName("destination");

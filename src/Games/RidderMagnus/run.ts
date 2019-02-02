@@ -1,3 +1,3 @@
 namespace RidderMagnus {
-    StoryScript.Run('RidderMagnus', new Rules(), new CustomTexts().texts);
+    StoryScript.Run('RidderMagnus', new CustomTexts().texts, new Rules());
 }
