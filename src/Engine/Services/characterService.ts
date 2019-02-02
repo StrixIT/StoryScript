@@ -23,7 +23,7 @@ namespace StoryScript {
 
         getSheetAttributes = (): string[] => {
             var self = this;
-            return self._rules && self._rules.getSheetAttributes() || [];
+            return self._rules && self._rules.getSheetAttributes && self._rules.getSheetAttributes() || [];
         }
 
         setupCharacter = (): ICreateCharacter => {
