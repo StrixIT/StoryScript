@@ -144,7 +144,6 @@ namespace StoryScript {
                 self._game.worldProperties = saveGame.worldProperties;
             
                 self._locationService.init(self._game, false);
-
                 self._game.currentLocation = self._game.locations.get(saveGame.location);
 
                 if (saveGame.previousLocation) {
@@ -153,6 +152,7 @@ namespace StoryScript {
 
                 self.SaveWorldState();
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
+                self._game.actionLog = [];
 
                 self._game.state = saveGame.state;
             }

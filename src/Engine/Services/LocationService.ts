@@ -156,12 +156,6 @@ namespace StoryScript {
             self._dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
 
             if (game.previousLocation) {
-                if (!game.previousLocation.hasVisited) {
-                    game.previousLocation.hasVisited = true;
-                    self._game.statistics.LocationsVisited = self._game.statistics.LocationsVisited || 0;
-                    self._game.statistics.LocationsVisited += 1;
-                }
-
                 if (game.previousLocation.complete) {
                     game.previousLocation.complete(game, game.previousLocation);
                 }
@@ -180,6 +174,9 @@ namespace StoryScript {
             // If the player hasn't been here before, play the location events.
             if (!game.currentLocation.hasVisited && game.currentLocation.enterEvents) {
                 self.playEvents(game, game.currentLocation.enterEvents);
+                game.currentLocation.hasVisited = true;
+                self._game.statistics.LocationsVisited = self._game.statistics.LocationsVisited || 0;
+                self._game.statistics.LocationsVisited += 1;
             }
 
             self.loadConversations(game);
