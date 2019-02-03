@@ -3,5 +3,6 @@
   "server": {
     "baseDir": "./dist"
   },
-  "injectChanges": true
+  "injectChanges": true,
+  "ghostMode": false
 }

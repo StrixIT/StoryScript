@@ -458,10 +458,6 @@
         }
 
         private isEntityActive = (game: IGame, entity: IItem | ICompiledEnemy | IDestination): boolean => {
-            if (entity.inactive) {
-                return false;
-            }
-
             return (!entity.activeNight && !entity.activeDay) || (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay)
         }
     }
