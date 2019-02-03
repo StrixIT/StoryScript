@@ -31,7 +31,7 @@
         // Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
         if (typeof String.prototype.parseFunction != 'function') {
             (String.prototype).parseFunction = function () {
-                var funcReg = /function *\(([^()]*)\)[ \n\t]*{(.*)}/gmi;
+                var funcReg = /function *[a-zA-Z]{0,}\(([^()]*)\)[ \n\t]*{(.*)}/gmi;
                 var match = funcReg.exec(this.replace(/\n/g, ' '));
         
                 if (match) {
