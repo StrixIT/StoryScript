@@ -3,6 +3,7 @@
     exec = require('child_process').exec,
     cssmin = require("gulp-cssmin"),
     rename = require('gulp-rename'),
+    replace = require('gulp-replace'),
     //uglify = require("gulp-uglify"),
     flatten = require('gulp-flatten'),
     ts = require('gulp-typescript'),
@@ -24,6 +25,41 @@ var paths = {
     sourceroot: "./src/",
     typeroot: "./src/types/"
 };
+
+gulp.task('create-game-basic', function () {
+    var gameNameSpace = '', mode = '';
+
+    if (!gameNameSpace) {
+        gameNameSpace = '_test'
+        //throw new Error('No game namespace defined!');
+    }
+
+    if (!mode) {
+        mode = 'basic';
+    }
+
+    var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
+
+    var sources = mode === 'basic' ? 
+    [
+        templateRoot + 'locations/*.html',
+        templateRoot + 'ui/**/*.css',
+        templateRoot + 'bs-config.json',
+        templateRoot + 'customTexts.ts',
+        templateRoot + 'run.ts'
+    ] : 
+    [
+        templateRoot + '**/*.*'
+    ];
+
+    var destination = paths.sourceroot + 'Games/' + gameNameSpace;
+
+    console.log('sources:' + sources + '. Destination: ' + destination);
+
+    return gulp.src(sources, {base: templateRoot })
+            .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
+            .pipe(gulp.dest(destination));
+});
 
 gulp.task('start', ['watch'], function() {
     exec('lite-server -c ' + paths.webroot + 'bs-config.json');
