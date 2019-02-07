@@ -2,8 +2,8 @@
     export interface ILocationService {
         init(game: IGame, buildWorld?: boolean): void;
         saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>): void;
-        changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame): void;
         copyWorld(): ICompiledCollection<ILocation, ICompiledLocation>;
+        changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame): void;
     }
 }
 
@@ -24,83 +24,17 @@ namespace StoryScript {
             game.definitions.dynamicLocations = self.dynamicLocations;
         }
 
-        private loadWorld(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
-            var self = this;
-
-            if (buildWorld) {
-                self.pristineLocations = self.buildWorld();
-                var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
-
-                if (isEmpty(locations)) {
-                    self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                    locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
-                }
-            }
-            else {
-                locations = self._game.locations;
-            }
-
-            locations.forEach(function (location) {
-                self.initDestinations(location);
-
-                createReadOnlyCollection(location, 'features', location.features || <any>[]);
-                location.features.push = (<any>location.features.push).proxy(self.addFeature, self._game);
-
-                createReadOnlyCollection(location, 'actions', <any>location.actions || []);
-                location.actions.push = (<any>location.actions.push).proxy(self.addAction, self._game);
-
-                createReadOnlyCollection(location, 'combatActions', <any>location.combatActions || []);
-                location.combatActions.push = (<any>location.combatActions.push).proxy(self.addAction, self._game);
-
-                createReadOnlyCollection(location, 'persons', location.persons || <any>[]);
-                createReadOnlyCollection(location, 'enemies', location.enemies || <any>[]);
-                createReadOnlyCollection(location, 'items', location.items || <any>[]);
-
-                Object.defineProperty(location, 'activePersons', {
-                    get: function () {
-                        return location.persons.filter(e => { return !e.inactive; });
-                    }
-                });
-
-                Object.defineProperty(location, 'activeEnemies', {
-                    get: function () {
-                        return location.enemies.filter(e => { return !e.inactive; });
-                    }
-                });
-
-                Object.defineProperty(location, 'activeItems', {
-                    get: function () {
-                        return location.items.filter(e => { return !e.inactive; });
-                    }
-                });
-
-                addProxy(location, 'enemy', self._game, self._rules);
-            });
-
-            return locations;
-        }
-
-        private initDestinations(location: ICompiledLocation) {
-            var self = this;
-            createReadOnlyCollection(location, 'destinations', location.destinations || <any>[]);
-
-            // Add a proxy to the destination collection push function, to replace the target function pointer
-            // with the target id when adding destinations and enemies at runtime.
-            location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self._game);
-
-            Object.defineProperty(location, 'activeDestinations', {
-                get: function () {
-                    return location.destinations.filter(e => { return !e.inactive; });
-                }
-            });
-        }
-
-        public saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>) {
+        saveWorld = (locations: ICompiledCollection<ILocation, ICompiledLocation>) => {
             var self = this;
             self._dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
-        public changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame) {
+        copyWorld = (): ICompiledCollection<ILocation, ICompiledLocation> => {
+            var self = this;
+            return self._dataService.copy(self._game.locations, self.pristineLocations);
+        }
+
+        changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
             var self = this;
             var presentLocation: ICompiledLocation;
 
@@ -187,9 +121,75 @@ namespace StoryScript {
             self.loadConversations(game);
         }
 
-        copyWorld = (): ICompiledCollection<ILocation, ICompiledLocation> => {
+        private loadWorld(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
             var self = this;
-            return self._dataService.copy(self._game.locations, self.pristineLocations);
+
+            if (buildWorld) {
+                self.pristineLocations = self.buildWorld();
+                var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+
+                if (isEmpty(locations)) {
+                    self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
+                    locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+                }
+            }
+            else {
+                locations = self._game.locations;
+            }
+
+            locations.forEach(function (location) {
+                self.initDestinations(location);
+
+                createReadOnlyCollection(location, 'features', location.features || <any>[]);
+                location.features.push = (<any>location.features.push).proxy(self.addFeature, self._game);
+
+                createReadOnlyCollection(location, 'actions', <any>location.actions || []);
+                location.actions.push = (<any>location.actions.push).proxy(self.addAction, self._game);
+
+                createReadOnlyCollection(location, 'combatActions', <any>location.combatActions || []);
+                location.combatActions.push = (<any>location.combatActions.push).proxy(self.addAction, self._game);
+
+                createReadOnlyCollection(location, 'persons', location.persons || <any>[]);
+                createReadOnlyCollection(location, 'enemies', location.enemies || <any>[]);
+                createReadOnlyCollection(location, 'items', location.items || <any>[]);
+
+                Object.defineProperty(location, 'activePersons', {
+                    get: function () {
+                        return location.persons.filter(e => { return !e.inactive; });
+                    }
+                });
+
+                Object.defineProperty(location, 'activeEnemies', {
+                    get: function () {
+                        return location.enemies.filter(e => { return !e.inactive; });
+                    }
+                });
+
+                Object.defineProperty(location, 'activeItems', {
+                    get: function () {
+                        return location.items.filter(e => { return !e.inactive; });
+                    }
+                });
+
+                addProxy(location, 'enemy', self._game, self._rules);
+            });
+
+            return locations;
+        }
+
+        private initDestinations(location: ICompiledLocation) {
+            var self = this;
+            createReadOnlyCollection(location, 'destinations', location.destinations || <any>[]);
+
+            // Add a proxy to the destination collection push function, to replace the target function pointer
+            // with the target id when adding destinations and enemies at runtime.
+            location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self._game);
+
+            Object.defineProperty(location, 'activeDestinations', {
+                get: function () {
+                    return location.destinations.filter(e => { return !e.inactive; });
+                }
+            });
         }
 
         private initTrade(game: IGame) {
@@ -220,6 +220,14 @@ namespace StoryScript {
                 ];
             }
 
+            self.processLocations(locations, compiledLocations);
+
+            return compiledLocations;
+        }
+
+        private processLocations(locations: [() => ILocation], compiledLocations: ICompiledLocation[]) {
+            var self = this;
+
             for (var n in locations) {
                 var definition = locations[n];
                 var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self._definitions);
@@ -235,8 +243,6 @@ namespace StoryScript {
                 self.buildEntries(location, 'items', self._game.helpers.getItem);
                 compiledLocations.push(location);
             }
-
-            return compiledLocations;
         }
 
         private buildEntries(location: ICompiledLocation, collectionName: string, instantiateFunction: Function) {
@@ -474,12 +480,15 @@ namespace StoryScript {
 
             var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
             var parser = new DOMParser();
-
-            if (descriptions.indexOf('<descriptions>') == -1) {
-                descriptions = '<descriptions>' + descriptions + '</descriptions>';
-            }
-
             var htmlDoc = parser.parseFromString(descriptions, "text/html");
+
+            self.processDescriptions(htmlDoc, game);
+            self.processDynamicLocations(htmlDoc, game);
+            self.processFeatures(htmlDoc, game);
+            self.selectLocationDescription(game);
+        }
+
+        private processDescriptions(htmlDoc: Document, game: IGame) {
             var descriptionNodes = htmlDoc.getElementsByTagName("description");
             game.currentLocation.descriptions = {};
 
@@ -495,6 +504,14 @@ namespace StoryScript {
 
                 game.currentLocation.descriptions[name] = node.innerHTML;
                 game.currentLocation.name = displayNameAttribute || game.currentLocation.name;
+            }
+        }
+
+        private processDynamicLocations(htmlDoc: Document, game: IGame) {
+            var self = this;
+
+            if (!game.definitions.dynamicLocations) {
+                return;
             }
 
             var destinationsNodes = htmlDoc.getElementsByTagName("destination");
@@ -516,7 +533,9 @@ namespace StoryScript {
                 game.locations.push(locationToAdd);
                 game.currentLocation.destinations.push(locationToAdd);
             }
+        }
 
+        private processFeatures(htmlDoc: Document, game: IGame) {
             var featureNodes = htmlDoc.getElementsByTagName("feature");
 
             if (game.currentLocation.features) {
@@ -537,8 +556,6 @@ namespace StoryScript {
                     game.currentLocation.features.filter(f => f.name.toLowerCase() === nameAttribute)[0].description = node.innerHTML;
                 }
             }
-
-            self.selectLocationDescription(game);
         }
 
         private selectLocationDescription(game: IGame) {
