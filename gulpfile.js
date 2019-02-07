@@ -1,5 +1,4 @@
 ﻿var gulp = require("gulp"),
-    shell = require('gulp-shell'),
     exec = require('child_process').exec,
     cssmin = require("gulp-cssmin"),
     rename = require('gulp-rename'),
