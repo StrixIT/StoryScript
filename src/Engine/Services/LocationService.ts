@@ -41,11 +41,7 @@ namespace StoryScript {
             }
 
             locations.forEach(function (location) {
-                createReadOnlyCollection(location, 'destinations', location.destinations || <any>[]);
-
-                // Add a proxy to the destination collection push function, to replace the target function pointer
-                // with the target id when adding destinations and enemies at runtime.
-                location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self._game);
+                self.initDestinations(location);
 
                 createReadOnlyCollection(location, 'features', location.features || <any>[]);
                 location.features.push = (<any>location.features.push).proxy(self.addFeature, self._game);
@@ -78,16 +74,25 @@ namespace StoryScript {
                     }
                 });
 
-                Object.defineProperty(location, 'activeDestinations', {
-                    get: function () {
-                        return location.destinations.filter(e => { return !e.inactive; });
-                    }
-                });
-
                 addProxy(location, 'enemy', self._game, self._rules);
             });
 
             return locations;
+        }
+
+        private initDestinations(location: ICompiledLocation) {
+            var self = this;
+            createReadOnlyCollection(location, 'destinations', location.destinations || <any>[]);
+
+            // Add a proxy to the destination collection push function, to replace the target function pointer
+            // with the target id when adding destinations and enemies at runtime.
+            location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self._game);
+
+            Object.defineProperty(location, 'activeDestinations', {
+                get: function () {
+                    return location.destinations.filter(e => { return !e.inactive; });
+                }
+            });
         }
 
         public saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>) {
@@ -505,7 +510,8 @@ namespace StoryScript {
 
                 var targetExists = self._dataService.loadDescription('locations', { id: nameAttribute }) != null;
 
-                var locationToAdd = { id: nameAttribute, target: targetExists ? nameAttribute : null, name: node.innerHTML };
+                var locationToAdd = { id: nameAttribute, target: targetExists ? nameAttribute : null, name: node.innerHTML, destinations: [] };
+                self.initDestinations(locationToAdd);
 
                 game.locations.push(locationToAdd);
                 game.currentLocation.destinations.push(locationToAdd);
