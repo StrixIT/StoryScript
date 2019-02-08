@@ -216,6 +216,17 @@ namespace StoryScript {
             var self = this;
             var locations = self._definitions.locations;
             var compiledLocations = [];
+            var dynamicLocations = false;
+
+            if (locations.length < 1)
+            {
+                dynamicLocations = true;
+                var dynamicStartLocation = function Start () { return { name: 'Start' } };
+
+                locations = [
+                    dynamicStartLocation
+                ];
+            }
 
             if (locations.length < 1)
             {
