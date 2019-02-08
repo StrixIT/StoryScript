@@ -25,40 +25,9 @@ var paths = {
     typeroot: "./src/types/"
 };
 
-gulp.task('create-game-basic', function () {
-    var gameNameSpace = '', mode = '';
+gulp.task('create-game', createGame());
 
-    if (!gameNameSpace) {
-        gameNameSpace = '_test'
-        //throw new Error('No game namespace defined!');
-    }
-
-    if (!mode) {
-        mode = 'basic';
-    }
-
-    var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
-
-    var sources = mode === 'basic' ? 
-    [
-        templateRoot + 'locations/*.html',
-        templateRoot + 'ui/**/*.css',
-        templateRoot + 'bs-config.json',
-        templateRoot + 'customTexts.ts',
-        templateRoot + 'run.ts'
-    ] : 
-    [
-        templateRoot + '**/*.*'
-    ];
-
-    var destination = paths.sourceroot + 'Games/' + gameNameSpace;
-
-    console.log('sources:' + sources + '. Destination: ' + destination);
-
-    return gulp.src(sources, {base: templateRoot })
-            .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
-            .pipe(gulp.dest(destination));
-});
+gulp.task('create-game-basic', createGame('basic'));
 
 gulp.task('start', ['watch'], function() {
     exec('lite-server -c ' + paths.webroot + 'bs-config.json');
@@ -107,6 +76,44 @@ gulp.task('watch', ['build-game'], function () {
         }
     });
 });
+
+function createGame(mode) {
+    if (!mode) {
+        mode = 'standard';
+    }
+
+    return function () {
+        var gameNameSpace = getNameSpace();
+
+        var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
+
+        var sources = mode === 'basic' ? 
+        [
+            templateRoot + 'locations/*.html',
+            templateRoot + 'bs-config.json',
+            templateRoot + 'customTexts.ts',
+            templateRoot + 'run.ts'
+        ] : 
+        [
+            templateRoot + '**/*.*',
+            '!' + templateRoot + '**/*.css'
+        ];
+
+        var destination = paths.sourceroot + 'Games/' + gameNameSpace;
+        var cssPath = mode == 'basic' ? 'basic-game.css' : 'game.css';
+
+        var css = gulp.src([templateRoot + 'ui/styles/' + cssPath])
+                    .pipe(rename('game.css'))
+                    .pipe(gulp.dest(paths.sourceroot + 'Games/' + gameNameSpace + '/ui/styles'));
+
+        var code = gulp.src(sources, {base: templateRoot })
+                .pipe(replace('StoryScript.Run(\'GameTemplate\', new CustomTexts().texts, new Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', new CustomTexts().texts, {})'))
+                .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
+                .pipe(gulp.dest(destination));
+
+        return merge(css, code);
+    }
+}
 
 function compileTs(type, path, compileFunc, nameSpace) {
     if (path) {
