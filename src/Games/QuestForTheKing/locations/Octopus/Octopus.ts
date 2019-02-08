@@ -17,7 +17,6 @@
                     status: StoryScript.ActionStatus.Available,
                     type: StoryScript.ActionType.Check,
                     execute: (game: IGame) => {
-                        game.currentLocation.enemies.length = 0;
                         game.logToLocationLog(game.currentLocation.descriptions['attacknight']);
                         game.currentLocation.enemies.map(e => e.inactive = false);
                     }
