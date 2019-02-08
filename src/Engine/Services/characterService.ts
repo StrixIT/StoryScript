@@ -32,7 +32,7 @@ namespace StoryScript {
             self.prepareSheet(sheet);
             self._game.createCharacterSheet = sheet;
 
-            if (sheet.steps.length === 0) {
+            if (!self._game.character && sheet.steps.length === 0) {
                 self._game.character = self.createCharacter(self._game, sheet);
                 self._game.changeLocation('Start');
                 self._game.state = GameState.Play;
@@ -97,6 +97,12 @@ namespace StoryScript {
 
                 character = self._rules.createCharacter(game, characterData);
                 self.processDefaultSettings(character, characterData);
+            }
+            else {
+                // Set a placeholder character to keep the game logic functional when no character is used.
+                character = <any>{
+                    name: null
+                };
             }
 
             return character;

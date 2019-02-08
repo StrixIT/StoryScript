@@ -106,6 +106,13 @@ namespace StoryScript {
                 self._rules.enterLocation(game, game.currentLocation, travel);
             }
 
+            // In dynamic mode, refresh the location on every browser reload.
+            // Todo: should descriptions be refreshed this way for default mode as well?
+            if (!travel && self._game.definitions.dynamicLocations) {
+                self._game.currentLocation.descriptions = null;
+                self._game.currentLocation.text = null;
+            }
+
             self.loadLocationDescriptions(game);
 
             self.initTrade(game);
@@ -514,6 +521,7 @@ namespace StoryScript {
                 return;
             }
 
+            game.currentLocation.destinations.length = 0;
             var destinationsNodes = htmlDoc.getElementsByTagName("destination");
 
             for (var i = 0; i < destinationsNodes.length; i++) {
@@ -522,7 +530,8 @@ namespace StoryScript {
 
                 if (!nameAttribute)
                 {
-                    throw new Error('There is a destination without a name for location ' + game.currentLocation.id + '.');
+                    console.log('There is a destination without a name for location ' + game.currentLocation.id + '.');
+                    continue;
                 }
 
                 var targetExists = self._dataService.loadDescription('locations', { id: nameAttribute }) != null;
