@@ -105,7 +105,8 @@ function createGame(mode) {
             templateRoot + 'locations/*.html',
             templateRoot + 'bs-config.json',
             templateRoot + 'customTexts.ts',
-            templateRoot + 'run.ts'
+            templateRoot + 'run.ts',
+            templateRoot + 'resources/*.*',
         ] : 
         [
             templateRoot + '**/*.*',
