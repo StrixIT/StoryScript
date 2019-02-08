@@ -152,6 +152,7 @@ namespace StoryScript {
 
                 self.SaveWorldState();
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
+                self._game.actionLog = [];
 
                 self._game.actionLog = [];
 
