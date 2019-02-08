@@ -25,7 +25,7 @@
             enterEvents: [
                 (game: IGame) => {
                     if (game.worldProperties.isNight) {
-                        game.currentLocation.enemies.length = 0;
+                        game.currentLocation.enemies.map(e => e.inactive = true);
                     }
                 }
             ]

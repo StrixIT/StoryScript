@@ -83,7 +83,7 @@ namespace StoryScript {
             
             var html = self.descriptionBundle.get(identifier);
 
-            if (!html) {
+            if (html === undefined) {
                 console.log('No file ' + identifier + '.html found. Did you create this file already?');
                 self.loadedDescriptions[identifier] = null;
                 return null;

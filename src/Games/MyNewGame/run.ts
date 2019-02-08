@@ -1,3 +1,3 @@
 namespace MyNewGame {
-    StoryScript.Run('MyNewGame', new Rules(), new CustomTexts().texts);
+    StoryScript.Run('MyNewGame', new CustomTexts().texts, new Rules());
 }

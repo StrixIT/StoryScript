@@ -1,3 +1,3 @@
 namespace DangerousCave {
-    StoryScript.Run('DangerousCave', new Rules(), new CustomTexts().texts);
+    StoryScript.Run('DangerousCave', new CustomTexts().texts, new Rules());
 }

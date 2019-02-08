@@ -27,6 +27,11 @@ namespace StoryScript {
             var self = this;
             self._scope.$emit('loadGame');
         }
+
+        dynamicLocations = (): boolean => {
+            var self = this;
+            return self._gameService.dynamicLocations();
+        }
     }
 
     NavigationController.$inject = ['$scope', 'gameService', 'customTexts'];

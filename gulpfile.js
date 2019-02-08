@@ -1,8 +1,8 @@
 ﻿var gulp = require("gulp"),
-    shell = require('gulp-shell'),
     exec = require('child_process').exec,
     cssmin = require("gulp-cssmin"),
     rename = require('gulp-rename'),
+    replace = require('gulp-replace'),
     //uglify = require("gulp-uglify"),
     flatten = require('gulp-flatten'),
     ts = require('gulp-typescript'),
@@ -24,6 +24,10 @@ var paths = {
     sourceroot: "./src/",
     typeroot: "./src/types/"
 };
+
+gulp.task('create-game', createGame());
+
+gulp.task('create-game-basic', createGame('basic'));
 
 gulp.task('start', ['watch'], function() {
     exec('lite-server -c ' + paths.webroot + 'bs-config.json');
@@ -72,6 +76,44 @@ gulp.task('watch', ['build-game'], function () {
         }
     });
 });
+
+function createGame(mode) {
+    if (!mode) {
+        mode = 'standard';
+    }
+
+    return function () {
+        var gameNameSpace = getNameSpace();
+
+        var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
+
+        var sources = mode === 'basic' ? 
+        [
+            templateRoot + 'locations/*.html',
+            templateRoot + 'bs-config.json',
+            templateRoot + 'customTexts.ts',
+            templateRoot + 'run.ts'
+        ] : 
+        [
+            templateRoot + '**/*.*',
+            '!' + templateRoot + '**/*.css'
+        ];
+
+        var destination = paths.sourceroot + 'Games/' + gameNameSpace;
+        var cssPath = mode == 'basic' ? 'basic-game.css' : 'game.css';
+
+        var css = gulp.src([templateRoot + 'ui/styles/' + cssPath])
+                    .pipe(rename('game.css'))
+                    .pipe(gulp.dest(paths.sourceroot + 'Games/' + gameNameSpace + '/ui/styles'));
+
+        var code = gulp.src(sources, {base: templateRoot })
+                .pipe(replace('StoryScript.Run(\'GameTemplate\', new CustomTexts().texts, new Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', new CustomTexts().texts, {})'))
+                .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
+                .pipe(gulp.dest(destination));
+
+        return merge(css, code);
+    }
+}
 
 function compileTs(type, path, compileFunc, nameSpace) {
     if (path) {

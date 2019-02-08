@@ -17,6 +17,7 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: StoryScript.GameState): void;
+        dynamicLocations(): boolean;
     }
 }
 
@@ -143,7 +144,6 @@ namespace StoryScript {
                 self._game.worldProperties = saveGame.worldProperties;
             
                 self._locationService.init(self._game, false);
-
                 self._game.currentLocation = self._game.locations.get(saveGame.location);
 
                 if (saveGame.previousLocation) {
@@ -152,6 +152,8 @@ namespace StoryScript {
 
                 self.SaveWorldState();
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
+
+                self._game.actionLog = [];
 
                 self._game.state = saveGame.state;
             }
@@ -296,6 +298,11 @@ namespace StoryScript {
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
+        }
+
+        dynamicLocations = (): boolean => {
+            var self = this;
+            return self._game.definitions.dynamicLocations;
         }
 
         private SaveWorldState() {
