@@ -7,7 +7,7 @@
             reward: 4,
             onAttack: (game: IGame) => {
                 if (game.worldProperties.freedFaeries) {
-                    game.currentLocation.text += game.currentLocation.descriptions['freedfaeries'];
+                    game.logToLocationLog(game.currentLocation.descriptions['freedfaeries']);
                     game.currentLocation.enemies.length = 0;
                 }
             }

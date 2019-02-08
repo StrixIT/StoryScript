@@ -23,6 +23,8 @@
 
 namespace StoryScript {
     export class GameService implements IGameService {
+        private audioTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
+
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
         }
 
@@ -433,10 +435,10 @@ namespace StoryScript {
             }
 
             if (descriptionKey !== key) {
-                self.updateAudioTags(descriptionEntry, descriptionKey, ['autoplay="autoplay"', 'autoplay=""'], '');
+                self.updateAudioTags(descriptionEntry, descriptionKey, self.audioTags, '');
             }
 
-            var startPlay = self.updateAudioTags(parent, key, ['autoplay="autoplay"', 'autoplay=""'], 'added="added"');
+            var startPlay = self.updateAudioTags(parent, key, self.audioTags, 'added="added"');
     
             if (startPlay)
             {
