@@ -120,7 +120,7 @@ function createGame(mode) {
                     .pipe(gulp.dest(paths.sourceroot + 'Games/' + gameNameSpace + '/ui/styles'));
 
         var code = gulp.src(sources, {base: templateRoot })
-                .pipe(replace('StoryScript.Run(\'GameTemplate\', new CustomTexts().texts, new Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', new CustomTexts().texts, ' + (mode === 'basic' ? '{}' : 'new Rules()' + ')')))
+                .pipe(replace('StoryScript.Run(\'GameTemplate\', new CustomTexts().texts, new Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', new CustomTexts().texts' + (mode === 'basic' ? '' : ', new Rules()') + ')'))
                 .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
                 .pipe(gulp.dest(destination));
 
