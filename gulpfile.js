@@ -84,7 +84,7 @@ function fixPopper() {
         var typesPath = './node_modules/@types/bootstrap';
 
         return gulp.src([typesPath + '/index.d.ts'])
-            .pipe(replace('import * as Popper from "popper.js/index"', 'import * as Popper from "../../popper.js/index"'))
+            .pipe(replace('import * as Popper from "popper.js"', 'import * as Popper from "../../popper.js/index"'))
             .pipe(flatten())
             .pipe(gulp.dest(typesPath))
     }

@@ -348,14 +348,17 @@ namespace StoryScript {
 
             self._game.combinations = {
                 activeCombination: null,
-                tryCombine: (target: ICombinable): void => {
+                tryCombine: (target: ICombinable): boolean => {
                     var result = self._combinationService.tryCombination(target);
 
                     if (typeof result === 'string') {
                         var evt = new Event('combinationFinished');
                         (<any>evt).combineText = result;
-                        self._events.dispatchEvent(evt)
+                        self._events.dispatchEvent(evt);
+                        return true;
                     }
+
+                    return false;
                 },
                 getCombineClass: (tool: ICombinable): string => {
                     return self._combinationService.getCombineClass(tool);
@@ -513,17 +516,6 @@ namespace StoryScript {
             }
 
             self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
-        }
-
-        private setStartNode(person: ICompiledPerson, nodeName: string): void {
-            var node = person.conversation.nodes.filter(n => n.node === nodeName)[0];
-
-            if (node == null) {
-                console.log("Cannot set conversation start node to node " + nodeName + ". A node with this name is not defined.");
-                return;
-            }
-
-            node.start = true;
         }
     }
 }

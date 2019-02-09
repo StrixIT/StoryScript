@@ -5,6 +5,7 @@
         "@types/jquery": "^3.3.29",
         "@types/angular": "^1.6.54",
         "@types/bootstrap": "^4.2.1",
+        "natives": "^1.1.6",
         "popper.js": "^1.14.3",
         "del": "3.0.0",
         "gulp": "^3.9.1",
