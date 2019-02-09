@@ -1,17 +1,17 @@
 ﻿var gulp = require("gulp"),
-    exec = require('child_process').exec,
-    cssmin = require("gulp-cssmin"),
-    rename = require('gulp-rename'),
-    replace = require('gulp-replace'),
-    //uglify = require("gulp-uglify"),
-    flatten = require('gulp-flatten'),
-    ts = require('gulp-typescript'),
     merge = require('merge2'),
-    concat = require('gulp-concat'),
-    sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
     jf = require('jsonfile'),
+    browserSync = require('browser-sync').create(),
+    ts = require('gulp-typescript'),
+    flatten = require('gulp-flatten'),
+    rename = require('gulp-rename'),
+    replace = require('gulp-replace'),
+    concat = require('gulp-concat'),
+    cssmin = require("gulp-cssmin"),
     minifyHtml = require('gulp-minify-html'),
+    //uglify = require("gulp-uglify"),
+    sourcemaps = require('gulp-sourcemaps'),
     angularTemplateCache = require('gulp-angular-templatecache'),
     gameDescriptionBundler = require('./src/gameDescriptionBundler');
 
@@ -30,7 +30,12 @@ gulp.task('create-game', createGame());
 gulp.task('create-game-basic', createGame('basic'));
 
 gulp.task('start', ['watch'], function() {
-    exec('lite-server -c ' + paths.webroot + 'bs-config.json');
+    var config = jf.readFileSync(paths.webroot + 'bs-config.json');
+    browserSync.init(config);
+
+    gulp.watch(paths.webroot + '**/*.js').on('change', browserSync.reload);
+    gulp.watch(paths.webroot + '**/*.html').on('change', browserSync.reload);
+    gulp.watch(paths.webroot + 'resources/*.*').on('change', browserSync.reload);
 });
 
 gulp.task('fix-popper', fixPopper());
@@ -221,7 +226,8 @@ function copyCss(nameSpace, path) {
         .pipe(flatten())
         .pipe(cssmin())
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest(paths.webroot + 'css'));
+        .pipe(gulp.dest(paths.webroot + 'css'))
+        .pipe(browserSync.stream());
 }
 
 function copyHtml() {

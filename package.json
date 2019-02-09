@@ -26,6 +26,7 @@
         "lite-server": "^2.4.0",
         "lodash": "^4.17.11",
         "gulp-angular-templatecache": "^2.2.6",
-        "gulp-minify-html": "^1.0.6"
+        "gulp-minify-html": "^1.0.6",
+        "browser-sync": "^2.26.3"
     }
 }
