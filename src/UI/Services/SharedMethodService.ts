@@ -99,7 +99,7 @@ namespace StoryScript
         showDescription = (scope: ng.IScope, type: string, item: any, title: string): void => {
             var self = this;
 
-            if (item.description === undefined) {
+            if (item.description === undefined || item.description === null) {
                 item.description = self._gameService.getDescription(type, item, 'description');
             }
 

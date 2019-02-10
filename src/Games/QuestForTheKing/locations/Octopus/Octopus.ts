@@ -17,8 +17,7 @@
                     status: StoryScript.ActionStatus.Available,
                     type: StoryScript.ActionType.Check,
                     execute: (game: IGame) => {
-                        game.currentLocation.enemies.length = 0;
-                        game.currentLocation.text += game.currentLocation.descriptions['attacknight'];
+                        game.logToLocationLog(game.currentLocation.descriptions['attacknight']);
                         game.currentLocation.enemies.map(e => e.inactive = false);
                     }
                 },
@@ -30,7 +29,7 @@
                         // Remove the octopus and the attack action when chosing to sail past.
                         game.currentLocation.enemies.length = 0;
                         game.currentLocation.actions.length = 0;
-                        game.currentLocation.text += game.currentLocation.descriptions['floatby'];
+                        game.logToLocationLog(game.currentLocation.descriptions['floatby']);
                     }
                 }
             ]           

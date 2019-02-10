@@ -1,17 +1,17 @@
 ﻿var gulp = require("gulp"),
-    exec = require('child_process').exec,
-    cssmin = require("gulp-cssmin"),
-    rename = require('gulp-rename'),
-    replace = require('gulp-replace'),
-    //uglify = require("gulp-uglify"),
-    flatten = require('gulp-flatten'),
-    ts = require('gulp-typescript'),
     merge = require('merge2'),
-    concat = require('gulp-concat'),
-    sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
     jf = require('jsonfile'),
+    browserSync = require('browser-sync').create(),
+    ts = require('gulp-typescript'),
+    flatten = require('gulp-flatten'),
+    rename = require('gulp-rename'),
+    replace = require('gulp-replace'),
+    concat = require('gulp-concat'),
+    cssmin = require("gulp-cssmin"),
     minifyHtml = require('gulp-minify-html'),
+    //uglify = require("gulp-uglify"),
+    sourcemaps = require('gulp-sourcemaps'),
     angularTemplateCache = require('gulp-angular-templatecache'),
     gameDescriptionBundler = require('./src/gameDescriptionBundler');
 
@@ -29,12 +29,10 @@ gulp.task('create-game', createGame());
 
 gulp.task('create-game-basic', createGame('basic'));
 
-gulp.task('start', ['watch'], function() {
-    exec('lite-server -c ' + paths.webroot + 'bs-config.json');
-});
+gulp.task('fix-popper', fixPopper());
 
 gulp.task('build-game', ['delete-files', 'compile-engine'], function() {
-    var namespace = getNameSpace();
+    var namespace = getNameSpace();   
     return buildGame(namespace);
 });
 
@@ -42,31 +40,40 @@ gulp.task('delete-files', function () {
     return del.sync([paths.webroot + '**/*', paths.typeroot + '**/*']);
 });
 
-gulp.task('compile-engine', function() {
+gulp.task('compile-engine', ['fix-popper'], function() {
     return compileTs('StoryScript', null, compileStoryScript);
 });
 
-gulp.task('watch', ['build-game'], function () {
+gulp.task('start', ['build-game'], function () {
+    var config = jf.readFileSync(paths.webroot + 'bs-config.json');
+    browserSync.init(config);
+    
     var nameSpace = getNameSpace();
 
     gulp.watch(["src/Engine/**/*.ts"], function (e) {
         return compileTs('StoryScript', e.path, compileStoryScript);
-    });
+    }).on('change', browserSync.reload);;
+
     gulp.watch(["src/Games/**/*.ts"], function (e) {
         return compileTs('Game', e.path, compileGame, nameSpace);
-    });
+    }).on('change', browserSync.reload);;
+
     gulp.watch(["src/UI/**/*.ts"], function (e) {
         return compileTs('UI', e.path, compileUI);
-    });
+    }).on('change', browserSync.reload);;
+
     gulp.watch(["src/UI/**/*.html"], function (e) {
         return compileUITemplates();
-    });
+    }).on('change', browserSync.reload);;
+
     gulp.watch(["src/Games/**/*.html"], function (e) {
         return compileGameDescriptions(nameSpace);
-    });
+    }).on('change', browserSync.reload);
+
     gulp.watch(["src/**/*.css"], function (e) {
-        return copyCss(nameSpace, e.path);
+        return copyCss(nameSpace, e.path).pipe(browserSync.stream());
     });
+
     gulp.watch(["src/Games/**/resources/*.*"], function (e) {
         if (e.type === 'deleted') {
             return deleteResource(e.path)
@@ -74,8 +81,19 @@ gulp.task('watch', ['build-game'], function () {
         else {
             return copyResource(e.path);
         }
-    });
+    }).on('change', browserSync.reload);;
 });
+
+function fixPopper() {
+    return function() {
+        var typesPath = './node_modules/@types/bootstrap';
+
+        return gulp.src([typesPath + '/index.d.ts'])
+            .pipe(replace('import * as Popper from "popper.js"', 'import * as Popper from "../../popper.js/index"'))
+            .pipe(flatten())
+            .pipe(gulp.dest(typesPath))
+    }
+}
 
 function createGame(mode) {
     if (!mode) {
@@ -92,7 +110,8 @@ function createGame(mode) {
             templateRoot + 'locations/*.html',
             templateRoot + 'bs-config.json',
             templateRoot + 'customTexts.ts',
-            templateRoot + 'run.ts'
+            templateRoot + 'run.ts',
+            templateRoot + 'resources/*.*',
         ] : 
         [
             templateRoot + '**/*.*',
@@ -107,7 +126,7 @@ function createGame(mode) {
                     .pipe(gulp.dest(paths.sourceroot + 'Games/' + gameNameSpace + '/ui/styles'));
 
         var code = gulp.src(sources, {base: templateRoot })
-                .pipe(replace('StoryScript.Run(\'GameTemplate\', new CustomTexts().texts, new Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', new CustomTexts().texts, {})'))
+                .pipe(replace('StoryScript.Run(\'GameTemplate\', new CustomTexts().texts, new Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', new CustomTexts().texts' + (mode === 'basic' ? '' : ', new Rules()') + ')'))
                 .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
                 .pipe(gulp.dest(destination));
 

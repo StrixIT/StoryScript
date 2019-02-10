@@ -106,7 +106,7 @@
              * Try the combination the player has created.
              * @param target The target of the combination
              */
-            tryCombine(target: ICombinable): void;
+            tryCombine(target: ICombinable): boolean;
         }
 
         /**

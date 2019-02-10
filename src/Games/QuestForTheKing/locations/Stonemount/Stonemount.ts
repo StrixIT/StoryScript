@@ -17,7 +17,7 @@
                     text: 'Search the stone mount',
                     execute: (game: IGame) => {
                         game.character.currency += 35;
-                        game.currentLocation.text += game.currentLocation.descriptions['search'];
+                        game.logToLocationLog(game.currentLocation.descriptions['search']);
                     }
                 }
             ]

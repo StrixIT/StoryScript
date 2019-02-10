@@ -17,7 +17,7 @@
                     text: 'Touch the Altar',
                     execute: (game: IGame) => {
                         var key = game.worldProperties.isDay ? 'touchday' : 'touchnight';
-                        game.currentLocation.text += game.currentLocation.descriptions[key];
+                        game.logToLocationLog(game.currentLocation.descriptions[key]);
 
                         // Fully heal the character.
                         game.character.currentHitpoints = game.character.hitpoints;

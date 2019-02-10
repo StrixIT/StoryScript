@@ -119,22 +119,23 @@ namespace StoryScript {
             var self = this;
             var nameSpaceObject = window[self._gameNameSpace];
 
-            definitions.locations = <[() => ILocation]>[];
+            // Todo: can this typing be fixed?
+            definitions.locations = <any>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], definitions.locations);
 
-            definitions.enemies = <[() => IEnemy]>[];
+            definitions.enemies = <any>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], definitions.enemies);
 
-            definitions.persons = <[() => IPerson]>[];
+            definitions.persons = <any>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Persons'], definitions.persons);
 
-            definitions.items = <[() => IItem]>[];
+            definitions.items = <any>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Items'], definitions.items);
 
-            definitions.quests = <[() => IQuest]>[];
+            definitions.quests = <any>[];
             self.moveObjectPropertiesToArray(nameSpaceObject['Quests'], definitions.quests);
 
-            definitions.actions = <[() => IAction]>[];
+            definitions.actions = <any>[];
             self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], definitions.actions);
             self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], definitions.actions);
 

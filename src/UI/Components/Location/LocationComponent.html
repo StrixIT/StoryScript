@@ -15,6 +15,6 @@
         </li>
     </ul>
     <ul id="location-log" class="list-unstyled">
-        <li ng-repeat="message in $ctrl.game.currentLocation.log track by $index">{{ message }}</li>
+        <li ng-repeat="message in $ctrl.game.currentLocation.log track by $index" ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation.log, $index)"></li>
     </ul>
 </div>

@@ -3,7 +3,7 @@
         return {
             name: "Find Joe's journal",
             status: (game, quest, done) => {
-                return 'Jou have ' + (done ? '' : 'not ') + 'found Joe\'s journal' + (done ? '!' : ' yet.');
+                return 'You have ' + (done ? '' : 'not ') + 'found Joe\'s journal' + (done ? '!' : ' yet.');
             },
             start: (game, quest, person) => {
             },

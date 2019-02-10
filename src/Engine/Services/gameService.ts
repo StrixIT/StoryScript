@@ -23,6 +23,8 @@
 
 namespace StoryScript {
     export class GameService implements IGameService {
+        private audioTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
+
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
         }
 
@@ -152,6 +154,7 @@ namespace StoryScript {
 
                 self.SaveWorldState();
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
+                self._game.actionLog = [];
 
                 self._game.actionLog = [];
 
@@ -345,14 +348,17 @@ namespace StoryScript {
 
             self._game.combinations = {
                 activeCombination: null,
-                tryCombine: (target: ICombinable): void => {
+                tryCombine: (target: ICombinable): boolean => {
                     var result = self._combinationService.tryCombination(target);
 
                     if (typeof result === 'string') {
                         var evt = new Event('combinationFinished');
                         (<any>evt).combineText = result;
-                        self._events.dispatchEvent(evt)
+                        self._events.dispatchEvent(evt);
+                        return true;
                     }
+
+                    return false;
                 },
                 getCombineClass: (tool: ICombinable): string => {
                     return self._combinationService.getCombineClass(tool);
@@ -432,10 +438,10 @@ namespace StoryScript {
             }
 
             if (descriptionKey !== key) {
-                self.updateAudioTags(descriptionEntry, descriptionKey, ['autoplay="autoplay"', 'autoplay=""'], '');
+                self.updateAudioTags(descriptionEntry, descriptionKey, self.audioTags, '');
             }
 
-            var startPlay = self.updateAudioTags(parent, key, ['autoplay="autoplay"', 'autoplay=""'], 'added="added"');
+            var startPlay = self.updateAudioTags(parent, key, self.audioTags, 'added="added"');
     
             if (startPlay)
             {
@@ -510,17 +516,6 @@ namespace StoryScript {
             }
 
             self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
-        }
-
-        private setStartNode(person: ICompiledPerson, nodeName: string): void {
-            var node = person.conversation.nodes.filter(n => n.node === nodeName)[0];
-
-            if (node == null) {
-                console.log("Cannot set conversation start node to node " + nodeName + ". A node with this name is not defined.");
-                return;
-            }
-
-            node.start = true;
         }
     }
 }

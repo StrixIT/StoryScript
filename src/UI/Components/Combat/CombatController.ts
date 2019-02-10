@@ -21,7 +21,6 @@ namespace StoryScript {
 
         executeAction = (action: IAction): void => {
             var self = this;
-            var args = [].slice.call(arguments);
             self._sharedMethodService.executeAction(action, self);
         }
 
