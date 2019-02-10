@@ -4,6 +4,6 @@
     },
     "include": [
         "../types/**/*.ts",
-        "./MyInteractiveStory/**/*.ts"
+        "./DangerousCave/**/*.ts"
     ]
 }
