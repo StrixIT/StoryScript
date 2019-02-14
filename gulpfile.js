@@ -31,6 +31,8 @@ gulp.task('create-game-basic', createGame('basic'));
 
 gulp.task('fix-popper', fixPopper());
 
+gulp.task('fix-popper', fixPopper());
+
 gulp.task('build-game', ['delete-files', 'compile-engine'], function() {
     var namespace = getNameSpace();   
     return buildGame(namespace);
