@@ -522,6 +522,19 @@ namespace StoryScript {
             }
 
             game.currentLocation.destinations.length = 0;
+
+            // Add a 'back' destination for easy testing
+            if (game.previousLocation && game.previousLocation) {
+                var backLocation = {
+                    id: game.previousLocation.id,
+                    target: <any>game.previousLocation.id,
+                    name: 'back',
+                    style: 'dynamic-back-button'
+                };
+
+                game.currentLocation.destinations.push(backLocation);
+            }
+
             var destinationsNodes = htmlDoc.getElementsByTagName("destination");
 
             for (var i = 0; i < destinationsNodes.length; i++) {
