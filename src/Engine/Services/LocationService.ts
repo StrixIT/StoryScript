@@ -12,7 +12,7 @@ namespace StoryScript {
         private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
         private dynamicLocations: boolean = false;
 
-        constructor(private _dataService: IDataService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
+        constructor(private _dataService: IDataService, private _conversationService: IConversationService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
 
         init = (game: IGame, buildWorld?: boolean) => {
@@ -36,12 +36,39 @@ namespace StoryScript {
 
         changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
             var self = this;
-            var presentLocation: ICompiledLocation;
 
             // TODO: shouldn't these events be played only once?
             if (game.previousLocation && game.previousLocation.leaveEvents) {
                 self.playEvents(game, game.previousLocation.leaveEvents);
             }
+
+            // If there is no location, we are starting a new game and we're done here.
+            if (!self.switchLocation(game, location)) {
+                return;
+            }
+
+            self.processDestinations(game);
+            self.saveLocations(game);
+
+            if (self._rules.enterLocation) {
+                self._rules.enterLocation(game, game.currentLocation, travel);
+            }
+
+            // In dynamic mode, refresh the location on every browser reload.
+            // Todo: should descriptions be refreshed this way for default mode as well?
+            if (!travel && self._game.definitions.dynamicLocations) {
+                self._game.currentLocation.descriptions = null;
+                self._game.currentLocation.text = null;
+            }
+
+            self.loadLocationDescriptions(game);
+            self.initTrade(game);
+            self.playEnterEvents(game);
+            self._conversationService.loadConversations(game);
+        }
+
+        private switchLocation(game: IGame, location: string | (() => ILocation)): boolean {
+            var presentLocation: ICompiledLocation;
 
             // If no location is specified, go to the previous location.
             if (!location) {
@@ -55,14 +82,16 @@ namespace StoryScript {
                 game.previousLocation = game.currentLocation;
             }
 
-            // If there is no location, we are starting a new game. Quit for now.
             if (!location && !presentLocation) {
-                return;
+                return false;
             }
 
             var key = typeof location == 'function' ? <string>(<any>location).name : location ? location : presentLocation.id;
             game.currentLocation = game.locations.get(key);
+            return true;
+        }
 
+        private processDestinations(game: IGame) {
             if (game.currentLocation.destinations) {
 
                 // remove the return message from the current location destinations.
@@ -81,7 +110,7 @@ namespace StoryScript {
                         (<any>destination).isPreviousLocation = true;
                     }
 
-                    addKeyAction(self._game, destination);
+                    addKeyAction(game, destination);
                 });
 
                 game.currentLocation.destinations.forEach(destination => {
@@ -90,6 +119,10 @@ namespace StoryScript {
                     }
                 });
             }
+        }
+
+        private saveLocations(game: IGame) {
+            var self = this;
 
             // Save the previous and current location, then get the location text.
             self._dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
@@ -101,48 +134,24 @@ namespace StoryScript {
 
                 self._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
+        }
 
-            if (self._rules.enterLocation) {
-                self._rules.enterLocation(game, game.currentLocation, travel);
-            }
-
-            // In dynamic mode, refresh the location on every browser reload.
-            // Todo: should descriptions be refreshed this way for default mode as well?
-            if (!travel && self._game.definitions.dynamicLocations) {
-                self._game.currentLocation.descriptions = null;
-                self._game.currentLocation.text = null;
-            }
-
-            self.loadLocationDescriptions(game);
-
-            self.initTrade(game);
+        private playEnterEvents(game: IGame) {
+            var self = this;
 
             // If the player hasn't been here before, play the location events.
             if (!game.currentLocation.hasVisited && game.currentLocation.enterEvents) {
                 self.playEvents(game, game.currentLocation.enterEvents);
                 game.currentLocation.hasVisited = true;
-                self._game.statistics.LocationsVisited = self._game.statistics.LocationsVisited || 0;
-                self._game.statistics.LocationsVisited += 1;
+                game.statistics.LocationsVisited = game.statistics.LocationsVisited || 0;
+                game.statistics.LocationsVisited += 1;
             }
-
-            self.loadConversations(game);
         }
 
         private loadWorld(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
             var self = this;
 
-            if (buildWorld) {
-                self.pristineLocations = self.buildWorld();
-                var locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
-
-                if (isEmpty(locations)) {
-                    self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                    locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
-                }
-            }
-            else {
-                locations = self._game.locations;
-            }
+            const locations = self.getLocations(buildWorld);
 
             locations.forEach(function (location) {
                 self.initDestinations(location);
@@ -160,28 +169,52 @@ namespace StoryScript {
                 createReadOnlyCollection(location, 'enemies', location.enemies || <any>[]);
                 createReadOnlyCollection(location, 'items', location.items || <any>[]);
 
-                Object.defineProperty(location, 'activePersons', {
-                    get: function () {
-                        return location.persons.filter(e => { return !e.inactive; });
-                    }
-                });
-
-                Object.defineProperty(location, 'activeEnemies', {
-                    get: function () {
-                        return location.enemies.filter(e => { return !e.inactive; });
-                    }
-                });
-
-                Object.defineProperty(location, 'activeItems', {
-                    get: function () {
-                        return location.items.filter(e => { return !e.inactive; });
-                    }
-                });
+                self.createActiveCollections(location);
 
                 addProxy(location, 'enemy', self._game, self._rules);
             });
 
             return locations;
+        }
+
+        private getLocations(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
+            var self = this;
+            var locations: ICompiledCollection<ILocation, ICompiledLocation> = null;
+
+            if (buildWorld) {
+                self.pristineLocations = self.buildWorld();
+                locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+
+                if (isEmpty(locations)) {
+                    self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
+                    locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+                }
+            }
+            else {
+                locations = self._game.locations;
+            }
+
+            return locations;
+        }
+
+        private createActiveCollections(location: ICompiledLocation) {
+            Object.defineProperty(location, 'activePersons', {
+                get: function () {
+                    return location.persons.filter(e => { return !e.inactive; });
+                }
+            });
+
+            Object.defineProperty(location, 'activeEnemies', {
+                get: function () {
+                    return location.enemies.filter(e => { return !e.inactive; });
+                }
+            });
+
+            Object.defineProperty(location, 'activeItems', {
+                get: function () {
+                    return location.items.filter(e => { return !e.inactive; });
+                }
+            });
         }
 
         private initDestinations(location: ICompiledLocation) {
@@ -207,7 +240,7 @@ namespace StoryScript {
                     text: game.currentLocation.trade.title,
                     type: ActionType.Trade,
                     execute: 'trade'
-                    // Arguments are ignored for now, are dealt with in the trade function on the main controller.
+                    // Arguments are ignored here. These are dealt with in the trade function on the main controller.
                 });
             }
         }
@@ -338,145 +371,6 @@ namespace StoryScript {
             }
         }
 
-        private loadConversations(game: IGame) {
-            var self = this;
-
-            if (!game.currentLocation.persons) {
-                return;
-            }
-
-            game.currentLocation.persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
-                var conversations = self._dataService.loadDescription('persons', person);
-                var parser = new DOMParser();
-
-                if (conversations.indexOf('<conversation>') == -1) {
-                    conversations = '<conversation>' + conversations + '</conversation>';
-                }
-
-                var htmlDoc = parser.parseFromString(conversations, "text/html");
-                var defaultReplyNodes = htmlDoc.getElementsByTagName("default-reply");
-                var defaultReply = null;
-
-                if (defaultReplyNodes.length > 1) {
-                    throw new Error('More than one default reply in conversation for person ' + person.id + '.');
-                }
-                else if (defaultReplyNodes.length === 1) {
-                    defaultReply = defaultReplyNodes[0].innerHTML.trim();
-                }
-
-                var conversationNodes = htmlDoc.getElementsByTagName("node");
-
-                person.conversation.nodes = [];
-
-                for (var i = 0; i < conversationNodes.length; i++) {
-                    var node = conversationNodes[i];
-                    var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
-
-                    if (!nameAttribute && console) {
-                        console.log('Missing name attribute on node for conversation for person ' + person.id + '. Using \'default\' as default name');
-                        nameAttribute = 'default';
-                    }
-
-                    if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
-                        throw new Error('Duplicate nodes with name ' + name + ' for conversation for person ' + person.id + '.');
-                    }
-
-                    var newNode = <IConversationNode>{
-                        node: nameAttribute,
-                        lines: '',
-                        replies: null,
-                    };
-
-                    for (var j = 0; j < node.childNodes.length; j++) {
-                        var replies = node.childNodes[j];
-
-                        if (replies.nodeName.toLowerCase() == 'replies') {
-                            var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
-                            var addDefaultReply = addDefaultValue && addDefaultValue.toLowerCase() === 'false' ? false : true;
-
-                            newNode.replies = <IConversationReplies>{
-                                defaultReply: <boolean>addDefaultReply,
-                                options: <ICollection<IConversationReply>>[]
-                            };
-
-                            for (var k = 0; k < replies.childNodes.length; k++) {
-                                var replyNode = replies.childNodes[k];
-
-                                if (replyNode.nodeName.toLowerCase() == 'reply') {
-                                    var requires = self.GetNodeValue(replyNode, 'requires');
-                                    var linkToNode = self.GetNodeValue(replyNode, 'node');
-                                    var trigger = self.GetNodeValue(replyNode, 'trigger');
-                                    var questStart = self.GetNodeValue(replyNode, 'quest-start');
-                                    var questComplete = self.GetNodeValue(replyNode, 'quest-complete');
-                                    var setStart = self.GetNodeValue(replyNode, 'set-start');
-
-                                    if (trigger && !person.conversation.actions[trigger]) {
-                                        console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
-                                    }
-
-                                    var reply = <IConversationReply>{
-                                        requires: requires,
-                                        linkToNode: linkToNode,
-                                        trigger: trigger,
-                                        questStart: questStart,
-                                        questComplete: questComplete,
-                                        setStart: setStart,
-                                        lines: (<any>replyNode).innerHTML.trim(),
-                                    };
-
-                                    newNode.replies.options.push(reply);
-                                }
-                            }
-
-                            node.removeChild(replies);
-
-                            if (defaultReply && newNode.replies.defaultReply) {
-                                newNode.replies.options.push(<IConversationReply>{
-                                    lines: defaultReply
-                                });
-                            }
-                        }
-                    }
-
-                    if (!newNode.replies && defaultReply) {
-                        newNode.replies = <IConversationReplies>{
-                            defaultReply: true,
-                            options: <ICollection<IConversationReply>>[
-                                {
-                                    lines: defaultReply
-                                }
-                            ]
-                        }
-                    }
-
-                    newNode.lines = node.innerHTML.trim();
-                    person.conversation.nodes.push(newNode);
-                }
-
-                person.conversation.nodes.forEach(n => {
-                    if (n.replies && n.replies.options)
-                    {
-                        n.replies.options.forEach(r => {
-                            if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
-                                console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
-                            }
-
-                            if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
-                                console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
-                            }
-                        });
-                    }
-                });
-
-                var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
-                person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
-            });
-        }
-
-        private GetNodeValue(node: Node, attribute: string): string {
-            return (<any>node).attributes[attribute] && (<any>node).attributes[attribute].value
-        }
-
         private loadLocationDescriptions(game: IGame) {
             var self = this;
 
@@ -534,6 +428,12 @@ namespace StoryScript {
 
                 game.currentLocation.destinations.push(backLocation);
             }
+
+            self.processDynamicDestinations(htmlDoc, game);
+        }
+
+        private processDynamicDestinations(htmlDoc: Document, game: IGame) {
+            var self = this;
 
             var destinationsNodes = htmlDoc.getElementsByTagName("destination");
 

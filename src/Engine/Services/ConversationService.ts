@@ -1,5 +1,6 @@
 namespace StoryScript {
     export interface IConversationService {
+        loadConversations(game: IGame): void;
         initConversation(): void;
         answer(node: IConversationNode, reply: IConversationReply): void;
         getLines(nodeOrReply: IConversationNode | IConversationReply): string;
@@ -8,7 +9,28 @@ namespace StoryScript {
 
 namespace StoryScript {
     export class ConversationService implements IConversationService {
-        constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        }
+
+        loadConversations = (game: IGame): void => {
+            var self = this;
+
+            if (!game.currentLocation.persons) {
+                return;
+            }
+
+            game.currentLocation.persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
+                var htmlDoc = self.loadConversationHtml(person);
+                var defaultReply = self.getDefaultReply(htmlDoc, person);
+                var conversationNodes = htmlDoc.getElementsByTagName("node");
+
+                person.conversation.nodes = [];
+                self.processConversationNodes(conversationNodes, person, defaultReply);
+                self.checkNodes(person);
+
+                var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
+                person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
+            });
         }
 
         initConversation(): void {
@@ -37,27 +59,7 @@ namespace StoryScript {
                 reply: reply.lines
             });
 
-            if (reply.trigger) {
-                person.conversation.actions[reply.trigger](self._game, person);
-            }
-
-            if (reply.setStart) {
-                person.conversation.nodes.forEach(n => n.start = false);
-                var startNode = person.conversation.nodes.filter((node) => { return node.node == reply.setStart; })[0];
-                startNode.start = true;
-            }
-
-            if (reply.linkToNode) {
-                person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
-                self.setReplyStatus(person.conversation, person.conversation.activeNode);
-            }
-            else {
-                person.conversation.nodes.forEach((node) => {
-                    node.active = false;
-                });
-
-                person.conversation.activeNode = null;
-            }
+            self.processReply(person, reply);
 
             var questProgress = reply.questStart || reply.questComplete;
 
@@ -73,6 +75,157 @@ namespace StoryScript {
             }
 
             return null;
+        }
+
+        private loadConversationHtml(person: ICompiledPerson): Document {
+            var self = this;
+            var conversations = self._dataService.loadDescription('persons', person);
+            var parser = new DOMParser();
+
+            if (conversations.indexOf('<conversation>') == -1) {
+                conversations = '<conversation>' + conversations + '</conversation>';
+            }
+
+            return parser.parseFromString(conversations, "text/html");
+        }
+
+        private getDefaultReply(htmlDoc: Document, person: ICompiledPerson): string {
+            var defaultReplyNodes = htmlDoc.getElementsByTagName("default-reply");
+            var defaultReply: string = null;
+
+            if (defaultReplyNodes.length > 1) {
+                throw new Error('More than one default reply in conversation for person ' + person.id + '.');
+            }
+            else if (defaultReplyNodes.length === 1) {
+                defaultReply = defaultReplyNodes[0].innerHTML.trim();
+            }
+
+            return defaultReply;
+        }
+
+        private processConversationNodes(conversationNodes: HTMLCollectionOf<Element>, person: ICompiledPerson, defaultReply: string) {
+            var self = this;
+
+            for (var i = 0; i < conversationNodes.length; i++) {
+                var node = conversationNodes[i];
+                var newNode = self.getNewNode(person, node);
+
+                self.processReplyNodes(person, node, newNode, defaultReply);
+
+                if (!newNode.replies && defaultReply) {
+                    newNode.replies = <IConversationReplies>{
+                        defaultReply: true,
+                        options: <ICollection<IConversationReply>>[
+                            {
+                                lines: defaultReply
+                            }
+                        ]
+                    }
+                }
+
+                newNode.lines = node.innerHTML.trim();
+                person.conversation.nodes.push(newNode);
+            }
+        }
+
+        private getNewNode(person: ICompiledPerson, node: Element): IConversationNode {
+            var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
+
+            if (!nameAttribute && console) {
+                console.log('Missing name attribute on node for conversation for person ' + person.id + '. Using \'default\' as default name');
+                nameAttribute = 'default';
+            }
+
+            if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
+                throw new Error('Duplicate nodes with name ' + name + ' for conversation for person ' + person.id + '.');
+            }
+
+            return <IConversationNode>{
+                node: nameAttribute,
+                lines: '',
+                replies: null,
+            };
+        }
+
+        private processReplyNodes(person: ICompiledPerson, node: Element, newNode: IConversationNode, defaultReply: string) {
+            var self = this;
+
+            for (var j = 0; j < node.childNodes.length; j++) {
+                var replies = node.childNodes[j];
+
+                if (replies.nodeName.toLowerCase() == 'replies') {
+                    var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
+                    var addDefaultReply = addDefaultValue && addDefaultValue.toLowerCase() === 'false' ? false : true;
+
+                    newNode.replies = <IConversationReplies>{
+                        defaultReply: <boolean>addDefaultReply,
+                        options: <ICollection<IConversationReply>>[]
+                    };
+
+                    self.buildReplies(person, newNode, replies);
+                    node.removeChild(replies);
+
+                    if (defaultReply && newNode.replies.defaultReply) {
+                        newNode.replies.options.push(<IConversationReply>{
+                            lines: defaultReply
+                        });
+                    }
+                }
+            }
+        }
+
+        private buildReplies(person: ICompiledPerson, newNode: IConversationNode, replies: ChildNode) {
+            var self = this;
+
+            for (var k = 0; k < replies.childNodes.length; k++) {
+                var replyNode = replies.childNodes[k];
+
+                if (replyNode.nodeName.toLowerCase() == 'reply') {
+                    var requires = self.GetNodeValue(replyNode, 'requires');
+                    var linkToNode = self.GetNodeValue(replyNode, 'node');
+                    var trigger = self.GetNodeValue(replyNode, 'trigger');
+                    var questStart = self.GetNodeValue(replyNode, 'quest-start');
+                    var questComplete = self.GetNodeValue(replyNode, 'quest-complete');
+                    var setStart = self.GetNodeValue(replyNode, 'set-start');
+
+                    if (trigger && !person.conversation.actions[trigger]) {
+                        console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
+                    }
+
+                    var reply = <IConversationReply>{
+                        requires: requires,
+                        linkToNode: linkToNode,
+                        trigger: trigger,
+                        questStart: questStart,
+                        questComplete: questComplete,
+                        setStart: setStart,
+                        lines: (<any>replyNode).innerHTML.trim(),
+                    };
+
+                    newNode.replies.options.push(reply);
+                }
+            }
+        }
+
+        private checkNodes(person: ICompiledPerson) {
+            person.conversation.nodes.forEach(n => {
+                if (n.replies && n.replies.options)
+                {
+                    n.replies.options.forEach(r => {
+                        if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
+                            console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
+                        }
+
+                        if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
+                            console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
+                        }
+                    });
+                }
+            });
+        }
+
+        private GetNodeValue(node: Node, attribute: string): string {
+            return (<any>node).attributes[attribute] && (<any>node).attributes[attribute].value
         }
 
         private getActiveNode(person: ICompiledPerson): IConversationNode {
@@ -124,6 +277,32 @@ namespace StoryScript {
             }
         }
 
+        private processReply(person: ICompiledPerson, reply: IConversationReply) {
+            var self = this;
+
+            if (reply.trigger) {
+                person.conversation.actions[reply.trigger](self._game, person);
+            }
+
+            if (reply.setStart) {
+                person.conversation.nodes.forEach(n => n.start = false);
+                var startNode = person.conversation.nodes.filter((node) => { return node.node == reply.setStart; })[0];
+                startNode.start = true;
+            }
+
+            if (reply.linkToNode) {
+                person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
+                self.setReplyStatus(person.conversation, person.conversation.activeNode);
+            }
+            else {
+                person.conversation.nodes.forEach((node) => {
+                    node.active = false;
+                });
+
+                person.conversation.activeNode = null;
+            }
+        }
+
         private checkReplyAvailability(activeNode: IConversationNode, reply: IConversationReply) : boolean {
             var self = this;
             var isAvailable = true;
@@ -139,50 +318,62 @@ namespace StoryScript {
                     console.log('Invalid reply requirement for node ' + activeNode.node + '!');
                 }
 
-                switch (type) {
-                    case 'item': {
-                        // Check item available. Item list first, equipment second.
-                        var hasItem = self._game.character.items.get(value) != undefined;
+                isAvailable = self.checkReplyRequirements(self._game, activeNode, type, value);
 
-                        if (!hasItem) {
-                            for (var i in self._game.character.equipment) {
-                                var slotItem = <IItem>self._game.character.equipment[i];
-                                hasItem = slotItem != undefined && slotItem != null && slotItem.id != undefined && slotItem.id.toLowerCase() === value;
-                            }
-                        }
-
-                        isAvailable = hasItem;
-                    } break;
-                    case 'location': {
-                        // Check location visited
-                        var location = self._game.locations.get(value);
-
-                        if (!location) {
-                            console.log('Invalid location ' + value + ' for reply requirement for node ' + activeNode.node + '!');
-                        }
-
-                        isAvailable = location.hasVisited === true;
-                    } break;
-                    case 'quest-start':
-                    case 'quest-done':
-                    case 'quest-complete': {
-                        // Check quest start, quest done or quest complete.
-                        var quest = self._game.character.quests.get(value);
-                        isAvailable = quest != undefined &&
-                            (type === 'quest-start' ? true : type === 'quest-done' ?
-                                quest.checkDone(self._game, quest) : quest.completed);
-                    } break;
-                    default: {
-                        // Check attributes
-                        var attribute = self._game.character[type];
-
-                        if (!attribute) {
-                            console.log('Invalid attribute ' + type + ' for reply requirement for node ' + activeNode.node + '!');
-                        }
-
-                        isAvailable = isNaN(self._game.character[type]) ? self._game.character[type] === value : parseInt(self._game.character[type]) >= parseInt(value);
-                    } break;
+                if (!isAvailable) {
+                    break;
                 }
+            }
+
+            return isAvailable;
+        }
+
+        private checkReplyRequirements(game: IGame, activeNode: IConversationNode, type: string, value: string): boolean {
+            var isAvailable = true;
+
+            switch (type) {
+                case 'item': {
+                    // Check item available. Item list first, equipment second.
+                    var hasItem = game.character.items.get(value) != undefined;
+
+                    if (!hasItem) {
+                        for (var i in game.character.equipment) {
+                            var slotItem = <IItem>game.character.equipment[i];
+                            hasItem = slotItem != undefined && slotItem != null && slotItem.id != undefined && slotItem.id.toLowerCase() === value;
+                        }
+                    }
+
+                    isAvailable = hasItem;
+                } break;
+                case 'location': {
+                    // Check location visited
+                    var location = game.locations.get(value);
+
+                    if (!location) {
+                        console.log('Invalid location ' + value + ' for reply requirement for node ' + activeNode.node + '!');
+                    }
+
+                    isAvailable = location.hasVisited === true;
+                } break;
+                case 'quest-start':
+                case 'quest-done':
+                case 'quest-complete': {
+                    // Check quest start, quest done or quest complete.
+                    var quest = game.character.quests.get(value);
+                    isAvailable = quest != undefined &&
+                        (type === 'quest-start' ? true : type === 'quest-done' ?
+                            quest.checkDone(game, quest) : quest.completed);
+                } break;
+                default: {
+                    // Check attributes
+                    var attribute = game.character[type];
+
+                    if (!attribute) {
+                        console.log('Invalid attribute ' + type + ' for reply requirement for node ' + activeNode.node + '!');
+                    }
+
+                    isAvailable = isNaN(game.character[type]) ? game.character[type] === value : parseInt(game.character[type]) >= parseInt(value);
+                } break;
             }
 
             return isAvailable;
