@@ -47,6 +47,12 @@ namespace StoryScript {
                 return true;
             }
 
+            return self.getReturnText(target);
+        }
+
+        private getReturnText(target: ICombinable): string {
+            var self = this;
+            var combo = self._game.combinations.activeCombination;
             var tool = combo.selectedTool;
             var type = combo.selectedCombinationAction;
             var text = combo.selectedCombinationAction.requiresTarget ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
@@ -54,7 +60,6 @@ namespace StoryScript {
             self._game.combinations.activeCombination = null;
             var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === <any>c.target))[0] : null;
             var resultText = null;
-
 
             if (combination) {
                 resultText = combination.match(self._game, target, tool);

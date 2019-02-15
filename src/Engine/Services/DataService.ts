@@ -54,7 +54,7 @@ namespace StoryScript {
                         return null;
                     }
 
-                    self.restore(data);
+                    self.restoreFunctions(data);
                     return data;
                 }
 
@@ -174,78 +174,90 @@ namespace StoryScript {
                     clone[key] = null;
                     continue;
                 }
-
-                var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
-
-                if (value.isProxy) {
+                else if (value.isProxy) {
                     continue;
                 }
-                else if (Array.isArray(value)) {
-                    clone[key] = [];
-                    self.buildClone(value, pristineValue, clone[key]);
-                }
-                else if (typeof value === "object") {
-                    if (Array.isArray(clone)) {
-                        clone.push({});
-                    }
-                    else {
-                        clone[key] = {};
-                    }
 
-                    self.buildClone(value, pristineValue, clone[key]);
-                }
-                else if (typeof value === 'function') {
-                    if (!value.isProxy) {
-                        if (value.functionId) {
-                            var parts = self.GetFunctionIdParts(value.functionId);
-
-                            if (parts.type === 'actions' && !self.functionList[parts.type][parts.functionId]) {
-                                var match: string = null;
-
-                                for (var n in self.functionList[parts.type]) {
-                                    var entry = self.functionList[parts.type][n];
-
-                                    if (entry.hash === parts.hash) {
-                                        match = n;
-                                        break;
-                                    }
-                                }
-
-                                if (match) {
-                                    clone[key] = 'function#' + parts.type + '_' + match + '#' + parts.hash;
-                                }
-                                else {
-                                    clone[key] = value.toString();
-                                }
-                            }
-                            else {
-                                clone[key] = value.functionId;
-                            }
-                        }
-                        else {
-                            // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
-                            // to a function. Convert values that have an arrow notation.
-                            let functionString = value.toString();
-
-                            if (functionString.indexOf('function') == -1) {
-                                var arrowIndex = functionString.indexOf('=>');
-
-                                functionString = 'function' + functionString.match(self.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
-                            }
-
-                            clone[key] = functionString;
-                        }
-                    }
-                }
-                else {
-                    clone[key] = value;
-                }
+                self.getClonedValue(clone, value, key, pristineValues);
             }
 
             return clone;
         }
 
-        private restore(loaded) {
+        private getClonedValue(clone: any, value: any, key: string, pristineValues: any) {
+            var self = this;
+            
+            var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
+
+            if (Array.isArray(value)) {
+                clone[key] = [];
+                self.buildClone(value, pristineValue, clone[key]);
+            }
+            else if (typeof value === "object") {
+                if (Array.isArray(clone)) {
+                    clone.push({});
+                }
+                else {
+                    clone[key] = {};
+                }
+
+                self.buildClone(value, pristineValue, clone[key]);
+            }
+            else if (typeof value === 'function') {
+                self.getClonedFunction(clone, value, key);
+            }
+            else {
+                clone[key] = value;
+            }
+        }
+
+        private getClonedFunction(clone: any, value: any, key: string) {
+            var self = this;
+
+            if (!value.isProxy) {
+                if (value.functionId) {
+                    var parts = self.GetFunctionIdParts(value.functionId);
+
+                    if (parts.type === 'actions' && !self.functionList[parts.type][parts.functionId]) {
+                        var match: string = null;
+
+                        for (var n in self.functionList[parts.type]) {
+                            var entry = self.functionList[parts.type][n];
+
+                            if (entry.hash === parts.hash) {
+                                match = n;
+                                break;
+                            }
+                        }
+
+                        if (match) {
+                            clone[key] = 'function#' + parts.type + '_' + match + '#' + parts.hash;
+                        }
+                        else {
+                            clone[key] = value.toString();
+                        }
+                    }
+                    else {
+                        clone[key] = value.functionId;
+                    }
+                }
+                else {
+                    // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
+                    // to a function. Convert values that have an arrow notation.
+                    let functionString = value.toString();
+
+                    if (functionString.indexOf('function') == -1) {
+                        var arrowIndex = functionString.indexOf('=>');
+
+                        functionString = 'function' + functionString.match(self.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
+                    }
+
+                    clone[key] = functionString;
+                }
+            }
+        }
+
+        private restoreFunctions(loaded) {
             var self = this;
 
             for (var key in loaded) {
@@ -259,26 +271,32 @@ namespace StoryScript {
                     return;
                 }
                 else if (typeof value === "object") {
-                    self.restore(loaded[key]);
+                    self.restoreFunctions(loaded[key]);
                 }
                 else if (typeof value === 'string') {
-                    if (value.indexOf('function#') > -1) {
-                        var parts = self.GetFunctionIdParts(value);
-                        var typeList = self.functionList[parts.type];
-
-                        if (!typeList[parts.functionId]) {
-                            console.log('Function with key: ' + parts.functionId + ' could not be found!');
-                        }
-                        else if (typeList[parts.functionId].hash != parts.hash) {
-                            console.log('Function with key: ' + parts.functionId + ' was found but the hash does not match the stored hash!');
-                        }
-
-                        loaded[key] = typeList[parts.functionId].function;
-                    }
-                    else if (typeof value === 'string' && value.indexOf('function') > -1) {
-                        loaded[key] = (<any>value).parseFunction();
-                    }
+                    self.restoreFunctionFromString(loaded, value, key);
                 }
+            }
+        }
+
+        private restoreFunctionFromString(loaded: any, value: any, key: string) {
+            var self = this;
+
+            if (value.indexOf('function#') > -1) {
+                var parts = self.GetFunctionIdParts(value);
+                var typeList = self.functionList[parts.type];
+
+                if (!typeList[parts.functionId]) {
+                    console.log('Function with key: ' + parts.functionId + ' could not be found!');
+                }
+                else if (typeList[parts.functionId].hash != parts.hash) {
+                    console.log('Function with key: ' + parts.functionId + ' was found but the hash does not match the stored hash!');
+                }
+
+                loaded[key] = typeList[parts.functionId].function;
+            }
+            else if (typeof value === 'string' && value.indexOf('function') > -1) {
+                loaded[key] = (<any>value).parseFunction();
             }
         }
 
