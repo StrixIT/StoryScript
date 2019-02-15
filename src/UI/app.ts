@@ -13,6 +13,8 @@
 
     storyScriptModule.service("sharedMethodService", SharedMethodService);
 
+    storyScriptModule.directive("imageMapContainer", ImageMapClickHandler.Factory());
+
     storyScriptModule.component('main', {
         templateUrl: 'ui/MainComponent.html',
         controller: MainController
