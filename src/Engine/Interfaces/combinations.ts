@@ -14,7 +14,7 @@
          * @param tool The tool for the combination.
          * @param target The target of the combination.
          */
-        combineFailText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
+        failText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
     }
 
     /**
@@ -24,7 +24,7 @@
         /**
          * The target of this combination.
          */
-        target: T;
+        target?: T;
 
         /**
          * The type of the combination, which should match an ICombination text.

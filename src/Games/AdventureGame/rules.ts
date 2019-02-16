@@ -11,10 +11,19 @@
                     preposition: 'at'
                 },
                 {
+                    text: Constants.TOUCH,
+                    requiresTarget: false
+                },
+                {
                     text: Constants.LOOKAT,
                     preposition: 'at',
                     requiresTarget: false,
-                    combineFailText: (game, tool, target): string => { return 'You look at the ' + target.name + '. There is nothing special about it';}
+                    failText: (game, tool, target): string => { return 'You look at the ' + target.name + '. There is nothing special about it';}
+                },
+                {
+                    text: Constants.WALK,
+                    preposition: 'to',
+                    requiresTarget: false
                 }
             ];
         }
