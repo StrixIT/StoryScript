@@ -23,7 +23,7 @@
 
 namespace StoryScript {
     export class GameService implements IGameService {
-        private audioTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
+        private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
 
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
         }
@@ -162,7 +162,7 @@ namespace StoryScript {
             }
 
             if (description) {
-                self.processAudioTags(entity, key);
+                self.processMediaTags(entity, key);
             }
 
             return description;
@@ -434,7 +434,7 @@ namespace StoryScript {
             }
         }
 
-        private processAudioTags(parent: any, key: string) {
+        private processMediaTags(parent: any, key: string) {
             var self = this;
             var descriptionEntry = parent;
             var descriptionKey = key;
@@ -453,45 +453,47 @@ namespace StoryScript {
             }
 
             if (descriptionKey !== key) {
-                self.updateAudioTags(descriptionEntry, descriptionKey, self.audioTags, '');
+                self.updateMediaTags(descriptionEntry, descriptionKey, self.mediaTags, '');
             }
 
-            var startPlay = self.updateAudioTags(parent, key, self.audioTags, 'added="added"');
-            self.startAudio(startPlay, key);
-        }
-
-        private startAudio(startPlay: boolean, key:string) {
-            var self = this;
+            var startPlay = self.updateMediaTags(parent, key, self.mediaTags, 'added="added"');
 
             if (startPlay)
             {
-                setTimeout(function () {
-                    var audioElements = document.getElementsByTagName('audio');
-    
-                    for (var i = 0; i < audioElements.length; i++) {
-                        var element = (<HTMLAudioElement>audioElements[i]);
-                        var added = element.getAttribute('added');
-    
-                        if (element.play && added === 'added') {
-                            self.updateAudioTags(parent, key, ['added="added"'], '');
-
-                            // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
-                            const playPromise = element.play();
-
-                            if (playPromise !== null) {
-                                playPromise.catch(() => { 
-                                    setTimeout(function () {
-                                        element.play(); 
-                                    }, 1000);
-                                });
-                            }
-                        }
-                    }
-                }, 0);
+                self.startPlay('audio', parent, key);
+                self.startPlay('video', parent, key);
             }
         }
 
-        private updateAudioTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
+        private startPlay(type: string, parent: any, key: string): void {
+            var self = this;
+
+            setTimeout(function () {
+                var mediaElements = document.getElementsByTagName(type);
+
+                for (var i = 0; i < mediaElements.length; i++) {
+                    var element = <HTMLMediaElement>mediaElements[i];
+                    var added = element.getAttribute('added');
+
+                    if (element.play && added === 'added') {
+                        self.updateMediaTags(parent, key, ['added="added"'], '');
+
+                        // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
+                        const playPromise = element.play();
+
+                        if (playPromise !== null) {
+                            playPromise.catch(() => { 
+                                setTimeout(function () {
+                                    element.play(); 
+                                }, 1000);
+                            });
+                        }
+                    }
+                }
+            }, 0);
+        }
+
+        private updateMediaTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
             let startPlay = false;
 
             if (entity[key]) {
