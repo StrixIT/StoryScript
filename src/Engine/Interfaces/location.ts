@@ -19,7 +19,7 @@
         /**
          * The features of this location that the player can interact with.
          */
-        features?: IFeature[];
+        features?: ICollection<IFeature>;
 
         /**
          * The enemies that occupy this location.
