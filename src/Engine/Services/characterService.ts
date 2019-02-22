@@ -31,13 +31,6 @@ namespace StoryScript {
             var sheet = (self._rules && self._rules.getCreateCharacterSheet && self._rules.getCreateCharacterSheet()) || { steps: []};
             self.prepareSheet(sheet);
             self._game.createCharacterSheet = sheet;
-
-            if (!self._game.character && sheet.steps.length === 0) {
-                self._game.character = self.createCharacter(self._game, sheet);
-                self._game.changeLocation('Start');
-                self._game.state = GameState.Play;
-            }
-
             return sheet;
         }
 

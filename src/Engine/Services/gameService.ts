@@ -23,7 +23,7 @@
 
 namespace StoryScript {
     export class GameService implements IGameService {
-        private audioTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
+        private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
 
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
         }
@@ -37,31 +37,14 @@ namespace StoryScript {
             }
 
             self.setupGame();
-
             self._game.highScores = self._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
-
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
             if (self._game.character && locationName) {
-                self.setupCharacter();
-
-                var lastLocation = self._game.locations.get(locationName);
-                var previousLocationName = self._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
-
-                if (previousLocationName) {
-                    self._game.previousLocation = self._game.locations.get(previousLocationName);
-                }
-
-                // Reset loading descriptions so changes to the descriptions are shown right away instead of requiring a world reset.
-                self.resetLoadedHtml(self._game.locations);
-                self.resetLoadedHtml(self._game.character);
-
-                self._locationService.changeLocation(lastLocation.id, false, self._game);
-
-                self._game.state = StoryScript.GameState.Play;
+                self.resume(locationName);
             }
             else {
                 self._game.state = StoryScript.GameState.CreateCharacter;
@@ -155,9 +138,6 @@ namespace StoryScript {
                 self.SaveWorldState();
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
                 self._game.actionLog = [];
-
-                self._game.actionLog = [];
-
                 self._game.state = saveGame.state;
             }
         }
@@ -182,7 +162,7 @@ namespace StoryScript {
             }
 
             if (description) {
-                self.processAudioTags(entity, key);
+                self.processMediaTags(entity, key);
             }
 
             return description;
@@ -213,29 +193,7 @@ namespace StoryScript {
             self._rules.fight(self._game, enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
-                if (enemy.items) {
-                    enemy.items.forEach((item: IItem) => {
-                        self._game.currentLocation.items.push(item);
-                    });
-
-                    enemy.items.length = 0;
-                }
-
-                self._game.character.currency = self._game.character.currency || 0;
-                self._game.character.currency += enemy.currency || 0;
-
-                self._game.statistics.enemiesDefeated = self._game.statistics.enemiesDefeated || 0;
-                self._game.statistics.enemiesDefeated += 1;
-
-                self._game.currentLocation.enemies.remove(enemy);
-
-                if (self._rules.enemyDefeated) {
-                    self._rules.enemyDefeated(self._game, enemy);
-                }
-
-                if (enemy.onDefeat) {
-                    enemy.onDefeat(self._game);
-                }
+                self.enemyDefeated(enemy);
             }
 
             if (self._game.character.currentHitpoints <= 0) {
@@ -308,6 +266,53 @@ namespace StoryScript {
             return self._game.definitions.dynamicLocations;
         }
 
+        private resume(locationName: string) {
+            var self = this;
+
+            self.setupCharacter();
+
+            var lastLocation = self._game.locations.get(locationName);
+            var previousLocationName = self._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
+
+            if (previousLocationName) {
+                self._game.previousLocation = self._game.locations.get(previousLocationName);
+            }
+
+            // Reset loading descriptions so changes to the descriptions are shown right away instead of requiring a world reset.
+            self.resetLoadedHtml(self._game.locations);
+            self.resetLoadedHtml(self._game.character);
+
+            self._locationService.changeLocation(lastLocation.id, false, self._game);
+
+            self._game.state = StoryScript.GameState.Play;
+        }
+
+        private enemyDefeated(enemy: ICompiledEnemy) {
+            var self = this;
+
+            if (enemy.items) {
+                enemy.items.forEach((item: IItem) => {
+                    self._game.currentLocation.items.push(item);
+                });
+
+                enemy.items.length = 0;
+            }
+
+            self._game.character.currency = self._game.character.currency || 0;
+            self._game.character.currency += enemy.currency || 0;
+            self._game.statistics.enemiesDefeated = self._game.statistics.enemiesDefeated || 0;
+            self._game.statistics.enemiesDefeated += 1;
+            self._game.currentLocation.enemies.remove(enemy);
+
+            if (self._rules.enemyDefeated) {
+                self._rules.enemyDefeated(self._game, enemy);
+            }
+
+            if (enemy.onDefeat) {
+                enemy.onDefeat(self._game);
+            }
+        }
+
         private SaveWorldState() {
             var self = this;
             self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
@@ -318,6 +323,26 @@ namespace StoryScript {
 
         private setupGame(): void {
             var self = this;
+            self.initLogs();
+            self._game.fight = self.fight;
+
+            // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
+            if (!(<any>self._game).stateString) {
+                Object.defineProperty(self._game, 'stateString', {
+                    enumerable: true,
+                    get: function () {
+                        return GameState[self._game.state];
+                    }
+                });
+            }
+
+            self.setupCombinations();
+            self._locationService.init(self._game);
+        }
+
+        private initLogs() {
+            var self = this;
+
             self._game.actionLog = [];
             self._game.combatLog = [];
 
@@ -333,18 +358,10 @@ namespace StoryScript {
             self._game.logToCombatLog = (message: string) => {
                 self._game.combatLog.splice(0, 0, message);
             }
+        }
 
-            self._game.fight = self.fight;
-
-            // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
-            if (!(<any>self._game).stateString) {
-                Object.defineProperty(self._game, 'stateString', {
-                    enumerable: true,
-                    get: function () {
-                        return GameState[self._game.state];
-                    }
-                });
-            }
+        private setupCombinations() {
+            var self = this;
 
             self._game.combinations = {
                 activeCombination: null,
@@ -364,8 +381,6 @@ namespace StoryScript {
                     return self._combinationService.getCombineClass(tool);
                 }
             };
-
-            self._locationService.init(self._game);
         }
 
         private setupCharacter(): void {
@@ -419,7 +434,7 @@ namespace StoryScript {
             }
         }
 
-        private processAudioTags(parent: any, key: string) {
+        private processMediaTags(parent: any, key: string) {
             var self = this;
             var descriptionEntry = parent;
             var descriptionKey = key;
@@ -438,36 +453,47 @@ namespace StoryScript {
             }
 
             if (descriptionKey !== key) {
-                self.updateAudioTags(descriptionEntry, descriptionKey, self.audioTags, '');
+                self.updateMediaTags(descriptionEntry, descriptionKey, self.mediaTags, '');
             }
 
-            var startPlay = self.updateAudioTags(parent, key, self.audioTags, 'added="added"');
-    
+            var startPlay = self.updateMediaTags(parent, key, self.mediaTags, 'added="added"');
+
             if (startPlay)
             {
-                setTimeout(function () {
-                    var audioElements = document.getElementsByTagName('audio');
-    
-                    for (var i = 0; i < audioElements.length; i++) {
-                        var element = (<HTMLAudioElement>audioElements[i]);
-                        var added = element.getAttribute('added');
-    
-                        if (element.play && added === 'added') {
-                            self.updateAudioTags(parent, key, ['added="added"'], '');
-
-                            // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
-                            const playPromise = element.play();
-
-                            if (playPromise !== null) {
-                                playPromise.catch(() => { element.play(); });
-                            }
-                        }
-                    }
-                }, 0);
+                self.startPlay('audio', parent, key);
+                self.startPlay('video', parent, key);
             }
         }
 
-        private updateAudioTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
+        private startPlay(type: string, parent: any, key: string): void {
+            var self = this;
+
+            setTimeout(function () {
+                var mediaElements = document.getElementsByTagName(type);
+
+                for (var i = 0; i < mediaElements.length; i++) {
+                    var element = <HTMLMediaElement>mediaElements[i];
+                    var added = element.getAttribute('added');
+
+                    if (element.play && added === 'added') {
+                        self.updateMediaTags(parent, key, ['added="added"'], '');
+
+                        // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
+                        const playPromise = element.play();
+
+                        if (playPromise !== null) {
+                            playPromise.catch(() => { 
+                                setTimeout(function () {
+                                    element.play(); 
+                                }, 1000);
+                            });
+                        }
+                    }
+                }
+            }, 0);
+        }
+
+        private updateMediaTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
             let startPlay = false;
 
             if (entity[key]) {
@@ -487,7 +513,6 @@ namespace StoryScript {
 
         private updateHighScore(): void {
             var self = this;
-
             var scoreEntry = { name: self._game.character.name, score: self._game.character.score };
 
             if (!self._game.highScores || !self._game.highScores.length) {

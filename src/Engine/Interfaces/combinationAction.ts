@@ -23,6 +23,6 @@
          * @param tool The tool for the combination
          * @param target The target of the combination
          */
-        combineFailText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
+        failText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
     }
 }

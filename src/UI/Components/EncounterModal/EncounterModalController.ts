@@ -62,6 +62,8 @@ namespace StoryScript {
         }
 
         private watchGameState(newValue: GameState, oldValue: GameState, controller: EncounterModalController) {
+            var self = this;
+
             if (oldValue != undefined) {
                 // If there is a person trader, sync the money between him and the shop on trade end.
                 if (oldValue == GameState.Trade) {
@@ -71,6 +73,11 @@ namespace StoryScript {
                 }
             }
             
+            self.getStateSettings(controller, newValue);
+            self.switchState(controller, newValue);
+        }
+
+        private getStateSettings(controller: EncounterModalController, newValue: GameState): void {
             switch (newValue) {
                 case GameState.Combat: {
                     controller.modalSettings.title = controller._texts.combatTitle;
@@ -93,7 +100,9 @@ namespace StoryScript {
 
                 } break;
             }
+        }
 
+        private switchState(controller: EncounterModalController, newValue: GameState): void {
             if (newValue != undefined) {
                 var modalStates = [
                     GameState.Combat,

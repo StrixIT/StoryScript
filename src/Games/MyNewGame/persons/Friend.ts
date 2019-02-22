@@ -31,9 +31,8 @@
                 actions: {
                     'addHedgehog': (game, person) => {
                         var garden = game.locations.get(Locations.Garden);
-
                         garden.hasVisited = false;
-                        garden.enterEvents = <[(game: IGame) => void]>[];
+                        garden.enterEvents = <any>[];
 
                         garden.enterEvents.push((game: IGame) => {
                             game.logToLocationLog('Ah! There is the hedgehog Joe was talking about.');

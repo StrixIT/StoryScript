@@ -44,6 +44,11 @@ h2 {
     display: inline-block;
 }
 
+#conversation-history {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
 #create-character .input-group-prepend {
     max-width: 70%;
 }

@@ -14,7 +14,7 @@
         "../types/**/*.ts",
         "./Services/**/*.ts",
         "./Components/**/*.ts",
-        "./Controllers/*.ts",
+        "./Directives/**/*.ts",
         "./app.ts"
     ]
 }

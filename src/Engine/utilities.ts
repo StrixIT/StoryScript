@@ -181,15 +181,15 @@
 
         if (enemy.combinations) {
             var combines = <ICombine<() => ICombinable>[]>[];
-            var combineFailText = enemy.combinations.combineFailText;
+            var failText = enemy.combinations.failText;
 
             enemy.combinations.combine.forEach((combine: ICombine<() => ICombinable>) => {
                 var compiled = combine;
-                compiled.target = (<any>compiled.target).name;
+                compiled.target = compiled.target && (<any>compiled.target).name;
                 combines.push(compiled);
             });
 
-            compiledEnemy.combinations.combineFailText = combineFailText;
+            compiledEnemy.combinations.failText = failText;
             createReadOnlyCollection(compiledEnemy.combinations, 'combine', combines);
         }
 
