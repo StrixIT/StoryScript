@@ -14,3 +14,7 @@
 .back-label {
     display: none;
 }
+
+.dynamic-back-button {
+    display: inline-block;
+}
