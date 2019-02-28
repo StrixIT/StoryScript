@@ -26,6 +26,7 @@
         "browser-sync": "^2.26.3",
         "natives": "^1.1.6",
         "popper.js": "^1.14.7",
-        "lodash": "^4.17.11"
+        "lodash": "^4.17.11",
+        "extend": ">=3.0.2"
     }
 }
