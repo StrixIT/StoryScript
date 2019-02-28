@@ -460,7 +460,7 @@ namespace StoryScript {
         private processFeatures(htmlDoc: Document, game: IGame) {
             var featureNodes = htmlDoc.getElementsByTagName("feature");
 
-            if (game.currentLocation.features) {
+            if (game.currentLocation.features && game.currentLocation.features.length > 0) {
                 for (var i = 0; i < featureNodes.length; i++) {
                     var node = featureNodes[i];
                     var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
@@ -472,7 +472,7 @@ namespace StoryScript {
                     nameAttribute = nameAttribute.toLowerCase();
 
                     if (!game.currentLocation.features.some(f => f.name.toLowerCase() === nameAttribute)) {
-                        throw new Error('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
+                        console.log('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
                     }
 
                     game.currentLocation.features.filter(f => f.name.toLowerCase() === nameAttribute)[0].description = node.innerHTML;

@@ -5,6 +5,7 @@
                 // Add combination action names here if you want to use this feature.
             ];
         }
+        
         getSheetAttributes = () => {
             return [
                 // Add the character attributes that you want to show on the character sheet here
