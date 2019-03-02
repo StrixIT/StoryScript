@@ -476,7 +476,14 @@ namespace StoryScript {
                     var added = element.getAttribute('added');
 
                     if (element.play && added === 'added') {
-                        self.updateMediaTags(parent, key, ['added="added"'], '');
+                        var loop = element.getAttribute('loop');
+
+                        if (loop != null) {
+                            self.updateMediaTags(parent, key, ['added="added"'], 'autoplay');
+                        }
+                        else {
+                            self.updateMediaTags(parent, key, ['added="added"'], '');
+                        }
 
                         // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
                         const playPromise = element.play();
@@ -495,14 +502,15 @@ namespace StoryScript {
 
         private updateMediaTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
             let startPlay = false;
+            var entry = entity[key];
 
-            if (entity[key]) {
+            if (entry) {
                 for (var i in tagToFind)
                 {
                     var tag = tagToFind[i];
 
-                    if (entity[key].indexOf(tag) > -1) {
-                        entity[key] = entity[key].replace(tag, tagToReplace);
+                    if (entry.indexOf(tag) > -1) {
+                        entity[key] = entry.replace(tag, tagToReplace);
                         startPlay = true;
                     }
                 }
