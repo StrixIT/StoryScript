@@ -12,10 +12,10 @@
          */
         preposition?: string;
         /**
-         * True if the action requires a target, false otherwise. E.g. 'Look at' does not require a target
-         * (you can just look at something) while 'Throw at' obviously does require a target.
+         * True if the action requires a tool, false otherwise. E.g. 'Look at' does not require a tool
+         * (you can just look at something) while 'Throw at' obviously does require something being thrown.
          */
-        requiresTarget?: boolean;
+        requiresTool?: boolean;
 
         /**
          * The text to show to the player, or a function returning this text, when a combination attempt for this action fails.

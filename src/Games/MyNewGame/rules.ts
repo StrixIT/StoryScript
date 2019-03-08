@@ -115,17 +115,17 @@
                 {
                     text: 'Look',
                     preposition: 'at',
-                    requiresTarget: false,
+                    requiresTool: false,
                     failText: (game, tool, target): string => { return 'There is nothing special about ' + target.name; }
                 },
                 {
                     text: 'Pull',
-                    requiresTarget: false,
+                    requiresTool: false,
                     failText: (game, tool, target): string => { return 'You can\'t pull that.'; }
                 },
                 {
                     text: 'Push',
-                    requiresTarget: false,
+                    requiresTool: false,
                     failText: (game, tool, target): string => { return 'You can\'t push that.'; }
                 }
             ];

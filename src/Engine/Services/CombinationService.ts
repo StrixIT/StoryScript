@@ -40,7 +40,7 @@ namespace StoryScript {
 
             combo.selectedCombinationAction.preposition = combo.selectedCombinationAction.preposition || '';
 
-            if (combo.selectedCombinationAction.requiresTarget && !combo.selectedTool) {
+            if (combo.selectedCombinationAction.requiresTool && !combo.selectedTool) {
 
                 combo.combineText = combo.selectedCombinationAction.text + ' ' + target.name + ' ' + combo.selectedCombinationAction.preposition;
                 combo.selectedTool = target;
@@ -55,10 +55,10 @@ namespace StoryScript {
             var combo = self._game.combinations.activeCombination;
             var tool = combo.selectedTool;
             var type = combo.selectedCombinationAction;
-            var text = combo.selectedCombinationAction.requiresTarget ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
+            var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
             self._game.combinations.activeCombination = null;
-            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTarget || tool.id === <any>c.target))[0] : null;
+            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTool || tool.id === <any>c.target))[0] : null;
             var resultText = null;
 
             if (combination) {
@@ -71,7 +71,7 @@ namespace StoryScript {
                 resultText = typeof type.failText === 'function' ? type.failText(self._game, tool, target) : type.failText;
             }
             else {
-                resultText = tool ? self._texts.format(self._texts.noCombination, [tool.name, target.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTarget, [target.name, type.text, type.preposition]);
+                resultText = tool ? self._texts.format(self._texts.noCombination, [tool.name, target.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
             }
 
             return text = text + (resultText ? ': ' + resultText : '');

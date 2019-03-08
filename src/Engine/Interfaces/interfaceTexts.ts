@@ -64,7 +64,7 @@
         combinations?: string;
         tryCombination?: string;
         noCombination?: string;
-        noCombinationNoTarget?: string;
+        noCombinationNoTool?: string;
         levelUp?: string;
         levelUpDescription?: string;
         completeLevelUp?: string;

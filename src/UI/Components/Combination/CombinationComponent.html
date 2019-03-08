@@ -1,10 +1,12 @@
 <div class="box-container" id="combinations" ng-if="$ctrl.combineActions.length > 0">
     <div class="box-title">{{ $ctrl.texts.combinations }}</div>
-    <ul class="list-unstyled inline">
-        <button type="button" class="btn" ng-class="$ctrl.getCombineClass(c)" ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)">{{c.text}}</button>
-    </ul>
-    <div class="inline">
-        <p class="combination-text" ng-show="$ctrl.game.combinations.activeCombination.combineText">{{$ctrl.game.combinations.activeCombination.combineText}}</p>
-        <p class="combination-result-text" ng-show="$ctrl.combinationText">{{$ctrl.combinationText}}</p>
+    <div class="row">
+        <ul class="list-unstyled col-3">
+            <button type="button" class="btn" ng-class="$ctrl.getCombineClass(c)" ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)">{{c.text}}</button>
+        </ul>
+        <div class="col-9">
+            <p class="combination-text" ng-show="$ctrl.game.combinations.activeCombination.combineText">{{$ctrl.game.combinations.activeCombination.combineText}}</p>
+            <p class="combination-result-text" ng-show="$ctrl.combinationText">{{$ctrl.combinationText}}</p>
+        </div>
     </div>
 </div>

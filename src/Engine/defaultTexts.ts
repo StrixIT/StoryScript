@@ -62,7 +62,7 @@
             combinations: "Combinations",
             tryCombination: "Try",
             noCombination: "You {2} the {0} {3} the {1}. Nothing happens.",
-            noCombinationNoTarget: "You {1} {2} the {0}. Nothing happens.",
+            noCombinationNoTool: "You {1} {2} the {0}. Nothing happens.",
             levelUp: "Level up",
             completeLevelUp: "Accept",
             levelUpDescription: "You reached level {0}.",

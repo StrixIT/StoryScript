@@ -25,12 +25,12 @@ namespace StoryScript {
                 return;
             }
 
-            combination.requiresTarget = combination.requiresTarget === undefined || combination.requiresTarget === true ? true : false;
+            combination.requiresTool = combination.requiresTool === undefined || combination.requiresTool === true ? true : false;
 
             self._game.combinations.activeCombination = {
                 selectedCombinationAction: combination,
                 selectedTool: null,
-                combineText: combination.requiresTarget ? combination.text : combination.text + ' ' + (combination.preposition || '')
+                combineText: combination.requiresTool ? combination.text : combination.text + ' ' + (combination.preposition || '')
             };
         }
 
@@ -42,7 +42,7 @@ namespace StoryScript {
         showCombinationText = (text: string): void => {
             var self = this;
             self.combinationText = text;
-            self._timeout(() => self.combinationText = null, 2000);
+            self._timeout(() => self.combinationText = null, 4000);
         }
 
         tryCombination = (source: ICombinable, target: { name: string }, type: ICombinationAction) => {

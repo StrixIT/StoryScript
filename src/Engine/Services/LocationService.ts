@@ -464,6 +464,7 @@ namespace StoryScript {
                 for (var i = 0; i < featureNodes.length; i++) {
                     var node = featureNodes[i];
                     var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+                    var displayNameAttribute = node.attributes['displayname'] && node.attributes['displayname'].nodeValue;
 
                     if (!nameAttribute) {
                         throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
@@ -475,7 +476,9 @@ namespace StoryScript {
                         console.log('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
                     }
 
-                    game.currentLocation.features.filter(f => f.name.toLowerCase() === nameAttribute)[0].description = node.innerHTML;
+                    var feature = game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
+                    feature.name = displayNameAttribute || feature.name;
+                    feature.description = node.innerHTML;
                 }
             }
         }

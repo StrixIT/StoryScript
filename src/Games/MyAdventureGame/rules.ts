@@ -1,14 +1,10 @@
-﻿namespace AdventureGame {
+namespace MyAdventureGame {
     export class Rules implements StoryScript.IRules {
         getCombinationActions = (): StoryScript.ICombinationAction[] => {
             return [
                 {
                     text: Constants.USE,
                     preposition: 'on'
-                },
-                {
-                    text: Constants.THROW,
-                    preposition: 'at'
                 },
                 {
                     text: Constants.TOUCH,
@@ -18,31 +14,28 @@
                     text: Constants.LOOKAT,
                     preposition: 'at',
                     requiresTool: false,
-                    failText: (game, tool, target): string => { return 'You look at the ' + target.name + '. There is nothing special about it';}
-                },
-                {
-                    text: Constants.WALK,
-                    preposition: 'to',
-                    requiresTool: false
+                    failText: (game, tool, target): string => { 
+                        return 'You look at the ' + target.name + '. There is nothing special about it';
+                    }
                 }
             ];
         }
-
+        
         getSheetAttributes = () => {
             return [
-                // Add character sheet property names here
+                // Add the character attributes that you want to show on the character sheet here
             ];
         }
 
         getCreateCharacterSheet = (): StoryScript.ICreateCharacter => {
             return {
                 steps: [
-                    // Add the character creation steps here.
+                    // Add the character creation steps here, if you want to use character creation.
                 ]
             };
         }
 
-        createCharacter = (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
+        public createCharacter(game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
             var self = this;
             var character = new Character();
             return character;
