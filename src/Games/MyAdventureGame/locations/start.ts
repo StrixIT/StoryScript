@@ -32,7 +32,7 @@ namespace MyAdventureGame.Locations {
                             },
                             {
                                 type: Constants.USE,
-                                target: Items.Flask,
+                                tool: Items.Flask,
                                 match: (game, tool, target): string => {
                                     var flask = game.character.items.get(Items.Flask);
 

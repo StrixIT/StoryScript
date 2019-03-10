@@ -125,6 +125,9 @@ namespace StoryScript {
             if (saveGame) {
                 self._game.loading = true;
                 self._game.character = saveGame.character;
+
+                self.setupCharacter();
+
                 self._game.locations = saveGame.world;
                 self._game.worldProperties = saveGame.worldProperties;
             

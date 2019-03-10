@@ -8,6 +8,9 @@ namespace MyAdventureGame.Locations {
                     target: Locations.Start
                 }
             ],
+            items: [
+                Items.Herbs
+            ],
             features: [
                 {
                     name: 'woundedwarrior',

@@ -8,7 +8,7 @@ namespace StoryScript {
 
 namespace StoryScript {
     export class CombinationService implements ICombinationService {
-        constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _helperService: IHelperService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
         }
 
         getCombinationActions = (): ICombinationAction[] => {
@@ -58,7 +58,18 @@ namespace StoryScript {
             var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
             self._game.combinations.activeCombination = null;
-            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTool || tool.id === <any>c.target))[0] : null;
+            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTool || tool.id === <any>c.tool))[0] : null;
+            
+            if (!combination) {
+                // For items, the order in which the combination is tried shouldn't matter.
+                var toolItem = self._helperService.getItem(tool.id);
+                var targetItem = self._helperService.getItem(target.id);
+
+                if (toolItem && targetItem) {
+                    combination = toolItem.combinations && toolItem.combinations.combine ? toolItem.combinations.combine.filter(c => c.type === type.text && targetItem.id === <any>c.tool)[0] : null;
+                }
+            }
+            
             var resultText = null;
 
             if (combination) {

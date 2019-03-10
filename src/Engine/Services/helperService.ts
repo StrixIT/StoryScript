@@ -60,7 +60,8 @@ namespace StoryScript {
 
         getItem = (selector: string | (() => IItem)) => {
             var self = this;
-            return StoryScript.find<IItem>(self._game.definitions.items, selector, 'items', self._game.definitions);
+            var instance = StoryScript.find<IItem>(self._game.definitions.items, selector, 'items', self._game.definitions);
+            return instantiateItem(instance);
         }
 
         getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {

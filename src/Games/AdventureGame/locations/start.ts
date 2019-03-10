@@ -75,7 +75,7 @@
                             },
                             {
                                 type: Constants.USE,
-                                target: Items.Flask,
+                                tool: Items.Flask,
                                 match: (game, tool, target): string => {
                                     game.character.items.remove(Items.Flask);
                                     game.character.items.push(Items.BlessedWater);

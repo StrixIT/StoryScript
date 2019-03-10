@@ -161,13 +161,22 @@
         return results[0] ? results[0] : null;
     }
 
+    export function instantiateItem(item: IItem): IItem {
+        if (!item) {
+            return null;
+        }
+
+        compileCombinations(item, item);
+        return item;
+    }
+
     export function instantiateEnemy(enemy: IEnemy, definitions: IDefinitions, game: IGame, rules: IRules): ICompiledEnemy {
         if (!enemy) {
             return null;
         }
 
         // A trick to work with a compiled enemy here as id is lacking in enemy and a direct cast is not possible.
-        var compiledEnemy = <ICompiledEnemy><any>enemy;
+        var compiledEnemy = <ICompiledEnemy><unknown>enemy;
 
         var items = <IItem[]>[];
 
@@ -178,21 +187,7 @@
         }
 
         createReadOnlyCollection(compiledEnemy, 'items', items);
-
-        if (enemy.combinations) {
-            var combines = <ICombine<() => ICombinable>[]>[];
-            var failText = enemy.combinations.failText;
-
-            enemy.combinations.combine.forEach((combine: ICombine<() => ICombinable>) => {
-                var compiled = combine;
-                compiled.target = compiled.target && (<any>compiled.target).name;
-                combines.push(compiled);
-            });
-
-            compiledEnemy.combinations.failText = failText;
-            createReadOnlyCollection(compiledEnemy.combinations, 'combine', combines);
-        }
-
+        compileCombinations(enemy, compiledEnemy);
         addProxy(compiledEnemy, 'item', game, rules);
 
         return compiledEnemy;
@@ -291,6 +286,22 @@
         }
 
         return selector ? collectionToFilter.filter(selector) : collectionToFilter;
+    }
+
+    function compileCombinations(definitionEntry: ICombinable, compiledEntry: ICombinable) {
+        if (definitionEntry.combinations) {
+            var combines = <ICombine<() => ICombinable>[]>[];
+            var failText = definitionEntry.combinations.failText;
+
+            definitionEntry.combinations.combine.forEach((combine: ICombine<() => ICombinable>) => {
+                var compiled = combine;
+                compiled.tool = compiled.tool && (<any>compiled.tool).name;
+                combines.push(compiled);
+            });
+
+            compiledEntry.combinations.failText = failText;
+            createReadOnlyCollection(compiledEntry.combinations, 'combine', combines);
+        }
     }
 
     function extend(target, source) {

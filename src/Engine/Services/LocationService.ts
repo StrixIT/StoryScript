@@ -320,11 +320,15 @@ namespace StoryScript {
                     if (feature.combinations && feature.combinations.combine) {
                         for (var j in feature.combinations.combine) {
                             var combination = feature.combinations.combine[j];
-                            combination.target = combination.target && (<any>combination.target).name;
+                            self.setTool(combination);
                         }
                     }
                 }
             }
+        }
+
+        private setTool(combination: ICombine<() => ICombinable>) {
+            combination.tool = combination.tool && (<any>combination.tool).name;
         }
 
         private addDestination() {
@@ -346,7 +350,7 @@ namespace StoryScript {
 
             // Replace the target function pointer with the target id.
             var feature = <IFeature>args[0];
-            feature.combinations.combine.forEach(c => c.target = c.target && (<any>c.target).name);
+            feature.combinations.combine.forEach(c => self.setTool(c));
 
             args.splice(1, 1);
             originalFunction.apply(this, args);
@@ -553,7 +557,7 @@ namespace StoryScript {
             if (destination.barrier.combinations && destination.barrier.combinations.combine) {
                 for (var n in destination.barrier.combinations.combine) {
                     var combination = destination.barrier.combinations.combine[n];
-                    combination.target = combination.target && (<any>combination.target).name;
+                    self.setTool(combination);
                 }
             }
         }

@@ -22,9 +22,9 @@
      */
     export interface ICombine<T extends () => ICombinable> {
         /**
-         * The target of this combination.
+         * The tool for this combination.
          */
-        target?: T;
+        tool?: T;
 
         /**
          * The type of the combination, which should match an ICombination text.
