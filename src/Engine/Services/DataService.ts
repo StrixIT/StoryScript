@@ -15,7 +15,7 @@ namespace StoryScript {
         public functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
         private descriptionBundle: Map<string, string>;
         private loadedDescriptions: { [id: string]: string };
-        private functionArgumentRegex = /\([a-z-A-Z0-9: ]{1,}\)/;
+        private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
 
         constructor(private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string, private _definitions: IDefinitions) {
             var self = this;

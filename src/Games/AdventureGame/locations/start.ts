@@ -16,7 +16,7 @@
                         },
                         combine: [
                             {
-                                target: Items.Dagger,
+                                tool: Items.Dagger,
                                 type: Constants.USE,
                                 match: (game, tool, target): string => {
                                     return 'Used dagger on vine!';
