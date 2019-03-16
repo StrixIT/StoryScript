@@ -56,9 +56,9 @@ namespace StoryScript {
 
             // In dynamic mode, refresh the location on every browser reload.
             // Todo: should descriptions be refreshed this way for default mode as well?
-            if (!travel && self._game.definitions.dynamicLocations) {
-                self._game.currentLocation.descriptions = null;
-                self._game.currentLocation.text = null;
+            if (!travel && game.definitions.dynamicLocations) {
+                game.currentLocation.descriptions = null;
+                game.currentLocation.text = null;
             }
 
             self.loadLocationDescriptions(game);
@@ -315,20 +315,23 @@ namespace StoryScript {
 
                 for (var i in location.features) {
                     var feature = location.features[i];
+
+                    // Compile stand-alone features that are still functions.
+                    if (typeof feature === 'function') {
+                        location.features[i] = (<() => IFeature>feature)();
+                        feature = location.features[i];
+                    }
+
                     feature.id = feature.name;
 
                     if (feature.combinations && feature.combinations.combine) {
                         for (var j in feature.combinations.combine) {
                             var combination = feature.combinations.combine[j];
-                            self.setTool(combination);
+                            setTool(combination);
                         }
                     }
                 }
             }
-        }
-
-        private setTool(combination: ICombine<() => ICombinable>) {
-            combination.tool = combination.tool && (<any>combination.tool).name;
         }
 
         private addDestination() {
@@ -344,13 +347,35 @@ namespace StoryScript {
         }
 
         private addFeature() {
-            var self = this;
             var args = [].slice.apply(arguments);
             var originalFunction = args.shift();
 
-            // Replace the target function pointer with the target id.
+            // Compile a feature passed as a function first.
+            if (typeof args[0] === 'function') {
+                args[0] = args[0]();
+            }
+
             var feature = <IFeature>args[0];
-            feature.combinations.combine.forEach(c => self.setTool(c));
+
+            if (feature.combinations && feature.combinations.combine) {
+                feature.combinations.combine.forEach(c => setTool(c));
+            }
+
+            if (feature.map) {
+                var imageMaps = document.getElementsByTagName("map");
+
+                for (var i = 0; i < imageMaps.length; i++) {
+                    var map = <HTMLMapElement>imageMaps[i];
+                    
+                    if (map.name && map.name.toLowerCase() === feature.map.toLowerCase()) {
+                        var area = document.createElement('area');
+                        area.setAttribute('coords', feature.coords);
+                        area.setAttribute('shape', feature.shape);
+                        map.appendChild(area);
+                        area.setAttribute('name', feature.name);
+                    }
+                }
+            }
 
             args.splice(1, 1);
             originalFunction.apply(this, args);
@@ -466,7 +491,7 @@ namespace StoryScript {
 
             if (game.currentLocation.features && game.currentLocation.features.length > 0) {
                 for (var i = 0; i < featureNodes.length; i++) {
-                    var node = featureNodes[i];
+                    const node = featureNodes[i];
                     var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
                     var displayNameAttribute = node.attributes['displayname'] && node.attributes['displayname'].nodeValue;
 
@@ -483,6 +508,31 @@ namespace StoryScript {
                     var feature = game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
                     feature.name = displayNameAttribute || feature.name;
                     feature.description = node.innerHTML;
+                }
+            }
+
+            // Get map, shape and coordinates information for image map features.
+            var map = htmlDoc.getElementsByTagName("map");
+
+            if (map.length > 0)
+            {
+                var mapName = map[0].attributes['name'] && map[0].attributes['name'].nodeValue;
+                var areaNodes = htmlDoc.getElementsByTagName("area");
+
+                for (var f = 0; f < areaNodes.length; f++) {
+                    const node = areaNodes[f];
+                    var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+
+                    if (nameAttribute) {
+                        var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
+                        var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
+                        var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
+
+                        var feature = game.currentLocation.features.get(nameAttribute);
+                        feature.map = mapName;
+                        feature.coords = coordsAttribute;
+                        feature.shape = shapeAttribute;
+                    }
                 }
             }
         }
@@ -557,9 +607,13 @@ namespace StoryScript {
             if (destination.barrier.combinations && destination.barrier.combinations.combine) {
                 for (var n in destination.barrier.combinations.combine) {
                     var combination = destination.barrier.combinations.combine[n];
-                    self.setTool(combination);
+                    setTool(combination);
                 }
             }
         }
+    }
+
+    function setTool(combination: ICombine<() => ICombinable>) {
+        combination.tool = combination.tool && (<any>combination.tool).name;
     }
 }
