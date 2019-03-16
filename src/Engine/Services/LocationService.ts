@@ -157,13 +157,14 @@ namespace StoryScript {
                 self.initDestinations(location);
 
                 createReadOnlyCollection(location, 'features', location.features || <any>[]);
-                location.features.push = (<any>location.features.push).proxy(self.addFeature, self._game);
+                location.features.push = location.features.push.proxy(self.addFeature, self._game);
+                location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
 
                 createReadOnlyCollection(location, 'actions', <any>location.actions || []);
-                location.actions.push = (<any>location.actions.push).proxy(self.addAction, self._game);
+                location.actions.push = location.actions.push.proxy(self.addAction, self._game);
 
                 createReadOnlyCollection(location, 'combatActions', <any>location.combatActions || []);
-                location.combatActions.push = (<any>location.combatActions.push).proxy(self.addAction, self._game);
+                location.combatActions.push = location.combatActions.push.proxy(self.addAction, self._game);
 
                 createReadOnlyCollection(location, 'persons', location.persons || <any>[]);
                 createReadOnlyCollection(location, 'enemies', location.enemies || <any>[]);
@@ -361,19 +362,32 @@ namespace StoryScript {
                 feature.combinations.combine.forEach(c => setTool(c));
             }
 
-            if (feature.map) {
-                var imageMaps = document.getElementsByTagName("map");
+            var map = findImageMap(feature);
 
-                for (var i = 0; i < imageMaps.length; i++) {
-                    var map = <HTMLMapElement>imageMaps[i];
-                    
-                    if (map.name && map.name.toLowerCase() === feature.map.toLowerCase()) {
-                        var area = document.createElement('area');
-                        area.setAttribute('coords', feature.coords);
-                        area.setAttribute('shape', feature.shape);
-                        map.appendChild(area);
-                        area.setAttribute('name', feature.name);
-                    }
+            if (map) {     
+                var area = document.createElement('area');
+                area.setAttribute('coords', feature.coords);
+                area.setAttribute('shape', feature.shape);
+                map.appendChild(area);
+                area.setAttribute('name', feature.name);
+            }
+
+            args.splice(1, 1);
+            originalFunction.apply(this, args);
+        }
+
+        private removeFeature() {
+            var args = [].slice.apply(arguments);
+            var originalFunction = args.shift();
+            var featureId = typeof args[0] === 'function' ? args[0].name : typeof args[0] === 'object' ? args[0].id : args[0];
+            var game = <IGame>args[1];
+            var feature = game.currentLocation.features.get(featureId);
+
+            if (feature) {
+                var area = findImageMapArea(feature);
+
+                if (area) {
+                    area.parentNode.removeChild(area);
                 }
             }
 
@@ -487,6 +501,12 @@ namespace StoryScript {
         }
 
         private processFeatures(htmlDoc: Document, game: IGame) {
+            var self = this;
+            self.processTextFeatures(game, htmlDoc);
+            self.processVisualFeatures(game);
+        }
+
+        private processTextFeatures(game: IGame, htmlDoc: Document) {
             var featureNodes = htmlDoc.getElementsByTagName("feature");
 
             if (game.currentLocation.features && game.currentLocation.features.length > 0) {
@@ -510,31 +530,81 @@ namespace StoryScript {
                     feature.description = node.innerHTML;
                 }
             }
+        }
 
-            // Get map, shape and coordinates information for image map features.
-            var map = htmlDoc.getElementsByTagName("map");
+        private processVisualFeatures(game: IGame) {
+            var self = this;
 
-            if (map.length > 0)
-            {
-                var mapName = map[0].attributes['name'] && map[0].attributes['name'].nodeValue;
-                var areaNodes = htmlDoc.getElementsByTagName("area");
+            // Get map, shape and coordinates information for image map features and add pictures for them.
+            // For this to work, the description needs to be updated in the browser, hence the timeout.
+            setTimeout(() => {
+                var map = document.getElementsByTagName("map")[0];
 
-                for (var f = 0; f < areaNodes.length; f++) {
-                    const node = areaNodes[f];
-                    var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+                if (map) {
+                    var mapName = map.attributes['name'] && map.attributes['name'].nodeValue;
+                    var areaNodes = map.childNodes;
 
-                    if (nameAttribute) {
-                        var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
-                        var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
-                        var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
+                    for (var f = 0; f < areaNodes.length; f++) {
+                        const node = <HTMLAreaElement>areaNodes[f];
+                        var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
 
-                        var feature = game.currentLocation.features.get(nameAttribute);
-                        feature.map = mapName;
-                        feature.coords = coordsAttribute;
-                        feature.shape = shapeAttribute;
+                        if (nameAttribute) {
+                            var feature = game.currentLocation.features.get(nameAttribute);
+
+                            if (feature) {
+                                var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
+                                var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
+                                var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
+                                feature.map = mapName;
+                                feature.coords = coordsAttribute;
+                                feature.shape = shapeAttribute;
+
+                                if (feature.picture) {
+                                    self.addFeaturePicture(feature, coordsAttribute, node);
+                                }
+                            }
+                        }
                     }
                 }
+            }, 0);
+        }
+
+        private addFeaturePicture(feature: IFeature, coordsAttribute: any, node: HTMLAreaElement) {
+            var image = document.createElement('img');
+            var coords = coordsAttribute.split(",");
+            var top = null, left = null;
+
+            if (feature.shape.toLowerCase() === 'poly') {
+                var x = [], y = [];
+
+                for (var i = 0; i < coords.length; i++) {
+                    var value = coords[i];
+                    if (i % 2 === 0) {
+                        x.push(value);
+                    }
+                    else {
+                        y.push(value);
+                    }
+                }
+
+                left = x.reduce(function (p, v) {
+                    return (p < v ? p : v);
+                });
+                
+                top = y.reduce(function (p, v) {
+                    return (p < v ? p : v);
+                });
             }
+            else {
+                left = coords[0];
+                top = coords[1];
+            }
+
+            image.src = 'resources/' + feature.picture;
+            image.style.position = 'absolute';
+            image.style.top = top + 'px';
+            image.style.left = left + 'px';
+            node.appendChild(image);
         }
 
         private selectLocationDescription(game: IGame) {
@@ -615,5 +685,41 @@ namespace StoryScript {
 
     function setTool(combination: ICombine<() => ICombinable>) {
         combination.tool = combination.tool && (<any>combination.tool).name;
+    }
+
+    function findImageMap(feature: IFeature) {
+        var mapElement = <HTMLMapElement>null;
+
+        if (feature && feature.map) {
+            var imageMaps = document.getElementsByTagName("map");
+
+            for (var i = 0; i < imageMaps.length; i++) {
+                var map = <HTMLMapElement>imageMaps[i];
+                
+                if (map.name && map.name.toLowerCase() === feature.map.toLowerCase()) {
+                    mapElement = map;
+                }
+            }
+        }
+
+        return mapElement;
+    }
+
+    function findImageMapArea(feature: IFeature) {
+        var area = <HTMLAreaElement>null;
+        var map = findImageMap(feature);
+
+        if (map) {
+            map.childNodes.forEach(n => {
+                var attributes = (<any>n).attributes;
+                var areaName = attributes['name'] && attributes['name'].nodeValue;
+                
+                if (areaName.toLowerCase() === feature.id.toLowerCase()) {
+                    area = <HTMLAreaElement>n;
+                }
+            });
+        }
+
+        return area;
     }
 }

@@ -70,6 +70,7 @@
         if ((<any>Array.prototype).remove === undefined) {
             Object.defineProperty(Array.prototype, 'remove', {
                 enumerable: false,
+                writable: true,
                 value: function (item: any) {
                     // Need to cast to any for ES5 and lower
                     var index = (<any>Array.prototype).findIndex.call(this, function (x) {

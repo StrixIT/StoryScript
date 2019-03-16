@@ -23,5 +23,11 @@
          * The shape of this feature when using image maps for visual features.
          */
         shape?: string;
+
+        /**
+         * The file path for a custom picture to show on top of the image map for this feature when using 
+         * image maps for visual features. The path should be relative to the resources folder.
+         */
+        picture?: string;
     }
 }

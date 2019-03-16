@@ -14,14 +14,18 @@ namespace MyAdventureGameVisual.Locations {
             features: [
                 {
                     name: 'woundedwarrior',
+                    picture: 'healingpotion.png',
                     combinations: {
                         failText: 'That won\'t help him.',
                         combine: [
                             {
                                 type: Constants.LOOKAT,
                                 match: (game, tool, target): string => {
-                                    if (!game.character.items.get(Items.Flask)) {
+                                    var feature = game.currentLocation.features.get('woundedwarrior');
+
+                                    if (feature) {
                                         game.character.items.push(Items.Flask);
+                                        game.currentLocation.features.remove(feature);
                                         return `Looking at the warrior, you see a flask on his belt.
                                                 carefully, you remove it.`;
                                     }
