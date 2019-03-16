@@ -8,21 +8,26 @@ namespace StoryScript
             var self = this;
 
             element.on('click', 'map', function(e) {
-                e.preventDefault();
-                var target = e.target;
-                var featureName = target.attributes['name'] && target.attributes['name'].value;
+                self.handleClick(e, e.target, self._game, scope);
+            });
 
-                if (featureName) {
-                    var feature = self._game.currentLocation.features.filter(f => f.name.toLowerCase() == featureName.toLowerCase())[0];
-
-                    if (feature) {
-                        scope.$applyAsync(() => {
-                            self._game.combinations.tryCombine(feature);
-                        });
-                    }
-                }
+            element.on('click', 'img', function(e) {
+                self.handleClick(e, e.target.parentElement, self._game, scope);
             });
         };
+
+        private handleClick(e: JQueryEventObject, target: Element, game: IGame, scope: angular.IScope) {
+            e.preventDefault();
+            var featureName = target.attributes['name'] && target.attributes['name'].value;
+            if (featureName) {
+                var feature = game.currentLocation.features.filter(f => f.name.toLowerCase() == featureName.toLowerCase())[0];
+                if (feature) {
+                    scope.$applyAsync(() => {
+                        game.combinations.tryCombine(feature);
+                    });
+                }
+            }
+        }
 
         public static Factory()
         {

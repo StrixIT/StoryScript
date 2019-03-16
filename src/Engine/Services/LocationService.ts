@@ -559,10 +559,7 @@ namespace StoryScript {
                                 feature.map = mapName;
                                 feature.coords = coordsAttribute;
                                 feature.shape = shapeAttribute;
-
-                                if (feature.picture) {
-                                    addFeaturePicture(feature, coordsAttribute, node);
-                                }
+                                addFeaturePicture(feature, coordsAttribute, node);
                             }
                         }
                     }
@@ -687,6 +684,10 @@ namespace StoryScript {
     }
 
     function addFeaturePicture(feature: IFeature, coordsAttribute: any, node: HTMLAreaElement) {
+        if (!feature.picture) {
+            return;
+        }
+
         var image = document.createElement('img');
         var coords = coordsAttribute.split(",");
         var top = null, left = null;

@@ -14,7 +14,6 @@ namespace MyAdventureGameVisual.Locations {
             features: [
                 {
                     name: 'woundedwarrior',
-                    picture: 'healingpotion.png',
                     combinations: {
                         failText: 'That won\'t help him.',
                         combine: [
@@ -29,9 +28,30 @@ namespace MyAdventureGameVisual.Locations {
                                         return `Looking at the warrior, you see a flask on his belt.
                                                 carefully, you remove it.`;
                                     }
-                                    else {
-                                        return 'You see nothing else that might help.';
+
+                                    return null;
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: 'Dagger',
+                    picture: 'dagger.png',
+                    combinations: {
+                        combine: [
+                            {
+                                type: Constants.TOUCH,
+                                match: (game, tool, target): string => {
+                                    var feature = game.currentLocation.features.get('dagger');
+
+                                    if (feature) {
+                                        game.character.items.push(Items.Dagger);
+                                        game.currentLocation.features.remove(feature);
+                                        return `You pick up the dagger.`;
                                     }
+
+                                    return null;
                                 }
                             }
                         ]
