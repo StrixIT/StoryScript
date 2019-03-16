@@ -370,6 +370,7 @@ namespace StoryScript {
                 area.setAttribute('shape', feature.shape);
                 map.appendChild(area);
                 area.setAttribute('name', feature.name);
+                addFeaturePicture(feature, area.attributes['coords'].nodeValue, area);
             }
 
             args.splice(1, 1);
@@ -560,51 +561,13 @@ namespace StoryScript {
                                 feature.shape = shapeAttribute;
 
                                 if (feature.picture) {
-                                    self.addFeaturePicture(feature, coordsAttribute, node);
+                                    addFeaturePicture(feature, coordsAttribute, node);
                                 }
                             }
                         }
                     }
                 }
             }, 0);
-        }
-
-        private addFeaturePicture(feature: IFeature, coordsAttribute: any, node: HTMLAreaElement) {
-            var image = document.createElement('img');
-            var coords = coordsAttribute.split(",");
-            var top = null, left = null;
-
-            if (feature.shape.toLowerCase() === 'poly') {
-                var x = [], y = [];
-
-                for (var i = 0; i < coords.length; i++) {
-                    var value = coords[i];
-                    if (i % 2 === 0) {
-                        x.push(value);
-                    }
-                    else {
-                        y.push(value);
-                    }
-                }
-
-                left = x.reduce(function (p, v) {
-                    return (p < v ? p : v);
-                });
-                
-                top = y.reduce(function (p, v) {
-                    return (p < v ? p : v);
-                });
-            }
-            else {
-                left = coords[0];
-                top = coords[1];
-            }
-
-            image.src = 'resources/' + feature.picture;
-            image.style.position = 'absolute';
-            image.style.top = top + 'px';
-            image.style.left = left + 'px';
-            node.appendChild(image);
         }
 
         private selectLocationDescription(game: IGame) {
@@ -721,5 +684,43 @@ namespace StoryScript {
         }
 
         return area;
+    }
+
+    function addFeaturePicture(feature: IFeature, coordsAttribute: any, node: HTMLAreaElement) {
+        var image = document.createElement('img');
+        var coords = coordsAttribute.split(",");
+        var top = null, left = null;
+
+        if (feature.shape.toLowerCase() === 'poly') {
+            var x = [], y = [];
+
+            for (var i = 0; i < coords.length; i++) {
+                var value = coords[i];
+                if (i % 2 === 0) {
+                    x.push(value);
+                }
+                else {
+                    y.push(value);
+                }
+            }
+
+            left = x.reduce(function (p, v) {
+                return (p < v ? p : v);
+            });
+            
+            top = y.reduce(function (p, v) {
+                return (p < v ? p : v);
+            });
+        }
+        else {
+            left = coords[0];
+            top = coords[1];
+        }
+
+        image.src = 'resources/' + feature.picture;
+        image.style.position = 'absolute';
+        image.style.top = top + 'px';
+        image.style.left = left + 'px';
+        node.appendChild(image);
     }
 }
