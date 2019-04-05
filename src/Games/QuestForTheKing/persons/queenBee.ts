@@ -2,7 +2,7 @@
     export function QueenBee(): IPerson {
         return {
             name: 'Queen Bee',
-            //pictureFileName: 'bandit.jpg',
+            //picture: 'bandit.jpg',
             hitpoints: 10,
             attack: '1d6',
             reward: 5,

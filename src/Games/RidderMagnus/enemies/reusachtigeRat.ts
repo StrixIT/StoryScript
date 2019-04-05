@@ -2,7 +2,7 @@
     export function ReusachtigeRat(): IEnemy {
         return {
             name: 'Reusachtige rat',
-            pictureFileName: 'enemies/ReusachtigeRat.jpg',
+            picture: 'enemies/ReusachtigeRat.jpg',
             hitpoints: 13,
             attack: '1d6+2',
             reward: 2,

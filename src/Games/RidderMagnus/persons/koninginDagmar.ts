@@ -2,7 +2,7 @@
     export function KoninginDagmar(): IPerson {
         return {
             name: 'Koningin Dagmar',
-            //pictureFileName:
+            //picture:
             hitpoints: 1000,
             attack: '10d6',
             reward: 100,

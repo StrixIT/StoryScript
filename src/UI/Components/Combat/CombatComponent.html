@@ -4,7 +4,7 @@
             <ul class="list-unstyled" ng-show="$ctrl.game.currentLocation.activeEnemies.length > 0">
                 <li ng-repeat="enemy in $ctrl.game.currentLocation.activeEnemies">
                     <button type="button" class="btn btn-danger" ng-click="$ctrl.fight(enemy)">{{ $ctrl.texts.format($ctrl.texts.attack, [enemy.name]) }}</button>
-                    <img ng-src="{{ enemy.pictureFileName }}" ng-if="enemy.pictureFileName" />
+                    <img ng-src="{{ enemy.picture }}" ng-if="enemy.picture" />
                 </li>
             </ul>
             <ul class="list-unstyled">

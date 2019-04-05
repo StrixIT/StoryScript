@@ -8,7 +8,7 @@
                 <button type="button" class="btn btn-info trade" ng-if="person.trade" ng-click="$ctrl.trade(game, 1, person)">{{ $ctrl.texts.format($ctrl.texts.trade, [person.name]) }}</button>
                 <button type="button" class="btn btn-danger" ng-if="person.canAttack === undefined || person.canAttack === true" ng-click="$ctrl.startCombat(person)">{{ $ctrl.texts.format($ctrl.texts.attack, [person.name]) }}</button>
             </div>
-            <img ng-src="{{ person.pictureFileName }}" ng-if="person.pictureFileName" />
+            <img ng-src="{{ person.picture }}" ng-if="person.picture" />
         </li>
     </ul>
 </div>

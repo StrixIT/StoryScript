@@ -11,10 +11,10 @@
         /**
          * The text to show to the player, or a function returning this text, when a combination attempt on this object fails.
          * @param game The game object
-         * @param tool The tool for the combination.
          * @param target The target of the combination.
+         * @param tool The tool for the combination.
          */
-        failText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
+        failText?: string | ((game: IGame, target: ICombinable, tool: ICombinable) => string);
     }
 
     /**
@@ -34,9 +34,9 @@
         /**
          * The function to execute when a combination is successful. Return the success text.
          * @param game The game object
-         * @param tool The tool for the combination
          * @param target The target of the combination
+         * @param tool The tool for the combination
          */
-        match(game: IGame, tool: ICombinable, target: ICombinable): string;
+        match(game: IGame, target: ICombinable, tool: ICombinable): string;
     }
 }

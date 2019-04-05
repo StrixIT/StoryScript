@@ -74,13 +74,13 @@ namespace StoryScript {
                 resultText = combination.match(self._game, target, tool);
             }
             else if (target.combinations && target.combinations.failText) {
-                resultText = typeof target.combinations.failText === 'function' ? target.combinations.failText(self._game, tool, target) : target.combinations.failText;
+                resultText = typeof target.combinations.failText === 'function' ? target.combinations.failText(self._game, target, tool) : target.combinations.failText;
             }
             else if (type.failText) {
-                resultText = typeof type.failText === 'function' ? type.failText(self._game, tool, target) : type.failText;
+                resultText = typeof type.failText === 'function' ? type.failText(self._game, target, tool) : type.failText;
             }
             else {
-                resultText = tool ? self._texts.format(self._texts.noCombination, [tool.name, target.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
+                resultText = tool ? self._texts.format(self._texts.noCombination, [target.name, tool.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
             }
 
             return text = text + (resultText ? ': ' + resultText : '');

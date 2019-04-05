@@ -2,7 +2,7 @@
     export function RatMan(): IEnemy {
         return {
             name: 'Ratman',
-            pictureFileName: 'enemies/RatMan.jpg',
+            picture: 'enemies/RatMan.jpg',
             hitpoints: 15 ,
             attack: '2d4+1',
             defense: 1 ,

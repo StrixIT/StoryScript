@@ -9,11 +9,6 @@
         id: string;
 
         /**
-         * The file name of the picture to show for the enemy. It should be relative to the index.html file.
-         */
-        pictureFileName?: string;
-
-        /**
          * The name of the enemy as displayed to the player.
          */
         name: string;
@@ -23,6 +18,11 @@
          */
 
         description?: string;
+
+        /**
+         * The file name of the picture shown for the enemy, relative to the index.html file.
+         */
+        picture?: string;
 
         /**
          * The health of the enemy.

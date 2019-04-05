@@ -2,30 +2,18 @@
     /**
      * An item that can be found in the game and used by the character.
      */
-    export interface IItem extends ICombinable {
-        /**
-         * The id of the item.
-         */
-        id?: string;
-
-        /**
-         * The file name of the image to display for the item. The file name should be relative to the index.html file. Note that if you
-         * use an HTML-page to describe the item, you can add an image-tag to it with the class 'picture'. The source of the image-tag
-         * will then be used to set this property at run-time.
-         */
-        pictureFileName?: string;
-
+    export interface IItem extends IFeature {
         /**
          * One or more parts of the character body this item is for (or no part, in case of a miscellaneous item).
          */
         equipmentType: EquipmentType | EquipmentType[];
 
-        /**
+                /**
          * The details about this item as displayed to the player. If you use an HTML-page to describe the item, the contents of that HTM-page
          * will be used to set this property at run-time.
          */
         description?: string;
-
+        
         /**
          * The damage done by this item when used in combat.
          */

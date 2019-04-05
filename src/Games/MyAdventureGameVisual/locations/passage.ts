@@ -8,9 +8,6 @@ namespace MyAdventureGameVisual.Locations {
                     target: Locations.Start
                 }
             ],
-            items: [
-                Items.Herbs
-            ],
             features: [
                 {
                     name: 'woundedwarrior',
@@ -33,25 +30,18 @@ namespace MyAdventureGameVisual.Locations {
                                 }
                             }
                         ]
-                    }
+                    },
                 },
+                Items.Herbs,
                 {
-                    name: 'Dagger',
-                    picture: 'dagger.png',
+                    name: 'passage',
                     combinations: {
                         combine: [
                             {
-                                type: Constants.TOUCH,
+                                type: Constants.WALK,
                                 match: (game, tool, target): string => {
-                                    var feature = game.currentLocation.features.get('dagger');
-
-                                    if (feature) {
-                                        game.character.items.push(Items.Dagger);
-                                        game.currentLocation.features.remove(feature);
-                                        return `You pick up the dagger.`;
-                                    }
-
-                                    return null;
+                                    game.changeLocation(Locations.Start);
+                                    return 'You crawl back through the passage...';
                                 }
                             }
                         ]

@@ -67,7 +67,7 @@ namespace StoryScript {
             return null;
         }
 
-        loadDescription = (type: string, item: { id?: string, description?: string, pictureFileName?: string, hasHtmlDescription?: boolean }): string => {
+        loadDescription = (type: string, item: { id?: string, description?: string, picture?: string, hasHtmlDescription?: boolean }): string => {
             var self = this;
             var identifier = self.GetIdentifier(type, item);
 
@@ -95,7 +95,7 @@ namespace StoryScript {
             var pictureSrc = pictureElement && pictureElement.getAttribute('src');
 
             if (pictureSrc) {
-                item.pictureFileName = pictureSrc;
+                item.picture = pictureSrc;
             }
 
             // Track that this item had a HTML description so it can be re-loaded later.
@@ -111,7 +111,7 @@ namespace StoryScript {
             return self.descriptionBundle.get(identifier) != null;
         }
 
-        private GetIdentifier(type: string, item: { id?: string; description?: string; pictureFileName?: string; hasHtmlDescription?: boolean; }) {
+        private GetIdentifier(type: string, item: { id?: string; description?: string; picture?: string; hasHtmlDescription?: boolean; }) {
             return (type + '/' + item.id).toLowerCase();
         }
 

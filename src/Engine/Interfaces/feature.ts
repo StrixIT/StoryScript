@@ -4,8 +4,8 @@
      */
     export interface IFeature extends ICombinable {
         /**
-         * The description of this feature as shown to the player. This can also be set in the location
-         * HTML file by adding a <feature name="{featureName}"> tag.
+         * The description of this feature as shown to the player. For location features defined in HTML,
+         * this can also be set in the location HTML file by adding a <feature name="{featureName}"> tag.
          */
         description?: string;
 
@@ -25,8 +25,8 @@
         shape?: string;
 
         /**
-         * The file path for a custom picture to show on top of the image map for this feature when using 
-         * image maps for visual features. The path should be relative to the resources folder.
+         * The file path for the picture to show. When using image maps for visual features, the picture will
+         * be shown on top of the image map for this feature. The path should be relative to the resources folder.
          */
         picture?: string;
     }

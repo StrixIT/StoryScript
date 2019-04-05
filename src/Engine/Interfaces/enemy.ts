@@ -2,19 +2,7 @@
     /**
      * Defines an enemy for the game.
      */
-    export interface IEnemy extends ICombinable {
-        /**
-         * The file name of the image to display for the enemy. The file name should be relative to the index.html file. Note that if you
-         * use an HTML-page to describe the enemy, you can add an image-tag to it with the class 'picture'. The source of the image-tag
-         * will then be used to set this property at run-time.
-         */
-        pictureFileName?: string;
-
-        /**
-         * The name of the enemy as displayed to the player.
-         */
-        name: string;
-
+    export interface IEnemy extends IFeature {
         /**
          * The details about this enemy as displayed to the player. If you use an HTML-page to describe the enemy, the contents of that HTM-page
          * will be used to set this property at run-time.
