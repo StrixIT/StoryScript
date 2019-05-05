@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Enemies {
-    export function Orc(): IEnemy {
-        return {
+    export function Orc() {
+        return BuildEnemy({
             name: 'Ork',
             hitpoints: 12,
             attack: '2d4+1',
@@ -8,6 +8,6 @@
             items: [
                 Items.IronHelmet
             ]
-        }
+        });
     }
 }

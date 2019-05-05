@@ -1,6 +1,6 @@
 namespace MyAdventureGame.Locations {
-    export function Passage(): StoryScript.ILocation {
-        return {
+    export function Passage() {
+        return BuildLocation({
             name: 'A passage in the undergrowth',
             destinations: [
                 {
@@ -34,6 +34,6 @@ namespace MyAdventureGame.Locations {
                     }
                 }
             ]
-        }
+        });
     }
 }

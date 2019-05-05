@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function CrossRoads(): StoryScript.ILocation {
-        return {
+    export function CrossRoads() {
+        return BuildLocation({
             name: 'Een kruispunt',
             enterEvents: [
                 (game: IGame) => {
@@ -30,6 +30,6 @@
                     target: Locations.RightCorridor
                 }
             ],
-        }
+        });
     }
 }

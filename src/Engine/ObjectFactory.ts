@@ -76,6 +76,11 @@ namespace StoryScript {
             return self._combinationService;
         }
 
+        GetDefinitions = (): IDefinitions => {
+            var self = this;
+            return self._definitions;
+        }
+
         private init = (): void => {
             var self = this;
 

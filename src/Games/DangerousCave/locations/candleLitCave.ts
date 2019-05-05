@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function CandleLitCave(): StoryScript.ILocation {
-        return {
+    export function CandleLitCave() {
+        return BuildLocation({
             name: 'Een grot met kaarslicht',
             destinations: [
                 {
@@ -28,6 +28,6 @@
                     }
                 })
             ]
-        }
+        });
     }
 }

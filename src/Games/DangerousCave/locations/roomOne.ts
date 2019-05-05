@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function RoomOne(): StoryScript.ILocation {
-        return {
+    export function RoomOne() {
+        return BuildLocation({
             name: 'De kamer van de ork',
             enemies: [
                 Enemies.Orc
@@ -42,6 +42,6 @@
                     target: Locations.LeftCorridor
                 }
             ]
-        }
+        });
     }
 }

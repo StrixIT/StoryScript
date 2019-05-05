@@ -119,30 +119,29 @@ namespace StoryScript {
             var self = this;
             var nameSpaceObject = window[self._gameNameSpace];
 
-            // Todo: can this typing be fixed?
-            definitions.locations = <any>[];
+            definitions.locations = [];
             self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], definitions.locations);
 
-            definitions.enemies = <any>[];
+            definitions.enemies = [];
             self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], definitions.enemies);
 
-            definitions.persons = <any>[];
+            definitions.persons = [];
             self.moveObjectPropertiesToArray(nameSpaceObject['Persons'], definitions.persons);
 
-            definitions.items = <any>[];
+            definitions.items = [];
             self.moveObjectPropertiesToArray(nameSpaceObject['Items'], definitions.items);
 
-            definitions.quests = <any>[];
+            definitions.quests = [];
             self.moveObjectPropertiesToArray(nameSpaceObject['Quests'], definitions.quests);
 
-            definitions.actions = <any>[];
+            definitions.actions = [];
             self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], definitions.actions);
             self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], definitions.actions);
 
             return definitions;
         }
 
-        private moveObjectPropertiesToArray<T>(object: {}, collection: [() => T]) {
+        private moveObjectPropertiesToArray<T>(object: {}, collection: (() => T)[]) {
             for (var n in object) {
                 if (object.hasOwnProperty(n)) {
                     collection.push(object[n]);
@@ -329,7 +328,7 @@ namespace StoryScript {
 
                 for (var j in definitions) {
                     var definition = <() => {}>definitions[j];
-                    self.getFunctions(type, definitionKeys, StoryScript.definitionToObject(definition, type, self._definitions), null);
+                    self.getFunctions(type, definitionKeys, StoryScript.definitionToObject(definition), null);
                 }
 
                 index++;
@@ -358,7 +357,7 @@ namespace StoryScript {
                     return;
                 }
                 else if (typeof value === "object") {
-                    self.getFunctions(type, definitionKeys, entity[key], parentId + '_' + key);
+                    self.getFunctions(type, definitionKeys, entity[key], entity[key].id ? parentId + '_' + key + '_' + entity[key].id : parentId + '_' + key);
                 }
                 else if (typeof value == 'function' && !value.isProxy) {
                     var functionId = parentId + '_' + key;

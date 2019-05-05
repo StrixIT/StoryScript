@@ -68,12 +68,12 @@
          /**
          * When specified, the functions in this array will be called when the player enters the location for the first time.
          */       
-        enterEvents?: [(game: IGame) => void];
+        enterEvents?: ((game: IGame) => void)[];
 
         /**
          * When specified, the functions in this array will be called when the player leaves the location.
          */
-        leaveEvents?: [(game: IGame) => void];
+        leaveEvents?: ((game: IGame) => void)[];
 
         /**
          * Actions that the player can perform at this location.
@@ -129,7 +129,5 @@
          */
         // Todo: keep this on the general code or is this game specific?
         complete?(game: IGame, location: ICompiledLocation): boolean;
-
-        
     }
 }

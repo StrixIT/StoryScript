@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function LeftCorridor(): StoryScript.ILocation {
-        return {
+    export function LeftCorridor() {
+        return BuildLocation({
             name: 'Een pikdonkere gang',
             enterEvents: [
                 (game: IGame) => {
@@ -44,6 +44,6 @@
                     }
                 })
             ]
-        }
+        });
     }
 }

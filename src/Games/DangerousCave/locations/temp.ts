@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function Temp(): StoryScript.ILocation {
-        return {
+    export function Temp() {
+        return BuildLocation({
             name: 'Deze locatie bestaat nog niet',
             destinations: [
                 {
@@ -8,6 +8,6 @@
                     target: Locations.Entry,
                 }
             ]
-        }
+        });
     }
 }

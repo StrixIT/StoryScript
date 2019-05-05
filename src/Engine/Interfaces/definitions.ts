@@ -6,32 +6,32 @@
         /**
          * The locations available in the game world.
          */
-        locations: [() => ILocation];
+        locations: (() => ILocation)[];
 
         /**
          * The actions the player can perform in the game world.
          */
-        actions: [() => IAction];
+        actions: (() => IAction)[];
 
         /**
          * The enemies present in the game world.
          */
-        enemies: [() => IEnemy];
+        enemies: (() => IEnemy)[];
 
         /**
          * The persons roaming the game world.
          */
-        persons: [() => IPerson];
+        persons: (() => IPerson)[];
 
         /**
          * The items that can be found in the game world.
          */
-        items: [() => IItem];
+        items: (() => IItem)[];
 
         /**
          * The quests the player can pursue in the game world.
          */
-        quests: [() => IQuest];
+        quests: (() => IQuest)[];
 
         /**
          * Indicates whether locations are added dynamically. Used only for interactive story mode.

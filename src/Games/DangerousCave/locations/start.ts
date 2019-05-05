@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function Start(): StoryScript.ILocation {
-        return {
+    export function Start() {
+        return BuildLocation({
             name: 'De ingang van de Gevaarlijke Grot',
             destinations: [
                 {
@@ -19,6 +19,6 @@
                     }
                 })
             ]
-        }
+        });
     }
 }

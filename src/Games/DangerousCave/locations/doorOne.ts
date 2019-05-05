@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function DoorOne(): StoryScript.ILocation {
-        return {
+    export function DoorOne() {
+        return BuildLocation({
             name: 'Een donkere gang met een deur',
             destinations: [
                 {
@@ -51,6 +51,6 @@
                     }
                 })
             ]
-        }
+        });
     }
 }

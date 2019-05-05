@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function CentreRoom(): StoryScript.ILocation {
-        return {
+    export function CentreRoom() {
+        return BuildLocation({
             name: 'Een opslagkamer',
             destinations: [
                 {
@@ -20,6 +20,6 @@
                     }
                 })
             ]
-        }
+        });
     }
 }

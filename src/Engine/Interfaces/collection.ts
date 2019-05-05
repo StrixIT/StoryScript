@@ -7,8 +7,7 @@
          * Get an item from the collection using its id or function name.
          * @param id 
          */
-        // Todo: the ...params seems to be not used. Keep it in, or use only a parameterless function (that IS needed)?
-        get?(id?: string | ((...params) => T) | T): T;
+        get?(id?: string | ((...params) => T)): T;
 
         /**
          * Add an item to the collection using its id or function name.
@@ -20,7 +19,6 @@
          * Remove an item from the collection using its id or function name.
          * @param id 
          */
-        // Todo: the ...params seems to be not used. Keep it in, or use only a parameterless function (that IS needed)?
-        remove?(id: string | ((...params) => T) | T): void;
+        remove?(id: string | (() => T) | T): void;
     }
 }

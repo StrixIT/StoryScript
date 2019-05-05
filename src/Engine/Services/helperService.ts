@@ -54,31 +54,27 @@ namespace StoryScript {
 
         getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
             var self = this;
-            var instance = StoryScript.find<IEnemy>(self._game.definitions.enemies, selector, 'enemies', self._game.definitions);
-            return instantiateEnemy(instance, self._game.definitions, self._game, self._rules);
+            return find<IEnemy, ICompiledEnemy>(selector, 'enemies', self._game.definitions);
         }
 
         getItem = (selector: string | (() => IItem)) => {
             var self = this;
-            var instance = StoryScript.find<IItem>(self._game.definitions.items, selector, 'items', self._game.definitions);
-            return instantiateItem(instance);
+            return find<IItem, IItem>(selector, 'items', self._game.definitions);
         }
 
         getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
             var self = this;
-            var instance = StoryScript.find<IPerson>(self._game.definitions.persons, selector, 'persons', self._game.definitions);
-            return instantiatePerson(instance, self._game.definitions, self._game, self._rules);
+            return find<IPerson, ICompiledPerson>(selector, 'persons', self._game.definitions);
         }
 
         randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
             var self = this;
-            var instance = StoryScript.random<IEnemy>(self._game.definitions.enemies, 'enemies', self._game.definitions, <(enemy: IEnemy) => boolean>selector);
-            return instantiateEnemy(instance, self._game.definitions, self._game, self._rules);
+            return random<IEnemy, ICompiledEnemy>('enemies', self._game.definitions, <(enemy: IEnemy) => boolean>selector);
         }
 
         randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
             var self = this;
-            return StoryScript.random<IItem>(self._game.definitions.items, 'items', self._game.definitions, <(item: IItem) => boolean>selector);
+            return random<IItem, IItem>('items', self._game.definitions, <(item: IItem) => boolean>selector);
         }
 
         rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {

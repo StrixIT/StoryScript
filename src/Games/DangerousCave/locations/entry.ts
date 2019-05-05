@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function Entry(): StoryScript.ILocation {
-        return {
+    export function Entry() {
+        return BuildLocation({
             name: 'De grot',
             // Example
             //descriptionSelector: function() {
@@ -38,6 +38,6 @@
                     }
                 })
             ]
-        };
+        });
     }
 }

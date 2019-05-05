@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function LeftRoom(): StoryScript.ILocation {
-        return {
+    export function LeftRoom() {
+        return BuildLocation({
             name: 'De slaapkamer van de orks',
             enemies: [
                 Enemies.Orc,
@@ -12,6 +12,6 @@
                     target: Locations.RoomOne
                 }
             ]
-        }
+        });
     }
 }

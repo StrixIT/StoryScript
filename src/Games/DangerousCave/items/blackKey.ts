@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Items {
-    export function BlackKey(): StoryScript.IKey {
-        return {
+    export function BlackKey() {
+        return BuildItem({
             name: 'Black key',
             description: 'This black iron key has a gargoyle figurine on it.',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
@@ -11,6 +11,6 @@
                     destination.name = 'Donkere kamer';
                 })
             }
-        }
+        });
     }
 }

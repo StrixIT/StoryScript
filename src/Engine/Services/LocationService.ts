@@ -155,24 +155,11 @@ namespace StoryScript {
 
             locations.forEach(function (location) {
                 self.initDestinations(location);
-
-                createReadOnlyCollection(location, 'features', location.features || <any>[]);
                 location.features.push = location.features.push.proxy(self.addFeature, self._game);
                 location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
-
-                createReadOnlyCollection(location, 'actions', <any>location.actions || []);
                 location.actions.push = location.actions.push.proxy(self.addAction, self._game);
-
-                createReadOnlyCollection(location, 'combatActions', <any>location.combatActions || []);
                 location.combatActions.push = location.combatActions.push.proxy(self.addAction, self._game);
-
-                createReadOnlyCollection(location, 'persons', location.persons || <any>[]);
-                createReadOnlyCollection(location, 'enemies', location.enemies || <any>[]);
-                createReadOnlyCollection(location, 'items', location.items || <any>[]);
-
-                self.createActiveCollections(location);
-
-                addProxy(location, 'enemy', self._game, self._rules);
+                setRuntimeProperties(location, 'location');
             });
 
             return locations;
@@ -196,26 +183,6 @@ namespace StoryScript {
             }
 
             return locations;
-        }
-
-        private createActiveCollections(location: ICompiledLocation) {
-            Object.defineProperty(location, 'activePersons', {
-                get: function () {
-                    return location.persons.filter(e => { return !e.inactive; });
-                }
-            });
-
-            Object.defineProperty(location, 'activeEnemies', {
-                get: function () {
-                    return location.enemies.filter(e => { return !e.inactive; });
-                }
-            });
-
-            Object.defineProperty(location, 'activeItems', {
-                get: function () {
-                    return location.items.filter(e => { return !e.inactive; });
-                }
-            });
         }
 
         private initDestinations(location: ICompiledLocation) {
@@ -266,37 +233,15 @@ namespace StoryScript {
             return compiledLocations;
         }
 
-        private processLocations(locations: [() => ILocation], compiledLocations: ICompiledLocation[]) {
+        private processLocations(locations: (() => ILocation)[], compiledLocations: ICompiledLocation[]) {
             var self = this;
 
             for (var n in locations) {
                 var definition = locations[n];
-                var location = <ICompiledLocation><any>definitionToObject(definition, 'locations', self._definitions);
-
-                if (!self.dynamicLocations && !location.destinations) {
-                    console.log('No destinations specified for location ' + location.id);
-                }
-
+                var location = <any>definitionToObject(definition);
                 self.setDestinations(location);
-                self.compileFeatures(location);
-                self.buildEntries(location, 'enemies', self._game.helpers.getEnemy);
-                self.buildEntries(location, 'persons', self._game.helpers.getPerson);
-                self.buildEntries(location, 'items', self._game.helpers.getItem);
                 compiledLocations.push(location);
             }
-        }
-
-        private buildEntries(location: ICompiledLocation, collectionName: string, instantiateFunction: Function) {
-            var self = this;
-            var collection = [];
-
-            for (var n in location[collectionName]) {
-                var name = location[collectionName][n].name;
-                var entry = name ? instantiateFunction(location[collectionName][n]) : location[collectionName][n]();
-                collection.push(entry);
-            }
-
-            location[collectionName] = collection;
         }
 
         private setDestinations(location: ICompiledLocation) {
@@ -306,32 +251,6 @@ namespace StoryScript {
                 location.destinations.forEach(destination => {
                     setDestination(destination);
                 });
-            }
-        }
-
-        private compileFeatures(location: ICompiledLocation) {
-            var self = this;
-
-            if (!isEmpty(location.features)) {
-
-                for (var i in location.features) {
-                    var feature = location.features[i];
-
-                    // Compile stand-alone features that are still functions.
-                    if (typeof feature === 'function') {
-                        location.features[i] = (<() => IFeature>feature)();
-                        feature = location.features[i];
-                    }
-
-                    feature.id = feature.name;
-
-                    if (feature.combinations && feature.combinations.combine) {
-                        for (var j in feature.combinations.combine) {
-                            var combination = feature.combinations.combine[j];
-                            setTool(combination);
-                        }
-                    }
-                }
             }
         }
 
@@ -407,7 +326,7 @@ namespace StoryScript {
             originalFunction.apply(this, args);
         }
 
-        private playEvents(game: IGame, events: [(game: IGame) => void]) {
+        private playEvents(game: IGame, events: ((game: IGame) => void)[]) {
             var self = this;
 
             for (var n in events) {
@@ -631,7 +550,7 @@ namespace StoryScript {
             }
 
             if (destination.barrier.key) {
-                (<any>destination.barrier).key = definitionToObject(destination.barrier.key, 'items', self.definitions);
+                (<any>destination.barrier).key = definitionToObject(destination.barrier.key);
             }
 
             if (destination.barrier.combinations && destination.barrier.combinations.combine) {

@@ -4,20 +4,6 @@
         return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
     }
 
-    export function definitionToObject<T>(definition: () => T, type: string, definitions: IDefinitions): T {
-        var instance = definition();
-
-        // Need to cast to any for ES5 and lower
-        (<any>instance).id = (<any>definition).name;
-
-        // Add the type to the object so we can distinguish between them in the combine functionality.
-        (<any>instance).type = type.charAt(type.length - 1) === 's' ? type.substring(type.length - 3) === 'ies' ? type.substring(0, type.length - 3) + 'y' : type.substring(0, type.length - 1) : type;
-
-        addFunctionIds(instance, type, getDefinitionKeys(definitions));
-
-        return instance;
-    }
-
     export function createReadOnlyCollection(entity: any, propertyName: string, collection: { id?: string, type?: string }[]) {
         Object.defineProperty(entity, propertyName, {
             enumerable: true,
@@ -74,25 +60,9 @@
         }
     }
 
-    function getPath(value, key: string, path: string, definitionKeys: string[]): string {
-        if (definitionKeys.indexOf(key) != -1) {
-            path = key;
-        }
-        else if (definitionKeys.indexOf(path) != -1 && !isNaN(parseInt(key))) {
+    export function random<T, U>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): U {
+        var collection = definitions[type];
 
-        }
-        else {
-            path = path === undefined ? key : path + '_' + key;
-        }
-
-        if (value.id) {
-            path = path + '_' + value.id;
-        }
-
-        return path;
-    }
-
-    export function random<T>(collection: T[] | ([() => T]), type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
         if (!collection) {
             return null;
         }
@@ -104,7 +74,7 @@
         }
 
         var index = Math.floor(Math.random() * selection.length);
-        return selection[index];
+        return <U><unknown>selection[index];
     }
 
     export function randomList<T>(collection: T[] | ([() => T]), count: number, type: string, definitions: IDefinitions, selector?: (item: T) => boolean): ICollection<T> {
@@ -128,7 +98,9 @@
         return results;
     }
 
-    export function find<T>(collection: T[] | ([() => T]), selector: string | (() => T) | ((item: T) => boolean), type: string, definitions: IDefinitions): T {
+    export function find<T, U>(selector: string | (() => T) | ((item: T) => boolean), type: string, definitions: IDefinitions): U {
+        var collection = definitions[type];
+
         if (!collection && !selector) {
             return null;
         }
@@ -148,7 +120,7 @@
                     return (<any>definition).name === <string>selector;
                 });
 
-                return match[0] ? definitionToObject(match[0], type, definitions) : null;
+                return match[0] ? <U><unknown>definitionToObject(match[0]) : null;
             }
         }
 
@@ -158,93 +130,35 @@
             throw new Error('Collection contains more than one match!');
         }
 
-        return results[0] ? results[0] : null;
+        return results[0] ? <U><unknown>results[0] : null;
     }
 
-    export function instantiateItem(item: IItem): IItem {
-        if (!item) {
-            return null;
-        }
+    export function addProxy(entry, collectionType: string) {
+        var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
 
-        compileCombinations(item, item);
-        return item;
-    }
-
-    export function instantiateEnemy(enemy: IEnemy, definitions: IDefinitions, game: IGame, rules: IRules): ICompiledEnemy {
-        if (!enemy) {
-            return null;
-        }
-
-        // A trick to work with a compiled enemy here as id is lacking in enemy and a direct cast is not possible.
-        var compiledEnemy = <ICompiledEnemy><unknown>enemy;
-
-        var items = <IItem[]>[];
-
-        if (enemy.items) {
-            enemy.items.forEach((def: () => IItem) => {
-                items.push(StoryScript.definitionToObject(def, 'items', definitions));
-            });
-        }
-
-        createReadOnlyCollection(compiledEnemy, 'items', items);
-        compileCombinations(enemy, compiledEnemy);
-        addProxy(compiledEnemy, 'item', game, rules);
-
-        return compiledEnemy;
-    }
-
-    export function instantiatePerson(person: IPerson, definitions: IDefinitions, game: IGame, rules: IRules): ICompiledPerson {
-        if (!person) {
-            return null;
-        }
-
-        var compiledPerson = <ICompiledPerson>instantiateEnemy(person, definitions, game, rules);
-
-        var quests = <IQuest[]>[];
-
-        if (person.quests) {
-            person.quests.forEach((def: () => IQuest) => {
-                quests.push(StoryScript.definitionToObject(def, 'quests', definitions));
-            });
-        }
-
-        createReadOnlyCollection(compiledPerson, 'quests', <any>quests);
-        // As far as I can tell right now, there is no reason to add quests to a person at run-time.
-        //addProxy(compiledPerson, 'quest', game, ruleService);
-
-        return compiledPerson;
-    }
-
-    export function addProxy(entry, collectionType: string, game: IGame, rules: IRules) {
         if (collectionType === 'enemy') {
             entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
-                var enemy = null;
+                var enemy: IEnemy = null;
 
                 if (typeof selector !== 'object') {
-                    enemy = game.helpers.getEnemy(selector);
+                    enemy = find(selector, 'enemies', definitions);
                 }
                 else {
-                    // Todo: should I not invoke the function here?
-                    enemy = <any>selector;
+                    enemy = selector;
                 }
 
                 push.call(this, enemy);
-
-                if (rules.addEnemyToLocation) {
-                    rules.addEnemyToLocation(game, game.currentLocation, enemy);
-                }
             });
         }
         if (collectionType === 'item') {
             entry.items.push = (<any>entry.items.push).proxy(function (push: Function, selector: string | (() => IItem)) {
-                var item = null;
+                var item: IItem = null;
 
                 if (typeof selector !== 'object') {
-                    item = game.helpers.getItem(selector);
+                    item = find(selector, 'items', definitions);
                 }
                 else {
-                    // Todo: should I not invoke the function here?
-                    item = <any>selector;
+                    item = selector;
                 }
 
                 push.call(this, item);
@@ -273,12 +187,12 @@
         this.dispatchEvent = target.dispatchEvent.bind(target);
     }
 
-    function getFilteredInstantiatedCollection<T>(collection: T[] | ([() => T]), type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
+    function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
         var collectionToFilter = <T[]>[]
 
         if (typeof collection[0] === 'function') {
             (<[() => T]>collection).forEach((def: () => T) => {
-                collectionToFilter.push(definitionToObject(def, type, definitions));
+                collectionToFilter.push(definitionToObject(def));
             });
         }
         else {
@@ -288,20 +202,22 @@
         return selector ? collectionToFilter.filter(selector) : collectionToFilter;
     }
 
-    function compileCombinations(definitionEntry: ICombinable, compiledEntry: ICombinable) {
-        if (definitionEntry.combinations) {
-            var combines = <ICombine<() => ICombinable>[]>[];
-            var failText = definitionEntry.combinations.failText;
-
-            definitionEntry.combinations.combine.forEach((combine: ICombine<() => ICombinable>) => {
-                var compiled = combine;
-                compiled.tool = compiled.tool && (<any>compiled.tool).name;
-                combines.push(compiled);
-            });
-
-            compiledEntry.combinations.failText = failText;
-            createReadOnlyCollection(compiledEntry.combinations, 'combine', combines);
+    function getPath(value, key: string, path: string, definitionKeys: string[]): string {
+        if (definitionKeys.indexOf(key) != -1) {
+            path = key;
         }
+        else if (definitionKeys.indexOf(path) != -1 && !isNaN(parseInt(key))) {
+
+        }
+        else {
+            path = path === undefined ? key : path + '_' + key;
+        }
+
+        if (value.id) {
+            path = path + '_' + value.id;
+        }
+
+        return path;
     }
 
     function extend(target, source) {

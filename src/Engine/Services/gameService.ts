@@ -392,7 +392,7 @@ namespace StoryScript {
             createReadOnlyCollection(self._game.character, 'items', isEmpty(self._game.character.items) ? [] : <any>self._game.character.items);
             createReadOnlyCollection(self._game.character, 'quests', isEmpty(self._game.character.quests) ? [] : <any>self._game.character.quests);
 
-            addProxy(self._game.character, 'item', self._game, self._rules);
+            addProxy(self._game.character, 'item');
 
             Object.defineProperty(self._game.character, 'combatItems', {
                 get: function () {

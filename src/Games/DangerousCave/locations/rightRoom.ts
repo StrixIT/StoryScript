@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
-    export function RightRoom(): StoryScript.ILocation {
-        return {
+    export function RightRoom() {
+        return BuildLocation({
             name: 'Een schemerige gang',
             enemies: [
                 Enemies.GiantBat
@@ -26,6 +26,6 @@
                     }
                 })
             ]
-        }
+        });
     }
 }

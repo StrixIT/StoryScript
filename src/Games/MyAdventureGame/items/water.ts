@@ -1,6 +1,6 @@
 namespace MyAdventureGame.Items {
-    export function Water(): IItem {
-        return {
+    export function Water() {
+        return BuildItem({
             name: 'Fountain water',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             combinations: {
@@ -19,6 +19,6 @@ namespace MyAdventureGame.Items {
                     }
                 ]
             }
-        }
+        });
     }
 }

@@ -215,7 +215,6 @@
             var numberOfEnemies = location.activeEnemies.length;
             var fleeAction = location.combatActions.get(Actions.Flee);
 
-
             if (!fleeAction && numberOfEnemies > 0 && numberOfEnemies < game.character.vlugheid) {
                 var action = Actions.Flee('');
                 (<any>action).id = (<any>Actions.Flee).name;

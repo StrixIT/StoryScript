@@ -1,9 +1,9 @@
 ﻿namespace DangerousCave.Items {
-    export function SmallShield(): IItem {
-        return {
+    export function SmallShield() {
+        return BuildItem({
             name: 'Klein schild',
             defense: 2,
             equipmentType: StoryScript.EquipmentType.LeftHand
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Enemies {
-    export function Troll(): IEnemy {
-        return {
+    export function Troll() {
+        return BuildEnemy({
             name: 'Trol',
             hitpoints: 20,
             attack: '2d6',
@@ -8,6 +8,6 @@
             items: [
                 Items.HealingPotion
             ]
-        }
+        });
     }
 }

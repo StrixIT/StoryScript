@@ -1,10 +1,10 @@
 ﻿namespace DangerousCave.Enemies {
-    export function GiantBat(): IEnemy {
-        return {
+    export function GiantBat() {
+        return BuildEnemy({
             name: 'Reuzenvleermuis',
             hitpoints: 7,
             attack: '1d6',
             reward: 1
-        }
+        });
     }
 }
