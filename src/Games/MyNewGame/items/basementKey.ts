@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Items {
-    export function BasementKey(): StoryScript.IKey {
-        return {
+    export function BasementKey() {
+        return BuildItem({
             name: 'Basement key',
             keepAfterUse: false,
             open: {
@@ -10,6 +10,6 @@
                 })
             },
             equipmentType: StoryScript.EquipmentType.Miscellaneous
-        }
+        });
     }
 }

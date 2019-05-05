@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Persons {
-    export function Friend(): IPerson {
-        return {
+    export function Friend() {
+        return BuildPerson({
             name: 'Joe',
             hitpoints: 10,
             attack: '1d6',
@@ -43,6 +43,6 @@
             quests: [
                 Quests.Journal
             ]
-        }
+        });
     }
 }

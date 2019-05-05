@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Locations {
-    export function Bedroom(): StoryScript.ILocation {
-        return {
+    export function Bedroom() {
+        return BuildLocation({
             name: 'Bedroom',
             destinations: [
                 {
@@ -32,6 +32,6 @@
                     }
                 }
             }
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Locations {
-    export function DirtRoad(): StoryScript.ILocation {
-        return {
+    export function DirtRoad() {
+        return BuildLocation({
             name: 'Dirt road',
             destinations: [
                 {
@@ -22,6 +22,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }

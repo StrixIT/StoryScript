@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Quests {
-    export function Journal(): StoryScript.IQuest {
-        return {
+    export function Journal() {
+        return StoryScript.BuildQuest({
             name: "Find Joe's journal",
             status: (game, quest, done) => {
                 return 'You have ' + (done ? '' : 'not ') + 'found Joe\'s journal' + (done ? '!' : ' yet.');
@@ -15,6 +15,6 @@
                 game.character.items.remove(ring);
                 game.character.currency += 5;
             }
-        }
+        });
     }
 }

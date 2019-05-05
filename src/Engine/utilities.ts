@@ -31,35 +31,6 @@
         return definitionKeys;
     }
 
-    export function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
-        if (!path) {
-            path = entity.id || entity.name;
-        }
-
-        for (var key in entity) {
-            if (!entity.hasOwnProperty(key)) {
-                continue;
-            }
-
-            if (definitionKeys.indexOf(key) != -1 || key === 'target') {
-                continue;
-            }
-
-            var value = entity[key];
-
-            if (value == undefined) {
-                return;
-            }
-            else if (typeof value === "object") {
-                addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
-            }
-            else if (typeof value === 'function' && !value.isProxy) {
-                var functionId = path ? path + '_' + key : key;
-                value.functionId = 'function#' + type + '_' + functionId + '#' + createFunctionHash(value);
-            }
-        }
-    }
-
     export function random<T, U>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): U {
         var collection = definitions[type];
 
@@ -200,24 +171,6 @@
         }
 
         return selector ? collectionToFilter.filter(selector) : collectionToFilter;
-    }
-
-    function getPath(value, key: string, path: string, definitionKeys: string[]): string {
-        if (definitionKeys.indexOf(key) != -1) {
-            path = key;
-        }
-        else if (definitionKeys.indexOf(path) != -1 && !isNaN(parseInt(key))) {
-
-        }
-        else {
-            path = path === undefined ? key : path + '_' + key;
-        }
-
-        if (value.id) {
-            path = path + '_' + value.id;
-        }
-
-        return path;
     }
 
     function extend(target, source) {

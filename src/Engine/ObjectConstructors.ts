@@ -3,13 +3,15 @@ namespace StoryScript {
         var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
         var instance = definition();
         (<any>instance).id = definition.name;
-        addFunctionIds(instance, (<any>instance).type, getDefinitionKeys(definitions));
+        var type = (<any>instance).type;
+        type = type === 'enemy' ? 'enemies' : type + 's';
+        addFunctionIds(instance, type, getDefinitionKeys(definitions));
         return instance;
     }
 
     export function BuildLocation<T extends ILocation>(entity: T): T {
         var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
-        var location = CreateObject(entity, 'locations');
+        var location = CreateObject(entity, 'location');
 
         if (!definitions.dynamicLocations && !location.destinations) {
             console.log('No destinations specified for location ' + (<any>location).id);
@@ -23,7 +25,7 @@ namespace StoryScript {
     }
 
     export function BuildEnemy<T extends IEnemy>(entity: T, type?: string): T {
-        var enemy = CreateObject(entity, type || 'enemies');
+        var enemy = CreateObject(entity, type || 'enemy');
         var items = <IItem[]>[];
 
         if (enemy.items) {
@@ -40,7 +42,7 @@ namespace StoryScript {
     }
 
     export function BuildPerson<T extends IPerson>(entity: T): T {
-        var person = BuildEnemy(entity, 'persons');
+        var person = BuildEnemy(entity, 'person');
 
         var quests = <IQuest[]>[];
 
@@ -57,9 +59,15 @@ namespace StoryScript {
     }
 
     export function BuildItem<T extends IItem>(entity: T): T {
-        var item = CreateObject(entity, 'items');
+        var item = CreateObject(entity, 'item');
         compileCombinations(item);
         setRuntimeProperties(item, 'item');
+        return item;
+    }
+
+    export function BuildQuest<T extends IQuest>(entity: T): T {
+        var item = CreateObject(entity, 'quest');
+        setRuntimeProperties(item, 'quest');
         return item;
     }
 
@@ -102,11 +110,57 @@ namespace StoryScript {
         }
     }
 
+    export function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
+        if (!path) {
+            path = entity.id || entity.name;
+        }
+
+        for (var key in entity) {
+            if (!entity.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (definitionKeys.indexOf(key) != -1 || key === 'target') {
+                continue;
+            }
+
+            var value = entity[key];
+
+            if (value == undefined) {
+                return;
+            }
+            else if (typeof value === "object") {
+                addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
+            }
+            else if (typeof value === 'function' && !value.isProxy) {
+                var functionId = path ? path + '_' + key : key;
+                value.functionId = 'function#' + type + '_' + functionId + '#' + createFunctionHash(value);
+            }
+        }
+    }
+
+    function getPath(value, key: string, path: string, definitionKeys: string[]): string {
+        if (definitionKeys.indexOf(key) != -1) {
+            path = key;
+        }
+        else if (definitionKeys.indexOf(path) != -1 && !isNaN(parseInt(key))) {
+
+        }
+        else {
+            path = path === undefined ? key : path + '_' + key;
+        }
+
+        if (value.id) {
+            path = path + '_' + value.id;
+        }
+
+        return path;
+    }
+
     function CreateObject<T>(entity: T, type: string)
     {
         // Add the type to the object so we can distinguish between them in the combine functionality.
         (<any>entity).type = type;
-
         return entity;
     }
 
