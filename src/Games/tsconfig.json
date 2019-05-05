@@ -4,6 +4,6 @@
     },
     "include": [
         "../types/**/*.ts",
-        "./MyAdventureGame/**/*.ts"
+        "./MyAdventureGameVisual/**/*.ts"
     ]
 }

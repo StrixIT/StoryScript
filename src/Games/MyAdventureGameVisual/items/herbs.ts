@@ -1,6 +1,6 @@
 namespace MyAdventureGameVisual.Items {
     export function Herbs(): IItem {
-        return {
+        return BuildItem({
             name: 'Herbs',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             picture: 'herbs.png',
@@ -20,6 +20,6 @@ namespace MyAdventureGameVisual.Items {
                     }
                 ]
             }
-        }
+        });
     }
 }

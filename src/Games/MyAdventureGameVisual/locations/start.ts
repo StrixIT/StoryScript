@@ -1,6 +1,6 @@
 namespace MyAdventureGameVisual.Locations {
-    export function Start(): StoryScript.ILocation {
-        return {
+    export function Start() {
+        return BuildLocation({
             name: 'Start',
             features: [
                 {
@@ -47,6 +47,6 @@ namespace MyAdventureGameVisual.Locations {
                     }
                 }
             ]
-        }
+        });
     }
 }

@@ -1,8 +1,8 @@
 namespace MyAdventureGameVisual.Items {
-    export function Flask(): IItem {
-        return {
+    export function Flask() {
+        return BuildItem({
             name: 'Flask',
             equipmentType: StoryScript.EquipmentType.Miscellaneous
-        }
+        });
     }
 }
