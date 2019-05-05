@@ -155,11 +155,11 @@ namespace StoryScript {
 
             locations.forEach(function (location) {
                 self.initDestinations(location);
+                setRuntimeProperties(location, 'location');
                 location.features.push = location.features.push.proxy(self.addFeature, self._game);
                 location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
                 location.actions.push = location.actions.push.proxy(self.addAction, self._game);
                 location.combatActions.push = location.combatActions.push.proxy(self.addAction, self._game);
-                setRuntimeProperties(location, 'location');
             });
 
             return locations;
