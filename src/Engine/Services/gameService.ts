@@ -142,6 +142,9 @@ namespace StoryScript {
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
                 self._game.actionLog = [];
                 self._game.state = saveGame.state;
+
+                var evt = new Event('loadingDone');
+                self._events.dispatchEvent(evt)
             }
         }
 

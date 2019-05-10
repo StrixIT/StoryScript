@@ -129,11 +129,6 @@
             return character;
         }
 
-        public addEnemyToLocation(game: IGame, location: StoryScript.ICompiledLocation, enemy: ICompiledEnemy) {
-            var self = this;
-            self.addFleeAction(game, location);
-        }
-
         public enterLocation(game: IGame, location: StoryScript.ICompiledLocation): void {
             var self = this;
 

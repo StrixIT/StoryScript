@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class MainController {
-        constructor(private _scope: ng.IScope, private _eventListener: EventTarget, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
@@ -17,6 +17,13 @@ namespace StoryScript {
 
             _eventListener.addEventListener('combinationFinished', function(event) {
                 self._scope.$broadcast('showCombinationText', (<any>event).combineText);
+            });
+
+            _eventListener.addEventListener('loadingDone', function(event) {
+                self._timeout(() =>
+                    self._scope.$applyAsync(() => {
+                        self._game.loading = false;
+                    }), 0);
             });
 
             self.init();
@@ -73,5 +80,5 @@ namespace StoryScript {
         }
     }
 
-    MainController.$inject = ['$scope', 'eventListener', 'gameService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', '$timeout', 'eventListener', 'gameService', 'game', 'customTexts'];
 }
