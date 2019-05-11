@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Persons {
-    export function QueenBee(): IPerson {
-        return {
+    export function QueenBee() {
+        return BuildPerson({
             name: 'Queen Bee',
             //picture: 'bandit.jpg',
             hitpoints: 10,
@@ -26,6 +26,6 @@
                     }
                 }
             }
-        }
+        });
     }
 }

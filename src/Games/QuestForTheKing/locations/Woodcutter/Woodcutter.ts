@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Woodcutter(): StoryScript.ILocation {
-        return {
+    export function Woodcutter() {
+        return BuildLocation({
             name: 'The Woodcutters Cottage',
             destinations: [
                 {
@@ -15,6 +15,6 @@
                 Items.Parchment,
                 Items.Bow,
             ]
-        }
+        });
     }
 }

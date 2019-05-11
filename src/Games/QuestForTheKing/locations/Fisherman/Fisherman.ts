@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Fisherman(): StoryScript.ILocation {
-        return {
+    export function Fisherman() {
+        return BuildLocation({
             name: 'The Fishermans Cottage',
             destinations: [
                 {
@@ -8,7 +8,7 @@
                     target: Locations.Quest1map2
                 }                                       
             ]
-        }
+        });
     }
 }
    

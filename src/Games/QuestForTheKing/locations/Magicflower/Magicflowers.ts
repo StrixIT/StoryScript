@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Magicflowers(): StoryScript.ILocation {
-        return {
+    export function Magicflowers() {
+        return BuildLocation({
             name: 'The Magic Flowers',
             destinations: [
                 {
@@ -15,7 +15,7 @@
             items: [
                 Items.Magicflower,                
             ]
-        }
+        });
     }
 }
    

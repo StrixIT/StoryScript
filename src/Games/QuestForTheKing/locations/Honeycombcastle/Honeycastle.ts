@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Honeycastle(): StoryScript.ILocation {
-        return {
+    export function Honeycastle() {
+        return BuildLocation({
             name: 'The Honeycomb Castle',
             destinations: [
                 {
@@ -12,6 +12,6 @@
                     target: Locations.Castleapproach
                 }            
             ],             
-        }
+        });
     }
 }    

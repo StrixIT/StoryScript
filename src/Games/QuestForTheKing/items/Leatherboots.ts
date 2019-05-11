@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Leatherboots(): IItem {
-        return {
+    export function Leatherboots() {
+        return BuildItem({
             name: 'Leather Boots',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Feet,
@@ -8,6 +8,6 @@
             arcane: false,
             value: 5,
             itemClass: [Class.Rogue, Class.Warrior, Class.Wizard]
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Treestump(): StoryScript.ILocation {
-        return {
+    export function Treestump() {
+        return BuildLocation({
             name: 'The Satyr',
             destinations: [
                 {
@@ -44,6 +44,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }    

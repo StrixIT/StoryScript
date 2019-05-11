@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Claymore(): IItem {
-        return {
+    export function Claymore() {
+        return BuildItem({
             name: 'Claymore',
             damage: '2',
             equipmentType: [StoryScript.EquipmentType.LeftHand, StoryScript.EquipmentType.RightHand],
@@ -9,6 +9,6 @@
             value: 30,
             attackText: 'You swing your claymore',
             itemClass: Class.Warrior
-        }
+        });
     }
 }

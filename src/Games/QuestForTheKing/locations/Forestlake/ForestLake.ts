@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function ForestLake(): StoryScript.ILocation {
-        return {
+    export function ForestLake() {
+        return BuildLocation({
             name: 'Forest Lake',
             destinations: [
                 {
@@ -19,6 +19,6 @@
             complete: (game, location) => {
                 return locationComplete(game, location, () => location.activeEnemies.length == 0, () => location.items.length == 0);
             }
-        }
+        });
     }
 }    

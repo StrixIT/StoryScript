@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Heavymace(): IItem {
-        return {
+    export function Heavymace() {
+        return BuildItem({
             name: 'Heavy Mace',
             damage: '2',
             equipmentType: [StoryScript.EquipmentType.LeftHand, StoryScript.EquipmentType.RightHand],
@@ -9,6 +9,6 @@
             value: 25,
             attackText: 'You swing your heavy mace',
             itemClass: Class.Warrior
-        }
+        });
     }
 }

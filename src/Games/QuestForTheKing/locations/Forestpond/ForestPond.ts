@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function ForestPond(): StoryScript.ILocation {
-        return {
+    export function ForestPond() {
+        return BuildLocation({
             name: 'The Forest Pond',
             destinations: [
                 {
@@ -15,6 +15,6 @@
                 items: [
                     Items.Magicshield,
                 ]
-        }
+        });
     }
 }    

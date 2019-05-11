@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Quest1map3(): StoryScript.ILocation {
-        return {
+    export function Quest1map3() {
+        return BuildLocation({
             name: 'The Eastern Forest',
             destinations: [
                 {                          
@@ -29,8 +29,7 @@
                        name: 'The Troll',
                        target: Locations.Troll
                    },           
-            ]    
-           
-        }
+            ]
+        });
     }
 }

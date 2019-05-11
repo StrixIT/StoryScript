@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Quest1map1(): StoryScript.ILocation {
-        return {
+    export function Quest1map1() {
+        return BuildLocation({
             name: 'The Forest of Myrr',
             destinations: [
                 {
@@ -34,8 +34,7 @@
                     style: 'location-danger'
                 }
             
-            ]    
-           
-        }
+            ]          
+        });
     }
 }

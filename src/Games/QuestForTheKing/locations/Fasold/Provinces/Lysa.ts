@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Lysa(): StoryScript.ILocation {
-        return {
+    export function Lysa() {
+        return BuildLocation({
             name: 'Lysa',
             destinations: [
                 {
@@ -33,6 +33,6 @@
                     target: Locations.Sandfell
                 },  
             ]
-        }
+        });
     }
 }

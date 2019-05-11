@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Wizardcloak(): IItem {
-        return {
+    export function Wizardcloak() {
+        return BuildItem({
             name: 'Wizard Cloak',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Body,
@@ -8,6 +8,6 @@
             arcane: true,
             value: 15,
             itemClass: Class.Wizard
-        }
+        });
     }
 }

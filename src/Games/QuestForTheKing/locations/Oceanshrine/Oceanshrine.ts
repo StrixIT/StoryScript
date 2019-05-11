@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Oceanshrine(): StoryScript.ILocation {
-        return {
+    export function Oceanshrine() {
+        return BuildLocation({
             name: 'The Ocean Shrine',
             destinations: [
                 {
@@ -37,6 +37,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }    

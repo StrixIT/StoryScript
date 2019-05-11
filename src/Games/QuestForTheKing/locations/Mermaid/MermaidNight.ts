@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function MermaidNight(): StoryScript.ILocation {
-        return {
+    export function MermaidNight() {
+        return BuildLocation({
             name: 'The Mermaid',
             destinations: [
                 {
@@ -16,6 +16,6 @@
                     target: Locations.Quest1map2  
                 }
             ],
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function NightInYourTent(): StoryScript.ILocation {
-        return {
+    export function NightInYourTent() {
+        return BuildLocation({
             name: 'Night in your tent',
             destinations: [
                 {
@@ -12,6 +12,6 @@
                 StoryScript.custom(Enemies.Assassin, { name: 'Female Assassin' }),
                 StoryScript.custom(Enemies.Assassin, { name: 'Male Assassin' })
             ]
-        }
+        });
     }
 }    

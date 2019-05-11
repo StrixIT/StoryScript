@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Fireball(): IItem {
-        return {
+    export function Fireball() {
+        return BuildItem({
             name: 'Fireball Spell',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
@@ -8,6 +8,6 @@
             attackText: 'You cast your fireball',
             itemClass: Class.Wizard,
             arcane: true
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Gelandri(): StoryScript.ILocation {
-        return {
+    export function Gelandri() {
+        return BuildLocation({
             name: 'Gelandri',
             destinations: [
                 {
@@ -33,6 +33,6 @@
                     target: Locations.Sandfell
                 },
             ]
-        }
+        });
     }
 }

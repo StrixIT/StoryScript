@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Idunia(): StoryScript.ILocation {
-        return {
+    export function Idunia() {
+        return BuildLocation({
             name: 'The Kingdom of Idunia',
             destinations: [
                 {
@@ -38,6 +38,6 @@
                     target: Locations.Sandfell
                 },
             ]
-        }
+        });
     }
 }

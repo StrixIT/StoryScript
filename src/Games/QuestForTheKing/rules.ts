@@ -367,8 +367,8 @@
             var self = this;
            game.combatLog = [];
             var damage =game.helpers.rollDice('1d6') +game.character.strength +game.helpers.calculateBonus(game.character, 'damage');
-            var combatText =game.character.equipment.rightHand ?game.character.equipment.rightHand.attackText : '';
-            combatText =game.character.equipment.leftHand ? (combatText ? combatText + '. ' : '') +game.character.equipment.leftHand.attackText : combatText;
+            var combatText = game.character.equipment.rightHand ? game.character.equipment.rightHand.attackText : '';
+            combatText = game.character.equipment.leftHand && game.character.equipment.leftHand.id !== game.character.equipment.rightHand.id ? (combatText ? combatText + '. ' : '') + game.character.equipment.leftHand.attackText : combatText;
             enemy.hitpoints -= damage;
 
             if (combatText) {

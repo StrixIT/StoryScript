@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Day2(): StoryScript.ILocation {
-        return {
+    export function Day2() {
+        return BuildLocation({
             name: 'Day 2',
             enemies: [
                 Enemies.Nobleman
@@ -25,6 +25,6 @@
             enterEvents: [
                 changeDay
             ]
-        }
+        });
     }
 }

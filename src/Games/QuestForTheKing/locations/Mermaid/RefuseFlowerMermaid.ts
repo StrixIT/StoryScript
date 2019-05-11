@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function RefuseFlowerMermaid(): StoryScript.ILocation {
-        return {
+    export function RefuseFlowerMermaid() {
+        return BuildLocation({
             name: 'The Mermaid',
             destinations: [
                 {
@@ -8,6 +8,6 @@
                     target: Locations.Quest1map2
                 }
             ],           
-        }
+        });
     }
 }

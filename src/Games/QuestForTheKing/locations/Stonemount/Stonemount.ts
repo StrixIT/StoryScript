@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Stonemount(): StoryScript.ILocation {
-        return {
+    export function Stonemount() {
+        return BuildLocation({
             name: 'The Stone Mount',
             destinations: [
                 {
@@ -21,6 +21,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }    

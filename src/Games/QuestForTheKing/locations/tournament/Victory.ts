@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Victory(): StoryScript.ILocation {
-        return {
+    export function Victory() {
+        return BuildLocation({
             name: 'Victory',
             destinations: [
                 {
@@ -13,6 +13,6 @@
                     style: 'location-danger'
                 }
             ]           
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Paralysis(): IItem {
-        return {
+    export function Paralysis() {
+        return BuildItem({
             name: 'Paralysis',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Hands,
@@ -9,6 +9,6 @@
             value: 30,
             attackText: 'You cast your Paralysis spell',
             itemClass: Class.Wizard
-        }
+        });
     }
 }

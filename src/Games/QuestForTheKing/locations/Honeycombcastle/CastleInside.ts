@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function CastleInside(): StoryScript.ILocation {
-        return {
+    export function CastleInside() {
+        return BuildLocation({
             name: 'Entering the Castle',
             destinations: [
                 {
@@ -11,6 +11,6 @@
             persons: [
                 Persons.QueenBee
             ]
-        }
+        });
     }
 }    

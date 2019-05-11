@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Octopus(): StoryScript.ILocation {
-        return {
+    export function Octopus() {
+        return BuildLocation({
             name: 'The Giant Octopus',
             destinations: [
                 {
@@ -33,6 +33,6 @@
                     }
                 }
             ]           
-        }
+        });
     }
 }    

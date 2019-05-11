@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function HealersTent(): StoryScript.ILocation {
-        return {
+    export function HealersTent() {
+        return BuildLocation({
             name: 'Healers Tent',
             descriptionSelector: (game: IGame) => {
                 return 'day' + game.worldProperties.currentDay;
@@ -44,6 +44,6 @@
                     maxItems: 5
                 }
             }
-        }
+        });
     }
 }

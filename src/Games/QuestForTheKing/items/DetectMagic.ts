@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function DetectMagic(): IItem {
-        return {
+    export function DetectMagic() {
+        return BuildItem({
             name: 'Detect Magic',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Hands,
@@ -8,6 +8,6 @@
             arcane: true,
             value: 7,
             itemClass: Class.Wizard    
-        }
+        });
     }
 }

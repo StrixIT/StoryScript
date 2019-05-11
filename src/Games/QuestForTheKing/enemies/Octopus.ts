@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
-    export function Octopus(): IEnemy {
-        return {
+    export function Octopus() {
+        return BuildEnemy({
             name: 'Giant Octopus',
             hitpoints: 20,
             attack: '1d6',
@@ -9,6 +9,6 @@
             onDefeat: (game: IGame) => {
                 game.currentLocation.actions.length = 0;
             }
-        }
+        });
     }
 }

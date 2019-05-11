@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function WeaponSmith(): StoryScript.ILocation {
-        return {
+    export function WeaponSmith() {
+        return BuildLocation({
             name: 'Weapon Smith',
             descriptionSelector: (game: IGame) => {
                 return 'day' + game.worldProperties.currentDay;
@@ -43,6 +43,6 @@
                     maxItems: 5
                 }
             }
-        }
+        });
     }
 }

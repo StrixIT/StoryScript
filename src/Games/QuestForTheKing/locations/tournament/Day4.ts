@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Day4(): StoryScript.ILocation {
-        return {
+    export function Day4() {
+        return BuildLocation({
             name: 'Day 4',
             destinations: [
                 {
@@ -14,6 +14,6 @@
             enterEvents: [
                 changeDay
             ]
-        }
+        });
     }
 }

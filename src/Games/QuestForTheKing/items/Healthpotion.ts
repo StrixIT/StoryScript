@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Healthpotion(): IItem {
-        return {
+    export function Healthpotion() {
+        return BuildItem({
             name: 'Health Potion',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
@@ -13,6 +13,6 @@
                 game.character.currentHitpoints += 5;
                 game.character.items.remove(item);
             }
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Lessersisters(): StoryScript.ILocation {
-        return {
+    export function Lessersisters() {
+        return BuildLocation({
             name: 'Lesser Sisters',
             destinations: [
                 {
@@ -24,6 +24,6 @@
                 }
          
             ]
-        }
+        });
     }
 }

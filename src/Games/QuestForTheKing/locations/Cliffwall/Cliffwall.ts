@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Cliffwall(): StoryScript.ILocation {
-        return {
+    export function Cliffwall() {
+        return BuildLocation({
             name: 'The Cliffwall',
             destinations: [
                 {
@@ -15,6 +15,6 @@
             enemies: [
                 Enemies.Twoheadedwolf
             ]
-        }
+        });
     }
 }    

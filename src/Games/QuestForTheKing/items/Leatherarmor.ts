@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Leatherarmor(): IItem {
-        return {
+    export function Leatherarmor() {
+        return BuildItem({
             name: 'Leather Armor',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Body,
@@ -8,6 +8,6 @@
             arcane: false,
             value: 10,
             itemClass: [Class.Rogue, Class.Warrior]
-        }
+        });
     }
 }

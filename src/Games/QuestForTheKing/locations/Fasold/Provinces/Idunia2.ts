@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Idunia2(): StoryScript.ILocation {
-        return {
+    export function Idunia2() {
+        return BuildLocation({
             name: 'Idunia',
             destinations: [
                 {
@@ -33,6 +33,6 @@
                     target: Locations.Ravendal
                 },  
             ]
-        }
+        });
     }
 }

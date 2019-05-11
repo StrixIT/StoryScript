@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Aifor(): StoryScript.ILocation {
-        return {
+    export function Aifor() {
+        return BuildLocation({
             name: 'Aifor',
             destinations: [
                 {
@@ -33,6 +33,6 @@
                     target: Locations.Sandfell
                 },
             ]
-        }
+        });
     }
 }

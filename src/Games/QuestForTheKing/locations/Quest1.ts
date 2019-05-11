@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Quest1(): StoryScript.ILocation {
-        return {
+    export function Quest1() {
+        return BuildLocation({
             name: 'Your First Quest',
             destinations: [
                 {
@@ -13,6 +13,6 @@
                     game.worldProperties.travelCounter = 0;
                 }
             ]
-        }
+        });
     }
 }

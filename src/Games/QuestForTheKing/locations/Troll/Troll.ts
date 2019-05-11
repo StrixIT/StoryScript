@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Troll(): StoryScript.ILocation {
-        return {
+    export function Troll() {
+        return BuildLocation({
             name: 'The Troll',
             destinations: [
                 {
@@ -20,6 +20,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }    

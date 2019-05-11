@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Necromancer(): StoryScript.ILocation {
-        return {
+    export function Necromancer() {
+        return BuildLocation({
             name: 'The Necromancer',
             destinations: [
                 {
@@ -11,6 +11,6 @@
             enemies: [
                 Enemies.Necromancer
             ]
-        }
+        });
     }
 }    

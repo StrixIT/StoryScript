@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Brennus(): ILocation {
-        return {
+    export function Brennus() {
+        return BuildLocation({
             name: 'Brennus',
             destinations: [
                 {
@@ -29,6 +29,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }    

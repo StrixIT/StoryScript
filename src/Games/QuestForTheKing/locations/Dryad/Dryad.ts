@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Dryad(): StoryScript.ILocation {
-        return {
+    export function Dryad() {
+        return BuildLocation({
             name: 'The Dryad Tree',
             destinations: [
                 {
@@ -9,6 +9,6 @@
                 }           
 
             ]
-        }
+        });
     }
 }    

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Castleapproach(): StoryScript.ILocation {
-        return {
+    export function Castleapproach() {
+        return BuildLocation({
             name: 'Approaching the Castle',
             destinations: [
                 {
@@ -12,6 +12,6 @@
                     target: Locations.CastleInside
                 }          
             ],             
-        }
+        });
     }
 }    

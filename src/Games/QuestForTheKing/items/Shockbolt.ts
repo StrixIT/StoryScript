@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Shockbolt(): IItem {
-        return {
+    export function Shockbolt() {
+        return BuildItem({
             name: 'Shockbolt',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,
@@ -9,6 +9,6 @@
             value: 15,
             attackText: 'You cast your shockbolt',
             itemClass: Class.Wizard
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
-    export function Twoheadedwolf(): IEnemy {
-        return {
+    export function Twoheadedwolf() {
+        return BuildEnemy({
             name: 'Two-Headed Wolf',
             hitpoints: 20,
             attack: '1d8',
@@ -11,6 +11,6 @@
                     game.currentLocation.enemies.length = 0;
                 }
             }
-        }
+        });
     }
 }

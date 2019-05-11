@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Moonsister(): StoryScript.ILocation {
-        return {
+    export function Moonsister() {
+        return BuildLocation({
             name: 'The Moonsister',
             destinations: [
                 {
@@ -24,6 +24,6 @@
                 }
 
             ]
-        }
+        });
     }
 }

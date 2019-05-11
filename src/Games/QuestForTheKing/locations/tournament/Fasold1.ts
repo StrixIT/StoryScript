@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Fasold1(): StoryScript.ILocation {
-        return {
+    export function Fasold1() {
+        return BuildLocation({
             name: 'Fasold the Storyteller',
             destinations: [
                 {
@@ -28,6 +28,6 @@
                     target: Locations.Idunia
                 },  
             ]
-        }
+        });
     }
 }

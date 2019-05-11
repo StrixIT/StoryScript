@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Skysister(): StoryScript.ILocation {
-        return {
+    export function Skysister() {
+        return BuildLocation({
             name: 'The Sister of the Sky',
             destinations: [
                 {
@@ -24,6 +24,6 @@
                 }
             
             ]
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Seasister(): StoryScript.ILocation {
-        return {
+    export function Seasister() {
+        return BuildLocation({
             name: 'The Seasister',
             destinations: [
                 {
@@ -24,6 +24,6 @@
                 }
          
             ]
-        }
+        });
     }
 }

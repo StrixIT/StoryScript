@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Quest1map4(): StoryScript.ILocation {
-        return {
+    export function Quest1map4() {
+        return BuildLocation({
             name: 'The Southern Forest',
             destinations: [
                 
@@ -26,8 +26,7 @@
                        target: Locations.Quest1map1,
                        style: 'location-danger'
                    }    
-            ]    
-           
-        }
+            ]
+        });
     }
 }

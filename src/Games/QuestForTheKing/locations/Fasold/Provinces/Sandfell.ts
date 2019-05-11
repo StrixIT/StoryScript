@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Sandfell(): StoryScript.ILocation {
-        return {
+    export function Sandfell() {
+        return BuildLocation({
             name: 'Sandfell',
             destinations: [
                 {
@@ -33,6 +33,6 @@
                     target: Locations.Ravendal
                 },
             ]            
-        }
+        });
     }
 }

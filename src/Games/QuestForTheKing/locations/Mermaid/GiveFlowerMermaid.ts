@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function GiveFlowerMermaid(): StoryScript.ILocation {
-        return {
+    export function GiveFlowerMermaid() {
+        return BuildLocation({
             name: 'The Mermaid',
             destinations: [
                 {
@@ -11,6 +11,6 @@
             items: [
                 Items.Pearl,
             ]
-        }
+        });
     }
 }

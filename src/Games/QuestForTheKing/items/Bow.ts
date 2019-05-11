@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Bow(): IItem {
-        return {
+    export function Bow() {
+        return BuildItem({
             name: 'Bow',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.LeftHand,
@@ -8,6 +8,6 @@
             value: 3,
             attackText: 'You fire your bow',
             itemClass: [Class.Rogue, Class.Warrior]
-        }
+        });
     }
 }

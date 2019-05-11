@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Darkmagic(): StoryScript.ILocation {
-        return {
+    export function Darkmagic() {
+        return BuildLocation({
             name: 'Dark Magic',
             destinations: [
                 {
@@ -12,6 +12,6 @@
                     Enemies.Mirrorimage
                     
                 ]
-        }
+        });
     }
 }    

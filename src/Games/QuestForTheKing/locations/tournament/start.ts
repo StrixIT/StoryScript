@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
-    export function Start(): StoryScript.ILocation {
-        return {
+    export function Start() {
+        return BuildLocation({
             name: 'Start',
             destinations: [
                 {
@@ -8,6 +8,6 @@
                     target: Locations.Day1
                 }
             ]
-        }
+        });
     }
 }

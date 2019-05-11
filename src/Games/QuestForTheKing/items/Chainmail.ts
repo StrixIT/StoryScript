@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
-    export function Chainmail():IItem {
-        return {
+    export function Chainmail() {
+        return BuildItem({
             name: 'Chain Mail',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Body,
@@ -8,6 +8,6 @@
             arcane: false,
             value: 20,
             itemClass: Class.Warrior
-        }
+        });
     }
 }
