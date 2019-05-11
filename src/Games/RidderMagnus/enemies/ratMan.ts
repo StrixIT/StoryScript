@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Enemies {
-    export function RatMan(): IEnemy {
-        return {
+    export function RatMan() {
+        return BuildEnemy({
             name: 'Ratman',
             picture: 'enemies/RatMan.jpg',
             hitpoints: 15 ,
@@ -9,6 +9,6 @@
             reward: 1 ,
             goudstukken: 2
             // reward should be: 1 rattenstaart (quest item), 1 punt (score)
-        }
+        });
     }
 }

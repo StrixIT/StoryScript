@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
-    export function Tunnel(): ILocation {
-        return {
+    export function Tunnel() {
+        return BuildLocation({
             name: 'Een tunnel onder het paleis',
 
             destinations: [
@@ -15,6 +15,6 @@
             ],
            //event: hier zit een val. Licht en Zoeken kan het voorkomen, anders gaat hij af.
            //Een lading stenen valt van boven op de held. Een helm helpt.
-        }
+        });
     }
 }

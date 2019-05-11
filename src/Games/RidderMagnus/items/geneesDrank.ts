@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
-    export function GeneesDrank(): IItem {
-        return {
+    export function GeneesDrank() {
+        return BuildItem({
             name: 'Geneesdrank',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             description: 'Drink dit op als je zwaar gewond bent.',
@@ -8,6 +8,6 @@
             charges: 1 ,
             value: 5
             //requirement: vechten >0
-        }
+        });
     }
 }

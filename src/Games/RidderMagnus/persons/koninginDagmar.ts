@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Persons {
-    export function KoninginDagmar(): IPerson {
-        return {
+    export function KoninginDagmar() {
+        return BuildPerson({
             name: 'Koningin Dagmar',
             //picture:
             hitpoints: 1000,
@@ -18,6 +18,6 @@
                 Quests.GoudenRing,
                 Quests.RattenStaarten
             ]
-        }
+        });
     }
 }

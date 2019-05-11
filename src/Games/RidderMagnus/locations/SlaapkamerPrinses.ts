@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
-    export function SlaapkamerPrinses(): ILocation {
-        return {
+    export function SlaapkamerPrinses() {
+        return BuildLocation({
             name: 'De Slaapkamer van de Prinses',
 
             destinations: [
@@ -39,6 +39,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }

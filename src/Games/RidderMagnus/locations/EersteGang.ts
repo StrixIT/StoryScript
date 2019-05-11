@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
-    export function EersteGang(): ILocation {
-        return {
+    export function EersteGang() {
+        return BuildLocation({
             name: 'Een lange, rechte gang',
 
             destinations: [
@@ -28,6 +28,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Enemies {
-    export function EnormeRat(): IEnemy {
-        return {
+    export function EnormeRat() {
+        return BuildEnemy({
             name: 'Enorme rat',
             picture: 'enemies/EnormeRat.jpg' ,
             hitpoints: 7 ,
@@ -8,6 +8,6 @@
             reward: 1,
             onDefeat: defeatRat
             // reward should be: 1 rattenstaart (quest item), 1 punt (score)
-        }
+        });
     }
 }

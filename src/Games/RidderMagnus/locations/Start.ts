@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
-    export function Start(): ILocation {
-        return {
+    export function Start() {
+        return BuildLocation({
             name: 'De Troonzaal',
             items: [
                 Items.LichtSpreuk
@@ -45,6 +45,6 @@
                     }
                 }
             ]
-        }
+        });
     }
 }

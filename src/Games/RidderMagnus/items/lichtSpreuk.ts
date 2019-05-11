@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
-    export function LichtSpreuk(): IItem {
-        return {
+    export function LichtSpreuk() {
+        return BuildItem({
             name: 'Licht (spreuk)',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             description: 'Een magisch licht dat de duisternis verjaagt.',
@@ -10,6 +10,6 @@
             },
             value: 10
             //requirement: toveren >0
-        }
+        });
     }
 }

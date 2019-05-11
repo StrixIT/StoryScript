@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
-    export function Adelaarsveer(): IItem {
-        return {
+    export function Adelaarsveer() {
+        return BuildItem({
             name: 'Adelaarsveer',
             equipmentType: StoryScript.EquipmentType.Amulet,
             description: 'Een verzilverde veer aan een zilveren ketting. Men zegt dat de drager er scherpere ogen van krijgt.' ,
@@ -9,6 +9,6 @@
             },
             value: 11
             //requirement: zoeken >1
-        }
+        });
     }
 }

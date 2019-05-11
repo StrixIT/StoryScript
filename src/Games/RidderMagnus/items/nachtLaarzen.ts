@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
-    export function NachtLaarzen(): IItem {
-        return {
+    export function NachtLaarzen() {
+        return BuildItem({
             name: 'Nachtlaarzen',
             equipmentType: StoryScript.EquipmentType.Feet,
             description: 'Diepzwarte laarzen van fluweelzacht leer, waarmee je geluidloos loopt.',
@@ -10,6 +10,6 @@
             },
             value: 25
             //requirement: sluipen >1
-        }
+        });
     }
 }

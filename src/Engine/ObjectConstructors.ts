@@ -54,7 +54,10 @@ namespace StoryScript {
             person.quests = <any>quests;
         }
 
-        setRuntimeProperties(person, 'person');
+        createReadOnlyCollection(person, 'quests', <any>person.quests || []);
+        // As far as I can tell right now, there is no reason to add quests to a person at run-time.
+        //addProxy(compiledPerson, 'quest', game, ruleService);
+        
         return person;
     }
 
@@ -85,13 +88,6 @@ namespace StoryScript {
             var enemy = <ICompiledEnemy>entity;
             createReadOnlyCollection(enemy, 'items', <any>enemy.items || []);
             addProxy(enemy, 'item');
-        }
-
-        if (type === 'person') {
-            var person = <ICompiledPerson>entity;
-            createReadOnlyCollection(person, 'quests', <any>person.quests || []);
-            // As far as I can tell right now, there is no reason to add quests to a person at run-time.
-            //addProxy(compiledPerson, 'quest', game, ruleService);
         }
 
         if (type ==='location') {

@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
-    export function Tovermantel(): IItem {
-        return {
+    export function Tovermantel() {
+        return BuildItem({
             name: 'Tovermantel',
             equipmentType: StoryScript.EquipmentType.Body,
             description: 'Een witte mantel die in het licht glinstert in alle kleuren van de regenboog. Hij beschermt je en versterkt je toverkracht.',
@@ -10,6 +10,6 @@
             defense: 1 ,
             value: 15
             //requirement: toveren >0
-        }
+        });
     }
 }

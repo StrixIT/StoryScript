@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Quests {
-    export function GoudenRing(): StoryScript.IQuest {
-        return {
+    export function GoudenRing() {
+        return BuildQuest( {
             name: "Zoek de gouden ring",
             status: (game, quest, done) => {
                 return 'Je hebt de ring ' + (done ? '' : 'nog niet ') + 'gevonden' + (done ? '!' : '.');
@@ -33,6 +33,6 @@
                 //de beloning moet een keuze worden: geld, random training of random item (item hier geen gouden ring)
                 //of een specifiek item gebaseerd op het personage? of keuze uit specifieke items
             }
-        }
+        });
     }
 }
