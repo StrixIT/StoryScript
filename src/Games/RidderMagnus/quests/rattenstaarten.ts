@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Quests {
     export function RattenStaarten() {
-        return BuildQuest({
+        return Quest({
             name: "Verzamel rattenstaarten",
             status: (game, quest, done) => {
                 return done ? "Je hebt genoeg rattenstaarten verzameld!" : "Verzamel 10 rattenstaarten. Je hebt er nu " + quest.progress.rattenStaarten + ".";

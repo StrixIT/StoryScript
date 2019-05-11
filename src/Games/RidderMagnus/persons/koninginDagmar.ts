@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Persons {
     export function KoninginDagmar() {
-        return BuildPerson({
+        return Person({
             name: 'Koningin Dagmar',
             //picture:
             hitpoints: 1000,

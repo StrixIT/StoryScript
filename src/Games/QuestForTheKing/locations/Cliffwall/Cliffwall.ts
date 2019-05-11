@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Cliffwall() {
-        return BuildLocation({
+        return Location({
             name: 'The Cliffwall',
             destinations: [
                 {

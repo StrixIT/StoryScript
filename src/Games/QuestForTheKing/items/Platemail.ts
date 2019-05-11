@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Platemail() {
-        return BuildItem({
+        return Item({
             name: 'Platemail',
             equipmentType: StoryScript.EquipmentType.Body,
             dayAvailable: 1,

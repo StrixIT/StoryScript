@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function CrossRoads() {
-        return BuildLocation({
+        return Location({
             name: 'Een kruispunt',
             enterEvents: [
                 (game: IGame) => {

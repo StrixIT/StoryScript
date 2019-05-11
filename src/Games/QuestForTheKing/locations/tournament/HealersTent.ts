@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function HealersTent() {
-        return BuildLocation({
+        return Location({
             name: 'Healers Tent',
             descriptionSelector: (game: IGame) => {
                 return 'day' + game.worldProperties.currentDay;

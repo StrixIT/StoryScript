@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Shockbolt() {
-        return BuildItem({
+        return Item({
             name: 'Shockbolt',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,

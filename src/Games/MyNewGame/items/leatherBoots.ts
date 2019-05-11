@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Items {
     export function LeatherBoots() {
-        return BuildItem({
+        return Item({
             name: 'Leather boots',
             defense: 1,
             equipmentType: StoryScript.EquipmentType.Feet,

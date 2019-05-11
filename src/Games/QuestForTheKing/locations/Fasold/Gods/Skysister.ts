@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Skysister() {
-        return BuildLocation({
+        return Location({
             name: 'The Sister of the Sky',
             destinations: [
                 {

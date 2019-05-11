@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Quest1map4() {
-        return BuildLocation({
+        return Location({
             name: 'The Southern Forest',
             destinations: [
                 

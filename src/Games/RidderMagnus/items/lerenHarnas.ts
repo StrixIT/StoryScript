@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function LerenHarnas() {
-        return BuildItem({
+        return Item({
             name: 'Leren harnas',
             defense: 2 ,
             equipmentType: StoryScript.EquipmentType.Body,

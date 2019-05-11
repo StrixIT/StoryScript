@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Oceanshrine() {
-        return BuildLocation({
+        return Location({
             name: 'The Ocean Shrine',
             destinations: [
                 {

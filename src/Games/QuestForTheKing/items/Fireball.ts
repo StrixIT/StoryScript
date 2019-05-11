@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Fireball() {
-        return BuildItem({
+        return Item({
             name: 'Fireball Spell',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,

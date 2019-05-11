@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Lysa() {
-        return BuildLocation({
+        return Location({
             name: 'Lysa',
             destinations: [
                 {

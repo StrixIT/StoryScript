@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus {
-    export function BuildLocation<T extends ILocation>(entity: T): T {
-        return StoryScript.BuildLocation(entity);
+    export function Location<T extends ILocation>(entity: T): T {
+        return StoryScript.Location(entity);
     }
 
     export interface ILocation extends StoryScript.ILocation {

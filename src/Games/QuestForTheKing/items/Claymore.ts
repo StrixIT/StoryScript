@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Claymore() {
-        return BuildItem({
+        return Item({
             name: 'Claymore',
             damage: '2',
             equipmentType: [StoryScript.EquipmentType.LeftHand, StoryScript.EquipmentType.RightHand],

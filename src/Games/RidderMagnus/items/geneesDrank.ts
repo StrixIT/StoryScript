@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function GeneesDrank() {
-        return BuildItem({
+        return Item({
             name: 'Geneesdrank',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             description: 'Drink dit op als je zwaar gewond bent.',

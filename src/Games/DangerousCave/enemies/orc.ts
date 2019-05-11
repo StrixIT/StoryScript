@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Enemies {
     export function Orc() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Ork',
             hitpoints: 12,
             attack: '2d4+1',

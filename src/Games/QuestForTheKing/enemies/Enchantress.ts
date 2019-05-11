@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Enchantress() {
-        return BuildEnemy({
+        return Enemy({
             name: 'The Enchantress',
             hitpoints: 20,
             attack: '1d8',

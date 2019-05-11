@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Twoheadedwolf() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Two-Headed Wolf',
             hitpoints: 20,
             attack: '1d8',

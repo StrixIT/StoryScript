@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function LongSword() {
-        return BuildItem({
+        return Item({
             name: 'Long Sword',
             damage: '1D6',
             equipmentType: StoryScript.EquipmentType.LeftHand,

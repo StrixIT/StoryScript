@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Quest1map1() {
-        return BuildLocation({
+        return Location({
             name: 'The Forest of Myrr',
             destinations: [
                 {

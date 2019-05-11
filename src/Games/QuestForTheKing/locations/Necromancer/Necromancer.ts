@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Necromancer() {
-        return BuildLocation({
+        return Location({
             name: 'The Necromancer',
             destinations: [
                 {

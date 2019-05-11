@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Troll() {
-        return BuildLocation({
+        return Location({
             name: 'The Troll',
             destinations: [
                 {

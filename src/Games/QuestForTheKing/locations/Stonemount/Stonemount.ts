@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Stonemount() {
-        return BuildLocation({
+        return Location({
             name: 'The Stone Mount',
             destinations: [
                 {

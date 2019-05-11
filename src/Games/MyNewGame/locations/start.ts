@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Locations {
     export function Start() {
-        return BuildLocation({
+        return Location({
             name: 'Home',
             descriptionSelector: (game: IGame) => {
                 var date = new Date();

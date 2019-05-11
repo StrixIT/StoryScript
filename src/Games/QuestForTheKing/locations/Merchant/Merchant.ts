@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Merchant() {
-        return BuildLocation({
+        return Location({
             name: 'The Merchant',
             destinations: [
                 {

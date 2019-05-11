@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function WeaponSmith() {
-        return BuildLocation({
+        return Location({
             name: 'Weapon Smith',
             descriptionSelector: (game: IGame) => {
                 return 'day' + game.worldProperties.currentDay;

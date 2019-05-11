@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Lockpicks() {
-        return BuildItem({
+        return Item({
             name: 'Lockpicks',            
             equipmentType: StoryScript.EquipmentType.LeftHand,
             value: 5,

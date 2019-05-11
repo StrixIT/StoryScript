@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Warhammer() {
-        return BuildItem({
+        return Item({
             name: 'Warhammer',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,

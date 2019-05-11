@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function RightCorridor() {
-        return BuildLocation({
+        return Location({
             name: 'Een gemetselde gang',
             destinations: [
                 {

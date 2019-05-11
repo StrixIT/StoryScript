@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Rapier() {
-        return BuildItem({
+        return Item({
             name: 'Rapier',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,

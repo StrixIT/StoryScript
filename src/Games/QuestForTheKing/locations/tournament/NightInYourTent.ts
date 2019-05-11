@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function NightInYourTent() {
-        return BuildLocation({
+        return Location({
             name: 'Night in your tent',
             destinations: [
                 {

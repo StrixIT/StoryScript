@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Brownbear() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Brown Bear',
             hitpoints: 20,
             attack: '1d8',

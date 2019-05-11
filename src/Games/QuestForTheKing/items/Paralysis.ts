@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Paralysis() {
-        return BuildItem({
+        return Item({
             name: 'Paralysis',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Hands,

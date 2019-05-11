@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Shieldmaiden() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Shieldmaiden',
             hitpoints: 18,
             attack: '1d8',

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Battleaxe() {
-        return BuildItem({
+        return Item({
             name: 'Battle Axe',
             damage: '1D8',
             equipmentType: StoryScript.EquipmentType.LeftHand,

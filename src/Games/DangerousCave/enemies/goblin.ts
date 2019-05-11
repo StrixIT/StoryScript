@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Enemies {
     export function Goblin() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Goblin',
             hitpoints: 6,
             attack: 'd4+3',

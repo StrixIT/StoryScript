@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function GoudenRing() {
-        return BuildItem({
+        return Item({
             name: 'Gouden ring',
             damage: '0',
             equipmentType: StoryScript.EquipmentType.Amulet ,

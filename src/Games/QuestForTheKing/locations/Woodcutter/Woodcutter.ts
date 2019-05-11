@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Woodcutter() {
-        return BuildLocation({
+        return Location({
             name: 'The Woodcutters Cottage',
             destinations: [
                 {

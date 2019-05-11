@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Sandfell() {
-        return BuildLocation({
+        return Location({
             name: 'Sandfell',
             destinations: [
                 {

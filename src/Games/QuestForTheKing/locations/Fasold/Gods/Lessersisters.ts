@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Lessersisters() {
-        return BuildLocation({
+        return Location({
             name: 'Lesser Sisters',
             destinations: [
                 {

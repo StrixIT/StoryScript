@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function NachtLaarzen() {
-        return BuildItem({
+        return Item({
             name: 'Nachtlaarzen',
             equipmentType: StoryScript.EquipmentType.Feet,
             description: 'Diepzwarte laarzen van fluweelzacht leer, waarmee je geluidloos loopt.',

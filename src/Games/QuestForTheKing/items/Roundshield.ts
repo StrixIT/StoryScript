@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Roundshield() {
-        return BuildItem({
+        return Item({
             name: 'Round Shield',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.RightHand,

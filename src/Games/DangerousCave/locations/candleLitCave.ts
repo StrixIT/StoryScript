@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function CandleLitCave() {
-        return BuildLocation({
+        return Location({
             name: 'Een grot met kaarslicht',
             destinations: [
                 {

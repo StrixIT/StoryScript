@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Octopus() {
-        return BuildLocation({
+        return Location({
             name: 'The Giant Octopus',
             destinations: [
                 {

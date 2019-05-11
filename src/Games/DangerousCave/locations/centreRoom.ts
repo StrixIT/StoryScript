@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function CentreRoom() {
-        return BuildLocation({
+        return Location({
             name: 'Een opslagkamer',
             destinations: [
                 {

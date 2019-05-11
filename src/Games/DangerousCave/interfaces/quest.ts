@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave {
-    export function BuildQuest<T extends IQuest>(entity: T): T {
-        return StoryScript.BuildQuest(entity);
+    export function Quest<T extends IQuest>(entity: T): T {
+        return StoryScript.Quest(entity);
     }
 
     export interface IQuest extends StoryScript.IQuest {

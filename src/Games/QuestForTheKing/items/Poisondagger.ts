@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Poisondagger() {
-        return BuildItem({
+        return Item({
             name: 'Poison Dagger',
             damage: '3',
             equipmentType: StoryScript.EquipmentType.LeftHand,           

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Fisherman() {
-        return BuildLocation({
+        return Location({
             name: 'The Fishermans Cottage',
             destinations: [
                 {

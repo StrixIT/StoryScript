@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
     export function SlaapkamerPrinses() {
-        return BuildLocation({
+        return Location({
             name: 'De Slaapkamer van de Prinses',
 
             destinations: [

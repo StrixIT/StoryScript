@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Gelandri() {
-        return BuildLocation({
+        return Location({
             name: 'Gelandri',
             destinations: [
                 {

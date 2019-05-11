@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Ravendal() {
-        return BuildLocation({
+        return Location({
             name: 'Ravendal',
             destinations: [
                 {

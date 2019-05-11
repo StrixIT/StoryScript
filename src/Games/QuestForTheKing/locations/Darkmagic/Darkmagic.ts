@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Darkmagic() {
-        return BuildLocation({
+        return Location({
             name: 'Dark Magic',
             destinations: [
                 {

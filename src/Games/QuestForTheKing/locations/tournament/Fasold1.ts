@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Fasold1() {
-        return BuildLocation({
+        return Location({
             name: 'Fasold the Storyteller',
             destinations: [
                 {

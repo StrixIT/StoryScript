@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Magicflowers() {
-        return BuildLocation({
+        return Location({
             name: 'The Magic Flowers',
             destinations: [
                 {

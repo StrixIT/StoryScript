@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Enemies {
     export function Bandit() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Bandit',
             hitpoints: 10,
             attack: '1d6',

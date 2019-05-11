@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Dryad() {
-        return BuildLocation({
+        return Location({
             name: 'The Dryad Tree',
             destinations: [
                 {

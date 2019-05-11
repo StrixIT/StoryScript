@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Day2() {
-        return BuildLocation({
+        return Location({
             name: 'Day 2',
             enemies: [
                 Enemies.Nobleman

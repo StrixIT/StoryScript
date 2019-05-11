@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Locations {
     export function Bedroom() {
-        return BuildLocation({
+        return Location({
             name: 'Bedroom',
             destinations: [
                 {

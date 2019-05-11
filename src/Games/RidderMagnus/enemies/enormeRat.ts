@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Enemies {
     export function EnormeRat() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Enorme rat',
             picture: 'enemies/EnormeRat.jpg' ,
             hitpoints: 7 ,

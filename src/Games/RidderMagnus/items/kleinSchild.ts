@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function KleinSchild() {
-        return BuildItem({
+        return Item({
             name: 'Klein schild',
             defense: 1 ,
             equipmentType: StoryScript.EquipmentType.LeftHand ,

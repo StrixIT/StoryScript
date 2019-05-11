@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function Zwaard() {
-        return BuildItem({
+        return Item({
             name: 'Zwaard',
             damage: '3',
             equipmentType: StoryScript.EquipmentType.RightHand,

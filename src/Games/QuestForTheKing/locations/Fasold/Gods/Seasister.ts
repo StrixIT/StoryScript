@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Seasister() {
-        return BuildLocation({
+        return Location({
             name: 'The Seasister',
             destinations: [
                 {

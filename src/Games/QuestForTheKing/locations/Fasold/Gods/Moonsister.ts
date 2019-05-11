@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Moonsister() {
-        return BuildLocation({
+        return Location({
             name: 'The Moonsister',
             destinations: [
                 {

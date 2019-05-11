@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Mirrorimage() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Mirror Image',
             hitpoints: 15,
             attack: '1d6',

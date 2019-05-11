@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function LeftCorridor() {
-        return BuildLocation({
+        return Location({
             name: 'Een pikdonkere gang',
             enterEvents: [
                 (game: IGame) => {

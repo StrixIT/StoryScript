@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function ForestPond() {
-        return BuildLocation({
+        return Location({
             name: 'The Forest Pond',
             destinations: [
                 {

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function CastleInside() {
-        return BuildLocation({
+        return Location({
             name: 'Entering the Castle',
             destinations: [
                 {

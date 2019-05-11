@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Rockwolf() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Rockwolf',
             hitpoints: 18,
             attack: '1d6',

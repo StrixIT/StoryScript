@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Troll() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Troll',
             hitpoints: 22,
             attack: '1d8',

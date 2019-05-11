@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Victory() {
-        return BuildLocation({
+        return Location({
             name: 'Victory',
             destinations: [
                 {

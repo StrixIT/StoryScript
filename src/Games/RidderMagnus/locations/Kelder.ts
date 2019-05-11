@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
     export function Kelder() {
-        return BuildLocation({
+        return Location({
             name: 'De Kelder',
             sluipCheck: 4,
             //Bij eerste bezoek: er komt hier als event eenmalig een dire rat, tenzij je succesvol sluipt. 

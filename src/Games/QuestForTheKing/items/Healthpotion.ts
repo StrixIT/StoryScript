@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Healthpotion() {
-        return BuildItem({
+        return Item({
             name: 'Health Potion',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,

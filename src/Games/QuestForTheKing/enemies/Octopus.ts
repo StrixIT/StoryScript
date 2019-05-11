@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Octopus() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Giant Octopus',
             hitpoints: 20,
             attack: '1d6',

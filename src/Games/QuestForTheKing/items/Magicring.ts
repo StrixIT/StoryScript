@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Magicring() {
-        return BuildItem({
+        return Item({
             name: 'Magic Ring',
             damage: '0',
             equipmentType: StoryScript.EquipmentType.LeftRing,

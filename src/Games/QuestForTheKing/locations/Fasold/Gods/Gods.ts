@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Gods() {
-        return BuildLocation({
+        return Location({
             name: 'Gods of Idunia',
             destinations: [
                 {

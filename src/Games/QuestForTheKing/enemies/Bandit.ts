@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Bandit() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Bandit',
             hitpoints: 14,
             attack: '1d4',

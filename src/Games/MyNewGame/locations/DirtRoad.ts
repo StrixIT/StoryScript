@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Locations {
     export function DirtRoad() {
-        return BuildLocation({
+        return Location({
             name: 'Dirt road',
             destinations: [
                 {

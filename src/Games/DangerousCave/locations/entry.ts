@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function Entry() {
-        return BuildLocation({
+        return Location({
             name: 'De grot',
             // Example
             //descriptionSelector: function() {

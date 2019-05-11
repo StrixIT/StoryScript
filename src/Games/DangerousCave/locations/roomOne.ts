@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function RoomOne() {
-        return BuildLocation({
+        return Location({
             name: 'De kamer van de ork',
             enemies: [
                 Enemies.Orc

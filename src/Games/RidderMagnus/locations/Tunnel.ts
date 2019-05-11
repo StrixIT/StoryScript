@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
     export function Tunnel() {
-        return BuildLocation({
+        return Location({
             name: 'Een tunnel onder het paleis',
 
             destinations: [

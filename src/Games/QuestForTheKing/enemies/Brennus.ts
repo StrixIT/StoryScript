@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Brennus() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Brennus',
             hitpoints: 20,
             attack: '1d8',

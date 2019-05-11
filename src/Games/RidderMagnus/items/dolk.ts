@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function Dolk() {
-        return BuildItem({
+        return Item({
             name: 'Dolk',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.RightHand ,

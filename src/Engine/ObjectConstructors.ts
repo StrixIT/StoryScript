@@ -9,7 +9,7 @@ namespace StoryScript {
         return instance;
     }
 
-    export function BuildLocation<T extends ILocation>(entity: T): T {
+    export function Location<T extends ILocation>(entity: T): T {
         var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
         var location = CreateObject(entity, 'location');
 
@@ -24,7 +24,7 @@ namespace StoryScript {
         return location;
     }
 
-    export function BuildEnemy<T extends IEnemy>(entity: T, type?: string): T {
+    export function Enemy<T extends IEnemy>(entity: T, type?: string): T {
         var enemy = CreateObject(entity, type || 'enemy');
         var items = <IItem[]>[];
 
@@ -41,8 +41,8 @@ namespace StoryScript {
         return enemy;
     }
 
-    export function BuildPerson<T extends IPerson>(entity: T): T {
-        var person = BuildEnemy(entity, 'person');
+    export function Person<T extends IPerson>(entity: T): T {
+        var person = Enemy(entity, 'person');
 
         var quests = <IQuest[]>[];
 
@@ -61,14 +61,14 @@ namespace StoryScript {
         return person;
     }
 
-    export function BuildItem<T extends IItem>(entity: T): T {
+    export function Item<T extends IItem>(entity: T): T {
         var item = CreateObject(entity, 'item');
         compileCombinations(item);
         setRuntimeProperties(item, 'item');
         return item;
     }
 
-    export function BuildQuest<T extends IQuest>(entity: T): T {
+    export function Quest<T extends IQuest>(entity: T): T {
         var item = CreateObject(entity, 'quest');
         setRuntimeProperties(item, 'quest');
         return item;

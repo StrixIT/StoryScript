@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Goldnecklace() {
-        return BuildItem({
+        return Item({
             name: 'Necklace',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.Amulet,

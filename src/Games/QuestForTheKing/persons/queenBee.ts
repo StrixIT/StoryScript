@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Persons {
     export function QueenBee() {
-        return BuildPerson({
+        return Person({
             name: 'Queen Bee',
             //picture: 'bandit.jpg',
             hitpoints: 10,

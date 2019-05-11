@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Day4() {
-        return BuildLocation({
+        return Location({
             name: 'Day 4',
             destinations: [
                 {

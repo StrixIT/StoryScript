@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Nobleman() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Nobleman',
             hitpoints: 14,
             attack: '1d4',

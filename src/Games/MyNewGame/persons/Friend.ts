@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Persons {
     export function Friend() {
-        return BuildPerson({
+        return Person({
             name: 'Joe',
             hitpoints: 10,
             attack: '1d6',

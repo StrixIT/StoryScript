@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Items {
     export function Lantern() {
-        return BuildItem({
+        return Item({
             name: 'Lantaren',
             bonuses: {
                 perception: 1

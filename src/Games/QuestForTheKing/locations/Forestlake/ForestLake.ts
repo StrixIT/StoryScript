@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function ForestLake() {
-        return BuildLocation({
+        return Location({
             name: 'Forest Lake',
             destinations: [
                 {

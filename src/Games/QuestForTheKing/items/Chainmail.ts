@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Chainmail() {
-        return BuildItem({
+        return Item({
             name: 'Chain Mail',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Body,

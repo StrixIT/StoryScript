@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Guardians() {
-        return BuildLocation({
+        return Location({
             name: 'The Strange Trees',
             destinations: [
                 {

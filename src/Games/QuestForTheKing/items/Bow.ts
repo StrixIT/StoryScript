@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Bow() {
-        return BuildItem({
+        return Item({
             name: 'Bow',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.LeftHand,

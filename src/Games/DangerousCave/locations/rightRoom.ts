@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function RightRoom() {
-        return BuildLocation({
+        return Location({
             name: 'Een schemerige gang',
             enemies: [
                 Enemies.GiantBat

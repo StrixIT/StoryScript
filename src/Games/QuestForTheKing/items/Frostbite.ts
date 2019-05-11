@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Frostbite() {
-        return BuildItem({
+        return Item({
             name: 'Frostbite Spell',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.LeftHand,

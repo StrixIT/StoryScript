@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Honeycastle() {
-        return BuildLocation({
+        return Location({
             name: 'The Honeycomb Castle',
             destinations: [
                 {

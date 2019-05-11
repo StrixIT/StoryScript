@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Items {
     export function IJzerenHelm() {
-        return BuildItem({
+        return Item({
             name: 'IJzeren helm',
             defense: 1 ,
             equipmentType: StoryScript.EquipmentType.Head,

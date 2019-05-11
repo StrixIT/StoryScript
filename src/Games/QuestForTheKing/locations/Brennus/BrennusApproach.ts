@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function BrennusApproach() {
-        return BuildLocation({
+        return Location({
             name: 'Brennus',
             destinations: [
                 {

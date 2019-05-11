@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Ghost() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Wraith',
             hitpoints: 14,
             attack: '1d4',

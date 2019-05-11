@@ -1,6 +1,6 @@
 namespace MyAdventureGameVisual.Locations {
     export function Passage() {
-        return BuildLocation({
+        return Location({
             name: 'A passage in the undergrowth',
             destinations: [
                 {

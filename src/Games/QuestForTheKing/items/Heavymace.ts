@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Heavymace() {
-        return BuildItem({
+        return Item({
             name: 'Heavy Mace',
             damage: '2',
             equipmentType: [StoryScript.EquipmentType.LeftHand, StoryScript.EquipmentType.RightHand],

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Enemies {
     export function Farmboy() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Farmboy',
             hitpoints: 10,
             attack: '1d4',

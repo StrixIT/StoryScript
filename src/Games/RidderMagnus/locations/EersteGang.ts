@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Locations {
     export function EersteGang() {
-        return BuildLocation({
+        return Location({
             name: 'Een lange, rechte gang',
 
             destinations: [

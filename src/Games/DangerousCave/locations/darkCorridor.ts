@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function DarkCorridor() {
-        return BuildLocation({
+        return Location({
             name: 'Een donkere smalle gang',
             enemies: [
                 Enemies.Orc

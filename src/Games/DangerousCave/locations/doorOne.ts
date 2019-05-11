@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function DoorOne() {
-        return BuildLocation({
+        return Location({
             name: 'Een donkere gang met een deur',
             destinations: [
                 {

@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus.Quests {
     export function GoudenRing() {
-        return BuildQuest( {
+        return Quest( {
             name: "Zoek de gouden ring",
             status: (game, quest, done) => {
                 return 'Je hebt de ring ' + (done ? '' : 'nog niet ') + 'gevonden' + (done ? '!' : '.');

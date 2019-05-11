@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function WestCrossing() {
-        return BuildLocation({
+        return Location({
             name: 'Een donkere gemetselde gang',
             enemies: [
                 Enemies.Goblin

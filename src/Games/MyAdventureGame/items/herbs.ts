@@ -1,6 +1,6 @@
 namespace MyAdventureGame.Items {
     export function Herbs() {
-        return BuildItem({
+        return Item({
             name: 'Herbs',
             equipmentType: StoryScript.EquipmentType.Miscellaneous
         });

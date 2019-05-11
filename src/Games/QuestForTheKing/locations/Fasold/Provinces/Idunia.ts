@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function Idunia() {
-        return BuildLocation({
+        return Location({
             name: 'The Kingdom of Idunia',
             destinations: [
                 {

@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function Arena() {
-        return BuildLocation({
+        return Location({
             name: 'Een hoek van de grot waar kaarsen branden',
             enemies: [
                 Enemies.Orc

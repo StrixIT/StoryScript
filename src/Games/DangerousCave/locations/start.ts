@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function Start() {
-        return BuildLocation({
+        return Location({
             name: 'De ingang van de Gevaarlijke Grot',
             destinations: [
                 {

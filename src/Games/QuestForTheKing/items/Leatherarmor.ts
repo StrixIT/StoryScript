@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Leatherarmor() {
-        return BuildItem({
+        return Item({
             name: 'Leather Armor',
             damage: '2',
             equipmentType: StoryScript.EquipmentType.Body,

@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Locations {
     export function Temp() {
-        return BuildLocation({
+        return Location({
             name: 'Deze locatie bestaat nog niet',
             destinations: [
                 {

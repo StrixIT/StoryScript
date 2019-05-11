@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Locations {
     export function GiveFlowerMermaid() {
-        return BuildLocation({
+        return Location({
             name: 'The Mermaid',
             destinations: [
                 {

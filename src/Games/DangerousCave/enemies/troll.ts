@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Enemies {
     export function Troll() {
-        return BuildEnemy({
+        return Enemy({
             name: 'Trol',
             hitpoints: 20,
             attack: '2d6',

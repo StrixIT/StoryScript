@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Boat() {
-        return BuildItem({
+        return Item({
             name: 'Small Boat',
             damage: '0',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
