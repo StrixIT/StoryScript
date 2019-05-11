@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Quests {
     export function Journal() {
-        return StoryScript.BuildQuest({
+        return BuildQuest({
             name: "Find Joe's journal",
             status: (game, quest, done) => {
                 return 'You have ' + (done ? '' : 'not ') + 'found Joe\'s journal' + (done ? '!' : ' yet.');

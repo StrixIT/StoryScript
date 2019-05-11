@@ -109,7 +109,7 @@
 
         if (collectionType === 'enemy') {
             entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
-                var enemy: IEnemy = null;
+                var enemy: ICompiledEnemy = null;
 
                 if (typeof selector !== 'object') {
                     enemy = find(selector, 'enemies', definitions);

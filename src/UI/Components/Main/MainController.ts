@@ -19,13 +19,6 @@ namespace StoryScript {
                 self._scope.$broadcast('showCombinationText', (<any>event).combineText);
             });
 
-            _eventListener.addEventListener('loadingDone', function(event) {
-                self._timeout(() =>
-                    self._scope.$applyAsync(() => {
-                        self._game.loading = false;
-                    }), 0);
-            });
-
             self.init();
         }
 

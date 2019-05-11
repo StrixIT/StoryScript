@@ -143,8 +143,9 @@ namespace StoryScript {
                 self._game.actionLog = [];
                 self._game.state = saveGame.state;
 
-                var evt = new Event('loadingDone');
-                self._events.dispatchEvent(evt)
+                setTimeout(() => {
+                    self._game.loading = false;
+                }, 0);
             }
         }
 
