@@ -17,7 +17,13 @@ namespace StoryScript {
             console.log('No destinations specified for location ' + (<any>location).id);
         }
 
-        compileFeatures(location);
+        if (!isEmpty(location.features)) {
+
+            for (var i in location.features) {
+                location.features[i] = CompileFeature(location.features[i]);
+            }
+        }
+
         setLocationCollections(location);
         setRuntimeProperties(location, 'location');
 
@@ -74,6 +80,26 @@ namespace StoryScript {
         return item;
     }
 
+    export function CompileFeature(feature: string | (() => IFeature) | IFeature): IFeature {
+        var compiledFeature = <IFeature>feature;
+        
+        // Compile stand-alone features that are still functions.
+        if (typeof feature === 'function') {
+            compiledFeature = (<() => IFeature>feature)();
+        }
+
+        compiledFeature.id = compiledFeature.name;
+
+        if (compiledFeature.combinations && compiledFeature.combinations.combine) {
+            for (var j in compiledFeature.combinations.combine) {
+                var combination = compiledFeature.combinations.combine[j];
+                combination.tool = combination.tool && (<any>combination.tool).name;
+            }
+        }
+
+        return compiledFeature;
+    }
+
     export function setRuntimeProperties(entity: any, type: string) {
         if (type === 'item' || type === 'enemy' || type === 'person') {
             var combinable = <ICombinable>entity;
@@ -103,6 +129,7 @@ namespace StoryScript {
             createActiveCollections(<ICompiledLocation><unknown>location);
     
             addProxy(location, 'enemy');
+            addProxy(location, 'feature');
         }
     }
 
@@ -174,30 +201,6 @@ namespace StoryScript {
             entry.combinations.combine = combines;
             entry.combinations.failText = failText;
             createReadOnlyCollection(entry.combinations, 'combine', combines);
-        }
-    }
-
-    function compileFeatures(location: ILocation) {
-        if (!isEmpty(location.features)) {
-
-            for (var i in location.features) {
-                var feature = location.features[i];
-
-                // Compile stand-alone features that are still functions.
-                if (typeof feature === 'function') {
-                    location.features[i] = (<() => IFeature>feature)();
-                    feature = location.features[i];
-                }
-
-                feature.id = feature.name;
-
-                if (feature.combinations && feature.combinations.combine) {
-                    for (var j in feature.combinations.combine) {
-                        var combination = feature.combinations.combine[j];
-                        combination.tool = combination.tool && (<any>combination.tool).name;
-                    }
-                }
-            }
         }
     }
 

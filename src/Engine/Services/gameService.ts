@@ -170,6 +170,7 @@ namespace StoryScript {
 
             if (description) {
                 self.processMediaTags(entity, key);
+                description = self.processCodeFeatures(entity, description);
             }
 
             return description;
@@ -524,6 +525,35 @@ namespace StoryScript {
             }
 
             return startPlay;
+        }
+
+        private processCodeFeatures(location: ICompiledLocation, description: string): string {
+            if (location.features.length > 0) {
+                var parser = new DOMParser();
+                var htmlDoc = parser.parseFromString(description, 'text/html');
+
+                var map = htmlDoc.getElementsByTagName("map")[0];
+                var existingFeatures: string[] = [];
+                map.childNodes.forEach(n => { 
+                    var name = <string>(<HTMLAreaElement>n).attributes['name'].nodeValue;
+
+                    if (name) {
+                        existingFeatures.push(name.toLowerCase());
+                    }
+                });
+
+                location.features.forEach(f => {
+                    if (f.shape && f.coords && existingFeatures.indexOf(f.name.toLowerCase()) < 0) {
+                        var newNode = <HTMLAreaElement>document.createElement('area');
+                        newNode.setAttribute('name', f.name);
+                        newNode.setAttribute('shape', f.shape);
+                        newNode.setAttribute('coords', f.coords);
+                        description = description.replace('</map>', newNode.outerHTML + '</map>');
+                    }
+                });
+            }
+
+            return description;
         }
 
         private updateHighScore(): void {

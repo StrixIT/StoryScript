@@ -104,11 +104,11 @@
         return results[0] ? <U><unknown>results[0] : null;
     }
 
-    export function addProxy(entry, collectionType: string) {
+    export function addProxy(entry: any, collectionType: string) {
         var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
 
         if (collectionType === 'enemy') {
-            entry.enemies.push = (<any>entry.enemies.push).proxy(function (push: Function, selector: string | (() => IEnemy)) {
+            entry.enemies.push = entry.enemies.push.proxy(function (push: Function, selector: string | (() => IEnemy)) {
                 var enemy: ICompiledEnemy = null;
 
                 if (typeof selector !== 'object') {
@@ -121,8 +121,9 @@
                 push.call(this, enemy);
             });
         }
+        
         if (collectionType === 'item') {
-            entry.items.push = (<any>entry.items.push).proxy(function (push: Function, selector: string | (() => IItem)) {
+            entry.items.push = entry.items.push.proxy(function (push: Function, selector: string | (() => IItem)) {
                 var item: IItem = null;
 
                 if (typeof selector !== 'object') {
@@ -133,6 +134,13 @@
                 }
 
                 push.call(this, item);
+            });
+        }
+
+        if (collectionType == 'feature') {
+            entry.features.push = entry.features.push.proxy(function (push: Function, selector: string | (() => IFeature)) {
+                var feature = CompileFeature(selector);
+                push.call(this, feature);
             });
         }
     }

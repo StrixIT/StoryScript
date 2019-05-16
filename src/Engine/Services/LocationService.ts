@@ -427,7 +427,7 @@ namespace StoryScript {
         }
 
         private processTextFeatures(game: IGame, htmlDoc: Document) {
-            var featureNodes = htmlDoc.getElementsByTagName("feature");
+            var featureNodes = htmlDoc.getElementsByTagName('area');
 
             if (game.currentLocation.features && game.currentLocation.features.length > 0) {
                 for (var i = 0; i < featureNodes.length; i++) {
@@ -474,7 +474,6 @@ namespace StoryScript {
                             if (feature) {
                                 var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
                                 var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
-                                var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
                                 feature.map = mapName;
                                 feature.coords = coordsAttribute;
                                 feature.shape = shapeAttribute;
