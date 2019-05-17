@@ -533,24 +533,27 @@ namespace StoryScript {
                 var htmlDoc = parser.parseFromString(description, 'text/html');
 
                 var map = htmlDoc.getElementsByTagName("map")[0];
-                var existingFeatures: string[] = [];
-                map.childNodes.forEach(n => { 
-                    var name = <string>(<HTMLAreaElement>n).attributes['name'].nodeValue;
 
-                    if (name) {
-                        existingFeatures.push(name.toLowerCase());
-                    }
-                });
+                if (map) {
+                    var existingFeatures: string[] = [];
+                    map.childNodes.forEach(n => { 
+                        var name = <string>(<HTMLAreaElement>n).attributes['name'].nodeValue;
 
-                location.features.forEach(f => {
-                    if (f.shape && f.coords && existingFeatures.indexOf(f.name.toLowerCase()) < 0) {
-                        var newNode = <HTMLAreaElement>document.createElement('area');
-                        newNode.setAttribute('name', f.name);
-                        newNode.setAttribute('shape', f.shape);
-                        newNode.setAttribute('coords', f.coords);
-                        description = description.replace('</map>', newNode.outerHTML + '</map>');
-                    }
-                });
+                        if (name) {
+                            existingFeatures.push(name.toLowerCase());
+                        }
+                    });
+
+                    location.features.forEach(f => {
+                        if (f.shape && f.coords && existingFeatures.indexOf(f.name.toLowerCase()) < 0) {
+                            var newNode = <HTMLAreaElement>document.createElement('area');
+                            newNode.setAttribute('name', f.name);
+                            newNode.setAttribute('shape', f.shape);
+                            newNode.setAttribute('coords', f.coords);
+                            description = description.replace('</map>', newNode.outerHTML + '</map>');
+                        }
+                    });
+                }
             }
 
             return description;

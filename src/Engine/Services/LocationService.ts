@@ -427,7 +427,7 @@ namespace StoryScript {
         }
 
         private processTextFeatures(game: IGame, htmlDoc: Document) {
-            var featureNodes = htmlDoc.getElementsByTagName('area');
+            var featureNodes = htmlDoc.getElementsByTagName('feature');
 
             if (game.currentLocation.features && game.currentLocation.features.length > 0) {
                 for (var i = 0; i < featureNodes.length; i++) {
