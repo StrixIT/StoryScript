@@ -8,7 +8,7 @@ namespace StoryScript {
 
 namespace StoryScript {
     export class CombinationService implements ICombinationService {
-        constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
         }
 
         getCombinationActions = (): ICombinationAction[] => {
@@ -83,9 +83,10 @@ namespace StoryScript {
                 resultText = tool ? self._texts.format(self._texts.noCombination, [target.name, tool.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
             }
 
+            SaveWorldState(self._dataService, self._locationService, self._game);
             return text = text + (resultText ? ': ' + resultText : '');
         }
     }
 
-    CombinationService.$inject = ['game', 'rules', 'customTexts'];
+    CombinationService.$inject = ['dataService', 'locationService', 'game', 'rules', 'customTexts'];
 }

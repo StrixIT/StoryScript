@@ -114,7 +114,7 @@ namespace StoryScript {
                 self._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
             }
             else {
-                self.SaveWorldState();
+                SaveWorldState(self._dataService, self._locationService, self._game);
             }
         }
 
@@ -138,7 +138,7 @@ namespace StoryScript {
                     self._game.previousLocation = self._game.locations.get(saveGame.previousLocation);
                 }
 
-                self.SaveWorldState();
+                SaveWorldState(self._dataService, self._locationService, self._game);
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
                 self._game.actionLog = [];
                 self._game.state = saveGame.state;
@@ -171,6 +171,7 @@ namespace StoryScript {
             if (description) {
                 self.processMediaTags(entity, key);
                 description = self.processCodeFeatures(entity, description);
+                self.processVisualFeatures(self._game);
             }
 
             return description;
@@ -319,14 +320,6 @@ namespace StoryScript {
             if (enemy.onDefeat) {
                 enemy.onDefeat(self._game);
             }
-        }
-
-        private SaveWorldState() {
-            var self = this;
-            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
-            self._dataService.save(StoryScript.DataKeys.STATISTICS, self._game.statistics);
-            self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, self._game.worldProperties);
-            self._locationService.saveWorld(self._game.locations);
         }
 
         private setupGame(): void {
@@ -557,6 +550,84 @@ namespace StoryScript {
             }
 
             return description;
+        }
+
+        private processVisualFeatures(game: IGame) {
+            var self = this;
+
+            // Get map, shape and coordinates information for image map features and add pictures for them.
+            // For this to work, the description needs to be updated in the browser, hence the timeout.
+            setTimeout(() => {
+                var map = document.getElementsByTagName("map")[0];
+
+                if (map) {
+                    var mapName = map.attributes['name'] && map.attributes['name'].nodeValue;
+                    var areaNodes = map.childNodes;
+
+                    for (var f = 0; f < areaNodes.length; f++) {
+                        const node = <HTMLAreaElement>areaNodes[f];
+
+                        if (!node.hasChildNodes()) {
+                            var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+
+                            if (nameAttribute) {
+                                var feature = game.currentLocation.features.get(nameAttribute);
+
+                                if (feature) {
+                                    var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
+                                    var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
+                                    feature.map = mapName;
+                                    feature.coords = coordsAttribute;
+                                    feature.shape = shapeAttribute;
+                                    self.addFeaturePicture(feature, coordsAttribute, node);
+                                }
+                            }
+                        }
+                    }
+                }
+            }, 0);
+        }
+
+        private addFeaturePicture(feature: IFeature, coordsAttribute: any, node: HTMLAreaElement) {
+            if (!feature.picture) {
+                return;
+            }
+    
+            var image = document.createElement('img');
+            var coords = coordsAttribute.split(",");
+            var top = null, left = null;
+    
+            if (feature.shape.toLowerCase() === 'poly') {
+                var x = [], y = [];
+    
+                for (var i = 0; i < coords.length; i++) {
+                    var value = coords[i];
+                    if (i % 2 === 0) {
+                        x.push(value);
+                    }
+                    else {
+                        y.push(value);
+                    }
+                }
+    
+                left = x.reduce(function (p, v) {
+                    return (p < v ? p : v);
+                });
+                
+                top = y.reduce(function (p, v) {
+                    return (p < v ? p : v);
+                });
+            }
+            else {
+                left = coords[0];
+                top = coords[1];
+            }
+    
+            image.src = 'resources/' + feature.picture;
+            image.style.position = 'absolute';
+            image.style.top = top + 'px';
+            image.style.left = left + 'px';
+            node.appendChild(image);
         }
 
         private updateHighScore(): void {

@@ -156,7 +156,6 @@ namespace StoryScript {
             locations.forEach(function (location) {
                 self.initDestinations(location);
                 setRuntimeProperties(location, 'location');
-                location.features.push = location.features.push.proxy(self.addFeature, self._game);
                 location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
                 location.actions.push = location.actions.push.proxy(self.addAction, self._game);
                 location.combatActions.push = location.combatActions.push.proxy(self.addAction, self._game);
@@ -266,36 +265,6 @@ namespace StoryScript {
             originalFunction.apply(this, args);
         }
 
-        private addFeature() {
-            var args = [].slice.apply(arguments);
-            var originalFunction = args.shift();
-
-            // Compile a feature passed as a function first.
-            if (typeof args[0] === 'function') {
-                args[0] = args[0]();
-            }
-
-            var feature = <IFeature>args[0];
-
-            if (feature.combinations && feature.combinations.combine) {
-                feature.combinations.combine.forEach(c => setTool(c));
-            }
-
-            var map = findImageMap(feature);
-
-            if (map) {     
-                var area = document.createElement('area');
-                area.setAttribute('coords', feature.coords);
-                area.setAttribute('shape', feature.shape);
-                map.appendChild(area);
-                area.setAttribute('name', feature.name);
-                addFeaturePicture(feature, area.attributes['coords'].nodeValue, area);
-            }
-
-            args.splice(1, 1);
-            originalFunction.apply(this, args);
-        }
-
         private removeFeature() {
             var args = [].slice.apply(arguments);
             var originalFunction = args.shift();
@@ -348,7 +317,7 @@ namespace StoryScript {
 
             self.processDescriptions(htmlDoc, game);
             self.processDynamicLocations(htmlDoc, game);
-            self.processFeatures(htmlDoc, game);
+            self.processTextFeatures(htmlDoc, game);
             self.selectLocationDescription(game);
         }
 
@@ -420,13 +389,7 @@ namespace StoryScript {
             }
         }
 
-        private processFeatures(htmlDoc: Document, game: IGame) {
-            var self = this;
-            self.processTextFeatures(game, htmlDoc);
-            self.processVisualFeatures(game);
-        }
-
-        private processTextFeatures(game: IGame, htmlDoc: Document) {
+        private processTextFeatures(htmlDoc: Document, game: IGame) {
             var featureNodes = htmlDoc.getElementsByTagName('feature');
 
             if (game.currentLocation.features && game.currentLocation.features.length > 0) {
@@ -450,39 +413,6 @@ namespace StoryScript {
                     feature.description = node.innerHTML;
                 }
             }
-        }
-
-        private processVisualFeatures(game: IGame) {
-            var self = this;
-
-            // Get map, shape and coordinates information for image map features and add pictures for them.
-            // For this to work, the description needs to be updated in the browser, hence the timeout.
-            setTimeout(() => {
-                var map = document.getElementsByTagName("map")[0];
-
-                if (map) {
-                    var mapName = map.attributes['name'] && map.attributes['name'].nodeValue;
-                    var areaNodes = map.childNodes;
-
-                    for (var f = 0; f < areaNodes.length; f++) {
-                        const node = <HTMLAreaElement>areaNodes[f];
-                        var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-
-                        if (nameAttribute) {
-                            var feature = game.currentLocation.features.get(nameAttribute);
-
-                            if (feature) {
-                                var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
-                                var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
-                                feature.map = mapName;
-                                feature.coords = coordsAttribute;
-                                feature.shape = shapeAttribute;
-                                addFeaturePicture(feature, coordsAttribute, node);
-                            }
-                        }
-                    }
-                }
-            }, 0);
         }
 
         private selectLocationDescription(game: IGame) {
@@ -555,14 +485,10 @@ namespace StoryScript {
             if (destination.barrier.combinations && destination.barrier.combinations.combine) {
                 for (var n in destination.barrier.combinations.combine) {
                     var combination = destination.barrier.combinations.combine[n];
-                    setTool(combination);
+                    combination.tool = combination.tool && (<any>combination.tool).name;
                 }
             }
         }
-    }
-
-    function setTool(combination: ICombine<() => ICombinable>) {
-        combination.tool = combination.tool && (<any>combination.tool).name;
     }
 
     function findImageMap(feature: IFeature) {
@@ -599,47 +525,5 @@ namespace StoryScript {
         }
 
         return area;
-    }
-
-    function addFeaturePicture(feature: IFeature, coordsAttribute: any, node: HTMLAreaElement) {
-        if (!feature.picture) {
-            return;
-        }
-
-        var image = document.createElement('img');
-        var coords = coordsAttribute.split(",");
-        var top = null, left = null;
-
-        if (feature.shape.toLowerCase() === 'poly') {
-            var x = [], y = [];
-
-            for (var i = 0; i < coords.length; i++) {
-                var value = coords[i];
-                if (i % 2 === 0) {
-                    x.push(value);
-                }
-                else {
-                    y.push(value);
-                }
-            }
-
-            left = x.reduce(function (p, v) {
-                return (p < v ? p : v);
-            });
-            
-            top = y.reduce(function (p, v) {
-                return (p < v ? p : v);
-            });
-        }
-        else {
-            left = coords[0];
-            top = coords[1];
-        }
-
-        image.src = 'resources/' + feature.picture;
-        image.style.position = 'absolute';
-        image.style.top = top + 'px';
-        image.style.left = left + 'px';
-        node.appendChild(image);
     }
 }

@@ -14,7 +14,7 @@ namespace MyAdventureGame {
                     text: Constants.LOOKAT,
                     preposition: 'at',
                     requiresTool: false,
-                    failText: (game, tool, target): string => { 
+                    failText: (game, target, tool): string => { 
                         return 'You look at the ' + target.name + '. There is nothing special about it';
                     }
                 }
