@@ -8,7 +8,7 @@ namespace StoryScript {
 
 namespace StoryScript {
     export class CombinationService implements ICombinationService {
-        constructor(private _helperService: IHelperService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+        constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
         }
 
         getCombinationActions = (): ICombinationAction[] => {

@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class CombinationController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _combinationService: ICombinationService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _combinationService: ICombinationService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = _texts;
@@ -48,8 +48,9 @@ namespace StoryScript {
         tryCombination = (source: ICombinable, target: { name: string }, type: ICombinationAction) => {
             var self = this;
             self._combinationService.tryCombination(source);
+            self._gameService.saveGame();
         }
     }
 
-    CombinationController.$inject = ['$scope', '$timeout', 'combinationService', 'game', 'customTexts'];
+    CombinationController.$inject = ['$scope', '$timeout', 'combinationService', 'gameService', 'game', 'customTexts'];
 }
