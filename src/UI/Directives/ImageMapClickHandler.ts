@@ -19,8 +19,9 @@ namespace StoryScript
         private handleClick(e: JQueryEventObject, target: Element, game: IGame, scope: angular.IScope) {
             e.preventDefault();
             var featureName = target.attributes['name'] && target.attributes['name'].value;
+            
             if (featureName) {
-                var feature = game.currentLocation.features.filter(f => f.name.toLowerCase() == featureName.toLowerCase())[0];
+                var feature = game.currentLocation.features.filter(f => f.id == featureName.toLowerCase())[0];
                 if (feature) {
                     scope.$applyAsync(() => {
                         game.combinations.tryCombine(feature);

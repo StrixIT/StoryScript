@@ -10,7 +10,7 @@ namespace MyAdventureGameVisual.Locations {
             ],
             features: [
                 {
-                    name: 'woundedwarrior',
+                    name: 'Wounded warrior',
                     combinations: {
                         failText: 'That won\'t help him.',
                         combine: [

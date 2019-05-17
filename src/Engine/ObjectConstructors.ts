@@ -14,7 +14,7 @@ namespace StoryScript {
         var location = CreateObject(entity, 'location');
 
         if (!definitions.dynamicLocations && !location.destinations) {
-            console.log('No destinations specified for location ' + (<any>location).id);
+            console.log('No destinations specified for location ' + location.name);
         }
 
         if (!isEmpty(location.features)) {
@@ -88,7 +88,7 @@ namespace StoryScript {
             compiledFeature = (<() => IFeature>feature)();
         }
 
-        compiledFeature.id = compiledFeature.name;
+        compiledFeature.id = compiledFeature.name.toLowerCase().replace(/\s/g,'');
 
         if (compiledFeature.combinations && compiledFeature.combinations.combine) {
             for (var j in compiledFeature.combinations.combine) {

@@ -538,9 +538,9 @@ namespace StoryScript {
                     });
 
                     location.features.forEach(f => {
-                        if (f.shape && f.coords && existingFeatures.indexOf(f.name.toLowerCase()) < 0) {
+                        if (f.shape && f.coords && existingFeatures.indexOf(f.id) < 0) {
                             var newNode = <HTMLAreaElement>document.createElement('area');
-                            newNode.setAttribute('name', f.name);
+                            newNode.setAttribute('name', f.id);
                             newNode.setAttribute('shape', f.shape);
                             newNode.setAttribute('coords', f.coords);
                             description = description.replace('</map>', newNode.outerHTML + '</map>');
@@ -566,14 +566,13 @@ namespace StoryScript {
 
                     for (var f = 0; f < areaNodes.length; f++) {
                         const node = <HTMLAreaElement>areaNodes[f];
+                        var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
 
-                        if (!node.hasChildNodes()) {
-                            var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+                        if (nameAttribute) {
+                            var feature = game.currentLocation.features.get(nameAttribute);
 
-                            if (nameAttribute) {
-                                var feature = game.currentLocation.features.get(nameAttribute);
-
-                                if (feature) {
+                            if (feature) {
+                                if (!node.hasChildNodes()) {
                                     var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
                                     var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
                                     feature.map = mapName;
@@ -581,6 +580,9 @@ namespace StoryScript {
                                     feature.shape = shapeAttribute;
                                     self.addFeaturePicture(feature, coordsAttribute, node);
                                 }
+                            }
+                            else {
+                                map.removeChild(node);
                             }
                         }
                     }

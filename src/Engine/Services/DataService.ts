@@ -328,7 +328,7 @@ namespace StoryScript {
 
                 for (var j in definitions) {
                     var definition = <() => {}>definitions[j];
-                    self.getFunctions(type, definitionKeys, StoryScript.definitionToObject(definition), null);
+                    self.getFunctions(type, definitionKeys, definitionToObject(definition), null);
                 }
 
                 index++;

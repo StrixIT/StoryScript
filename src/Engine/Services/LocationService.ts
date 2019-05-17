@@ -404,11 +404,11 @@ namespace StoryScript {
 
                     nameAttribute = nameAttribute.toLowerCase();
 
-                    if (!game.currentLocation.features.some(f => f.name.toLowerCase() === nameAttribute)) {
+                    if (!game.currentLocation.features.some(f => f.id === nameAttribute)) {
                         console.log('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
                     }
 
-                    var feature = game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
+                    var feature = game.currentLocation.features.filter(f => f.id === nameAttribute)[0];
                     feature.name = displayNameAttribute || feature.name;
                     feature.description = node.innerHTML;
                 }
@@ -518,7 +518,7 @@ namespace StoryScript {
                 var attributes = (<any>n).attributes;
                 var areaName = attributes['name'] && attributes['name'].nodeValue;
                 
-                if (areaName.toLowerCase() === feature.id.toLowerCase()) {
+                if (areaName.toLowerCase() === feature.id) {
                     area = <HTMLAreaElement>n;
                 }
             });
