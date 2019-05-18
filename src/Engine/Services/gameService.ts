@@ -42,6 +42,13 @@ namespace StoryScript {
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
+            var characterSheet = self._rules.getCreateCharacterSheet && self._rules.getCreateCharacterSheet();
+            var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
+
+            if (!hasCreateCharacterSteps && !self._game.character) {
+                self._game.character = <ICharacter>{};
+                locationName = 'Start';
+            }
 
             if (self._game.character && locationName) {
                 self.resume(locationName);
