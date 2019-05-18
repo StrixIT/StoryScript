@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing.Items {
     export function Parchment() {
-        return Item( {
+        return Key( {
             name: 'Old Parchment',
             damage: '0',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,

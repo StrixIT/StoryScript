@@ -74,6 +74,10 @@ namespace StoryScript {
         return item;
     }
 
+    export function Key<T extends IKey>(entity: T): T {
+        return Item(entity);
+    }
+
     export function Quest<T extends IQuest>(entity: T): T {
         var item = CreateObject(entity, 'quest');
         setRuntimeProperties(item, 'quest');

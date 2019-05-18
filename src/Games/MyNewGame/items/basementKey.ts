@@ -1,6 +1,6 @@
 ﻿namespace MyNewGame.Items {
     export function BasementKey() {
-        return Item({
+        return Key({
             name: 'Basement key',
             keepAfterUse: false,
             open: {

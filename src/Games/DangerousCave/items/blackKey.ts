@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Items {
     export function BlackKey() {
-        return Item({
+        return Key({
             name: 'Black key',
             description: 'This black iron key has a gargoyle figurine on it.',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
