@@ -78,6 +78,10 @@ namespace StoryScript {
         return Item(entity);
     }
 
+    export function Feature<T extends IFeature>(entity: T): IFeature {
+        return CompileFeature(entity);
+    }
+
     export function Quest<T extends IQuest>(entity: T): T {
         var item = CreateObject(entity, 'quest');
         setRuntimeProperties(item, 'quest');

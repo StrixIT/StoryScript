@@ -9,7 +9,7 @@ namespace MyAdventureGame.Items {
                     {
                         type: Constants.USE,
                         tool: Items.Herbs,
-                        match: (game, tool, target): string => {
+                        match: (game, target, tool): string => {
                             game.character.items.remove(Items.Water);
                             game.character.items.remove(Items.Herbs);
                             game.character.items.push(Items.HealingPotion);

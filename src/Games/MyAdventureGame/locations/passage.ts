@@ -19,7 +19,7 @@ namespace MyAdventureGame.Locations {
                         combine: [
                             {
                                 type: Constants.LOOKAT,
-                                match: (game, tool, target): string => {
+                                match: (game, target, tool): string => {
                                     if (!game.character.items.get(Items.Flask)) {
                                         game.character.items.push(Items.Flask);
                                         return `Looking at the warrior, you see a flask on his belt.

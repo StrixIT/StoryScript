@@ -9,13 +9,13 @@ namespace MyAdventureGameVisual.Locations {
                         combine: [
                             {
                                 type: Constants.LOOKAT,
-                                match: (game, tool, target): string => {
+                                match: (game, target, tool): string => {
                                     return 'You look at the fountain water. It is very clear and reflects the forest.';
                                 }
                             },
                             {
                                 type: Constants.TOUCH,
-                                match: (game, tool, target): string => {
+                                match: (game, target, tool): string => {
                                     if (!game.currentLocation.features.get('passage')) {
                                         game.currentLocation.features.push(Features.Passage);
                                         return `You walk towards the fountain and touch the fountain water.
@@ -30,7 +30,7 @@ namespace MyAdventureGameVisual.Locations {
                             {
                                 type: Constants.USE,
                                 tool: Items.Flask,
-                                match: (game, tool, target): string => {
+                                match: (game, target, tool): string => {
                                     var flask = game.character.items.get(Items.Flask);
 
                                     if (flask) {

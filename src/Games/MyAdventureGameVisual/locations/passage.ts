@@ -16,7 +16,7 @@ namespace MyAdventureGameVisual.Locations {
                         combine: [
                             {
                                 type: Constants.LOOKAT,
-                                match: (game, tool, target): string => {
+                                match: (game, target, tool): string => {
                                     var feature = game.currentLocation.features.get('woundedwarrior');
 
                                     if (feature) {
@@ -39,7 +39,7 @@ namespace MyAdventureGameVisual.Locations {
                         combine: [
                             {
                                 type: Constants.WALK,
-                                match: (game, tool, target): string => {
+                                match: (game, target, tool): string => {
                                     game.changeLocation(Locations.Start);
                                     return 'You crawl back through the passage...';
                                 }
