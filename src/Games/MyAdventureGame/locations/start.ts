@@ -19,7 +19,7 @@ namespace MyAdventureGame.Locations {
                                     if (game.currentLocation.destinations.length == 0) {
                                         game.currentLocation.destinations.push({
                                             name: 'Crawl though the undergrowth',
-                                            target: Locations.Passage
+                                            target: Locations.Passage.name
                                         });
                                         return `You walk towards the fountain and touch the fountain water.
                                          It is a little cold. When you pull back your hand, you hear a soft

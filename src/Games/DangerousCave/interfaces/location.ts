@@ -15,5 +15,8 @@
         enemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
         activeItems?: StoryScript.ICompiledCollection<IItem, ICompiledItem>;
         items?: StoryScript.ICompiledCollection<IItem, ICompiledItem>;
+        activePersons?: StoryScript.ICompiledCollection<IPerson, ICompiledPerson>;
+        persons?: StoryScript.ICompiledCollection<IPerson, ICompiledPerson>;
+        activePerson: ICompiledPerson;
     }
 }

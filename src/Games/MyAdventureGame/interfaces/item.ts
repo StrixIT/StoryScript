@@ -3,7 +3,10 @@ namespace MyAdventureGame {
         return StoryScript.Item(entity);
     }
 
-    export interface IItem extends StoryScript.IItem {
+    export interface IItem extends IFeature, StoryScript.IItem {
         // Add game-specific item properties here
+    }
+
+    export interface ICompiledItem extends IItem, ICompiledFeature, StoryScript.ICompiledItem {
     }
 }
