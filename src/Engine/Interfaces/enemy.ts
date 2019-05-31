@@ -1,10 +1,10 @@
 ﻿namespace StoryScript {
     /**
-     * Defines an enemy for the game.
+     * Defines the base properties for an enemy in the game.
      */
-    export interface IEnemy extends IFeature {
+    export interface IEnemyBase extends IFeature {
         /**
-         * The details about this enemy as displayed to the player. If you use an HTML-page to describe the enemy, the contents of that HTM-page
+         * The details about this enemy as displayed to the player. If you use an HTML-page to describe the enemy, the contents of that HTML-page
          * will be used to set this property at run-time.
          */
         description?: string;
@@ -26,11 +26,6 @@
         inactive?: boolean;
 
         /**
-         * The items the enemy is carrying.
-         */
-        items?: ICollection<() => IItem>;
-
-        /**
          * When specified, this function will be called when the enemy is attacked by the player.
          * @param game The game object
          */
@@ -41,5 +36,25 @@
          * @param game The game object
          */
         onDefeat?(game: IGame): void;
+    }
+
+    /**
+     * Defines an enemy in the game.
+     */
+    export interface IEnemy extends IEnemyBase {
+        /**
+         * The items the enemy is carrying.
+         */
+        items?: ICollection<() => IItem>;
+    }
+
+    /**
+     * An enemy instance compiled for runtime.
+     */
+    export interface ICompiledEnemy extends IEnemyBase, ICompiledFeature {
+        /**
+         * The items the enemy is carrying.
+         */
+        items?: ICollection<ICompiledItem>;
     }
 }

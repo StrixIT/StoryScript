@@ -3,8 +3,14 @@
         return StoryScript.Enemy(entity);
     }
 
-    export interface IEnemy extends StoryScript.IEnemy {
+    export interface IEnemyBase extends StoryScript.IEnemyBase {
         attack: string;
         reward: number;
+    }
+
+    export interface IEnemy extends IEnemyBase, StoryScript.IEnemy {
+    }
+
+    export interface ICompiledEnemy extends IEnemyBase, ICompiledFeature, StoryScript.ICompiledEnemy {
     }
 }

@@ -29,7 +29,7 @@ namespace StoryScript {
             self._gameService.fight(enemy);
         }
 
-        useItem = (item: IItem): void => {
+        useItem = (item: ICompiledItem): void => {
             var self = this;
             self._gameService.useItem(item);
         }

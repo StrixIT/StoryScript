@@ -3,7 +3,13 @@
         return StoryScript.Enemy(entity);
     }
 
-    export interface IEnemy extends StoryScript.IEnemy {
+    export interface IEnemyBase extends StoryScript.IEnemyBase {
         // Add game-specific enemy properties here
+    }
+
+    export interface IEnemy extends IEnemyBase, StoryScript.IEnemy {
+    }
+
+    export interface ICompiledEnemy extends IEnemyBase, ICompiledFeature, StoryScript.ICompiledEnemy {
     }
 }

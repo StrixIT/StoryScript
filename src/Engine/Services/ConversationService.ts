@@ -338,7 +338,7 @@ namespace StoryScript {
 
                     if (!hasItem) {
                         for (var i in game.character.equipment) {
-                            var slotItem = <IItem>game.character.equipment[i];
+                            var slotItem = <ICompiledItem>game.character.equipment[i];
                             hasItem = slotItem != undefined && slotItem != null && slotItem.id != undefined && slotItem.id.toLowerCase() === value;
                         }
                     }

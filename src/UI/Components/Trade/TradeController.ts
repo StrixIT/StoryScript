@@ -7,7 +7,7 @@ namespace StoryScript {
             self._scope.$on('init', () => self.trade = self._tradeService.initTrade());
         }
 
-        trade: ITrade;
+        trade: ICompiledTrade;
         game: IGame;
         texts: IInterfaceTexts;
 
@@ -16,20 +16,20 @@ namespace StoryScript {
             return self._tradeService.canPay(currency, value);
         }
 
-        actualPrice = (item: IItem, modifier: number | (() => number)): number => {
+        actualPrice = (item: ICompiledItem, modifier: number | (() => number)): number => {
             var self = this;
             return self._tradeService.actualPrice(item, modifier);
         }
 
-        displayPrice = (item: IItem, actualPrice: number): string  => {
+        displayPrice = (item: ICompiledItem, actualPrice: number): string  => {
             var self = this;
             return self._tradeService.displayPrice(item, actualPrice);
         }
-        buy = (item: IItem, trade: ITrade): void => {
+        buy = (item: ICompiledItem, trade: ICompiledTrade): void => {
             var self = this;
             self._tradeService.buy(item, trade);
         }
-        sell = (item: IItem, trade: ITrade): void => {
+        sell = (item: ICompiledItem, trade: ICompiledTrade): void => {
             var self = this;
             self._tradeService.sell(item, trade);
         }

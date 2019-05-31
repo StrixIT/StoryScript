@@ -87,7 +87,7 @@
                 /**
                  * The currently selected tool of the combination.
                  */
-                selectedTool: ICombinable;
+                selectedTool: ICompiledCombinable;
 
                 /**
                  * The text displayed to the player for the current combine status.
@@ -100,13 +100,13 @@
              * @param tool The tool of the combination. Pass this in to get the class name for the tool element. Pass nothing to
              * get the class name for the tool button bar.
              */
-            getCombineClass(tool: ICombinable): void,
+            getCombineClass(tool: ICompiledCombinable): void,
 
             /**
              * Try the combination the player has created.
              * @param target The target of the combination
              */
-            tryCombine(target: ICombinable): boolean;
+            tryCombine(target: ICompiledCombinable): boolean;
         }
 
         /**

@@ -19,7 +19,7 @@ namespace StoryScript {
             return self._game.currentLocation && self._game.currentLocation.activePersons && self._game.currentLocation.activePersons.length > 0;
         }
 
-        getCombineClass = (item: IItem) => {
+        getCombineClass = (item: ICompiledItem) => {
             var self = this;
             return self._game.combinations.getCombineClass(item);
         }
@@ -35,7 +35,7 @@ namespace StoryScript {
             self._game.state = GameState.Conversation;
         }
 
-        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ITrade) => {
+        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ICompiledTrade) => {
             var self = this;
             return self._sharedMethodService.trade(self._game, actionIndex, trade);
         }

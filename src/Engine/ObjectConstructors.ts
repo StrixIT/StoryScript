@@ -89,11 +89,11 @@ namespace StoryScript {
     }
 
     export function CompileFeature(feature: string | (() => IFeature) | IFeature): IFeature {
-        var compiledFeature = <IFeature>feature;
+        var compiledFeature = <ICompiledFeature>feature;
         
         // Compile stand-alone features that are still functions.
         if (typeof feature === 'function') {
-            compiledFeature = (<() => IFeature>feature)();
+            compiledFeature = <ICompiledFeature>(<() => IFeature>feature)();
         }
 
         compiledFeature.id = compiledFeature.name.toLowerCase().replace(/\s/g,'');

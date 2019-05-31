@@ -3,7 +3,17 @@
         return StoryScript.Location(entity);
     }
 
-    export interface ILocation extends StoryScript.ILocation {
+    export interface ILocationBase extends StoryScript.ILocationBase {
         // Add game-specific location properties here
+    }
+
+    export interface ILocation extends ILocationBase, StoryScript.ILocation {
+    }
+
+    export interface ICompiledLocation extends ILocationBase, StoryScript.ICompiledLocation {
+        activeEnemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
+        enemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
+        activeItems?: StoryScript.ICompiledCollection<IItem, ICompiledItem>;
+        items?: StoryScript.ICompiledCollection<IItem, ICompiledItem>;
     }
 }

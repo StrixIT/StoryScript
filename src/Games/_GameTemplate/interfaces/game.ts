@@ -1,5 +1,5 @@
 ﻿namespace GameTemplate {
-    //Your game-specific game interface.
+    // Your game-specific game interface.
     export interface IGame extends StoryScript.IGame {
         character: Character;
         locations: StoryScript.ICompiledCollection<ILocation, ICompiledLocation>;

@@ -110,7 +110,7 @@ namespace StoryScript {
                         (<any>destination).isPreviousLocation = true;
                     }
 
-                    addKeyAction(game, destination);
+                    addKeyAction(game, <IDestination><unknown>destination);
                 });
 
                 game.currentLocation.destinations.forEach(destination => {
@@ -248,7 +248,7 @@ namespace StoryScript {
 
             if (location.destinations) {
                 location.destinations.forEach(destination => {
-                    setDestination(destination);
+                    setDestination(<IDestination><unknown>destination);
                 });
             }
         }
@@ -455,7 +455,7 @@ namespace StoryScript {
                 destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
             }
 
-            var barrierKey = <IKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
+            var barrierKey = <ICompiledKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
 
             if (barrierKey) {
                 destination.barrier.actions.push(barrierKey.open);
@@ -509,7 +509,7 @@ namespace StoryScript {
         return mapElement;
     }
 
-    function findImageMapArea(feature: IFeature) {
+    function findImageMapArea(feature: ICompiledFeature) {
         var area = <HTMLAreaElement>null;
         var map = findImageMap(feature);
 

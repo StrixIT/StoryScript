@@ -20,7 +20,7 @@
             };
         }
 
-        public createCharacter(game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter {
+        createCharacter = (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
             var self = this;
             var character = new Character();
             return character;

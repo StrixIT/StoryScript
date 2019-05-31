@@ -105,7 +105,7 @@
          * @param character The player character
          * @param item The item about to be equipped
          */
-        beforeEquip?(game: IGame, character: ICharacter, item: IItem): boolean;
+        beforeEquip?(game: IGame, character: ICharacter, item: ICompiledItem): boolean;
 
         /**
          * Specify this function if you want to apply custom rules before allowing a player to unequip an item. If the player
@@ -114,7 +114,7 @@
          * @param character The player character
          * @param item The item about to be unequipped
          */
-        beforeUnequip?(game: IGame, character: ICharacter, item: IItem): boolean;
+        beforeUnequip?(game: IGame, character: ICharacter, item: ICompiledItem): boolean;
 
         /**
          * Specify this function if you want to run custom logic to set the description selector when selecting the description when

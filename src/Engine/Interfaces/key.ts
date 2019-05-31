@@ -14,4 +14,8 @@
          */
         open: IBarrierAction;
     }
+
+    export interface ICompiledKey extends IKey, ICompiledItem {
+        
+    }
 }

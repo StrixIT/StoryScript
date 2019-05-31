@@ -30,4 +30,8 @@
          */
         picture?: string;
     }
+
+    export interface ICompiledFeature extends IFeature, ICompiledCombinable { 
+        
+    }
 }

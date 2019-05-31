@@ -3,7 +3,13 @@
         return StoryScript.Person(entity);
     }
 
-    export interface IPerson extends StoryScript.IPerson {
+    export interface IPersonBase extends StoryScript.IPersonBase {
         // Add game-specific person properties here
+    }
+
+    export interface IPerson extends IPersonBase, StoryScript.IPerson {
+    }
+
+    export interface ICompiledPerson extends IPersonBase, ICompiledEnemy, StoryScript.ICompiledPerson {
     }
 }

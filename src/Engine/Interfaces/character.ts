@@ -37,18 +37,18 @@
         /**
          * All items the player is carrying in his backpack. Note that equipped items are not in this list.
          */
-        items: ICollection<StoryScript.IItem>;
+        items: ICompiledCollection<IItem, ICompiledItem>;
 
         /**
          * All items the character has that can be used during combat.
          */
         // Todo: is this used?
-        combatItems?: ICollection<StoryScript.IItem>;
+        combatItems?: ICompiledCollection<IItem, ICompiledItem>;
 
         /**
          * All the quests the player has accepted, both active and complete.
          */
-        quests?: ICollection<StoryScript.IQuest>;
+        quests?: ICollection<IQuest>;
 
         /**
          * The items the character has equipped.

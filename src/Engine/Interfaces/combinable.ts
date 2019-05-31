@@ -4,11 +4,6 @@ namespace StoryScript {
      */
     export interface ICombinable {
         /**
-         * The id of the object, set at run-time.
-         */
-        id?: string;
-
-        /**
          * The name of the object.
          */
         name: string;
@@ -17,5 +12,15 @@ namespace StoryScript {
          * The combinations this object type can participate in.
          */
         combinations?: ICombinations<() => ICombinable>;
+    }
+
+        /**
+     * Defines an object that can participate in combinations.
+     */
+    export interface ICompiledCombinable extends ICombinable {
+        /**
+         * The id of the object.
+         */
+        id: string;
     }
 }

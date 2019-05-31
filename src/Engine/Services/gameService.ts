@@ -12,11 +12,11 @@
         getDescription(type: string, entity: any, key: string): string;
         initCombat(): void;
         fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
-        useItem(item: IItem): void;
-        executeBarrierAction(destination: IDestination, barrier: IBarrier): void;
+        useItem(item: ICompiledItem): void;
+        executeBarrierAction(destination: IDestination, barrier: ICompiledBarrier): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
-        changeGameState(state: StoryScript.GameState): void;
+        changeGameState(state: GameState): void;
         dynamicLocations(): boolean;
     }
 }
@@ -219,12 +219,12 @@ namespace StoryScript {
             self.saveGame();
         }
 
-        useItem = (item: IItem): void => {
+        useItem = (item: ICompiledItem): void => {
             var self = this;
             item.use(self._game, item);
         }
 
-        executeBarrierAction = (destination: IDestination, barrier: IBarrier): void => {
+        executeBarrierAction = (destination: IDestination, barrier: ICompiledBarrier): void => {
             var self = this;
 
             // Todo: improve, use selected action as object.
@@ -232,7 +232,7 @@ namespace StoryScript {
                 return;
             }
 
-            var action = barrier.actions.filter((item: IBarrier) => { return item.name == barrier.selectedAction.name; })[0];
+            var action = barrier.actions.filter((item: IBarrierAction) => { return item.name == barrier.selectedAction.name; })[0];
             action.action(self._game, destination, barrier, action);
             barrier.actions.remove(action);
 
@@ -265,7 +265,7 @@ namespace StoryScript {
             }
         }
 
-        changeGameState = (state: StoryScript.GameState) => {
+        changeGameState = (state: GameState) => {
             var self = this;
 
             if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
@@ -307,7 +307,7 @@ namespace StoryScript {
             var self = this;
 
             if (enemy.items) {
-                enemy.items.forEach((item: IItem) => {
+                enemy.items.forEach((item: ICompiledItem) => {
                     self._game.currentLocation.items.push(item);
                 });
 
@@ -528,7 +528,7 @@ namespace StoryScript {
         }
 
         private processCodeFeatures(location: ICompiledLocation, description: string): string {
-            if (location.features.length > 0) {
+            if (location.features && location.features.length > 0) {
                 var parser = new DOMParser();
                 var htmlDoc = parser.parseFromString(description, 'text/html');
 
