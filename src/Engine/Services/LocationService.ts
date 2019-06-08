@@ -237,7 +237,7 @@ namespace StoryScript {
 
             for (var n in locations) {
                 var definition = locations[n];
-                var location = <any>definitionToObject(definition);
+                var location = <ICompiledLocation>definition();
                 self.setDestinations(location);
                 compiledLocations.push(location);
             }

@@ -1,4 +1,12 @@
 ﻿namespace StoryScript {
+    export function GetPlural(name: string): string {
+        return name.endsWith('y') ? 
+                name.substring(0, name.length - 1) + 'ies' 
+                : name.endsWith('s') ? 
+                    name 
+                    : name + 's';;
+    }
+
     export function isEmpty(object: any, property?: string) {
         var objectToCheck = property ? object[property] : object;
         return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
@@ -80,7 +88,7 @@
             return (<any>definition).name === selector;
         });
 
-        return match[0] ? definitionToObject(match[0]) : null;
+        return match[0] ? match[0]() : null;
     }
 
     export function custom<T>(definition: () => T, customData: {}): () => T {
@@ -109,7 +117,7 @@
 
         if (typeof collection[0] === 'function') {
             (<[() => T]>collection).forEach((def: () => T) => {
-                collectionToFilter.push(definitionToObject(def));
+                collectionToFilter.push(def());
             });
         }
         else {

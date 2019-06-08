@@ -289,7 +289,8 @@ namespace StoryScript {
 
             if (value.indexOf('function#') > -1) {
                 var parts = self.GetFunctionIdParts(value);
-                var typeList = self.functionList[parts.type];
+                var type = GetPlural(parts.type);
+                var typeList = self.functionList[type];
 
                 if (!typeList[parts.functionId]) {
                     console.log('Function with key: ' + parts.functionId + ' could not be found!');
@@ -334,7 +335,7 @@ namespace StoryScript {
 
                 for (var j in definitions) {
                     var definition = <() => {}>definitions[j];
-                    self.getFunctions(type, definitionKeys, definitionToObject(definition), null);
+                    self.getFunctions(type, definitionKeys, type === 'actions' ? definition : definition(), null);
                 }
 
                 index++;

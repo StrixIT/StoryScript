@@ -1,12 +1,27 @@
 namespace StoryScript {
-    export function definitionToObject<T>(definition: () => T): T {
+    function CreateObject<T>(entity: T, type: string)
+    {
         var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
-        var instance = definition();
-        (<any>instance).id = definition.name;
-        var type = (<any>instance).type;
-        type = type === 'enemy' ? 'enemies' : type + 's';
-        addFunctionIds(instance, type, getDefinitionKeys(definitions));
-        return instance;
+        var error = new Error();
+        var stack = error.stack.split('\n');
+
+        // Skip the stack lines Error, at CreateObject and the first at {type}, e.g. at Item.
+        for (var i = 3; i < stack.length; i++) {
+            var line = stack[i];
+            var functionName = line.trim().split(' ')[1];
+            functionName = functionName.replace('Object.', '');
+            
+            if (['Location', 'Item', 'Key', 'Enemy', 'Person'].indexOf(functionName) < 0) {
+                (<any>entity).id = functionName;
+                break;
+            }
+        }
+
+        addFunctionIds(entity, type, getDefinitionKeys(definitions));
+
+        // Add the type to the object so we can distinguish between them in the combine functionality.
+        (<any>entity).type = GetPlural(type);
+        return entity;
     }
 
     export function Location<T extends ILocation>(entity: T): T {
@@ -139,15 +154,6 @@ namespace StoryScript {
         }
 
         return path;
-    }
-
-    function CreateObject<T>(entity: T, type: string)
-    {
-        var error = new Error();
-
-        // Add the type to the object so we can distinguish between them in the combine functionality.
-        (<any>entity).type = type;
-        return entity;
     }
 
     function compileCombinations(entry: ICombinable) {
