@@ -2,7 +2,7 @@
     /**
      * The base properties for barriers that block a player from moving between one world location to the next.
      */
-    export interface IBarrierBase extends ICombinable {
+    export interface IBarrier extends ICombinable {
         /**
          * The actions the player can perform on the barrier (e.g. inspect or open).
          */
@@ -12,26 +12,11 @@
          * The currently selected action for the barrier. Used during run-time only.
          */
         selectedAction?: IBarrierAction;
-    }
 
-    /**
-     * Barriers that block a player from moving between one world location to the next.
-     */
-    export interface IBarrier extends IBarrierBase {
         /**
-         * The key used to remove this barrier. This is an item implementing the IKey interface.
+         * The key to use to remove this barrier.
          */
-        key?: () => IKey;
-    }
-
-    /**
-     * Barriers that block a player from moving between one world location to the next, compiled for runtime.
-     */
-    export interface ICompiledBarrier extends IBarrierBase, ICompiledCombinable {
-        /**
-         * The key used to remove this barrier. This is an item implementing the IKey interface.
-         */
-        key?: ICompiledKey;
+        key?: IKey | (() => IKey);
     }
 
     /**

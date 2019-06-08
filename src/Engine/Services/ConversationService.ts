@@ -77,7 +77,7 @@ namespace StoryScript {
             return null;
         }
 
-        private loadConversationHtml(person: ICompiledPerson): Document {
+        private loadConversationHtml(person: IPerson): Document {
             var self = this;
             var conversations = self._dataService.loadDescription('persons', person);
             var parser = new DOMParser();
@@ -89,7 +89,7 @@ namespace StoryScript {
             return parser.parseFromString(conversations, "text/html");
         }
 
-        private getDefaultReply(htmlDoc: Document, person: ICompiledPerson): string {
+        private getDefaultReply(htmlDoc: Document, person: IPerson): string {
             var defaultReplyNodes = htmlDoc.getElementsByTagName("default-reply");
             var defaultReply: string = null;
 
@@ -103,7 +103,7 @@ namespace StoryScript {
             return defaultReply;
         }
 
-        private processConversationNodes(conversationNodes: HTMLCollectionOf<Element>, person: ICompiledPerson, defaultReply: string) {
+        private processConversationNodes(conversationNodes: HTMLCollectionOf<Element>, person: IPerson, defaultReply: string) {
             var self = this;
 
             for (var i = 0; i < conversationNodes.length; i++) {
@@ -128,7 +128,7 @@ namespace StoryScript {
             }
         }
 
-        private getNewNode(person: ICompiledPerson, node: Element): IConversationNode {
+        private getNewNode(person: IPerson, node: Element): IConversationNode {
             var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
 
             if (!nameAttribute && console) {
@@ -147,7 +147,7 @@ namespace StoryScript {
             };
         }
 
-        private processReplyNodes(person: ICompiledPerson, node: Element, newNode: IConversationNode, defaultReply: string) {
+        private processReplyNodes(person: IPerson, node: Element, newNode: IConversationNode, defaultReply: string) {
             var self = this;
 
             for (var j = 0; j < node.childNodes.length; j++) {
@@ -174,7 +174,7 @@ namespace StoryScript {
             }
         }
 
-        private buildReplies(person: ICompiledPerson, newNode: IConversationNode, replies: ChildNode) {
+        private buildReplies(person: IPerson, newNode: IConversationNode, replies: ChildNode) {
             var self = this;
 
             for (var k = 0; k < replies.childNodes.length; k++) {
@@ -207,7 +207,7 @@ namespace StoryScript {
             }
         }
 
-        private checkNodes(person: ICompiledPerson) {
+        private checkNodes(person: IPerson) {
             person.conversation.nodes.forEach(n => {
                 if (n.replies && n.replies.options)
                 {
@@ -228,7 +228,7 @@ namespace StoryScript {
             return (<any>node).attributes[attribute] && (<any>node).attributes[attribute].value
         }
 
-        private getActiveNode(person: ICompiledPerson): IConversationNode {
+        private getActiveNode(person: IPerson): IConversationNode {
             var self = this;
 
             if (!person || !person.conversation) {
@@ -256,7 +256,7 @@ namespace StoryScript {
             return activeNode;
         }
 
-        private initReplies(person: ICompiledPerson): void {
+        private initReplies(person: IPerson): void {
             var self = this;
             var activeNode = person.conversation.activeNode;
 
@@ -277,7 +277,7 @@ namespace StoryScript {
             }
         }
 
-        private processReply(person: ICompiledPerson, reply: IConversationReply) {
+        private processReply(person: IPerson, reply: IConversationReply) {
             var self = this;
 
             if (reply.trigger) {
@@ -338,7 +338,7 @@ namespace StoryScript {
 
                     if (!hasItem) {
                         for (var i in game.character.equipment) {
-                            var slotItem = <ICompiledItem>game.character.equipment[i];
+                            var slotItem = <IItem>game.character.equipment[i];
                             hasItem = slotItem != undefined && slotItem != null && slotItem.id != undefined && slotItem.id.toLowerCase() === value;
                         }
                     }
@@ -392,7 +392,7 @@ namespace StoryScript {
             }
         }
 
-        private questProgress(type: string, person: ICompiledPerson, reply: IConversationReply) {
+        private questProgress(type: string, person: IPerson, reply: IConversationReply) {
             var self = this;
             var quest: IQuest;
             var start = type === "questStart";

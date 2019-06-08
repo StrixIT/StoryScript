@@ -11,9 +11,9 @@
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         getDescription(type: string, entity: any, key: string): string;
         initCombat(): void;
-        fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
-        useItem(item: ICompiledItem): void;
-        executeBarrierAction(destination: IDestination, barrier: ICompiledBarrier): void;
+        fight(enemy: IEnemy, retaliate?: boolean): void;
+        useItem(item: IItem): void;
+        executeBarrierAction(destination: IDestination, barrier: IBarrier): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
@@ -198,7 +198,7 @@ namespace StoryScript {
             });
         }
 
-        fight = (enemy: ICompiledEnemy, retaliate?: boolean) => {
+        fight = (enemy: IEnemy, retaliate?: boolean) => {
             var self = this;
 
             if (!self._rules || !self._rules.fight)
@@ -219,12 +219,12 @@ namespace StoryScript {
             self.saveGame();
         }
 
-        useItem = (item: ICompiledItem): void => {
+        useItem = (item: IItem): void => {
             var self = this;
             item.use(self._game, item);
         }
 
-        executeBarrierAction = (destination: IDestination, barrier: ICompiledBarrier): void => {
+        executeBarrierAction = (destination: IDestination, barrier: IBarrier): void => {
             var self = this;
 
             // Todo: improve, use selected action as object.
@@ -303,11 +303,11 @@ namespace StoryScript {
             self._game.state = StoryScript.GameState.Play;
         }
 
-        private enemyDefeated(enemy: ICompiledEnemy) {
+        private enemyDefeated(enemy: IEnemy) {
             var self = this;
 
             if (enemy.items) {
-                enemy.items.forEach((item: ICompiledItem) => {
+                enemy.items.forEach((item: IItem) => {
                     self._game.currentLocation.items.push(item);
                 });
 
@@ -396,8 +396,6 @@ namespace StoryScript {
 
             createReadOnlyCollection(self._game.character, 'items', isEmpty(self._game.character.items) ? [] : <any>self._game.character.items);
             createReadOnlyCollection(self._game.character, 'quests', isEmpty(self._game.character.quests) ? [] : <any>self._game.character.quests);
-
-            addProxy(self._game.character, 'item');
 
             Object.defineProperty(self._game.character, 'combatItems', {
                 get: function () {

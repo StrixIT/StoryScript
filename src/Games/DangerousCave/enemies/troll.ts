@@ -6,7 +6,7 @@
             attack: '2d6',
             reward: 2,
             items: [
-                Items.HealingPotion
+                Items.HealingPotion()
             ]
         });
     }

@@ -1,15 +1,15 @@
 ﻿namespace StoryScript {
     export interface ILocationService {
         init(game: IGame, buildWorld?: boolean): void;
-        saveWorld(locations: ICompiledCollection<ILocation, ICompiledLocation>): void;
-        copyWorld(): ICompiledCollection<ILocation, ICompiledLocation>;
+        saveWorld(locations: ICollection<ICompiledLocation>): void;
+        copyWorld(): ICollection<ICompiledLocation>;
         changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame): void;
     }
 }
 
 namespace StoryScript {
     export class LocationService implements ILocationService {
-        private pristineLocations: ICompiledCollection<ILocation, ICompiledLocation>;
+        private pristineLocations: ICollection<ICompiledLocation>;
         private dynamicLocations: boolean = false;
 
         constructor(private _dataService: IDataService, private _conversationService: IConversationService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
@@ -24,12 +24,12 @@ namespace StoryScript {
             game.definitions.dynamicLocations = self.dynamicLocations;
         }
 
-        saveWorld = (locations: ICompiledCollection<ILocation, ICompiledLocation>) => {
+        saveWorld = (locations: ICollection<ICompiledLocation>) => {
             var self = this;
             self._dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
-        copyWorld = (): ICompiledCollection<ILocation, ICompiledLocation> => {
+        copyWorld = (): ICollection<ICompiledLocation> => {
             var self = this;
             return self._dataService.copy(self._game.locations, self.pristineLocations);
         }
@@ -148,7 +148,7 @@ namespace StoryScript {
             }
         }
 
-        private loadWorld(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
+        private loadWorld(buildWorld: boolean): ICollection<ICompiledLocation> {
             var self = this;
 
             const locations = self.getLocations(buildWorld);
@@ -164,17 +164,17 @@ namespace StoryScript {
             return locations;
         }
 
-        private getLocations(buildWorld: boolean): ICompiledCollection<ILocation, ICompiledLocation> {
+        private getLocations(buildWorld: boolean): ICollection<ICompiledLocation> {
             var self = this;
-            var locations: ICompiledCollection<ILocation, ICompiledLocation> = null;
+            var locations: ICollection<ICompiledLocation> = null;
 
             if (buildWorld) {
                 self.pristineLocations = self.buildWorld();
-                locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+                locations = <ICollection<ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
 
                 if (isEmpty(locations)) {
                     self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                    locations = <ICompiledCollection<ILocation, ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
+                    locations = <ICollection<ICompiledLocation>>self._dataService.load(DataKeys.WORLD);
                 }
             }
             else {
@@ -455,7 +455,7 @@ namespace StoryScript {
                 destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
             }
 
-            var barrierKey = <ICompiledKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
+            var barrierKey = <IKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
 
             if (barrierKey) {
                 destination.barrier.actions.push(barrierKey.open);
@@ -476,10 +476,6 @@ namespace StoryScript {
         if (destination.barrier) {
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                 destination.barrier.selectedAction = destination.barrier.actions[0];
-            }
-
-            if (destination.barrier.key) {
-                (<any>destination.barrier).key = definitionToObject(destination.barrier.key);
             }
 
             if (destination.barrier.combinations && destination.barrier.combinations.combine) {
@@ -509,7 +505,7 @@ namespace StoryScript {
         return mapElement;
     }
 
-    function findImageMapArea(feature: ICompiledFeature) {
+    function findImageMapArea(feature: IFeature) {
         var area = <HTMLAreaElement>null;
         var map = findImageMap(feature);
 

@@ -43,10 +43,10 @@
                 }),
                 Actions.Search({
                     difficulty: 10,
-                    success: (game) => {
+                    success: (game: IGame) => {
                         game.logToLocationLog('Je tast de deur, vloer en muren af. Hoog aan de rechtermuur vind je aan een haakje een grote sleutel!')
                     },
-                    fail: (game) => {
+                    fail: (game: IGame) => {
                         game.logToLocationLog('Je tast de deur, vloer en muren af. Stenen, hout en gruis. Je vindt niets nuttigs.');
                     }
                 })

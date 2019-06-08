@@ -1,16 +1,10 @@
 ﻿namespace DangerousCave {
-    export function Enemy<T extends IEnemy>(entity: T): T {
+    export function Enemy(entity: IEnemy): IEnemy {
         return StoryScript.Enemy(entity);
     }
 
-    export interface IEnemyBase extends StoryScript.IEnemyBase {
+    export interface IEnemy extends StoryScript.IEnemy {
         attack: string;
         reward: number;
-    }
-
-    export interface IEnemy extends IEnemyBase, StoryScript.IEnemy {
-    }
-
-    export interface ICompiledEnemy extends IEnemyBase, ICompiledFeature, StoryScript.ICompiledEnemy {
     }
 }

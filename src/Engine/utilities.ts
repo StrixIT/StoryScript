@@ -31,7 +31,7 @@
         return definitionKeys;
     }
 
-    export function random<T, U>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): U {
+    export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
         var collection = definitions[type];
 
         if (!collection) {
@@ -45,7 +45,7 @@
         }
 
         var index = Math.floor(Math.random() * selection.length);
-        return <U><unknown>selection[index];
+        return selection[index];
     }
 
     export function randomList<T>(collection: T[] | ([() => T]), count: number, type: string, definitions: IDefinitions, selector?: (item: T) => boolean): ICollection<T> {
@@ -69,80 +69,18 @@
         return results;
     }
 
-    export function find<T, U>(selector: string | (() => T) | ((item: T) => boolean), type: string, definitions: IDefinitions): U {
+    export function find<T>(selector: string, type: string, definitions: IDefinitions): T {
         var collection = definitions[type];
 
         if (!collection && !selector) {
             return null;
         }
 
-        // Are we working with a definition collection?
-        if (typeof collection[0] === 'function') {
+        var match = (<[() => T]>collection).filter((definition: () => T) => {
+            return (<any>definition).name === selector;
+        });
 
-            // If so, is the selector a string value or a named function?
-            if (typeof selector === 'string' || ((<any>selector).name)) {
-
-                // Then, use the string or function name to get the definition.
-                if ((<any>selector).name) {
-                    selector = <string>(<any>selector).name;
-                }
-
-                var match = (<[() => T]>collection).filter((definition: () => T) => {
-                    return (<any>definition).name === <string>selector;
-                });
-
-                return match[0] ? <U><unknown>definitionToObject(match[0]) : null;
-            }
-        }
-
-        var results = getFilteredInstantiatedCollection<T>(collection, type, definitions, <(item: T) => boolean>selector);
-
-        if (results.length > 1) {
-            throw new Error('Collection contains more than one match!');
-        }
-
-        return results[0] ? <U><unknown>results[0] : null;
-    }
-
-    export function addProxy(entry: any, collectionType: string) {
-        var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
-
-        if (collectionType === 'enemy') {
-            entry.enemies.push = entry.enemies.push.proxy(function (push: Function, selector: string | (() => IEnemy)) {
-                var enemy: ICompiledEnemy = null;
-
-                if (typeof selector !== 'object') {
-                    enemy = find(selector, 'enemies', definitions);
-                }
-                else {
-                    enemy = selector;
-                }
-
-                push.call(this, enemy);
-            });
-        }
-        
-        if (collectionType === 'item') {
-            entry.items.push = entry.items.push.proxy(function (push: Function, selector: string | (() => IItem)) {
-                var item: IItem = null;
-
-                if (typeof selector !== 'object') {
-                    item = find(selector, 'items', definitions);
-                }
-                else {
-                    item = selector;
-                }
-
-                push.call(this, item);
-            });
-        }
-
-        if (collectionType == 'feature') {
-            entry.features.push = entry.features.push.proxy(function (push: Function, selector: string | (() => IFeature)) {
-                var feature = CompileFeature(selector);
-                push.call(this, feature);
-            });
-        }
+        return match[0] ? definitionToObject(match[0]) : null;
     }
 
     export function custom<T>(definition: () => T, customData: {}): () => T {

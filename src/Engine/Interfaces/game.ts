@@ -36,7 +36,7 @@
         /**
          * All the locations in the game world.
          */
-        locations: ICompiledCollection<ILocation, ICompiledLocation>;
+        locations: ICollection<ICompiledLocation>;
 
         /**
          * The location in the game world the player is currently at.
@@ -87,7 +87,7 @@
                 /**
                  * The currently selected tool of the combination.
                  */
-                selectedTool: ICompiledCombinable;
+                selectedTool: ICombinable;
 
                 /**
                  * The text displayed to the player for the current combine status.
@@ -100,13 +100,13 @@
              * @param tool The tool of the combination. Pass this in to get the class name for the tool element. Pass nothing to
              * get the class name for the tool button bar.
              */
-            getCombineClass(tool: ICompiledCombinable): void,
+            getCombineClass(tool: ICombinable): void,
 
             /**
              * Try the combination the player has created.
              * @param target The target of the combination
              */
-            tryCombine(target: ICompiledCombinable): boolean;
+            tryCombine(target: ICombinable): boolean;
         }
 
         /**
@@ -154,6 +154,6 @@
          * @param enemy The enemy to attack
          * @param boolean True if the enemy can retaliate (default), false otherwise
          */
-        fight(enemy: ICompiledEnemy, retaliate?: boolean): void;
+        fight(enemy: IEnemy, retaliate?: boolean): void;
     }
 }

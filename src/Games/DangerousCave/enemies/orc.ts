@@ -6,7 +6,7 @@
             attack: '2d4+1',
             reward: 1,
             items: [
-                Items.IronHelmet
+                Items.IronHelmet()
             ]
         });
     }

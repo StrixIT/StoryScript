@@ -3,10 +3,10 @@
         return Location({
             name: 'De kamer van de ork',
             enemies: [
-                Enemies.Orc
+                Enemies.Orc()
             ],
             items: [
-                Items.BlackKey
+                Items.BlackKey()
             ],
             destinations: [
                 {
@@ -21,7 +21,7 @@
                             },
                             {
                                 name: 'Open de deur',
-                                action: StoryScript.Actions.Open((game: IGame, destination: StoryScript.ICompiledDestination) => {
+                                action: StoryScript.Actions.Open((game: IGame, destination: StoryScript.IDestination) => {
                                     game.logToLocationLog('Je opent de eikenhouten deur.');
                                     destination.name = 'Gang (noord)';
                                 })

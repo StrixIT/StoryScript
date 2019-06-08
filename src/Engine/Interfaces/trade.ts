@@ -2,7 +2,7 @@
     /**
      * The base properties to configure a trader of or a container for items in the game.
      */
-    export interface ITradeBase {
+    export interface ITrade {
         /**
          * The title as shown to the player in the trade dialog.
          */
@@ -32,28 +32,23 @@
          * @param game The game object
          * @param trade The trader for which to refresh the item lists
          */
-        initCollection?(game: IGame, trade: ICompiledTrade): boolean;
+        initCollection?(game: IGame, trade: ITrade): boolean;
 
         /**
          * This function is executed when the player has bought an item from the trader.
          * @param game The game object
          * @param item The item bought
          */
-        onBuy?(game: IGame, item: ICompiledItem): void;
+        onBuy?(game: IGame, item: IItem): void;
 
         /**
          * This function is executed when the player has sold an item to the trader.
          * @param game The game object
          * @param item The item sold
          */
-        onSell?(game: IGame, item: ICompiledItem): void;
-    }
+        onSell?(game: IGame, item: IItem): void;
 
-    /**
-     * The options to configure a trader of or a container for items in the game.
-     */
-    export interface ITrade extends ITradeBase {
-        /**
+                /**
          * The collection of items the trader will buy or that can be put in the store.
          */
         sell?: IStock;
@@ -65,24 +60,9 @@
     }
 
     /**
-     * The options to configure a trader of or a container for items in the game.
-     */
-    export interface ICompiledTrade extends ITradeBase {
-        /**
-         * The collection of items the trader will buy or that can be put in the store.
-         */
-        sell?: ICompiledStock;
-
-        /**
-         * The collection of items the trader has to offer or that can be taken from the store.
-         */
-        buy?: ICompiledStock;
-    }
-
-    /**
      * The base properties to configure a collection of items available to buy or sell.
      */
-    export interface IStockBase {
+    export interface IStock {
         /**
          * The text for buying or selling the items as shown to the player.
          */
@@ -105,25 +85,16 @@
          * @param game The game object
          * @param item The item considered for selection.
          */
-        itemSelector?(game: IGame, item: ICompiledItem): boolean;
+        itemSelector?(game: IGame, item: IItem): boolean;
 
         /**
          * The maximum number of items to select for buying or selling using the item selector.
          */
         maxItems?: number;
-    }
 
-    export interface IStock extends IStockBase {
         /**
          * The items available for buying or selling.
          */
-        items?: ICollection<() => IItem>;
-    }
-
-    export interface ICompiledStock extends IStockBase {
-        /**
-         * The items available for buying or selling.
-         */
-        items?: ICollection<ICompiledItem>;
+        items?: ICollection<IItem>;
     }
 }

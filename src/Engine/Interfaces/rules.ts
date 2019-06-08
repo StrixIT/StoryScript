@@ -68,14 +68,14 @@
          * @param enemy The enemy being attacked
          * @param retaliate True if the enemies present can fight back, false or undefined otherwise
          */
-        fight?(game: IGame, enemy: ICompiledEnemy, retaliate?: boolean): void;
+        fight?(game: IGame, enemy: IEnemy, retaliate?: boolean): void;
 
         /**
          * This function will be called when an enemy is defeated.
          * @param game The active game
          * @param enemy The enemy just defeated
          */
-        enemyDefeated?(game: IGame, enemy: ICompiledEnemy): void;
+        enemyDefeated?(game: IGame, enemy: IEnemy): void;
 
         /**
          * Specify this function if you want to do something special when the player's health changes.
@@ -105,7 +105,7 @@
          * @param character The player character
          * @param item The item about to be equipped
          */
-        beforeEquip?(game: IGame, character: ICharacter, item: ICompiledItem): boolean;
+        beforeEquip?(game: IGame, character: ICharacter, item: IItem): boolean;
 
         /**
          * Specify this function if you want to apply custom rules before allowing a player to unequip an item. If the player
@@ -114,7 +114,7 @@
          * @param character The player character
          * @param item The item about to be unequipped
          */
-        beforeUnequip?(game: IGame, character: ICharacter, item: ICompiledItem): boolean;
+        beforeUnequip?(game: IGame, character: ICharacter, item: IItem): boolean;
 
         /**
          * Specify this function if you want to run custom logic to set the description selector when selecting the description when

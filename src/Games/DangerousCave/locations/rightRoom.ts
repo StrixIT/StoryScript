@@ -3,7 +3,7 @@
         return Location({
             name: 'Een schemerige gang',
             enemies: [
-                Enemies.GiantBat
+                Enemies.GiantBat()
             ],
             destinations: [
                 {

@@ -3,8 +3,8 @@
         return Location({
             name: 'De slaapkamer van de orks',
             enemies: [
-                Enemies.Orc,
-                Enemies.Goblin
+                Enemies.Orc(),
+                Enemies.Goblin()
             ],
             destinations: [
                 {

@@ -259,6 +259,8 @@ namespace StoryScript {
         private restoreFunctions(loaded) {
             var self = this;
 
+            try
+            {
             for (var key in loaded) {
                 if (!loaded.hasOwnProperty(key)) {
                     continue;
@@ -275,6 +277,10 @@ namespace StoryScript {
                 else if (typeof value === 'string') {
                     self.restoreFunctionFromString(loaded, value, key);
                 }
+            }
+            }
+            catch (ex) {
+                console.log(ex);
             }
         }
 
@@ -347,7 +353,7 @@ namespace StoryScript {
                     continue;
                 }
 
-                if (definitionKeys.indexOf(key) != -1 || key === 'target' || (parentId.indexOf('_barrier') != -1 && key === 'key')) {
+                if (definitionKeys.indexOf(key) != -1 || key === 'target') {
                     continue;
                 }
 

@@ -16,7 +16,7 @@ namespace StoryScript {
             return self._rules.getCombinationActions ? self._rules.getCombinationActions() : [];
         }
 
-        getCombineClass = (tool: ICompiledCombinable): string => {
+        getCombineClass = (tool: ICombinable): string => {
             var self = this;
             let className = '';
 
@@ -30,7 +30,7 @@ namespace StoryScript {
             return className;
         }
 
-        tryCombination = (target: ICompiledCombinable): boolean | string => {
+        tryCombination = (target: ICombinable): boolean | string => {
             var self = this;
             var combo = self._game.combinations.activeCombination;
 
@@ -50,7 +50,7 @@ namespace StoryScript {
             return self.performCombination(target);
         }
 
-        private performCombination(target: ICompiledCombinable): string {
+        private performCombination(target: ICombinable): string {
             var self = this;
             var combo = self._game.combinations.activeCombination;
             var tool = combo.selectedTool;

@@ -13,37 +13,25 @@
          * @param person The player character or the person to calculate the bonus for.
          * @param type The player attribute to get the bonus for (e.g. attack)
          */
-        calculateBonus(person: { items?: ICompiledCollection<IItem, ICompiledItem>, equipment?: {} }, type: string): number;
+        calculateBonus(person: { items?: ICollection<IItem>, equipment?: {} }, type: string): number;
 
         /**
          * Get a random enemy to add to the game.
          * @param selector A selector function to limit the list of enemies that can be returned at random (for example a function that excludes ghosts)
          */
-        randomEnemy(selector?: (enemy: IEnemy) => boolean): ICompiledEnemy;
+        randomEnemy(selector?: (enemy: IEnemy) => boolean): IEnemy;
 
         /**
          * Get a random item to add to the game.
          * @param selector A selector function to limit the list of items that can be returned at random (for example a function that excludes magic items)
          */
-        randomItem(selector?: (enemy: ICompiledItem) => boolean): ICompiledItem;
-
-        /**
-         * Gets a specific type of enemy to add to the game.
-         * @param selector The type of the enemy to add, as a string or a function name (e.g. 'Orc' or MyNewGame.Orc)
-         */
-        getEnemy(selector: string | (() => IEnemy)): ICompiledEnemy;
+        randomItem(selector?: (enemy: IItem) => boolean): IItem;
 
         /**
          * Gets a specific type of item to add to the game.
          * @param selector The type of the item to add, as a string or a function name (e.g. 'Dagger' or MyNewGame.Dagger)
          */        
-        getItem(selector: string | (() => IItem)): ICompiledItem;
-
-        /**
-         * Gets a specific (type of) person to add to the game.
-         * @param selector The type of the person to add, as a string or a function name (e.g. 'Friend' or MyNewGame.Friend)
-         */
-        getPerson(selector: string | (() => IPerson)): ICompiledPerson;
+        getItem(selector: string | (() => IItem)): IItem;
     }
 }
 
@@ -52,29 +40,19 @@ namespace StoryScript {
         constructor(private _game: IGame, private _rules: IRules) {
         }
 
-        getEnemy = (selector: string | (() => IEnemy)): ICompiledEnemy => {
+        randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
             var self = this;
-            return find<IEnemy, ICompiledEnemy>(selector, 'enemies', self._game.definitions);
+            return random<IEnemy>('enemies', self._game.definitions, <(enemy: IEnemy) => boolean>selector);
         }
 
-        getItem = (selector: string | (() => IItem)): ICompiledItem => {
+        randomItem = (selector?: string | (() => IItem) | ((item: IItem) => boolean)): IItem => {
             var self = this;
-            return find<IItem, ICompiledItem>(selector, 'items', self._game.definitions);
+            return random<IItem>('items', self._game.definitions, <(item: IItem) => boolean>selector);
         }
-
-        getPerson = (selector: string | (() => IPerson)): ICompiledPerson => {
+     
+        getItem = (selector: string): IItem => {
             var self = this;
-            return find<IPerson, ICompiledPerson>(selector, 'persons', self._game.definitions);
-        }
-
-        randomEnemy = (selector?: (enemy: IEnemy) => boolean): ICompiledEnemy => {
-            var self = this;
-            return random<IEnemy, ICompiledEnemy>('enemies', self._game.definitions, <(enemy: IEnemy) => boolean>selector);
-        }
-
-        randomItem = (selector?: string | (() => IItem) | ((item: ICompiledItem) => boolean)): ICompiledItem => {
-            var self = this;
-            return random<IItem, ICompiledItem>('items', self._game.definitions, <(item: ICompiledItem) => boolean>selector);
+            return find<IItem>(selector, 'items', self._game.definitions);
         }
 
         rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {

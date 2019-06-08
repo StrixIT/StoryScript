@@ -24,7 +24,7 @@ namespace StoryScript {
             return self._sharedMethodService.getButtonClass(action);
         }
 
-        getCombineClass = (barrier: ICompiledBarrier) => {
+        getCombineClass = (barrier: IBarrier) => {
             var self = this;
             return self._game.combinations.getCombineClass(barrier);
         }
@@ -44,7 +44,7 @@ namespace StoryScript {
             self._sharedMethodService.executeAction(action, self);
         }
 
-        executeBarrierAction = (destination: IDestination, barrier: ICompiledBarrier) => {
+        executeBarrierAction = (destination: IDestination, barrier: IBarrier) => {
             var self = this;
 
             if (self._game.combinations.tryCombine(barrier))
@@ -58,7 +58,7 @@ namespace StoryScript {
             self._gameService.executeBarrierAction(destination, barrier);
         }
 
-        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ICompiledTrade) => {
+        trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade) => {
             var self = this;
             return self._sharedMethodService.trade(game, actionIndex, trade);
         }
@@ -71,7 +71,7 @@ namespace StoryScript {
             self._gameService.saveGame();
         }
 
-        pickupItem = (item: ICompiledItem): void => {
+        pickupItem = (item: IItem): void => {
             var self = this;
             var isCombining = self._game.combinations.activeCombination;
 

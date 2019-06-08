@@ -5,7 +5,7 @@ namespace StoryScript
         getButtonClass(action: IAction): string;
         executeAction(action: IAction, controller: ng.IComponentController): void;
         startCombat(): void;
-        trade(game: IGame, actionIndex: number, trade: ICompiledPerson | ICompiledTrade): boolean;
+        trade(game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean;
         showDescription(scope: ng.IScope, type: string, item: any, title: string, ): void;
     }
 
@@ -88,7 +88,7 @@ namespace StoryScript
             self._game.state = GameState.Combat;
         }
 
-        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ICompiledTrade): boolean => {
+        trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean => {
             var self = this;
             self._tradeService.trade(trade);
 

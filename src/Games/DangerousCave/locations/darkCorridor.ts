@@ -3,7 +3,7 @@
         return Location({
             name: 'Een donkere smalle gang',
             enemies: [
-                Enemies.Orc
+                Enemies.Orc()
             ],
             destinations: [
                 {

@@ -22,12 +22,12 @@ namespace StoryScript {
             return Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
         }
 
-        getCombineClass = (item: ICompiledItem) => {
+        getCombineClass = (item: IItem) => {
             var self = this;
             return self._game.combinations.getCombineClass(item);
         }
 
-        tryCombine = (item: ICompiledItem) => {
+        tryCombine = (item: IItem) => {
             var self = this;
             self._game.combinations.tryCombine(item);
         }
@@ -42,17 +42,17 @@ namespace StoryScript {
             self._sharedMethodService.showDescription(self._scope, 'items', item, title);
         }
 
-        canEquip = (item: ICompiledItem): boolean => {
+        canEquip = (item: IItem): boolean => {
             var self = this;
             return self._characterService.canEquip(item);
         }
 
-        equipItem = (item: ICompiledItem): void => {
+        equipItem = (item: IItem): void => {
             var self = this;
             self._characterService.equipItem(item);
         }
 
-        unequipItem = (item: ICompiledItem): void => {
+        unequipItem = (item: IItem): void => {
             var self = this;
             self._characterService.unequipItem(item);
         }
@@ -62,12 +62,12 @@ namespace StoryScript {
             return self._characterService.isSlotUsed(slot);
         }
 
-        useItem = (item: ICompiledItem): void => {
+        useItem = (item: IItem): void => {
             var self = this;
             self._gameService.useItem(item);
         }
 
-        dropItem = (item: ICompiledItem): void => {
+        dropItem = (item: IItem): void => {
             var self = this;
             self._characterService.dropItem(item);
         }

@@ -4,9 +4,9 @@
      * should keep the key after using it, it is removed from his item list.
      * @param callBack 
      */
-    export function OpenWithKey(callBack: (game: IGame, destination: ICompiledDestination) => void) {
-        return function (game: IGame, destination: ICompiledDestination) {
-            var key = destination.barrier.key;
+    export function OpenWithKey(callBack: (game: IGame, destination: IDestination) => void) {
+        return (game: IGame, destination: IDestination) => {
+            var key = <IKey>destination.barrier.key;
 
             if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {
                 // Todo: Cater for the situation that the player dropped the key before activating the open action.

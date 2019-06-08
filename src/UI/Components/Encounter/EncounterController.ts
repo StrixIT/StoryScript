@@ -19,28 +19,28 @@ namespace StoryScript {
             return self._game.currentLocation && self._game.currentLocation.activePersons && self._game.currentLocation.activePersons.length > 0;
         }
 
-        getCombineClass = (item: ICompiledItem) => {
+        getCombineClass = (item: IItem) => {
             var self = this;
             return self._game.combinations.getCombineClass(item);
         }
 
-        tryCombine = (person: ICompiledPerson) => {
+        tryCombine = (person: IPerson) => {
             var self = this;
             self._game.combinations.tryCombine(person);
         }
 
-        talk = (person: ICompiledPerson) => {
+        talk = (person: IPerson) => {
             var self = this;
             self._game.currentLocation.activePerson = person;
             self._game.state = GameState.Conversation;
         }
 
-        trade = (game: IGame, actionIndex: number, trade: ICompiledPerson | ICompiledTrade) => {
+        trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade) => {
             var self = this;
             return self._sharedMethodService.trade(self._game, actionIndex, trade);
         }
 
-        startCombat = (person: ICompiledPerson) => {
+        startCombat = (person: IPerson) => {
             var self = this;
 
             // The person becomes an enemy when attacked!

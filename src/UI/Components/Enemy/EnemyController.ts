@@ -10,12 +10,12 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
-        getCombineClass = (item: ICompiledItem) => {
+        getCombineClass = (item: IItem) => {
             var self = this;
             return self._game.combinations.getCombineClass(item);
         }
 
-        tryCombine = (enemy: ICompiledEnemy) => {
+        tryCombine = (enemy: IEnemy) => {
             var self = this;
             self._game.combinations.tryCombine(enemy);
         }
@@ -30,7 +30,7 @@ namespace StoryScript {
             self._sharedMethodService.showDescription(self._scope, 'enemies', item, title);
         }
 
-        startCombat = (enemy: ICompiledEnemy) => {
+        startCombat = (enemy: IEnemy) => {
             var self = this;
             self._sharedMethodService.startCombat();
         }

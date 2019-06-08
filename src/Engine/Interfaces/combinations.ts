@@ -2,7 +2,7 @@
     /**
      * A list of combinations that can be used on an object.
      */
-    export interface ICombinations<T extends () => ICombinable> {
+    export interface ICombinations<T extends ICombinable> {
         /**
          * The combinations available.
          */
@@ -20,7 +20,7 @@
     /**
      * A combination definition.
      */
-    export interface ICombine<T extends () => ICombinable> {
+    export interface ICombine<T extends ICombinable> {
         /**
          * The tool for this combination.
          */

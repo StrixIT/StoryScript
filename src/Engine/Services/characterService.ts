@@ -7,11 +7,11 @@
         levelUp(game: IGame, characterData: any): ICharacter;
         limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
         distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
-        canEquip(item: ICompiledItem): boolean;
-        equipItem(item: ICompiledItem): void;
-        unequipItem(item: ICompiledItem): void;
+        canEquip(item: IItem): boolean;
+        equipItem(item: IItem): void;
+        unequipItem(item: IItem): void;
         isSlotUsed(slot: string): boolean;
-        dropItem(item: ICompiledItem): void;
+        dropItem(item: IItem): void;
         questStatus(quest: IQuest): string;
     }
 }
@@ -125,7 +125,7 @@ namespace StoryScript {
             return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
         }
 
-        equipItem = (item: ICompiledItem): void => {
+        equipItem = (item: IItem): void => {
             var self = this;
 
             var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
@@ -155,7 +155,7 @@ namespace StoryScript {
             self._game.character.items.remove(item);
         }
 
-        unequipItem = (item: ICompiledItem): void => {
+        unequipItem = (item: IItem): void => {
             var self = this;
             var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
@@ -175,7 +175,7 @@ namespace StoryScript {
             return false;
         }
 
-        dropItem = (item: ICompiledItem): void => {
+        dropItem = (item: IItem): void => {
             var self = this;
             self._game.character.items.remove(item);
             self._game.currentLocation.items.push(item);
@@ -285,7 +285,7 @@ namespace StoryScript {
             }); 
         }
 
-        private unequip(type: string, currentItem?: ICompiledItem) {
+        private unequip(type: string, currentItem?: IItem) {
             var self = this;
             var equippedItem = self._game.character.equipment[type];
 

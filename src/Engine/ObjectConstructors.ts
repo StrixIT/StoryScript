@@ -13,18 +13,18 @@ namespace StoryScript {
         var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
         var location = CreateObject(entity, 'location');
 
+        if (location.destinations) {
+            location.destinations.forEach(d => {
+                if (d.barrier && d.barrier.key && typeof(d.barrier.key) === 'function') {
+                    d.barrier.key = d.barrier.key();
+                }
+            });
+        }
+
         if (!definitions.dynamicLocations && !location.destinations) {
             console.log('No destinations specified for location ' + location.name);
         }
 
-        if (!isEmpty(location.features)) {
-
-            for (var i in location.features) {
-                location.features[i] = CompileFeature(location.features[i]);
-            }
-        }
-
-        setLocationCollections(location);
         setRuntimeProperties(location, 'location');
 
         return location;
@@ -32,16 +32,6 @@ namespace StoryScript {
 
     export function Enemy<T extends IEnemy>(entity: T, type?: string): T {
         var enemy = CreateObject(entity, type || 'enemy');
-        var items = <IItem[]>[];
-
-        if (enemy.items) {
-            enemy.items.forEach((def: () => IItem) => {
-                items.push(definitionToObject<IItem>(def));
-            });
-
-            enemy.items = <any>items;
-        }
-
         compileCombinations(enemy);
         setRuntimeProperties(enemy, 'enemy');
         return enemy;
@@ -49,21 +39,7 @@ namespace StoryScript {
 
     export function Person<T extends IPerson>(entity: T): T {
         var person = Enemy(entity, 'person');
-
-        var quests = <IQuest[]>[];
-
-        if (person.quests) {
-            person.quests.forEach((def: () => IQuest) => {
-                quests.push(definitionToObject(def));
-            });
-
-            person.quests = <any>quests;
-        }
-
         createReadOnlyCollection(person, 'quests', <any>person.quests || []);
-        // As far as I can tell right now, there is no reason to add quests to a person at run-time.
-        //addProxy(compiledPerson, 'quest', game, ruleService);
-        
         return person;
     }
 
@@ -79,33 +55,14 @@ namespace StoryScript {
     }
 
     export function Feature<T extends IFeature>(entity: T): IFeature {
-        return CompileFeature(entity);
+        entity.id = entity.name.toLowerCase().replace(/\s/g,'');
+        return entity;
     }
 
     export function Quest<T extends IQuest>(entity: T): T {
         var item = CreateObject(entity, 'quest');
         setRuntimeProperties(item, 'quest');
         return item;
-    }
-
-    export function CompileFeature(feature: string | (() => IFeature) | IFeature): IFeature {
-        var compiledFeature = <ICompiledFeature>feature;
-        
-        // Compile stand-alone features that are still functions.
-        if (typeof feature === 'function') {
-            compiledFeature = <ICompiledFeature>(<() => IFeature>feature)();
-        }
-
-        compiledFeature.id = compiledFeature.name.toLowerCase().replace(/\s/g,'');
-
-        if (compiledFeature.combinations && compiledFeature.combinations.combine) {
-            for (var j in compiledFeature.combinations.combine) {
-                var combination = compiledFeature.combinations.combine[j];
-                combination.tool = combination.tool && (<any>combination.tool).name;
-            }
-        }
-
-        return compiledFeature;
     }
 
     export function setRuntimeProperties(entity: any, type: string) {
@@ -119,9 +76,8 @@ namespace StoryScript {
         }
 
         if (type === 'enemy' || type === 'person') {
-            var enemy = <ICompiledEnemy>entity;
+            var enemy = <IEnemy>entity;
             createReadOnlyCollection(enemy, 'items', <any>enemy.items || []);
-            addProxy(enemy, 'item');
         }
 
         if (type ==='location') {
@@ -134,10 +90,7 @@ namespace StoryScript {
             createReadOnlyCollection(location, 'enemies', location.enemies || <any>[]);
             createReadOnlyCollection(location, 'items', location.items || <any>[]);
     
-            createActiveCollections(<ICompiledLocation><unknown>location);
-    
-            addProxy(location, 'enemy');
-            addProxy(location, 'feature');
+            createActiveCollections(location);
         }
     }
 
@@ -190,6 +143,8 @@ namespace StoryScript {
 
     function CreateObject<T>(entity: T, type: string)
     {
+        var error = new Error();
+
         // Add the type to the object so we can distinguish between them in the combine functionality.
         (<any>entity).type = type;
         return entity;
@@ -209,38 +164,6 @@ namespace StoryScript {
             entry.combinations.combine = combines;
             entry.combinations.failText = failText;
             createReadOnlyCollection(entry.combinations, 'combine', combines);
-        }
-    }
-
-    function setLocationCollections(location: ILocation) {
-        if (location.enemies) {
-            var enemies = [];
-
-            location.enemies.forEach((def: () => IEnemy) => {
-                enemies.push(definitionToObject(def));
-            });
-
-            location.enemies = enemies;
-        }
-
-        if (location.persons) {
-            var persons = [];
-
-            location.persons.forEach((def: () => IPerson) => {
-                persons.push(definitionToObject(def));
-            });
-
-            location.persons = persons;
-        }
-
-        if (location.items) {
-            var items = [];
-
-            location.items.forEach((def: () => IItem) => {
-                items.push(definitionToObject(def));
-            });
-
-            location.items = items;
         }
     }
 

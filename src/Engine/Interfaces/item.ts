@@ -54,14 +54,14 @@
          * @param item The item to be equipped
          * @param game The game object
          */
-        equip?(item: ICompiledItem, game: IGame): boolean;
+        equip?(item: IItem, game: IGame): boolean;
 
          /**
          * When specified, this function will be executed when the item is unequipped by the player.
          * @param item The item to be unequipped
          * @param game The game object
          */
-        unequip?(item: ICompiledItem, game: IGame): boolean;
+        unequip?(item: IItem, game: IGame): boolean;
 
         /**
          * When specified, this item can be used and a use action becomes available on the item. The function will be executed when the player
@@ -69,10 +69,6 @@
          * @param game The game object
          * @param item The item to use
          */
-        use?(game: IGame, item: ICompiledItem): void
-    }
-
-    export interface ICompiledItem extends IItem, ICompiledFeature {
-
+        use?(game: IGame, item: IItem): void
     }
 }

@@ -2,7 +2,7 @@
     /**
      * Defines the base properties for an enemy in the game.
      */
-    export interface IEnemyBase extends IFeature {
+    export interface IEnemy extends IFeature {
         /**
          * The details about this enemy as displayed to the player. If you use an HTML-page to describe the enemy, the contents of that HTML-page
          * will be used to set this property at run-time.
@@ -18,6 +18,11 @@
          * The amount of credits the enemy has, in whatever form.
          */
         currency?: number;
+
+        /**
+         * The items the enemy is carrying.
+         */
+        items?: ICollection<IItem>;
 
         /**
          * When this flag is set to true, the enemy is not shown to the player, cannot be attacked and will not block the player from travelling.
@@ -36,25 +41,5 @@
          * @param game The game object
          */
         onDefeat?(game: IGame): void;
-    }
-
-    /**
-     * Defines an enemy in the game.
-     */
-    export interface IEnemy extends IEnemyBase {
-        /**
-         * The items the enemy is carrying.
-         */
-        items?: ICollection<() => IItem>;
-    }
-
-    /**
-     * An enemy instance compiled for runtime.
-     */
-    export interface ICompiledEnemy extends IEnemyBase, ICompiledFeature {
-        /**
-         * The items the enemy is carrying.
-         */
-        items?: ICollection<ICompiledItem>;
     }
 }

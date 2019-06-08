@@ -31,12 +31,12 @@ namespace StoryScript {
             return self.worldProperties;
         }
 
-        getCombineClass = (feature: ICompiledFeature) => {
+        getCombineClass = (feature: IFeature) => {
             var self = this;
             return self._game.combinations.getCombineClass(feature);
         }
 
-        tryCombine = (feature: ICompiledFeature): void => {
+        tryCombine = (feature: IFeature): void => {
             var self = this;
             self._game.combinations.tryCombine(feature);
         }

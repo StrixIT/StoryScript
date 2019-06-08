@@ -11,11 +11,11 @@
             actions: [
                 Actions.Search({
                     difficulty: 9,
-                    success: function (game) {
+                    success: function (game: IGame) {
                         game.logToLocationLog('Je vindt een schild!');
-                        game.character.items.push(Items.SmallShield);
+                        game.character.items.push(Items.SmallShield());
                     },
-                    fail: function (game) {
+                    fail: function (game: IGame) {
                         game.logToLocationLog('Je vindt niets.');
                     }
                 })

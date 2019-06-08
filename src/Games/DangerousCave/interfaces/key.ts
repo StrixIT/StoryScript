@@ -6,7 +6,4 @@
     export interface IKey extends IItem, StoryScript.IKey {
         // Add game-specific key properties here
     }
-
-    export interface ICompiledKey extends IKey, ICompiledItem, StoryScript.ICompiledKey {
-    }
 }

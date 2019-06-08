@@ -3,7 +3,7 @@
         return Location({
             name: 'Een donkere gemetselde gang',
             enemies: [
-                Enemies.Goblin
+                Enemies.Goblin()
             ],
             destinations: [
                 {
