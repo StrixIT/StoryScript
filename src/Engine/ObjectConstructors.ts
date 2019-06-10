@@ -11,7 +11,7 @@ namespace StoryScript {
             var functionName = line.trim().split(' ')[1];
             functionName = functionName.replace('Object.', '');
             
-            if (['Location', 'Item', 'Key', 'Enemy', 'Person'].indexOf(functionName) < 0) {
+            if (['Action', 'Location', 'Item', 'Key', 'Enemy', 'Person'].indexOf(functionName) < 0) {
                 (<any>entity).id = functionName;
                 break;
             }
@@ -80,6 +80,10 @@ namespace StoryScript {
         return item;
     }
 
+    export function Action(action: IAction): IAction {
+        return  CreateObject(action, 'action');
+    }
+
     export function setRuntimeProperties(entity: any, type: string) {
         if (type === 'item' || type === 'enemy' || type === 'person') {
             var combinable = <ICombinable>entity;
@@ -109,7 +113,7 @@ namespace StoryScript {
         }
     }
 
-    export function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
+    function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
         if (!path) {
             path = entity.id || entity.name;
         }

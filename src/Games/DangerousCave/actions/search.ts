@@ -9,7 +9,7 @@
 
 namespace DangerousCave.Actions {
     export function Search(settings: SearchSettings): StoryScript.IAction {
-        return {
+        return Action({
             text: settings && settings.text || 'Zoek',
             type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
@@ -24,6 +24,6 @@ namespace DangerousCave.Actions {
                     settings.fail(game);
                 };
             }
-        }
+        });
     }
 }

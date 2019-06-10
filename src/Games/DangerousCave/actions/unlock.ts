@@ -9,7 +9,7 @@
 
 namespace DangerousCave.Actions {
     export function Unlock(settings: UnlockSettings): StoryScript.IAction {
-        return {
+        return Action({
             text: settings && settings.text || 'Slot openen',
             type: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
@@ -27,7 +27,7 @@ namespace DangerousCave.Actions {
                     return true;
                 };
             }
-        }
+        });
     }
 }
 

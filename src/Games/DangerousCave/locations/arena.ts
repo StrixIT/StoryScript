@@ -18,7 +18,7 @@
                         game.currentLocation.text = game.currentLocation.descriptions['triggered'];
                         var troll = Enemies.Troll();
                         troll.onDefeat = onDefeat;
-                        game.currentLocation.enemies.push();
+                        game.currentLocation.enemies.push(troll);
                         game.logToActionLog('Er verschijnt op magische wijze een enorme trol waar het symbool was! Hij valt je aan!');
                     }
                 }

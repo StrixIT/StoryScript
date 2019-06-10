@@ -157,8 +157,6 @@ namespace StoryScript {
                 self.initDestinations(location);
                 setRuntimeProperties(location, 'location');
                 location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
-                location.actions.push = location.actions.push.proxy(self.addAction, self._game);
-                location.combatActions.push = location.combatActions.push.proxy(self.addAction, self._game);
             });
 
             return locations;
@@ -280,17 +278,6 @@ namespace StoryScript {
                 }
             }
 
-            args.splice(1, 1);
-            originalFunction.apply(this, args);
-        }
-
-        private addAction() {
-            var self = this;
-            var args = [].slice.apply(arguments);
-            var originalFunction = args.shift();
-
-            // Add the action function ids.
-            addFunctionIds(args[0], 'actions', getDefinitionKeys(self._definitions));
             args.splice(1, 1);
             originalFunction.apply(this, args);
         }
