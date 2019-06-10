@@ -11,7 +11,7 @@ namespace DangerousCave.Actions {
     export function Search(settings: SearchSettings): StoryScript.IAction {
         return Action({
             text: settings && settings.text || 'Zoek',
-            type: StoryScript.ActionType.Check,
+            actionType: StoryScript.ActionType.Check,
             execute: function (game: IGame) {
                 var result;
                 var check = game.helpers.rollDice(game.character.oplettendheid + 'd6');

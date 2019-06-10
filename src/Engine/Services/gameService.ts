@@ -394,8 +394,8 @@ namespace StoryScript {
         private setupCharacter(): void {
             var self = this;
 
-            createReadOnlyCollection(self._game.character, 'items', isEmpty(self._game.character.items) ? [] : <any>self._game.character.items);
-            createReadOnlyCollection(self._game.character, 'quests', isEmpty(self._game.character.quests) ? [] : <any>self._game.character.quests);
+            self._game.character.items = self._game.character.items || [];
+            self._game.character.quests = self._game.character.quests || [];
 
             Object.defineProperty(self._game.character, 'combatItems', {
                 get: function () {

@@ -37,7 +37,7 @@ namespace StoryScript
         }
 
         getButtonClass = (action: IAction): string => {
-            var type = action.type || ActionType.Regular;
+            var type = action.actionType || ActionType.Regular;
             var buttonClass = 'btn-';
 
             switch (type) {
@@ -111,7 +111,7 @@ namespace StoryScript
 
         private getActionIndex(game: IGame, action: IAction): number {
             var index = -1;
-            var compare = (a: IAction) => a.type === action.type && a.text === action.text && a.status === action.status;
+            var compare = (a: IAction) => a.actionType === action.actionType && a.text === action.text && a.status === action.status;
 
             game.currentLocation.actions.forEach((a, i) => {
                 if (compare(a)) {

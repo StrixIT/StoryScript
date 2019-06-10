@@ -126,8 +126,8 @@
         return Array.prototype.filter.call(array, matchById(id));
     }
 
-    function matchById(id) {
-        return function (x) {
+    function matchById(id: string) {
+        return function (x: any) {
             return x.id.toLowerCase() === id.toLowerCase() || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name === id));
         };
     }

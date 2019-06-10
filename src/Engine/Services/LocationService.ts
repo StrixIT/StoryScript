@@ -110,7 +110,7 @@ namespace StoryScript {
                         (<any>destination).isPreviousLocation = true;
                     }
 
-                    addKeyAction(game, <IDestination><unknown>destination);
+                    addKeyAction(game, destination);
                 });
 
                 game.currentLocation.destinations.forEach(destination => {
@@ -155,7 +155,9 @@ namespace StoryScript {
 
             locations.forEach(function (location) {
                 self.initDestinations(location);
-                setRuntimeProperties(location, 'location');
+
+                setReadOnlyLocationProperties(location);
+
                 location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
             });
 
@@ -199,11 +201,11 @@ namespace StoryScript {
 
         private initTrade(game: IGame) {
             // Todo: better way to get action. Use action function name from function list?
-            if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(a => a.type == ActionType.Trade))) {
+            if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(a => a.actionType == ActionType.Trade))) {
 
                 game.currentLocation.actions.push({
                     text: game.currentLocation.trade.title,
-                    type: ActionType.Trade,
+                    actionType: ActionType.Trade,
                     execute: 'trade'
                     // Arguments are ignored here. These are dealt with in the trade function on the main controller.
                 });

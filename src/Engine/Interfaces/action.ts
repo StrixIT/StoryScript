@@ -11,7 +11,7 @@
         /**
          * How to visually identify this action to the player.
          */
-        type?: ActionType;
+        actionType?: ActionType;
 
          /**
          * The action status or a function that returns an action status to set the status dynamically.
