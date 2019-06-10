@@ -176,6 +176,10 @@ namespace StoryScript {
                 else if (value.isProxy) {
                     continue;
                 }
+                // Exclude hashkeys used by angularjs.
+                else if (key.indexOf('$$hashKey') > -1) {
+                    continue;
+                }
 
                 self.getClonedValue(clone, value, key, pristineValues);
             }
@@ -289,7 +293,7 @@ namespace StoryScript {
 
             if (value.indexOf('function#') > -1) {
                 var parts = self.GetFunctionIdParts(value);
-                var type = GetPlural(parts.type);
+                var type = getPlural(parts.type);
                 var typeList = self.functionList[type];
 
                 if (!typeList[parts.functionId]) {

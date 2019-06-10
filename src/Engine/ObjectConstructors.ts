@@ -1,6 +1,9 @@
 namespace StoryScript {
+    var _definitions: IDefinitions = null;
+    var _typeNames: string[] = null;
+
     export function Location<T extends ILocation>(entity: T): T {
-        var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
+        var definitions = getDefinitions();
         var location = CreateObject(entity, 'location');
 
         if (location.destinations) {
@@ -87,7 +90,8 @@ namespace StoryScript {
 
     function CreateObject<T>(entity: T, type: string)
     {
-        var definitions = window.StoryScript.ObjectFactory.GetDefinitions();
+        var definitions = getDefinitions();
+        var types = getTypeNames(definitions);
         var error = new Error();
         var stack = error.stack.split('\n');
 
@@ -95,9 +99,10 @@ namespace StoryScript {
         for (var i = 3; i < stack.length; i++) {
             var line = stack[i];
             var functionName = line.trim().split(' ')[1];
-            functionName = functionName.replace('Object.', '');
+            functionName = functionName.replace('Object.', '').replace('Array.', '');
+            var key = functionName.toLowerCase();
             
-            if (['Action', 'Location', 'Item', 'Key', 'Enemy', 'Person'].indexOf(functionName) < 0) {
+            if (types.indexOf(key) < 0) {
                 (<any>entity).id = functionName;
                 break;
             }
@@ -106,8 +111,22 @@ namespace StoryScript {
         addFunctionIds(entity, type, getDefinitionKeys(definitions));
 
         // Add the type to the object so we can distinguish between them in the combine functionality.
-        (<any>entity).type = GetPlural(type);
+        (<any>entity).type = getPlural(type);
         return entity;
+    }
+
+    function getDefinitions(): IDefinitions {
+        _definitions = _definitions || window.StoryScript.ObjectFactory.GetDefinitions();
+        return _definitions;
+    }
+
+    function getTypeNames(definitions: IDefinitions): string[] {
+        if (_typeNames == null) {
+            _typeNames = getDefinitionKeys(definitions);
+            _typeNames = _typeNames.concat(['actions', 'keys']);
+        }
+
+        return _typeNames.map(t => getSingular(t).toLowerCase());
     }
 
     function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {

@@ -1,10 +1,16 @@
 ﻿namespace StoryScript {
-    export function GetPlural(name: string): string {
+    export function getPlural(name: string): string {
         return name.endsWith('y') ? 
                 name.substring(0, name.length - 1) + 'ies' 
                 : name.endsWith('s') ? 
                     name 
-                    : name + 's';;
+                    : name + 's';
+    }
+
+    export function getSingular(name: string): string {
+        return name.endsWith('ies') ? 
+                name.substring(0, name.length - 3) + 'y' 
+                : name.substring(0, name.length - 1);
     }
 
     export function isEmpty(object: any, property?: string) {
