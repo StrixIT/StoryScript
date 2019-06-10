@@ -158,6 +158,7 @@ namespace StoryScript {
 
                 setReadOnlyLocationProperties(location);
 
+                location.features = location.features || [];
                 location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
             });
 
@@ -220,7 +221,7 @@ namespace StoryScript {
             if (locations.length < 1)
             {
                 self.dynamicLocations = true;
-                var dynamicStartLocation = function Start () { return { name: 'Start' } };
+                var dynamicStartLocation = function Start () { return Location({ name: 'Start' }) };
 
                 locations = [
                     dynamicStartLocation

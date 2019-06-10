@@ -3,20 +3,17 @@
         return StoryScript.Location(entity);
     }
 
-    export interface ILocationBase extends StoryScript.ILocationBase {
+    export interface ILocation extends StoryScript.ILocation {
         // Add game-specific location properties here
     }
 
-    export interface ILocation extends ILocationBase, StoryScript.ILocation {
-    }
-
-    export interface ICompiledLocation extends ILocationBase, StoryScript.ICompiledLocation {
-        activeEnemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
-        enemies?: StoryScript.ICompiledCollection<IEnemy, ICompiledEnemy>;
-        activeItems?: StoryScript.ICompiledCollection<IItem, ICompiledItem>;
-        items?: StoryScript.ICompiledCollection<IItem, ICompiledItem>;
-        activePersons?: StoryScript.ICompiledCollection<IPerson, ICompiledPerson>;
-        persons?: StoryScript.ICompiledCollection<IPerson, ICompiledPerson>;
-        activePerson: ICompiledPerson;
+    export interface ICompiledLocation extends StoryScript.ICompiledLocation {
+        activeEnemies?: StoryScript.ICollection<IEnemy>;
+        enemies?: StoryScript.ICollection<IEnemy>;
+        activeItems?: StoryScript.ICollection<IItem>;
+        items?: StoryScript.ICollection<IItem>;
+        activePersons?: StoryScript.ICollection<IPerson>;
+        persons?: StoryScript.ICollection<IPerson>;
+        activePerson: IPerson;
     }
 }
