@@ -34,7 +34,7 @@
         /**
          * The nodes that make up this conversation.
          */
-        nodes?: ICollection<IConversationNode>;
+        nodes?: IConversationNode[];
 
         /**
          * The node currently active in the conversation.
@@ -89,7 +89,7 @@
         /**
          * The settings for this reply.
          */
-        options?: ICollection<IConversationReply>;
+        options?: IConversationReply[];
     }
 
     /**

@@ -113,14 +113,14 @@ namespace StoryScript {
                 self.processReplyNodes(person, node, newNode, defaultReply);
 
                 if (!newNode.replies && defaultReply) {
-                    newNode.replies = <IConversationReplies>{
+                    newNode.replies = {
                         defaultReply: true,
-                        options: <ICollection<IConversationReply>>[
+                        options: [
                             {
                                 lines: defaultReply
                             }
                         ]
-                    }
+                    };
                 }
 
                 newNode.lines = node.innerHTML.trim();
@@ -159,7 +159,7 @@ namespace StoryScript {
 
                     newNode.replies = <IConversationReplies>{
                         defaultReply: <boolean>addDefaultReply,
-                        options: <ICollection<IConversationReply>>[]
+                        options: []
                     };
 
                     self.buildReplies(person, newNode, replies);

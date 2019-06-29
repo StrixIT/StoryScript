@@ -37,18 +37,18 @@
         /**
          * All items the player is carrying in his backpack. Note that equipped items are not in this list.
          */
-        items: ICollection<IItem>;
+        items: IItem[];
 
         /**
          * All items the character has that can be used during combat.
          */
         // Todo: is this used?
-        combatItems?: ICollection<IItem>;
+        combatItems?: IItem[];
 
         /**
          * All the quests the player has accepted, both active and complete.
          */
-        quests?: ICollection<IQuest>;
+        quests?: IQuest[];
 
         /**
          * The items the character has equipped.

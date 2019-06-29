@@ -22,12 +22,12 @@
         /**
          * Actions that the player can perform at this location.
          */
-        actions?: ICollection<IAction>;
+        actions?: IAction[];
 
         /**
          * Actions that the player can perform at this location when in combat.
          */
-        combatActions?: ICollection<IAction>;
+        combatActions?: IAction[];
 
         /**
          * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically
@@ -40,27 +40,27 @@
         /**
          * The features of this location that the player can interact with.
          */
-        features?: ICollection<IFeature>;
+        features?: IFeature[];
 
         /**
          * The enemies that occupy this location.
          */
-        enemies?: ICollection<IEnemy>;
+        enemies?: IEnemy[];
 
         /**
          * The characters at this location that the player can interact with.
          */
-        persons?: ICollection<IPerson>;
+        persons?: IPerson[];
 
         /**
          * The items that can be found at this location.
          */
-        items?: ICollection<IItem>;
+        items?: IItem[];
 
         /**
          * The other locations in the game world that can be reached from this one.
          */
-        destinations?: ICollection<IDestination>;
+        destinations?: IDestination[];
 
         /**
          * Trade objects present at this location. If you don't want to use persons to trade with, you can use this object. Useful for
@@ -90,22 +90,22 @@
         /**
          * The enemies that are present (active) at this location.
          */
-        activeEnemies?: ICollection<IEnemy>;
+        activeEnemies?: IEnemy[];
 
         /**
          * The characters that are present (active) at this location that the player can interact with.
          */
-        activePersons?: ICollection<IPerson>;
+        activePersons?: IPerson[];
 
         /**
          * The items that are found (active) at this location.
          */
-        activeItems?: ICollection<IItem>;
+        activeItems?: IItem[];
 
         /**
          * The other locations in the game world that are reachable (active) from this one.
          */
-        activeDestinations?: ICollection<IDestination>;
+        activeDestinations?: IDestination[];
 
         /**
          * The current description shown to the player for this location.

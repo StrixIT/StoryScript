@@ -47,9 +47,9 @@
         return selection[index];
     }
 
-    export function randomList<T>(collection: T[] | ([() => T]), count: number, type: string, definitions: IDefinitions, selector?: (item: T) => boolean): ICollection<T> {
+    export function randomList<T>(collection: T[] | ([() => T]), count: number, type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T[] {
         var selection = getFilteredInstantiatedCollection<T>(collection, type, definitions, selector);
-        var results = <ICollection<T>>[];
+        var results = <T[]>[];
 
         if (count === undefined) {
             count = selection.length;

@@ -13,7 +13,7 @@
          * @param person The player character or the person to calculate the bonus for.
          * @param type The player attribute to get the bonus for (e.g. attack)
          */
-        calculateBonus(person: { items?: ICollection<IItem>, equipment?: {} }, type: string): number;
+        calculateBonus(person: { items?: IItem[], equipment?: {} }, type: string): number;
 
         /**
          * Get a random enemy to add to the game.
@@ -80,7 +80,7 @@ namespace StoryScript {
             return result;
         }
 
-        calculateBonus = (person: { items?: ICollection<IItem>, equipment?: {} }, type: string) => {
+        calculateBonus = (person: { items?: IItem[], equipment?: {} }, type: string) => {
             var bonus = 0;
 
             if (person.equipment) {

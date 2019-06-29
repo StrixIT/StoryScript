@@ -129,11 +129,11 @@ namespace StoryScript {
 
     function CreateObject<T>(entity: T, type: string, useNameAsId?: boolean)
     {
-        var compiledEntity: any = entity;
+        var checkType = <{ id: string, type: string}><unknown>entity;
 
-        if (compiledEntity.id || compiledEntity.type) {
-            var propertyErrors = compiledEntity.id && compiledEntity.type ? ['id', 'type']
-                                    : compiledEntity.id ? ['id'] : ['type'];
+        if (checkType.id || checkType.type) {
+            var propertyErrors = checkType.id && checkType.type ? ['id', 'type']
+                                    : checkType.id ? ['id'] : ['type'];
 
             var message = propertyErrors.length > 1 ? "Properties {0} are used by StoryScript. Don't use them on your own types." 
                                                         : "Property {0} is used by StoryScript. Don't use it on your own types.";
@@ -141,6 +141,7 @@ namespace StoryScript {
             throw new Error(message.replace('{0}', propertyErrors.join(' and ')));
         }
 
+        var compiledEntity: { id: string, name: string, type: string } = typeof entity === 'function' ? entity() : entity;
         var definitions = getDefinitions();
         var types = getTypeNames(definitions);
         var error = new Error();
@@ -165,19 +166,19 @@ namespace StoryScript {
 
         var definitionKeys = getDefinitionKeys(definitions);
 
-        addFunctionIds(entity, type, definitionKeys);
+        addFunctionIds(compiledEntity, type, definitionKeys);
         var plural = getPlural(type);
 
         // Add the type to the object so we can distinguish between them in the combine functionality.
-        (<any>entity).type = plural;
+        compiledEntity.type = plural;
 
         var functions = window.StoryScript.ObjectFactory.GetFunctions();
 
-        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>entity).id.toLowerCase()))) {
-            getFunctions(plural, functions, definitionKeys, entity, null);
+        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>compiledEntity).id.toLowerCase()))) {
+            getFunctions(plural, functions, definitionKeys, compiledEntity, null);
         }
 
-        return entity;
+        return <T><unknown>compiledEntity;
     }
 
     function getDefinitions(): IDefinitions {

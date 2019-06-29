@@ -6,7 +6,7 @@
         /**
          * The actions the player can perform on the barrier (e.g. inspect or open).
          */
-        actions?: ICollection<IBarrierAction>;
+        actions?: IBarrierAction[];
 
         /**
          * The currently selected action for the barrier. Used during run-time only.

@@ -95,6 +95,6 @@
         /**
          * The items available for buying or selling.
          */
-        items?: ICollection<IItem>;
+        items?: IItem[];
     }
 }
