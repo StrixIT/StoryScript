@@ -9,6 +9,11 @@
         locations: (() => ILocation)[];
 
         /**
+         * The features present in the game world.
+         */
+        features: (() => IFeature)[];
+
+        /**
          * The actions the player can perform in the game world.
          */
         actions: (() => IAction)[];

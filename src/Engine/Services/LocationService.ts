@@ -155,10 +155,6 @@ namespace StoryScript {
 
             locations.forEach(function (location) {
                 self.initDestinations(location);
-
-                setReadOnlyLocationProperties(location);
-
-                location.features = location.features || [];
                 location.features.remove = location.features.remove.proxy(self.removeFeature, self._game);
             });
 
@@ -187,7 +183,6 @@ namespace StoryScript {
 
         private initDestinations(location: ICompiledLocation) {
             var self = this;
-            createReadOnlyCollection(location, 'destinations', location.destinations || <any>[]);
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
@@ -394,11 +389,11 @@ namespace StoryScript {
 
                     nameAttribute = nameAttribute.toLowerCase();
 
-                    if (!game.currentLocation.features.some(f => f.id === nameAttribute)) {
+                    if (!game.currentLocation.features.some(f => f.id.toLowerCase() === nameAttribute)) {
                         console.log('There is no feature with name ' + nameAttribute + ' for location ' + game.currentLocation.id + '.');
                     }
 
-                    var feature = game.currentLocation.features.filter(f => f.id === nameAttribute)[0];
+                    var feature = game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
                     feature.name = displayNameAttribute || feature.name;
                     feature.description = node.innerHTML;
                 }

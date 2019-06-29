@@ -58,13 +58,13 @@ namespace StoryScript {
             var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
             self._game.combinations.activeCombination = null;
-            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.type === type.text && (!type.requiresTool || tool.id === <any>c.tool))[0] : null;
+            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.combinationType === type.text && (!type.requiresTool || tool.id === <any>c.tool))[0] : null;
             
             if (!combination) {
                 // For items, the order in which the combination is tried shouldn't matter.
                 // Todo: better type the type property.
                 if (tool && (<any>tool).type === 'item' && target && (<any>target).type === 'item') {
-                    combination = tool.combinations && tool.combinations.combine ? tool.combinations.combine.filter(c => c.type === type.text && target.id === <any>c.tool)[0] : null;
+                    combination = tool.combinations && tool.combinations.combine ? tool.combinations.combine.filter(c => c.combinationType === type.text && target.id === <any>c.tool)[0] : null;
                 }
             }
             

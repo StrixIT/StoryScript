@@ -29,7 +29,7 @@
         /**
          * The type of the combination, which should match an ICombination text.
          */
-        type: string,
+        combinationType: string,
 
         /**
          * The function to execute when a combination is successful. Return the success text.

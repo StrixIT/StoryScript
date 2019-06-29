@@ -14,12 +14,12 @@
          * Add an item to the collection directly or using its id.
          * @param id 
          */
-        push(id?: string | T): number;
+        push(id?: string | ((...params: any) => T) | T): number;
 
         /**
          * Remove an item from the collection directly or using its id.
          * @param id 
          */
-        remove?(id: string | T): void;
+        remove?(id: string | ((...params: any) => T) | T): void;
     }
 }

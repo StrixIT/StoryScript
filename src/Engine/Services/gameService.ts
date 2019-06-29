@@ -47,6 +47,7 @@ namespace StoryScript {
 
             if (!hasCreateCharacterSteps && !self._game.character) {
                 self._game.character = <ICharacter>{};
+                setReadOnlyCharacterProperties(self._game.character);
                 locationName = 'Start';
             }
 
@@ -87,7 +88,7 @@ namespace StoryScript {
             var self = this;
             self._game.character = self._characterService.createCharacter(self._game, characterData);
             self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
-            self.setupCharacter();
+            self._game.character = self._dataService.load(StoryScript.DataKeys.CHARACTER);
             self._game.changeLocation('Start');
             self._game.state = StoryScript.GameState.Play;
         }
@@ -132,9 +133,6 @@ namespace StoryScript {
             if (saveGame) {
                 self._game.loading = true;
                 self._game.character = saveGame.character;
-
-                self.setupCharacter();
-
                 self._game.locations = saveGame.world;
                 self._game.worldProperties = saveGame.worldProperties;
             
@@ -284,9 +282,6 @@ namespace StoryScript {
 
         private resume(locationName: string) {
             var self = this;
-
-            self.setupCharacter();
-
             var lastLocation = self._game.locations.get(locationName);
             var previousLocationName = self._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
 
@@ -389,19 +384,6 @@ namespace StoryScript {
                     return self._combinationService.getCombineClass(tool);
                 }
             };
-        }
-
-        private setupCharacter(): void {
-            var self = this;
-
-            self._game.character.items = self._game.character.items || [];
-            self._game.character.quests = self._game.character.quests || [];
-
-            Object.defineProperty(self._game.character, 'combatItems', {
-                get: function () {
-                    return self._game.character.items.filter(e => { return e.useInCombat; });
-                }
-            });
         }
 
         private resetLoadedHtml(entity: any): void {

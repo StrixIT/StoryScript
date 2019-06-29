@@ -90,6 +90,9 @@ namespace StoryScript {
 
                 character = self._rules.createCharacter(game, characterData);
                 self.processDefaultSettings(character, characterData);
+
+                initCollection(character, 'items');
+                initCollection(character, 'quests');
             }
             else {
                 // Set a placeholder character to keep the game logic functional when no character is used.
@@ -97,6 +100,8 @@ namespace StoryScript {
                     name: null
                 };
             }
+
+            setReadOnlyCharacterProperties(character);
 
             return character;
         }

@@ -8,7 +8,7 @@ namespace MyAdventureGame {
 
         // Add character properties here.
 
-        items: StoryScript.ICompiledCollection<IItem, ICompiledItem> = [];
+        items: StoryScript.ICollection<IItem> = [];
 
         equipment: {
         };

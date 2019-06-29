@@ -18,21 +18,6 @@
         return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
     }
 
-    export function createReadOnlyCollection(entity: any, propertyName: string, collection: { id?: string, type?: string }[]) {
-        Object.defineProperty(entity, propertyName, {
-            enumerable: true,
-            get: function () {
-                return collection;
-            },
-            set: function () {
-                var type = entity.type ? entity.type : null;
-                var messageStart = 'Cannot set collection ' + propertyName;
-                var message = type ? messageStart + ' on type ' + type : messageStart + '.';
-                throw new Error(message);
-            }
-        });
-    }
-
     export function getDefinitionKeys(definitions: IDefinitions) {
         var definitionKeys: string[] = [];
 

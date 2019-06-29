@@ -2,7 +2,7 @@ namespace StoryScript {
     var _definitions: IDefinitions = null;
     var _typeNames: string[] = null;
 
-    export function Location<T extends ILocation>(entity: T): T {
+    export function Location(entity: ILocation): ILocation {
         var definitions = getDefinitions();
         var location = CreateObject(entity, 'location');
 
@@ -18,29 +18,26 @@ namespace StoryScript {
             console.log('No destinations specified for location ' + location.name);
         }
 
-        createReadOnlyCollection(location, 'features', location.features || <any>[]);
-
-        location.actions = location.actions || [];
-        location.combatActions = location.combatActions || [];
-        location.persons = location.persons || [];
-        location.enemies = location.enemies || [];
-        location.items = location.items || [];
+        initCollection(location, 'actions');
+        initCollection(location, 'combatActions');
+        initCollection(location, 'destinations');
+        initCollection(location, 'features', true);
+        initCollection(location, 'items');
+        initCollection(location, 'enemies');
+        initCollection(location, 'persons');
 
         setReadOnlyLocationProperties(location);
 
         return location;
     }
 
-    export function Enemy<T extends IEnemy>(entity: T, type?: string): T {
-        var enemy = CreateObject(entity, type || 'enemy');
-        compileCombinations(enemy);
-        enemy.items = enemy.items || [];
-        return enemy;
+    export function Enemy<T extends IEnemy>(entity: T): T {
+        return EnemyBase(entity, 'enemy');
     }
 
     export function Person<T extends IPerson>(entity: T): T {
-        var person = Enemy(entity, 'person');
-        person.quests = person.quests || [];
+        var person = EnemyBase(entity, 'person');
+        initCollection(person, 'quests');
         return person;
     }
 
@@ -55,8 +52,9 @@ namespace StoryScript {
     }
 
     export function Feature<T extends IFeature>(entity: T): IFeature {
-        entity.id = entity.name.toLowerCase().replace(/\s/g,'');
-        return entity;
+        var feature = CreateObject(entity, 'feature');
+        compileCombinations(feature);
+        return feature;
     }
 
     export function Quest<T extends IQuest>(entity: T): T {
@@ -88,8 +86,61 @@ namespace StoryScript {
         });
     }
 
-    function CreateObject<T>(entity: T, type: string)
+    export function setReadOnlyCharacterProperties(character: ICharacter) {
+        Object.defineProperty(character, 'combatItems', {
+            get: function () {
+                return character.items.filter(e => { return e.useInCombat; });
+            }
+        });
+    }
+
+    export function initCollection<T>(entity: any, property: string, buildInline?: boolean) {
+        var collection= entity[property] || [];
+
+        if (entity[property] && buildInline) {
+            // Initialize any objects that have been declared inline (not a recommended but possible way to declare objects). Check
+            // for the existence of an id property to determine whether the object is already initialized.
+            collection = (<[]>entity[property]).map((e: { id: string }) => e.id ? e : CreateObject(e, getSingular(property), buildInline));
+        }
+
+        Object.defineProperty(entity, property, {
+            enumerable: true,
+            get: function () {
+                return collection;
+            },
+            set: function () {
+                var type = entity.type ? entity.type : null;
+                var messageStart = 'Cannot set collection ' + property;
+                var message = type ? messageStart + ' on type ' + type : messageStart + '.';
+                throw new Error(message);
+            }
+        });
+
+        var readOnlyCollection = entity[property];
+        readOnlyCollection.push = readOnlyCollection.push.proxy(pushEntity);
+    }
+
+    function EnemyBase<T extends IEnemy>(entity: T, type: string): T {
+        var enemy = CreateObject(entity, type);
+        compileCombinations(enemy);
+        initCollection(enemy, 'items');
+        return enemy;
+    }
+
+    function CreateObject<T>(entity: T, type: string, useNameAsId?: boolean)
     {
+        var compiledEntity: any = entity;
+
+        if (compiledEntity.id || compiledEntity.type) {
+            var propertyErrors = compiledEntity.id && compiledEntity.type ? ['id', 'type']
+                                    : compiledEntity.id ? ['id'] : ['type'];
+
+            var message = propertyErrors.length > 1 ? "Properties {0} are used by StoryScript. Don't use them on your own types." 
+                                                        : "Property {0} is used by StoryScript. Don't use it on your own types.";
+
+            throw new Error(message.replace('{0}', propertyErrors.join(' and ')));
+        }
+
         var definitions = getDefinitions();
         var types = getTypeNames(definitions);
         var error = new Error();
@@ -103,15 +154,29 @@ namespace StoryScript {
             var key = functionName.toLowerCase();
             
             if (types.indexOf(key) < 0) {
-                (<any>entity).id = functionName;
+                compiledEntity.id = functionName.toLowerCase();
                 break;
             }
         }
 
-        addFunctionIds(entity, type, getDefinitionKeys(definitions));
+        if (useNameAsId || !compiledEntity.id) {          
+            compiledEntity.id = compiledEntity.name.toLowerCase().replace(/\s/g,'');
+        }
+
+        var definitionKeys = getDefinitionKeys(definitions);
+
+        addFunctionIds(entity, type, definitionKeys);
+        var plural = getPlural(type);
 
         // Add the type to the object so we can distinguish between them in the combine functionality.
-        (<any>entity).type = getPlural(type);
+        (<any>entity).type = plural;
+
+        var functions = window.StoryScript.ObjectFactory.GetFunctions();
+
+        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>entity).id.toLowerCase()))) {
+            getFunctions(plural, functions, definitionKeys, entity, null);
+        }
+
         return entity;
     }
 
@@ -189,7 +254,55 @@ namespace StoryScript {
 
             entry.combinations.combine = combines;
             entry.combinations.failText = failText;
-            createReadOnlyCollection(entry.combinations, 'combine', combines);
+            initCollection(entry.combinations, 'combine');
+        }
+    }
+
+    function pushEntity() {
+        var args = [].slice.apply(arguments);
+        var originalFunction = args.shift();
+        args[0] = typeof args[0] === 'function' ? args[0]() : args[0];
+        originalFunction.apply(this, args);
+    };
+
+    function getFunctions(type: string, functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, definitionKeys: string[], entity: any, parentId: any) {
+        if (!parentId) {
+            parentId = entity.id || entity.name;
+        }
+
+        for (var key in entity) {
+            if (!entity.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (definitionKeys.indexOf(key) != -1 || key === 'target') {
+                continue;
+            }
+
+            var value = entity[key];
+
+            if (value == undefined) {
+                return;
+            }
+            else if (typeof value === "object") {
+                getFunctions(type, functionList, definitionKeys, entity[key], entity[key].id ? parentId + '_' + key + '_' + entity[key].id : parentId + '_' + key);
+            }
+            else if (typeof value == 'function' && !value.isProxy) {
+                var functionId = parentId + '_' + key;
+
+                if (!functionList[type]) {
+                    functionList[type] = {};
+                }
+
+                if (functionList[type][functionId]) {
+                    throw new Error('Trying to register a duplicate function key: ' + functionId);
+                }
+
+                functionList[type][functionId] = {
+                    function: value,
+                    hash: createFunctionHash(value)
+                }
+            }
         }
     }
 }

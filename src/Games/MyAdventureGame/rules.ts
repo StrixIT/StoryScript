@@ -41,14 +41,14 @@ namespace MyAdventureGame {
             return character;
         }
 
-        fight = (game: IGame, enemy: ICompiledEnemy, retaliate?: boolean) => {
+        fight = (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
 
             // Implement character attack here.
 
             if (retaliate) {
-                game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     // Implement monster attack here
                 });
             }

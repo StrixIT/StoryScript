@@ -1,6 +1,5 @@
 ﻿namespace StoryScript {
     export interface IDataService {
-        functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
         loadDescription(type: string, item: { id?: string, description?: string }): string;
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         save<T>(key: string, value: T, pristineValues?: T): void;
@@ -12,28 +11,26 @@
 
 namespace StoryScript {
     export class DataService implements IDataService {
-        public functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } };
         private descriptionBundle: Map<string, string>;
         private loadedDescriptions: { [id: string]: string };
         private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
 
-        constructor(private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string, private _definitions: IDefinitions) {
+        constructor(private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string) {
             var self = this;
-            self._definitions = self.getDefinitions(_definitions);
-            self._game.definitions = self._definitions;
-            self.registerFunctions();
             self.descriptionBundle = window.StoryScript.GetGameDescriptions();
         }
         
         save = <T>(key: string, value: T, pristineValues?: T): void => {
             var self = this;
-            var clone = self.buildClone(value, pristineValues);
+            var functions = window.StoryScript.ObjectFactory.GetFunctions();
+            var clone = self.buildClone(functions, value, pristineValues);
             self._localStorageService.set(self._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
         }
 
         copy = <T>(value: T, pristineValue: T): T => {
             var self = this;
-            return self.buildClone(value, pristineValue);
+            var functions = window.StoryScript.ObjectFactory.GetFunctions();
+            return self.buildClone(functions, value, pristineValue);
         }
 
         getSaveKeys = (): string[] => {
@@ -54,7 +51,25 @@ namespace StoryScript {
                         return null;
                     }
 
-                    self.restoreFunctions(data);
+                    var functionList = window.StoryScript.ObjectFactory.GetFunctions();
+                    self.restoreObjects(functionList, data);
+
+                    if (key.startsWith(StoryScript.DataKeys.GAME + '_')) {
+                        data.world.forEach(location => {
+                            setReadOnlyLocationProperties(location);
+                        });     
+                        
+                        setReadOnlyCharacterProperties(data.character)
+                    }
+                    else if (key  === StoryScript.DataKeys.WORLD) {
+                        data.forEach(location => {
+                            setReadOnlyLocationProperties(location);
+                        });     
+                    }
+                    else if (key === StoryScript.DataKeys.CHARACTER) {
+                        setReadOnlyCharacterProperties(data);
+                    }
+
                     return data;
                 }
 
@@ -115,41 +130,7 @@ namespace StoryScript {
             return (type + '/' + item.id).toLowerCase();
         }
 
-        private getDefinitions(definitions: IDefinitions) {
-            var self = this;
-            var nameSpaceObject = window[self._gameNameSpace];
-
-            definitions.locations = [];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Locations'], definitions.locations);
-
-            definitions.enemies = [];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Enemies'], definitions.enemies);
-
-            definitions.persons = [];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Persons'], definitions.persons);
-
-            definitions.items = [];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Items'], definitions.items);
-
-            definitions.quests = [];
-            self.moveObjectPropertiesToArray(nameSpaceObject['Quests'], definitions.quests);
-
-            definitions.actions = [];
-            self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], definitions.actions);
-            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], definitions.actions);
-
-            return definitions;
-        }
-
-        private moveObjectPropertiesToArray<T>(object: {}, collection: (() => T)[]) {
-            for (var n in object) {
-                if (object.hasOwnProperty(n)) {
-                    collection.push(object[n]);
-                }
-            }
-        }
-
-        private buildClone(values, pristineValues, clone?) {
+        private buildClone(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, values, pristineValues, clone?) {
             var self = this;
 
             if (!clone) {
@@ -181,20 +162,20 @@ namespace StoryScript {
                     continue;
                 }
 
-                self.getClonedValue(clone, value, key, pristineValues);
+                self.getClonedValue(functionList, clone, value, key, pristineValues);
             }
 
             return clone;
         }
 
-        private getClonedValue(clone: any, value: any, key: string, pristineValues: any) {
+        private getClonedValue(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string, pristineValues: any) {
             var self = this;
             
             var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
 
             if (Array.isArray(value)) {
                 clone[key] = [];
-                self.buildClone(value, pristineValue, clone[key]);
+                self.buildClone(functionList, value, pristineValue, clone[key]);
             }
             else if (typeof value === "object") {
                 if (Array.isArray(clone)) {
@@ -204,28 +185,28 @@ namespace StoryScript {
                     clone[key] = {};
                 }
 
-                self.buildClone(value, pristineValue, clone[key]);
+                self.buildClone(functionList, value, pristineValue, clone[key]);
             }
             else if (typeof value === 'function') {
-                self.getClonedFunction(clone, value, key);
+                self.getClonedFunction(functionList, clone, value, key);
             }
             else {
                 clone[key] = value;
             }
         }
 
-        private getClonedFunction(clone: any, value: any, key: string) {
+        private getClonedFunction(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string) {
             var self = this;
 
             if (!value.isProxy) {
                 if (value.functionId) {
                     var parts = self.GetFunctionIdParts(value.functionId);
 
-                    if (parts.type === 'actions' && !self.functionList[parts.type][parts.functionId]) {
+                    if (parts.type === 'actions' && !functionList[parts.type][parts.functionId]) {
                         var match: string = null;
 
-                        for (var n in self.functionList[parts.type]) {
-                            var entry = self.functionList[parts.type][n];
+                        for (var n in functionList[parts.type]) {
+                            var entry = functionList[parts.type][n];
 
                             if (entry.hash === parts.hash) {
                                 match = n;
@@ -260,7 +241,7 @@ namespace StoryScript {
             }
         }
 
-        private restoreFunctions(loaded) {
+        private restoreObjects(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded) {
             var self = this;
 
             try
@@ -275,11 +256,15 @@ namespace StoryScript {
                 if (value == undefined) {
                     return;
                 }
+                else if (Array.isArray(value)) {
+                    initCollection(loaded, key);
+                    self.restoreObjects(functionList, value);
+                }
                 else if (typeof value === "object") {
-                    self.restoreFunctions(loaded[key]);
+                    self.restoreObjects(functionList, value);
                 }
                 else if (typeof value === 'string') {
-                    self.restoreFunctionFromString(loaded, value, key);
+                    self.restoreFunction(functionList, loaded, value, key);
                 }
             }
             }
@@ -288,13 +273,13 @@ namespace StoryScript {
             }
         }
 
-        private restoreFunctionFromString(loaded: any, value: any, key: string) {
+        private restoreFunction(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded: any, value: any, key: string) {
             var self = this;
 
             if (value.indexOf('function#') > -1) {
                 var parts = self.GetFunctionIdParts(value);
                 var type = getPlural(parts.type);
-                var typeList = self.functionList[type];
+                var typeList = functionList[type];
 
                 if (!typeList[parts.functionId]) {
                     console.log('Function with key: ' + parts.functionId + ' could not be found!');
@@ -323,65 +308,6 @@ namespace StoryScript {
                 type: type,
                 functionId: functionId,
                 hash: hash
-            }
-        }
-
-        private registerFunctions() {
-            var self = this;
-            var definitionKeys = getDefinitionKeys(self._definitions);
-            self.functionList = {};
-            var index = 0;
-
-            for (var i in self._definitions) {
-                var type = definitionKeys[index] || 'actions';
-                var definitions = self._definitions[i];
-                self.functionList[type] = {};
-
-                for (var j in definitions) {
-                    var definition = <() => {}>definitions[j];
-                    self.getFunctions(type, definitionKeys, type === 'actions' ? definition : definition(), null);
-                }
-
-                index++;
-            }
-        }
-
-        private getFunctions(type: string, definitionKeys: string[], entity: any, parentId: any) {
-            var self = this;
-
-            if (!parentId) {
-                parentId = entity.id || entity.name;
-            }
-
-            for (var key in entity) {
-                if (!entity.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                if (definitionKeys.indexOf(key) != -1 || key === 'target') {
-                    continue;
-                }
-
-                var value = entity[key];
-
-                if (value == undefined) {
-                    return;
-                }
-                else if (typeof value === "object") {
-                    self.getFunctions(type, definitionKeys, entity[key], entity[key].id ? parentId + '_' + key + '_' + entity[key].id : parentId + '_' + key);
-                }
-                else if (typeof value == 'function' && !value.isProxy) {
-                    var functionId = parentId + '_' + key;
-
-                    if (self.functionList[type][functionId]) {
-                        throw new Error('Trying to register a duplicate function key: ' + functionId);
-                    }
-
-                    self.functionList[type][functionId] = {
-                        function: value,
-                        hash: createFunctionHash(value)
-                    }
-                }
             }
         }
     }
