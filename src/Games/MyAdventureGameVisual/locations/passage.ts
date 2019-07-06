@@ -15,7 +15,7 @@ namespace MyAdventureGameVisual.Locations {
                         failText: 'That won\'t help him.',
                         combine: [
                             {
-                                type: Constants.LOOKAT,
+                                combinationType : Constants.LOOKAT,
                                 match: (game, target, tool): string => {
                                     var feature = game.currentLocation.features.get('woundedwarrior');
 
@@ -32,13 +32,13 @@ namespace MyAdventureGameVisual.Locations {
                         ]
                     },
                 },
-                Items.Herbs,
+                Items.Herbs(),
                 {
-                    name: 'passage',
+                    name: 'passageback',
                     combinations: {
                         combine: [
                             {
-                                type: Constants.WALK,
+                                combinationType: Constants.WALK,
                                 match: (game, target, tool): string => {
                                     game.changeLocation(Locations.Start);
                                     return 'You crawl back through the passage...';

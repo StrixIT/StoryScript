@@ -5,13 +5,13 @@ namespace MyAdventureGame.Features {
             combinations: {
                 combine: [
                     {
-                        type: Constants.LOOKAT,
+                        combinationType: Constants.LOOKAT,
                         match: (game, target, tool): string => {
                             return 'You look at the fountain water. It is very clear and reflects the forest.';
                         }
                     },
                     {
-                        type: Constants.TOUCH,
+                        combinationType: Constants.TOUCH,
                         match: (game, target, tool): string => {
                             if (game.currentLocation.destinations.length == 0) {
                                 game.currentLocation.destinations.push({
@@ -28,7 +28,7 @@ namespace MyAdventureGame.Features {
                         }
                     },
                     {
-                        type: Constants.USE,
+                        combinationType: Constants.USE,
                         tool: Items.Flask,
                         match: (game, target, tool): string => {
                             var flask = game.character.items.get(Items.Flask);

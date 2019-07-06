@@ -76,7 +76,7 @@
                 value: function (item: any) {
                     // Need to cast to any for ES5 and lower
                     var index = (<any>Array.prototype).findIndex.call(this, function (x) {
-                        return x === item || (typeof item === 'function' && item.name === x.id) || (item.id && x.id && item.id === x.id) || item === x.id;
+                        return x === item || (typeof item === 'function' && item.name.toLowerCase() === x.id) || (item.id && x.id && item.id.toLowerCase() === x.id.toLowerCase()) || item === x.id;
                     });
 
                     if (index != -1) {
@@ -128,7 +128,7 @@
 
     function matchById(id: string) {
         return function (x: any) {
-            return x.id.toLowerCase() === id.toLowerCase() || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name === id));
+            return x.id.toLowerCase() === id.toLowerCase() || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name.toLowerCase() === id));
         };
     }
 }

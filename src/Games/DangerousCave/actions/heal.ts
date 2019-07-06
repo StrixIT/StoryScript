@@ -1,5 +1,5 @@
 ﻿namespace DangerousCave.Actions {
-    export function Heal(potency: string): (...params) => void {
+    export function Heal(potency: string): (...params) => {
         return function (game: IGame, item: IItem) {
             var healed = game.helpers.rollDice(potency);
             game.character.currentHitpoints += healed;

@@ -46,8 +46,7 @@ namespace StoryScript {
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
 
             if (!hasCreateCharacterSteps && !self._game.character) {
-                self._game.character = <ICharacter>{};
-                setReadOnlyCharacterProperties(self._game.character);
+                self._game.character = self._characterService.createCharacter(self._game, {});
                 locationName = 'Start';
             }
 

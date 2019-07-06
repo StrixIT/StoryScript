@@ -1,5 +1,5 @@
 namespace MyAdventureGameVisual {
-    export function Enemy<T extends IEnemy>(entity: T): T {
+    export function Enemy(entity: IEnemy): IEnemy {
         return StoryScript.Enemy(entity);
     }
 

@@ -1,5 +1,5 @@
 ﻿namespace GameTemplate {
-    export function Person<T extends IPerson>(entity: T): T {
+    export function Person(entity: IPerson): IPerson {
         return StoryScript.Person(entity);
     }
 

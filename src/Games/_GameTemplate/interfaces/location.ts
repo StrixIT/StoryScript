@@ -1,5 +1,5 @@
 ﻿namespace GameTemplate {
-    export function Location<T extends ILocation>(entity: T): T {
+    export function Location(entity: ILocation): ILocation  {
         return StoryScript.Location(entity);
     }
 

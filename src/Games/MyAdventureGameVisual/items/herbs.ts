@@ -7,7 +7,7 @@ namespace MyAdventureGameVisual.Items {
             combinations: {
                 combine: [
                     {
-                        type: Constants.TOUCH,
+                        combinationType: Constants.TOUCH,
                         match: (game, target, tool): string => {
                             if (target) {
                                 game.character.items.push(<IItem>target);

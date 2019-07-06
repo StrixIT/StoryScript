@@ -7,7 +7,7 @@ namespace MyAdventureGame.Items {
                 failText: 'You can\'t use the water like that',
                 combine: [
                     {
-                        type: Constants.USE,
+                        combinationType: Constants.USE,
                         tool: Items.Herbs,
                         match: (game, target, tool): string => {
                             game.character.items.remove(Items.Water);

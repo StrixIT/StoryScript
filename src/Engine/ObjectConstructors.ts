@@ -1,6 +1,7 @@
 namespace StoryScript {
     var _definitions: IDefinitions = null;
     var _typeNames: string[] = null;
+    var _registeredIds: Set<string> = new Set<string>();
 
     export function Location(entity: ILocation): ILocation {
         var definitions = getDefinitions();
@@ -141,6 +142,7 @@ namespace StoryScript {
             throw new Error(message.replace('{0}', propertyErrors.join(' and ')));
         }
 
+        useNameAsId = useNameAsId === undefined ? false : useNameAsId;
         var compiledEntity: { id: string, name: string, type: string } = typeof entity === 'function' ? entity() : entity;
         var definitions = getDefinitions();
         var types = getTypeNames(definitions);
@@ -171,6 +173,12 @@ namespace StoryScript {
 
         // Add the type to the object so we can distinguish between them in the combine functionality.
         compiledEntity.type = plural;
+
+        if (_registeredIds.has(compiledEntity.id + '_' + compiledEntity.type + '_' +  !useNameAsId)) {
+            throw new Error('Duplicate id detected: ' + compiledEntity.id + '. You cannot use names for entities declared inline that are the same as the names of stand-alone entities.');
+        }
+
+        _registeredIds.add(compiledEntity.id + '_' + compiledEntity.type + '_' +  useNameAsId);
 
         var functions = window.StoryScript.ObjectFactory.GetFunctions();
 

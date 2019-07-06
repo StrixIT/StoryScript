@@ -6,7 +6,7 @@ namespace MyAdventureGame.Features {
                 failText: 'That won\'t help him.',
                 combine: [
                     {
-                        type: Constants.LOOKAT,
+                        combinationType: Constants.LOOKAT,
                         match: (game, target, tool): string => {
                             if (!game.character.items.get(Items.Flask)) {
                                 game.character.items.push(Items.Flask);

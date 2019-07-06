@@ -58,13 +58,16 @@ namespace StoryScript {
             var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
             self._game.combinations.activeCombination = null;
-            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => c.combinationType === type.text && (!type.requiresTool || tool.id === <any>c.tool))[0] : null;
+            var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => {
+                var toolMatch = type.requiresTool && c.tool && self.isMatch(c.tool, tool);
+                return c.combinationType === type.text && (!type.requiresTool || toolMatch);
+            })[0] : null;
             
             if (!combination) {
                 // For items, the order in which the combination is tried shouldn't matter.
                 // Todo: better type the type property.
-                if (tool && (<any>tool).type === 'item' && target && (<any>target).type === 'item') {
-                    combination = tool.combinations && tool.combinations.combine ? tool.combinations.combine.filter(c => c.combinationType === type.text && target.id === <any>c.tool)[0] : null;
+                if (tool && (<any>tool).type === 'items' && target && (<any>target).type === 'items') {
+                    combination = tool.combinations && tool.combinations.combine ? tool.combinations.combine.filter(c => c.combinationType === type.text && self.isMatch(c.tool, target))[0] : null;
                 }
             }
             
@@ -85,6 +88,12 @@ namespace StoryScript {
 
             SaveWorldState(self._dataService, self._locationService, self._game);
             return text = text + (resultText ? ': ' + resultText : '');
+        }
+
+        private isMatch(combineTool: any, tool: ICombinable) {
+            return  (typeof combineTool === 'function' ?
+                        tool.id === combineTool.name.toLowerCase() :
+                        tool.id === combineTool.toLowerCase());
         }
     }
 

@@ -1,5 +1,5 @@
 ﻿namespace MyAdventureGameVisual {
-    export function Key<T extends IKey>(entity: T): T {
+    export function Key(entity: IKey): IKey {
         return StoryScript.Key(entity);
     }
 

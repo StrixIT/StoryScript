@@ -90,9 +90,6 @@ namespace StoryScript {
 
                 character = self._rules.createCharacter(game, characterData);
                 self.processDefaultSettings(character, characterData);
-
-                initCollection(character, 'items');
-                initCollection(character, 'quests');
             }
             else {
                 // Set a placeholder character to keep the game logic functional when no character is used.
@@ -100,6 +97,9 @@ namespace StoryScript {
                     name: null
                 };
             }
+
+            initCollection(character, 'items');
+            initCollection(character, 'quests');
 
             setReadOnlyCharacterProperties(character);
 
@@ -267,6 +267,10 @@ namespace StoryScript {
         }
 
         private processDefaultSettings = (character: ICharacter, characterData: ICreateCharacter): void => {
+            if (!characterData.steps) {
+                return;
+            }
+
             characterData.steps.forEach(function (step) {
                 if (step.questions) {
                     step.questions.forEach(function (question) {

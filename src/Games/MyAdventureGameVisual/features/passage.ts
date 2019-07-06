@@ -8,7 +8,7 @@ namespace MyAdventureGameVisual.Features {
             combinations: {
                 combine: [
                     {
-                        type: Constants.WALK,
+                        combinationType: Constants.WALK,
                         match: (game, target, tool): string => {
                             game.changeLocation(Locations.Passage);
                             return 'You crawl through the undergrowth...';
