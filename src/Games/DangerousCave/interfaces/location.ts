@@ -1,5 +1,5 @@
 ﻿namespace DangerousCave {
-    export function Location<T extends ILocation>(entity: T): T {
+    export function Location(entity: ILocation): ILocation {
         return StoryScript.Location(entity);
     }
 
@@ -8,12 +8,12 @@
     }
 
     export interface ICompiledLocation extends StoryScript.ICompiledLocation {
-        activeEnemies?: StoryScript.ICollection<IEnemy>;
-        enemies?: StoryScript.ICollection<IEnemy>;
-        activeItems?: StoryScript.ICollection<IItem>;
-        items?: StoryScript.ICollection<IItem>;
-        activePersons?: StoryScript.ICollection<IPerson>;
-        persons?: StoryScript.ICollection<IPerson>;
+        activeEnemies?: IEnemy[];
+        enemies?: IEnemy[];
+        activeItems?: IItem[];
+        items?: IItem[];
+        activePersons?: IPerson[];
+        persons?: IPerson[];
         activePerson: IPerson;
     }
 }

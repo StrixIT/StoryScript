@@ -1,5 +1,5 @@
 ﻿namespace DangerousCave {
-    export function Person<T extends IPerson>(entity: T): T {
+    export function PersonIPerson(entity: IPerson): IPerson {
         return StoryScript.Person(entity);
     }
 

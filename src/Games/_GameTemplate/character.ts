@@ -8,7 +8,7 @@
 
         // Add character properties here.
 
-        items: StoryScript.ICollection<IItem> = [];
+        items: IItem[] = [];
 
         equipment: {
             // Remove the slots you don't want to use
