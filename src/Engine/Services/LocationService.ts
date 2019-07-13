@@ -26,12 +26,12 @@ namespace StoryScript {
 
         saveWorld = (locations: ICompiledLocation[]) => {
             var self = this;
-            self._dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
+            self._dataService.save(DataKeys.WORLD, locations);
         }
 
         copyWorld = (): ICompiledLocation[] => {
             var self = this;
-            return self._dataService.copy(self._game.locations, self.pristineLocations);
+            return self._dataService.copy(self._game.locations);
         }
 
         changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
@@ -167,11 +167,11 @@ namespace StoryScript {
 
             if (buildWorld) {
                 self.pristineLocations = self.buildWorld();
-                locations = self._dataService.load(DataKeys.WORLD);
+                locations = self._dataService.load(DataKeys.WORLD, self.pristineLocations);
 
                 if (isEmpty(locations)) {
-                    self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                    locations = self._dataService.load(DataKeys.WORLD);
+                    locations = self.pristineLocations;
+                    self._dataService.save(DataKeys.WORLD, locations);
                 }
             }
             else {
@@ -423,6 +423,8 @@ namespace StoryScript {
     function addKeyAction(game: IGame, destination: IDestination) {
         if (destination.barrier && destination.barrier.key) {
             var existingAction = null;
+
+            // Todo: do we need to create a hash? Can't we check this in a more straightforward way?
             var keyActionHash = createFunctionHash((<any>destination.barrier.key).open.action);
 
             if (destination.barrier.actions) {

@@ -38,19 +38,20 @@ namespace StoryScript {
 
             self.setupGame();
             self._game.highScores = self._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
-            self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
             var characterSheet = self._rules.getCreateCharacterSheet && self._rules.getCreateCharacterSheet();
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
+            var savedCharacter = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
 
-            if (!hasCreateCharacterSteps && !self._game.character) {
+            if (!savedCharacter && !hasCreateCharacterSteps) {
                 self._game.character = self._characterService.createCharacter(self._game, {});
                 locationName = 'Start';
             }
 
-            if (self._game.character && locationName) {
+            if (savedCharacter && locationName) {
+                self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER, savedCharacter);
                 self.resume(locationName);
             }
             else {
@@ -87,7 +88,6 @@ namespace StoryScript {
             var self = this;
             self._game.character = self._characterService.createCharacter(self._game, characterData);
             self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
-            self._game.character = self._dataService.load(StoryScript.DataKeys.CHARACTER);
             self._game.changeLocation('Start');
             self._game.state = StoryScript.GameState.Play;
         }

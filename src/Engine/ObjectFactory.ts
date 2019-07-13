@@ -5,7 +5,6 @@ namespace StoryScript {
 
         private _game: IGame = <IGame>{};
         private _definitions: IDefinitions = <IDefinitions>{};
-        private _functions: { [type: string]: { [id: string]: { function: Function, hash: number } } };
 
         private _nameSpace: string;
         private _texts: IInterfaceTexts;
@@ -82,18 +81,12 @@ namespace StoryScript {
             return self._definitions;
         }
 
-        GetFunctions = (): { [type: string]: { [id: string]: { function: Function, hash: number } } } => {
-            var self = this;
-            return self._functions;
-        }
-
         private init = (): void => {
             var self = this;
 
             if (!ObjectFactory._isInitialized)
             {
                 self.getDefinitions();
-                self.registerFunctions();
                 self._game.definitions = self._definitions;
                 self._helperService = new HelperService(self._game, self._rules);
                 self._tradeService = new TradeService(self._game, self._texts);
@@ -104,26 +97,6 @@ namespace StoryScript {
                 self._characterService = new CharacterService(self._dataService, self._game, self._rules);
                 self._gameService = new GameService(self._dataService, self._locationService, self._characterService, self._combinationService, self._eventTarget, self._rules, self._helperService, self._game);
                 ObjectFactory._isInitialized = true;
-            }
-        }
-
-        private registerFunctions() {
-            var self = this;
-            var definitionKeys = getDefinitionKeys(self._definitions);
-            self._functions = {};
-            var index = 0;
-
-            for (var i in self._definitions) {
-                var type = definitionKeys[index] || 'actions';
-                var definitions = self._definitions[i];
-                self._functions[type] = {};
-
-                for (var j in definitions) {
-                    var definition = <() => {}>definitions[j];
-                    definition();
-                }
-
-                index++;
             }
         }
 

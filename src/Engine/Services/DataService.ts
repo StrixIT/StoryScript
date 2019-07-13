@@ -2,10 +2,10 @@
     export interface IDataService {
         loadDescription(type: string, item: { id?: string, description?: string }): string;
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
-        save<T>(key: string, value: T, pristineValues?: T): void;
-        load<T>(key: string): T;
+        save<T>(key: string, value: T): void;
+        load<T>(key: string, pristineValues?: T): T;
         getSaveKeys(): string[];
-        copy<T>(value: T, pristineValue: T): T;
+        copy<T>(value: T): T;
     }
 }
 
@@ -20,17 +20,15 @@ namespace StoryScript {
             self.descriptionBundle = window.StoryScript.GetGameDescriptions();
         }
         
-        save = <T>(key: string, value: T, pristineValues?: T): void => {
+        save = <T>(key: string, value: T): void => {
             var self = this;
-            var functions = window.StoryScript.ObjectFactory.GetFunctions();
-            var clone = self.buildClone(functions, value, pristineValues);
+            var clone = self.buildClone(value);
             self._localStorageService.set(self._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
         }
 
-        copy = <T>(value: T, pristineValue: T): T => {
+        copy = <T>(value: T): T => {
             var self = this;
-            var functions = window.StoryScript.ObjectFactory.GetFunctions();
-            return self.buildClone(functions, value, pristineValue);
+            return self.buildClone(value);
         }
 
         getSaveKeys = (): string[] => {
@@ -38,7 +36,7 @@ namespace StoryScript {
             return self._localStorageService.getKeys(self._gameNameSpace + '_' + DataKeys.GAME + '_');
         }
 
-        load = <T>(key: string): T => {
+        load = <T>(key: string, pristineValues?: T): T => {
             var self = this;
 
             try {
@@ -51,26 +49,9 @@ namespace StoryScript {
                         return null;
                     }
 
-                    var functionList = window.StoryScript.ObjectFactory.GetFunctions();
-                    self.restoreObjects(functionList, data);
+                    self.restoreObjects(data, pristineValues);
 
-                    if (key.startsWith(StoryScript.DataKeys.GAME + '_')) {
-                        data.world.forEach(location => {
-                            setReadOnlyLocationProperties(location);
-                        });     
-                        
-                        setReadOnlyCharacterProperties(data.character)
-                    }
-                    else if (key  === StoryScript.DataKeys.WORLD) {
-                        data.forEach(location => {
-                            setReadOnlyLocationProperties(location);
-                        });     
-                    }
-                    else if (key === StoryScript.DataKeys.CHARACTER) {
-                        setReadOnlyCharacterProperties(data);
-                    }
-
-                    return data;
+                    return pristineValues || data;
                 }
 
                 return null;
@@ -130,7 +111,7 @@ namespace StoryScript {
             return (type + '/' + item.id).toLowerCase();
         }
 
-        private buildClone(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, values, pristineValues, clone?) {
+        private buildClone(values, clone?) {
             var self = this;
 
             if (!clone) {
@@ -157,25 +138,26 @@ namespace StoryScript {
                 else if (value.isProxy) {
                     continue;
                 }
+                else if (value.isOriginal) {
+                    continue;
+                }
                 // Exclude hashkeys used by angularjs.
                 else if (key.indexOf('$$hashKey') > -1) {
                     continue;
                 }
 
-                self.getClonedValue(functionList, clone, value, key, pristineValues);
+                self.getClonedValue(clone, value, key);
             }
 
             return clone;
         }
 
-        private getClonedValue(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string, pristineValues: any) {
+        private getClonedValue(clone: any, value: any, key: string) {
             var self = this;
-            
-            var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
 
             if (Array.isArray(value)) {
                 clone[key] = [];
-                self.buildClone(functionList, value, pristineValue, clone[key]);
+                self.buildClone(value, clone[key]);
             }
             else if (typeof value === "object") {
                 if (Array.isArray(clone)) {
@@ -185,129 +167,69 @@ namespace StoryScript {
                     clone[key] = {};
                 }
 
-                self.buildClone(functionList, value, pristineValue, clone[key]);
+                self.buildClone(value, clone[key]);
             }
             else if (typeof value === 'function') {
-                self.getClonedFunction(functionList, clone, value, key);
+                self.serializeFunction(clone, value, key);
             }
             else {
                 clone[key] = value;
             }
         }
 
-        private getClonedFunction(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string) {
+        private serializeFunction(clone: any, value: any, key: string) {
             var self = this;
 
-            if (!value.isProxy) {
-                if (value.functionId) {
-                    var parts = self.GetFunctionIdParts(value.functionId);
+            if (!value.isProxy && !value.isOriginal) {
+                // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
+                // to a function. Convert values that have an arrow notation.
+                let functionString = value.toString();
 
-                    if (parts.type === 'actions' && !functionList[parts.type][parts.functionId]) {
-                        var match: string = null;
+                if (functionString.indexOf('function') == -1) {
+                    var arrowIndex = functionString.indexOf('=>');
 
-                        for (var n in functionList[parts.type]) {
-                            var entry = functionList[parts.type][n];
-
-                            if (entry.hash === parts.hash) {
-                                match = n;
-                                break;
-                            }
-                        }
-
-                        if (match) {
-                            clone[key] = 'function#' + parts.type + '_' + match + '#' + parts.hash;
-                        }
-                        else {
-                            clone[key] = value.toString();
-                        }
-                    }
-                    else {
-                        clone[key] = value.functionId;
-                    }
+                    functionString = 'function' + functionString.match(self.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
                 }
-                else {
-                    // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
-                    // to a function. Convert values that have an arrow notation.
-                    let functionString = value.toString();
 
-                    if (functionString.indexOf('function') == -1) {
-                        var arrowIndex = functionString.indexOf('=>');
-
-                        functionString = 'function' + functionString.match(self.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
-                    }
-
-                    clone[key] = functionString;
-                }
+                clone[key] = functionString;
             }
         }
 
-        private restoreObjects(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded) {
+        private restoreObjects<T>(loaded, pristineValues: T) {
             var self = this;
 
-            try
-            {
             for (var key in loaded) {
                 if (!loaded.hasOwnProperty(key)) {
                     continue;
                 }
 
                 var value = loaded[key];
+                var pristineValue = pristineValues && pristineValues[key];
 
-                if (value == undefined) {
+                if (value === undefined) {
+                    if (pristineValues) {
+                        pristineValues[key] = undefined;
+                    }
+
                     return;
                 }
+                else if (pristineValue === undefined) {
+                    if (pristineValues) {
+                        pristineValues[key] = value;
+                    }
+                }
                 else if (Array.isArray(value)) {
-                    initCollection(loaded, key);
-                    self.restoreObjects(functionList, value);
+                    self.restoreObjects(value, pristineValue);
                 }
                 else if (typeof value === "object") {
-                    self.restoreObjects(functionList, value);
+                    self.restoreObjects(value, pristineValue);
                 }
-                else if (typeof value === 'string') {
-                    self.restoreFunction(functionList, loaded, value, key);
+                else if (typeof value === 'string' && value.indexOf('function') > -1) {
+                    pristineValues[key] = (<any>value).parseFunction();
                 }
-            }
-            }
-            catch (ex) {
-                console.log(ex);
-            }
-        }
-
-        private restoreFunction(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded: any, value: any, key: string) {
-            var self = this;
-
-            if (value.indexOf('function#') > -1) {
-                var parts = self.GetFunctionIdParts(value);
-                var type = getPlural(parts.type);
-                var typeList = functionList[type];
-
-                if (!typeList[parts.functionId]) {
-                    console.log('Function with key: ' + parts.functionId + ' could not be found!');
+                else {
+                    pristineValues[key] = value;
                 }
-                else if (typeList[parts.functionId].hash != parts.hash) {
-                    console.log('Function with key: ' + parts.functionId + ' was found but the hash does not match the stored hash!');
-                }
-
-                loaded[key] = typeList[parts.functionId].function;
-            }
-            else if (typeof value === 'string' && value.indexOf('function') > -1) {
-                loaded[key] = (<any>value).parseFunction();
-            }
-        }
-
-        private GetFunctionIdParts(value: string): IFunctionIdParts {
-            var parts = value.split('#');
-            var functionPart = parts[1];
-            var functionParts = functionPart.split('_');
-            var type = functionParts[0];
-            functionParts.splice(0, 1);
-            var functionId = functionParts.join('_');
-            var hash = parseInt(parts[2]);
-
-            return {
-                type: type,
-                functionId: functionId,
-                hash: hash
             }
         }
     }

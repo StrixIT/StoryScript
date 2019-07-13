@@ -84,9 +84,9 @@ namespace StoryScript {
 
         createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
             var self = this;
-            var character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
+            var character = null;
 
-            if (isEmpty(character) && self._rules && self._rules.createCharacter) {
+            if (self._rules && self._rules.createCharacter) {
 
                 character = self._rules.createCharacter(game, characterData);
                 self.processDefaultSettings(character, characterData);
@@ -101,7 +101,13 @@ namespace StoryScript {
             initCollection(character, 'items');
             initCollection(character, 'quests');
 
-            setReadOnlyCharacterProperties(character);
+            Object.defineProperty(character, 'combatItems', {
+                get: function () {
+                    return character.items.filter(e => { return e.useInCombat; });
+                }
+            });
+
+            self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER, character);
 
             return character;
         }
