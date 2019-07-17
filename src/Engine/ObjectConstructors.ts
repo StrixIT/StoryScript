@@ -67,6 +67,34 @@ namespace StoryScript {
         return CreateObject(action, 'action');
     }
 
+    export function setReadOnlyLocationProperties(location: ILocation) {
+        Object.defineProperty(location, 'activePersons', {
+            get: function () {
+                return location.persons.filter(e => { return !e.inactive; });
+            }
+        });
+
+        Object.defineProperty(location, 'activeEnemies', {
+            get: function () {
+                return location.enemies.filter(e => { return !e.inactive; });
+            }
+        });
+
+        Object.defineProperty(location, 'activeItems', {
+            get: function () {
+                return location.items.filter(e => { return !e.inactive; });
+            }
+        });
+    }
+
+    export function setReadOnlyCharacterProperties(character: ICharacter) {
+        Object.defineProperty(character, 'combatItems', {
+            get: function () {
+                return character.items.filter(e => { return e.useInCombat; });
+            }
+        });
+    }
+
     export function initCollection<T>(entity: any, property: string, buildInline?: boolean) {
         var collection= entity[property] || [];
 
@@ -138,6 +166,9 @@ namespace StoryScript {
             compiledEntity.id = compiledEntity.name.toLowerCase().replace(/\s/g,'');
         }
 
+        var definitionKeys = getDefinitionKeys(definitions);
+
+        addFunctionIds(compiledEntity, type, definitionKeys);
         var plural = getPlural(type);
 
         // Add the type to the object so we can distinguish between them in the combine functionality.
@@ -149,47 +180,13 @@ namespace StoryScript {
 
         _registeredIds.add(compiledEntity.id + '_' + compiledEntity.type + '_' +  useNameAsId);
 
-        // Mark all functions on the entity as original, so they are not added to the save game data.
-        markOriginalFunctions(compiledEntity);
+        var functions = window.StoryScript.ObjectFactory.GetFunctions();
+
+        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>compiledEntity).id.toLowerCase()))) {
+            getFunctions(plural, functions, definitionKeys, compiledEntity, null);
+        }
 
         return <T><unknown>compiledEntity;
-    }
-
-    function markOriginalFunctions(entity: any) {
-        for (var key in entity) {
-            if (!entity.hasOwnProperty(key)) {
-                continue;
-            }
-
-            var value = entity[key];
-
-            if (typeof value === 'function') {
-                value.isOriginal = true;
-            }
-            else if (typeof value === 'object' || Array.isArray(value)) {
-                markOriginalFunctions(value);
-            }
-        }
-    }
-
-    function setReadOnlyLocationProperties(location: ILocation) {
-        Object.defineProperty(location, 'activePersons', {
-            get: function () {
-                return location.persons.filter(e => { return !e.inactive; });
-            }
-        });
-
-        Object.defineProperty(location, 'activeEnemies', {
-            get: function () {
-                return location.enemies.filter(e => { return !e.inactive; });
-            }
-        });
-
-        Object.defineProperty(location, 'activeItems', {
-            get: function () {
-                return location.items.filter(e => { return !e.inactive; });
-            }
-        });
     }
 
     function getDefinitions(): IDefinitions {
@@ -204,6 +201,53 @@ namespace StoryScript {
         }
 
         return _typeNames.map(t => getSingular(t).toLowerCase());
+    }
+
+    function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
+        if (!path) {
+            path = entity.id || entity.name;
+        }
+
+        for (var key in entity) {
+            if (!entity.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (definitionKeys.indexOf(key) != -1 || key === 'target') {
+                continue;
+            }
+
+            var value = entity[key];
+
+            if (value == undefined) {
+                return;
+            }
+            else if (typeof value === "object") {
+                addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
+            }
+            else if (typeof value === 'function' && !value.isProxy) {
+                var functionId = path ? path + '_' + key : key;
+                value.functionId = 'function#' + type + '_' + functionId + '#' + createFunctionHash(value);
+            }
+        }
+    }
+
+    function getPath(value, key: string, path: string, definitionKeys: string[]): string {
+        if (definitionKeys.indexOf(key) != -1) {
+            path = key;
+        }
+        else if (definitionKeys.indexOf(path) != -1 && !isNaN(parseInt(key))) {
+
+        }
+        else {
+            path = path === undefined ? key : path + '_' + key;
+        }
+
+        if (value.id) {
+            path = path + '_' + value.id;
+        }
+
+        return path;
     }
 
     function compileCombinations(entry: ICombinable) {
@@ -229,4 +273,45 @@ namespace StoryScript {
         args[0] = typeof args[0] === 'function' ? args[0]() : args[0];
         originalFunction.apply(this, args);
     };
+
+    function getFunctions(type: string, functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, definitionKeys: string[], entity: any, parentId: any) {
+        if (!parentId) {
+            parentId = entity.id || entity.name;
+        }
+
+        for (var key in entity) {
+            if (!entity.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (definitionKeys.indexOf(key) != -1 || key === 'target') {
+                continue;
+            }
+
+            var value = entity[key];
+
+            if (value == undefined) {
+                return;
+            }
+            else if (typeof value === "object") {
+                getFunctions(type, functionList, definitionKeys, entity[key], entity[key].id ? parentId + '_' + key + '_' + entity[key].id : parentId + '_' + key);
+            }
+            else if (typeof value == 'function' && !value.isProxy) {
+                var functionId = parentId + '_' + key;
+
+                if (!functionList[type]) {
+                    functionList[type] = {};
+                }
+
+                if (functionList[type][functionId]) {
+                    throw new Error('Trying to register a duplicate function key: ' + functionId);
+                }
+
+                functionList[type][functionId] = {
+                    function: value,
+                    hash: createFunctionHash(value)
+                }
+            }
+        }
+    }
 }
