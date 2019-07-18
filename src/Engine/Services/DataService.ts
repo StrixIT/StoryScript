@@ -237,8 +237,8 @@ namespace StoryScript {
 
                 var value = loaded[key];
 
-                if (value == undefined) {
-                    return;
+                if (value === undefined) {
+                    continue;
                 }
                 else if (Array.isArray(value)) {
                     initCollection(loaded, key);

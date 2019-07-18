@@ -3,7 +3,7 @@
         return StoryScript.Person(entity);
     }
 
-    export interface IPerson extends StoryScript.IPerson, IEnemy {
+    export interface IPerson extends IEnemy, StoryScript.IPerson, IEnemy {
 
     }
 }

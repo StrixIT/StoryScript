@@ -1,13 +1,16 @@
 ﻿namespace RidderMagnus {
     export interface IGame extends StoryScript.IGame {
         character: Character;
-        locations: StoryScript.ICompiledCollection<ILocation, ICompiledLocation>;
+        locations: StoryScript.ICollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
+        helpers: IHelperService;
+    }
 
-        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => ICompiledEnemy;
+    export interface IHelperService extends StoryScript.IHelperService {
+        randomEnemy(selector?: (enemy: IEnemy) => boolean): IEnemy;
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-        getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
+        getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
         getItem: (selector: string | (() => IItem)) => IItem;
     }
 }

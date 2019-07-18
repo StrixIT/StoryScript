@@ -1,5 +1,5 @@
 ﻿namespace PathOfHeroes {
-    export function Quest<T extends IQuest>(entity: T): T {
+    export function Quest(entity: IQuest): IQuest {
         return StoryScript.Quest(entity);
     }
 

@@ -2,7 +2,7 @@ namespace MyAdventureGameVisual {
     //Your game-specific game interface.
     export interface IGame extends StoryScript.IGame {
         character: Character;
-        locations: ICompiledLocation[];
+        locations: StoryScript.ICollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
         helpers: IHelperService;

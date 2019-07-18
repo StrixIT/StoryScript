@@ -22,9 +22,9 @@
                             game.logToLocationLog('Daar! Onder het bed ligt echt een monster. Het heeft jou nog niet gezien.');
                             game.currentLocation.actions.push({
                                 text: 'Besluip het monster',
-                                type: StoryScript.ActionType.Combat,
+                                actionType: StoryScript.ActionType.Combat,
                                 execute: (game: IGame) => {
-                                    var ratman = game.getEnemy(Enemies.RatMan);
+                                    var ratman = game.helpers.getEnemy(Enemies.RatMan);
                                     game.currentLocation.enemies.push(ratman);
                                     var damage = game.character.sluipen * game.character.vechten;
                                     ratman.hitpoints -= damage;

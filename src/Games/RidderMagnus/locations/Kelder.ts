@@ -7,7 +7,7 @@
             //Met zoeken is er een ring te vinden. 
             //Als de ring al gevonden is, levert zoeken vooral ratten op.
             enemies: [
-                Enemies.ReusachtigeRat
+                Enemies.ReusachtigeRat()
             ],
             destinations: [
                 {

@@ -19,4 +19,8 @@ namespace StoryScript {
          */
         remove?(id: string | ((...params: any) => T) | T): void;
     }
+
+    export interface ILocationCollection extends ICollection<ICompiledLocation> {
+        get?(id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation;
+    }
 }

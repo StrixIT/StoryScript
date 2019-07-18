@@ -164,12 +164,12 @@
             return character;
         }
 
-        fight = (game: IGame, enemy: ICompiledEnemy) => {
+        fight = (game: IGame, enemy: IEnemy) => {
             var self = this;
 
             // Implement character attack here.
 
-            game.currentLocation.enemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 // Implement monster attack here
             });
         }

@@ -110,7 +110,7 @@
 
                 if (roll >= game.currentLocation.sluipCheck) {
 
-                    game.currentLocation.activeEnemies.forEach((enemy: ICompiledEnemy, index: number) => {
+                    game.currentLocation.activeEnemies.forEach((enemy: IEnemy, index: number) => {
                         var sneakAction = {
                             isSneakAction: true,
                             text: 'Besluip ' + enemy.name,
@@ -151,7 +151,7 @@
             });
         }
 
-        fight = (game: IGame, enemy: ICompiledEnemy, retaliate?: boolean) => {
+        fight = (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
             var self = this;
             retaliate = retaliate == undefined ? true : retaliate;
 
@@ -169,7 +169,7 @@
             }
 
             if (retaliate) {
-                game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = game.helpers.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (game.character.snelheid + game.helpers.calculateBonus(game.character, 'defense'))) + game.helpers.calculateBonus(enemy, 'damage'));
                     game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
@@ -178,7 +178,7 @@
             }
         }
 
-        enemyDefeated(game: IGame, enemy: ICompiledEnemy) {
+        enemyDefeated(game: IGame, enemy: IEnemy) {
             var self = this;
 
             if (enemy.reward) {

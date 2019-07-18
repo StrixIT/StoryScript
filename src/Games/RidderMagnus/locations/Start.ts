@@ -3,12 +3,12 @@
         return Location({
             name: 'De Troonzaal',
             items: [
-                Items.LichtSpreuk
+                Items.LichtSpreuk()
             ],
             persons: [
                 //persons.Trader
                 //persons.Trainer
-                Persons.KoninginDagmar
+                Persons.KoninginDagmar()
             ],
             destinations: [
                 //{

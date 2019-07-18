@@ -32,6 +32,12 @@
          * @param selector The type of the item to add, as a string or a function name (e.g. 'Dagger' or MyNewGame.Dagger)
          */        
         getItem(selector: string | (() => IItem)): IItem;
+
+        /**
+         * Gets a specific type of enemy to add to the game.
+         * @param selector The type of the enemy to add, as a string or a function name (e.g. 'Orc' or MyNewGame.Orc)
+         */        
+        getEnemy(selector: string | (() => IEnemy)): IEnemy;
     }
 }
 
@@ -53,6 +59,11 @@ namespace StoryScript {
         getItem = (selector: string): IItem => {
             var self = this;
             return find<IItem>(selector, 'items', self._game.definitions);
+        }
+
+        getEnemy = (selector: string): IEnemy => {
+            var self = this;
+            return find<IEnemy>(selector, 'enemies', self._game.definitions);
         }
 
         rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {

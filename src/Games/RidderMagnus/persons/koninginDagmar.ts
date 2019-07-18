@@ -15,8 +15,8 @@
                 }
             },
             quests: [
-                Quests.GoudenRing,
-                Quests.RattenStaarten
+                Quests.GoudenRing(),
+                Quests.RattenStaarten()
             ]
         });
     }

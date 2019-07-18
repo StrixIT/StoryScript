@@ -1,8 +1,9 @@
 ﻿namespace RidderMagnus {
-    export function Person<T extends IPerson>(entity: T): T {
+    export function Person(entity: IPerson): IPerson {
         return StoryScript.Person(entity);
     }
 
-    export interface IPerson extends StoryScript.IPerson, IEnemy {
+    export interface IPerson extends IEnemy, StoryScript.IPerson {
+        // Add game-specific person properties here
     }
 }

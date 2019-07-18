@@ -1,5 +1,5 @@
 namespace RidderMagnus {
-    export function Feature<T extends IFeature>(entity: T): IFeature {
+    export function Feature(entity: IFeature): IFeature {
         return StoryScript.Feature(entity);
     }
 

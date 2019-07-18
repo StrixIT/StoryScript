@@ -298,8 +298,10 @@ namespace StoryScript {
 
         private createCharacter(characterData : ICharacter) {
             var self = this;
-            self._game.character = self._characterService.createCharacter(self._game, characterData);
-            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
+            var character = self._characterService.createCharacter(self._game, characterData);
+            character.items = character.items || [];
+            character.quests = character.quests || [];
+            self._dataService.save(StoryScript.DataKeys.CHARACTER, character);
             self._game.character = self._dataService.load(StoryScript.DataKeys.CHARACTER);
         }
 

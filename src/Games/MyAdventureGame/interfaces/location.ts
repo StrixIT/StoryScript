@@ -7,7 +7,7 @@ namespace MyAdventureGame {
         // Add game-specific location properties here
     }
 
-    export interface ICompiledLocation extends StoryScript.ICompiledLocation {
+    export interface ICompiledLocation extends ILocation, StoryScript.ICompiledLocation {
         activeEnemies?: StoryScript.ICollection<IEnemy>;
         enemies?: StoryScript.ICollection<IEnemy>;
         activeItems?: StoryScript.ICollection<IItem>;

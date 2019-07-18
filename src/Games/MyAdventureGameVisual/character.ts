@@ -8,7 +8,7 @@ namespace MyAdventureGameVisual {
 
         // Add character properties here.
 
-        items = <IItem[]>[];
+        items: StoryScript.ICollection<IItem> = [];
 
         equipment: {
         };
