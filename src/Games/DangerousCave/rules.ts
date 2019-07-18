@@ -206,7 +206,6 @@
         }
 
         private addFleeAction(game: IGame, location: StoryScript.ICompiledLocation): void {
-            var self = this;
             var numberOfEnemies = location.activeEnemies.length;
             var fleeAction = location.combatActions.get(Actions.Flee);
 

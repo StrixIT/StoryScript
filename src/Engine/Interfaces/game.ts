@@ -36,7 +36,7 @@
         /**
          * All the locations in the game world.
          */
-        locations: ICompiledLocation[];
+        locations: ICollection<ICompiledLocation>;
 
         /**
          * The location in the game world the player is currently at.

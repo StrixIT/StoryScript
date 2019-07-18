@@ -46,7 +46,7 @@ namespace StoryScript {
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
 
             if (!hasCreateCharacterSteps && !self._game.character) {
-                self._game.character = self._characterService.createCharacter(self._game, {});
+                self.createCharacter(<ICharacter>{});
                 locationName = 'Start';
             }
 
@@ -85,9 +85,7 @@ namespace StoryScript {
 
         startNewGame = (characterData: any): void => {
             var self = this;
-            self._game.character = self._characterService.createCharacter(self._game, characterData);
-            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
-            self._game.character = self._dataService.load(StoryScript.DataKeys.CHARACTER);
+            self.createCharacter(characterData);
             self._game.changeLocation('Start');
             self._game.state = StoryScript.GameState.Play;
         }
@@ -230,8 +228,9 @@ namespace StoryScript {
             }
 
             var action = barrier.actions.filter((item: IBarrierAction) => { return item.name == barrier.selectedAction.name; })[0];
+            var actionIndex = barrier.actions.indexOf(action);
             action.action(self._game, destination, barrier, action);
-            barrier.actions.remove(action);
+            barrier.actions.splice(actionIndex, 1);
 
             if (barrier.actions.length) {
                 barrier.selectedAction = barrier.actions[0];
@@ -295,6 +294,13 @@ namespace StoryScript {
             self._locationService.changeLocation(lastLocation.id, false, self._game);
 
             self._game.state = StoryScript.GameState.Play;
+        }
+
+        private createCharacter(characterData : ICharacter) {
+            var self = this;
+            self._game.character = self._characterService.createCharacter(self._game, characterData);
+            self._dataService.save(StoryScript.DataKeys.CHARACTER, self._game.character);
+            self._game.character = self._dataService.load(StoryScript.DataKeys.CHARACTER);
         }
 
         private enemyDefeated(enemy: IEnemy) {

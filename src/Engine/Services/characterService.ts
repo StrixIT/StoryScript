@@ -98,11 +98,6 @@ namespace StoryScript {
                 };
             }
 
-            initCollection(character, 'items');
-            initCollection(character, 'quests');
-
-            setReadOnlyCharacterProperties(character);
-
             return character;
         }
 
@@ -318,7 +313,7 @@ namespace StoryScript {
                     }
                 }
 
-                if (equippedItem && !isNaN( equippedItem.equipmentType) && self._game.character.items.indexOf(equippedItem) === -1) {
+                if (equippedItem && !isNaN(equippedItem.equipmentType) && !self._game.character.items.get(equippedItem)) {
                     self._game.character.items.push(equippedItem);
                 }
 

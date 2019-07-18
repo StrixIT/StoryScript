@@ -53,23 +53,7 @@ namespace StoryScript {
 
                     var functionList = window.StoryScript.ObjectFactory.GetFunctions();
                     self.restoreObjects(functionList, data);
-
-                    if (key.startsWith(StoryScript.DataKeys.GAME + '_')) {
-                        data.world.forEach(location => {
-                            setReadOnlyLocationProperties(location);
-                        });     
-                        
-                        setReadOnlyCharacterProperties(data.character)
-                    }
-                    else if (key  === StoryScript.DataKeys.WORLD) {
-                        data.forEach(location => {
-                            setReadOnlyLocationProperties(location);
-                        });     
-                    }
-                    else if (key === StoryScript.DataKeys.CHARACTER) {
-                        setReadOnlyCharacterProperties(data);
-                    }
-
+                    setReadOnlyProperties(key, data);
                     return data;
                 }
 

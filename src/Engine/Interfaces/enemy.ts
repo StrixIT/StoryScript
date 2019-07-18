@@ -22,7 +22,7 @@
         /**
          * The items the enemy is carrying.
          */
-        items?: IItem[];
+        items?: ICollection<IItem>;
 
         /**
          * When this flag is set to true, the enemy is not shown to the player, cannot be attacked and will not block the player from travelling.

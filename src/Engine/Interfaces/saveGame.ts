@@ -36,7 +36,7 @@ namespace StoryScript {
         /**
          * The world locations to save.
          */
-        world: ICompiledLocation[];
+        world: ICollection<ICompiledLocation>;
 
         /**
          * The state of the game when saved.

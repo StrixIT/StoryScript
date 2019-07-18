@@ -21,6 +21,6 @@
         /**
          * The quests this person has available.
          */
-        quests?: IQuest[];
+        quests?: ICollection<IQuest>;
     }
 }

@@ -1,15 +1,15 @@
 ﻿namespace StoryScript {
     export interface ILocationService {
         init(game: IGame, buildWorld?: boolean): void;
-        saveWorld(locations: ICompiledLocation[]): void;
-        copyWorld(): ICompiledLocation[];
+        saveWorld(locations: ICollection<ICompiledLocation>): void;
+        copyWorld(): ICollection<ICompiledLocation>;
         changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame): void;
     }
 }
 
 namespace StoryScript {
     export class LocationService implements ILocationService {
-        private pristineLocations: ICompiledLocation[];
+        private pristineLocations: ICollection<ICompiledLocation>;
         private dynamicLocations: boolean = false;
 
         constructor(private _dataService: IDataService, private _conversationService: IConversationService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
@@ -24,12 +24,12 @@ namespace StoryScript {
             game.definitions.dynamicLocations = self.dynamicLocations;
         }
 
-        saveWorld = (locations: ICompiledLocation[]) => {
+        saveWorld = (locations: ICollection<ICompiledLocation>) => {
             var self = this;
             self._dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
         }
 
-        copyWorld = (): ICompiledLocation[] => {
+        copyWorld = (): ICollection<ICompiledLocation> => {
             var self = this;
             return self._dataService.copy(self._game.locations, self.pristineLocations);
         }
@@ -148,7 +148,7 @@ namespace StoryScript {
             }
         }
 
-        private loadWorld(buildWorld: boolean): ICompiledLocation[] {
+        private loadWorld(buildWorld: boolean): ICollection<ICompiledLocation> {
             var self = this;
 
             const locations = self.getLocations(buildWorld);
@@ -161,9 +161,9 @@ namespace StoryScript {
             return locations;
         }
 
-        private getLocations(buildWorld: boolean): ICompiledLocation[] {
+        private getLocations(buildWorld: boolean): ICollection<ICompiledLocation> {
             var self = this;
-            var locations = <ICompiledLocation[]>null;
+            var locations = <ICollection<ICompiledLocation>>null;
 
             if (buildWorld) {
                 self.pristineLocations = self.buildWorld();
@@ -186,7 +186,7 @@ namespace StoryScript {
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
-            location.destinations.push = (<any>location.destinations.push).proxy(self.addDestination, self._game);
+            location.destinations.push = location.destinations.push.proxy(self.addDestination, self._game);
 
             Object.defineProperty(location, 'activeDestinations', {
                 get: function () {
@@ -208,7 +208,7 @@ namespace StoryScript {
             }
         }
 
-        private buildWorld(): ICompiledLocation[] {
+        private buildWorld(): ICollection<ICompiledLocation> {
             var self = this;
             var locations = self._definitions.locations;
             var compiledLocations = [];
@@ -228,7 +228,7 @@ namespace StoryScript {
             return compiledLocations;
         }
 
-        private processLocations(locations: (() => ILocation)[], compiledLocations: ICompiledLocation[]) {
+        private processLocations(locations: (() => ILocation)[], compiledLocations: ICollection<ICompiledLocation>) {
             var self = this;
 
             for (var n in locations) {
@@ -280,9 +280,7 @@ namespace StoryScript {
             originalFunction.apply(this, args);
         }
 
-        private playEvents(game: IGame, events: ((game: IGame) => void)[]) {
-            var self = this;
-
+        private playEvents(game: IGame, events: ICollection<((game: IGame) => void)>) {
             for (var n in events) {
                 events[n](game);
             }

@@ -13,7 +13,7 @@
         oplettendheid: number = 1;
         defense: number = 1;
 
-        items: IItem[] = [];
+        items: StoryScript.ICollection<IItem> = [];
 
         equipment: {
             head: StoryScript.IItem,

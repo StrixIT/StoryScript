@@ -127,7 +127,7 @@ namespace StoryScript {
             }
         }
 
-        private initCombat = (newValue: IEnemy[]): void => {
+        private initCombat = (newValue: ICollection<IEnemy>): void => {
             var self = this;
 
             if (newValue) {

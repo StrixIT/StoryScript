@@ -11,23 +11,23 @@
         /**
          * When specified, the functions in this array will be called when the player enters the location for the first time.
          */
-        enterEvents?: ((game: IGame) => void)[];
+        enterEvents?: ICollection<((game: IGame) => void)>;
 
         /**
          * When specified, the functions in this array will be called when the player leaves the location.
          */
         // Todo: shouldn't they be called only one time, when the player first leaves the location?
-        leaveEvents?: ((game: IGame) => void)[];
+        leaveEvents?: ICollection<((game: IGame) => void)>;
 
         /**
          * Actions that the player can perform at this location.
          */
-        actions?: IAction[];
+        actions?: ICollection<IAction>;
 
         /**
          * Actions that the player can perform at this location when in combat.
          */
-        combatActions?: IAction[];
+        combatActions?: ICollection<IAction>;
 
         /**
          * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically
@@ -40,27 +40,27 @@
         /**
          * The features of this location that the player can interact with.
          */
-        features?: IFeature[];
+        features?: ICollection<IFeature>;
 
         /**
          * The enemies that occupy this location.
          */
-        enemies?: IEnemy[];
+        enemies?: ICollection<IEnemy>;
 
         /**
          * The characters at this location that the player can interact with.
          */
-        persons?: IPerson[];
+        persons?: ICollection<IPerson>;
 
         /**
          * The items that can be found at this location.
          */
-        items?: IItem[];
+        items?: ICollection<IItem>;
 
         /**
          * The other locations in the game world that can be reached from this one.
          */
-        destinations?: IDestination[];
+        destinations?: ICollection<IDestination>;
 
         /**
          * Trade objects present at this location. If you don't want to use persons to trade with, you can use this object. Useful for
@@ -90,22 +90,22 @@
         /**
          * The enemies that are present (active) at this location.
          */
-        activeEnemies?: IEnemy[];
+        activeEnemies?: ICollection<IEnemy>;
 
         /**
          * The characters that are present (active) at this location that the player can interact with.
          */
-        activePersons?: IPerson[];
+        activePersons?: ICollection<IPerson>;
 
         /**
          * The items that are found (active) at this location.
          */
-        activeItems?: IItem[];
+        activeItems?: ICollection<IItem>;
 
         /**
          * The other locations in the game world that are reachable (active) from this one.
          */
-        activeDestinations?: IDestination[];
+        activeDestinations?: ICollection<IDestination>;
 
         /**
          * The current description shown to the player for this location.

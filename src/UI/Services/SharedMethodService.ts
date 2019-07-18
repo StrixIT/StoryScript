@@ -74,7 +74,7 @@ namespace StoryScript
 
                 // Todo: combat actions will never be removed this way.
                 if (!result && self._game.currentLocation.actions) {
-                    self._game.currentLocation.actions.remove(action);
+                    self._game.currentLocation.actions.splice(actionIndex, 1);
                 }
 
                 // After each action, save the game.

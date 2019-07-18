@@ -67,7 +67,25 @@ namespace StoryScript {
         return CreateObject(action, 'action');
     }
 
-    export function setReadOnlyLocationProperties(location: ILocation) {
+    export function setReadOnlyProperties(key: string, data: any) {
+        if (key.startsWith(StoryScript.DataKeys.GAME + '_')) {
+            data.world.forEach(location => {
+                setReadOnlyLocationProperties(location);
+            });     
+            
+            setReadOnlyCharacterProperties(data.character)
+        }
+        else if (key  === StoryScript.DataKeys.WORLD) {
+            data.forEach(location => {
+                setReadOnlyLocationProperties(location);
+            });     
+        }
+        else if (key === StoryScript.DataKeys.CHARACTER) {
+            setReadOnlyCharacterProperties(data);
+        }
+    }
+
+    function setReadOnlyLocationProperties(location: ILocation) {
         Object.defineProperty(location, 'activePersons', {
             get: function () {
                 return location.persons.filter(e => { return !e.inactive; });
@@ -87,7 +105,7 @@ namespace StoryScript {
         });
     }
 
-    export function setReadOnlyCharacterProperties(character: ICharacter) {
+    function setReadOnlyCharacterProperties(character: ICharacter) {
         Object.defineProperty(character, 'combatItems', {
             get: function () {
                 return character.items.filter(e => { return e.useInCombat; });
@@ -96,6 +114,26 @@ namespace StoryScript {
     }
 
     export function initCollection<T>(entity: any, property: string, buildInline?: boolean) {
+        const _entityCollections: string[] = [
+            'features',
+            'items',
+            'enemies',
+            'persons',
+            'quests'
+        ];
+
+        const _gameCollections: string[] = _entityCollections.concat([
+            'actions',
+            'combatActions',
+            'destinations',
+            'enterEvents',
+            'leaveEvents'
+        ]);
+
+        if (_gameCollections.indexOf(property) === -1) {
+            return;
+        }
+        
         var collection= entity[property] || [];
 
         if (entity[property] && buildInline) {
@@ -117,8 +155,16 @@ namespace StoryScript {
             }
         });
 
+        if (_entityCollections.indexOf(property) === -1) {
+            return;
+        }
+
         var readOnlyCollection = entity[property];
-        readOnlyCollection.push = readOnlyCollection.push.proxy(pushEntity);
+
+        Object.defineProperty(readOnlyCollection, 'push', {
+            writable: true,
+            value: readOnlyCollection.push.proxy(pushEntity)
+        });
     }
 
     function EnemyBase<T extends IEnemy>(entity: T, type: string): T {
