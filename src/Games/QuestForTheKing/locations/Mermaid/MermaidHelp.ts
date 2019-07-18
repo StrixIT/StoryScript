@@ -9,9 +9,8 @@
                 }              
             ],                       
             items: [
-                Items.Pearl,                
+                Items.Pearl(),                
             ]
         });
     }
 }
-   

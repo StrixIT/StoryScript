@@ -9,8 +9,8 @@
                 },             
             ],
             enemies: [
-                Enemies.Wolf,
-                Enemies.Wolf
+                Enemies.Wolf(),
+                Enemies.Wolf()
             ],
             actions: [
                 {

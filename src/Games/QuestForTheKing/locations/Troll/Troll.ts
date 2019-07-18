@@ -9,7 +9,7 @@
                 }
             ],
             enemies: [
-                Enemies.Troll             
+                Enemies.Troll()          
             ],
             actions: [
                 {

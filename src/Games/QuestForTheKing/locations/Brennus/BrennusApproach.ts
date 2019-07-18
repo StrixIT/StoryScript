@@ -9,7 +9,7 @@
                 }
             ],
             enemies: [
-                Enemies.Brennus
+                Enemies.Brennus()
             ]
         });
     }

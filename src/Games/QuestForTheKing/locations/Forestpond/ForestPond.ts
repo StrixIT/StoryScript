@@ -8,13 +8,12 @@
                     target: Locations.Quest1map2
                 }              
             ],
-                enemies: [
-                    Enemies.DarkDryad
-                    
+            enemies: [
+                Enemies.DarkDryad()
             ],
-                items: [
-                    Items.Magicshield,
-                ]
+            items: [
+                Items.Magicshield(),
+            ]
         });
     }
 }    

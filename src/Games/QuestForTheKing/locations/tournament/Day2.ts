@@ -3,7 +3,7 @@
         return Location({
             name: 'Day 2',
             enemies: [
-                Enemies.Nobleman
+                Enemies.Nobleman()
             ],
             destinations: [
                 {

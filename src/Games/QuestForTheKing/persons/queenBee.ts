@@ -7,7 +7,7 @@
             attack: '1d6',
             reward: 5,
             items: [
-                Items.Beesting
+                Items.Beesting()
             ],
             currency: 10,
             conversation: {

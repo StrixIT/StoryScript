@@ -20,7 +20,7 @@
                 },
             ],
             enemies: [
-                Enemies.Brennus        
+                Enemies.Brennus()  
             ],
             enterEvents: [
                 (game: IGame) => {

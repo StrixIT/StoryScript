@@ -9,13 +9,12 @@
                 }              
             ],            
             enemies: [
-                Enemies.Brownbear
+                Enemies.Brownbear()
 
             ],
             items: [
-                Items.Magicflower,                
+                Items.Magicflower(),                
             ]
         });
     }
 }
-   

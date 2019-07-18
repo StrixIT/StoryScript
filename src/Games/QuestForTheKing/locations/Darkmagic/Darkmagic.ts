@@ -8,10 +8,9 @@
                     target: Locations.Quest1map4
                 }              
             ],
-                enemies: [
-                    Enemies.Mirrorimage
-                    
-                ]
+            enemies: [
+                Enemies.Mirrorimage()             
+            ]
         });
     }
 }    

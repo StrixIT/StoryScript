@@ -19,7 +19,7 @@
                 },
             ],
             enemies: [
-                Enemies.Shieldmaiden
+                Enemies.Shieldmaiden()
             ],
             enterEvents: [
                 changeDay

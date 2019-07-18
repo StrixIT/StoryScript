@@ -1,9 +1,9 @@
 ﻿module QuestForTheKing {
-    export function Item<T extends IItem>(entity: T): T {
+    export function Item(entity: IItem): IItem {
         return StoryScript.Item(entity);
     }
 
-    export interface IItem extends StoryScript.IItem {
+    export interface IItem extends IFeature, StoryScript.IItem {
         damage?: string;
         defense?: number;
         dayAvailable?: number;

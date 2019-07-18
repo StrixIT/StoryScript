@@ -9,13 +9,13 @@
                 }              
             ],
             enemies: [
-                Enemies.Octopus                   
+                Enemies.Octopus()                 
             ],
             actions: [
                 {
                     text: 'Attack the Shadow',
                     status: StoryScript.ActionStatus.Available,
-                    type: StoryScript.ActionType.Check,
+                    actionType: StoryScript.ActionType.Check,
                     execute: (game: IGame) => {
                         game.logToLocationLog(game.currentLocation.descriptions['attacknight']);
                         game.currentLocation.enemies.map(e => e.inactive = false);
@@ -24,7 +24,7 @@
                 {
                     text: 'Leave the Shadow alone',
                     status: StoryScript.ActionStatus.Available,
-                    type: StoryScript.ActionType.Check,
+                    actionType: StoryScript.ActionType.Check,
                     execute: (game: IGame) => {
                         // Remove the octopus and the attack action when chosing to sail past.
                         game.currentLocation.enemies.length = 0;

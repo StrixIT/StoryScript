@@ -13,7 +13,7 @@
                 }                                     
             ],
             enemies: [
-                Enemies.Twoheadedwolf
+                Enemies.Twoheadedwolf()
             ]
         });
     }

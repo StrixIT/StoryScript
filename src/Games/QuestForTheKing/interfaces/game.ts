@@ -1,15 +1,17 @@
 ﻿module QuestForTheKing {
     export interface IGame extends StoryScript.IGame {
         character: Character;
-        locations: StoryScript.ICompiledCollection<ILocation, ICompiledLocation>;
+        locations: StoryScript.ICollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;
-
-        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => ICompiledEnemy;
-        randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-        getEnemy: (selector: string | (() => IEnemy)) => ICompiledEnemy;
-        getItem: (selector: string | (() => IItem)) => IItem;
-
+        helpers: IHelperService;
         worldProperties: IWorldProperties
+    }
+
+    export interface IHelperService extends StoryScript.IHelperService {
+        randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
+        randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
+        getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
+        getItem: (selector: string | (() => IItem)) => IItem;
     }
 }

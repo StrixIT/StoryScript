@@ -9,12 +9,12 @@
                 }
             ],
             enemies: [
-                Enemies.Bandit,
-                Enemies.Bandit,
-                Enemies.Ghost
+                Enemies.Bandit(),
+                Enemies.Bandit(),
+                Enemies.Ghost()
             ],
             items: [
-                Items.Goldnecklace
+                Items.Goldnecklace()
             ],
             complete: (game, location) => {
                 return locationComplete(game, location, () => location.activeEnemies.length == 0, () => location.items.length == 0);

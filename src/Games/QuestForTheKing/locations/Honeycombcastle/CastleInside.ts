@@ -9,7 +9,7 @@
                 }
             ],
             persons: [
-                Persons.QueenBee
+                Persons.QueenBee()
             ]
         });
     }

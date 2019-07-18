@@ -9,11 +9,11 @@
                 }
             ],
             enemies: [
-                Enemies.Ghost
+                Enemies.Ghost()
             ],
             items: [
-                Items.Parchment,
-                Items.Bow,
+                Items.Parchment(),
+                Items.Bow(),
             ]
         });
     }

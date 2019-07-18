@@ -25,7 +25,7 @@
 
             ],
             enemies: [
-                Enemies.Farmboy
+                Enemies.Farmboy()
             ],
             enterEvents: [
                 changeDay

@@ -9,7 +9,7 @@
                 }
             ],
             items: [
-                Items.Beesting,
+                Items.Beesting(),
             ]
         });
     }

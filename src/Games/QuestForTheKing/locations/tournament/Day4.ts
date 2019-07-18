@@ -9,7 +9,7 @@
                 }
             ],
             enemies: [
-                Enemies.SirAyric
+                Enemies.SirAyric()
             ],
             enterEvents: [
                 changeDay

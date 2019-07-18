@@ -9,8 +9,8 @@
                 }              
             ],
             enemies: [
-                Enemies.Necromancer
+                Enemies.Necromancer()
             ]
         });
     }
-}    
+}
