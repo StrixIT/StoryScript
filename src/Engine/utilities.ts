@@ -82,11 +82,9 @@
         return match[0] ? match[0]() : null;
     }
 
-    export function custom<T>(definition: () => T, customData: {}): () => T {
-        return (): T => {
-            var instance = definition();
-            return extend(instance, customData);
-        };
+    export function custom<T>(definition: () => T, customData: {}): T {
+        var instance = definition();
+        return extend(instance, customData);
     }
 
     export function equals<T>(entity: T, definition: () => T): boolean {

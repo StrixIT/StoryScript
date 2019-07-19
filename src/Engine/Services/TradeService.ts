@@ -43,7 +43,7 @@ namespace StoryScript {
                 return null;
             }
 
-            var itemsForSale = trader.buy.items;
+            var itemsForSale = trader.buy.items.slice();
 
             var buySelector = (item: IItem) => {
                 return trader.buy.itemSelector(self._game, item);
@@ -59,8 +59,13 @@ namespace StoryScript {
                 return trader.sell.itemSelector(self._game, item);
             };
 
-            trader.buy.items = itemsForSale;
-            trader.sell.items = StoryScript.randomList<IItem>(self._game.character.items, trader.sell.maxItems, 'items', self._game.definitions, sellSelector);
+            var itemsToSell = StoryScript.randomList<IItem>(self._game.character.items, trader.sell.maxItems, 'items', self._game.definitions, sellSelector);
+
+            trader.buy.items.length = 0;
+            itemsForSale.forEach(i => trader.buy.items.push(i));
+
+            trader.sell.items.length = 0;
+            itemsToSell.forEach(i => trader.sell.items.push(i));
 
             return trader;
         }
