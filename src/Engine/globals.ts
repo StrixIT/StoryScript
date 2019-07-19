@@ -29,7 +29,7 @@
 
         // This allows deserializing functions added at runtime without using eval.
         // Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
-        if (typeof String.prototype.parseFunction != 'function') {
+        if (typeof String.prototype.parseFunction !== 'function') {
             (String.prototype).parseFunction = function () {
                 var text = this.toString();
                 var funcReg = /function[ ]{0,}([a-zA-Z0-9]{0,})(\([\w\d, ]{0,}\))[ \n\t]*({.*})/gmis;       

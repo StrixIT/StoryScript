@@ -17,7 +17,7 @@ module.exports = function(config) {
     files: [
       'test-main.js',
       { pattern: 'dist/js/StoryScript.js', included: true },
-      { pattern: 'src/engine/spec/**/*Spec.js', included: false }
+      { pattern: 'tests/**/*Spec.js', included: false }
     ],
 
 
