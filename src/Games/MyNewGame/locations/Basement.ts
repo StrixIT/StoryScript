@@ -9,7 +9,7 @@
                 }
             ],
             items: [
-                Items.Journal
+                Items.Journal()
             ]
         });
     }

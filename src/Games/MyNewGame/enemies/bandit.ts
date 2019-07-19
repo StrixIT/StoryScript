@@ -5,8 +5,8 @@
             hitpoints: 10,
             attack: '1d6',
             items: [
-                Items.Sword,
-                Items.BasementKey
+                Items.Sword(),
+                Items.BasementKey()
             ]
         });
     }

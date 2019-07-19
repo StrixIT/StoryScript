@@ -81,7 +81,7 @@
             return character;
         }
 
-        fight = (game: IGame, enemy: ICompiledEnemy) => {
+        fight = (game: IGame, enemy: IEnemy) => {
             var self = this;
             var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
             game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
@@ -91,7 +91,7 @@
                 game.logToCombatLog('You defeat the ' + enemy.name + '!');
             }
 
-            game.currentLocation.activeEnemies.filter((enemy: ICompiledEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+            game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                 var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
                 game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                 game.character.currentHitpoints -= damage;

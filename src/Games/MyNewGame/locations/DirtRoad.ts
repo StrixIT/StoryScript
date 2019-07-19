@@ -9,7 +9,7 @@
                 }
             ],
             enemies: [
-                Enemies.Bandit
+                Enemies.Bandit()
             ],
             combatActions: [
                 {

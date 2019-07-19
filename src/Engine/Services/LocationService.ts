@@ -420,8 +420,9 @@ namespace StoryScript {
 
     function addKeyAction(game: IGame, destination: IDestination) {
         if (destination.barrier && destination.barrier.key) {
+            var keyEntity = typeof destination.barrier.key === 'function' ? destination.barrier.key() : destination.barrier.key;
             var existingAction = null;
-            var keyActionHash = createFunctionHash((<any>destination.barrier.key).open.action);
+            var keyActionHash = createFunctionHash(keyEntity.open.action);
 
             if (destination.barrier.actions) {
                 destination.barrier.actions.forEach(x => {

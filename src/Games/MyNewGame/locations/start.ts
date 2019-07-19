@@ -27,7 +27,7 @@
                 }
             ],
             persons: [
-                Persons.Friend
+                Persons.Friend()
             ]
         });
     }

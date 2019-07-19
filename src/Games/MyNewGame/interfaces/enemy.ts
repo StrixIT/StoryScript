@@ -1,9 +1,9 @@
 ﻿namespace MyNewGame {
-    export function Enemy<T extends IEnemy>(entity: T): T {
+    export function Enemy(entity: IEnemy): IEnemy {
         return StoryScript.Enemy(entity);
     }
 
     export interface IEnemy extends StoryScript.IEnemy {
-        attack: string;     
+        attack: string;   
     }
 }
