@@ -23,7 +23,8 @@ var tsUIProject = ts.createProject("./src/UI/tsconfig.json");
 var paths = {
     webroot: "./dist/",
     sourceroot: "./src/",
-    typeroot: "./src/types/"
+    typeroot: "./src/types/",
+    testroot: "./tests/TestGameFiles"
 };
 
 gulp.task('create-game', createGame());
@@ -267,7 +268,10 @@ function compileGame() {
         }}))
         .pipe(sourcemaps.init()).pipe(tsGameProject());
 
-    return tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js'));
+    return merge(
+        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
+        tsResult.js.pipe(concat('game.js')).pipe(gulp.dest(paths.testroot))
+    );
 }
 
 function compileUI() {
@@ -307,10 +311,14 @@ function compileUITemplates() {
 
 function compileGameDescriptions(nameSpace) {
     var gameDir = 'src/games/' + nameSpace;
-
-    return gulp
+    var descriptionPipe = gulp
         .src([gameDir + '/**/*.html', '!' + gameDir + '/ui' ])
         .pipe(minifyHtml({ empty: true }))
-        .pipe(gameDescriptionBundler(nameSpace))
-        .pipe(gulp.dest(paths.webroot + 'js/'));
+        .pipe(gameDescriptionBundler(nameSpace));
+
+    return merge
+    (
+        descriptionPipe.pipe(gulp.dest(paths.webroot + 'js/')),
+        descriptionPipe.pipe(gulp.dest(paths.testroot))
+    );
 }

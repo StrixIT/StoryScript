@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       'test-main.js',
       { pattern: 'dist/js/StoryScript.js', included: true },
+      { pattern: 'tests/TestGameFiles/game*.js', included: true },
       { pattern: 'tests/**/*Spec.js', included: false }
     ],
 

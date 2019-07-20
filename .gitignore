@@ -10,3 +10,4 @@
 /src/Games/**/resources/*
 !/src/Games/**/resources/readme.txt
 /src/Games/QuestForTheKing/**/*.html
+/tests/TestGameFiles/*
