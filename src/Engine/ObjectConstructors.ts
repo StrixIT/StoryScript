@@ -85,34 +85,6 @@ namespace StoryScript {
         }
     }
 
-    function setReadOnlyLocationProperties(location: ILocation) {
-        Object.defineProperty(location, 'activePersons', {
-            get: function () {
-                return location.persons.filter(e => { return !e.inactive; });
-            }
-        });
-
-        Object.defineProperty(location, 'activeEnemies', {
-            get: function () {
-                return location.enemies.filter(e => { return !e.inactive; });
-            }
-        });
-
-        Object.defineProperty(location, 'activeItems', {
-            get: function () {
-                return location.items.filter(e => { return !e.inactive; });
-            }
-        });
-    }
-
-    function setReadOnlyCharacterProperties(character: ICharacter) {
-        Object.defineProperty(character, 'combatItems', {
-            get: function () {
-                return character.items.filter(e => { return e.useInCombat; });
-            }
-        });
-    }
-
     export function initCollection<T>(entity: any, property: string, buildInline?: boolean) {
         const _entityCollections: string[] = [
             'features',
@@ -127,7 +99,8 @@ namespace StoryScript {
             'combatActions',
             'destinations',
             'enterEvents',
-            'leaveEvents'
+            'leaveEvents',
+            'combine'
         ]);
 
         if (_gameCollections.indexOf(property) === -1) {
@@ -164,6 +137,34 @@ namespace StoryScript {
         Object.defineProperty(readOnlyCollection, 'push', {
             writable: true,
             value: readOnlyCollection.push.proxy(pushEntity)
+        });
+    }
+
+    function setReadOnlyLocationProperties(location: ILocation) {
+        Object.defineProperty(location, 'activePersons', {
+            get: function () {
+                return location.persons.filter(e => { return !e.inactive; });
+            }
+        });
+
+        Object.defineProperty(location, 'activeEnemies', {
+            get: function () {
+                return location.enemies.filter(e => { return !e.inactive; });
+            }
+        });
+
+        Object.defineProperty(location, 'activeItems', {
+            get: function () {
+                return location.items.filter(e => { return !e.inactive; });
+            }
+        });
+    }
+
+    function setReadOnlyCharacterProperties(character: ICharacter) {
+        Object.defineProperty(character, 'combatItems', {
+            get: function () {
+                return character.items.filter(e => { return e.useInCombat; });
+            }
         });
     }
 
@@ -228,6 +229,7 @@ namespace StoryScript {
 
         var functions = window.StoryScript.ObjectFactory.GetFunctions();
 
+        // If this is the first time an object of this definition is created, get the functions.
         if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>compiledEntity).id.toLowerCase()))) {
             getFunctions(plural, functions, definitionKeys, compiledEntity, null);
         }
