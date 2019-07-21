@@ -240,11 +240,9 @@ namespace StoryScript {
         }
 
         private setDestinations(location: ICompiledLocation) {
-            var self = this;
-
             if (location.destinations) {
                 location.destinations.forEach(destination => {
-                    setDestination(<IDestination><unknown>destination);
+                    setDestination(destination);
                 });
             }
         }
@@ -448,13 +446,11 @@ namespace StoryScript {
     }
 
     function setDestination(destination: IDestination) {
-        var self = this;
-
         // Replace the function pointers for the destination targets with the function keys.
         // That's all that is needed to navigate, and makes it easy to save these targets.
         // Note that dynamically added destinations already have a string as target so use that one.
         // Also set the barrier selected actions to the first one available for each barrier.
-        // Further, instantiate any keys present and replace combine functions with their target ids.
+        // Further, replace combine functions with their target ids.
         destination.target = (destination.target && (<any>destination.target).name) || destination.target;
 
         if (destination.barrier) {

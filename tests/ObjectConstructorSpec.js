@@ -48,19 +48,43 @@ describe("ObjectFactory", function() {
     });
 
     it("should instantiate keys on destination barriers", function() {
-        var game = StoryScript.ObjectFactory.GetGame();
+        var functions = StoryScript.ObjectFactory.GetFunctions();
 
-        var locationWithBarrier = {
-            name: 'Test location',
-            destinations: [
-                {
-                    barrier: {
+        function Key() {
+            return {
+                name: 'Test key'
+            };
+        };
 
+        function locationWithBarrier() {
+            return StoryScript.Location({
+                name: 'Test location',
+                destinations: [
+                    {
+                        name: 'Test barrier',
+                        barrier: {
+                            name: 'Door',
+                            key: Key,
+                            actions: [
+                                {
+                                    name: 'Inspect',
+                                    action: () => {}
+                                },
+                            ]
+                        }
                     }
-                }
-            ]
-        }
+                ]
+            });
+        };
         
-        // Todo
+        var result = locationWithBarrier();
+        var key = result.destinations[0].barrier.key;
+        expect(typeof key).toBe('object');
+        expect(key.name).toBe('Test key');
+
+        // Clean up the function definitions added creating this location.
+        var keysToRemove = Object.keys(functions.locations);
+        delete functions.locations[keysToRemove.pop()];
+        delete functions.locations[keysToRemove.pop()];
     });
 });
