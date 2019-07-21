@@ -24,7 +24,7 @@ describe("LocalStorage", function() {
         expect(loadedValue.values).toEqual([ 1, 2 ]);
 
         // Clean up
-        localStorage.removeItem(key);
+        localStorage.removeItem('StoryScript_' + key);
     });
 
     it("should get all the keys of saved values for the game", function() {
@@ -46,7 +46,7 @@ describe("LocalStorage", function() {
         // Clean up
         for (var i = 0; i < keys.length; i++)
         {
-            localStorage.removeItem(gameKey + keys[i]);
+            localStorage.removeItem('StoryScript_' + gameKey + keys[i]);
         }
     });
 });
