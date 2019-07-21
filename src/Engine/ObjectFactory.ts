@@ -35,6 +35,11 @@ namespace StoryScript {
             return self._eventTarget;
         }
 
+        GetNameSpace = (): string => {
+            var self = this;
+            return self._nameSpace;
+        }
+
         GetGame = (): IGame => {
             var self = this;
             self.init();
@@ -86,6 +91,20 @@ namespace StoryScript {
             var self = this;
             return self._functions;
         }
+
+        // Access to services used internally for testing.
+        GetStorageService = (): ILocalStorageService => {
+            var self = this;
+            self.init();
+            return self._localStorageService;
+        }
+
+        GetHelperService = (): IHelperService => {
+            var self = this;
+            self.init();
+            return self._helperService;
+        }
+        //
 
         private init = (): void => {
             var self = this;
