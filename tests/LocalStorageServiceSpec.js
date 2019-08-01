@@ -6,7 +6,7 @@ describe("LocalStorage", function() {
     });
 
     it("should store a value and retrieve it", function() {
-        var service = StoryScript.ObjectFactory.GetStorageService();
+        var service = new StoryScript.LocalStorageService();
 
         var key = 'storage';
         var value = JSON.stringify({
@@ -28,7 +28,7 @@ describe("LocalStorage", function() {
     });
 
     it("should get all the keys of saved values for the game", function() {
-        var service = StoryScript.ObjectFactory.GetStorageService();
+        var service = new StoryScript.LocalStorageService();
         var nameSpace = StoryScript.ObjectFactory.GetNameSpace();
         var gameKey = nameSpace + '_' + StoryScript.DataKeys.GAME + '_';
 

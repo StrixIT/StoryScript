@@ -43,7 +43,7 @@
 
 namespace StoryScript {
     export class HelperService implements IHelperService {
-        constructor(private _game: IGame, private _rules: IRules) {
+        constructor(private _game: IGame) {
         }
 
         randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {

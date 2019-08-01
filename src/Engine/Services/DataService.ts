@@ -15,7 +15,7 @@ namespace StoryScript {
         private loadedDescriptions: { [id: string]: string };
         private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
 
-        constructor(private _localStorageService: ILocalStorageService, private _events: EventTarget, private _game: IGame, private _gameNameSpace: string) {
+        constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
             var self = this;
             self.descriptionBundle = window.StoryScript.GetGameDescriptions();
         }

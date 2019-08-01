@@ -92,17 +92,11 @@ namespace StoryScript {
             return self._functions;
         }
 
-        // Access to services used internally for testing.
-        GetStorageService = (): ILocalStorageService => {
+        // Access to services used internally for testing.       
+        GetLocationService = (): ILocationService => {
             var self = this;
             self.init();
-            return self._localStorageService;
-        }
-
-        GetHelperService = (): IHelperService => {
-            var self = this;
-            self.init();
-            return self._helperService;
+            return self._locationService;
         }
         //
 
@@ -114,9 +108,9 @@ namespace StoryScript {
                 self.getDefinitions();
                 self.registerFunctions();
                 self._game.definitions = self._definitions;
-                self._helperService = new HelperService(self._game, self._rules);
+                self._helperService = new HelperService(self._game);
                 self._tradeService = new TradeService(self._game, self._texts);
-                self._dataService = new DataService(self._localStorageService, self._eventTarget, self._game, self._nameSpace);
+                self._dataService = new DataService(self._localStorageService, self._nameSpace);
                 self._conversationService = new ConversationService(self._dataService, self._game, self._rules, self._texts);
                 self._locationService = new LocationService(self._dataService, self._conversationService, self._rules, self._game, self._definitions);
                 self._combinationService = new CombinationService(self._dataService, self._locationService, self._game, self._rules, self._texts);
