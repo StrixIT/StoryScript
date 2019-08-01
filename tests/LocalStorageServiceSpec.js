@@ -32,7 +32,7 @@ describe("LocalStorage", function() {
         var nameSpace = StoryScript.ObjectFactory.GetNameSpace();
         var gameKey = nameSpace + '_' + StoryScript.DataKeys.GAME + '_';
 
-        var keys = [ 'storage', 'new', 'test' ];
+        var keys = [ 'storage', 'new', 'test' ].sort();
         var values = [ 1, 2, 3];
 
         for (var i = 0; i < keys.length; i++)
@@ -40,7 +40,7 @@ describe("LocalStorage", function() {
             service.set(gameKey + keys[i], values[i]);
         }
 
-        var storageKeys = service.getKeys(gameKey);
+        var storageKeys = service.getKeys(gameKey).sort();
         expect(storageKeys).toEqual(keys);
 
         // Clean up

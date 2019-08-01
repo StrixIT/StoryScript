@@ -11,7 +11,7 @@
     export interface IHelperService extends StoryScript.IHelperService {
         randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
         randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-        getEnemy: (selector: string | (() => IEnemy)) => IEnemy;
-        getItem: (selector: string | (() => IItem)) => IItem;
+        getEnemy: (selector: string) => IEnemy;
+        getItem: (selector: string) => IItem;
     }
 }

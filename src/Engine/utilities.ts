@@ -68,20 +68,6 @@
         return results;
     }
 
-    export function find<T>(selector: string, type: string, definitions: IDefinitions): T {
-        var collection = definitions[type];
-
-        if (!collection && !selector) {
-            return null;
-        }
-
-        var match = (<[() => T]>collection).filter((definition: () => T) => {
-            return (<any>definition).name === selector;
-        });
-
-        return match[0] ? match[0]() : null;
-    }
-
     export function custom<T>(definition: () => T, customData: {}): T {
         var instance = definition();
         return extend(instance, customData);

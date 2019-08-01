@@ -24,7 +24,7 @@
                                 text: 'Besluip het monster',
                                 actionType: StoryScript.ActionType.Combat,
                                 execute: (game: IGame) => {
-                                    var ratman = game.helpers.getEnemy(Enemies.RatMan);
+                                    var ratman = Enemies.RatMan();
                                     game.currentLocation.enemies.push(ratman);
                                     var damage = game.character.sluipen * game.character.vechten;
                                     ratman.hitpoints -= damage;
