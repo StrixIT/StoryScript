@@ -20,8 +20,9 @@ namespace StoryScript {
             var self = this;
             let className = '';
 
+            // TODO: actually use the 'combine-active-selected' class!
             if (tool) {
-                className = self._game.combinations.activeCombination ? self._game.combinations.activeCombination.selectedTool && self._game.combinations.activeCombination.selectedTool.id === tool.id ? 'combine-active-selected' : 'combine-selectable' : null;
+                className = self._game.combinations.activeCombination ? self._game.combinations.activeCombination.selectedTool && self._game.combinations.activeCombination.selectedTool.id === tool.id ? 'combine-active-selected' : 'combine-selectable' : '';
             }
             else {
                 className = self._game.combinations.activeCombination  ? 'combine-active-hide' : '';
