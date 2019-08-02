@@ -92,14 +92,6 @@ namespace StoryScript {
             return self._functions;
         }
 
-        // Access to services used internally for testing.       
-        GetLocationService = (): ILocationService => {
-            var self = this;
-            self.init();
-            return self._locationService;
-        }
-        //
-
         private init = (): void => {
             var self = this;
 
