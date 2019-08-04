@@ -30,10 +30,12 @@ describe("DataService", function() {
         var result = service.load('game');
         expect(result).not.toBe(null);
         
-        // TODO: complete this. Right now, the LocationService loadWorld method needs to be called to
-        // correctly initialize the destinations array (adding the push proxy) and the features array
-        // (adding the remove proxy).
-        //expect(result).toEqual(game.locations);
+        // Right now, the LocationService loadWorld method needs to be called to
+        // correctly initialize the destinations array adding the push proxy. Remove
+        // the proxy to be able to compare.
+        game.locations.forEach(l => delete l.destinations.push);
+
+        expect(result).toEqual(game.locations);
     });
 
     it("should create a copy of a complex object", function() {
