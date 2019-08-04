@@ -2,7 +2,6 @@ namespace MyAdventureGameVisual.Features {
     export function Passage() {
         return Feature({
             name: 'Passage',
-            map: "forest",
             coords:"492,241,464,196",
             shape:"rect",
             combinations: {

@@ -34,7 +34,7 @@ namespace MyAdventureGameVisual.Locations {
                 },
                 Items.Herbs(),
                 {
-                    name: 'passageback',
+                    name: 'Passage back',
                     combinations: {
                         combine: [
                             {

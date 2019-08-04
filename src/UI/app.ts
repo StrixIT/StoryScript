@@ -13,7 +13,7 @@
 
     storyScriptModule.service("sharedMethodService", SharedMethodService);
 
-    storyScriptModule.directive("imageMapContainer", ImageMapClickHandler.Factory());
+    storyScriptModule.directive("featurePicture", FeaturePicture.Factory());
 
     storyScriptModule.component('main', {
         templateUrl: 'ui/MainComponent.html',

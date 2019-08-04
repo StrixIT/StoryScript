@@ -172,8 +172,6 @@ namespace StoryScript {
 
             if (description) {
                 self.processMediaTags(entity, key);
-                description = self.processCodeFeatures(entity, description);
-                self.processVisualFeatures(self._game);
             }
 
             return description;
@@ -512,118 +510,6 @@ namespace StoryScript {
             }
 
             return startPlay;
-        }
-
-        private processCodeFeatures(location: ICompiledLocation, description: string): string {
-            if (location.features && location.features.length > 0) {
-                var parser = new DOMParser();
-                var htmlDoc = parser.parseFromString(description, 'text/html');
-
-                var map = htmlDoc.getElementsByTagName("map")[0];
-
-                if (map) {
-                    var existingFeatures: string[] = [];
-                    map.childNodes.forEach(n => { 
-                        var name = <string>(<HTMLAreaElement>n).attributes['name'].nodeValue;
-
-                        if (name) {
-                            existingFeatures.push(name.toLowerCase());
-                        }
-                    });
-
-                    location.features.forEach(f => {
-                        if (f.shape && f.coords && existingFeatures.indexOf(f.id) < 0) {
-                            var newNode = <HTMLAreaElement>document.createElement('area');
-                            newNode.setAttribute('name', f.id);
-                            newNode.setAttribute('shape', f.shape);
-                            newNode.setAttribute('coords', f.coords);
-                            description = description.replace('</map>', newNode.outerHTML + '</map>');
-                        }
-                    });
-                }
-            }
-
-            return description;
-        }
-
-        private processVisualFeatures(game: IGame) {
-            var self = this;
-
-            // Get map, shape and coordinates information for image map features and add pictures for them.
-            // For this to work, the description needs to be updated in the browser, hence the timeout.
-            setTimeout(() => {
-                var map = document.getElementsByTagName("map")[0];
-
-                if (map) {
-                    var mapName = map.attributes['name'] && map.attributes['name'].nodeValue;
-                    var areaNodes = map.childNodes;
-
-                    for (var f = 0; f < areaNodes.length; f++) {
-                        const node = <HTMLAreaElement>areaNodes[f];
-                        var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-
-                        if (nameAttribute) {
-                            var feature = game.currentLocation.features.get(nameAttribute);
-
-                            if (feature) {
-                                if (!node.hasChildNodes()) {
-                                    var shapeAttribute = node.attributes['shape'] && node.attributes['shape'].nodeValue;
-                                    var coordsAttribute = node.attributes['coords'] && node.attributes['coords'].nodeValue;
-                                    feature.map = mapName;
-                                    feature.coords = coordsAttribute;
-                                    feature.shape = shapeAttribute;
-                                    self.addFeaturePicture(feature, coordsAttribute, node);
-                                }
-                            }
-                            else {
-                                map.removeChild(node);
-                            }
-                        }
-                    }
-                }
-            }, 0);
-        }
-
-        private addFeaturePicture(feature: IFeature, coordsAttribute: any, node: HTMLAreaElement) {
-            if (!feature.picture) {
-                return;
-            }
-    
-            var image = document.createElement('img');
-            var coords = coordsAttribute.split(",");
-            var top = null, left = null;
-    
-            if (feature.shape.toLowerCase() === 'poly') {
-                var x = [], y = [];
-    
-                for (var i = 0; i < coords.length; i++) {
-                    var value = coords[i];
-                    if (i % 2 === 0) {
-                        x.push(value);
-                    }
-                    else {
-                        y.push(value);
-                    }
-                }
-    
-                left = x.reduce(function (p, v) {
-                    return (p < v ? p : v);
-                });
-                
-                top = y.reduce(function (p, v) {
-                    return (p < v ? p : v);
-                });
-            }
-            else {
-                left = coords[0];
-                top = coords[1];
-            }
-    
-            image.src = 'resources/' + feature.picture;
-            image.style.position = 'absolute';
-            image.style.top = top + 'px';
-            image.style.left = left + 'px';
-            node.appendChild(image);
         }
 
         private updateHighScore(): void {

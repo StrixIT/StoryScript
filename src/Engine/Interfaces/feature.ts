@@ -10,11 +10,6 @@
         description?: string;
 
         /**
-         * The name of the image map this feature is part of when using image maps for visual features.
-         */
-        map?: string;
-
-        /**
          * The coordinates of this feature when using image maps for visual features.
          */
         coords?: string;
