@@ -8,8 +8,8 @@
         limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
         distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
         canEquip(item: IItem): boolean;
-        equipItem(item: IItem): void;
-        unequipItem(item: IItem): void;
+        equipItem(item: IItem): boolean;
+        unequipItem(item: IItem): boolean;
         isSlotUsed(slot: string): boolean;
         dropItem(item: IItem): void;
         questStatus(quest: IQuest): string;
@@ -125,25 +125,29 @@ namespace StoryScript {
             return item.equipmentType != StoryScript.EquipmentType.Miscellaneous;
         }
 
-        equipItem = (item: IItem): void => {
+        equipItem = (item: IItem): boolean => {
             var self = this;
 
             var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
             for (var n in equipmentTypes) {
                 var type = self.getEquipmentType(equipmentTypes[n]);
-                self.unequip(type);
+                var unequipped = self.unequip(type);
+
+                if (!unequipped) {
+                    return false;
+                }
             }
 
             if (self._rules.beforeEquip) {
                 if (!self._rules.beforeEquip(self._game, self._game.character, item)) {
-                    return;
+                    return false;
                 }
             }
 
             if (item.equip) {
                 if (!item.equip(item, self._game)) {
-                    return;
+                    return false;
                 }
             }
 
@@ -153,16 +157,23 @@ namespace StoryScript {
             }
 
             self._game.character.items.remove(item);
+            return true;
         }
 
-        unequipItem = (item: IItem): void => {
+        unequipItem = (item: IItem): boolean => {
             var self = this;
             var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
             for (var n in equipmentTypes) {
                 var type = self.getEquipmentType(equipmentTypes[n]);
-                self.unequip(type);
+                var unequipped = self.unequip(type);
+
+                if (!unequipped) {
+                    return false;
+                }
             }
+
+            return true;
         }
 
         isSlotUsed = (slot: string): boolean => {
@@ -289,7 +300,7 @@ namespace StoryScript {
             }); 
         }
 
-        private unequip(type: string, currentItem?: IItem) {
+        private unequip(type: string, currentItem?: IItem): boolean {
             var self = this;
             var equippedItem = self._game.character.equipment[type];
 
@@ -297,21 +308,25 @@ namespace StoryScript {
                 if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
                     for (var n in equippedItem.equipmentType) {
                         var type = self.getEquipmentType(equippedItem.equipmentType[n]);
-                        self.unequip(type, equippedItem);
+                        var unEquipped = self.unequip(type, equippedItem);
+
+                        if (!unEquipped) {
+                            return false;
+                        }
                     }
 
-                    return;
+                    return true;
                 }
 
                 if (self._rules.beforeUnequip) {
                     if (!self._rules.beforeUnequip(self._game, self._game.character, equippedItem)) {
-                        return;
+                        return false;
                     }
                 }
 
                 if (equippedItem.unequip) {
                     if (!equippedItem.unequip(equippedItem, self._game)) {
-                        return;
+                        return false;
                     }
                 }
 
@@ -321,6 +336,8 @@ namespace StoryScript {
 
                 self._game.character.equipment[type] = null;
             }
+
+            return true;
         }
 
         private getEquipmentType = (slot: StoryScript.EquipmentType) => {
