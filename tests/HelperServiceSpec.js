@@ -122,6 +122,7 @@ describe("HelperService", function() {
         var service = new StoryScript.HelperService();
 
         var character = {
+            defense: 1,
             items: [
                 {
                     name: 'Chain mail',
@@ -139,6 +140,6 @@ describe("HelperService", function() {
         }
         var result = service.calculateBonus(character, 'defense');
         
-        expect(result).toBe(5);
+        expect(result).toBe(6);
     });
 });

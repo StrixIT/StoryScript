@@ -94,6 +94,10 @@ namespace StoryScript {
         calculateBonus = (person: { items?: ICollection<IItem>, equipment?: {} }, type: string) => {
             var bonus = 0;
 
+            if (person[type]) {
+                bonus += person[type];
+            }
+
             if (person.equipment) {
                 for (var n in person.equipment) {
                     var item = person.equipment[n];

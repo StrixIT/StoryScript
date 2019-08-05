@@ -374,24 +374,27 @@ namespace StoryScript {
         private processVisualFeatures(htmlDoc: Document, game: IGame) {
             var self = this;
             var visualFeatureNode = htmlDoc.getElementsByTagName('visual-features')[0];
-            game.currentLocation.features.collectionPicture = visualFeatureNode.attributes['img'] && visualFeatureNode.attributes['img'].nodeValue;
 
-            if (game.currentLocation.features && game.currentLocation.features.length > 0 && visualFeatureNode) {
-                var areaNodes = <HTMLCollectionOf<HTMLAreaElement>>visualFeatureNode.getElementsByTagName('area');
+            if (visualFeatureNode) {
+                game.currentLocation.features.collectionPicture = visualFeatureNode.attributes['img'] && visualFeatureNode.attributes['img'].nodeValue;
 
-                for (var i = 0; i < areaNodes.length; i++) {
-                    const node = areaNodes[i];
-                    const feature = self.getBasicFeatureData(game, node);
+                if (game.currentLocation.features && game.currentLocation.features.length > 0 && visualFeatureNode) {
+                    var areaNodes = <HTMLCollectionOf<HTMLAreaElement>>visualFeatureNode.getElementsByTagName('area');
 
-                    if (feature) {
-                        feature.coords = feature.coords || node.attributes['coords'] && node.attributes['coords'].nodeValue;
-                        feature.shape = feature.shape || node.attributes['shape'] && node.attributes['shape'].nodeValue;
-                        feature.picture = feature.picture || node.attributes['img'] && node.attributes['img'].nodeValue;
+                    for (var i = 0; i < areaNodes.length; i++) {
+                        const node = areaNodes[i];
+                        const feature = self.getBasicFeatureData(game, node);
+
+                        if (feature) {
+                            feature.coords = feature.coords || node.attributes['coords'] && node.attributes['coords'].nodeValue;
+                            feature.shape = feature.shape || node.attributes['shape'] && node.attributes['shape'].nodeValue;
+                            feature.picture = feature.picture || node.attributes['img'] && node.attributes['img'].nodeValue;
+                        }
                     }
                 }
-            }
 
-            visualFeatureNode.parentNode.removeChild(visualFeatureNode);
+                visualFeatureNode.parentNode.removeChild(visualFeatureNode);
+            }
         }
 
         private getBasicFeatureData(game: IGame, node: HTMLElement): IFeature {
