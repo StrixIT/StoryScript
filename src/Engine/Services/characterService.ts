@@ -117,6 +117,7 @@ namespace StoryScript {
                 self.processDefaultSettings(character, characterData);
             }
 
+            // Todo: sabe world state on level up.
             game.state = StoryScript.GameState.Play;
             return character;
         }
