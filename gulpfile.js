@@ -12,6 +12,7 @@
     cssmin = require("gulp-cssmin"),
     minifyHtml = require('gulp-minify-html'),
     //uglify = require("gulp-uglify"),
+    gulpIgnore = require('gulp-ignore'),
     sourcemaps = require('gulp-sourcemaps'),
     angularTemplateCache = require('gulp-angular-templatecache'),
     gameDescriptionBundler = require('./src/gameDescriptionBundler');
@@ -66,11 +67,13 @@ gulp.task('start', ['build-game'], function () {
         return compileTs('UI', e.path, compileUI);
     }).on('change', browserSync.reload);
 
-    gulp.watch(["src/UI/**/*.html"], function (e) {
-        return compileUITemplates();
+    gulp.watch(['src/UI/**/*.html', 'src/Games/' + nameSpace + '/ui/**/*.html'], function (e) {
+        console.log('UI template html file ' + e.path + ' has been changed. Compiling UI html...');
+        return compileUITemplates(nameSpace);
     }).on('change', browserSync.reload);
 
-    gulp.watch(["src/Games/**/*.html"], function (e) {
+    gulp.watch(['src/Games/**/*.html', '!src/Games/' + nameSpace + '/ui/**'], function (e) {
+        console.log('Html file ' + e.path + ' has been changed. Compiling game descriptions...');
         return compileGameDescriptions(nameSpace);
     }).on('change', browserSync.reload);
 
@@ -158,7 +161,7 @@ function buildGame(nameSpace) {
     var css = copyCss(nameSpace);
     var html = copyHtml();
     var config = copyConfig(nameSpace);
-    var ui = compileUI();
+    var ui = compileUI(nameSpace);
     var game = compileGame(nameSpace);
     var descriptions = compileGameDescriptions(nameSpace);
     return merge(libs, resources, css, html, config, ui, game, descriptions);
@@ -274,7 +277,7 @@ function compileGame() {
     );
 }
 
-function compileUI() {
+function compileUI(nameSpace) {
     var tsResult = tsUIProject
         .src()
         .pipe(plumber({ errorHandler: function(error) {
@@ -283,7 +286,7 @@ function compileUI() {
         .pipe(sourcemaps.init())
         .pipe(tsUIProject());
         
-    var templateResult = compileUITemplates();
+    var templateResult = compileUITemplates(nameSpace);
 
     return merge([
         tsResult.js.pipe(concat('ui.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
@@ -291,9 +294,13 @@ function compileUI() {
     ]);
 }
 
-function compileUITemplates() {
+function compileUITemplates(nameSpace) {
+    var includedTemplates = [];
+
     return gulp
-        .src('src/ui/**/*.html')
+        .src(['src/games/' + nameSpace + '/ui/**/*.html', 'src/ui/**/*.html'])
+        // Remove duplicate components so game specific components override the default ones.
+        .pipe(gulpIgnore.exclude(isDuplicate))
         .pipe(minifyHtml({ empty: true }))
         .pipe(angularTemplateCache({ 
             filename: 'ui-templates.js', 
@@ -306,13 +313,24 @@ function compileUITemplates() {
             standAlone: false 
         }))
         .pipe(gulp.dest(paths.webroot + 'js/'));
-}
 
+    function isDuplicate(file) {
+        var pathParts = file.path.split('\\');
+        var fileName = pathParts[pathParts.length - 1];
+
+        if (includedTemplates.indexOf(fileName) > -1) {
+            return true;
+        }
+
+        includedTemplates.push(fileName);
+        return false;
+    }
+}
 
 function compileGameDescriptions(nameSpace) {
     var gameDir = 'src/games/' + nameSpace;
     var descriptionPipe = gulp
-        .src([gameDir + '/**/*.html', '!' + gameDir + '/ui' ])
+        .src([gameDir + '/**/*.html', '!' + gameDir + '/ui/**' ])
         .pipe(minifyHtml({ empty: true }))
         .pipe(gameDescriptionBundler(nameSpace));
 
