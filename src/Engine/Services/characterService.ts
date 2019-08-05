@@ -188,6 +188,11 @@ namespace StoryScript {
 
         dropItem = (item: IItem): void => {
             var self = this;
+
+            if (!item) {
+                return;
+            }
+
             self._game.character.items.remove(item);
             self._game.currentLocation.items.push(item);
         }

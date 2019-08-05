@@ -287,6 +287,85 @@ describe("CharacterService", function() {
         expect(game.character.equipment.rightHand).toBe(sword);
     });
 
+    it("should return false when an equipment slot is not used", function() {
+        var game = {
+            character: {
+                equipment: {
+                    rightHand: undefined
+                },
+                items: []
+            }
+        }
+
+        var service = getService(game);
+        var result = service.isSlotUsed('rightHand');
+
+        expect(result).toBeFalsy();
+    });
+
+    it("should return true when an equipment slot is used", function() {
+        var sword = MyNewGame.Items.Sword();
+
+        var game = {
+            character: {
+                equipment: {
+                    rightHand: sword
+                },
+                items: []
+            }
+        }
+
+        var service = getService(game);
+        var result = service.isSlotUsed('rightHand');
+
+        expect(result).toBeTruthy();
+    });
+
+    it("should drop an item the character has in his backpack", function() {
+        var sword = MyNewGame.Items.Sword();
+
+        var game = {
+            character: {
+                items: [
+                    sword
+                ]
+            },
+            currentLocation: {
+                items: []
+            }
+        }
+
+        var service = getService(game);
+        service.dropItem(sword);
+
+        expect(game.character.items.length).toBe(0);
+        expect(game.currentLocation.items.length).toBe(1);
+        expect(game.currentLocation.items[0]).toBe(sword);
+    });
+
+    it("should return the status of a quest when it is a string", function() {
+        var quest = {
+            status: 'Started'
+        }
+
+        var service = getService();
+        var result = service.questStatus(quest);
+
+        expect(result).toBe(quest.status);
+    });
+
+    it("should return the status of a quest when it is returned by a function", function() {
+        var quest = {
+            status: function() { return 'Started' },
+            checkDone: function() { return true }
+        }
+
+        var service = getService();
+        var result = service.questStatus(quest);
+
+        expect(result).toBe(result);
+    });
+
     var sheetAttributes = [
         'strength',
         'agility',
