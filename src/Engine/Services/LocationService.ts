@@ -139,9 +139,13 @@ namespace StoryScript {
         private playEnterEvents(game: IGame) {
             var self = this;
 
-            // If the player hasn't been here before, play the location events.
-            if (!game.currentLocation.hasVisited && game.currentLocation.enterEvents) {
-                self.playEvents(game, game.currentLocation.enterEvents);
+            // If the player hasn't been here before, play the location events. Also update
+            // the visit statistics.
+            if (!game.currentLocation.hasVisited) {
+                if (game.currentLocation.enterEvents) {
+                    self.playEvents(game, game.currentLocation.enterEvents);
+                }
+
                 game.currentLocation.hasVisited = true;
                 game.statistics.LocationsVisited = game.statistics.LocationsVisited || 0;
                 game.statistics.LocationsVisited += 1;
