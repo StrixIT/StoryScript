@@ -74,10 +74,17 @@
                 enumerable: false,
                 writable: true,
                 value: function (item: any) {
-                    // Need to cast to any for ES5 and lower
-                    var index = (<any>Array.prototype).findIndex.call(this, function (x) {
-                        return x === item || (typeof item === 'function' && item.name.toLowerCase() === x.id) || (item.id && x.id && item.id.toLowerCase() === x.id.toLowerCase()) || item === x.id;
-                    });
+                    if (!item) {
+                        return;
+                    }
+
+                    var entry = find(item, this)[0];
+
+                    if (!entry) {
+                        return;
+                    }
+
+                    var index = Array.prototype.indexOf.call(this, entry);
 
                     if (index != -1) {
                         Array.prototype.splice.call(this, index, 1);
@@ -116,19 +123,12 @@
     }
 
     function find(id: any, array: any[]): any[] {
-        if (typeof id === 'function') {
-            id = id.name;
-        }
-        else if (typeof id === 'object') {
-            id = id.id;
+        if (typeof id === 'object') {
+            return Array.prototype.filter.call(array, (x: object) => x === id);
         }
 
-        return Array.prototype.filter.call(array, matchById(id));
-    }
+        id = typeof id === 'function' ? id.name.toLowerCase() : id.toLowerCase();
 
-    function matchById(id: string) {
-        return function (x: any) {
-            return x.id.toLowerCase() === id.toLowerCase() || (x.target && x.target === id || (typeof x.target === 'function' && x.target.name.toLowerCase() === id));
-        };
+        return Array.prototype.filter.call(array, (x: any) => x.id === id || (x.target && x.target.toLowerCase() === id || (typeof x.target === 'function' && x.target.name.toLowerCase() === id)));
     }
 }

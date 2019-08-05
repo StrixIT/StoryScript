@@ -1,5 +1,10 @@
 describe("CharacterService", function() {
 
+    beforeEach(() => {
+        // Trigger object factory initialization.
+        StoryScript.ObjectFactory.GetGame();
+    });
+
     it("should return the properties defined for the character sheet", function() {
         var service = getService();
         var result = service.getSheetAttributes().sort();
@@ -45,6 +50,27 @@ describe("CharacterService", function() {
         expect(result).toBe(levelUpSheet);
         expect(gameSheet).toBe(levelUpSheet);
         expect(result.steps[0].questions[0].selectedEntry).toBe(levelUpSheet.steps[0].questions[0].entries[0]);
+    });
+
+    it("should move an equipped item back to the backpack when equipping an item of the same type", function() {
+        var game = {
+            character: {
+                equipment: {},
+                items: []
+            }
+        }
+        var service = getService(game);
+        var equippedBoots = MyNewGame.Items.LeatherBoots();
+        var backPackBoots = MyNewGame.Items.LeatherBoots();
+        game.character.equipment.feet = equippedBoots;
+        game.character.items.push(backPackBoots);
+        service.equipItem(backPackBoots);
+
+        expect(game.character.equipment.feet).not.toBeNull();
+        expect(game.character.equipment.feet).toBe(backPackBoots);
+
+        expect(game.character.items.length).toBe(1);
+        expect(game.character.items[0]).toBe(equippedBoots); 
     });
 
     var sheetAttributes = [

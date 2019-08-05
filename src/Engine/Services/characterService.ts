@@ -299,6 +299,8 @@ namespace StoryScript {
                         var type = self.getEquipmentType(equippedItem.equipmentType[n]);
                         self.unequip(type, equippedItem);
                     }
+
+                    return;
                 }
 
                 if (self._rules.beforeUnequip) {
