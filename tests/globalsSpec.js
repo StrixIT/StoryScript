@@ -44,6 +44,19 @@ describe("Utilities", function() {
         expect(result).toEqual(5);
     });
 
+    it("Deserializing a multiline function should get a working function", function() {
+        StoryScript.addFunctionExtensions();
+
+        var functionString = `function MyFunction(x, y) { 
+                                return x + y; 
+                            }`;
+                            
+        var myFunction = functionString.parseFunction();
+        var result = myFunction(2, 3);
+        
+        expect(result).toEqual(5);
+    });
+
     it("Creating a function hash should get a unique hash for each function", function() {
         function FirstFunction(x, y) { return x + y; };
         function SecondFunction(x, y) { if (x === null && y === null) { return null; } else { return x > y; } };

@@ -32,7 +32,7 @@
         if (typeof String.prototype.parseFunction !== 'function') {
             (String.prototype).parseFunction = function () {
                 var text = this.toString();
-                var funcReg = /function[ ]{0,}([a-zA-Z0-9]{0,})(\([\w\d, ]{0,}\))[ \n\t]*({.*})/gmis;       
+                var funcReg = /function[\s]*([a-zA-Z0-9]*)(\([\w\d, ]*\))[\s]*({[\S\s]*})/gmi;   
                 var match = funcReg.exec(text);
         
                 if (match) {
