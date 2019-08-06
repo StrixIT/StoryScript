@@ -103,7 +103,7 @@ namespace StoryScript {
                 self._helperService = new HelperService(self._game);
                 self._tradeService = new TradeService(self._game, self._texts);
                 self._dataService = new DataService(self._localStorageService, self._nameSpace);
-                self._conversationService = new ConversationService(self._dataService, self._game, self._rules, self._texts);
+                self._conversationService = new ConversationService(self._dataService, self._game);
                 self._locationService = new LocationService(self._dataService, self._conversationService, self._rules, self._game, self._definitions);
                 self._combinationService = new CombinationService(self._dataService, self._locationService, self._game, self._rules, self._texts);
                 self._characterService = new CharacterService(self._dataService, self._game, self._rules);

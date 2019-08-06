@@ -17,7 +17,7 @@ namespace StoryScript {
 
         trade = (trade: IPerson | ITrade): void => {
             var self = this;
-            var isPerson = trade['type'] === 'persons';
+            var isPerson = trade && trade['type'] === 'persons';
 
             self._game.currentLocation.activeTrade = isPerson ? (<IPerson>trade).trade : self._game.currentLocation.trade;
             var trader = self._game.currentLocation.activeTrade;

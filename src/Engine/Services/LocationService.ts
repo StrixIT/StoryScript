@@ -64,7 +64,7 @@ namespace StoryScript {
             self.loadLocationDescriptions(game);
             self.initTrade(game);
             self.playEnterEvents(game);
-            self._conversationService.loadConversations(game);
+            self._conversationService.loadConversations();
         }
 
         private switchLocation(game: IGame, location: string | (() => ILocation)): boolean {
