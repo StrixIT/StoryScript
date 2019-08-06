@@ -8,9 +8,9 @@ namespace MyAdventureGameVisual.Items {
                 combine: [
                     {
                         combinationType: Constants.TOUCH,
-                        match: (game, target, tool): string => {
+                        match: (game, target: IItem, tool): string => {
                             if (target) {
-                                game.character.items.push(<IItem>target);
+                                game.character.items.push(target);
                                 game.currentLocation.features.remove(target);
                                 return `You collect the herbs.`;
                             }

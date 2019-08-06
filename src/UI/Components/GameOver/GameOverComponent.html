@@ -1,5 +1,5 @@
 <div ng-if="$ctrl.game.stateString == 'GameOver'">
-    <h2>{{ $ctrl.texts.youLost }}</h1>
+    <h2>{{ $ctrl.texts.youLost }}</h2>
     <p>{{ $ctrl.texts.questFailed }}</p>
     <div>{{ $ctrl.texts.finalScore }}{{ $ctrl.game.character.score }}</div>
     <button type="button" class="btn btn-primary restart" ng-click="$ctrl.restart()">{{ $ctrl.texts.tryAgain }}</button>
