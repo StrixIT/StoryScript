@@ -1,7 +1,16 @@
 namespace MyRolePlayingGame.Locations {
     export function Basement() {
         return Location({
-            name: 'Basement'
+            name: 'Basement',
+            destinations: [
+                {
+                    name: 'To the garden',
+                    target: Locations.Garden
+                }
+            ],
+            items: [
+                Items.Journal()
+            ]
         });
     }
 }

@@ -20,11 +20,14 @@ namespace MyRolePlayingGame.Locations {
                 {
                     name: 'Out the front door',
                     target: Locations.DirtRoad
+                },
+                {
+                    name: 'To the bedroom',
+                    target: Locations.Bedroom
                 }
             ],
-            items: [
-                Items.Sword(),
-                Items.LeatherBoots()
+            persons: [
+                Persons.Friend()
             ]
         });
     }
