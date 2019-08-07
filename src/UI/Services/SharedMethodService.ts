@@ -61,8 +61,8 @@ namespace StoryScript
             if (action && action.execute) {
                 // Modify the arguments collection to add the game to the collection before calling the function specified.
                 var args = <any[]>[self._game, action];
-                var actionIndex = self.getActionIndex(self._game, action);
-                args.splice(1, 0, actionIndex)
+                var actionData = self.getActionIndex(self._game, action);
+                args.splice(1, 0, actionData.index)
 
                 if (action.arguments && action.arguments.length) {
                     args = args.concat(action.arguments);
@@ -72,9 +72,12 @@ namespace StoryScript
                 var executeFunc = typeof action.execute !== 'function' ? controller[<string>action.execute] : action.execute;
                 var result = executeFunc.apply(controller, args);
 
-                // Todo: combat actions will never be removed this way.
-                if (!result && self._game.currentLocation.actions) {
-                    self._game.currentLocation.actions.splice(actionIndex, 1);
+                if (!result && actionData.index !== -1) {
+                    if (actionData.type === 'regular' && self._game.currentLocation.actions) {
+                        self._game.currentLocation.actions.splice(actionData.index, 1);
+                    } else if (actionData.type === 'combat' && self._game.currentLocation.combatActions) {
+                        self._game.currentLocation.combatActions.splice(actionData.index, 1);
+                    }
                 }
 
                 // After each action, save the game.
@@ -109,13 +112,15 @@ namespace StoryScript
             }
         }
 
-        private getActionIndex(game: IGame, action: IAction): number {
+        private getActionIndex(game: IGame, action: IAction): { type: string, index: number} {
             var index = -1;
+            var type: string = null;
             var compare = (a: IAction) => a.actionType === action.actionType && a.text === action.text && a.status === action.status;
 
             game.currentLocation.actions.forEach((a, i) => {
                 if (compare(a)) {
                     index = i;
+                    type = 'regular';
                     return;
                 }
             });
@@ -124,12 +129,16 @@ namespace StoryScript
                 game.currentLocation.combatActions.forEach((a, i) => {
                     if (compare(a)) {
                         index = i;
+                        type = 'combat';
                         return;
                     }
                 });
             }
 
-            return index;
+            return {
+                type: type,
+                index: index
+            };
         }
     }
 
