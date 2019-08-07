@@ -1,12 +1,11 @@
 ﻿namespace StoryScript {
     /**
-     * The conversation options to configure a conversation between the player and a person.
+     * A conversation between the player and a person. The nodes are loaded at run-time from the HTML file of the person.
      */
-    export interface IConversationOptions {
+    export interface IConversation {
         /**
          * The title of the conversation as shown to the player.
          */
-        // Todo: is this used?
         title?: string;
 
         /**
@@ -25,16 +24,16 @@
          * The actions that can be triggered from the conversation.
          */
         actions?: { [name: string]: (game: IGame, person: IPerson) => void }
-    }
 
-    /**
-     * A conversation between the player and a person. The nodes are loaded at run-time from the HTML file of the person.
-     */
-    export interface IConversation extends IConversationOptions {
         /**
-         * The nodes that make up this conversation.
+         * The nodes that make up this conversation. Loaded from the person HTML at runtime.
          */
         nodes?: IConversationNode[];
+
+        /**
+         * The name of the node to start the conversation with. Set at runtime.
+         */
+        startNode?: string;
 
         /**
          * The node currently active in the conversation.
@@ -51,11 +50,6 @@
      * A node of a conversation.
      */
     export interface IConversationNode {
-        /**
-         * True if this node is the starting node for the conversation, false otherwise.
-         */
-        start?: boolean,
-
         /**
          * True if this node is the active node of the conversation, false otherwise.
          */

@@ -235,22 +235,23 @@ namespace StoryScript {
                 return null;
             }
 
-            var activeNode = person.conversation.activeNode;
+            var conversation = person.conversation;
+            var activeNode = conversation.activeNode;
 
             if (!activeNode) {
-                activeNode = person.conversation.selectActiveNode ? person.conversation.selectActiveNode(self._game, person) : null;
+                activeNode = conversation.selectActiveNode ? conversation.selectActiveNode(self._game, person) : null;
             }
 
             if (!activeNode) {
-                activeNode = person.conversation.nodes.filter((node) => { return node.active; })[0];
+                activeNode = conversation.nodes.filter((node) => { return node.active; })[0];
             }
 
             if (!activeNode) {
-                activeNode = person.conversation.nodes.filter((node) => { return node.start; })[0];
+                activeNode = conversation.nodes.filter((node) => { return node.node && conversation.startNode && node.node.toLowerCase() === person.conversation.startNode.toLowerCase(); })[0];
             }
 
             if (!activeNode) {
-                activeNode = person.conversation.nodes[0];
+                activeNode = conversation.nodes[0];
             }
 
             return activeNode;
@@ -285,9 +286,8 @@ namespace StoryScript {
             }
 
             if (reply.setStart) {
-                person.conversation.nodes.forEach(n => n.start = false);
                 var startNode = person.conversation.nodes.filter((node) => { return node.node == reply.setStart; })[0];
-                startNode.start = true;
+                person.conversation.startNode = startNode.node;
             }
 
             if (reply.linkToNode) {
