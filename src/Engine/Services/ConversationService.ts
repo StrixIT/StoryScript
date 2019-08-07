@@ -391,25 +391,31 @@ namespace StoryScript {
 
             if (start) {
                 quest = person.quests.get(reply[type]);
-                quest.issuedBy = person.id;
-                self._game.character.quests.push(quest);
-                person.quests.remove(quest);
-                quest.progress = quest.progress || {};
 
-                if (quest.start) {
-                    quest.start(self._game, quest, person);
+                if (!quest.started) {
+                    quest.issuedBy = person.id;
+                    self._game.character.quests.push(quest);
+                    person.quests.remove(quest);
+                    quest.progress = quest.progress || {};
+
+                    if (quest.start) {
+                        quest.start(self._game, quest, person);
+                    }
+
+                    quest.started = true;
+                    quest.completed = false;
                 }
-
-                quest.completed = false;
             }
             else {
                 quest = self._game.character.quests.get(reply[type]);
 
-                if (quest.complete) {
-                    quest.complete(self._game, quest, person);
-                }
+                if (!quest.completed) {
+                    if (quest.complete) {
+                        quest.complete(self._game, quest, person);
+                    }
 
-                quest.completed = true;
+                    quest.completed = true;
+                }
             }
         }
     }

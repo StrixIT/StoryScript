@@ -42,6 +42,11 @@
         complete?(game: IGame, quest: IQuest, person: IPerson): void;
 
         /**
+         * True if the player started the quest, false otherwise.
+         */
+        started?: boolean;
+
+        /**
          * True if the player completed the quest, false otherwise.
          */
         completed?: boolean;
