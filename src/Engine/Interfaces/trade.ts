@@ -48,7 +48,7 @@
          */
         onSell?(game: IGame, item: IItem): void;
 
-                /**
+        /**
          * The collection of items the trader will buy or that can be put in the store.
          */
         sell?: IStock;

@@ -16,11 +16,7 @@ namespace StoryScript {
         private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
         private locationPropertiesToIgnoreForClone = [
             'activePerson',
-            'activeTrade',
-            'activePersons',
-            'activeEnemies',
-            'activeItems',
-            'activeDestinations'
+            'activeTrade'
         ];
 
         constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {

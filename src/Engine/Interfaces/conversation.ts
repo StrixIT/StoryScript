@@ -51,11 +51,6 @@
      */
     export interface IConversationNode {
         /**
-         * True if this node is the active node of the conversation, false otherwise.
-         */
-        active?: boolean;
-
-        /**
          * The internal name of the node, used to reference it from code.
          */
         node: string;

@@ -9,7 +9,7 @@
         name: string;
 
         /**
-         * The name of the person the player is pursuing this quest for.
+         * The id of the person the player is pursuing this quest for.
          */
         issuedBy?: string;
 

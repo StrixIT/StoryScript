@@ -27,7 +27,7 @@
         /**
          * Additional parameters to pass to the execute function.
          */
-        // Todo: will this ever be used? Do we need this?
+        // Todo: will this ever be used? Do we need this? Can this be used to make runtime functions more flexible (issue #93)
         arguments?: any[];
     }
 }

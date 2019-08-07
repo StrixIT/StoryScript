@@ -42,7 +42,6 @@ namespace StoryScript {
                 return;
             }
 
-            activeNode.active = true;
             person.conversation.activeNode = activeNode;
             self.initReplies(person);
             self.setReplyStatus(person.conversation, activeNode);
@@ -243,10 +242,6 @@ namespace StoryScript {
             }
 
             if (!activeNode) {
-                activeNode = conversation.nodes.filter((node) => { return node.active; })[0];
-            }
-
-            if (!activeNode) {
                 activeNode = conversation.nodes.filter((node) => { return node.node && conversation.startNode && node.node.toLowerCase() === person.conversation.startNode.toLowerCase(); })[0];
             }
 
@@ -295,10 +290,6 @@ namespace StoryScript {
                 self.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
             else {
-                person.conversation.nodes.forEach((node) => {
-                    node.active = false;
-                });
-
                 person.conversation.activeNode = null;
             }
         }
