@@ -42,7 +42,6 @@
         /**
          * All items the character has that can be used during combat.
          */
-        // Todo: is this used?
         combatItems?: ICollection<IItem>;
 
         /**

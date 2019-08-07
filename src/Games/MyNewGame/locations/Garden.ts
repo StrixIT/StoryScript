@@ -18,7 +18,6 @@
                     text: 'Search the Shed',
                     execute: (game) => {
                         // Add a new destination.
-                        // Todo: make sure the destination action function pointer is set correctly when storing the game.
                         game.currentLocation.destinations.push({
                             name: 'Enter the basement',
                             target: Locations.Basement,

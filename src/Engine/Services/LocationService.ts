@@ -55,7 +55,7 @@ namespace StoryScript {
             }
 
             // In dynamic mode, refresh the location on every browser reload.
-            // Todo: should descriptions be refreshed this way for default mode as well?
+            // Todo: should descriptions be refreshed this way for default mode as well? Combine with game service method doing the same.
             if (!travel && game.definitions.dynamicLocations) {
                 game.currentLocation.descriptions = null;
                 game.currentLocation.text = null;
