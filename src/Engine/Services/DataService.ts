@@ -19,7 +19,8 @@ namespace StoryScript {
             'activeTrade',
             'activePersons',
             'activeEnemies',
-            'activeItems'
+            'activeItems',
+            'activeDestinations'
         ];
 
         constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
