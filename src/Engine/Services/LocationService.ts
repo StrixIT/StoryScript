@@ -50,8 +50,8 @@ namespace StoryScript {
             self.processDestinations(game);
             self.saveLocations(game);
 
-            if (self._rules.enterLocation) {
-                self._rules.enterLocation(game, game.currentLocation, travel);
+            if (self._rules.exploration && self._rules.exploration.enterLocation) {
+                self._rules.exploration.enterLocation(game, game.currentLocation, travel);
             }
 
             // In dynamic mode, refresh the location on every browser reload.
@@ -435,7 +435,7 @@ namespace StoryScript {
                 selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
                 game.currentLocation.text = game.currentLocation.descriptions[selector];
             }
-            else if (self._rules.descriptionSelector && (selector = self._rules.descriptionSelector(game))) {
+            else if (self._rules.exploration && self._rules.exploration.descriptionSelector && (selector = self._rules.exploration.descriptionSelector(game))) {
                 game.currentLocation.text = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
             }
             else {

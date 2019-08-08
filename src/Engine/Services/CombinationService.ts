@@ -13,7 +13,8 @@ namespace StoryScript {
 
         getCombinationActions = (): ICombinationAction[] => {
             var self = this;
-            return self._rules.getCombinationActions ? self._rules.getCombinationActions() : [];
+            var rule = self._rules.setup && self._rules.setup.getCombinationActions
+            return rule ? rule() : [];
         }
 
         getCombineClass = (tool: ICombinable): string => {

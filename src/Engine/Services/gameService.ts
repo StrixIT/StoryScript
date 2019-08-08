@@ -32,8 +32,8 @@ namespace StoryScript {
             var self = this;
             self._game.helpers = self._helperService;
 
-            if (self._rules.setupGame) {
-                self._rules.setupGame(self._game);
+            if (self._rules.setup && self._rules.setup.setupGame) {
+                self._rules.setup.setupGame(self._game);
             }
 
             self.setupGame();
@@ -42,7 +42,7 @@ namespace StoryScript {
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
-            var characterSheet = self._rules.getCreateCharacterSheet && self._rules.getCreateCharacterSheet();
+            var characterSheet = self._rules.character && self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet();
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
 
             if (!hasCreateCharacterSteps && !self._game.character) {
@@ -180,8 +180,8 @@ namespace StoryScript {
         initCombat = (): void => {
             var self = this;
 
-            if (self._rules.initCombat) {
-                self._rules.initCombat(self._game, self._game.currentLocation);
+            if (self._rules.combat && self._rules.combat.initCombat) {
+                self._rules.combat.initCombat(self._game, self._game.currentLocation);
             }
 
             self._game.currentLocation.activeEnemies.forEach(enemy => {
@@ -194,12 +194,12 @@ namespace StoryScript {
         fight = (enemy: IEnemy, retaliate?: boolean) => {
             var self = this;
 
-            if (!self._rules || !self._rules.fight)
+            if (!self._rules.combat || !self._rules.combat.fight)
             {
                 return;
             }
 
-            self._rules.fight(self._game, enemy, retaliate);
+            self._rules.combat.fight(self._game, enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
                 self.enemyDefeated(enemy);
@@ -243,7 +243,7 @@ namespace StoryScript {
             // Todo: change if xp can be lost.
             if (change > 0) {
                 var character = self._game.character;
-                var levelUp = self._rules && self._rules.scoreChange && self._rules.scoreChange(self._game, change);
+                var levelUp = self._rules.general && self._rules.general.scoreChange && self._rules.general.scoreChange(self._game, change);
 
                 if (levelUp) {
                     self._game.state = StoryScript.GameState.LevelUp;
@@ -254,8 +254,8 @@ namespace StoryScript {
         hitpointsChange = (change: number): void => {
             var self = this;
 
-            if (self._rules.hitpointsChange) {
-                self._rules.hitpointsChange(self._game, change);
+            if (self._rules.character && self._rules.character.hitpointsChange) {
+                self._rules.character.hitpointsChange(self._game, change);
             }
         }
 
@@ -263,8 +263,8 @@ namespace StoryScript {
             var self = this;
 
             if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
-                if (self._rules.determineFinalScore) {
-                    self._rules.determineFinalScore(self._game);
+                if (self._rules.general && self._rules.general.determineFinalScore) {
+                    self._rules.general.determineFinalScore(self._game);
                 }
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
@@ -320,8 +320,8 @@ namespace StoryScript {
             self._game.statistics.enemiesDefeated += 1;
             self._game.currentLocation.enemies.remove(enemy);
 
-            if (self._rules.enemyDefeated) {
-                self._rules.enemyDefeated(self._game, enemy);
+            if (self._rules.combat && self._rules.combat.enemyDefeated) {
+                self._rules.combat.enemyDefeated(self._game, enemy);
             }
 
             if (enemy.onDefeat) {
