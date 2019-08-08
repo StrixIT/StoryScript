@@ -71,25 +71,25 @@ describe("Utilities", function() {
     it("should get an entity using the function name", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(MyNewGame.Items.Journal);
+        var result = testArray.get(_TestGame.Items.Journal);
 
         expect(result).not.toBeNull();
-        expect(result.id).toBe(MyNewGame.Items.Journal.name.toLowerCase());
+        expect(result.id).toBe(_TestGame.Items.Journal.name.toLowerCase());
     });
 
     it("should get an entity using an id string", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(MyNewGame.Items.Journal.name);
+        var result = testArray.get(_TestGame.Items.Journal.name);
 
         expect(result).not.toBeNull();
-        expect(result.id).toBe(MyNewGame.Items.Journal.name.toLowerCase());
+        expect(result.id).toBe(_TestGame.Items.Journal.name.toLowerCase());
     });
 
     it("should not get an entity when passing in a new object", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(MyNewGame.Items.Journal());
+        var result = testArray.get(_TestGame.Items.Journal());
 
         expect(result).toBeUndefined();
     });
@@ -100,15 +100,15 @@ describe("Utilities", function() {
         var result = testArray.get();
 
         expect(result).not.toBeUndefined();
-        expect(result.id).toBe(MyNewGame.Items.Sword.name.toLowerCase());
+        expect(result.id).toBe(_TestGame.Items.Sword.name.toLowerCase());
     });
 
     it("should get an entity using its object reference", function() {
         StoryScript.addArrayExtensions();
-        var journal = MyNewGame.Items.Journal();
+        var journal = _TestGame.Items.Journal();
 
         var testArray = [
-            MyNewGame.Items.Sword(),
+            _TestGame.Items.Sword(),
             journal
         ];
         var result = testArray.get(journal);
@@ -160,55 +160,55 @@ describe("Utilities", function() {
     it("should get all entities in the array matching the id", function() {
         StoryScript.addArrayExtensions();
         var testArray = [
-            MyNewGame.Items.Sword(),
-            MyNewGame.Items.Sword()
+            _TestGame.Items.Sword(),
+            _TestGame.Items.Sword()
         ];;
-        var result = testArray.all(MyNewGame.Items.Sword);
+        var result = testArray.all(_TestGame.Items.Sword);
 
         expect(result).not.toBeUndefined();
         expect(result.length).toBe(2);
-        expect(result[0].id).toBe(MyNewGame.Items.Sword.name.toLowerCase());
-        expect(result[1].id).toBe(MyNewGame.Items.Sword.name.toLowerCase());
+        expect(result[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
+        expect(result[1].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
     });
 
     it("should remove an entity using the function name", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(MyNewGame.Items.Journal);
+        testArray.remove(_TestGame.Items.Journal);
 
         expect(testArray.length).toBe(1);
-        expect(testArray[0].id).toBe(MyNewGame.Items.Sword.name.toLowerCase());
+        expect(testArray[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
     });
 
     it("should remove an entity using an id string", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(MyNewGame.Items.Journal.name);
+        testArray.remove(_TestGame.Items.Journal.name);
 
         expect(testArray.length).toBe(1);
-        expect(testArray[0].id).toBe(MyNewGame.Items.Sword.name.toLowerCase());
+        expect(testArray[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
     });
 
     it("should not remove an entity when passing in a new object", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(MyNewGame.Items.Journal());
+        testArray.remove(_TestGame.Items.Journal());
 
         expect(testArray.length).toBe(2);
-        expect(testArray[1].id).toBe(MyNewGame.Items.Journal.name.toLowerCase());
+        expect(testArray[1].id).toBe(_TestGame.Items.Journal.name.toLowerCase());
     });
 
     it("should remove an entity using its object reference", function() {
         StoryScript.addArrayExtensions();
-        var journal = MyNewGame.Items.Journal();
+        var journal = _TestGame.Items.Journal();
         var testArray = [
-            MyNewGame.Items.Sword(),
+            _TestGame.Items.Sword(),
             journal
         ];
         testArray.remove(journal);
 
         expect(testArray.length).toBe(1);
-        expect(testArray[0].id).toBe(MyNewGame.Items.Sword.name.toLowerCase());
+        expect(testArray[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
     });
 
     it("should remove a destination using the string id of the destination", function() {
@@ -260,8 +260,8 @@ describe("Utilities", function() {
 
     function getTestArray() {
         return [
-            MyNewGame.Items.Sword(),
-            MyNewGame.Items.Journal()
+            _TestGame.Items.Sword(),
+            _TestGame.Items.Journal()
         ];
     }
 });

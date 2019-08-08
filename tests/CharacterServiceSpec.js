@@ -18,7 +18,7 @@ describe("CharacterService", function() {
         var service = getService(game);
         var result = service.setupCharacter();
         var gameSheet = game.createCharacterSheet;
-        var createSheet = new MyNewGame.Rules().character.getCreateCharacterSheet();
+        var createSheet = new _TestGame.Rules().character.getCreateCharacterSheet();
         createSheet.currentStep = 0;
 
         // Remove the next step function from the object for comparison.
@@ -55,7 +55,7 @@ describe("CharacterService", function() {
     });
 
     it("should allow equipping a non-miscellaneous item", function() {
-        var boots = MyNewGame.Items.LeatherBoots();
+        var boots = _TestGame.Items.LeatherBoots();
         var service = getService();
         var result = service.canEquip(boots);
 
@@ -63,7 +63,7 @@ describe("CharacterService", function() {
     });
 
     it("should disallow equipping a miscellaneous item", function() {
-        var journal = MyNewGame.Items.Journal();
+        var journal = _TestGame.Items.Journal();
         var service = getService();
         var result = service.canEquip(journal);
 
@@ -79,7 +79,7 @@ describe("CharacterService", function() {
         }
 
         var service = getService(game);
-        var boots = MyNewGame.Items.LeatherBoots();
+        var boots = _TestGame.Items.LeatherBoots();
         game.character.items.push(boots);
         service.equipItem(boots);
 
@@ -121,14 +121,14 @@ describe("CharacterService", function() {
 
         var service = getService(game);
 
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
         sword.unequip = function(item, game) {
             return false;
         }
 
         game.character.equipment.rightHand = sword;
 
-        var newSword = MyNewGame.Items.Sword();
+        var newSword = _TestGame.Items.Sword();
         var result = service.equipItem(newSword);
 
         expect(result).toBeFalsy();
@@ -147,7 +147,7 @@ describe("CharacterService", function() {
 
         var service = getService(game);
 
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
         sword.unequip = function(item, game) {
             return false;
         }
@@ -189,7 +189,7 @@ describe("CharacterService", function() {
             }
         };
 
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
 
         game.character.equipment.rightHand = twoHandedSword;
         game.character.equipment.leftHand = twoHandedSword;
@@ -210,7 +210,7 @@ describe("CharacterService", function() {
 
         var service = getService(game);
 
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
         sword.equip = function(item, game) {
             return false;
         }
@@ -229,8 +229,8 @@ describe("CharacterService", function() {
             }
         }
         var service = getService(game);
-        var equippedBoots = MyNewGame.Items.LeatherBoots();
-        var backPackBoots = MyNewGame.Items.LeatherBoots();
+        var equippedBoots = _TestGame.Items.LeatherBoots();
+        var backPackBoots = _TestGame.Items.LeatherBoots();
         game.character.equipment.feet = equippedBoots;
         game.character.items.push(backPackBoots);
         service.equipItem(backPackBoots);
@@ -259,7 +259,7 @@ describe("CharacterService", function() {
         }
 
         var service = getService(game, rules);
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
 
         var result = service.equipItem(sword);
 
@@ -284,7 +284,7 @@ describe("CharacterService", function() {
         }
 
         var service = getService(game, rules);
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
         game.character.equipment.rightHand = sword;
 
         var result = service.unequipItem(sword);
@@ -310,7 +310,7 @@ describe("CharacterService", function() {
     });
 
     it("should return true when an equipment slot is used", function() {
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
 
         var game = {
             character: {
@@ -328,7 +328,7 @@ describe("CharacterService", function() {
     });
 
     it("should drop an item the character has in his backpack", function() {
-        var sword = MyNewGame.Items.Sword();
+        var sword = _TestGame.Items.Sword();
 
         var game = {
             character: {
@@ -408,7 +408,7 @@ describe("CharacterService", function() {
     };
 
     function getService(game, rules) {
-        return new StoryScript.CharacterService({}, game || {}, rules || new MyNewGame.Rules());
+        return new StoryScript.CharacterService({}, game || {}, rules || new _TestGame.Rules());
     }
 
 });

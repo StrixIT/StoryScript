@@ -66,6 +66,6 @@ describe("CombinationService", function() {
     ];
 
     function getService(game) {
-        return new StoryScript.CombinationService({}, {}, game, new MyNewGame.Rules(), {});
+        return new StoryScript.CombinationService({}, {}, game, new _TestGame.Rules(), {});
     }
 });
