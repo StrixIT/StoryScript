@@ -1,14 +1,6 @@
 ﻿namespace MyNewGame {
     export class Rules implements StoryScript.IRules {
         setup = {
-            getSheetAttributes: (): string[] =>  {
-                return [
-                    'strength',
-                    'agility',
-                    'intelligence'
-                ]
-            },
-
             getCombinationActions: (): StoryScript.ICombinationAction[] => {
                 return [
                     {
@@ -46,6 +38,14 @@
         };
 
         character = {
+            getSheetAttributes: (): string[] =>  {
+                return [
+                    'strength',
+                    'agility',
+                    'intelligence'
+                ]
+            },
+
             getCreateCharacterSheet: (): StoryScript.ICreateCharacter => {
                 return {
                     steps: [

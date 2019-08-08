@@ -23,13 +23,13 @@ namespace StoryScript {
 
         getSheetAttributes = (): string[] => {
             var self = this;
-            var characterRules = self.getCharacterRules();
+            var characterRules = self._rules && self._rules.character;
             return characterRules && characterRules.getSheetAttributes && characterRules.getSheetAttributes() || [];
         }
 
         setupCharacter = (): ICreateCharacter => {
             var self = this;
-            var characterRules = self.getCharacterRules();
+            var characterRules = self._rules && self._rules.character;
             var sheet = (characterRules && characterRules.getCreateCharacterSheet && characterRules.getCreateCharacterSheet()) || { steps: []};
             self.prepareSheet(sheet);
             self._game.createCharacterSheet = sheet;
@@ -87,7 +87,7 @@ namespace StoryScript {
         createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
             var self = this;
             var character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
-            var characterRules = self.getCharacterRules();
+            var characterRules = self._rules && self._rules.character;
 
             if (isEmpty(character) && characterRules && characterRules.createCharacter) {
 
@@ -106,7 +106,7 @@ namespace StoryScript {
 
         setupLevelUp = (): ICreateCharacter => {
             var self = this;
-            var characterRules = self.getCharacterRules();
+            var characterRules = self._rules && self._rules.character;
             var sheet = characterRules && characterRules.getLevelUpSheet && characterRules.getLevelUpSheet();
 
             if (sheet) {
@@ -120,7 +120,7 @@ namespace StoryScript {
         levelUp = (game: IGame, characterData: ICreateCharacter): ICharacter => {
             var self = this;
             var character = self._game.character;
-            var characterRules = self.getCharacterRules();
+            var characterRules = self._rules && self._rules.character;
 
             if (characterRules && characterRules.levelUp && characterRules.levelUp(character, characterData)) {
                 self.processDefaultSettings(character, characterData);
@@ -149,7 +149,7 @@ namespace StoryScript {
                 }
             }
 
-            var characterRules = self.getCharacterRules();
+            var characterRules = self._rules && self._rules.character;
 
             if (characterRules.beforeEquip) {
                 if (!characterRules.beforeEquip(self._game, self._game.character, item)) {
@@ -212,11 +212,6 @@ namespace StoryScript {
         questStatus = (quest: IQuest): string => {
             var self = this;
             return typeof quest.status === 'function' ? (<any>quest).status(self._game, quest, quest.checkDone(self._game, quest)) : quest.status;
-        }
-
-        private getCharacterRules() {
-            var self = this;
-            return self._rules && self._rules.character && self._rules.character;
         }
 
         private prepareSheet = (sheet: ICreateCharacter): void => {
@@ -340,7 +335,7 @@ namespace StoryScript {
                     return true;
                 }
 
-                var characterRules = self.getCharacterRules();
+                var characterRules = self._rules && self._rules.character;
 
                 if (characterRules.beforeUnequip) {
                     if (!characterRules.beforeUnequip(self._game, self._game.character, equippedItem)) {

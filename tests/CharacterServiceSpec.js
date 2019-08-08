@@ -18,7 +18,7 @@ describe("CharacterService", function() {
         var service = getService(game);
         var result = service.setupCharacter();
         var gameSheet = game.createCharacterSheet;
-        var createSheet = new MyNewGame.Rules().getCreateCharacterSheet();
+        var createSheet = new MyNewGame.Rules().character.getCreateCharacterSheet();
         createSheet.currentStep = 0;
 
         // Remove the next step function from the object for comparison.
@@ -36,8 +36,10 @@ describe("CharacterService", function() {
 
     it("should set the first step of the level up sheet as the selected step preparing level up", function() {
         var rules = {
-            getLevelUpSheet: function() {
-                return levelUpSheet
+            character: {
+                getLevelUpSheet: function() {
+                    return levelUpSheet
+                }
             }
         };
 
@@ -249,8 +251,10 @@ describe("CharacterService", function() {
         }
 
         var rules = {
-            beforeEquip: function(game, character, item) {
-                return false;
+            character: {
+                beforeEquip: function(game, character, item) {
+                    return false;
+                }
             }
         }
 
@@ -272,8 +276,10 @@ describe("CharacterService", function() {
         }
 
         var rules = {
-            beforeUnequip: function(game, character, item) {
-                return false;
+            character: {
+                beforeUnequip: function(game, character, item) {
+                    return false;
+                }
             }
         }
 
