@@ -1,6 +1,6 @@
 ﻿namespace GameTemplate {
     export class Rules implements StoryScript.IRules {
-        setup = {
+        setup = <StoryScript.ISetupRules>{
             getCombinationActions: (): StoryScript.ICombinationAction[] => {
                 return [
                     // Add combination action names here if you want to use this feature.
@@ -8,7 +8,7 @@
             }
         };
 
-        general = {
+        general = <StoryScript.IGeneralRules>{  
             scoreChange: (game: IGame, change: number): boolean => {
                 var self = this;
     
@@ -17,7 +17,7 @@
             }
         };
 
-        character = {
+        character = <StoryScript.ICharacterRules>{
             getSheetAttributes: (): string[] => {
                 return [
                     // Add the character attributes that you want to show on the character sheet here
@@ -39,11 +39,11 @@
             }
         };
 
-        exploration = {
+        exploration = <StoryScript.IExplorationRules>{
             
         };
 
-        combat = {
+        combat = <StoryScript.ICombatRules>{     
             fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
                 var self = this;
                 retaliate = retaliate == undefined ? true : retaliate;
