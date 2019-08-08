@@ -14,10 +14,6 @@ namespace StoryScript {
         private descriptionBundle: Map<string, string>;
         private loadedDescriptions: { [id: string]: string };
         private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
-        private locationPropertiesToIgnoreForClone = [
-            'activePerson',
-            'activeTrade'
-        ];
 
         constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
             var self = this;
@@ -129,10 +125,6 @@ namespace StoryScript {
             }
 
             for (var key in values) {
-                if (values.type && values.type === 'locations' && self.locationPropertiesToIgnoreForClone.indexOf(key) !== -1) {
-                    continue;
-                }
-
                 if (!values.hasOwnProperty(key)) {
                     continue;
                 }
