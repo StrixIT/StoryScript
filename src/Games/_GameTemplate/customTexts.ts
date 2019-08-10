@@ -1,7 +1,7 @@
 ﻿namespace GameTemplate {
-    export class CustomTexts {
-        texts: StoryScript.IInterfaceTexts = {
+    export function CustomTexts(): StoryScript.IInterfaceTexts {
+        return {
             // Add your custom texts here.
-        }
+        };
     }
 }

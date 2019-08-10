@@ -1,3 +1,3 @@
 namespace PathOfHeroes {
-    StoryScript.Run('PathOfHeroes', new CustomTexts().texts, new Rules());
+    StoryScript.Run('PathOfHeroes', CustomTexts(), Rules());
 }

@@ -1,6 +1,6 @@
 ﻿module QuestForTheKing {
-    export class CustomTexts {
-        texts: StoryScript.IInterfaceTexts = {
+    export function CustomTexts(): StoryScript.IInterfaceTexts {
+        return {
             gameName: 'Quests for the King',
 
             worldProperties: {
@@ -10,6 +10,6 @@
                 isNight: 'It is night',
                 timeOfDay: 'It is {0}'
             }
-        }
+        };
     }
 }
