@@ -1,59 +1,61 @@
 ﻿namespace GameTemplate {
-    export class Rules implements StoryScript.IRules {
-        setup = <StoryScript.ISetupRules>{
-            getCombinationActions: (): StoryScript.ICombinationAction[] => {
-                return [
-                    // Add combination action names here if you want to use this feature.
-                ];
-            }
-        };
-
-        general = <StoryScript.IGeneralRules>{  
-            scoreChange: (game: IGame, change: number): boolean => {
-                var self = this;
-    
-                // Implement logic to occur when the score changes. Return true when the character gains a level.
-                return false;
-            }
-        };
-
-        character = <StoryScript.ICharacterRules>{
-            getSheetAttributes: (): string[] => {
-                return [
-                    // Add the character attributes that you want to show on the character sheet here
-                ];
+    export function Rules(): StoryScript.IRules {
+        return {
+            setup: {
+                getCombinationActions: (): StoryScript.ICombinationAction[] => {
+                    return [
+                        // Add combination action names here if you want to use this feature.
+                    ];
+                }
             },
 
-            getCreateCharacterSheet: (): StoryScript.ICreateCharacter => {
-                return {
-                    steps: [
-                        // Add the character creation steps here, if you want to use character creation.
-                    ]
-                };
+            general: {  
+                scoreChange: (game: IGame, change: number): boolean => {
+                    var self = this;
+        
+                    // Implement logic to occur when the score changes. Return true when the character gains a level.
+                    return false;
+                }
             },
-
-            createCharacter: (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
-                var self = this;
-                var character = new Character();
-                return character;
-            }
-        };
-
-        exploration = <StoryScript.IExplorationRules>{
             
-        };
+            character: {
+                getSheetAttributes: (): string[] => {
+                    return [
+                        // Add the character attributes that you want to show on the character sheet here
+                    ];
+                },
 
-        combat = <StoryScript.ICombatRules>{     
-            fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
-                var self = this;
-                retaliate = retaliate == undefined ? true : retaliate;
+                getCreateCharacterSheet: (): StoryScript.ICreateCharacter => {
+                    return {
+                        steps: [
+                            // Add the character creation steps here, if you want to use character creation.
+                        ]
+                    };
+                },
 
-                // Implement character attack here.
+                createCharacter: (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
+                    var self = this;
+                    var character = new Character();
+                    return character;
+                }
+            },
 
-                if (retaliate) {
-                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                        // Implement monster attack here
-                    });
+            exploration: {
+                
+            },
+
+            combat: {     
+                fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
+                    var self = this;
+                    retaliate = retaliate == undefined ? true : retaliate;
+
+                    // Implement character attack here.
+
+                    if (retaliate) {
+                        game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                            // Implement monster attack here
+                        });
+                    }
                 }
             }
         };
