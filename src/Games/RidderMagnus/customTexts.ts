@@ -1,6 +1,6 @@
 ﻿namespace RidderMagnus {
-    export class CustomTexts {
-        texts: StoryScript.IInterfaceTexts = {
+    export function CustomTexts(): StoryScript.IInterfaceTexts {
+        return {
             actions: "Dit kan je doen",
             amulet: "Sieraad",
             attack: "Val {0} aan!",
@@ -33,6 +33,6 @@
             youLost: "Verloren",
             youWon: "Gewonnen",
             yourName: "Welkom, Ridder Magnus. Vul hier je naam in:",
-        }
+        };
     }
 }

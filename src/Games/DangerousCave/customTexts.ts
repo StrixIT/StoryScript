@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave {
-    export class CustomTexts {
-        texts: StoryScript.IInterfaceTexts = {
+    export function CustomTexts(): StoryScript.IInterfaceTexts {
+        return {
             newGame: "Nieuw spel",
             startAdventure: "Start avontuur",
             nextQuestion: "Volgende vraag",
@@ -38,7 +38,6 @@
             levelUpDescription: "Je hebt niveau {0} bereikt.",
             encounters: "Vijanden",
             
-
-        }
+        };
     }
 }
