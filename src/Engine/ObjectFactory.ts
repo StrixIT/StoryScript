@@ -150,6 +150,15 @@ namespace StoryScript {
             
             for (var n in object) {
                 if (object.hasOwnProperty(n)) {
+                    object[n] = object[n].proxy(object[n], (originalFunc, ...params) => {
+                        var id = params.splice(params.length - 1, 1)[0];
+                        var oldId = GetCurrentEntityId();
+                        SetCurrentEntityId(id);
+                        var result = originalFunc.apply(this, params);
+                        SetCurrentEntityId(oldId);
+                        return result;
+                    }, object[n].name);
+
                     collection.push(object[n]);
                 }
             }

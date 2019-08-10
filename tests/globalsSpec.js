@@ -27,7 +27,7 @@ describe("Utilities", function() {
             return myFunctionResult * z;
         }
 
-        MyFunction = MyFunction.proxy(AddOn, 5);
+        MyFunction = MyFunction.proxy(MyFunction, AddOn, 5);
         var result = MyFunction(2, 6);
 
         expect(result).toEqual(40);

@@ -189,7 +189,7 @@ namespace StoryScript {
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
-            location.destinations.push = location.destinations.push.proxy(self.addDestination, self._game);
+            location.destinations.push = location.destinations.push.proxy(location.destinations.push, self.addDestination, self._game);
 
             Object.defineProperty(location, 'activeDestinations', {
                 get: function () {
