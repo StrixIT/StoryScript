@@ -238,7 +238,7 @@ namespace StoryScript {
         var functions = window.StoryScript.ObjectFactory.GetFunctions();
 
         // If this is the first time an object of this definition is created, get the functions.
-        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>compiledEntity).id.toLowerCase()))) {
+        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>compiledEntity).id))) {
             getFunctions(plural, functions, definitionKeys, compiledEntity, null);
         }
 
