@@ -2,6 +2,15 @@ namespace StoryScript {
     var _definitions: IDefinitions = null;
     var _typeNames: string[] = null;
     var _registeredIds: Set<string> = new Set<string>();
+    var _currentEntityId: string = null;
+
+    export function GetCurrentEntityId() {
+        return _currentEntityId;
+    }
+
+    export function SetCurrentEntityId(id: string) {
+        _currentEntityId = id ? id.toLowerCase() : id;
+    }
 
     export function Location(entity: ILocation): ILocation {
         var definitions = getDefinitions();
@@ -136,7 +145,7 @@ namespace StoryScript {
 
         Object.defineProperty(readOnlyCollection, 'push', {
             writable: true,
-            value: readOnlyCollection.push.proxy(pushEntity)
+            value: readOnlyCollection.push.proxy(readOnlyCollection.push, pushEntity)
         });
     }
 
@@ -202,26 +211,14 @@ namespace StoryScript {
         useNameAsId = useNameAsId === undefined ? false : useNameAsId;
         var compiledEntity: { id: string, name: string, type: string } = typeof entity === 'function' ? entity() : entity;
         var definitions = getDefinitions();
-        var types = getTypeNames(definitions);
-        var error = new Error();
-        var stack = error.stack.split('\n');
+        
+        var entityId = GetCurrentEntityId();
 
-        // Skip the stack lines Error, at CreateObject and the first at {type}, e.g. at Item.
-        for (var i = 3; i < stack.length; i++) {
-            var line = stack[i];
-            // Firefox has a different formatting of the stack lines (Journal@[file_and_line]) than Chrome and Edge (at Object.Journal ([file_and_line])).
-            var functionName = line.indexOf('@') > -1 ? line.split('@')[0] : line.trim().split(' ')[1];
-            functionName = functionName.replace('Object.', '').replace('Array.', '');
-            var key = functionName.toLowerCase();
-            
-            if (types.indexOf(key) < 0) {
-                compiledEntity.id = functionName.toLowerCase();
-                break;
-            }
-        }
-
-        if (useNameAsId || !compiledEntity.id) {          
+        if (useNameAsId || !entityId) {          
             compiledEntity.id = compiledEntity.name.toLowerCase().replace(/\s/g,'');
+        }
+        else {
+            compiledEntity.id = entityId;
         }
 
         var definitionKeys = getDefinitionKeys(definitions);

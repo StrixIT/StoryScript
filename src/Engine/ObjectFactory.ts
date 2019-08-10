@@ -141,15 +141,26 @@ namespace StoryScript {
             self._definitions.persons = self.moveObjectPropertiesToArray(nameSpaceObject['Persons']);
             self._definitions.items = self.moveObjectPropertiesToArray(nameSpaceObject['Items']);
             self._definitions.quests = self.moveObjectPropertiesToArray(nameSpaceObject['Quests']);
-            self._definitions.actions = self.moveObjectPropertiesToArray(window['StoryScript']['Actions']);
-            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], self._definitions.actions);
+            self._definitions.actions = self.moveObjectPropertiesToArray(window['StoryScript']['Actions'], null, false);
+            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], self._definitions.actions, false);
         }
 
-        private moveObjectPropertiesToArray<T>(object: {}, collection?: (() => T)[]) {
+        private moveObjectPropertiesToArray<T>(object: {}, collection?: (() => T)[], addProxy: boolean = true) {
             collection = collection || [];
             
             for (var n in object) {
                 if (object.hasOwnProperty(n)) {
+                    if (addProxy) {
+                        object[n] = object[n].proxy(object[n], (originalFunc, ...params) => {
+                            var id = params[params.length - 1];
+                            var oldId = GetCurrentEntityId();
+                            SetCurrentEntityId(id);
+                            var result = originalFunc();
+                            SetCurrentEntityId(oldId);
+                            return result;
+                        }, object[n].name);
+                    }
+
                     collection.push(object[n]);
                 }
             }
