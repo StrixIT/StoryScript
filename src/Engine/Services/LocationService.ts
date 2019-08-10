@@ -253,11 +253,12 @@ namespace StoryScript {
         private addDestination() {
             var args = [].slice.apply(arguments);
             var originalFunction = args.shift();
-
             var destination = <IDestination>args[0];
-            setDestination(destination);
-            addKeyAction(args[1], destination);
+            var game = <IGame>args[1];
             args.splice(1, 1);
+
+            setDestination(destination);
+            addKeyAction(game, destination);
             originalFunction.apply(this, args);
         }
 
