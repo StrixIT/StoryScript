@@ -22,6 +22,7 @@ var tsGameProject = ts.createProject("./src/Games/tsconfig.json");
 var tsUIProject = ts.createProject("./src/UI/tsconfig.json");
 
 var paths = {
+    packages: "./node_modules/",
     webroot: "./dist/",
     sourceroot: "./src/",
     typeroot: "./src/types/",
@@ -164,16 +165,59 @@ function getNameSpace() {
     return config.include[1].split('/')[1];
 }
 
+function getStoryScriptVersion() {
+    return jf.readFileSync('./package.json').version;
+}
+
 function buildGame(nameSpace) {
-    var libs = copyLibraries();
+    var libs = buildTemplateAndCopyLibraries();
     var resources = copyResources(nameSpace);
     var css = copyCss(nameSpace);
-    var html = copyHtml();
     var config = copyConfig(nameSpace);
     var ui = compileUI(nameSpace);
     var game = compileGame(nameSpace);
     var descriptions = compileGameDescriptions(nameSpace);
-    return merge(libs, resources, css, html, config, ui, game, descriptions);
+
+    return merge(libs, resources, css, config, ui, game, descriptions);
+}
+
+function buildTemplateAndCopyLibraries() {
+    var storyScriptVersion = getStoryScriptVersion();
+
+    var jqueryPath = paths.packages + 'jquery/';
+    var jqueryConfig = jf.readFileSync(jqueryPath + 'package.json');
+    var jqueryversion = jqueryConfig.version;
+
+    var angularPath = paths.packages + 'angular/';
+    var angularConfig = jf.readFileSync(angularPath + 'package.json');
+    var angularVersion = angularConfig.version;
+
+    var bootstrapPath = paths.packages + 'bootstrap/';
+    var bootstrapConfig = jf.readFileSync(bootstrapPath + 'package.json');
+    var bootstrapVersion = bootstrapConfig.version;
+
+    var jquery = gulp.src([jqueryPath + 'dist/jquery.min.js']).pipe((rename(function (path) { addVersion(path, jqueryversion); }))).pipe(gulp.dest(paths.webroot + 'js/lib'));
+    var angular = gulp.src([angularPath + 'angular.min.js', paths.packages + 'angular-sanitize/angular-sanitize.min.js']).pipe((rename(function (path) { addVersion(path, angularVersion); }))).pipe(gulp.dest(paths.webroot + 'js/lib'));
+    var bootstrap = gulp.src([bootstrapPath + 'dist/js/bootstrap.min.js']).pipe((rename(function (path) { addVersion(path, bootstrapVersion); }))).pipe(gulp.dest(paths.webroot + 'js/lib'));
+    var bootstrapCss = gulp.src([bootstrapPath + 'dist/css/bootstrap.min.css']).pipe((rename(function (path) { addVersion(path, bootstrapVersion); }))).pipe(gulp.dest(paths.webroot + 'css/lib'));
+
+    var template = gulp.src([paths.sourceroot + 'UI/index.html'])
+        .pipe(flatten())
+        .pipe(replace('jquery.', 'jquery.' + jqueryversion + '.'))
+        .pipe(replace('angular.', 'angular.' + angularVersion + '.'))
+        .pipe(replace('angular-sanitize.', 'angular-sanitize.' + angularVersion + '.'))
+        .pipe(replace('bootstrap.', 'bootstrap.' + bootstrapVersion + '.'))
+        .pipe(replace('storyscript.', 'storyscript.' + storyScriptVersion + '.'))
+        .pipe(replace('ui.', 'ui.' + storyScriptVersion + '.'))
+        .pipe(gulp.dest(paths.webroot));
+
+    return merge(jquery, angular, bootstrap, bootstrapCss, template);
+}
+
+function addVersion(path, version) {
+    var nameParts = path.basename.split('.');
+    nameParts.splice(1, 0, version);
+    path.basename = nameParts.join('.');
 }
 
 function publishGame() {
@@ -242,16 +286,6 @@ function getFolderAndFileName(path) {
     };
 }
 
-function copyLibraries() {
-    var libJs = gulp.src([paths.sourceroot + 'Libraries/**/*.js'])
-        .pipe(gulp.dest(paths.webroot + 'js/lib'));
-
-    var libCss = gulp.src([paths.sourceroot + 'Libraries/bootstrap/bootstrap.min.css'])
-        .pipe(gulp.dest(paths.webroot + 'css/lib'));
-
-    return merge([libJs, libCss]);
-}
-
 function copyResources(nameSpace) {
     return gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/resources/**/*.*'])
         .pipe(flatten())
@@ -263,17 +297,19 @@ function copyCss(nameSpace, path) {
         console.log('Css file ' + path + ' has been changed. Compiling css...');
     }
 
+    var version = getStoryScriptVersion();
+
     return gulp.src([paths.sourceroot + 'UI/styles/*.css', paths.sourceroot + 'Games/' + nameSpace + '/ui/styles/*.css'])
         .pipe(flatten())
         .pipe(cssmin())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest(paths.webroot + 'css'));
-}
+        .pipe(rename(function (path) {
+            if (path.basename.toLowerCase().indexOf('storyscript') > -1) {
+                path.basename += '.' + version;
+            }
 
-function copyHtml() {
-    return gulp.src([paths.sourceroot + 'UI/index.html'])
-        .pipe(flatten())
-        .pipe(gulp.dest(paths.webroot));
+            path.basename += '.min';
+        }))
+        .pipe(gulp.dest(paths.webroot + 'css'));
 }
 
 function copyConfig(nameSpace) {
@@ -290,8 +326,10 @@ function compileStoryScript() {
         .pipe(sourcemaps.init())
         .pipe(tsStoryScriptProject());
 
+    var version = getStoryScriptVersion();
+
     return merge(
-        tsResult.js.pipe(concat('storyscript.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
+        tsResult.js.pipe(concat('storyscript.' + version + '.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
         tsResult.dts.pipe(concat('storyscript.d.ts')).pipe(gulp.dest(paths.typeroot))
     );
 }
@@ -320,9 +358,10 @@ function compileUI(nameSpace) {
         .pipe(tsUIProject());
         
     var templateResult = compileUITemplates(nameSpace);
+    var version = getStoryScriptVersion();
 
     return merge([
-        tsResult.js.pipe(concat('ui.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
+        tsResult.js.pipe(concat('ui.' + version +'.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
         templateResult
     ]);
 }
