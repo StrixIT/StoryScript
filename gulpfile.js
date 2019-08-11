@@ -25,7 +25,8 @@ var paths = {
     webroot: "./dist/",
     sourceroot: "./src/",
     typeroot: "./src/types/",
-    testroot: "./tests/TestGameFiles"
+    testroot: "./tests/TestGameFiles",
+    publishroot: "./pub/",
 };
 
 gulp.task('create-game', createGame());
@@ -41,8 +42,16 @@ gulp.task('build-game', ['delete-files', 'compile-engine'], function() {
     return buildGame(namespace);
 });
 
+gulp.task('publish-game', ['delete-published-files', 'build-game'], function() {  
+    return publishGame();
+});
+
 gulp.task('delete-files', function () {
     return del.sync([paths.webroot + '**/*', paths.typeroot + '**/*']);
+});
+
+gulp.task('delete-published-files', function () {
+    return del.sync([paths.publishroot + '**/*']);
 });
 
 gulp.task('compile-engine', ['fix-popper'], function() {
@@ -167,6 +176,30 @@ function buildGame(nameSpace) {
     return merge(libs, resources, css, html, config, ui, game, descriptions);
 }
 
+function publishGame() {
+    var css = gulp.src([paths.webroot + 'css/game*.css', paths.webroot + 'css/game*.css'])
+                .pipe(gulp.dest(paths.publishroot + 'css'));
+
+    var js = gulp.src([paths.webroot + 'js/game*.js'])
+                .pipe(concat('game.js'))
+                //.pipe(uglify())
+                .pipe(gulp.dest(paths.publishroot + 'js'));
+    
+    var templates = gulp.src([paths.webroot + 'js/ui-templates.js'])
+                .pipe(gulp.dest(paths.publishroot + 'js'));
+
+    var resources = gulp.src([paths.webroot + 'resources/**.*', '!' + paths.webroot + 'resources/readme.txt'])
+                .pipe(gulp.dest(paths.publishroot + 'resources'));
+    
+    var config = gulp.src([paths.webroot + '*.json'])
+                .pipe(gulp.dest(paths.publishroot));
+    
+    var index = gulp.src([paths.webroot + 'index.html'])
+                .pipe(gulp.dest(paths.publishroot));
+
+    return merge(css, js, templates, resources, config, index);
+}
+
 function copyResource(fullPath) {
     var folderAndFile = getFolderAndFileName(fullPath);
     console.log('Resource file ' + fullPath + ' has been changed. Updating ' + folderAndFile.folder + '/' + folderAndFile.file + ' (folder ' + folderAndFile.folder + ').');
@@ -244,7 +277,7 @@ function copyHtml() {
 }
 
 function copyConfig(nameSpace) {
-    return gulp.src([paths.sourceroot + '/bs-config.json', paths.sourceroot + 'Games/' + nameSpace + '/bs-config.json'])
+    return gulp.src([paths.sourceroot + '/bs-config.json', paths.sourceroot + 'Games/' + nameSpace + '/bs-config.json', , paths.sourceroot + 'Games/' + nameSpace + '/gameinfo.json'])
       .pipe(gulp.dest(paths.webroot));
 }
 
