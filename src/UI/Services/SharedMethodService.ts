@@ -50,6 +50,9 @@ namespace StoryScript
                 case ActionType.Combat: {
                     buttonClass += 'danger';
                 } break;
+                case ActionType.Trade: {
+                    buttonClass += 'secondary';
+                } break;
             }
 
             return buttonClass;
