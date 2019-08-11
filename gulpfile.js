@@ -221,7 +221,7 @@ function addVersion(path, version) {
 }
 
 function publishGame() {
-    var css = gulp.src([paths.webroot + 'css/game*.css', paths.webroot + 'css/game*.css'])
+    var css = gulp.src([paths.webroot + 'css/game*.css'])
                 .pipe(gulp.dest(paths.publishroot + 'css'));
 
     var js = gulp.src([paths.webroot + 'js/game*.js'])
@@ -239,9 +239,18 @@ function publishGame() {
                 .pipe(gulp.dest(paths.publishroot));
     
     var index = gulp.src([paths.webroot + 'index.html'])
+                .pipe(replace('<script src="js/game-descriptions.js"></script>', ''))
+                .pipe(replace('game.min.css', cacheBuster('game.min.css')))
+                .pipe(replace('game.js', cacheBuster('game.js')))
+                .pipe(replace('ui-templates.js', cacheBuster('ui-templates.js')))
                 .pipe(gulp.dest(paths.publishroot));
 
     return merge(css, js, templates, resources, config, index);
+}
+
+function cacheBuster(fileName) {
+    var cachebuster = Math.round(new Date().getTime() / 1000);
+    return fileName += '?cb=' + cachebuster;
 }
 
 function copyResource(fullPath) {
