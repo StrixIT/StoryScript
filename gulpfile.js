@@ -11,7 +11,6 @@
     concat = require('gulp-concat'),
     cssmin = require("gulp-cssmin"),
     minifyHtml = require('gulp-minify-html'),
-    //uglify = require("gulp-uglify"),
     gulpIgnore = require('gulp-ignore'),
     sourcemaps = require('gulp-sourcemaps'),
     angularTemplateCache = require('gulp-angular-templatecache'),
