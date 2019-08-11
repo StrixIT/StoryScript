@@ -16,8 +16,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'test-main.js',
-      { pattern: 'dist/js/StoryScript.js', included: true },
-      { pattern: 'tests/TestGameFiles/game*.js', included: true },
+      './test/storyscript.js',
+      './test/game-descriptions.js',
+      './test/game.js',
       { pattern: 'tests/**/*Spec.js', included: false }
     ],
 

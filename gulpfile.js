@@ -25,7 +25,7 @@ var paths = {
     webroot: "./dist/",
     sourceroot: "./src/",
     typeroot: "./src/types/",
-    testroot: "./tests/TestGameFiles",
+    testroot: "./test",
     publishroot: "./pub/",
 };
 
@@ -338,7 +338,8 @@ function compileStoryScript() {
 
     return merge(
         tsResult.js.pipe(concat('storyscript.' + version + '.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
-        tsResult.dts.pipe(concat('storyscript.d.ts')).pipe(gulp.dest(paths.typeroot))
+        tsResult.dts.pipe(concat('storyscript.d.ts')).pipe(gulp.dest(paths.typeroot)),
+        tsResult.js.pipe(concat('storyscript.js')).pipe(gulp.dest(paths.testroot))
     );
 }
 

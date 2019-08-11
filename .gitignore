@@ -7,8 +7,8 @@
 # Copied and generated files for StoryScript, resource files that should not be checked in
 /dist/*
 /pub/*
+/test/*
 /src/types/*
 /src/Games/**/resources/*
 !/src/Games/**/resources/readme.txt
 /src/Games/QuestForTheKing/**/*.html
-/tests/TestGameFiles/*
