@@ -447,9 +447,9 @@ namespace StoryScript {
 
     function addKeyAction(game: IGame, destination: IDestination) {
         if (destination.barrier && destination.barrier.key) {
-            var keyEntity = typeof destination.barrier.key === 'function' ? destination.barrier.key() : destination.barrier.key;
+            destination.barrier.key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : destination.barrier.key;
             var existingAction = null;
-            var keyActionHash = createFunctionHash(keyEntity.open.action);
+            var keyActionHash = createFunctionHash(destination.barrier.key.open.action);
 
             if (destination.barrier.actions) {
                 destination.barrier.actions.forEach(x => {
@@ -466,7 +466,8 @@ namespace StoryScript {
                 destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
             }
 
-            var barrierKey = <IKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
+            var keyId = destination.barrier.key.id;
+            var barrierKey = <IKey>(game.character.items.get(keyId) || game.currentLocation.items.get(keyId));
 
             if (barrierKey) {
                 destination.barrier.actions.push(barrierKey.open);
