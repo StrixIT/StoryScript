@@ -6,7 +6,7 @@
         <div class="col-4">
             <div class="float-right">
                 <button type="button" class="btn btn-danger btn-sm" ng-click="$ctrl.restart()">{{ $ctrl.texts.startOver }}</button>
-                <button type="button" ng-if="!$ctrl.dynamicLocations()" class="btn btn-danger btn-sm" ng-click="$ctrl.reset()">{{ $ctrl.texts.resetWorld }}</button>
+                <button id="resetbutton" type="button" ng-if="!$ctrl.dynamicLocations()" class="btn btn-danger btn-sm" ng-click="$ctrl.reset()">{{ $ctrl.texts.resetWorld }}</button>
                 <button type="button" class="btn btn-dark btn-sm" ng-click="$ctrl.save()">{{ $ctrl.texts.saveGame }}</button>
                 <button type="button" class="btn btn-dark btn-sm" ng-click="$ctrl.load()">{{ $ctrl.texts.loadGame }}</button>
             </div>

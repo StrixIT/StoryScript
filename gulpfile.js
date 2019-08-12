@@ -229,6 +229,7 @@ function publishGame() {
                 .pipe(gulp.dest(paths.publishroot + 'js'));
     
     var templates = gulp.src([paths.webroot + 'js/ui-templates.js'])
+                .pipe(replace(/<button id=resetbutton[^>]*>(.*?)<\s*\/\s*button>/g, ''))
                 .pipe(gulp.dest(paths.publishroot + 'js'));
 
     var resources = gulp.src([paths.webroot + 'resources/**.*', '!' + paths.webroot + 'resources/readme.txt'])
