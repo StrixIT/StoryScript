@@ -1,0 +1,41 @@
+#action-log, #exploration-onground, #exploration-destinations > .box-title {
+    display: none;
+}
+
+#location {
+    margin-bottom: 0px;
+}
+
+#exploration-destinations {
+    border-top: none;
+    border-radius: 0;
+}
+
+.back-label {
+    display: none;
+}
+
+.dynamic-back-button {
+    display: none;
+}
+
+body {
+    background: url('https://steamcdn-a.akamaihd.net/steamcommunity/public/images/items/512260/2a3f6481476c3a38bd3f53da5dac64c200cdb155.jpg') ;
+}
+
+h1 {
+    color: purple;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.box-container {
+    background-color: pink;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 1.5em;
+}
+
+.box-title {
+    color: pink;
+    font-size: 2em;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
