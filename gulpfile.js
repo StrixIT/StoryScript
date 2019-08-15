@@ -265,10 +265,10 @@ function publishGame(local) {
 
     if (local) {
         var libraries = merge(
-            gulp.src([paths.webroot + 'js/lib/*']).pipe(gulp.dest(paths.publishroot + 'js/lib')),
+            gulp.src([paths.webroot + 'js/lib/*']).pipe(replace(/\/\*# sourceMappingURL=.*\*\//g, '')).pipe(gulp.dest(paths.publishroot + 'js/lib')),
             gulp.src([paths.webroot + 'js/storyscript*.js']).pipe(gulp.dest(paths.publishroot + 'js')),
             gulp.src([paths.webroot + 'js/ui.*.js']).pipe(gulp.dest(paths.publishroot + 'js')),
-            gulp.src([paths.webroot + 'css/lib/*']).pipe(gulp.dest(paths.publishroot + 'css/lib')),
+            gulp.src([paths.webroot + 'css/lib/*']).pipe(replace(/\/\*# sourceMappingURL=.*\*\//g, '')).pipe(gulp.dest(paths.publishroot + 'css/lib')),
             gulp.src([paths.webroot + 'css/storyscript.*']).pipe(gulp.dest(paths.publishroot + 'css')),
             gulp.src([paths.webroot + 'css/game.*']).pipe(gulp.dest(paths.publishroot + 'css')));
 
