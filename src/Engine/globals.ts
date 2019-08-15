@@ -14,6 +14,9 @@
                 }}[name];
 
                 func.isProxy = true;
+
+                // Making the proxy a named function as done above doesn't work in Edge. Use an additional property as a workaround.
+                func.originalFunctionName = name;
                 return func;
             })();
         };

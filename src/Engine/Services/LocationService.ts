@@ -481,7 +481,10 @@ namespace StoryScript {
         // Note that dynamically added destinations already have a string as target so use that one.
         // Also set the barrier selected actions to the first one available for each barrier.
         // Further, replace combine functions with their target ids.
-        destination.target = (destination.target && (<any>destination.target).name) || destination.target;
+        var target = destination.target;
+        var targetName = typeof target === 'function' ? target.name || target.originalFunctionName : null;
+
+        destination.target = targetName || target;
 
         if (destination.barrier) {
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {
