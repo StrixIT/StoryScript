@@ -483,7 +483,7 @@ namespace StoryScript {
         // Further, replace combine functions with their target ids.
         var target = destination.target;
         target = typeof target === 'function' ? target.name || target.originalFunctionName : target;
-        destination.target = target.toLowerCase();
+        destination.target = target && target.toLowerCase();
 
         if (destination.barrier) {
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {

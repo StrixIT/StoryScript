@@ -278,7 +278,7 @@ namespace StoryScript {
 
         private resume(locationName: string) {
             var self = this;
-            var lastLocation = self._game.locations.get(locationName);
+            var lastLocation = self._game.locations.get(locationName) || self._game.locations.get('start');
             var previousLocationName = self._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
 
             if (previousLocationName) {
