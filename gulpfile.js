@@ -35,23 +35,16 @@ gulp.task('create-game-basic', createGame('basic'));
 
 gulp.task('fix-popper', fixPopper());
 
-gulp.task('fix-popper', fixPopper());
-
 gulp.task('build-game', ['delete-files', 'compile-engine'], function() {
     var namespace = getNameSpace();   
-    return buildGame(namespace, true);
+    return buildGame(namespace);
 });
 
-gulp.task('build-game-for-publication', ['delete-files', 'compile-engine-for-publication'], function() {
-    var namespace = getNameSpace();   
-    return buildGame(namespace, false);
-});
-
-gulp.task('publish-game', ['delete-published-files', 'build-game-for-publication'], function() {  
+gulp.task('publish-game', ['delete-published-files', 'build-game'], function() {  
     return publishGame(false);
 });
 
-gulp.task('publish-game-local', ['delete-published-files', 'build-game-for-publication'], function() {  
+gulp.task('publish-game-local', ['delete-published-files', 'build-game'], function() {  
     return publishGame(true);
 });
 
@@ -64,11 +57,7 @@ gulp.task('delete-published-files', function () {
 });
 
 gulp.task('compile-engine', ['fix-popper'], function() {
-    return compileTs('StoryScript', null, compileStoryScript, null, true);
-});
-
-gulp.task('compile-engine-for-publication', ['fix-popper'], function() {
-    return compileTs('StoryScript', null, compileStoryScript, null, false);
+    return compileTs('StoryScript', null, compileStoryScript);
 });
 
 gulp.task('start', ['build-game'], function () {
@@ -78,15 +67,15 @@ gulp.task('start', ['build-game'], function () {
     var nameSpace = getNameSpace();
 
     gulp.watch(["src/Engine/**/*.ts"], function (e) {
-        return compileTs('StoryScript', e.path, compileStoryScript, null, true);
+        return compileTs('StoryScript', e.path, compileStoryScript);
     }).on('change', browserSync.reload);
 
     gulp.watch(["src/Games/**/*.ts"], function (e) {
-        return compileTs('Game', e.path, compileGame, null, true);
+        return compileTs('Game', e.path, compileGame);
     }).on('change', browserSync.reload);
 
     gulp.watch(["src/UI/**/*.ts"], function (e) {
-        return compileTs('UI', e.path, compileUI, nameSpace, true);
+        return compileTs('UI', e.path, compileUI, nameSpace);
     }).on('change', browserSync.reload);
 
     gulp.watch(['src/UI/**/*.html', 'src/Games/' + nameSpace + '/ui/**/*.html'], function (e) {
@@ -155,7 +144,7 @@ function createGame(mode) {
                     .pipe(gulp.dest(paths.sourceroot + 'Games/' + gameNameSpace + '/ui/styles'));
 
         var code = gulp.src(sources, {base: templateRoot })
-                .pipe(replace('StoryScript.Run(\'GameTemplate\', new CustomTexts().texts, new Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', new CustomTexts().texts' + (mode === 'basic' ? '' : ', new Rules()') + ')'))
+                .pipe(replace('StoryScript.Run(\'GameTemplate\', CustomTexts(), Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', CustomTexts()' + (mode === 'basic' ? '' : ', Rules()') + ')'))
                 .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
                 .pipe(replace('namespace GameTemplate.Locations {', 'namespace ' + gameNameSpace + '.Locations {'))
                 .pipe(gulp.dest(destination));
@@ -164,12 +153,12 @@ function createGame(mode) {
     }
 }
 
-function compileTs(type, path, compileFunc, nameSpace, sourceMaps) {
+function compileTs(type, path, compileFunc, nameSpace) {
     if (path) {
         console.log('TypeScript file ' + path + ' has been changed. Compiling ' + type + '...');
     }
 
-    return compileFunc(nameSpace, sourceMaps);
+    return compileFunc(nameSpace);
 }
 
 function getNameSpace() {
@@ -181,13 +170,13 @@ function getStoryScriptVersion() {
     return jf.readFileSync('./package.json').version;
 }
 
-function buildGame(nameSpace, sourceMaps) {
+function buildGame(nameSpace) {
     var libs = buildTemplateAndCopyLibraries();
     var resources = copyResources(nameSpace);
     var css = copyCss(nameSpace);
     var config = copyConfig(nameSpace);
-    var ui = compileUI(nameSpace, sourceMaps);
-    var game = compileGame(nameSpace, sourceMaps);
+    var ui = compileUI(nameSpace);
+    var game = compileGame();
     var descriptions = compileGameDescriptions(nameSpace);
 
     return merge(libs, resources, css, config, ui, game, descriptions);
@@ -233,12 +222,15 @@ function addVersion(path, version) {
 }
 
 function publishGame(local) {
+    var sourceMapRegex = /(\/[\*\/]# sourceMappingURL=\S*)(( \*\/)|\b)/g;
+
     var css = gulp.src([paths.webroot + 'css/game*.css'])
+                .pipe(replace(sourceMapRegex, ''))
                 .pipe(gulp.dest(paths.publishroot + 'css'));
 
     var js = gulp.src([paths.webroot + 'js/game*.js'])
                 .pipe(concat('game.js'))
-                //.pipe(uglify())
+                .pipe(replace(sourceMapRegex, ''))
                 .pipe(gulp.dest(paths.publishroot + 'js'));
     
     var templates = gulp.src([paths.webroot + 'js/ui-templates.js'])
@@ -265,12 +257,12 @@ function publishGame(local) {
 
     if (local) {
         var libraries = merge(
-            gulp.src([paths.webroot + 'js/lib/*']).pipe(replace(/\/\*# sourceMappingURL=.*\*\//g, '')).pipe(gulp.dest(paths.publishroot + 'js/lib')),
-            gulp.src([paths.webroot + 'js/storyscript*.js']).pipe(gulp.dest(paths.publishroot + 'js')),
-            gulp.src([paths.webroot + 'js/ui.*.js']).pipe(gulp.dest(paths.publishroot + 'js')),
-            gulp.src([paths.webroot + 'css/lib/*']).pipe(replace(/\/\*# sourceMappingURL=.*\*\//g, '')).pipe(gulp.dest(paths.publishroot + 'css/lib')),
-            gulp.src([paths.webroot + 'css/storyscript.*']).pipe(gulp.dest(paths.publishroot + 'css')),
-            gulp.src([paths.webroot + 'css/game.*']).pipe(gulp.dest(paths.publishroot + 'css')));
+            gulp.src([paths.webroot + 'js/lib/*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js/lib')),
+            gulp.src([paths.webroot + 'js/storyscript*.js']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js')),
+            gulp.src([paths.webroot + 'js/ui.*.js']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js')),
+            gulp.src([paths.webroot + 'css/lib/*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css/lib')),
+            gulp.src([paths.webroot + 'css/storyscript.*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css')),
+            gulp.src([paths.webroot + 'css/game.*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css')));
 
         return merge(css, js, templates, resources, config, index, libraries);
     }
@@ -358,18 +350,15 @@ function copyConfig(nameSpace) {
       .pipe(gulp.dest(paths.webroot));
 }
 
-function compileStoryScript(nameSpace, sourceMaps) {
-    var tsPipe = tsStoryScriptProject
+function compileStoryScript() {
+    var tsResult = tsStoryScriptProject
         .src()
         .pipe(plumber({ errorHandler: function(error) {
             console.log(error);
-        }}));
+        }}))
+        .pipe(sourcemaps.init())
+        .pipe(tsStoryScriptProject());
 
-    if (sourceMaps) {
-        tsPipe = tsPipe.pipe(sourcemaps.init());
-    }
-
-    var tsResult = tsPipe.pipe(tsStoryScriptProject());
     var version = getStoryScriptVersion();
 
     return merge(
@@ -379,18 +368,14 @@ function compileStoryScript(nameSpace, sourceMaps) {
     );
 }
 
-function compileGame(nameSpace, sourceMaps) {
-    var tsPipe = tsGameProject
+function compileGame() {
+    var tsResult = tsGameProject
         .src()
         .pipe(plumber({ errorHandler: function(error) {
             console.log(error);
-        }}));
-
-    if (sourceMaps) {
-        tsPipe = tsPipe.pipe(sourcemaps.init());
-    }
-
-    var tsResult = tsPipe.pipe(tsGameProject());
+        }}))
+        .pipe(sourcemaps.init())
+        .pipe(tsGameProject());
 
     return merge(
         tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
@@ -398,18 +383,15 @@ function compileGame(nameSpace, sourceMaps) {
     );
 }
 
-function compileUI(nameSpace, sourceMaps) {
-    var tsPipe = tsUIProject
+function compileUI(nameSpace) {
+    var tsResult = tsUIProject
         .src()
         .pipe(plumber({ errorHandler: function(error) {
             console.log(error);
-        }}));
-
-    if (sourceMaps) {
-        tsPipe = tsPipe.pipe(sourcemaps.init());
-    }
-    
-    var tsResult = tsPipe.pipe(tsUIProject());     
+        }}))
+        .pipe(sourcemaps.init())
+        .pipe(tsUIProject());
+ 
     var templateResult = compileUITemplates(nameSpace);
     var version = getStoryScriptVersion();
 

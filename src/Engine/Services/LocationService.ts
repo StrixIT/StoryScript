@@ -219,7 +219,7 @@ namespace StoryScript {
             if (locations.length < 1)
             {
                 self.dynamicLocations = true;
-                var dynamicStartLocation = function Start () { return Location({ name: 'Start' }) };
+                var dynamicStartLocation = CreateEntityProxy( function Start () { return Location({ name: 'Start' }) });
 
                 locations = [
                     dynamicStartLocation

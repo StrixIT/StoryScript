@@ -4,6 +4,17 @@ namespace StoryScript {
     var _registeredIds: Set<string> = new Set<string>();
     var _currentEntityId: string = null;
 
+    export function CreateEntityProxy<T>(entityFunction: (() => T)): () => T {
+        return entityFunction.proxy(entityFunction, (originalFunc, ...params) => {
+            var id = params.splice(params.length - 1, 1)[0];
+            var oldId = GetCurrentEntityId();
+            SetCurrentEntityId(id);
+            var result = originalFunc.apply(this, params);
+            SetCurrentEntityId(oldId);
+            return result;
+        }, entityFunction.name);
+    }
+
     export function GetCurrentEntityId() {
         return _currentEntityId;
     }
