@@ -357,7 +357,7 @@ namespace StoryScript {
 
             entry.combinations.combine.forEach((combine: ICombine<() => ICombinable>) => {
                 var compiled = combine;
-                compiled.tool = compiled.tool && (<any>compiled.tool).name;
+                (<any>compiled).tool = compiled.tool && (compiled.tool.name || compiled.tool.originalFunctionName);
                 combines.push(compiled);
             });
 

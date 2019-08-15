@@ -93,9 +93,8 @@ namespace StoryScript {
         }
 
         private isMatch(combineTool: any, tool: ICombinable) {
-            return  (typeof combineTool === 'function' ?
-                        tool.id === combineTool.name.toLowerCase() :
-                        tool.id === combineTool.toLowerCase());
+            var combineId = typeof combineTool === 'function' ? combineTool.name || combineTool.originalFunctionName : combineTool;
+            return tool.id.toLowerCase() === combineId.toLowerCase();
         }
     }
 

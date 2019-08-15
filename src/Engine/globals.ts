@@ -131,8 +131,12 @@
             return Array.prototype.filter.call(array, (x: object) => x === id);
         }
 
-        id = typeof id === 'function' ? id.name.toLowerCase() : id.toLowerCase();
+        id = typeof id === 'function' ? (id.name || id.originalFunctionName).toLowerCase() : id.toLowerCase();
 
-        return Array.prototype.filter.call(array, (x: any) => x.id === id || (x.target && x.target.toLowerCase() === id || (typeof x.target === 'function' && x.target.name.toLowerCase() === id)));
+        return Array.prototype.filter.call(array, (x: any) => { 
+            var target = typeof x.target === 'function' ? x.target.name || x.target.originalFunctionName : x.target;
+            target = target && target.toLowerCase();
+            return x.id === id  || target === id;
+        });
     }
 }
