@@ -232,7 +232,7 @@ function addVersion(path, version) {
     path.basename = nameParts.join('.');
 }
 
-function publishGame(publishLibraries) {
+function publishGame(local) {
     var css = gulp.src([paths.webroot + 'css/game*.css'])
                 .pipe(gulp.dest(paths.publishroot + 'css'));
 
@@ -255,14 +255,21 @@ function publishGame(publishLibraries) {
                 .pipe(replace('<script src="js/game-descriptions.js"></script>', ''))
                 .pipe(replace('game.min.css', cacheBuster('game.min.css')))
                 .pipe(replace('game.js', cacheBuster('game.js')))
-                .pipe(replace('ui-templates.js', cacheBuster('ui-templates.js')))
-                .pipe(gulp.dest(paths.publishroot));
+                .pipe(replace('ui-templates.js', cacheBuster('ui-templates.js')));
+    
+    if (local) {
+        index = index.pipe(replace('="/', '="'));
+    }
+    
+    index = index.pipe(gulp.dest(paths.publishroot));
 
-    if (publishLibraries) {
+    if (local) {
         var libraries = merge(
             gulp.src([paths.webroot + 'js/lib/*']).pipe(gulp.dest(paths.publishroot + 'js/lib')),
             gulp.src([paths.webroot + 'js/storyscript*.js']).pipe(gulp.dest(paths.publishroot + 'js')),
+            gulp.src([paths.webroot + 'js/ui.*.js']).pipe(gulp.dest(paths.publishroot + 'js')),
             gulp.src([paths.webroot + 'css/lib/*']).pipe(gulp.dest(paths.publishroot + 'css/lib')),
+            gulp.src([paths.webroot + 'css/storyscript.*']).pipe(gulp.dest(paths.publishroot + 'css')),
             gulp.src([paths.webroot + 'css/game.*']).pipe(gulp.dest(paths.publishroot + 'css')));
 
         return merge(css, js, templates, resources, config, index, libraries);
