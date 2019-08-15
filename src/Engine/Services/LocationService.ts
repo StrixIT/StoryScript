@@ -321,7 +321,7 @@ namespace StoryScript {
             game.currentLocation.destinations.length = 0;
 
             // Add a 'back' destination for easy testing
-            if (game.previousLocation && game.previousLocation) {
+            if (game.previousLocation && game.previousLocation.id != 'start') {
                 var backLocation = {
                     id: game.previousLocation.id,
                     target: <any>game.previousLocation.id,
