@@ -120,22 +120,8 @@ function createGame(mode) {
 
     return function () {
         var gameNameSpace = getNameSpace();
-
         var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
-
-        var sources = mode === 'basic' ? 
-        [
-            templateRoot + 'locations/*.html',
-            templateRoot + 'bs-config.json',
-            templateRoot + 'customTexts.ts',
-            templateRoot + 'run.ts',
-            templateRoot + 'resources/*.*',
-        ] : 
-        [
-            templateRoot + '**/*.*',
-            '!' + templateRoot + '**/*.css'
-        ];
-
+        var sources = [templateRoot + '**/*.*', '!' + templateRoot + '**/*.css'];
         var destination = paths.sourceroot + 'Games/' + gameNameSpace;
         var cssPath = mode == 'basic' ? 'basic-game.css' : 'game.css';
 
@@ -144,10 +130,16 @@ function createGame(mode) {
                     .pipe(gulp.dest(paths.sourceroot + 'Games/' + gameNameSpace + '/ui/styles'));
 
         var code = gulp.src(sources, {base: templateRoot })
-                .pipe(replace('StoryScript.Run(\'GameTemplate\', CustomTexts(), Rules())', 'StoryScript.Run(\'' + gameNameSpace + '\', CustomTexts()' + (mode === 'basic' ? '' : ', Rules()') + ')'))
+                .pipe(replace('StoryScript.Run(\'GameTemplate\',', 'StoryScript.Run(\'' + gameNameSpace + '\','))
                 .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
-                .pipe(replace('namespace GameTemplate.Locations {', 'namespace ' + gameNameSpace + '.Locations {'))
-                .pipe(gulp.dest(destination));
+                .pipe(replace('namespace GameTemplate.Locations {', 'namespace ' + gameNameSpace + '.Locations {'));
+        
+        if (mode == 'basic' ) {
+            code = code.pipe(replace('useCharacter: true,', 'useCharacter: false,'))
+                    .pipe(replace('useBackpack: true,', 'useBackpack: false,'));
+        }
+        
+        code.pipe(gulp.dest(destination));
 
         return merge(css, code);
     }
