@@ -161,7 +161,7 @@ namespace StoryScript {
         if (location.destinations) {
             location.destinations.forEach(d => {
                 if (d.barrier && d.barrier.key && typeof(d.barrier.key) === 'function') {
-                    d.barrier.key = d.barrier.key();
+                    d.barrier.key = d.barrier.key.name || d.barrier.key.originalFunctionName;
                 }
             });
         }

@@ -16,7 +16,7 @@
         /**
          * The key to use to remove this barrier.
          */
-        key?: IKey | (() => IKey);
+        key?: (() => IKey) | string;
     }
 
     /**

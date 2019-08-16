@@ -6,10 +6,9 @@
      */
     export function OpenWithKey(callBack?: (game: IGame, destination: IDestination) => void) {
         return (game: IGame, destination: IDestination) => {
-            var key = <IKey>destination.barrier.key;
+            var key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
 
             if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {
-                // Todo: Cater for the situation that the player dropped the key before activating the open action.
                 game.character.items.remove(key);
                 game.currentLocation.items.remove(key);
             }

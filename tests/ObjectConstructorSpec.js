@@ -47,7 +47,7 @@ describe("ObjectFactory", function() {
         expect(typeof pushedItem).toBe('object');
     });
 
-    it("should instantiate keys on destination barriers", function() {
+    it("should set key id on destination barriers", function() {
         var functions = StoryScript.ObjectFactory.GetFunctions();
 
         function Key() {
@@ -79,8 +79,8 @@ describe("ObjectFactory", function() {
         
         var result = locationWithBarrier();
         var key = result.destinations[0].barrier.key;
-        expect(typeof key).toBe('object');
-        expect(key.name).toBe('Test key');
+        expect(typeof key).toBe('string');
+        expect(key).toBe('Key');
 
         // Clean up the function definitions added creating this location.
         var keysToRemove = Object.keys(functions.locations);

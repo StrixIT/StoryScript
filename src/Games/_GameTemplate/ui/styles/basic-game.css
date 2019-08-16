@@ -1,3 +1,6 @@
+/*#region BasicGame*/
+/* Remove this styling when you want to upgrade to a standard game */
+
 #action-log, #exploration-onground, #exploration-destinations > .box-title {
     display: none;
 }
@@ -10,6 +13,8 @@
     border-top: none;
     border-radius: 0;
 }
+
+/*#endregion */
 
 .back-label {
     display: none;
