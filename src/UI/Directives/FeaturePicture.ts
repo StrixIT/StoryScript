@@ -7,11 +7,23 @@ namespace StoryScript
         link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
             var self = this;
             var feature = <IFeature>(<any>scope).feature;
+            var parentElement = angular.element('#visual-features');
+
+            scope.$on('showCombinationText', function(event, data: ShowCombinationTextEvent) {
+                if (data.featureToRemove && data.featureToRemove === feature.id) {
+                    var pictureElement = parentElement.find('img[name="' + data.featureToRemove + '"]')[0];
+
+                    if (pictureElement) {
+                        pictureElement.remove();
+                    }
+                }
+            });
 
             if (feature.picture) {
                 var coords = self.getFeatureCoordinates(feature);
-                var pictureElement = '<img src="' + 'resources/' + feature.picture + '" style="position: absolute; top:' + coords.top + 'px' +'; left: '+ coords.left + 'px' + '" />';
-                element.append(pictureElement);
+                var pictureElement = angular.element('<img class="feature-picture" name="' + feature.id + '" src="' + 'resources/' + feature.picture + '" style="top:' + coords.top + 'px' +'; left: '+ coords.left + 'px' + '" />');
+                parentElement.append(pictureElement);
+                pictureElement.on('click', function() { element.click(); });
             }
         };
 

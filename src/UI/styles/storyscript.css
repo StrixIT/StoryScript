@@ -207,3 +207,8 @@ button.restart {
 table td {
     padding: 10px;
 }
+
+.feature-picture {
+    position: absolute;
+    cursor: pointer;
+}

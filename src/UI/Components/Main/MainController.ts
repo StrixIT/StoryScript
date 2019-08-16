@@ -1,4 +1,13 @@
 namespace StoryScript {
+    export class ShowCombinationTextEvent extends Event {
+        constructor() {
+            super('showCombinationText');
+        }
+
+        combineText: string;
+        featureToRemove: string;
+    }
+
     export class MainController {
         constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
@@ -15,8 +24,11 @@ namespace StoryScript {
             self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self._scope.$watch('game.character.score', self.watchCharacterScore);
 
-            _eventListener.addEventListener('combinationFinished', function(event) {
-                self._scope.$broadcast('showCombinationText', (<any>event).combineText);
+            _eventListener.addEventListener('combinationFinished', function(finishedEvent: StoryScript.CombinationFinishedEvent) {
+                var showEvent = new ShowCombinationTextEvent();
+                showEvent.combineText = finishedEvent.combineText;
+                showEvent.featureToRemove = finishedEvent.featureToRemove;
+                self._scope.$broadcast(event.type, showEvent);
             });
 
             self.init();
@@ -40,6 +52,7 @@ namespace StoryScript {
             if (!scope.$ctrl._game.loading) {
                 if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                     var change = newValue - oldValue;
+                    // Todo: test, does this work?
                     scope.$ctrl._gameService.hitpointsChange(change);
                 }
             }

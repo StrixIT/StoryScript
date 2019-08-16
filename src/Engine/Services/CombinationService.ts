@@ -2,7 +2,7 @@ namespace StoryScript {
     export interface ICombinationService {
         getCombinationActions(): ICombinationAction[];
         getCombineClass(tool: ICombinable): string;
-        tryCombination(target: ICombinable): boolean | string;
+        tryCombination(target: ICombinable): ICombineResult;
     }
 }
 
@@ -31,12 +31,16 @@ namespace StoryScript {
             return className;
         }
 
-        tryCombination = (target: ICombinable): boolean | string => {
+        tryCombination = (target: ICombinable): ICombineResult => {
             var self = this;
             var combo = self._game.combinations.activeCombination;
+            var result = <ICombineResult>{
+                success: false,
+                text: ''
+            };
 
             if (!target || !combo || !combo.selectedCombinationAction) {
-                return false;
+                return result;
             }
 
             combo.selectedCombinationAction.preposition = combo.selectedCombinationAction.preposition || '';
@@ -45,20 +49,22 @@ namespace StoryScript {
 
                 combo.combineText = combo.selectedCombinationAction.text + ' ' + target.name + ' ' + combo.selectedCombinationAction.preposition;
                 combo.selectedTool = target;
-                return true;
+                return result;
             }
 
             return self.performCombination(target);
         }
 
-        private performCombination(target: ICombinable): string {
+        private performCombination(target: ICombinable): ICombineResult {
             var self = this;
             var combo = self._game.combinations.activeCombination;
             var tool = combo.selectedTool;
             var type = combo.selectedCombinationAction;
             var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
                                                                         combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
+
             self._game.combinations.activeCombination = null;
+            
             var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => {
                 var toolMatch = type.requiresTool && c.tool && self.isMatch(c.tool, tool);
                 return c.combinationType === type.text && (!type.requiresTool || toolMatch);
@@ -72,23 +78,31 @@ namespace StoryScript {
                 }
             }
             
-            var resultText = null;
+            var result = <ICombineResult>{
+                success: false,
+                text: ''
+            };
 
             if (combination) {
-                resultText = combination.match(self._game, target, tool);
+                var matchResult = combination.match(self._game, target, tool);
+                result.success = true;
+                result.text = typeof matchResult === 'string' ? matchResult : matchResult.text;
+                result.removeFeature = typeof matchResult !== 'string' && matchResult.removeFeature;
             }
             else if (target.combinations && target.combinations.failText) {
-                resultText = typeof target.combinations.failText === 'function' ? target.combinations.failText(self._game, target, tool) : target.combinations.failText;
+                result.text = typeof target.combinations.failText === 'function' ? target.combinations.failText(self._game, target, tool) : target.combinations.failText;
             }
             else if (type.failText) {
-                resultText = typeof type.failText === 'function' ? type.failText(self._game, target, tool) : type.failText;
+                result.text = typeof type.failText === 'function' ? type.failText(self._game, target, tool) : type.failText;
             }
             else {
-                resultText = tool ? self._texts.format(self._texts.noCombination, [target.name, tool.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
+                result.text = tool ? self._texts.format(self._texts.noCombination, [target.name, tool.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
             }
 
             SaveWorldState(self._dataService, self._locationService, self._game);
-            return text = text + (resultText ? ': ' + resultText : '');
+
+            result.text = text + (result.text ? ': ' + result.text : '')
+            return result;
         }
 
         private isMatch(combineTool: any, tool: ICombinable) {

@@ -37,6 +37,35 @@
          * @param target The target of the combination
          * @param tool The tool for the combination
          */
-        match(game: IGame, target: ICombinable, tool: ICombinable): string;
+        match(game: IGame, target: ICombinable, tool: ICombinable): string | IMatchResult;
+    }
+
+    export interface ICombineResult {
+        /**
+         * The result text of the combination attempt.
+         */
+        text: string;
+
+        /**
+         * True if a successful match was made, false otherwise.
+         */
+        success: boolean;
+
+        /**
+         * If true, remove the feature after the match is made.
+         */
+        removeFeature?: boolean
+    }
+
+    export interface IMatchResult {
+        /**
+         * The result text of the combination match.
+         */
+        text: string,
+
+        /**
+         * If true, remove the feature after the match is made.
+         */
+        removeFeature?: boolean
     }
 }

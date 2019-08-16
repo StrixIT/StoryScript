@@ -1,4 +1,13 @@
 ﻿namespace StoryScript {
+    export class CombinationFinishedEvent extends Event {
+        constructor() {
+            super('combinationFinished');
+        }
+
+        combineText: string;
+        featureToRemove: string;
+    }
+
     export interface IGameService {
         init(): void;
         startNewGame(characterData: any): void;
@@ -374,9 +383,14 @@ namespace StoryScript {
                 tryCombine: (target: ICombinable): boolean => {
                     var result = self._combinationService.tryCombination(target);
 
-                    if (typeof result === 'string') {
-                        var evt = new Event('combinationFinished');
-                        (<any>evt).combineText = result;
+                    if (result.text) {
+                        var evt = new CombinationFinishedEvent();
+                        evt.combineText = result.text;
+
+                        if (result.success && result.removeFeature) {
+                            evt.featureToRemove = target.id;
+                        }
+
                         self._events.dispatchEvent(evt);
                         return true;
                     }
