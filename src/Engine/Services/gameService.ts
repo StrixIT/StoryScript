@@ -42,7 +42,7 @@ namespace StoryScript {
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
-            var characterSheet = self._rules.character && self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet();
+            var characterSheet = self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet();
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
 
             if (!hasCreateCharacterSteps && !self._game.character) {
@@ -242,7 +242,6 @@ namespace StoryScript {
 
             // Todo: change if xp can be lost.
             if (change > 0) {
-                var character = self._game.character;
                 var levelUp = self._rules.general && self._rules.general.scoreChange && self._rules.general.scoreChange(self._game, change);
 
                 if (levelUp) {
@@ -254,7 +253,7 @@ namespace StoryScript {
         hitpointsChange = (change: number): void => {
             var self = this;
 
-            if (self._rules.character && self._rules.character.hitpointsChange) {
+            if (self._rules.character.hitpointsChange) {
                 self._rules.character.hitpointsChange(self._game, change);
             }
         }

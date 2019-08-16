@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class MainController {
-        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
@@ -22,13 +22,9 @@ namespace StoryScript {
             self.init();
         }
 
-        showCharacterSheet = () => {
+        showCharacterPane = () => {
             var self = this;
-
-            // Just check to see whether there are any character sheet elements that display anything 
-            // to determine whether or not it should be shown.
-            var sheetElement = angular.element('#character-sheet-container');
-            return sheetElement[0] && sheetElement[0].innerText;
+            return self._characterService.useCharacter || self._characterService.useBackpack;
         }
 
         game: IGame;
@@ -73,5 +69,5 @@ namespace StoryScript {
         }
     }
 
-    MainController.$inject = ['$scope', '$timeout', 'eventListener', 'gameService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', '$timeout', 'eventListener', 'gameService', 'characterService', 'game', 'customTexts'];
 }

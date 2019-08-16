@@ -25,6 +25,7 @@ namespace StoryScript {
                 return;
             }
 
+            self.combinationText = null;
             combination.requiresTool = combination.requiresTool === undefined || combination.requiresTool === true ? true : false;
 
             self._game.combinations.activeCombination = {
@@ -42,7 +43,6 @@ namespace StoryScript {
         showCombinationText = (text: string): void => {
             var self = this;
             self.combinationText = text;
-            self._timeout(() => self.combinationText = null, 4000);
         }
 
         tryCombination = (source: ICombinable, target: { name: string }, type: ICombinationAction) => {

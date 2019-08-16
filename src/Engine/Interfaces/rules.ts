@@ -3,7 +3,7 @@
         /**
          * Rules for setting up the game.
          */
-        setup?: ISetupRules,
+        setup: ISetupRules,
 
         /**
          * General game rules.
@@ -13,7 +13,7 @@
         /**
          * Rules for the game character.
          */
-        character?: ICharacterRules,
+        character: ICharacterRules,
 
         /**
          * Rules for exploring.
@@ -27,6 +27,21 @@
     }
 
     export interface ISetupRules {
+        /**
+         * True if a character is used in the game, false otherwise.
+         */
+        useCharacter: boolean;
+
+        /**
+         * True if the backpack is used in the game, false otherwise.
+         */
+        useBackpack: boolean;
+
+        /**
+         * True if items can be dropped in the game, false otherwise.
+         */
+        dropItems: boolean;
+
         /**
          * Run custom code to prepare the game before play, e.g. adding game-specific world properties to it.
          * @param game The game about to be started

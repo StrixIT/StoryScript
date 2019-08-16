@@ -14,12 +14,22 @@ namespace StoryScript {
         showEquipment = (): boolean => {
             var self = this;
 
-            if (!self._game.character || !self._game.character.equipment)
+            if (!self._characterService.useCharacter)
             {
                 return false;
             }
 
             return Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
+        }
+
+        showBackpack = (): boolean => {
+            var self = this;
+            return self._characterService.useBackpack;
+        }
+
+        canDropItems = (): boolean => {
+            var self = this;
+            return self._characterService.dropItems;
         }
 
         getCombineClass = (item: IItem) => {

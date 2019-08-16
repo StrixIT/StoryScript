@@ -2,28 +2,31 @@
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
+                useCharacter: true,
+                useBackpack: true,
+                dropItems: true,
                 getCombinationActions: (): StoryScript.ICombinationAction[] => {
                     return [
                         {
                             text: 'Use',
                             preposition: 'with',
-                            failText: (game, tool, target): string => { return 'That is not going to work.'; }
+                            failText: (game, target, tool): string => { return 'That is not going to work.'; }
                         },
                         {
                             text: 'Look',
                             preposition: 'at',
                             requiresTool: false,
-                            failText: (game, tool, target): string => { return 'There is nothing special about ' + target.name; }
+                            failText: (game, target, tool): string => { return 'There is nothing special about ' + target.name; }
                         },
                         {
                             text: 'Pull',
                             requiresTool: false,
-                            failText: (game, tool, target): string => { return 'You can\'t pull that.'; }
+                            failText: (game, target, tool): string => { return 'You can\'t pull that.'; }
                         },
                         {
                             text: 'Push',
                             requiresTool: false,
-                            failText: (game, tool, target): string => { return 'You can\'t push that.'; }
+                            failText: (game, target, tool): string => { return 'You can\'t push that.'; }
                         }
                     ];
                 }
