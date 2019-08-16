@@ -1,6 +1,12 @@
 ﻿namespace RidderMagnus {
     export function Rules(): StoryScript.IRules {
         return {
+            setup: {
+                useCharacter: true,
+                useBackpack: true,
+                dropItems: true
+            },
+
             general: {
                 scoreChange: (game: IGame, change: number): boolean => {
                     var self = this;

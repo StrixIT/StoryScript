@@ -37,7 +37,8 @@
             completeLevelUp: "Ok",
             levelUpDescription: "Je hebt niveau {0} bereikt.",
             encounters: "Vijanden",
-            
+            combatTitle: "Gevecht",
+            combatWin: "Je hebt gewonnen!"
         };
     }
 }

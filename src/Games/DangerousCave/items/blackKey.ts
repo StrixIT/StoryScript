@@ -1,8 +1,8 @@
 ﻿namespace DangerousCave.Items {
     export function BlackKey() {
         return Key({
-            name: 'Black key',
-            description: 'This black iron key has a gargoyle figurine on it.',
+            name: 'Zwarte sleutel',
+            description: 'Op deze zwarte sleutel staat de afbeelding van een waterspuwer.',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             open: {
                 name: 'Open de deur met de zwarte sleutel',
