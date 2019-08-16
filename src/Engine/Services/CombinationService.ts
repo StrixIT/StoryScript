@@ -52,7 +52,17 @@ namespace StoryScript {
                 return result;
             }
 
-            return self.performCombination(target);
+            result = self.performCombination(target);
+
+            if (result.success) {
+                if (result.removeFeature) {
+                    self._game.currentLocation.features.remove(target.id);
+                }
+
+                SaveWorldState(self._dataService, self._locationService, self._game);
+            }
+
+            return result;
         }
 
         private performCombination(target: ICombinable): ICombineResult {
@@ -98,8 +108,6 @@ namespace StoryScript {
             else {
                 result.text = tool ? self._texts.format(self._texts.noCombination, [target.name, tool.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
             }
-
-            SaveWorldState(self._dataService, self._locationService, self._game);
 
             result.text = text + (result.text ? ': ' + result.text : '')
             return result;

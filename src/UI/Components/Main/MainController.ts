@@ -28,7 +28,7 @@ namespace StoryScript {
                 var showEvent = new ShowCombinationTextEvent();
                 showEvent.combineText = finishedEvent.combineText;
                 showEvent.featureToRemove = finishedEvent.featureToRemove;
-                self._scope.$broadcast(event.type, showEvent);
+                self._scope.$broadcast(showEvent.type, showEvent);
             });
 
             self.init();
