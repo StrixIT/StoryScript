@@ -33,7 +33,6 @@ namespace StoryScript {
         private init() {
             var self = this;
             self._gameService.init();
-            self._gameService.initTexts(self._texts);
             self._scope.$broadcast('createCharacter');
         }
 

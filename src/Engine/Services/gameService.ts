@@ -1,7 +1,6 @@
 ﻿namespace StoryScript {
     export interface IGameService {
         init(): void;
-        initTexts(customTexts: IInterfaceTexts): IInterfaceTexts;
         startNewGame(characterData: any): void;
         reset(): void;
         restart(): void;
@@ -25,7 +24,7 @@ namespace StoryScript {
     export class GameService implements IGameService {
         private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
 
-        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
         }
 
         init = (): void => {
@@ -37,6 +36,7 @@ namespace StoryScript {
             }
 
             self.setupGame();
+            self.initTexts();
             self._game.highScores = self._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
@@ -56,19 +56,6 @@ namespace StoryScript {
             else {
                 self._game.state = StoryScript.GameState.CreateCharacter;
             }
-        }
-
-        initTexts = (customTexts: IInterfaceTexts): IInterfaceTexts => {
-            var self = this;
-            var defaultTexts = new DefaultTexts();
-
-            for (var n in defaultTexts.texts) {
-                customTexts[n] = customTexts[n] ? customTexts[n] : defaultTexts.texts[n];
-            }
-
-            customTexts.format = defaultTexts.format;
-            customTexts.titleCase = defaultTexts.titleCase;
-            return customTexts;
         }
 
         reset = () => {
@@ -273,6 +260,18 @@ namespace StoryScript {
         dynamicLocations = (): boolean => {
             var self = this;
             return self._game.definitions.dynamicLocations;
+        }
+
+        private initTexts(): void {
+            var self = this;
+            var defaultTexts = new DefaultTexts();
+
+            for (var n in defaultTexts.texts) {
+                self._texts[n] = self._texts[n] ? self._texts[n] : defaultTexts.texts[n];
+            }
+
+            self._texts.format = defaultTexts.format;
+            self._texts.titleCase = defaultTexts.titleCase;
         }
 
         private resume(locationName: string) {

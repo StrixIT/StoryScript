@@ -107,7 +107,7 @@ namespace StoryScript {
                 self._locationService = new LocationService(self._dataService, self._conversationService, self._rules, self._game, self._definitions);
                 self._combinationService = new CombinationService(self._dataService, self._locationService, self._game, self._rules, self._texts);
                 self._characterService = new CharacterService(self._dataService, self._game, self._rules);
-                self._gameService = new GameService(self._dataService, self._locationService, self._characterService, self._combinationService, self._eventTarget, self._rules, self._helperService, self._game);
+                self._gameService = new GameService(self._dataService, self._locationService, self._characterService, self._combinationService, self._eventTarget, self._rules, self._helperService, self._game, self._texts);
                 ObjectFactory._isInitialized = true;
             }
         }
