@@ -122,6 +122,11 @@ function createGame(mode) {
         var gameNameSpace = getNameSpace();
         var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
         var sources = [templateRoot + '**/*.*', '!' + templateRoot + '**/*.css'];
+
+        if (mode == 'basic' ) {
+            sources.push('!' + templateRoot + 'locations/start.ts');
+        }
+
         var destination = paths.sourceroot + 'Games/' + gameNameSpace;
         var cssPath = mode == 'basic' ? 'basic-game.css' : 'game.css';
 
