@@ -1,6 +1,6 @@
 namespace DePrinsesInDeToren {
-    export class CustomTexts {
-        texts: StoryScript.IInterfaceTexts = {
+    export function CustomTexts(): StoryScript.IInterfaceTexts {
+        return {
             // Add your custom texts here.
             gameName: 'De Prinses in de Toren',
             load: 'laden',
