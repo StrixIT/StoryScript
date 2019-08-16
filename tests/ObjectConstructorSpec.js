@@ -12,7 +12,7 @@ describe("ObjectFactory", function() {
 
         expect(result).not.toEqual(null);
         expect(result.id).toEqual('start');
-        expect(result.type).toEqual('locations');
+        expect(result.type).toEqual('location');
         expect(result.descriptionSelector.functionId).toEqual('function#location_start_descriptionSelector#430859754');
     });
 
