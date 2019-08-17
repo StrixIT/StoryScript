@@ -58,11 +58,11 @@ namespace StoryScript {
             self._conversationService.loadConversations();
 
             // Add the 'back' button for testing
-            if (self._rules.setup.useBackButtonForTesting) {
+            if (self._rules.setup.useBackButtonForTesting && game.previousLocation && game.currentLocation.id != 'start') {
                 var backTestDestinationName = 'testbackdestination';
                 var backDestination = game.currentLocation.destinations.get(backTestDestinationName);
 
-                if (!backDestination && game.previousLocation && game.currentLocation.id != 'start') {         
+                if (!backDestination) {         
                     var backLocation = {
                         id: backTestDestinationName,
                         target: game.previousLocation.id,
@@ -71,6 +71,9 @@ namespace StoryScript {
                     };
 
                     game.currentLocation.destinations.push(backLocation);
+                }
+                else {
+                    backLocation.target = game.previousLocation.id;
                 }
             }
         }
@@ -317,12 +320,20 @@ namespace StoryScript {
                 }
                 else {
                     var featureText = node.innerHTML;
-                    if (featureText.substr(0, 1).trim() !== '' && featureText.substr(0, 6) !== '&nbsp;') {
-                        node.innerHTML = '&nbsp;' + node.innerHTML;
-                    }
 
-                    if (featureText.substr(featureText.length - 1, 1).trim() !== '' && featureText.substr(featureText.length - 6, 6) !== '&nbsp;') {
-                        node.innerHTML = node.innerHTML + '&nbsp;';
+                    // If there is text in the node, the feature is defined in the html. If not, only a placeholder is there.
+                    // In that case, update the node text as soon as the feature is present in code.
+                    if (node.innerHTML) {
+                        if (featureText.substr(0, 1).trim() !== '' && featureText.substr(0, 6) !== '&nbsp;') {
+                            node.innerHTML = '&nbsp;' + node.innerHTML;
+                        }
+
+                        if (featureText.substr(featureText.length - 1, 1).trim() !== '' && featureText.substr(featureText.length - 6, 6) !== '&nbsp;') {
+                            node.innerHTML = node.innerHTML + '&nbsp;';
+                        }
+                    }
+                    else {
+                        node.innerHTML = `&nbsp;${feature.description}&nbsp;`;
                     }
                 }
             }

@@ -4,6 +4,12 @@
      */
     export interface IFeature extends ICombinable {
         /**
+         * The description of the feature. Used when features are added to locations
+         * at run-time.
+         */
+        description?: string;
+
+        /**
          * The coordinates of this feature when using image maps for visual features.
          */
         coords?: string;
