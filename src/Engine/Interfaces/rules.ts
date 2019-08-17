@@ -28,6 +28,11 @@
 
     export interface ISetupRules {
         /**
+         * True if the back button for testing is used, false otherwise.
+         */
+        useBackButtonForTesting?: boolean;
+
+        /**
          * True if a character is used in the game, false otherwise.
          */
         useCharacter: boolean;

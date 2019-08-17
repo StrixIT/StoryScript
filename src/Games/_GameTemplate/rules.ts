@@ -2,6 +2,7 @@
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
+                useBackButtonForTesting: true,
                 useCharacter: true,
                 useBackpack: true,
                 dropItems: true,

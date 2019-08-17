@@ -56,6 +56,23 @@ namespace StoryScript {
             self.initTrade(game);
             self.playEnterEvents(game);
             self._conversationService.loadConversations();
+
+            // Add the 'back' button for testing
+            if (self._rules.setup.useBackButtonForTesting) {
+                var backTestDestinationName = 'testbackdestination';
+                var backDestination = game.currentLocation.destinations.get(backTestDestinationName);
+
+                if (!backDestination && game.previousLocation && game.currentLocation.id != 'start') {         
+                    var backLocation = {
+                        id: backTestDestinationName,
+                        target: game.previousLocation.id,
+                        name: 'back',
+                        style: 'back-button-for-testing'
+                    };
+
+                    game.currentLocation.destinations.push(backLocation);
+                }
+            }
         }
 
         private switchLocation(game: IGame, location: string | (() => ILocation)): boolean {

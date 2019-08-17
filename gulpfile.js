@@ -141,6 +141,9 @@ function createGame(mode) {
             code = code.pipe(replace('useCharacter: true,', 'useCharacter: false,'))
                     .pipe(replace('useBackpack: true,', 'useBackpack: false,'));
         }
+        else {
+            code = code.pipe(replace('useBackButtonForTesting: true,', ''));
+        }
         
         code.pipe(gulp.dest(destination));
 
@@ -224,6 +227,7 @@ function publishGame(local) {
                 .pipe(gulp.dest(paths.publishroot + 'css'));
 
     var js = gulp.src([paths.webroot + 'js/game*.js'])
+                .pipe(replace('useBackButtonForTesting: true,', ''))
                 .pipe(concat('game.js'))
                 .pipe(replace(sourceMapRegex, ''))
                 .pipe(gulp.dest(paths.publishroot + 'js'));
@@ -453,15 +457,12 @@ function createLocation(cb) {
     fs.readFile('./src/Games/_GameTemplate/locations/start.ts', 'utf8', function(err, text) {
         var tsContent = text.replace('GameTemplate.Locations {', nameSpace + '.Locations {')
                             .replace('export function Start()', 'export function ' + locationName + '()')
-                            .replace('name: \'Start\'', 'name: \'' + locationName + `\',
-            destinations: [
-                
-            ]`);
+                            .replace('name: \'Start\',', 'name: \'' + locationName + '\',');
 
         fs.writeFile('./src/Games/' + nameSpace + '/locations/' + locationName + '.ts', tsContent, cb, function() {
             fs.readFile('./src/Games/_GameTemplate/locations/Start.html', 'utf8', function(err, text) {
                 var tsContent = text.replace('Your adventure starts here!', '');
-        
+                     
                 fs.writeFile('./src/Games/' + nameSpace + '/locations/' + locationName + '.html', tsContent, cb);
             });
         });
