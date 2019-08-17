@@ -14,7 +14,6 @@ describe("LocationService", function() {
         expect(game.currentLocation).toBeNull();
         expect(game.previousLocation).toBeNull();
         expect(game.locations.length).toBe(5);
-        expect(game.definitions.dynamicLocations).toBeFalsy();
     });
 
     it("save world should call dataservice save", function() {

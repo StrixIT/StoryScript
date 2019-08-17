@@ -25,7 +25,6 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
-        dynamicLocations(): boolean;
     }
 }
 
@@ -264,11 +263,6 @@ namespace StoryScript {
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
-        }
-
-        dynamicLocations = (): boolean => {
-            var self = this;
-            return self._game.definitions.dynamicLocations;
         }
 
         private initTexts(): void {

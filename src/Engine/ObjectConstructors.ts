@@ -155,7 +155,6 @@ namespace StoryScript {
     }
 
     function createLocation(entity: ILocation) {
-        var definitions = getDefinitions();
         var location = CreateObject(entity, 'location');
 
         if (location.destinations) {
@@ -166,7 +165,7 @@ namespace StoryScript {
             });
         }
 
-        if (!definitions.dynamicLocations && !location.destinations) {
+        if (!location.destinations) {
             console.log('No destinations specified for location ' + location.name);
         }
 

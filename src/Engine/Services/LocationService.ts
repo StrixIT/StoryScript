@@ -10,7 +10,6 @@
 namespace StoryScript {
     export class LocationService implements ILocationService {
         private pristineLocations: ICollection<ICompiledLocation>;
-        private dynamicLocations: boolean = false;
 
         constructor(private _dataService: IDataService, private _conversationService: IConversationService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
@@ -21,7 +20,6 @@ namespace StoryScript {
             game.currentLocation = null;
             game.previousLocation = null;
             game.locations = self.loadWorld(buildWorld === undefined || buildWorld);
-            game.definitions.dynamicLocations = self.dynamicLocations;
         }
 
         saveWorld = (locations: ICollection<ICompiledLocation>) => {
@@ -52,13 +50,6 @@ namespace StoryScript {
 
             if (self._rules.exploration && self._rules.exploration.enterLocation) {
                 self._rules.exploration.enterLocation(game, game.currentLocation, travel);
-            }
-
-            // In dynamic mode, refresh the location on every browser reload.
-            // Todo: should descriptions be refreshed this way for default mode as well? Combine with game service method doing the same.
-            if (!travel && game.definitions.dynamicLocations) {
-                game.currentLocation.descriptions = null;
-                game.currentLocation.text = null;
             }
 
             self.loadLocationDescriptions(game);
@@ -215,19 +206,7 @@ namespace StoryScript {
             var self = this;
             var locations = self._definitions.locations;
             var compiledLocations = [];
-
-            if (locations.length < 1)
-            {
-                self.dynamicLocations = true;
-                var dynamicStartLocation = CreateEntityProxy( function Start () { return Location({ name: 'Start' }) });
-
-                locations = [
-                    dynamicStartLocation
-                ];
-            }
-
             self.processLocations(locations, compiledLocations);
-
             return compiledLocations;
         }
 
@@ -278,7 +257,6 @@ namespace StoryScript {
 
                 self.processVisualFeatures(htmlDoc, game);
                 self.processDescriptions(htmlDoc, game);
-                self.processDynamicLocations(htmlDoc, game);
             }
 
             self.selectLocationDescription(game);
@@ -297,7 +275,6 @@ namespace StoryScript {
             for (var i = 0; i < descriptionNodes.length; i++) {
                 var node = descriptionNodes[i];
                 var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-                var displayNameAttribute = node.attributes['displayname'] && node.attributes['displayname'].nodeValue;
                 var name = nameAttribute ? nameAttribute : 'default';
 
                 if (game.currentLocation.descriptions[name]) {
@@ -305,57 +282,7 @@ namespace StoryScript {
                 }
 
                 game.currentLocation.descriptions[name] = node.innerHTML;
-                game.currentLocation.name = displayNameAttribute || game.currentLocation.name;
             }      
-        }
-
-        private processDynamicLocations(htmlDoc: Document, game: IGame) {
-            var self = this;
-
-            if (!game.definitions.dynamicLocations) {
-                return;
-            }
-
-            game.currentLocation.destinations.length = 0;
-
-            // Add a 'back' destination for easy testing
-            if (game.previousLocation && game.currentLocation.id != 'start') {
-                var backLocation = {
-                    id: game.previousLocation.id,
-                    target: <any>game.previousLocation.id,
-                    name: 'back',
-                    style: 'dynamic-back-button'
-                };
-
-                game.currentLocation.destinations.push(backLocation);
-            }
-
-            self.processDynamicDestinations(htmlDoc, game);
-        }
-
-        private processDynamicDestinations(htmlDoc: Document, game: IGame) {
-            var self = this;
-
-            var destinationsNodes = htmlDoc.getElementsByTagName("destination");
-
-            for (var i = 0; i < destinationsNodes.length; i++) {
-                var node = destinationsNodes[i];
-                var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-
-                if (!nameAttribute)
-                {
-                    console.log('There is a destination without a name for location ' + game.currentLocation.id + '.');
-                    continue;
-                }
-
-                var targetExists = self._dataService.loadDescription('locations', { id: nameAttribute }) != null;
-
-                var locationToAdd = { id: nameAttribute, target: targetExists ? nameAttribute : null, name: node.innerHTML, destinations: [] };
-                self.initDestinations(locationToAdd);
-
-                game.locations.push(locationToAdd);
-                game.currentLocation.destinations.push(locationToAdd);
-            }
         }
 
         private processTextFeatures(game: IGame) {
