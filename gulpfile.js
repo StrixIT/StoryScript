@@ -3,6 +3,7 @@
     del = require('del'),
     jf = require('jsonfile'),
     browserSync = require('browser-sync').create(),
+    fs = require('fs'),
     ts = require('gulp-typescript'),
     plumber = require('gulp-plumber'),
     flatten = require('gulp-flatten'),
@@ -32,6 +33,8 @@ var paths = {
 gulp.task('create-game', createGame());
 
 gulp.task('create-game-basic', createGame('basic'));
+
+gulp.task('create-location', createLocation);
 
 gulp.task('fix-popper', fixPopper());
 
@@ -122,11 +125,6 @@ function createGame(mode) {
         var gameNameSpace = getNameSpace();
         var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
         var sources = [templateRoot + '**/*.*', '!' + templateRoot + '**/*.css'];
-
-        if (mode == 'basic' ) {
-            sources.push('!' + templateRoot + 'locations/start.ts');
-        }
-
         var destination = paths.sourceroot + 'Games/' + gameNameSpace;
         var cssPath = mode == 'basic' ? 'basic-game.css' : 'game.css';
 
@@ -443,4 +441,29 @@ function compileGameDescriptions(nameSpace) {
         descriptionPipe.pipe(gulp.dest(paths.webroot + 'js/')),
         descriptionPipe.pipe(gulp.dest(paths.testroot))
     );
+}
+
+function createLocation(cb) {
+    var args = process.argv;
+    var locationName = args[3].substring(2);
+    locationName = locationName.substring(0, 1).toUpperCase() + locationName.substring(1);
+
+    var nameSpace = getNameSpace(); 
+
+    fs.readFile('./src/Games/_GameTemplate/locations/start.ts', 'utf8', function(err, text) {
+        var tsContent = text.replace('GameTemplate.Locations {', nameSpace + '.Locations {')
+                            .replace('export function Start()', 'export function ' + locationName + '()')
+                            .replace('name: \'Start\'', 'name: \'' + locationName + `\',
+            destinations: [
+                
+            ]`);
+
+        fs.writeFile('./src/Games/' + nameSpace + '/locations/' + locationName + '.ts', tsContent, cb, function() {
+            fs.readFile('./src/Games/_GameTemplate/locations/Start.html', 'utf8', function(err, text) {
+                var tsContent = text.replace('Your adventure starts here!', '');
+        
+                fs.writeFile('./src/Games/' + nameSpace + '/locations/' + locationName + '.html', tsContent, cb);
+            });
+        });
+    });
 }
