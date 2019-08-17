@@ -73,8 +73,8 @@
         return extend(instance, customData);
     }
 
-    export function equals<T extends { id: string }>(entity: T, definition: () => T): boolean {
-        return entity.id === (definition.name || definition.originalFunctionName);
+    export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
+        return entity.id ? entity.id === (definition.name || definition.originalFunctionName) : false;
     }
 
     // Taken from https://stackoverflow.com/questions/15308371/custom-events-model-without-using-dom-events-in-javascript.
