@@ -8,7 +8,7 @@
          */
         equipmentType: EquipmentType | EquipmentType[];
 
-                /**
+        /**
          * The details about this item as displayed to the player. If you use an HTML-page to describe the item, the contents of that HTM-page
          * will be used to set this property at run-time.
          */

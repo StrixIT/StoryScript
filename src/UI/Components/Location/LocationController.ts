@@ -15,7 +15,7 @@ namespace StoryScript {
 
         getDescription = (entity: any, key: string): string => {
             var self = this;
-            return self._sce.trustAsHtml( self._gameService.getDescription('locations', entity, key));
+            return self._sce.trustAsHtml(self._gameService.getDescription('locations', entity, key));
         }
 
         getWorldProperties = (): any[] => {

@@ -271,20 +271,18 @@ namespace StoryScript {
         private loadLocationDescriptions(game: IGame) {
             var self = this;
 
-            if (game.currentLocation.descriptions) {
-                self.selectLocationDescription(game);
-                return;
+            if (!game.currentLocation.descriptions) {
+                var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
+                var parser = new DOMParser();
+                var htmlDoc = parser.parseFromString(descriptions, "text/html");
+
+                self.processVisualFeatures(htmlDoc, game);
+                self.processDescriptions(htmlDoc, game);
+                self.processDynamicLocations(htmlDoc, game);
             }
 
-            var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
-            var parser = new DOMParser();
-            var htmlDoc = parser.parseFromString(descriptions, "text/html");
-
-            self.processVisualFeatures(htmlDoc, game);
-            self.processDescriptions(htmlDoc, game);
-            self.processDynamicLocations(htmlDoc, game);
-            self.processTextFeatures(htmlDoc, game);
             self.selectLocationDescription(game);
+            self.processTextFeatures(game);
         }
 
         private processDescriptions(htmlDoc: Document, game: IGame) {
@@ -360,20 +358,32 @@ namespace StoryScript {
             }
         }
 
-        private processTextFeatures(htmlDoc: Document, game: IGame) {
+        private processTextFeatures(game: IGame) {
             var self = this;
+            var parser = new DOMParser();
+            var htmlDoc = parser.parseFromString(game.currentLocation.text, "text/html");
             var featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
-            if (game.currentLocation.features && game.currentLocation.features.length > 0) {
-                for (var i = 0; i < featureNodes.length; i++) {
-                    const node = featureNodes[i];
-                    const feature = self.getBasicFeatureData(game, node);
+            for (var i = 0; i < featureNodes.length; i++) {
+                const node = featureNodes[i];
+                const feature = self.getBasicFeatureData(game, node);
 
-                    if (feature) {
-                        feature.description = node.innerHTML;
+                if (!feature) {
+                    node.remove();
+                }
+                else {
+                    var featureText = node.innerHTML;
+                    if (featureText.substr(0, 1).trim() !== '' && featureText.substr(0, 6) !== '&nbsp;') {
+                        node.innerHTML = '&nbsp;' + node.innerHTML;
+                    }
+
+                    if (featureText.substr(featureText.length - 1, 1).trim() !== '' && featureText.substr(featureText.length - 6, 6) !== '&nbsp;') {
+                        node.innerHTML = node.innerHTML + '&nbsp;';
                     }
                 }
             }
+         
+            game.currentLocation.text = htmlDoc.body.innerHTML;
         }
 
         private processVisualFeatures(htmlDoc: Document, game: IGame) {
@@ -404,21 +414,13 @@ namespace StoryScript {
 
         private getBasicFeatureData(game: IGame, node: HTMLElement): IFeature {
             var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-            var displayNameAttribute = node.attributes['displayname'] && node.attributes['displayname'].nodeValue;
 
             if (!nameAttribute) {
                 throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
             }
 
             nameAttribute = nameAttribute.toLowerCase();
-            var feature = game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
-
-            if (!feature) {
-                return null;
-            }
-
-            feature.name = displayNameAttribute || feature.name;
-            return feature;
+            return game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
         }
 
         private selectLocationDescription(game: IGame) {

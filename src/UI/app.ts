@@ -14,6 +14,7 @@
     storyScriptModule.service("sharedMethodService", SharedMethodService);
 
     storyScriptModule.directive("featurePicture", FeaturePicture.Factory());
+    storyScriptModule.directive("textFeatures", TextFeatures.Factory());
 
     storyScriptModule.component('main', {
         templateUrl: 'ui/MainComponent.html',

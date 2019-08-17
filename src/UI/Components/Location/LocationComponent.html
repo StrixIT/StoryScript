@@ -3,18 +3,8 @@
     <ul id="world-properties">
         <li ng-repeat="property in $ctrl.getWorldProperties() track by $index" class="{{property.name}}">{{ property.value }}</li>
     </ul>
-    <div ng-if="!$ctrl.game.currentLocation.features.collectionPicture">
-        <p ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></p>
-        <ul id="location-features">
-            <li ng-repeat="feature in $ctrl.game.currentLocation.features" ng-class="$ctrl.getCombineClass(feature)" ng-if="feature.description">
-                <div ng-click="$ctrl.tryCombine(feature)">
-                    <!-- <p>
-                        {{feature.name}}
-                    </p> -->
-                    <p>{{feature.description}}</p>
-                </div>
-            </li>
-        </ul>
+    <div text-features ng-if="!$ctrl.game.currentLocation.features.collectionPicture">
+        <div ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></div>
     </div>
     <div id="visual-features" ng-if="$ctrl.game.currentLocation.features.collectionPicture">
         <img ng-src="{{ 'resources/' + $ctrl.game.currentLocation.features.collectionPicture }}" usemap="{{ '#' + $ctrl.game.currentLocation.id }}">

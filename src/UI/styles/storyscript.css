@@ -212,3 +212,7 @@ table td {
     position: absolute;
     cursor: pointer;
 }
+
+feature {
+    cursor: pointer;
+}
