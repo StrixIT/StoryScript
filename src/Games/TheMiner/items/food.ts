@@ -1,10 +1,10 @@
 namespace TheMiner.Items {
-    export function Pick() {
+    export function Food() {
         return Item({
-            name: 'pick',
+            name: 'food',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.RightHand,
-            description: 'your loyal mining tool'
+            description: 'can\'t live without it!'
             
         });
     }

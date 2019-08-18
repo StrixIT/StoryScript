@@ -1,10 +1,10 @@
 namespace TheMiner.Items {
-    export function Pick() {
+    export function rock() {
         return Item({
-            name: 'pick',
+            name: 'rock',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.RightHand,
-            description: 'your loyal mining tool'
+            description: 'you can throw these'
             
         });
     }

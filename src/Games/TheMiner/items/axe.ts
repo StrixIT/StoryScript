@@ -1,10 +1,10 @@
 namespace TheMiner.Items {
-    export function Pick() {
+    export function Axe() {
         return Item({
-            name: 'pick',
+            name: 'axe',
             damage: '1',
             equipmentType: StoryScript.EquipmentType.RightHand,
-            description: 'your loyal mining tool'
+            description: 'good for chopping wood'
             
         });
     }

@@ -52,10 +52,12 @@ namespace TheMiner.Locations {
                                         },
                                         {
                                             combinationType: Constants.TAKE,
-                                            match: (game, target, tool): string => {
+                                            match: (game, target, tool): StoryScript.IMatchResult => {
                                                 game.character.items.push(Items.Pick);
-                                                game.currentLocation.features.remove('Pick');
-                                                return "You pick up your pick. Ready for mining!";
+                                                return {
+                                                    text: "You pick up your pick. Ready for mining!",
+                                                    removeTarget: true
+                                                };
                                             }
                                         }
                                     ]
