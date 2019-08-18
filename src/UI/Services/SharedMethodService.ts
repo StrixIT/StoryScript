@@ -8,8 +8,10 @@ namespace StoryScript
         trade(game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean;
         showDescription(scope: ng.IScope, type: string, item: any, title: string, ): void;
         showEquipment(): boolean;
-        useBackpack?: boolean;
+        useCharacterSheet?: boolean;
         useEquipment?: boolean;
+        useBackpack?: boolean;
+        useQuests?: boolean;
         useGround?: boolean;
     }
 
@@ -36,7 +38,11 @@ namespace StoryScript
             };
         }
 
-        useBackpack: boolean;
+        useCharacterSheet?: boolean;
+        useEquipment?: boolean;
+        useBackpack?: boolean;
+        useQuests?: boolean;
+        useGround?: boolean;
 
         enemiesPresent = (): boolean => {
             var self = this;
@@ -124,13 +130,7 @@ namespace StoryScript
 
         showEquipment = (): boolean => {
             var self = this;
-
-            if (!self._characterService.useCharacter)
-            {
-                return false;
-            }
-
-            return Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
+            return self.useEquipment && Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
         }
 
         private getActionIndex(game: IGame, action: IAction): { type: string, index: number} {

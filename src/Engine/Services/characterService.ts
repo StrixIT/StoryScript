@@ -1,8 +1,5 @@
 ﻿namespace StoryScript {
     export interface ICharacterService {
-        useCharacter: boolean;
-        useBackpack: boolean;
-        dropItems: boolean;
         getSheetAttributes(): string[];
         setupCharacter(): ICreateCharacter;
         setupLevelUp(): ICreateCharacter;
@@ -22,19 +19,11 @@
 namespace StoryScript {
     export class CharacterService implements ICharacterService {
         constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
-            var self = this;
-            self.useCharacter = _rules.setup.useCharacter;
-            self.useBackpack = _rules.setup.useBackpack;
-            self.dropItems = _rules.setup.dropItems;
         }
-
-        useCharacter: boolean;
-        useBackpack: boolean;
-        dropItems: boolean;
 
         getSheetAttributes = (): string[] => {
             var self = this;
-            return self._rules.setup.useCharacter && self._rules.character.getSheetAttributes && self._rules.character.getSheetAttributes() || [];
+            return self._rules.character.getSheetAttributes && self._rules.character.getSheetAttributes() || [];
         }
 
         setupCharacter = (): ICreateCharacter => {

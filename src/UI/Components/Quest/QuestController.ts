@@ -1,10 +1,11 @@
 
 namespace StoryScript {
     export class QuestController {
-        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
+            self._sharedMethodService.useQuests = true;
         }
 
         game: IGame;
@@ -31,5 +32,5 @@ namespace StoryScript {
         }
     }
 
-    QuestController.$inject = ['$scope', 'characterService', 'game', 'customTexts'];
+    QuestController.$inject = ['$scope', 'characterService', 'sharedMethodService', 'game', 'customTexts'];
 }

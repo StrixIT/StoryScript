@@ -52,7 +52,7 @@ namespace StoryScript {
 
         canDropItems = (): boolean => {
             var self = this;
-            return self._characterService.dropItems;
+            return self._sharedMethodService.useGround;
         }
 
         dropItem = (item: IItem): void => {

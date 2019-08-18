@@ -36,9 +36,6 @@ describe("CharacterService", function() {
 
     it("should set the first step of the level up sheet as the selected step preparing level up", function() {
         var rules = {
-            setup: {
-                useCharacter: true
-            },
             character: {
                 getLevelUpSheet: function() {
                     return levelUpSheet
@@ -254,9 +251,6 @@ describe("CharacterService", function() {
         }
 
         var rules = {
-            setup: {
-                useCharacter: true
-            },
             character: {
                 beforeEquip: function(game, character, item) {
                     return false;
@@ -282,9 +276,6 @@ describe("CharacterService", function() {
         }
 
         var rules = {
-            setup: {
-                useCharacter: true
-            },
             character: {
                 beforeUnequip: function(game, character, item) {
                     return false;
