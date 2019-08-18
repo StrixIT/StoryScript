@@ -34,6 +34,11 @@
         controller: CharacterSheetController
     });
 
+    storyScriptModule.component('backpack', {
+        templateUrl: 'ui/BackpackComponent.html',
+        controller: BackpackController
+    });
+
     storyScriptModule.component('levelUp', {
         templateUrl: 'ui/LevelUpComponent.html',
         controller: LevelUpController

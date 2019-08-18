@@ -7,10 +7,11 @@ namespace StoryScript
         startCombat(): void;
         trade(game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean;
         showDescription(scope: ng.IScope, type: string, item: any, title: string, ): void;
+        showEquipment(): boolean;
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
-        constructor(private _gameService: IGameService, private _tradeService: ITradeService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _gameService: IGameService, private _characterService: ICharacterService, private _tradeService: ITradeService, private _game: IGame, private _texts: IInterfaceTexts) {
 
         }
 
@@ -27,7 +28,8 @@ namespace StoryScript
                 executeAction: self.executeAction,
                 startCombat: self.startCombat,
                 trade: self.trade,
-                showDescription: self.showDescription
+                showDescription: self.showDescription,
+                showEquipment: self.showEquipment
             };
         }
 
@@ -115,6 +117,17 @@ namespace StoryScript
             }
         }
 
+        showEquipment = (): boolean => {
+            var self = this;
+
+            if (!self._characterService.useCharacter)
+            {
+                return false;
+            }
+
+            return Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
+        }
+
         private getActionIndex(game: IGame, action: IAction): { type: string, index: number} {
             var index = -1;
             var type: string = null;
@@ -145,5 +158,5 @@ namespace StoryScript
         }
     }
 
-    SharedMethodService.$inject = ['gameService', 'tradeService', 'game', 'customTexts'];
+    SharedMethodService.$inject = ['gameService', 'characterService', 'tradeService', 'game', 'customTexts'];
 }

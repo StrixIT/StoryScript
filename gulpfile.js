@@ -125,10 +125,14 @@ function createGame(mode) {
         var gameNameSpace = getNameSpace();
         var templateRoot = paths.sourceroot + 'Games/_GameTemplate/';
         var sources = [templateRoot + '**/*.*', '!' + templateRoot + '**/*.css'];
-        var destination = paths.sourceroot + 'Games/' + gameNameSpace;
-        var cssPath = mode == 'basic' ? 'basic-game.css' : 'game.css';
 
-        var css = gulp.src([templateRoot + 'ui/styles/' + cssPath])
+        if (mode === 'standard') {
+            sources.push('!' + templateRoot + 'ui/components/*');
+        }
+
+        var destination = paths.sourceroot + 'Games/' + gameNameSpace;
+
+        var css = gulp.src([templateRoot + 'ui/styles/game.css'])
                     .pipe(rename('game.css'))
                     .pipe(gulp.dest(paths.sourceroot + 'Games/' + gameNameSpace + '/ui/styles'));
 
@@ -137,11 +141,7 @@ function createGame(mode) {
                 .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
                 .pipe(replace('namespace GameTemplate.Locations {', 'namespace ' + gameNameSpace + '.Locations {'));
         
-        if (mode == 'basic' ) {
-            code = code.pipe(replace('useCharacter: true,', 'useCharacter: false,'))
-                    .pipe(replace('useBackpack: true,', 'useBackpack: false,'));
-        }
-        else {
+        if (mode === 'standard' ) {
             code = code.pipe(replace('useBackButtonForTesting: true,', ''));
         }
         

@@ -4,6 +4,7 @@
         <div class="row">
             <div id="character-container" ng-if="$ctrl.game.stateString !== 'CreateCharacter'" id="character-container" ng-class="{ 'col-4': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterPane() }">
                 <character-sheet></character-sheet>
+                <backpack></backpack>
             </div>
             <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterPane(), 'col-12': game.stateString === 'CreateCharacter' || !$ctrl.showCharacterPane() }">
                 <div ng-if="!$ctrl.game.stateString">

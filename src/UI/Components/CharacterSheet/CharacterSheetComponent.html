@@ -85,22 +85,6 @@
             </div>
         </div>
     </div>
-    <div class="box-container" id="character-backpack" ng-if="$ctrl.showBackpack()">
-        <div class="box-title" data-toggle="collapse" data-target="#backpack-panel">{{ $ctrl.texts.backpack }}</div>
-        <ul id="backpack-panel" class="collapse show list-unstyled">
-            <li ng-repeat="item in $ctrl.game.character.items">
-                <div ng-click="$ctrl.tryCombine(item)" ng-class="$ctrl.getCombineClass(item)">
-                    <span>{{ item.name }}</span>
-                    <div id="backpack-button-row" class="inline" ng-class="$ctrl.getCombineClass()">
-                        <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.canEquip(item) && $ctrl.showEquipment()" ng-click="$ctrl.equipItem(item)">{{ $ctrl.texts.equip }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.hasDescription('items', item)" ng-click="$ctrl.showDescription(item, item.name)">{{ $ctrl.texts.view }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="item.use" ng-click="$ctrl.useItem(item)">{{ $ctrl.texts.use }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.canDropItems()" ng-click="$ctrl.dropItem(item)">{{ $ctrl.texts.drop }}</button>
-                    </div>
-                </div>
-            </li>
-        </ul>
-    </div>
     <div class="box-container" id="character-quests" ng-if="$ctrl.showQuests()">
         <div class="box-title" data-toggle="collapse" data-target="#quest-panel">{{ $ctrl.texts.quests }}</div>
         <div id="quest-panel" class="collapse show">

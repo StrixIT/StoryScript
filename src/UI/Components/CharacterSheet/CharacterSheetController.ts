@@ -13,53 +13,7 @@ namespace StoryScript {
 
         showEquipment = (): boolean => {
             var self = this;
-
-            if (!self._characterService.useCharacter)
-            {
-                return false;
-            }
-
-            return Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
-        }
-
-        showBackpack = (): boolean => {
-            var self = this;
-            return self._characterService.useBackpack;
-        }
-
-        canDropItems = (): boolean => {
-            var self = this;
-            return self._characterService.dropItems;
-        }
-
-        getCombineClass = (item: IItem) => {
-            var self = this;
-            return self._game.combinations.getCombineClass(item);
-        }
-
-        tryCombine = (item: IItem) => {
-            var self = this;
-            self._game.combinations.tryCombine(item);
-        }
-        
-        hasDescription(type: string, item: { id?: string, description?: string }) {
-            var self = this;
-            return self._gameService.hasDescription(type, item);
-        }
-
-        showDescription(item: any, title: string) {
-            var self = this;
-            self._sharedMethodService.showDescription(self._scope, 'items', item, title);
-        }
-
-        canEquip = (item: IItem): boolean => {
-            var self = this;
-            return self._characterService.canEquip(item);
-        }
-
-        equipItem = (item: IItem): void => {
-            var self = this;
-            self._characterService.equipItem(item);
+            return self._sharedMethodService.showEquipment();
         }
 
         unequipItem = (item: IItem): void => {
@@ -70,16 +24,6 @@ namespace StoryScript {
         isSlotUsed = (slot: string): boolean => {
             var self = this;
             return self._characterService.isSlotUsed(slot);
-        }
-
-        useItem = (item: IItem): void => {
-            var self = this;
-            self._gameService.useItem(item);
-        }
-
-        dropItem = (item: IItem): void => {
-            var self = this;
-            self._characterService.dropItem(item);
         }
 
         showQuests = (): boolean => {
