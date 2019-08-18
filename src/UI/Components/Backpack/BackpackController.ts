@@ -4,6 +4,7 @@ namespace StoryScript {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
+            self._sharedMethodService.useBackpack = true;
         }
 
         game: IGame;

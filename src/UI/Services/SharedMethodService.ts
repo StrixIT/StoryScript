@@ -8,6 +8,9 @@ namespace StoryScript
         trade(game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean;
         showDescription(scope: ng.IScope, type: string, item: any, title: string, ): void;
         showEquipment(): boolean;
+        useBackpack?: boolean;
+        useEquipment?: boolean;
+        useGround?: boolean;
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
@@ -32,6 +35,8 @@ namespace StoryScript
                 showEquipment: self.showEquipment
             };
         }
+
+        useBackpack: boolean;
 
         enemiesPresent = (): boolean => {
             var self = this;

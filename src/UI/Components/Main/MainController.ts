@@ -52,7 +52,6 @@ namespace StoryScript {
             if (!scope.$ctrl._game.loading) {
                 if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                     var change = newValue - oldValue;
-                    // Todo: test, does this work?
                     scope.$ctrl._gameService.hitpointsChange(change);
                 }
             }

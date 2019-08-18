@@ -79,6 +79,11 @@
         controller: ExplorationController
     });
 
+    storyScriptModule.component('ground', {
+        templateUrl: 'ui/GroundComponent.html',
+        controller: GroundController
+    });
+
     storyScriptModule.component('enemy', {
         templateUrl: 'ui/EnemyComponent.html',
         controller: EnemyController
