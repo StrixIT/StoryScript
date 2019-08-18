@@ -2,10 +2,6 @@ namespace TheMiner {
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
-                useBackButtonForTesting: true,
-                useCharacter: false,
-                useBackpack: true,
-                dropItems: true,
                 getCombinationActions: (): StoryScript.ICombinationAction[] => {
                     return [
                         { text: Constants.USE,
