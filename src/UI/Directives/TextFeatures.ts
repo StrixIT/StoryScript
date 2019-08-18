@@ -31,7 +31,7 @@ namespace StoryScript
                     .map((i, e) => {
                         var featureElement = angular.element(e);
 
-                        if (data.featuresToRemove.indexOf(featureElement.attr('name')) > -1)
+                        if (data.featuresToRemove && data.featuresToRemove.indexOf(featureElement.attr('name')) > -1)
                         {
                             featureElement[0].innerHTML = '';
                         }

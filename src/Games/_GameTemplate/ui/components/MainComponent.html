@@ -1,0 +1,16 @@
+<div ng-init="init()">
+    <navigation></navigation>
+    <div class="container-fluid body-content">
+        <div class="row">
+            <div id="location-container" class="col-12">
+                <div ng-if="!$ctrl.game.stateString">
+                    {{ $ctrl.texts.loading }}
+                </div>
+                <div ng-if="$ctrl.game.stateString == 'Play'">
+                    <location></location>
+                    <exploration></exploration>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -61,6 +61,8 @@
         useInCombat?: string;
         view?: string;
         quests?: string;
+        currentQuests?: string;
+        completedQuests?: string;
         combinations?: string;
         tryCombination?: string;
         noCombination?: string;

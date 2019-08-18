@@ -70,19 +70,6 @@ namespace StoryScript {
             self.game.changeLocation(location, true);
             self._gameService.saveGame();
         }
-
-        pickupItem = (item: IItem): void => {
-            var self = this;
-            var isCombining = self._game.combinations.activeCombination;
-
-            if (isCombining) {
-                self._game.combinations.tryCombine(item)
-                return;
-            }
-
-            self.game.character.items.push(item);
-            self.game.currentLocation.items.remove(item);
-        }
     }
 
     ExplorationController.$inject = ['gameService', 'sharedMethodService', 'game', 'customTexts'];

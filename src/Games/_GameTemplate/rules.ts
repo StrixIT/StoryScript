@@ -2,10 +2,6 @@
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
-                useBackButtonForTesting: true,
-                useCharacter: true,
-                useBackpack: true,
-                dropItems: true,
                 getCombinationActions: (): StoryScript.ICombinationAction[] => {
                     return [
                         // Add combination action names here if you want to use this feature.

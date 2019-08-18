@@ -1,130 +1,16 @@
-<div id="charactersheet">
-    <div class="box-container" id="character-attributes" ng-if="$ctrl.displayCharacterAttributes.length > 0">
-        <div class="box-title" data-toggle="collapse" data-target="#character-info">{{ $ctrl.game.character.name }}</div>
-        <div id="character-info" class="collapse show">
-            <div id="portraitFrame">
-                <img class="portrait" ng-src="{{$ctrl.game.character.portraitFileName}}" />
-            </div>
-            <ul id="attributes-panel" class="list-unstyled">
-                <li ng-repeat="attribute in $ctrl.displayCharacterAttributes">
-                    {{ $ctrl.texts.titleCase($ctrl.texts.format(attribute)) }} {{ $ctrl.game.character[attribute] }}
-                </li>
-                <li>{{ $ctrl.texts.hitpoints }} {{ $ctrl.game.character.currentHitpoints }} / {{ $ctrl.game.character.hitpoints }}</li>
-                <li>{{ $ctrl.texts.currency }} {{ $ctrl.game.character.currency }}</li>
-            </ul>
-            <div class="clearfix"></div>
+<div class="box-container" id="character-attributes" ng-if="$ctrl.displayCharacterAttributes.length > 0">
+    <div class="box-title" data-toggle="collapse" data-target="#character-info">{{ $ctrl.game.character.name }}</div>
+    <div id="character-info" class="collapse show">
+        <div id="portraitFrame">
+            <img class="portrait" ng-src="{{$ctrl.game.character.portraitFileName}}" />
         </div>
-    </div>
-    <div class="box-container" id="character-equipment" ng-if="$ctrl.showEquipment()">
-        <div class="box-title" data-toggle="collapse" data-target="#equipment-panel">{{ $ctrl.texts.equipmentHeader }}</div>
-        <div id="equipment-panel" class="collapse show">
-            <div class="row" ng-show="$ctrl.isSlotUsed('head')">
-                <div class="col-12">
-                    <div>
-                        {{ $ctrl.texts.head }}
-                    </div>
-                    <div class="item-box" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.head)">
-                        {{ $ctrl.game.character.equipment.head.name }}
-                    </div>
-                </div>
-            </div>
-            <div class="row" ng-show="$ctrl.isSlotUsed('amulet')">
-                <div class="col-12">
-                    <div>
-                        {{ $ctrl.texts.amulet }}
-                    </div>
-                    <div class="item-box" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.amulet)">
-                        {{ $ctrl.game.character.equipment.amulet.name }}
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <span ng-show="$ctrl.isSlotUsed('hands') || $ctrl.isSlotUsed('rightHand') || $ctrl.isSlotUsed('rightRing')">{{ $ctrl.texts.rightHand }}</span>
-                </div>
-                <div class="col-6">
-                    <span ng-show="$ctrl.isSlotUsed('body')">{{ $ctrl.texts.body }}</span>
-                </div>
-                <div class="col-3">
-                    <span ng-show="$ctrl.isSlotUsed('hands') || $ctrl.isSlotUsed('leftHand') || $ctrl.isSlotUsed('leftRing')">{{ $ctrl.texts.leftHand }}</span>
-                </div>
-                <div class="col-3">
-                    <div class="item-box" ng-show="$ctrl.isSlotUsed('hands')" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.hands)">{{ $ctrl.game.character.equipment.hands.name }}</div>
-                    <div class="item-box" ng-class="{ 'side-borders' : $ctrl.isSlotUsed('hands') || $ctrl.isSlotUsed('rightRing') }" ng-show="$ctrl.isSlotUsed('rightHand')" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.rightHand)">{{ $ctrl.game.character.equipment.rightHand.name }}</div>
-                    <div class="item-box" ng-show="$ctrl.isSlotUsed('rightRing')" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.rightRing)">{{ $ctrl.game.character.equipment.rightRing.name }}</div>
-                </div>
-                <div class="col-6">
-                    <div class="item-box no-border" ng-show="($ctrl.isSlotUsed('rightHand') || $ctrl.isSlotUsed('leftHand')) && $ctrl.isSlotUsed('hands')"></div>
-                    <div class="item-box" ng-show="$ctrl.isSlotUsed('body')" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.body)">{{ $ctrl.game.character.equipment.body.name }}</div>
-                </div>
-                <div class="col-3">
-                    <div class="item-box" ng-show="$ctrl.isSlotUsed('hands')" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.hands)">{{ $ctrl.game.character.equipment.hands.name }}</div>
-                    <div class="item-box" ng-class="{ 'side-borders' : $ctrl.isSlotUsed('hands') || $ctrl.isSlotUsed('leftRing') }" ng-show="$ctrl.isSlotUsed('leftHand')" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.leftHand)">{{ $ctrl.game.character.equipment.leftHand.name }}</div>
-                    <div class="item-box" ng-show="$ctrl.isSlotUsed('leftRing')" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.leftRing)">{{ $ctrl.game.character.equipment.leftRing.name }}</div>
-                </div>
-            </div>
-            <div class="row" ng-show="$ctrl.isSlotUsed('legs')">
-                <div class="col-12">
-                    <div>
-                        {{ $ctrl.texts.legs }}
-                    </div>
-                    <div class="item-box" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.legs)">
-                        {{ $ctrl.game.character.equipment.legs.name }}
-                    </div>
-                </div>
-            </div>
-            <div class="row" ng-show="$ctrl.isSlotUsed('feet')">
-                <div class="col-12">
-                    <div>
-                        {{ $ctrl.texts.feet }}
-                    </div>
-                    <div class="item-box" ng-click="$ctrl.unequipItem($ctrl.game.character.equipment.feet)">
-                        {{ $ctrl.game.character.equipment.feet.name }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="box-container" id="character-backpack" ng-if="$ctrl.showBackpack()">
-        <div class="box-title" data-toggle="collapse" data-target="#backpack-panel">{{ $ctrl.texts.backpack }}</div>
-        <ul id="backpack-panel" class="collapse show list-unstyled">
-            <li ng-repeat="item in $ctrl.game.character.items">
-                <div ng-click="$ctrl.tryCombine(item)" ng-class="$ctrl.getCombineClass(item)">
-                    <span>{{ item.name }}</span>
-                    <div id="backpack-button-row" class="inline" ng-class="$ctrl.getCombineClass()">
-                        <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.canEquip(item) && $ctrl.showEquipment()" ng-click="$ctrl.equipItem(item)">{{ $ctrl.texts.equip }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.hasDescription('items', item)" ng-click="$ctrl.showDescription(item, item.name)">{{ $ctrl.texts.view }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="item.use" ng-click="$ctrl.useItem(item)">{{ $ctrl.texts.use }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="$ctrl.canDropItems()" ng-click="$ctrl.dropItem(item)">{{ $ctrl.texts.drop }}</button>
-                    </div>
-                </div>
+        <ul id="attributes-panel" class="list-unstyled">
+            <li ng-repeat="attribute in $ctrl.displayCharacterAttributes">
+                {{ $ctrl.texts.titleCase($ctrl.texts.format(attribute)) }} {{ $ctrl.game.character[attribute] }}
             </li>
+            <li>{{ $ctrl.texts.hitpoints }} {{ $ctrl.game.character.currentHitpoints }} / {{ $ctrl.game.character.hitpoints }}</li>
+            <li>{{ $ctrl.texts.currency }} {{ $ctrl.game.character.currency }}</li>
         </ul>
-    </div>
-    <div class="box-container" id="character-quests" ng-if="$ctrl.showQuests()">
-        <div class="box-title" data-toggle="collapse" data-target="#quest-panel">{{ $ctrl.texts.quests }}</div>
-        <div id="quest-panel" class="collapse show">
-            <div ng-if="$ctrl.showActiveQuests()">
-                <h4>Current</h4>
-                <ul>
-                    <li ng-repeat="quest in $ctrl.game.character.quests | filter:{ completed: false }">
-                        <div>
-                            <span>{{ quest.name }}</span>
-                            <div ng-bind-html="$ctrl.questStatus(quest)"></div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div ng-if="$ctrl.showCompletedQuests()">
-                <h4>Completed</h4>
-                <ul>
-                    <li ng-repeat="quest in $ctrl.game.character.quests | filter:{ completed: true }">
-                        <div>
-                            <div ng-bind-html="$ctrl.questStatus(quest)"></div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <div class="clearfix"></div>
     </div>
 </div>

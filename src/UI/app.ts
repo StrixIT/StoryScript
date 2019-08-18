@@ -34,6 +34,21 @@
         controller: CharacterSheetController
     });
 
+    storyScriptModule.component('equipment', {
+        templateUrl: 'ui/EquipmentComponent.html',
+        controller: EquipmentController
+    });
+
+    storyScriptModule.component('backpack', {
+        templateUrl: 'ui/BackpackComponent.html',
+        controller: BackpackController
+    });
+    
+    storyScriptModule.component('quests', {
+        templateUrl: 'ui/QuestComponent.html',
+        controller: QuestController
+    });
+
     storyScriptModule.component('levelUp', {
         templateUrl: 'ui/LevelUpComponent.html',
         controller: LevelUpController
@@ -62,6 +77,11 @@
     storyScriptModule.component('exploration', {
         templateUrl: 'ui/ExplorationComponent.html',
         controller: ExplorationController
+    });
+
+    storyScriptModule.component('ground', {
+        templateUrl: 'ui/GroundComponent.html',
+        controller: GroundController
     });
 
     storyScriptModule.component('enemy', {

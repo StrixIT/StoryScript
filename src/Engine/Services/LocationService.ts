@@ -58,22 +58,20 @@ namespace StoryScript {
             self._conversationService.loadConversations();
 
             // Add the 'back' button for testing
-            if (self._rules.setup.useBackButtonForTesting && game.previousLocation && game.currentLocation.id != 'start') {
+            if (game.previousLocation && game.currentLocation.id != 'start') {
                 var backTestDestinationName = 'testbackdestination';
-                var backDestination = game.currentLocation.destinations.get(backTestDestinationName);
+                var backDestination = game.currentLocation.destinations.get(game.previousLocation.id) 
+                                        || game.currentLocation.destinations.get(backTestDestinationName);
 
                 if (!backDestination) {         
                     var backLocation = {
                         id: backTestDestinationName,
                         target: game.previousLocation.id,
-                        name: 'back',
+                        name: `Back to ${game.previousLocation.name}`,
                         style: 'back-button-for-testing'
                     };
 
                     game.currentLocation.destinations.push(backLocation);
-                }
-                else {
-                    backLocation.target = game.previousLocation.id;
                 }
             }
         }

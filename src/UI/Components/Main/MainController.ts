@@ -9,7 +9,7 @@ namespace StoryScript {
     }
 
     export class MainController {
-        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _eventListener: EventTarget, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
@@ -36,7 +36,7 @@ namespace StoryScript {
 
         showCharacterPane = () => {
             var self = this;
-            return self._characterService.useCharacter || self._characterService.useBackpack;
+            return self._sharedMethodService.useCharacterSheet || self._sharedMethodService.useEquipment || self._sharedMethodService.useBackpack || self._sharedMethodService.useQuests;
         }
 
         game: IGame;
@@ -52,7 +52,6 @@ namespace StoryScript {
             if (!scope.$ctrl._game.loading) {
                 if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                     var change = newValue - oldValue;
-                    // Todo: test, does this work?
                     scope.$ctrl._gameService.hitpointsChange(change);
                 }
             }
@@ -80,5 +79,5 @@ namespace StoryScript {
         }
     }
 
-    MainController.$inject = ['$scope', '$timeout', 'eventListener', 'gameService', 'characterService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', 'eventListener', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
 }
