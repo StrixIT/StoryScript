@@ -141,10 +141,6 @@ function createGame(mode) {
                 .pipe(replace('namespace GameTemplate {', 'namespace ' + gameNameSpace + ' {'))
                 .pipe(replace('namespace GameTemplate.Locations {', 'namespace ' + gameNameSpace + '.Locations {'));
         
-        if (mode === 'standard' ) {
-            code = code.pipe(replace('useBackButtonForTesting: true,', ''));
-        }
-        
         code.pipe(gulp.dest(destination));
 
         return merge(css, code);
@@ -227,7 +223,6 @@ function publishGame(local) {
                 .pipe(gulp.dest(paths.publishroot + 'css'));
 
     var js = gulp.src([paths.webroot + 'js/game*.js'])
-                .pipe(replace('useBackButtonForTesting: true,', ''))
                 .pipe(concat('game.js'))
                 .pipe(replace(sourceMapRegex, ''))
                 .pipe(gulp.dest(paths.publishroot + 'js'));

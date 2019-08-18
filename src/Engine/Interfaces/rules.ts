@@ -28,11 +28,6 @@
 
     export interface ISetupRules {
         /**
-         * True if the back button for testing is used, false otherwise.
-         */
-        useBackButtonForTesting?: boolean;
-
-        /**
          * Run custom code to prepare the game before play, e.g. adding game-specific world properties to it.
          * @param game The game about to be started
          */
