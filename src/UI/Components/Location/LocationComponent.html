@@ -10,7 +10,7 @@
         <img ng-src="{{ 'resources/' + $ctrl.game.currentLocation.features.collectionPicture }}" usemap="{{ '#' + $ctrl.game.currentLocation.id }}">
         <map name="{{ $ctrl.game.currentLocation.id }}">
             <div ng-repeat="feature in $ctrl.game.currentLocation.features">
-                <area shape="{{feature.shape}}" coords="{{feature.coords}}" ng-click="$ctrl.game.combinations.tryCombine(feature)" feature-picture />
+                <area href="#0" shape="{{feature.shape}}" coords="{{feature.coords}}" ng-click="$ctrl.game.combinations.tryCombine(feature)" feature-picture />
             </div>
         </map>
     </div>
