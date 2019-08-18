@@ -15,6 +15,7 @@
                 <div ng-if="$ctrl.game.stateString == 'Play'">
                     <encounter></encounter>
                     <location></location>
+                    <action-log></action-log>
                     <ground></ground>
                     <exploration></exploration>
                     <enemy></enemy>
@@ -28,7 +29,6 @@
         <div class="row" ng-if="$ctrl.game.stateString !== 'CreateCharacter'">
             <div class="col-12">
                 <combination></combination>
-                <action-log></action-log>
             </div>
         </div>
     </div>
