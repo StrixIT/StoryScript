@@ -100,7 +100,7 @@ namespace StoryScript {
         if (entity[property] && buildInline) {
             // Initialize any objects that have been declared inline (not a recommended but possible way to declare objects). Check
             // for the existence of an id property to determine whether the object is already initialized.
-            collection = (<[]>entity[property]).map((e: { id: string, name: string }) => e.id ? e : Create(getSingular(property), e, e.name.toLowerCase().replace(/\s/g,'')));
+            collection = (<[]>entity[property]).map((e: { id: string, name: string }) => e.id ? e : Create(getSingular(property), e, getIdFromName(e)));
         }
 
         Object.defineProperty(entity, property, {
@@ -361,8 +361,17 @@ namespace StoryScript {
         var args = [].slice.apply(arguments);
         var originalFunction = args.shift();
         args[0] = typeof args[0] === 'function' ? args[0]() : args[0];
+        getIdFromName(args[0]);
         originalFunction.apply(this, args);
     };
+
+    function getIdFromName<T extends { name: string, id? : string}>(entity: T): string {
+        if (!entity.id) {
+            entity.id = entity.name.toLowerCase().replace(/\s/g,'');
+        }
+
+        return entity.id;
+    }
 
     function getFunctions(type: string, functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, definitionKeys: string[], entity: any, parentId: any) {
         if (!parentId) {

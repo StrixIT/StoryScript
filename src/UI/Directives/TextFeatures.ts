@@ -13,10 +13,23 @@ namespace StoryScript
             var self = this;
 
             scope.$on('showCombinationText', function(event, data: ShowCombinationTextEvent) {
+                // Show the text of added features.
+                element.find('feature')
+                    .filter((i, e) => e.innerHTML.trim() == '')
+                    .map((i, e) => {
+                        var featureElement = angular.element(e);
+                        var feature = self._game.currentLocation.features.get(featureElement.attr('name'));
+
+                        if (feature) {
+                            self._game.currentLocation.text = self._game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
+                        }
+                    });
+                
+                // Remove the text of deleted features.
                 var featureNode = element.find('feature[name="' + data.featureToRemove + '"]')[0];
 
                 if (featureNode) {
-                    featureNode.remove();
+                    featureNode.innerHTML = '';
                 }
             });
 
@@ -25,7 +38,7 @@ namespace StoryScript
                     var feature = self.getFeature(ev);
 
                     if (feature) {
-                        var result = self._game.combinations.tryCombine(feature);
+                        self._game.combinations.tryCombine(feature);
                         scope.$applyAsync();
                     }
                 }
@@ -37,13 +50,6 @@ namespace StoryScript
                     var feature = self.getFeature(ev);
                     var combineClass= self._combinationService.getCombineClass(feature);
                     node.addClass(combineClass);
-
-                    // Todo: not needed? Works without this in Chrome.
-                    // node.on('mouseout', function(ev) {
-                    //     var node = angular.element(ev.target);
-                    //     node.removeClass(combineClass);
-                    //     node.off('mouseout');
-                    // });
                 }
             });
 

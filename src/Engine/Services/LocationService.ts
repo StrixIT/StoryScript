@@ -315,26 +315,15 @@ namespace StoryScript {
                 const node = featureNodes[i];
                 const feature = self.getBasicFeatureData(game, node);
 
+                // If the feature is not present in code, clean the node html as the feature is either
+                // not yet added (the feature tag is a placeholder for a feature added at runtime) or it
+                // was deleted. Clean the node html to not show the feature text in case it was deleted.
                 if (!feature) {
-                    node.remove();
+                    node.innerHTML = '';
                 }
                 else {
-                    var featureText = node.innerHTML;
-
-                    // If there is text in the node, the feature is defined in the html. If not, only a placeholder is there.
-                    // In that case, update the node text as soon as the feature is present in code.
-                    if (node.innerHTML) {
-                        if (featureText.substr(0, 1).trim() !== '' && featureText.substr(0, 6) !== '&nbsp;') {
-                            node.innerHTML = '&nbsp;' + node.innerHTML;
-                        }
-
-                        if (featureText.substr(featureText.length - 1, 1).trim() !== '' && featureText.substr(featureText.length - 6, 6) !== '&nbsp;') {
-                            node.innerHTML = node.innerHTML + '&nbsp;';
-                        }
-                    }
-                    else {
-                        node.innerHTML = `&nbsp;${feature.description}&nbsp;`;
-                    }
+                    feature.description = node.innerHTML || feature.description;
+                    node.innerHTML = addHtmlSpaces(feature.description);
                 }
             }
          
