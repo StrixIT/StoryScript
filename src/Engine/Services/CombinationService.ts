@@ -111,7 +111,7 @@ namespace StoryScript {
                 result.text = typeof type.failText === 'function' ? type.failText(self._game, target, tool) : type.failText;
             }
             else {
-                result.text = tool ? self._texts.format(self._texts.noCombination, [target.name, tool.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
+                result.text = tool ? self._texts.format(self._texts.noCombination, [tool.name, target.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
             }
 
             result.text = text + (result.text ? ': ' + result.text : '')
