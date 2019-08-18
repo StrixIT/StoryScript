@@ -2,9 +2,6 @@
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
-                useCharacter: true,
-                useBackpack: true,
-                dropItems: true
             },
 
             general: {
