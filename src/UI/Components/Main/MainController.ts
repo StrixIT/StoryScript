@@ -5,7 +5,7 @@ namespace StoryScript {
         }
 
         combineText: string;
-        featureToRemove: string;
+        featuresToRemove: string[];
     }
 
     export class MainController {
@@ -27,7 +27,7 @@ namespace StoryScript {
             _eventListener.addEventListener('combinationFinished', function(finishedEvent: StoryScript.CombinationFinishedEvent) {
                 var showEvent = new ShowCombinationTextEvent();
                 showEvent.combineText = finishedEvent.combineText;
-                showEvent.featureToRemove = finishedEvent.featureToRemove;
+                showEvent.featuresToRemove = finishedEvent.featuresToRemove;
                 self._scope.$broadcast(showEvent.type, showEvent);
             });
 

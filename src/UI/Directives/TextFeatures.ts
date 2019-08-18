@@ -15,7 +15,7 @@ namespace StoryScript
             scope.$on('showCombinationText', function(event, data: ShowCombinationTextEvent) {
                 // Show the text of added features.
                 element.find('feature')
-                    .filter((i, e) => e.innerHTML.trim() == '')
+                    .filter((i, e) => e.innerHTML.trim() === '')
                     .map((i, e) => {
                         var featureElement = angular.element(e);
                         var feature = self._game.currentLocation.features.get(featureElement.attr('name'));
@@ -26,11 +26,16 @@ namespace StoryScript
                     });
                 
                 // Remove the text of deleted features.
-                var featureNode = element.find('feature[name="' + data.featureToRemove + '"]')[0];
+                element.find('feature')
+                    .filter((i, e) => e.innerHTML.trim() !== '')
+                    .map((i, e) => {
+                        var featureElement = angular.element(e);
 
-                if (featureNode) {
-                    featureNode.innerHTML = '';
-                }
+                        if (data.featuresToRemove.indexOf(featureElement.attr('name')) > -1)
+                        {
+                            featureElement[0].innerHTML = '';
+                        }
+                    });
             });
 
             element.on('click', function(ev) {

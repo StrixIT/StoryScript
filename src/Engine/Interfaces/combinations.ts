@@ -52,9 +52,14 @@
         success: boolean;
 
         /**
-         * If true, remove the feature after the match is made.
+         * If true, remove the tool feature after the match is made.
          */
-        removeFeature?: boolean
+        removeTool?: boolean
+        
+        /**
+         * If true, remove the target feature after the match is made.
+         */
+        removeTarget?: boolean
     }
 
     export interface IMatchResult {
@@ -64,8 +69,13 @@
         text: string,
 
         /**
-         * If true, remove the feature after the match is made.
+         * If true, remove the tool feature after the match is made.
          */
-        removeFeature?: boolean
+        removeTool?: boolean
+        
+        /**
+         * If true, remove the target feature after the match is made.
+         */
+        removeTarget?: boolean
     }
 }

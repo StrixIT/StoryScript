@@ -5,7 +5,7 @@
         }
 
         combineText: string;
-        featureToRemove: string;
+        featuresToRemove: string[];
     }
 
     export interface IGameService {
@@ -375,14 +375,23 @@ namespace StoryScript {
             self._game.combinations = {
                 activeCombination: null,
                 tryCombine: (target: ICombinable): boolean => {
+                    var activeCombo = self._game.combinations.activeCombination;
                     var result = self._combinationService.tryCombination(target);
 
                     if (result.text) {
                         var evt = new CombinationFinishedEvent();
                         evt.combineText = result.text;
 
-                        if (result.success && result.removeFeature) {
-                            evt.featureToRemove = target.id;
+                        if (result.success) {
+                            evt.featuresToRemove = [];
+
+                            if (result.removeTarget) {
+                                evt.featuresToRemove.push(target.id);
+                            }
+
+                            if (result.removeTool) {
+                                evt.featuresToRemove.push(activeCombo.selectedTool.id);
+                            }
                         }
 
                         self._events.dispatchEvent(evt);

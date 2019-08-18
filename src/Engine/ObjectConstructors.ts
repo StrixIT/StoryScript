@@ -361,16 +361,17 @@ namespace StoryScript {
         var args = [].slice.apply(arguments);
         var originalFunction = args.shift();
         args[0] = typeof args[0] === 'function' ? args[0]() : args[0];
-        getIdFromName(args[0]);
+
+        if (!args[0].id) {
+            args[0].id = getIdFromName(args[0]);
+        }
+
         originalFunction.apply(this, args);
     };
 
     function getIdFromName<T extends { name: string, id? : string}>(entity: T): string {
-        if (!entity.id) {
-            entity.id = entity.name.toLowerCase().replace(/\s/g,'');
-        }
-
-        return entity.id;
+        var id = entity.name.toLowerCase().replace(/\s/g,'');
+        return id;
     }
 
     function getFunctions(type: string, functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, definitionKeys: string[], entity: any, parentId: any) {

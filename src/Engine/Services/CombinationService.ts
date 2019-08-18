@@ -55,8 +55,12 @@ namespace StoryScript {
             result = self.performCombination(target);
 
             if (result.success) {
-                if (result.removeFeature) {
+                if (result.removeTarget) {
                     self._game.currentLocation.features.remove(target.id);
+                }
+
+                if (result.removeTool && combo.selectedTool.id != target.id) {
+                    self._game.currentLocation.features.remove(combo.selectedTool.id);
                 }
 
                 SaveWorldState(self._dataService, self._locationService, self._game);
@@ -97,7 +101,8 @@ namespace StoryScript {
                 var matchResult = combination.match(self._game, target, tool);
                 result.success = true;
                 result.text = typeof matchResult === 'string' ? matchResult : matchResult.text;
-                result.removeFeature = typeof matchResult !== 'string' && matchResult.removeFeature;
+                result.removeTarget = typeof matchResult !== 'string' && matchResult.removeTarget;
+                result.removeTool = typeof matchResult !== 'string' && matchResult.removeTool;
             }
             else if (target.combinations && target.combinations.failText) {
                 result.text = typeof target.combinations.failText === 'function' ? target.combinations.failText(self._game, target, tool) : target.combinations.failText;
