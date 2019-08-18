@@ -55,6 +55,8 @@
             useInCombat: "Use {0}",
             view: "View",
             quests: "Quests",
+            currentQuests: "Current",
+            completedQuests: "Completed",
             hands: "Hands",
             leftRing: "Left ring",
             rightRing: "Right ring",
