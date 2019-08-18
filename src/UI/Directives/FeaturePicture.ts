@@ -12,7 +12,7 @@ namespace StoryScript
             var parentElement = null;
 
             scope.$on('showCombinationText', function(event, data: ShowCombinationTextEvent) {
-                if (data.featuresToRemove && data.featuresToRemove.length > 0 && data.featuresToRemove.indexOf(feature.id) > -1) {
+                if (data.featuresToRemove && data.featuresToRemove.indexOf(feature.id) > -1) {
                     parentElement.remove();
                 }
             });
