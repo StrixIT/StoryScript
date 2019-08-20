@@ -198,8 +198,18 @@ namespace StoryScript {
                 return;
             }
 
-            self._game.character.items.remove(item);
-            self._game.currentLocation.items.push(item);
+            var drop = true;
+
+            if (self._rules.character.beforeDrop)
+            {
+                drop = self._rules.character.beforeDrop(self._game, self._game.character, item);
+            }
+
+            if (drop)
+            {
+                self._game.character.items.remove(item);
+                self._game.currentLocation.items.push(item);
+            }
         }
 
         questStatus = (quest: IQuest): string => {

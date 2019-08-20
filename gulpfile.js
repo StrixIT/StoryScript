@@ -224,6 +224,7 @@ function publishGame(local) {
 
     var js = gulp.src([paths.webroot + 'js/game*.js'])
                 .pipe(concat('game.js'))
+                .pipe(replace(/autoBackButton\s*:[\s\w]*,/g, ''))
                 .pipe(replace(sourceMapRegex, ''))
                 .pipe(gulp.dest(paths.publishroot + 'js'));
     

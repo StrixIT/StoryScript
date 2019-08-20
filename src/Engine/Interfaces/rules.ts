@@ -28,6 +28,12 @@
 
     export interface ISetupRules {
         /**
+         * Set this to true if you want to show an automatic destination back to the location the player
+         * visited previously. Used for testing only. This setting is removed when publishing the game.
+         */
+        autoBackButton?: boolean;
+
+        /**
          * Run custom code to prepare the game before play, e.g. adding game-specific world properties to it.
          * @param game The game about to be started
          */
@@ -107,6 +113,15 @@
          * @param item The item about to be unequipped
          */
         beforeUnequip?(game: IGame, character: ICharacter, item: IItem): boolean;
+
+        /**
+         * Specify this function if you want to apply custom rules before a player drops an item. Return false if the player
+         * should not drop the item.
+         * @param game The active game
+         * @param character The player character
+         * @param item The item about to be unequipped
+         */
+        beforeDrop?(game: IGame, character: ICharacter, item: IItem): boolean;
 
         /**
          * Specify this function if you want to do something special when the player's health changes.

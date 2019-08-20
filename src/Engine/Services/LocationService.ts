@@ -58,7 +58,7 @@ namespace StoryScript {
             self._conversationService.loadConversations();
 
             // Add the 'back' button for testing
-            if (game.previousLocation && game.currentLocation.id != 'start') {
+            if (self._rules.setup.autoBackButton && game.previousLocation && game.currentLocation.id != 'start') {
                 var backTestDestinationName = 'testbackdestination';
                 var backDestination = game.currentLocation.destinations.get(game.previousLocation.id) 
                                         || game.currentLocation.destinations.get(backTestDestinationName);
@@ -68,7 +68,7 @@ namespace StoryScript {
                         id: backTestDestinationName,
                         target: game.previousLocation.id,
                         name: `Back to ${game.previousLocation.name}`,
-                        style: 'back-button-for-testing'
+                        style: 'auto-back-button'
                     };
 
                     game.currentLocation.destinations.push(backLocation);
