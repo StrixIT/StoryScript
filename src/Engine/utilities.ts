@@ -14,6 +14,10 @@
     }
 
     export function addHtmlSpaces(text: string): string {
+        if (!text) {
+            return null;
+        }
+
         if (text.substr(0, 1).trim() !== '' && text.substr(0, 6) !== '&nbsp;') {
             text = '&nbsp;' + text;
         }
