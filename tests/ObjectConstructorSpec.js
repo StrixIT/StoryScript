@@ -13,7 +13,10 @@ describe("ObjectFactory", function() {
         expect(result).not.toEqual(null);
         expect(result.id).toEqual('start');
         expect(result.type).toEqual('location');
-        expect(result.descriptionSelector.functionId).toEqual('function#location_start_descriptionSelector#430859754');
+
+        var hashMatch = new RegExp(/function#location_start_descriptionSelector#[0-9]{9}/g).exec(result.descriptionSelector.functionId).length;
+
+        expect(hashMatch).toEqual(1);
     });
 
     it("should create a location with read-only properties", function() {

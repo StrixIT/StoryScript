@@ -71,7 +71,8 @@
             newSaveGame: "New save game",
             existingSaveGames: "Saved games",
             overwriteSaveGame: "Overwrite saved game {0}?",
-            loadSaveGame: "Load saved game {0}?"
+            loadSaveGame: "Load saved game {0}?",
+            characterSheet: "Character sheet"
         }
 
         format = (template: string, tokens: string[]): string => {
