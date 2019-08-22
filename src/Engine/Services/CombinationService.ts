@@ -74,8 +74,9 @@ namespace StoryScript {
             var combo = self._game.combinations.activeCombination;
             var tool = combo.selectedTool;
             var type = combo.selectedCombinationAction;
-            var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + ' ' + combo.selectedCombinationAction.preposition  + ' ' + target.name:
-                                                                        combo.selectedCombinationAction.text + ' ' + combo.selectedCombinationAction.preposition + ' ' + target.name;
+            var prepositionText = combo.selectedCombinationAction.preposition ? ' ' + combo.selectedCombinationAction.preposition + ' ' : ' '
+            var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + prepositionText + target.name:
+                                                                        combo.selectedCombinationAction.text + prepositionText + target.name;
 
             self._game.combinations.activeCombination = null;
             
