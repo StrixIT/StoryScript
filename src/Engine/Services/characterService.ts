@@ -18,7 +18,7 @@
 
 namespace StoryScript {
     export class CharacterService implements ICharacterService {
-        constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
+        constructor(private _game: IGame, private _rules: IRules) {
         }
 
         getSheetAttributes = (): string[] => {
@@ -35,8 +35,6 @@ namespace StoryScript {
         }
 
         limitSheetInput = (value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
-            var self = this;
-
             if (!isNaN(value)) {
                 var totalAssigned = 0;
 
@@ -84,9 +82,9 @@ namespace StoryScript {
 
         createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
             var self = this;
-            var character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
+            var character = null;
 
-            if (isEmpty(character) && self._rules.character.createCharacter) {
+            if (self._rules.character.createCharacter) {
 
                 character = self._rules.character.createCharacter(game, characterData);
                 self.processDefaultSettings(character, characterData);

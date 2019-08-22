@@ -1,5 +1,5 @@
-<div class="box-container" id="character-attributes" ng-if="$ctrl.displayCharacterAttributes.length > 0">
-    <div class="box-title" data-toggle="collapse" data-target="#character-info">{{ $ctrl.game.character.name }}</div>
+<div class="box-container" id="character-attributes">
+    <div class="box-title" data-toggle="collapse" data-target="#character-info">{{ $ctrl.game.character.name || $ctrl.texts.characterSheet }}</div>
     <div id="character-info" class="collapse show">
         <div id="portraitFrame">
             <img class="portrait" ng-src="{{$ctrl.game.character.portraitFileName}}" />

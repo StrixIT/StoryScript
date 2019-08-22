@@ -33,6 +33,7 @@
         "karma-edge-launcher": "^0.4.2",
         "karma-jasmine": "^2.0.1",
         "karma-requirejs": "^1.1.0",
+        "karma-coverage": "^2.0.1",
         "lodash": "^4.17.11",
         "merge2": "^1.2.3",
         "natives": "^1.1.6",

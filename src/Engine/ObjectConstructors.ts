@@ -360,12 +360,14 @@ namespace StoryScript {
     function pushEntity() {
         var args = [].slice.apply(arguments);
         var originalFunction = args.shift();
-        args[0] = typeof args[0] === 'function' ? args[0]() : args[0];
+        var entity = args[0];
+        entity = typeof entity === 'function' ? entity() : entity;
 
-        if (!args[0].id) {
-            args[0].id = getIdFromName(args[0]);
+        if (!entity.id && entity.name) {
+            entity.id = getIdFromName(entity);
         }
 
+        args[0] = entity;
         originalFunction.apply(this, args);
     };
 
