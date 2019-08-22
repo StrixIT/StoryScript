@@ -20,7 +20,14 @@ namespace TheMiner {
                             {
                             text: Constants.TAKE,  
                             requiresTool: false
+                           },
+                           {
+                            text: Constants.EAT,  
+                            requiresTool: false,
+                            failText: (game, target, tool): string => {
+                                return 'I can\'t eat that!';
                            }
+                        }
                     ];
                 }
             },
@@ -36,6 +43,7 @@ namespace TheMiner {
                 getSheetAttributes: (): string[] => {
                     return [
                         // Add the character attributes that you want to show on the character sheet here
+                       
                     ];
                 },
 

@@ -3,7 +3,7 @@ namespace TheMiner.Items {
         return Item({
             name: 'brick',
             damage: '1',
-            equipmentType: StoryScript.EquipmentType.RightHand,
+            equipmentType: StoryScript.EquipmentType.Miscellaneous,
             description: 'building material'
             
         });

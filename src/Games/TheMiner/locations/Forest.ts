@@ -23,8 +23,8 @@ namespace TheMiner.Locations {
                                     combinationType: Constants.TAKE,
                                     match: (game, target, tool): string => 
                                     {
-                                        return "You gather some food."
                                         game.character.items.push(Items.Food);
+                                        return "You gather some food.";
                                     }
                                 }
                             ]
