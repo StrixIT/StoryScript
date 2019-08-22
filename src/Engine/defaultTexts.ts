@@ -78,7 +78,16 @@
         format = (template: string, tokens: string[]): string => {
             if (template && tokens) {
                 for (var i = 0; i < tokens.length; i++) {
-                    template = template.replace('{' + i + '}', tokens[i]);
+                    var pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
+                    var match = new RegExp(pattern).exec(template)[0];
+                    var matchReplacement = match.replace('{' + i + '}', '');
+
+                    if (tokens[i].trim().length == 0 && matchReplacement.length > 1) {
+                        template = template.replace(match, ' ');
+                    }
+                    else {
+                        template = template.replace('{' + i + '}', tokens[i]);
+                    }
                 }
             }
 

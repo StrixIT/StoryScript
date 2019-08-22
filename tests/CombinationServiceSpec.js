@@ -91,9 +91,7 @@ describe("CombinationService", function() {
 
             var result = service.tryCombination(target);
             expect(result.success).toBeFalsy();
-            // Todo: fix the extra spaces when there is no preposition
-            expect(result.text).toBe('Take Ball: You Take  the Ball. Nothing happens.');
-
+            expect(result.text).toBe('Take Ball: You Take the Ball. Nothing happens.');
         });
 
     });
