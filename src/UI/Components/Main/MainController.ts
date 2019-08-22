@@ -13,7 +13,7 @@ namespace StoryScript {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
-            self._scope.$on('restart', () => self.init());
+            self._scope.$on('restart', () => self.init(true));
             self._scope.$on('showDescription', (event, args) => self._scope.$broadcast('initDescription', args));
             self._scope.$on('levelUp', () => self._scope.$broadcast('initLevelUp'));
             self._scope.$on('saveGame', () => self._scope.$broadcast('initSaveGame'));
@@ -42,8 +42,13 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
-        private init() {
+        private init(restart?: boolean) {
             var self = this;
+
+            if (restart) {
+                self._gameService.restart();
+            }
+
             self._gameService.init();
             self._scope.$broadcast('createCharacter');
         }
