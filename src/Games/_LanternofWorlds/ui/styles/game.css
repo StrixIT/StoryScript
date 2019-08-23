@@ -1,16 +1,3 @@
-#action-log, #exploration-onground, #exploration-destinations > .box-title {
-    display: none;
-}
-
-#location {
-    margin-bottom: 0px;
-}
-
-#exploration-destinations {
-    border-top: none;
-    border-radius: 0;
-}
-
 .back-label {
     display: none;
 }
