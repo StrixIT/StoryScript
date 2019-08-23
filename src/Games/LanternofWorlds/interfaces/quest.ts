@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     export function Quest(entity: IQuest): IQuest {
         return StoryScript.Quest(entity);
     }

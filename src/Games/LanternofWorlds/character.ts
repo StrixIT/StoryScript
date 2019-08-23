@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     export class Character implements StoryScript.ICharacter {
         name: string = "";
         score: number = 0;

@@ -1,4 +1,4 @@
-namespace _LanternofWorlds.Locations {
+namespace LanternofWorlds.Locations {
     export function Start() {
         return Location({
             name: 'Start',

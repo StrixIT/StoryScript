@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     export function Location(entity: ILocation): ILocation  {
         return StoryScript.Location(entity);
     }

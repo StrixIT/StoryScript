@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     export function Enemy(entity: IEnemy): IEnemy {
         return StoryScript.Enemy(entity);
     }

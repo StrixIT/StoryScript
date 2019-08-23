@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     export function Rules(): StoryScript.IRules {
         return {
             setup: {

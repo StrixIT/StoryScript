@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     export function Key(entity: IKey): IKey {
         return StoryScript.Key(entity);
     }

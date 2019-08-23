@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     // Your game-specific game interface.
     export interface IGame extends StoryScript.IGame {
         character: Character;

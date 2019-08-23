@@ -1,4 +1,4 @@
-namespace _LanternofWorlds {
+namespace LanternofWorlds {
     export function Person(entity: IPerson): IPerson {
         return StoryScript.Person(entity);
     }
