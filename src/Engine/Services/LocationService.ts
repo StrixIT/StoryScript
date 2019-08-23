@@ -393,11 +393,11 @@ namespace StoryScript {
         if (destination.barrier && destination.barrier.key) {
             var key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem( destination.barrier.key);
             var existingAction = null;
-            var keyActionHash = createFunctionHash(key.open.action);
+            var keyActionHash = createFunctionHash(key.open.execute);
 
             if (destination.barrier.actions) {
                 destination.barrier.actions.forEach(x => {
-                    if (createFunctionHash(x.action) === keyActionHash) {
+                    if (createFunctionHash(x.execute) === keyActionHash) {
                         existingAction = x;
                     };
                 });

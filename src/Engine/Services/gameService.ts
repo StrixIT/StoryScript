@@ -220,9 +220,9 @@ namespace StoryScript {
                 return;
             }
 
-            var action = barrier.actions.filter((item: IBarrierAction) => { return item.name == barrier.selectedAction.name; })[0];
+            var action = barrier.actions.filter((item: IBarrierAction) => { return item.text == barrier.selectedAction.text; })[0];
             var actionIndex = barrier.actions.indexOf(action);
-            action.action(self._game, destination, barrier, action);
+            action.execute(self._game, destination, barrier, action);
             barrier.actions.splice(actionIndex, 1);
 
             if (barrier.actions.length) {
