@@ -26,8 +26,8 @@
                                 name: 'Wooden trap door',
                                 actions: [
                                     {
-                                        name: 'Inspect',
-                                        action: (game: IGame) => {
+                                        text: 'Inspect',
+                                        execute: (game: IGame) => {
                                             game.logToLocationLog('The trap door looks old but still strong due to steel reinforcements. It is locked.');
                                         }
                                     }
