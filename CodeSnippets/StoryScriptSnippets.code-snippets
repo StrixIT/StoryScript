@@ -22,7 +22,7 @@
 			"namespace ${TM_DIRECTORY/((^[\\\\\\\\:\\w]*Games\\\\)|(\\\\[\\w]*$))//g}.Locations {",
 			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\t\treturn Location({",
-			"\t\t\tname: '$0',",
+			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\t\tdestinations: [",
 			"\t\t\t],",
 			"\t\t\tfeatures: [",
@@ -48,6 +48,42 @@
 		"description": "Add a new location"
 	},
 
+	"Features": {
+		"scope": "javascript,typescript",
+		"prefix": "ssFeature",
+		"body": [
+			"namespace ${TM_DIRECTORY/((^[\\\\\\\\:\\w]*Games\\\\)|(\\\\[\\w]*$))//g}.Features {",
+			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
+			"\t\treturn Feature({",
+			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
+			"\t\t\tcombinations: {",
+			"\t\t\t\tcombine: [",
+			"\t\t\t\t\t",
+			"\t\t\t\t],",
+			"\t\t\t},",
+			"\t\t});",
+			"\t}",
+			"}"
+		],
+		"description": "Add a new feature"
+	},
+
+	"InlineFeatures": {
+		"scope": "javascript,typescript",
+		"prefix": "ssFeature-inline",
+		"body": [
+			"{",
+			"\tname: '$0',",
+			"\tcombinations: {",
+			"\t\tcombine: [",
+			"\t\t\t",
+			"\t\t],",
+			"\t},",
+			"},",
+		],
+		"description": "Add a new inline feature"
+	},
+
 	"Enemies": {
 		"scope": "javascript,typescript",
 		"prefix": "ssEnemy",
@@ -55,7 +91,7 @@
 			"namespace ${TM_DIRECTORY/((^[\\\\\\\\:\\w]*Games\\\\)|(\\\\[\\w]*$))//g}.Enemies {",
 			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\t\treturn Enemy({",
-			"\t\t\tname: '$0',",
+			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\t\thitpoints: 10,",
 			"\t\t\titems: [",
 			"\t\t\t],",
@@ -73,7 +109,7 @@
 			"namespace ${TM_DIRECTORY/((^[\\\\\\\\:\\w]*Games\\\\)|(\\\\[\\w]*$))//g}.Persons {",
 			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\t\treturn Person({",
-			"\t\t\tname: '$0',",
+			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\t\thitpoints: 10,",
 			"\t\t\titems: [",
 			"\t\t\t],",
@@ -97,7 +133,7 @@
 			"namespace ${TM_DIRECTORY/((^[\\\\\\\\:\\w]*Games\\\\)|(\\\\[\\w]*$))//g}.Items {",
 			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\t\treturn Item({",
-			"\t\t\tname: '',",
+			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\t\tequipmentType: StoryScript.EquipmentType.Miscellaneous,",
 			"\t\t});",
 			"\t}",
@@ -165,7 +201,7 @@
 			"{",
 				"\tcombinationType: '',",
 				"\tmatch: (game, target, tool): string => {",
-				"\t\t",
+				"\t\treturn '';",
 				"\t},",
 			"},",
 		],
@@ -181,6 +217,23 @@
 			"},",
 		],
 		"description": "Add a new conversation action"
+	},
+
+	"Quests": {
+		"scope": "javascript,typescript",
+		"prefix": "ssQuest",
+		"body": [
+			"{",
+				"\tname: '',",
+				"\tstatus: (game, quest, done) => {",
+				"\t\treturn '';",
+				"\t},",
+				"\tcheckDone: (game, quest) => {",
+				"\t\treturn false;",
+				"\t},",
+			"},",
+		],
+		"description": "Add a new quest"
 	},
 
 	"StoryFunctions": {
