@@ -49,11 +49,11 @@ describe("HelperService", function() {
         var service = new StoryScript.HelperService(game);
         var expected = game.definitions.enemies.find(l => l.name === 'Bandit')();
 
-        // Set the action to null because comparing the action function fails.
-        expected.items[1].open.action = null;
+        // Set the execute to null because comparing the action function fails.
+        expected.items[1].open.execute = null;
 
         var getWithId = service.getEnemy('Bandit');
-        getWithId.items[1].open.action = null;
+        getWithId.items[1].open.execute = null;
 
         expect(getWithId).toEqual(expected);
     });
