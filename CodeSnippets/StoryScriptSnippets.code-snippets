@@ -236,7 +236,7 @@
 		"description": "Add a new quest"
 	},
 
-	"StoryFunctions": {
+	"StoryScriptFunctions": {
 		"scope": "javascript,typescript",
 		"prefix": "ssFunction",
 		"body": [
@@ -245,5 +245,86 @@
 			"},"
 		],
 		"description": "Add a new StoryScript function"
+	},
+
+	"Description": {
+		"scope": "html",
+		"prefix": "ssDescription",
+		"body": [
+			"<description name=\"\">",
+			"\t",
+			"</description>"
+		],
+		"description": "Add a new description"
+	},
+	
+	"StoryScriptAudio": {
+		"scope": "html",
+		"prefix": "ssAudio",
+		"body": [
+			"<audio controls=\"controls\" autoplay=\"autoplay\">",
+			"\t<source src=\".mp3\" type=\"audio/mp3\" />",
+			"\tYour browser does not support audio.",
+			"</audio>"
+		],
+		"description": "Add a new description"
+	},
+
+	"HtmlFeatures": {
+		"scope": "html",
+		"prefix": "ssFeature",
+		"body": [
+			"<feature name=\"\"></feature>",
+		],
+		"description": "Add a new feature"
+	},
+
+	"VisualFeatures": {
+		"scope": "html",
+		"prefix": "ssVisualFeatures",
+		"body": [
+			"<visual-features img=\"\">",
+			"\t<area name=\"\" shape=\"\" coords=\"\" />",
+			"</visual-features>"
+		],
+		"description": "Add a new visual feature collection"
+	},
+
+	"VisualFeature": {
+		"scope": "html",
+		"prefix": "ssArea",
+		"body": [
+			"<area name=\"\" shape=\"\" coords=\"\" />"
+		],
+		"description": "Add a new visual feature"
+	},
+
+	"Conversation": {
+		"scope": "html",
+		"prefix": "ssConversation",
+		"body": [
+			"<conversation>",
+			"\t<default-reply>",
+			"\t</default-reply>",
+			"\t<node name=\"\">",
+			"\t\t<p>",
+			"\t\t</p>",
+			"\t\t<replies default-reply=\"\">",
+			"\t\t</replies>",
+			"\t</node>",
+			"</conversation>"
+		],
+		"description": "Add a new conversation"
+	},
+
+	"Reply": {
+		"scope": "html",
+		"prefix": "ssReply",
+		"body": [
+			"<reply node=\"\" set-start=\"\" requires=\"\" trigger=\"\" quest-complete=\"\">",
+			"\t",
+			"</reply>"
+		],
+		"description": "Add a new conversation reply"
 	},
 }
