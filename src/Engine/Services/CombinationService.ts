@@ -39,6 +39,18 @@ namespace StoryScript {
                 text: ''
             };
 
+            if (!combo) {
+                var defaultAction = self.getCombinationActions().filter(c => c.isDefault)[0];
+
+                if (defaultAction) {
+                    combo = {
+                        selectedCombinationAction: defaultAction,
+                        combineText: '',
+                        selectedTool: null
+                    }
+                }
+            }
+
             if (!target || !combo || !combo.selectedCombinationAction) {
                 return result;
             }
@@ -52,7 +64,7 @@ namespace StoryScript {
                 return result;
             }
 
-            result = self.performCombination(target);
+            result = self.performCombination(target, combo);
 
             if (result.success) {
                 if (result.removeTarget) {
@@ -69,9 +81,8 @@ namespace StoryScript {
             return result;
         }
 
-        private performCombination(target: ICombinable): ICombineResult {
+        private performCombination(target: ICombinable, combo: IActiveCombination): ICombineResult {
             var self = this;
-            var combo = self._game.combinations.activeCombination;
             var tool = combo.selectedTool;
             var type = combo.selectedCombinationAction;
             var prepositionText = combo.selectedCombinationAction.preposition ? ' ' + combo.selectedCombinationAction.preposition + ' ' : ' '

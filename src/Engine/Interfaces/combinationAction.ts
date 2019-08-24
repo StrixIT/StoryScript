@@ -24,5 +24,11 @@
          * @param target The target of the combination
          */
         failText?: string | ((game: IGame, tool: ICombinable, target: ICombinable) => string);
+
+        /**
+         * Set this to true to make this action the default. A player doesn't need to select it first to use it. If no combination
+         * is active when the player selects a feature, this action will be used.
+         */
+        isDefault?: boolean;
     }
 }

@@ -9,7 +9,7 @@ namespace StoryScript {
     }
 
     export class MainController {
-        constructor(private _scope: ng.IScope, private _eventListener: EventTarget, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
@@ -29,6 +29,7 @@ namespace StoryScript {
                 showEvent.combineText = finishedEvent.combineText;
                 showEvent.featuresToRemove = finishedEvent.featuresToRemove;
                 self._scope.$broadcast(showEvent.type, showEvent);
+                self.applyDynamicStyling();
             });
 
             self.init();
@@ -51,6 +52,7 @@ namespace StoryScript {
 
             self._gameService.init();
             self._scope.$broadcast('createCharacter');
+            self.applyDynamicStyling();
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {
@@ -82,7 +84,25 @@ namespace StoryScript {
                 }
             }
         }
+
+        private applyDynamicStyling() {
+            var self = this;
+
+            self._timeout(() => {
+                var dynamicStyling = self._gameService.applyDynamicStyling();
+                dynamicStyling.forEach(s => {
+                    var element = angular.element(s.elementSelector);
+
+                    if (element.length) {
+                        var styleText = '';
+                        s.styles.forEach(e => styleText += e[0] + ': ' + e[1] + ';' );
+                        element.attr('style', styleText);
+                    }
+
+                });
+            }, 0, false);
+        }
     }
 
-    MainController.$inject = ['$scope', 'eventListener', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', '$timeout', 'eventListener', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
 }

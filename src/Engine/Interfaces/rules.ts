@@ -34,7 +34,7 @@
         autoBackButton?: boolean;
 
         /**
-         * Run custom code to prepare the game before play, e.g. adding game-specific world properties to it.
+         * Run custom code to prepare the game before it begins, e.g. adding game-specific world properties to it.
          * @param game The game about to be started
          */
         setupGame?(game: IGame): void;
@@ -44,6 +44,13 @@
          * your game uses (e.g. 'Look at', 'Use', etc.).
          */
         getCombinationActions?(): ICombinationAction[];
+
+        /**
+         * Run custom code to prepare the game before entering the start location, e.g. adding game-specific
+         * world properties to it.
+         * @param game The game about to be started
+         */
+        gameStart?(game: IGame): void;
     }
 
     export interface IGeneralRules {
@@ -149,6 +156,12 @@
          * @param game The active game
          */
         descriptionSelector?(game: IGame): string;
+
+        /**
+         * Specify this function if you want to do special dynamic styling in the interface. It is triggered when using combinations.
+         * @param game The active game
+         */
+        applyDynamicStyling?(game: IGame): IDynamicStyle[];
     }
 
     export interface ICombatRules {

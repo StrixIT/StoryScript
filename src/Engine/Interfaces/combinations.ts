@@ -18,6 +18,26 @@
     }
 
     /**
+     * The currently active combination when playing the game.
+     */
+    export interface IActiveCombination {
+        /**
+         * The action type of the currently active combination.
+         */
+        selectedCombinationAction: ICombinationAction;
+
+        /**
+         * The currently selected tool of the combination.
+         */
+        selectedTool: ICombinable;
+
+        /**
+         * The text displayed to the player for the current combine status.
+         */
+        combineText: string;
+    }
+
+    /**
      * A combination definition.
      */
     export interface ICombine<T extends ICombinable> {

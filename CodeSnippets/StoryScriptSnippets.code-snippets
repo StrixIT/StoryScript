@@ -24,6 +24,7 @@
 			"\t\treturn Location({",
 			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\t\tdestinations: [",
+			"\t\t\t\t$1",
 			"\t\t\t],",
 			"\t\t\tfeatures: [",
 			"\t\t\t],",
@@ -58,7 +59,7 @@
 			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\t\tcombinations: {",
 			"\t\t\t\tcombine: [",
-			"\t\t\t\t\t",
+			"\t\t\t\t\t$1",
 			"\t\t\t\t],",
 			"\t\t\t},",
 			"\t\t});",
@@ -73,10 +74,10 @@
 		"prefix": "ssFeature-inline",
 		"body": [
 			"{",
-			"\tname: '$0',",
+			"\tname: '$1',",
 			"\tcombinations: {",
 			"\t\tcombine: [",
-			"\t\t\t",
+			"\t\t\t$2",
 			"\t\t],",
 			"\t},",
 			"},",
@@ -92,7 +93,7 @@
 			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\t\treturn Enemy({",
 			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
-			"\t\t\thitpoints: 10,",
+			"\t\t\thitpoints: 10,$1",
 			"\t\t\titems: [",
 			"\t\t\t],",
 			"\t\t});",
@@ -110,7 +111,7 @@
 			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\t\treturn Person({",
 			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
-			"\t\t\thitpoints: 10,",
+			"\t\t\thitpoints: 10,$1",
 			"\t\t\titems: [",
 			"\t\t\t],",
 			"\t\t\tquests: [",
@@ -134,7 +135,7 @@
 			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\t\treturn Item({",
 			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
-			"\t\t\tequipmentType: StoryScript.EquipmentType.Miscellaneous,",
+			"\t\t\tequipmentType: StoryScript.EquipmentType.Miscellaneous,$1",
 			"\t\t});",
 			"\t}",
 			"}"
@@ -147,8 +148,8 @@
 		"prefix": "ssDestination",
 		"body": [
 			"{",
-				"\tname: '',",
-				"\ttarget: null",
+				"\tname: '$1',",
+				"\ttarget: $2null",
 			"},",
 		],
 		"description": "Add a new destination"
@@ -159,8 +160,9 @@
 		"prefix": "ssBarrier",
 		"body": [
 			"barrier: {",
-				"\tname: '',",
+				"\tname: '$1',",
 				"\tactions: [",
+				"\t\t$2",
 				"\t],",
 			"},",
 		],
@@ -172,13 +174,29 @@
 		"prefix": "ssAction",
 		"body": [
 			"{",
-				"\ttext: '',",
-				"\texecute: (game) => {",
-				"\t\t",
+				"\ttext: '$1',",
+				"\texecute: (game: IGame) => {",
+				"\t\t$2",
 				"\t},",
 			"},",
 		],
 		"description": "Add a new action"
+	},
+
+	"CombinationActions": {
+		"scope": "javascript,typescript",
+		"prefix": "ssCombinationAction",
+		"body": [
+			"{",
+				"\ttext: '$1',",
+				"\tpreposition: '$2',",
+				"\trequiresTool: false,",
+				"\tfailText: (game: IGame, target: StoryScript.ICombinable, tool: StoryScript.ICombinable): string => {",
+				"\t\treturn '$3';",
+				"},",
+			"},",
+		],
+		"description": "Add a new combination"
 	},
 
 	"Combinations": {
@@ -187,7 +205,7 @@
 		"body": [
 			"combinations: {",
 				"\tcombine: [",
-				"\t\t",
+				"\t\t$1",
 				"\t],",
 			"},",
 		],
@@ -199,9 +217,9 @@
 		"prefix": "ssCombine",
 		"body": [
 			"{",
-				"\tcombinationType: '',",
-				"\tmatch: (game, target, tool): string => {",
-				"\t\treturn '';",
+				"\tcombinationType: '$1',",
+				"\tmatch: (game: IGame, target: StoryScript.ICombinable, tool: StoryScript.ICombinable): string => {",
+				"\t\treturn '$2';",
 				"\t},",
 			"},",
 		],
@@ -212,8 +230,8 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssConversationAction",
 		"body": [
-			"Action: (game, person) => {",
-			"\t",
+			"$1Action: (game: IGame, person: IPerson) => {",
+			"\t$2",
 			"},",
 		],
 		"description": "Add a new conversation action"
@@ -224,11 +242,11 @@
 		"prefix": "ssQuest",
 		"body": [
 			"{",
-				"\tname: '',",
-				"\tstatus: (game, quest, done) => {",
-				"\t\treturn '';",
+				"\tname: '$1',",
+				"\tstatus: (game: IGame, quest: IQuest, done) => {",
+				"\t\treturn '$2';",
 				"\t},",
-				"\tcheckDone: (game, quest) => {",
+				"\tcheckDone: (game: IGame, quest:IQuest) => {",
 				"\t\treturn false;",
 				"\t},",
 			"},",
@@ -240,8 +258,8 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssFunction",
 		"body": [
-			"(game) => {",
-			"\t",
+			"(game: IGame) => {",
+			"\t$1",
 			"},"
 		],
 		"description": "Add a new StoryScript function"
@@ -251,8 +269,8 @@
 		"scope": "html",
 		"prefix": "ssDescription",
 		"body": [
-			"<description name=\"\">",
-			"\t",
+			"<description name=\"$1\">",
+			"\t$2",
 			"</description>"
 		],
 		"description": "Add a new description"
@@ -263,7 +281,7 @@
 		"prefix": "ssAudio",
 		"body": [
 			"<audio controls=\"controls\" autoplay=\"autoplay\">",
-			"\t<source src=\".mp3\" type=\"audio/mp3\" />",
+			"\t<source src=\"$1.mp3\" type=\"audio/mp3\" />",
 			"\tYour browser does not support audio.",
 			"</audio>"
 		],
@@ -274,7 +292,7 @@
 		"scope": "html",
 		"prefix": "ssFeature",
 		"body": [
-			"<feature name=\"\"></feature>",
+			"<feature name=\"$1\">$2</feature>",
 		],
 		"description": "Add a new feature"
 	},
@@ -283,8 +301,8 @@
 		"scope": "html",
 		"prefix": "ssVisualFeatures",
 		"body": [
-			"<visual-features img=\"\">",
-			"\t<area name=\"\" shape=\"\" coords=\"\" />",
+			"<visual-features img=\"$1\">",
+			"\t<area name=\"$2\" shape=\"$3\" coords=\"$4\" />",
 			"</visual-features>"
 		],
 		"description": "Add a new visual feature collection"
@@ -294,7 +312,7 @@
 		"scope": "html",
 		"prefix": "ssArea",
 		"body": [
-			"<area name=\"\" shape=\"\" coords=\"\" />"
+			"<area name=\"$1\" shape=\"$2\" coords=\"$3\" />"
 		],
 		"description": "Add a new visual feature"
 	},
@@ -306,10 +324,12 @@
 			"<conversation>",
 			"\t<default-reply>",
 			"\t</default-reply>",
-			"\t<node name=\"\">",
+			"\t<node name=\"$1\">",
 			"\t\t<p>",
+			"\t\t\t$2",
 			"\t\t</p>",
 			"\t\t<replies default-reply=\"\">",
+			"\t\t\t$3",
 			"\t\t</replies>",
 			"\t</node>",
 			"</conversation>"
@@ -317,12 +337,28 @@
 		"description": "Add a new conversation"
 	},
 
+	"ConversationNode": {
+		"scope": "html",
+		"prefix": "ssNode",
+		"body": [
+			"<node name=\"$1\">",
+			"\t<p>",
+			"\t\t$2",
+			"\t</p>",
+			"\t<replies default-reply=\"\">",
+			"\t\t$3",
+			"\t</replies>",
+			"</node>",
+		],
+		"description": "Add a new conversation reply"
+	},
+
 	"Reply": {
 		"scope": "html",
 		"prefix": "ssReply",
 		"body": [
-			"<reply node=\"\" set-start=\"\" requires=\"\" trigger=\"\" quest-complete=\"\">",
-			"\t",
+			"<reply node=\"$1\" set-start=\"\" requires=\"\" trigger=\"\" quest-complete=\"\">",
+			"\t$2",
 			"</reply>"
 		],
 		"description": "Add a new conversation reply"
