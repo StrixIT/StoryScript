@@ -25,6 +25,7 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
+        applyDynamicStyling(): IDynamicStyle[];
     }
 }
 
@@ -81,8 +82,17 @@ namespace StoryScript {
         startNewGame = (characterData: any): void => {
             var self = this;
             self.createCharacter(characterData);
-            self._game.changeLocation('Start');
+
+            if (self._rules.setup.gameStart) {
+                self._rules.setup.gameStart(self._game);
+            }
+
+            if (self._game.currentLocation.id != 'start') {
+                self._game.changeLocation('Start');
+            }
+
             self._game.state = StoryScript.GameState.Play;
+            self.saveGame();
         }
 
         restart = (): void => {
@@ -263,6 +273,11 @@ namespace StoryScript {
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
+        }
+
+        applyDynamicStyling = (): IDynamicStyle[] => {
+            var self = this;
+            return self._rules.exploration.applyDynamicStyling(self._game);
         }
 
         private initTexts(): void {

@@ -78,22 +78,7 @@
              * Holds the currently selected combination action during rum-time. This will be undefined or null when the player
              * is not trying a combination.
              */
-            activeCombination: {
-                /**
-                 * The action type of the currently active combination.
-                 */
-                selectedCombinationAction: ICombinationAction;
-
-                /**
-                 * The currently selected tool of the combination.
-                 */
-                selectedTool: ICombinable;
-
-                /**
-                 * The text displayed to the player for the current combine status.
-                 */
-                combineText: string;
-            },
+            activeCombination: IActiveCombination,
 
             /**
              * Get the class name to use for the current combine state.
