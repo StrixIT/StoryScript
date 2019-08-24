@@ -8,28 +8,11 @@ namespace TheMiner.Locations {
                     target: Locations.Start
                 }
             ],
+            enterEvents: [
+                (game) => { game.character.items.push(Items.Fruit()); }
+            ],
             features: [
-                {
-                    name: 'fruit and mushrooms',
-                    combinations: {
-                    combine: [
-                                {
-                                    combinationType: Constants.LOOKAT,
-                                    match: (game, target, tool): string => {
-                                        return "You see plenty of edible berries, leaves and mushrooms here.";
-                                    }
-                                },
-                                {
-                                    combinationType: Constants.TAKE,
-                                    match: (game, target, tool): string => 
-                                    {
-                                        game.character.items.push(Items.Food);
-                                        return "You gather some food.";
-                                    }
-                                }
-                            ]
-                            }
-                        },
+                Items.Fruit(),
                         {
                             name: 'animals',
                             combinations: {
@@ -70,7 +53,7 @@ namespace TheMiner.Locations {
                                             }
                                         },  
 
-                    ] 
+                    ]
         })
     }
 }
