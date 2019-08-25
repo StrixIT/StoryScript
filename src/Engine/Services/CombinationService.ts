@@ -110,7 +110,15 @@ namespace StoryScript {
             };
 
             if (combination) {
-                var matchResult = combination.match(self._game, target, tool);
+                var matchResult = combination.match ? combination.match(self._game, target, tool) 
+                                    : combo.selectedCombinationAction.defaultMatch ? combo.selectedCombinationAction.defaultMatch(self._game, target, tool)
+                                        : undefined;
+
+                if (matchResult === undefined) {
+                    var entity = <any>target;
+                    throw new Error(`No match function specified for ${entity.type} ${entity.id} for action ${combination.combinationType}. Neither was a default action specified. Add one or both.`)
+                }
+                
                 result.success = true;
                 result.text = typeof matchResult === 'string' ? matchResult : matchResult.text;
                 result.removeTarget = typeof matchResult !== 'string' && matchResult.removeTarget;

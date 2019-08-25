@@ -24,8 +24,11 @@ namespace StoryScript {
             for (var i = 0; i < self.worldProperties.length; i++) {
                 var property = self.worldProperties[i];
                 var value = self._game.worldProperties[property.name];
-                var text = self._texts.format(self._texts.worldProperties[property.name], [value]);
-                property.value = text;
+
+                if (self._texts.worldProperties) {
+                    var text = self._texts.format(self._texts.worldProperties[property.name], [value]);
+                    property.value = text;
+                }
             }
 
             return self.worldProperties;
