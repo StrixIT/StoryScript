@@ -30,5 +30,11 @@
          * is active when the player selects a feature, this action will be used.
          */
         isDefault?: boolean;
+
+        /**
+         * Set this to have a default match action available. This is useful if you want to have default behaviour for one particular
+         * type of action (e.g. Look at).
+         */
+        defaultMatch?(game: IGame, target: ICombinable, tool: ICombinable): string | IMatchResult;
     }
 }

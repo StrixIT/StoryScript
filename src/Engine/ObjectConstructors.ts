@@ -4,6 +4,11 @@ namespace StoryScript {
     var _registeredIds: Set<string> = new Set<string>();
     var _currentEntityId: string = null;
 
+    export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
+        var namedFunction = <() => T>createNamedFunction(null, entityFunction, getIdFromName({ id: '', name: name }));
+        return CreateEntityProxy(namedFunction)();
+    }
+
     export function CreateEntityProxy<T>(entityFunction: (() => T)): () => T {
         return entityFunction.proxy(entityFunction, (originalFunc, ...params) => {
             var id = params.splice(params.length - 1, 1)[0];
@@ -12,7 +17,7 @@ namespace StoryScript {
             var result = originalFunc.apply(this, params);
             SetCurrentEntityId(oldId);
             return result;
-        }, entityFunction.name);
+        }, entityFunction.name || entityFunction.originalFunctionName);
     }
 
     export function GetCurrentEntityId() {
@@ -243,7 +248,7 @@ namespace StoryScript {
         var functions = window.StoryScript.ObjectFactory.GetFunctions();
 
         // If this is the first time an object of this definition is created, get the functions.
-        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith((<any>compiledEntity).id))) {
+        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith(compiledEntity.id + '_'))) {
             getFunctions(plural, functions, definitionKeys, compiledEntity, null);
         }
 
@@ -393,7 +398,7 @@ namespace StoryScript {
             var value = entity[key];
 
             if (value == undefined) {
-                return;
+                continue;
             }
             else if (typeof value === "object") {
                 getFunctions(type, functionList, definitionKeys, entity[key], entity[key].id ? parentId + '_' + key + '_' + entity[key].id : parentId + '_' + key);
