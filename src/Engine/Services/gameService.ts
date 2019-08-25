@@ -25,7 +25,6 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
-        applyDynamicStyling(): IDynamicStyle[];
     }
 }
 
@@ -273,11 +272,6 @@ namespace StoryScript {
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
-        }
-
-        applyDynamicStyling = (): IDynamicStyle[] => {
-            var self = this;
-            return self._rules.exploration.applyDynamicStyling(self._game);
         }
 
         private initTexts(): void {

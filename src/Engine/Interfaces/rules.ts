@@ -156,12 +156,6 @@
          * @param game The active game
          */
         descriptionSelector?(game: IGame): string;
-
-        /**
-         * Specify this function if you want to do special dynamic styling in the interface. It is triggered when using combinations.
-         * @param game The active game
-         */
-        applyDynamicStyling?(game: IGame): IDynamicStyle[];
     }
 
     export interface ICombatRules {

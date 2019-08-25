@@ -24,12 +24,19 @@ namespace StoryScript {
             self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self._scope.$watch('game.character.score', self.watchCharacterScore);
 
+            self._game.dynamicStyles = self._game.dynamicStyles || [];
+
+            // Todo: improve this by using an object with deep watch?
+            self._scope.$watchCollection('game.dynamicStyles', function(newForm, oldForm) {
+                console.log('style change');
+                self.applyDynamicStyling();
+            });
+
             _eventListener.addEventListener('combinationFinished', function(finishedEvent: StoryScript.CombinationFinishedEvent) {
                 var showEvent = new ShowCombinationTextEvent();
                 showEvent.combineText = finishedEvent.combineText;
                 showEvent.featuresToRemove = finishedEvent.featuresToRemove;
                 self._scope.$broadcast(showEvent.type, showEvent);
-                self.applyDynamicStyling();
             });
 
             self.init();
@@ -52,7 +59,6 @@ namespace StoryScript {
 
             self._gameService.init();
             self._scope.$broadcast('createCharacter');
-            self.applyDynamicStyling();
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {
@@ -89,8 +95,7 @@ namespace StoryScript {
             var self = this;
 
             self._timeout(() => {
-                var dynamicStyling = self._gameService.applyDynamicStyling();
-                dynamicStyling.forEach(s => {
+                self._game.dynamicStyles.forEach(s => {
                     var element = angular.element(s.elementSelector);
 
                     if (element.length) {
