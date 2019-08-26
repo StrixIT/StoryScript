@@ -3,7 +3,7 @@ namespace LanternofWorlds.Locations {
         return Location({
             name: 'Your adventure begins',
             enterEvents: [
-                (game) => { game.changeLocation(Locations.Start) }
+                (game) => { game.changeLocation(Locations.Cave) }
             ],
             destinations: [
                 
