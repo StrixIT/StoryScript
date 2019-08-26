@@ -1,7 +1,10 @@
 namespace LanternofWorlds.Locations {
     export function Start() {
         return Location({
-            name: 'Start',
+            name: 'Your adventure begins',
+            enterEvents: [
+                (game) => { game.changeLocation(Locations.Start) }
+            ],
             destinations: [
                 
             ]

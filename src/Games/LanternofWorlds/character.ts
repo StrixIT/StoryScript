@@ -13,14 +13,8 @@ namespace LanternofWorlds {
         equipment: {
             // Remove the slots you don't want to use
             head: IItem,
-            amulet: IItem,
             body: IItem,
             hands: IItem,
-            leftHand: IItem,
-            leftRing: IItem,
-            rightHand: IItem,
-            rightRing: IItem,
-            legs: IItem,
             feet: IItem
         };
 
@@ -28,14 +22,8 @@ namespace LanternofWorlds {
             this.equipment = {
                 // Remove the slots you don't want to use
                 head: null,
-                amulet: null,
                 body: null,
                 hands: null,
-                leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
                 feet: null
             }
         }
