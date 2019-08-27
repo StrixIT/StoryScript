@@ -1,8 +1,12 @@
 ﻿namespace LanternofWorlds.Locations {
     export function Next2() {
         return Location({
-            name: 'Next2',
+            name: 'Intro',
             destinations: [
+                {
+                    name: 'Start your adventure',
+                    target: Locations.Next2,
+                }
                 
             ]
         });
