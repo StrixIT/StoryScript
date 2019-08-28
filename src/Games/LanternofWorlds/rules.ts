@@ -29,18 +29,18 @@ namespace LanternofWorlds {
                             {
                                 questions: [
                                     {
-                                        question: 'Do you want to start play...',
+                                        question: 'Do you want to...',
                                         entries: [
                                             {
-                                                text: 'Right away',
+                                                text: 'Choose a character',
                                                 value: '1'
                                             },
                                             {
-                                                text: 'After telling your story',
+                                                text: 'Create a story character',
                                                 value: '2'
                                             },
                                             {
-                                                text: 'By fine-tuning your sheet',
+                                                text: 'Create a custom character',
                                                 value: '3'
                                             }
                                         ]
