@@ -86,7 +86,7 @@ namespace StoryScript {
                 self._rules.setup.gameStart(self._game);
             }
 
-            if (self._game.currentLocation.id != 'start') {
+            if (!self._game.currentLocation) {
                 self._game.changeLocation('Start');
             }
 
