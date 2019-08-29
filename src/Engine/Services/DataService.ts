@@ -160,6 +160,14 @@ namespace StoryScript {
             if (Array.isArray(value)) {
                 clone[key] = [];
                 self.buildClone(functionList, value, pristineValue, clone[key]);
+
+                var additionalArrayProperties = Object.keys(value).filter(v => isNaN(parseInt(v)));
+
+                additionalArrayProperties.forEach(p => {
+                    var arrayPropertyKey = `${key}_arrProps`;
+                    clone[arrayPropertyKey] = {};
+                    self.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
+                });
             }
             else if (typeof value === "object") {
                 if (Array.isArray(clone)) {
@@ -244,6 +252,17 @@ namespace StoryScript {
                 else if (Array.isArray(value)) {
                     initCollection(loaded, key);
                     self.restoreObjects(functionList, value);
+
+                    var arrayPropertyKey = `${key}_arrProps`;
+                    var additionalArrayProperties = loaded[arrayPropertyKey];
+
+                    if (additionalArrayProperties) {
+                        Object.keys(additionalArrayProperties).forEach(k => {
+                            value[k] = additionalArrayProperties[k];
+                        });
+
+                        delete loaded[arrayPropertyKey];
+                    }
                 }
                 else if (typeof value === "object") {
                     self.restoreObjects(functionList, value);

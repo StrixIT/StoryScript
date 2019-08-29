@@ -105,7 +105,10 @@ namespace StoryScript {
         if (entity[property] && buildInline) {
             // Initialize any objects that have been declared inline (not a recommended but possible way to declare objects). Check
             // for the existence of an id property to determine whether the object is already initialized.
-            collection = (<[]>entity[property]).map((e: { id: string, name: string }) => e.id ? e : Create(getSingular(property), e, getIdFromName(e)));
+            var inlineCollection = (<[]>entity[property]).map((e: { id: string, name: string }) => e.id ? e : Create(getSingular(property), e, getIdFromName(e)));
+            collection.length = 0;
+
+            inlineCollection.forEach(e => collection.push(e));
         }
 
         Object.defineProperty(entity, property, {

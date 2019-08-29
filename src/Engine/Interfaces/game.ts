@@ -100,6 +100,11 @@
         worldProperties: any;
 
         /**
+         * Add styles that should be applied to the interface dynamically here.
+         */
+        dynamicStyles: IDynamicStyle[];
+
+        /**
          * The statistics for this game.
          */
         statistics: IStatistics;
