@@ -93,8 +93,8 @@ describe("CombinationService", function() {
             expect(result.success).toBeFalsy();
             expect(result.text).toBe('Take Ball: You Take the Ball. Nothing happens.');
         });
-
     });
+
 
     var combinationActionNames = [
         'Use',
@@ -106,4 +106,5 @@ describe("CombinationService", function() {
     function getService(game, texts) {
         return new StoryScript.CombinationService({}, {}, game, new _TestGame.Rules(), texts || {});
     }
+
 });

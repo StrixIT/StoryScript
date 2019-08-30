@@ -3,9 +3,6 @@
     <ul id="world-properties">
         <li ng-repeat="property in $ctrl.getWorldProperties() track by $index" class="{{property.name}}">{{ property.value }}</li>
     </ul>
-    <div text-features ng-if="!$ctrl.game.currentLocation.features.collectionPicture">
-        <div ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></div>
-    </div>
     <div id="visual-features" ng-if="$ctrl.game.currentLocation.features.collectionPicture">
         <img ng-src="{{ 'resources/' + $ctrl.game.currentLocation.features.collectionPicture }}" usemap="{{ '#' + $ctrl.game.currentLocation.id }}">
         <map name="{{ $ctrl.game.currentLocation.id }}">
@@ -13,6 +10,9 @@
                 <area href="#0" shape="{{feature.shape}}" coords="{{feature.coords}}" ng-click="$ctrl.game.combinations.tryCombine(feature)" feature-picture />
             </div>
         </map>
+    </div>
+    <div text-features>
+        <div ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation, 'text')"></div>
     </div>
     <ul id="location-log" class="list-unstyled">
         <li ng-repeat="message in $ctrl.game.currentLocation.log track by $index" ng-bind-html="$ctrl.getDescription($ctrl.game.currentLocation.log, $index)"></li>
