@@ -32,17 +32,14 @@ namespace LanternofWorlds {
                                         question: 'Do you want to...',
                                         entries: [
                                             {
-                                                text: 'Choose a character',
+                                                text: 'Start a regular game',
                                                 value: '1'
                                             },
                                             {
-                                                text: 'Create a story character',
+                                                text: 'Use the alternate start',
                                                 value: '2'
                                             },
-                                            {
-                                                text: 'Create a custom character',
-                                                value: '3'
-                                            }
+                                            
                                         ]
                                     }
                                 ],
@@ -52,10 +49,7 @@ namespace LanternofWorlds {
                                             return 1;
                                         };
                                         case '2': {
-                                            return 2;
-                                        };
-                                        case '3': {
-                                            return 3;
+                                            return 2;                             
                                         };
                                         default: {
                                             return 0;
@@ -66,7 +60,7 @@ namespace LanternofWorlds {
                             {
                                 questions: [
                                     {
-                                        question: 'Select your hero',
+                                        question: 'Select your story',
                                         entries: [
                                             {
                                                 text: 'Barlon the Oak',
@@ -96,57 +90,27 @@ namespace LanternofWorlds {
                             {
                                 questions: [
                                     {
-                                        question: 'As a child, you were always...',
+                                        question: 'Select your story',
                                         entries: [
                                             {
-                                                text: 'strong in fights',
+                                                text: 'You are a druid',
                                                 value: 'strength',
                                                 bonus: 1
                                             },
                                             {
-                                                text: 'a fast runner',
+                                                text: 'You are a veteran warrior',
                                                 value: 'agility',
                                                 bonus: 1
                                             },
                                             {
-                                                text: 'a curious reader',
+                                                text: 'You are a fisherman',
                                                 value: 'intelligence',
                                                 bonus: 1
                                             }
                                         ]
                                     }
                                 ],
-                                nextStepSelector: 4
-                            },
-                            {
-                                attributes: [
-                                    {
-                                        question: 'Create your hero ...',
-                                        numberOfPointsToDistribute: 10,
-                                        entries: [
-                                            {
-                                                attribute: 'strength',
-                                                max: 5,
-                                                min: 1
-                                            },
-                                            {
-                                                attribute: 'agility',
-                                                max: 5,
-                                                min: 1
-                                            },
-                                            {
-                                                attribute: 'intelligence',
-                                                max: 5,
-                                                min: 1
-                                            },
-                                            {
-                                                attribute: 'charisma',
-                                                max: 5,
-                                                min: 1
-                                            }
-                                        ]
-                                    }
-                                ],
+                                
                                 nextStepSelector: 4
                             },
                             {
