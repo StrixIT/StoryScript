@@ -7,7 +7,7 @@ describe("CombinationService", function() {
         expect(names).toEqual(combinationActionNames);
     });
 
-    describe("Combination css class", function() {
+    describe("Selection classes", function() {
 
         it("should return an empty string for a class when there is no active combination and no tool", function() {
             var service = getService({
@@ -62,23 +62,39 @@ describe("CombinationService", function() {
 
     });
 
-    describe("Trying combinations", function() {
+    describe("Try combinations", function() {
 
-        it("should return false when no target is passed and no default action is defined", function() {
-            var game = getGame();
-            var service = getService(game);
+        it("should fail a combination when there is no target or active combination", function() {
+            var game = {
+                combinations: {
+                    activeCombination: {}
+                }
+            };
+
+            var texts = {
+                noCombination: "You {2} the {0} {3} the {1}. Nothing happens.",
+                noCombinationNoTool: "You {1} {2} the {0}. Nothing happens.",
+                format: new StoryScript.DefaultTexts().format
+            }
+
+            var service = getService(game, texts);
             var result = service.tryCombination();
             expect(result.success).toBeFalsy();
-        });
 
-        it("should return false when a target is passed and no default action is defined", function() {
-            var game = getGame();
-            var service = getService(game);
-            var result = service.tryCombination();
+            var target = { name: 'Ball' };
+
+            var result = service.tryCombination(target);
             expect(result.success).toBeFalsy();
-        });
 
+            var activeCombination = game.combinations.activeCombination;
+            activeCombination.selectedCombinationAction = { text: 'Take' };
+
+            var result = service.tryCombination(target);
+            expect(result.success).toBeFalsy();
+            expect(result.text).toBe('Take Ball: You Take the Ball. Nothing happens.');
+        });
     });
+
 
     var combinationActionNames = [
         'Use',
@@ -87,17 +103,8 @@ describe("CombinationService", function() {
         'Push'
     ];
 
-    function getService(game) {
-        return new StoryScript.CombinationService({}, {}, game, new _TestGame.Rules(), {});
+    function getService(game, texts) {
+        return new StoryScript.CombinationService({}, {}, game, new _TestGame.Rules(), texts || {});
     }
 
-    function getGame() {
-        return {
-            combinations: {
-                activeCombination: {
-                    
-                }
-            }
-        };
-    }
 });
