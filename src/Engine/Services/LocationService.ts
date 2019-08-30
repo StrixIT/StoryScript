@@ -270,11 +270,14 @@ namespace StoryScript {
 
             if (!game.currentLocation.descriptions) {
                 var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
-                var parser = new DOMParser();
-                var htmlDoc = parser.parseFromString(descriptions, "text/html");
 
-                self.processVisualFeatures(htmlDoc, game);
-                self.processDescriptions(htmlDoc, game);
+                if (descriptions) {
+                    var parser = new DOMParser();
+                    var htmlDoc = parser.parseFromString(descriptions, "text/html");
+
+                    self.processVisualFeatures(htmlDoc, game);
+                    self.processDescriptions(htmlDoc, game);
+                }
             }
 
             self.selectLocationDescription(game);
@@ -305,6 +308,11 @@ namespace StoryScript {
 
         private processTextFeatures(game: IGame) {
             var self = this;
+
+            if (!game.currentLocation.text) {
+                return;
+            }
+
             var parser = new DOMParser();
             var htmlDoc = parser.parseFromString(game.currentLocation.text, "text/html");
             var featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
