@@ -2,6 +2,9 @@ namespace LanternofWorlds {
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
+                gameStart: (game: IGame) => {
+                    game.changeLocation(game.worldProperties.startChoice);
+                },
                 getCombinationActions: (): StoryScript.ICombinationAction[] => {
                     return [
                         // Add combination action names here if you want to use this feature.
@@ -46,46 +49,16 @@ namespace LanternofWorlds {
                                 nextStepSelector: (character, currentStep) => {
                                     switch (currentStep.questions[0].selectedEntry.value) {
                                         case '1': {
-                                            return 1;
+                                            return 2;
                                         };
                                         case '2': {
-                                            return 2;                             
+                                            return 1;                             
                                         };
                                         default: {
                                             return 0;
                                         }
                                     }
                                 }
-                            },
-                            {
-                                questions: [
-                                    {
-                                        question: 'Select your story',
-                                        entries: [
-                                            {
-                                                text: 'Barlon the Oak',
-                                                value: 'barlon',
-                                                bonus: 1
-                                            },
-                                            {
-                                                text: 'Stella the Quick',
-                                                value: 'stella',
-                                                bonus: 1
-                                            },
-                                            {
-                                                text: 'Jane Orion',
-                                                value: 'jane',
-                                                bonus: 1
-                                            },
-                                            {
-                                                text: 'Marlin Peacemaker',
-                                                value: 'marlin',
-                                                bonus: 1
-                                            }
-                                        ]
-                                    }
-                                ],
-                                nextStepSelector: 4
                             },
                             {
                                 questions: [
@@ -111,7 +84,7 @@ namespace LanternofWorlds {
                                     }
                                 ],
                                 
-                                nextStepSelector: 4
+                                nextStepSelector: 3
                             },
                             {
                                 questions: [
@@ -126,6 +99,11 @@ namespace LanternofWorlds {
                 },
 
                 createCharacter: (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
+                    var startChoice = characterData.steps[1].questions[0].selectedEntry.text === 'You are a druid' ? 'druid' :
+                                        characterData.steps[1].questions[0].selectedEntry.text === 'You are a veteran warrior' ? 'forest' : 'lake';
+                    
+                    game.worldProperties.startChoice = startChoice;
+
                     var character = new Character();
                     return character;
                 }
