@@ -75,40 +75,40 @@ function start(callBack) {
     
     var nameSpace = getNameSpace();
 
-    // Todo: fix watches, pipe to browserSync for correct working.
     gulp.watch(["src/Engine/**/*.ts"], function (e) {
-        return compileTs('StoryScript', e.path, compileStoryScript);
-    }).on('change', reloadBrowser);
+        return compileTs('StoryScript', e.path, compileStoryScript).pipe(browserSync.stream());
+    }).on('change', logFileChange);
 
     gulp.watch(["src/Games/**/*.ts"], function (e) {
-        return compileTs('Game', e.path, compileGame);
-    }).on('change', reloadBrowser);
+        return compileTs('Game', e.path, compileGame).pipe(browserSync.stream());
+    }).on('change', logFileChange);
 
     gulp.watch(["src/UI/**/*.ts"], function (e) {
-        return compileTs('UI', e.path, compileUI, nameSpace);
-    }).on('change', reloadBrowser);
+        return compileTs('UI', e.path, compileUI, nameSpace).pipe(browserSync.stream());
+    }).on('change', logFileChange);
 
     gulp.watch(['src/UI/**/*.html', 'src/Games/' + nameSpace + '/ui/**/*.html'], function () {
-        return compileUITemplates(nameSpace);
-    }).on('change', reloadBrowser);
+        return compileUITemplates(nameSpace).pipe(browserSync.stream());
+    }).on('change', logFileChange);
 
     gulp.watch(['src/Games/**/*.html', '!src/Games/' + nameSpace + '/ui/**'], function () {
-        return gameDescriptions(nameSpace);
-    }).on('change', reloadBrowser);
+        return gameDescriptions(nameSpace).pipe(browserSync.stream());
+    }).on('change', logFileChange);
 
     gulp.watch(["src/**/*.css"], function (e) {
         return copyCss(nameSpace, e.path).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    // Todo: fix watches, path is no longer passed.
+    // Todo: fix watches, path is no longer passed, del is now async,
+    //  pipe to browserSync for correct working.
     gulp.watch(["src/Games/**/resources/*.*"], function (e) {
         if (e.type === 'deleted') {
-            return deleteResource(e.path)
+            return deleteResource(e.path);
         }
         else {
             return copyResource(e.path);
         }
-    }).on('change', reloadBrowser);;
+    }).on('change', logFileChange);;
 
     callBack();
 }
@@ -120,11 +120,6 @@ function logFileChange(path, stats) {
         var type = extension === 'ts' ? 'TypeScript' : extension.substring(0, 1).toUpperCase() + extension.substring(1);
         console.log(`${type} file ${path} has been changed. Compiling ${extension}...`);
     }
-}
-
-function reloadBrowser(path, stats) {
-    logFileChange(path);
-    browserSync.reload(path);
 }
 
 function publishGame() { return gulp.series(deletePublishedFiles, buildGame), function() {  return publishGame(false); } };
