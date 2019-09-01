@@ -33,8 +33,8 @@ var paths = {
 exports.createGame = createGame;
 exports.buildGame = gulp.series(deleteFiles, compileEngine, fixPopper, buildGame, gameDescriptions, gameDescriptionsForTest);
 exports.start = gulp.series(buildGame, start);
-exports.publishGame = publishGame;
-exports.publishGameLocal = publishGameLocal;
+exports.publishGame = gulp.series(deletePublishedFiles, buildGame, function() {  return publishGameTask(false); });
+exports.publishGameLocal = gulp.series(deletePublishedFiles, buildGame, function() { return publishGameTask(true); });
 exports.compileEngine = compileEngine;
 exports.compileGameDescriptions = gulp.series(gameDescriptions, gameDescriptionsForTest);
 
@@ -122,10 +122,6 @@ function logFileChange(path, stats) {
     }
 }
 
-function publishGame() { return gulp.series(deletePublishedFiles, buildGame), function() {  return publishGame(false); } };
-
-function publishGameLocal() { return gulp.series(deletePublishedFiles, buildGame), function() { return publishGame(true); } };
-
 function compileEngine() {
     return compileTs('StoryScript', null, compileStoryScript);
 };
@@ -165,7 +161,7 @@ function deleteFiles(callBack) {
     return del([paths.webroot + '**/*', paths.typeroot + '**/*'], callBack);
 }
 
-function deletePublishedFiles () {
+function deletePublishedFiles (callBack) {
     return del([paths.publishroot + '**/*'], callBack);
 }
 
@@ -372,59 +368,59 @@ function getFolderAndFileName(path) {
     };
 }
 
-// function publishGame(local) {
-//     var sourceMapRegex = /(\/[\*\/]# sourceMappingURL=\S*)(( \*\/)|\b)/g;
+function publishGameTask(local) {
+    var sourceMapRegex = /(\/[\*\/]# sourceMappingURL=\S*)(( \*\/)|\b)/g;
 
-//     var css = gulp.src([paths.webroot + 'css/game*.css'])
-//                 .pipe(replace(sourceMapRegex, ''))
-//                 .pipe(gulp.dest(paths.publishroot + 'css'));
+    var css = gulp.src([paths.webroot + 'css/game*.css'])
+                .pipe(replace(sourceMapRegex, ''))
+                .pipe(gulp.dest(paths.publishroot + 'css'));
 
-//     var js = gulp.src([paths.webroot + 'js/game*.js'])
-//                 .pipe(concat('game.js'))
-//                 .pipe(replace(/autoBackButton\s*:[\s\w]*,/g, ''))
-//                 .pipe(replace(sourceMapRegex, ''))
-//                 .pipe(gulp.dest(paths.publishroot + 'js'));
+    var js = gulp.src([paths.webroot + 'js/game*.js'])
+                .pipe(concat('game.js'))
+                .pipe(replace(/autoBackButton\s*:[\s\w]*,/g, ''))
+                .pipe(replace(sourceMapRegex, ''))
+                .pipe(gulp.dest(paths.publishroot + 'js'));
     
-//     var templates = gulp.src([paths.webroot + 'js/ui-templates.js'])
-//                 .pipe(replace(/<button id=resetbutton[^>]*>(.*?)<\s*\/\s*button>/g, ''))
-//                 .pipe(gulp.dest(paths.publishroot + 'js'));
+    var templates = gulp.src([paths.webroot + 'js/ui-templates.js'])
+                .pipe(replace(/<button id=resetbutton[^>]*>(.*?)<\s*\/\s*button>/g, ''))
+                .pipe(gulp.dest(paths.publishroot + 'js'));
 
-//     var resources = gulp.src([paths.webroot + 'resources/**.*', '!' + paths.webroot + 'resources/readme.txt'])
-//                 .pipe(gulp.dest(paths.publishroot + 'resources'));
+    var resources = gulp.src([paths.webroot + 'resources/**.*', '!' + paths.webroot + 'resources/readme.txt'])
+                .pipe(gulp.dest(paths.publishroot + 'resources'));
     
-//     var config = gulp.src([paths.webroot + '*.json'])
-//                 .pipe(gulp.dest(paths.publishroot));
+    var config = gulp.src([paths.webroot + '*.json'])
+                .pipe(gulp.dest(paths.publishroot));
     
-//     var index = gulp.src([paths.webroot + 'index.html'])
-//                 .pipe(replace('<script src="js/game-descriptions.js"></script>', ''))
-//                 .pipe(replace('game.min.css', cacheBuster('game.min.css')))
-//                 .pipe(replace('game.js', cacheBuster('game.js')))
-//                 .pipe(replace('ui-templates.js', cacheBuster('ui-templates.js')));
+    var index = gulp.src([paths.webroot + 'index.html'])
+                .pipe(replace('<script src="js/game-descriptions.js"></script>', ''))
+                .pipe(replace('game.min.css', cacheBuster('game.min.css')))
+                .pipe(replace('game.js', cacheBuster('game.js')))
+                .pipe(replace('ui-templates.js', cacheBuster('ui-templates.js')));
     
-//     if (local) {
-//         index = index.pipe(replace('="/', '="'));
-//     }
+    if (local) {
+        index = index.pipe(replace('="/', '="'));
+    }
     
-//     index = index.pipe(gulp.dest(paths.publishroot));
+    index = index.pipe(gulp.dest(paths.publishroot));
 
-//     if (local) {
-//         var libraries = merge(
-//             gulp.src([paths.webroot + 'js/lib/*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js/lib')),
-//             gulp.src([paths.webroot + 'js/storyscript*.js']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js')),
-//             gulp.src([paths.webroot + 'js/ui.*.js']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js')),
-//             gulp.src([paths.webroot + 'css/lib/*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css/lib')),
-//             gulp.src([paths.webroot + 'css/storyscript.*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css')),
-//             gulp.src([paths.webroot + 'css/game.*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css')));
+    if (local) {
+        var libraries = merge(
+            gulp.src([paths.webroot + 'js/lib/*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js/lib')),
+            gulp.src([paths.webroot + 'js/storyscript*.js']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js')),
+            gulp.src([paths.webroot + 'js/ui.*.js']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'js')),
+            gulp.src([paths.webroot + 'css/lib/*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css/lib')),
+            gulp.src([paths.webroot + 'css/storyscript.*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css')),
+            gulp.src([paths.webroot + 'css/game.*']).pipe(replace(sourceMapRegex, '')).pipe(gulp.dest(paths.publishroot + 'css')));
 
-//         return merge(css, js, templates, resources, config, index, libraries);
-//     }
-//     else
-//     {
-//         return merge(css, js, templates, resources, config, index);
-//     }
-// }
+        return merge(css, js, templates, resources, config, index, libraries);
+    }
+    else
+    {
+        return merge(css, js, templates, resources, config, index);
+    }
+}
 
-// function cacheBuster(fileName) {
-//     var cachebuster = Math.round(new Date().getTime() / 1000);
-//     return fileName += '?cb=' + cachebuster;
-// }
+function cacheBuster(fileName) {
+    var cachebuster = Math.round(new Date().getTime() / 1000);
+    return fileName += '?cb=' + cachebuster;
+}
