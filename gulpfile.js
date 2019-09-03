@@ -99,16 +99,23 @@ function start(callBack) {
         return copyCss(nameSpace, e.path).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    // Todo: fix watches, path is no longer passed, del is now async,
-    //  pipe to browserSync for correct working.
-    gulp.watch(["src/Games/**/resources/*.*"], function (e) {
-        if (e.type === 'deleted') {
-            return deleteResource(e.path);
-        }
-        else {
-            return copyResource(e.path);
-        }
-    }).on('change', logFileChange);;
+    var resourceWatcher = gulp.watch(["src/Games/**/resources/*.*"]);
+      
+    resourceWatcher.on('unlink', (path, stats) => {
+        var folderAndFile = logResourceChange(path, 'deleted. Removing');
+        deleteResource(folderAndFile.folder + '/' + folderAndFile.file);
+        browserSync.stream();
+    });
+    
+    resourceWatcher.on('change', (path, stats) => {
+        var folderAndFile = logResourceChange(path, 'changed. Updating');
+        copyResource(path, folderAndFile.folder).pipe(browserSync.stream());
+    });
+
+    resourceWatcher.on('add', (path, stats) => {
+        var folderAndFile = logResourceChange(path, 'added. Updating');
+        copyResource(path, folderAndFile.folder).pipe(browserSync.stream());
+    });
 
     callBack();
 }
@@ -120,6 +127,12 @@ function logFileChange(path, stats) {
         var type = extension === 'ts' ? 'TypeScript' : extension.substring(0, 1).toUpperCase() + extension.substring(1);
         console.log(`${type} file ${path} has been changed. Compiling ${extension}...`);
     }
+}
+
+function logResourceChange(path, messageAddition) {
+    var folderAndFile = getFolderAndFileName(path);
+    console.log(`Resource file ${path} has been ${messageAddition} ${folderAndFile.folder + '/' + folderAndFile.file}.`);
+    return folderAndFile;
 }
 
 function compileEngine() {
@@ -326,17 +339,14 @@ function addVersion(path, version) {
     path.basename = nameParts.join('.');
 }
 
-function copyResource(fullPath) {
-    var folderAndFile = getFolderAndFileName(fullPath);
-    console.log('Resource file ' + fullPath + ' has been changed. Updating ' + folderAndFile.folder + '/' + folderAndFile.file + ' (folder ' + folderAndFile.folder + ').');
-    return gulp.src([fullPath]).pipe(gulp.dest(paths.webroot + folderAndFile.folder));
+function copyResource(fullPath, folder) {
+    return gulp.src([fullPath])
+        .pipe(flatten())
+        .pipe(gulp.dest(paths.webroot + folder));
 }
 
 function deleteResource(fullPath) {
-    var folderAndFile = getFolderAndFileName(fullPath);
-    var path = folderAndFile.folder + '/' + folderAndFile.file;
-    console.log('Resource file ' + fullPath + ' has been deleted. Removing ' + path + '.');
-    return del.sync([paths.webroot + path]);
+    return del.sync([paths.webroot + fullPath]);
 }
 
 function getFolderAndFileName(path) {
