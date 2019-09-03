@@ -75,27 +75,27 @@ function start(callBack) {
     
     var nameSpace = getNameSpace();
 
-    gulp.watch(["src/Engine/**/*.ts"], function (e) {
+    gulp.watch(["src/Engine/**/*.ts"], function watchEngineCode(e) {
         return compileTs('StoryScript', e.path, compileStoryScript).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    gulp.watch(["src/Games/**/*.ts"], function (e) {
+    gulp.watch(["src/Games/**/*.ts"], function watchGameCode(e) {
         return compileTs('Game', e.path, compileGame).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    gulp.watch(["src/UI/**/*.ts"], function (e) {
+    gulp.watch(["src/UI/**/*.ts"], function watchUICode(e) {
         return compileTs('UI', e.path, compileUI, nameSpace).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    gulp.watch(['src/UI/**/*.html', 'src/Games/' + nameSpace + '/ui/**/*.html'], function () {
+    gulp.watch(['src/UI/**/*.html', 'src/Games/' + nameSpace + '/ui/**/*.html'], function watchUIHtml() {
         return compileUITemplates(nameSpace).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    gulp.watch(['src/Games/**/*.html', '!src/Games/' + nameSpace + '/ui/**'], function () {
+    gulp.watch(['src/Games/**/*.html', '!src/Games/' + nameSpace + '/ui/**'], function watchGameHtml() {
         return gameDescriptions(nameSpace).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    gulp.watch(["src/**/*.css"], function (e) {
+    gulp.watch(["src/**/*.css"], function WatchCss(e) {
         return copyCss(nameSpace, e.path).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
