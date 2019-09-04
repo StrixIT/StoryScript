@@ -94,17 +94,17 @@ namespace LanternofWorlds {
                                         entries: [
                                             {
                                                 text: 'You are a druid',
-                                                value: 'strength',
+                                                value: 'intelligence',
                                                 bonus: 1
                                             },
                                             {
                                                 text: 'You are a veteran warrior',
-                                                value: 'agility',
+                                                value: 'strength',
                                                 bonus: 1
                                             },
                                             {
                                                 text: 'You are a fisherman',
-                                                value: 'intelligence',
+                                                value: 'agility',
                                                 bonus: 1
                                             }
                                         ]
