@@ -5,8 +5,8 @@
             description: 'Op deze zwarte sleutel staat de afbeelding van een waterspuwer.',
             equipmentType: StoryScript.EquipmentType.Miscellaneous,
             open: {
-                name: 'Open de deur met de zwarte sleutel',
-                action: StoryScript.Actions.OpenWithKey((game: IGame, destination: StoryScript.IDestination) => {
+                text: 'Open de deur met de zwarte sleutel',
+                execute: StoryScript.Actions.OpenWithKey((game: IGame, destination: StoryScript.IDestination) => {
                     game.logToLocationLog('Je opent de deur.');
                     destination.name = 'Donkere kamer';
                 })

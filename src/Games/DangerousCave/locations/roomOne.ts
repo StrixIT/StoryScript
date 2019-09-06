@@ -16,12 +16,12 @@
                         name: 'Houten deur',
                         actions: [
                             {
-                                name: 'Onderzoek de deur',
-                                action: Actions.Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
+                                text: 'Onderzoek de deur',
+                                execute: Actions.Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
                             },
                             {
-                                name: 'Open de deur',
-                                action: StoryScript.Actions.Open((game: IGame, destination: StoryScript.IDestination) => {
+                                text: 'Open de deur',
+                                execute: StoryScript.Actions.Open((game: IGame, destination: StoryScript.IDestination) => {
                                     game.logToLocationLog('Je opent de eikenhouten deur.');
                                     destination.name = 'Gang (noord)';
                                 })

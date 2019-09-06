@@ -8,7 +8,7 @@
             gameName: "Gevaarlijke grot",
             saveGame: "Spel opslaan",
             loadGame: "Laad spel",
-            loadSaveGame: "Laad spel",
+            loadSaveGame: "Laad spel {0}",
             youAreHere: "Je bent hier: {0}",
             destinations: "Reizen",
             onTheGround: "Op de grond",
