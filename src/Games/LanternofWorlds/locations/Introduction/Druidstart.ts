@@ -5,8 +5,7 @@ namespace LanternofWorlds.Locations {
             destinations: [
                 
             ],
-            features: [
-            ],
+            features: druidMap(),
             items: [
             ],
             enemies: [

@@ -1,18 +1,24 @@
 namespace LanternofWorlds {
     var _temparateFeatures: StoryScript.IFeatureCollection;
 
-    export function temparateFeatures() {
+    export function druidMap() {
         if (!_temparateFeatures) {
             var mapData = <IMapData>{
-                picture: 'tile demo.png',
-                tilePrefix: 'tm',
+                picture: 'ForestMap1.png',
+                tilePrefix: 'fm',
                 tileType: TileType.Hexagon,
-                rows: 3,
-                columns: 3,
-                startRow: 2,
-                tileHeight: 600,
-                tileWidth: 800,
-                tileGutter: 10
+                rows: 4,
+                columns: 4,
+                startRow: 1,
+                tileHeight: 226,
+                tileWidth: 305,
+                tileGutter: 3,
+                missingTiles: [
+                    '11',
+                    '41',
+                    '42',
+                    '44'
+                ]
             };
 
             var tileAdditions = [
@@ -50,6 +56,7 @@ namespace LanternofWorlds {
         tileGutter?: number;
         height?: number;
         width?: number;
+        missingTiles: string[];
     } 
 
     function createFeatureMap(mapData: IMapData, tileAdditions: (string | (() => ILocation))[][]): StoryScript.IFeatureCollection {
@@ -64,6 +71,12 @@ namespace LanternofWorlds {
             
         for (var i = 1; i <= mapData.rows; i++) {
             for (var j = 1; j <= mapData.columns; j++) {
+                var location = `${i}${j}`;
+
+                if (mapData.missingTiles.indexOf(location) != -1) {
+                    continue;
+                }
+
                 var featureName = `${mapData.tilePrefix}${i}${j}`;
                 map.push(createTileFeature(mapData, featureName, i, j));
             }
