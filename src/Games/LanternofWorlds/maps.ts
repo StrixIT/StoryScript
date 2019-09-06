@@ -1,8 +1,8 @@
 namespace LanternofWorlds {
-    var _temparateFeatures: StoryScript.IFeatureCollection;
+    var _druidMap: StoryScript.IFeatureCollection;
 
     export function druidMap() {
-        if (!_temparateFeatures) {
+        if (!_druidMap) {
             var mapData = <IMapData>{
                 picture: 'ForestMap1.png',
                 tilePrefix: 'fm',
@@ -27,11 +27,11 @@ namespace LanternofWorlds {
                 //['31', Locations.Water],
             ];
     
-            _temparateFeatures = createFeatureMap(mapData, tileAdditions);
+            _druidMap = createFeatureMap(mapData, tileAdditions);
         }
 
         // Todo: this does not get reset on game restart. Use one of the setup rules?
-        return _temparateFeatures;
+        return _druidMap;
     }
 
     export enum TileType {
