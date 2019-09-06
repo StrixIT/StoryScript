@@ -14,6 +14,7 @@
     minifyHtml = require('gulp-minify-html'),
     gulpIgnore = require('gulp-ignore'),
     sourcemaps = require('gulp-sourcemaps'),
+    imagemin = require('gulp-imagemin'),
     angularTemplateCache = require('gulp-angular-templatecache'),
     gameDescriptionBundler = require('./src/gameDescriptionBundler');
 
@@ -394,9 +395,10 @@ function publishGameTask(local) {
                 .pipe(replace(/<button id=resetbutton[^>]*>(.*?)<\s*\/\s*button>/g, ''))
                 .pipe(gulp.dest(paths.publishroot + 'js'));
 
-    var resources = gulp.src([paths.webroot + 'resources/**.*', '!' + paths.webroot + 'resources/readme.txt'])
-                .pipe(gulp.dest(paths.publishroot + 'resources'));
-    
+    var resources = gulp.src([paths.webroot + 'resources/**.*'])
+                        .pipe(imagemin())
+                        .pipe(gulp.dest(paths.publishroot + 'resources'));
+
     var config = gulp.src([paths.webroot + '*.json'])
                 .pipe(gulp.dest(paths.publishroot));
     
