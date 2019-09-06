@@ -36,7 +36,8 @@ namespace LanternofWorlds {
                                         entries: [
                                             {
                                                 text: 'Start a regular game',
-                                                value: '1'
+                                                value: '1',
+                                                finish: true
                                             },
                                             {
                                                 text: 'Use the alternate start',
@@ -83,26 +84,22 @@ namespace LanternofWorlds {
                                         ]
                                     }
                                 ],
-                                
-                                nextStepSelector: 3
-                            },
-                            {
-                                questions: [
-                                    {
-                                        question: 'Good luck...',
-                                        entries: []
-                                    }
-                                ]
+                                finish: true
                             }
                         ]
                     };
                 },
 
                 createCharacter: (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
-                    var startChoice = characterData.steps[1].questions[0].selectedEntry.text === 'You are a druid' ? 'Druidstart' :
-                    characterData.steps[1].questions[0].selectedEntry.text === 'You are a fisherman' ? 'Fishermanstart' :
-                                        characterData.steps[1].questions[0].selectedEntry.text === 'You are a veteran warrior' ? 'forest' : 'lake';
-                    
+                    var selectedStart = characterData.steps[1].questions[0].selectedEntry;
+                    var startChoice = 'start';
+
+                    if (selectedStart && selectedStart.text) {
+                        startChoice = selectedStart.text === 'You are a druid' ? 'Druidstart'
+                            : selectedStart.text === 'You are a fisherman' ? 'Fishermanstart' 
+                            : selectedStart.text === 'You are a veteran warrior' ? 'forest' : 'start';
+                    }
+
                     game.worldProperties.startChoice = startChoice;
 
                     var character = new Character();
