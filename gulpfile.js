@@ -32,11 +32,10 @@ var paths = {
 
 exports.createGame = createGame;
 exports.buildGame = gulp.series(deleteFiles, compileEngine, fixPopper, buildGame, gameDescriptions, gameDescriptionsForTest);
-exports.start = gulp.series(buildGame, start);
-exports.publishGame = gulp.series(deletePublishedFiles, buildGame, function() {  return publishGameTask(false); });
-exports.publishGameLocal = gulp.series(deletePublishedFiles, buildGame, function() { return publishGameTask(true); });
+exports.start = gulp.series(exports.buildGame, start);
+exports.publishGame = gulp.series(deletePublishedFiles, exports.buildGame, function() {  return publishGameTask(false); });
+exports.publishGameLocal = gulp.series(deletePublishedFiles, exports.buildGame, function() { return publishGameTask(true); });
 exports.compileEngine = compileEngine;
-exports.compileGameDescriptions = gulp.series(gameDescriptions, gameDescriptionsForTest);
 
 function createGame() {
     var gameNameSpace = getNameSpace();
