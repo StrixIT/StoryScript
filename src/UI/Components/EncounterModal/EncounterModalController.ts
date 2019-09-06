@@ -58,7 +58,7 @@ namespace StoryScript {
 
         getDescription(entity: any, key: string) {
             var self = this;
-            return self._sce.trustAsHtml( self._gameService.getDescription(entity.type, entity.item, key));
+            return self._sce.trustAsHtml(self._gameService.getDescription(entity.type, entity.item, key));
         }
 
         private watchGameState(newValue: GameState, oldValue: GameState, controller: EncounterModalController) {

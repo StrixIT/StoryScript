@@ -13,6 +13,22 @@
                 : name.substring(0, name.length - 1);
     }
 
+    export function addHtmlSpaces(text: string): string {
+        if (!text) {
+            return null;
+        }
+
+        if (text.substr(0, 1).trim() !== '' && text.substr(0, 6) !== '&nbsp;') {
+            text = '&nbsp;' + text;
+        }
+
+        if (text.substr(text.length - 1, 1).trim() !== '' && text.substr(text.length - 6, 6) !== '&nbsp;') {
+            text = text + '&nbsp;';
+        }
+
+        return text;
+    }
+
     export function isEmpty(object: any, property?: string) {
         var objectToCheck = property ? object[property] : object;
         return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
@@ -73,8 +89,8 @@
         return extend(instance, customData);
     }
 
-    export function equals<T>(entity: T, definition: () => T): boolean {
-        return (<any>entity).id === (<any>definition).name;
+    export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
+        return entity.id ? entity.id === (definition.name || definition.originalFunctionName) : false;
     }
 
     // Taken from https://stackoverflow.com/questions/15308371/custom-events-model-without-using-dom-events-in-javascript.

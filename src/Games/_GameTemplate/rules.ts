@@ -11,8 +11,6 @@
 
             general: {  
                 scoreChange: (game: IGame, change: number): boolean => {
-                    var self = this;
-        
                     // Implement logic to occur when the score changes. Return true when the character gains a level.
                     return false;
                 }
@@ -34,7 +32,6 @@
                 },
 
                 createCharacter: (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
-                    var self = this;
                     var character = new Character();
                     return character;
                 }
@@ -46,7 +43,6 @@
 
             combat: {     
                 fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
-                    var self = this;
                     retaliate = retaliate == undefined ? true : retaliate;
 
                     // Implement character attack here.

@@ -1,0 +1,26 @@
+<div class="box-container" id="character-quests" ng-if="$ctrl.showQuests()">
+    <div class="box-title" data-toggle="collapse" data-target="#quest-panel">{{ $ctrl.texts.quests }}</div>
+    <div id="quest-panel" class="collapse show">
+        <div ng-if="$ctrl.showActiveQuests()">
+            <h4>{{ $ctrl.texts.currentQuests }}</h4>
+            <ul>
+                <li ng-repeat="quest in $ctrl.game.character.quests | filter:{ completed: false }">
+                    <div>
+                        <span>{{ quest.name }}</span>
+                        <div ng-bind-html="$ctrl.questStatus(quest)"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div ng-if="$ctrl.showCompletedQuests()">
+            <h4>{{ $ctrl.texts.completedQuests }}</h4>
+            <ul>
+                <li ng-repeat="quest in $ctrl.game.character.quests | filter:{ completed: true }">
+                    <div>
+                        <div ng-bind-html="$ctrl.questStatus(quest)"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

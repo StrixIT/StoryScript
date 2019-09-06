@@ -4,8 +4,8 @@
      */
     export interface IFeature extends ICombinable {
         /**
-         * The description of this feature as shown to the player. For location features defined in HTML,
-         * this can also be set in the location HTML file by adding a <feature name="{featureName}"> tag.
+         * The description of the feature. Used when features are added to locations
+         * at run-time.
          */
         description?: string;
 

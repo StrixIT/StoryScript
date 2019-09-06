@@ -18,27 +18,23 @@
 
 namespace StoryScript {
     export class CharacterService implements ICharacterService {
-        constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
+        constructor(private _game: IGame, private _rules: IRules) {
         }
 
         getSheetAttributes = (): string[] => {
             var self = this;
-            var characterRules = self._rules && self._rules.character;
-            return characterRules && characterRules.getSheetAttributes && characterRules.getSheetAttributes() || [];
+            return self._rules.character.getSheetAttributes && self._rules.character.getSheetAttributes() || [];
         }
 
         setupCharacter = (): ICreateCharacter => {
             var self = this;
-            var characterRules = self._rules && self._rules.character;
-            var sheet = (characterRules && characterRules.getCreateCharacterSheet && characterRules.getCreateCharacterSheet()) || { steps: []};
+            var sheet = (self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet()) || { steps: []};
             self.prepareSheet(sheet);
             self._game.createCharacterSheet = sheet;
             return sheet;
         }
 
         limitSheetInput = (value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
-            var self = this;
-
             if (!isNaN(value)) {
                 var totalAssigned = 0;
 
@@ -86,12 +82,11 @@ namespace StoryScript {
 
         createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
             var self = this;
-            var character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
-            var characterRules = self._rules && self._rules.character;
+            var character = null;
 
-            if (isEmpty(character) && characterRules && characterRules.createCharacter) {
+            if (self._rules.character.createCharacter) {
 
-                character = characterRules.createCharacter(game, characterData);
+                character = self._rules.character.createCharacter(game, characterData);
                 self.processDefaultSettings(character, characterData);
             }
             else {
@@ -106,8 +101,7 @@ namespace StoryScript {
 
         setupLevelUp = (): ICreateCharacter => {
             var self = this;
-            var characterRules = self._rules && self._rules.character;
-            var sheet = characterRules && characterRules.getLevelUpSheet && characterRules.getLevelUpSheet();
+            var sheet = self._rules.character.getLevelUpSheet && self._rules.character.getLevelUpSheet();
 
             if (sheet) {
                 self.prepareSheet(sheet);
@@ -120,9 +114,8 @@ namespace StoryScript {
         levelUp = (game: IGame, characterData: ICreateCharacter): ICharacter => {
             var self = this;
             var character = self._game.character;
-            var characterRules = self._rules && self._rules.character;
 
-            if (characterRules && characterRules.levelUp && characterRules.levelUp(character, characterData)) {
+            if (self._rules.character.levelUp && self._rules.character.levelUp(character, characterData)) {
                 self.processDefaultSettings(character, characterData);
             }
 
@@ -149,10 +142,8 @@ namespace StoryScript {
                 }
             }
 
-            var characterRules = self._rules && self._rules.character;
-
-            if (characterRules.beforeEquip) {
-                if (!characterRules.beforeEquip(self._game, self._game.character, item)) {
+            if (self._rules.character.beforeEquip) {
+                if (!self._rules.character.beforeEquip(self._game, self._game.character, item)) {
                     return false;
                 }
             }
@@ -205,8 +196,18 @@ namespace StoryScript {
                 return;
             }
 
-            self._game.character.items.remove(item);
-            self._game.currentLocation.items.push(item);
+            var drop = true;
+
+            if (self._rules.character.beforeDrop)
+            {
+                drop = self._rules.character.beforeDrop(self._game, self._game.character, item);
+            }
+
+            if (drop)
+            {
+                self._game.character.items.remove(item);
+                self._game.currentLocation.items.push(item);
+            }
         }
 
         questStatus = (quest: IQuest): string => {
@@ -215,6 +216,8 @@ namespace StoryScript {
         }
 
         private prepareSheet = (sheet: ICreateCharacter): void => {
+            var self = this;
+
             if (sheet.steps.length == 0) {
                 return;
             }
@@ -225,7 +228,15 @@ namespace StoryScript {
                 sheet.steps[0].questions[0].selectedEntry = sheet.steps[0].questions[0].entries[0];
             }
 
-            sheet.nextStep = (data: ICreateCharacter) => {
+            self.setFinish(sheet);
+
+            sheet.nextStep = (data: ICreateCharacter, next: Boolean) => {
+                if (next !== undefined && next !== null && !next)
+                {
+                    self.setFinish(data);
+                    return;
+                }
+
                 var selector = data.steps[data.currentStep].nextStepSelector;
                 var previousStep = data.currentStep;
 
@@ -335,10 +346,8 @@ namespace StoryScript {
                     return true;
                 }
 
-                var characterRules = self._rules && self._rules.character;
-
-                if (characterRules.beforeUnequip) {
-                    if (!characterRules.beforeUnequip(self._game, self._game.character, equippedItem)) {
+                if (self._rules.character.beforeUnequip) {
+                    if (!self._rules.character.beforeUnequip(self._game, self._game.character, equippedItem)) {
                         return false;
                     }
                 }
@@ -362,6 +371,16 @@ namespace StoryScript {
         private getEquipmentType = (slot: StoryScript.EquipmentType) => {
             var type = StoryScript.EquipmentType[slot];
             return type.substring(0, 1).toLowerCase() + type.substring(1);
+        }
+
+        private setFinish(data: ICreateCharacter): void {
+            if (data && data.steps) {
+                var activeStep = data.steps[data.currentStep];
+
+                if (activeStep.questions) {
+                    activeStep.finish = activeStep.questions.filter(q => q.selectedEntry.finish).length > 0;
+                }
+            }
         }
     }
 }

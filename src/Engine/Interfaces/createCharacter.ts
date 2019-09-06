@@ -16,8 +16,9 @@
         /**
          * The function that will select the next step in the character creation process. This function is added by the engine at run-time.
          * @param character The character sheet filled in so far
+         * @param next True if the next step is to be triggered, false otherwise. Defaults to true.
          */
-        nextStep?(character: ICreateCharacter): void;
+        nextStep?(character: ICreateCharacter, next?: boolean): void;
     }
 
     /**
@@ -50,9 +51,16 @@
         validation?(character: ICreateCharacter): string;
 
         /**
-         * The selector that determines what step will be activated after the current one. Either pass the number of the step or a function returning that number.
+         * The selector that determines what step will be activated after the current one.
+         * Either pass the number of the step or a function returning that number.
          */
         nextStepSelector?: number | ((character: ICreateCharacter, currentStep: ICreateCharacterStep) => number);
+
+        /**
+         * Set this flag to true to mark this step as one of the final steps in character creation. 
+         * This allows building a branched character creation process.
+         */
+        finish?: boolean;
     }
 
     /**
@@ -93,6 +101,12 @@
          * The bonus to apply to the character attribute when this answer is chosen.
          */
         bonus?: number;
+
+        /**
+         * Set this flag to true to make this choice finish character creation. 
+         * This allows building a branched character creation process.
+         */
+        finish?: boolean;
     }
 
     /**

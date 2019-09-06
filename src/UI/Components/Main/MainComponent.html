@@ -2,16 +2,21 @@
     <navigation></navigation>
     <div class="container-fluid body-content">
         <div class="row">
-            <div id="character-sheet-container" ng-if="$ctrl.game.stateString !== 'CreateCharacter'" id="character-container" ng-class="{ 'col-4': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterSheet() }">
+            <div id="character-container" ng-if="$ctrl.game.stateString !== 'CreateCharacter'" id="character-container" ng-class="{ 'col-4': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterPane() }">
                 <character-sheet></character-sheet>
+                <equipment></equipment>
+                <backpack></backpack>
+                <quests></quests>
             </div>
-            <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterSheet(), 'col-12': game.stateString === 'CreateCharacter' || !$ctrl.showCharacterSheet() }">
+            <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterPane(), 'col-12': game.stateString === 'CreateCharacter' || !$ctrl.showCharacterPane() }">
                 <div ng-if="!$ctrl.game.stateString">
                     {{ $ctrl.texts.loading }}
                 </div>
                 <div ng-if="$ctrl.game.stateString == 'Play'">
                     <encounter></encounter>
                     <location></location>
+                    <action-log></action-log>
+                    <ground></ground>
                     <exploration></exploration>
                     <enemy></enemy>
                 </div>
@@ -24,7 +29,6 @@
         <div class="row" ng-if="$ctrl.game.stateString !== 'CreateCharacter'">
             <div class="col-12">
                 <combination></combination>
-                <action-log></action-log>
             </div>
         </div>
     </div>

@@ -12,8 +12,11 @@ describe("ObjectFactory", function() {
 
         expect(result).not.toEqual(null);
         expect(result.id).toEqual('start');
-        expect(result.type).toEqual('locations');
-        expect(result.descriptionSelector.functionId).toEqual('function#location_start_descriptionSelector#430859754');
+        expect(result.type).toEqual('location');
+
+        var hashMatch = new RegExp(/function#location_start_descriptionSelector#[0-9]{9}/g).exec(result.descriptionSelector.functionId).length;
+
+        expect(hashMatch).toEqual(1);
     });
 
     it("should create a location with read-only properties", function() {
@@ -47,7 +50,7 @@ describe("ObjectFactory", function() {
         expect(typeof pushedItem).toBe('object');
     });
 
-    it("should instantiate keys on destination barriers", function() {
+    it("should set key id on destination barriers", function() {
         var functions = StoryScript.ObjectFactory.GetFunctions();
 
         function Key() {
@@ -79,8 +82,8 @@ describe("ObjectFactory", function() {
         
         var result = locationWithBarrier();
         var key = result.destinations[0].barrier.key;
-        expect(typeof key).toBe('object');
-        expect(key.name).toBe('Test key');
+        expect(typeof key).toBe('string');
+        expect(key).toBe('Key');
 
         // Clean up the function definitions added creating this location.
         var keysToRemove = Object.keys(functions.locations);

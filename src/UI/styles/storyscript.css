@@ -207,3 +207,16 @@ button.restart {
 table td {
     padding: 10px;
 }
+
+#visual-features {
+    overflow: hidden;
+}
+
+.feature-picture {
+    position: absolute;
+    cursor: pointer;
+}
+
+feature {
+    cursor: pointer;
+}

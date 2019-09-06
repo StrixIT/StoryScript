@@ -61,6 +61,8 @@
         useInCombat?: string;
         view?: string;
         quests?: string;
+        currentQuests?: string;
+        completedQuests?: string;
         combinations?: string;
         tryCombination?: string;
         noCombination?: string;
@@ -72,6 +74,7 @@
         existingSaveGames?: string;
         overwriteSaveGame?: string;
         loadSaveGame?: string;
+        characterSheet?: string;
 
         // Todo: keep this, or solve showing world properties in another way?
         worldProperties?: {};

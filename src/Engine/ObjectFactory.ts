@@ -106,8 +106,8 @@ namespace StoryScript {
                 self._conversationService = new ConversationService(self._dataService, self._game);
                 self._locationService = new LocationService(self._dataService, self._conversationService, self._rules, self._game, self._definitions);
                 self._combinationService = new CombinationService(self._dataService, self._locationService, self._game, self._rules, self._texts);
-                self._characterService = new CharacterService(self._dataService, self._game, self._rules);
-                self._gameService = new GameService(self._dataService, self._locationService, self._characterService, self._combinationService, self._eventTarget, self._rules, self._helperService, self._game);
+                self._characterService = new CharacterService(self._game, self._rules);
+                self._gameService = new GameService(self._dataService, self._locationService, self._characterService, self._combinationService, self._eventTarget, self._rules, self._helperService, self._game, self._texts);
                 ObjectFactory._isInitialized = true;
             }
         }
@@ -150,15 +150,7 @@ namespace StoryScript {
             
             for (var n in object) {
                 if (object.hasOwnProperty(n)) {
-                    object[n] = object[n].proxy(object[n], (originalFunc, ...params) => {
-                        var id = params.splice(params.length - 1, 1)[0];
-                        var oldId = GetCurrentEntityId();
-                        SetCurrentEntityId(id);
-                        var result = originalFunc.apply(this, params);
-                        SetCurrentEntityId(oldId);
-                        return result;
-                    }, object[n].name);
-
+                    object[n] = CreateEntityProxy(object[n]);
                     collection.push(object[n]);
                 }
             }

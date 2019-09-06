@@ -5,7 +5,7 @@ namespace StoryScript {
             self.game = self._game;
             self.texts = _texts;
             self.combineActions = self._combinationService.getCombinationActions();
-            self._scope.$on('showCombinationText', (event, text) => { self.showCombinationText(text); });
+            self._scope.$on('showCombinationText', (event, data) => { self.showCombinationText(data); });
         }
 
         game: IGame;
@@ -25,6 +25,7 @@ namespace StoryScript {
                 return;
             }
 
+            self.combinationText = null;
             combination.requiresTool = combination.requiresTool === undefined || combination.requiresTool === true ? true : false;
 
             self._game.combinations.activeCombination = {
@@ -39,13 +40,12 @@ namespace StoryScript {
             return self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
         }
 
-        showCombinationText = (text: string): void => {
+        showCombinationText = (event: ShowCombinationTextEvent): void => {
             var self = this;
-            self.combinationText = text;
-            self._timeout(() => self.combinationText = null, 4000);
+            self.combinationText = event.combineText;
         }
 
-        tryCombination = (source: ICombinable, target: { name: string }, type: ICombinationAction) => {
+        tryCombination = (source: ICombinable) => {
             var self = this;
             self._combinationService.tryCombination(source);
         }

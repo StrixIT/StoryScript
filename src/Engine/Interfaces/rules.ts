@@ -3,7 +3,7 @@
         /**
          * Rules for setting up the game.
          */
-        setup?: ISetupRules,
+        setup: ISetupRules,
 
         /**
          * General game rules.
@@ -13,7 +13,7 @@
         /**
          * Rules for the game character.
          */
-        character?: ICharacterRules,
+        character: ICharacterRules,
 
         /**
          * Rules for exploring.
@@ -28,7 +28,13 @@
 
     export interface ISetupRules {
         /**
-         * Run custom code to prepare the game before play, e.g. adding game-specific world properties to it.
+         * Set this to true if you want to show an automatic destination back to the location the player
+         * visited previously. Used for testing only. This setting is removed when publishing the game.
+         */
+        autoBackButton?: boolean;
+
+        /**
+         * Run custom code to prepare the game before it begins, e.g. adding game-specific world properties to it.
          * @param game The game about to be started
          */
         setupGame?(game: IGame): void;
@@ -38,6 +44,13 @@
          * your game uses (e.g. 'Look at', 'Use', etc.).
          */
         getCombinationActions?(): ICombinationAction[];
+
+        /**
+         * Run custom code to prepare the game before entering the start location, e.g. adding game-specific
+         * world properties to it.
+         * @param game The game about to be started
+         */
+        gameStart?(game: IGame): void;
     }
 
     export interface IGeneralRules {
@@ -107,6 +120,15 @@
          * @param item The item about to be unequipped
          */
         beforeUnequip?(game: IGame, character: ICharacter, item: IItem): boolean;
+
+        /**
+         * Specify this function if you want to apply custom rules before a player drops an item. Return false if the player
+         * should not drop the item.
+         * @param game The active game
+         * @param character The player character
+         * @param item The item about to be unequipped
+         */
+        beforeDrop?(game: IGame, character: ICharacter, item: IItem): boolean;
 
         /**
          * Specify this function if you want to do something special when the player's health changes.

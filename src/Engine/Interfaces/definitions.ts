@@ -37,10 +37,5 @@
          * The quests the player can pursue in the game world.
          */
         quests: (() => IQuest)[];
-
-        /**
-         * Indicates whether locations are added dynamically. Used only for interactive story mode.
-         */
-        dynamicLocations: boolean;
     }
 }

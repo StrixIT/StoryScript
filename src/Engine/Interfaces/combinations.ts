@@ -18,6 +18,26 @@
     }
 
     /**
+     * The currently active combination when playing the game.
+     */
+    export interface IActiveCombination {
+        /**
+         * The action type of the currently active combination.
+         */
+        selectedCombinationAction: ICombinationAction;
+
+        /**
+         * The currently selected tool of the combination.
+         */
+        selectedTool: ICombinable;
+
+        /**
+         * The text displayed to the player for the current combine status.
+         */
+        combineText: string;
+    }
+
+    /**
      * A combination definition.
      */
     export interface ICombine<T extends ICombinable> {
@@ -32,11 +52,51 @@
         combinationType: string,
 
         /**
-         * The function to execute when a combination is successful. Return the success text.
+         * The function to execute when a combination is successful. Return the success text. When omitted,
+         * the default match for the combination type will be invoked (when specified).
          * @param game The game object
          * @param target The target of the combination
          * @param tool The tool for the combination
          */
-        match(game: IGame, target: ICombinable, tool: ICombinable): string;
+        match?(game: IGame, target: ICombinable, tool: ICombinable): string | IMatchResult;
+    }
+
+    export interface ICombineResult {
+        /**
+         * The result text of the combination attempt.
+         */
+        text: string;
+
+        /**
+         * True if a successful match was made, false otherwise.
+         */
+        success: boolean;
+
+        /**
+         * If true, remove the tool feature after the match is made.
+         */
+        removeTool?: boolean
+        
+        /**
+         * If true, remove the target feature after the match is made.
+         */
+        removeTarget?: boolean
+    }
+
+    export interface IMatchResult {
+        /**
+         * The result text of the combination match.
+         */
+        text: string,
+
+        /**
+         * If true, remove the tool feature after the match is made.
+         */
+        removeTool?: boolean
+        
+        /**
+         * If true, remove the target feature after the match is made.
+         */
+        removeTarget?: boolean
     }
 }

@@ -111,7 +111,7 @@ namespace StoryScript {
         }
 
         private GetIdentifier(type: string, item: { id?: string; description?: string; picture?: string; hasHtmlDescription?: boolean; }) {
-            return (type + '/' + item.id).toLowerCase();
+            return (getPlural(type) + '/' + item.id).toLowerCase();
         }
 
         private buildClone(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, values, pristineValues, clone?) {
@@ -160,6 +160,14 @@ namespace StoryScript {
             if (Array.isArray(value)) {
                 clone[key] = [];
                 self.buildClone(functionList, value, pristineValue, clone[key]);
+
+                var additionalArrayProperties = Object.keys(value).filter(v => isNaN(parseInt(v)) && !(value[v].isProxy && value[v].name === 'push'));
+
+                additionalArrayProperties.forEach(p => {
+                    var arrayPropertyKey = `${key}_arrProps`;
+                    clone[arrayPropertyKey] = {};
+                    self.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
+                });
             }
             else if (typeof value === "object") {
                 if (Array.isArray(clone)) {
@@ -185,12 +193,13 @@ namespace StoryScript {
             if (!value.isProxy) {
                 if (value.functionId) {
                     var parts = self.GetFunctionIdParts(value.functionId);
+                    var plural = getPlural(parts.type);
 
-                    if (parts.type === 'actions' && !functionList[parts.type][parts.functionId]) {
+                    if (parts.type === 'action' && !functionList[plural][parts.functionId]) {
                         var match: string = null;
 
-                        for (var n in functionList[parts.type]) {
-                            var entry = functionList[parts.type][n];
+                        for (var n in functionList[plural]) {
+                            var entry = functionList[plural][n];
 
                             if (entry.hash === parts.hash) {
                                 match = n;
@@ -199,7 +208,7 @@ namespace StoryScript {
                         }
 
                         if (match) {
-                            clone[key] = 'function#' + parts.type + '_' + match + '#' + parts.hash;
+                            clone[key] = 'function#' + plural + '_' + match + '#' + parts.hash;
                         }
                         else {
                             clone[key] = value.toString();
@@ -243,6 +252,17 @@ namespace StoryScript {
                 else if (Array.isArray(value)) {
                     initCollection(loaded, key);
                     self.restoreObjects(functionList, value);
+
+                    var arrayPropertyKey = `${key}_arrProps`;
+                    var additionalArrayProperties = loaded[arrayPropertyKey];
+
+                    if (additionalArrayProperties) {
+                        Object.keys(additionalArrayProperties).forEach(k => {
+                            value[k] = additionalArrayProperties[k];
+                        });
+
+                        delete loaded[arrayPropertyKey];
+                    }
                 }
                 else if (typeof value === "object") {
                     self.restoreObjects(functionList, value);

@@ -2,21 +2,30 @@
     if (Function.prototype.proxy === undefined) {
         // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
         Function.prototype.proxy = function (originalFunction: Function, proxyFunction: Function, ...params) {
-            var self = this;
+            var proxyScope = this;
 
             return (function () {
-                var name = originalFunction.name;
-                
-                var func = {[name]: function () {
-                    var args = [].slice.call(arguments);
-                    args.splice(0, 0, self);
-                    return proxyFunction.apply(this, args.concat(...params));
-                }}[name];
-
+                var name = originalFunction.name;           
+                var func = createNamedFunction(proxyScope, proxyFunction, name, params);
                 func.isProxy = true;
                 return func;
             })();
         };
+    }
+
+    export function createNamedFunction(proxyScope, proxyFunction: Function, name: string, ...params): Function {
+        var namedFunction = {[name]: function () {
+            var args = [].slice.call(arguments);
+            // Todo: what is the scope of this?
+            proxyScope = proxyScope || this;
+            args.splice(0, 0, proxyScope);
+            return proxyFunction.apply(this, args.concat(...params));
+        }}[name];
+
+        // Making the proxy a named function as done above doesn't work in Edge. Use an additional property as a workaround.
+        namedFunction.originalFunctionName = name;
+
+        return namedFunction;
     }
 
     export function addFunctionExtensions() {
@@ -128,8 +137,12 @@
             return Array.prototype.filter.call(array, (x: object) => x === id);
         }
 
-        id = typeof id === 'function' ? id.name.toLowerCase() : id.toLowerCase();
+        id = typeof id === 'function' ? (id.name || id.originalFunctionName).toLowerCase() : id.toLowerCase();
 
-        return Array.prototype.filter.call(array, (x: any) => x.id === id || (x.target && x.target.toLowerCase() === id || (typeof x.target === 'function' && x.target.name.toLowerCase() === id)));
+        return Array.prototype.filter.call(array, (x: any) => { 
+            var target = typeof x.target === 'function' ? x.target.name || x.target.originalFunctionName : x.target;
+            target = target && target.toLowerCase();
+            return x.id === id  || target === id;
+        });
     }
 }

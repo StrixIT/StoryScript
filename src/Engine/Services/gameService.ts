@@ -1,7 +1,15 @@
 ﻿namespace StoryScript {
+    export class CombinationFinishedEvent extends Event {
+        constructor() {
+            super('combinationFinished');
+        }
+
+        combineText: string;
+        featuresToRemove: string[];
+    }
+
     export interface IGameService {
         init(): void;
-        initTexts(customTexts: IInterfaceTexts): IInterfaceTexts;
         startNewGame(characterData: any): void;
         reset(): void;
         restart(): void;
@@ -17,7 +25,6 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
-        dynamicLocations(): boolean;
     }
 }
 
@@ -25,7 +32,7 @@ namespace StoryScript {
     export class GameService implements IGameService {
         private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
 
-        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame) {
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
         }
 
         init = (): void => {
@@ -37,12 +44,13 @@ namespace StoryScript {
             }
 
             self.setupGame();
+            self.initTexts();
             self._game.highScores = self._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
-            var characterSheet = self._rules.character && self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet();
+            var characterSheet = self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet();
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
 
             if (!hasCreateCharacterSteps && !self._game.character) {
@@ -56,19 +64,6 @@ namespace StoryScript {
             else {
                 self._game.state = StoryScript.GameState.CreateCharacter;
             }
-        }
-
-        initTexts = (customTexts: IInterfaceTexts): IInterfaceTexts => {
-            var self = this;
-            var defaultTexts = new DefaultTexts();
-
-            for (var n in defaultTexts.texts) {
-                customTexts[n] = customTexts[n] ? customTexts[n] : defaultTexts.texts[n];
-            }
-
-            customTexts.format = defaultTexts.format;
-            customTexts.titleCase = defaultTexts.titleCase;
-            return customTexts;
         }
 
         reset = () => {
@@ -86,8 +81,17 @@ namespace StoryScript {
         startNewGame = (characterData: any): void => {
             var self = this;
             self.createCharacter(characterData);
-            self._game.changeLocation('Start');
+
+            if (self._rules.setup.gameStart) {
+                self._rules.setup.gameStart(self._game);
+            }
+
+            if (!self._game.currentLocation) {
+                self._game.changeLocation('Start');
+            }
+
             self._game.state = StoryScript.GameState.Play;
+            self.saveGame();
         }
 
         restart = (): void => {
@@ -225,9 +229,9 @@ namespace StoryScript {
                 return;
             }
 
-            var action = barrier.actions.filter((item: IBarrierAction) => { return item.name == barrier.selectedAction.name; })[0];
+            var action = barrier.actions.filter((item: IBarrierAction) => { return item.text == barrier.selectedAction.text; })[0];
             var actionIndex = barrier.actions.indexOf(action);
-            action.action(self._game, destination, barrier, action);
+            action.execute(self._game, destination, barrier, action);
             barrier.actions.splice(actionIndex, 1);
 
             if (barrier.actions.length) {
@@ -242,7 +246,6 @@ namespace StoryScript {
 
             // Todo: change if xp can be lost.
             if (change > 0) {
-                var character = self._game.character;
                 var levelUp = self._rules.general && self._rules.general.scoreChange && self._rules.general.scoreChange(self._game, change);
 
                 if (levelUp) {
@@ -254,7 +257,7 @@ namespace StoryScript {
         hitpointsChange = (change: number): void => {
             var self = this;
 
-            if (self._rules.character && self._rules.character.hitpointsChange) {
+            if (self._rules.character.hitpointsChange) {
                 self._rules.character.hitpointsChange(self._game, change);
             }
         }
@@ -271,14 +274,21 @@ namespace StoryScript {
             }
         }
 
-        dynamicLocations = (): boolean => {
+        private initTexts(): void {
             var self = this;
-            return self._game.definitions.dynamicLocations;
+            var defaultTexts = new DefaultTexts();
+
+            for (var n in defaultTexts.texts) {
+                self._texts[n] = self._texts[n] ? self._texts[n] : defaultTexts.texts[n];
+            }
+
+            self._texts.format = defaultTexts.format;
+            self._texts.titleCase = defaultTexts.titleCase;
         }
 
         private resume(locationName: string) {
             var self = this;
-            var lastLocation = self._game.locations.get(locationName);
+            var lastLocation = self._game.locations.get(locationName) || self._game.locations.get('start');
             var previousLocationName = self._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
 
             if (previousLocationName) {
@@ -374,11 +384,25 @@ namespace StoryScript {
             self._game.combinations = {
                 activeCombination: null,
                 tryCombine: (target: ICombinable): boolean => {
+                    var activeCombo = self._game.combinations.activeCombination;
                     var result = self._combinationService.tryCombination(target);
 
-                    if (typeof result === 'string') {
-                        var evt = new Event('combinationFinished');
-                        (<any>evt).combineText = result;
+                    if (result.text) {
+                        var evt = new CombinationFinishedEvent();
+                        evt.combineText = result.text;
+
+                        if (result.success) {
+                            evt.featuresToRemove = [];
+
+                            if (result.removeTarget) {
+                                evt.featuresToRemove.push(target.id);
+                            }
+
+                            if (result.removeTool) {
+                                evt.featuresToRemove.push(activeCombo.selectedTool.id);
+                            }
+                        }
+
                         self._events.dispatchEvent(evt);
                         return true;
                     }

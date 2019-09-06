@@ -14,7 +14,6 @@ namespace StoryScript {
 
         restart = (): void => {
             var self = this;
-            self._gameService.restart();
             self._scope.$emit('restart');
         }
 
@@ -26,11 +25,6 @@ namespace StoryScript {
         load = (): void => {
             var self = this;
             self._scope.$emit('loadGame');
-        }
-
-        dynamicLocations = (): boolean => {
-            var self = this;
-            return self._gameService.dynamicLocations();
         }
     }
 

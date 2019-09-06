@@ -23,7 +23,7 @@ describe("TradeService", function() {
         }
 
         var trader = {
-            type: 'persons',
+            type: 'person',
             name: 'Jack',
             currency: 10,
             trade: {},

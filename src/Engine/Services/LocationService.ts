@@ -10,7 +10,6 @@
 namespace StoryScript {
     export class LocationService implements ILocationService {
         private pristineLocations: ICollection<ICompiledLocation>;
-        private dynamicLocations: boolean = false;
 
         constructor(private _dataService: IDataService, private _conversationService: IConversationService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
@@ -21,7 +20,6 @@ namespace StoryScript {
             game.currentLocation = null;
             game.previousLocation = null;
             game.locations = self.loadWorld(buildWorld === undefined || buildWorld);
-            game.definitions.dynamicLocations = self.dynamicLocations;
         }
 
         saveWorld = (locations: ICollection<ICompiledLocation>) => {
@@ -54,17 +52,28 @@ namespace StoryScript {
                 self._rules.exploration.enterLocation(game, game.currentLocation, travel);
             }
 
-            // In dynamic mode, refresh the location on every browser reload.
-            // Todo: should descriptions be refreshed this way for default mode as well? Combine with game service method doing the same.
-            if (!travel && game.definitions.dynamicLocations) {
-                game.currentLocation.descriptions = null;
-                game.currentLocation.text = null;
-            }
-
             self.loadLocationDescriptions(game);
             self.initTrade(game);
             self.playEnterEvents(game);
             self._conversationService.loadConversations();
+
+            // Add the 'back' button for testing
+            if (self._rules.setup.autoBackButton && game.previousLocation && game.currentLocation.id != 'start') {
+                var backTestDestinationName = 'testbackdestination';
+                var backDestination = game.currentLocation.destinations.get(game.previousLocation.id) 
+                                        || game.currentLocation.destinations.get(backTestDestinationName);
+
+                if (!backDestination) {         
+                    var backLocation = {
+                        id: backTestDestinationName,
+                        target: game.previousLocation.id,
+                        name: `Back to ${game.previousLocation.name}`,
+                        style: 'auto-back-button'
+                    };
+
+                    game.currentLocation.destinations.push(backLocation);
+                }
+            }
         }
 
         private switchLocation(game: IGame, location: string | (() => ILocation)): boolean {
@@ -86,7 +95,7 @@ namespace StoryScript {
                 return false;
             }
 
-            var key = typeof location == 'function' ? <string>(<any>location).name : location ? location : presentLocation.id;
+            var key = typeof location == 'function' ? location.name || location.originalFunctionName : location ? location : presentLocation.id;
             game.currentLocation = game.locations.get(key);
             return true;
         }
@@ -215,19 +224,7 @@ namespace StoryScript {
             var self = this;
             var locations = self._definitions.locations;
             var compiledLocations = [];
-
-            if (locations.length < 1)
-            {
-                self.dynamicLocations = true;
-                var dynamicStartLocation = function Start () { return Location({ name: 'Start' }) };
-
-                locations = [
-                    dynamicStartLocation
-                ];
-            }
-
             self.processLocations(locations, compiledLocations);
-
             return compiledLocations;
         }
 
@@ -253,11 +250,12 @@ namespace StoryScript {
         private addDestination() {
             var args = [].slice.apply(arguments);
             var originalFunction = args.shift();
-
             var destination = <IDestination>args[0];
-            setDestination(destination);
-            addKeyAction(args[1], destination);
+            var game = <IGame>args[1];
             args.splice(1, 1);
+
+            setDestination(destination);
+            addKeyAction(game, destination);
             originalFunction.apply(this, args);
         }
 
@@ -270,20 +268,20 @@ namespace StoryScript {
         private loadLocationDescriptions(game: IGame) {
             var self = this;
 
-            if (game.currentLocation.descriptions) {
-                self.selectLocationDescription(game);
-                return;
+            if (!game.currentLocation.descriptions) {
+                var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
+
+                if (descriptions) {
+                    var parser = new DOMParser();
+                    var htmlDoc = parser.parseFromString(descriptions, "text/html");
+
+                    self.processVisualFeatures(htmlDoc, game);
+                    self.processDescriptions(htmlDoc, game);
+                }
             }
 
-            var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
-            var parser = new DOMParser();
-            var htmlDoc = parser.parseFromString(descriptions, "text/html");
-
-            self.processVisualFeatures(htmlDoc, game);
-            self.processDescriptions(htmlDoc, game);
-            self.processDynamicLocations(htmlDoc, game);
-            self.processTextFeatures(htmlDoc, game);
             self.selectLocationDescription(game);
+            self.processTextFeatures(game);
         }
 
         private processDescriptions(htmlDoc: Document, game: IGame) {
@@ -298,7 +296,6 @@ namespace StoryScript {
             for (var i = 0; i < descriptionNodes.length; i++) {
                 var node = descriptionNodes[i];
                 var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-                var displayNameAttribute = node.attributes['displayname'] && node.attributes['displayname'].nodeValue;
                 var name = nameAttribute ? nameAttribute : 'default';
 
                 if (game.currentLocation.descriptions[name]) {
@@ -306,73 +303,37 @@ namespace StoryScript {
                 }
 
                 game.currentLocation.descriptions[name] = node.innerHTML;
-                game.currentLocation.name = displayNameAttribute || game.currentLocation.name;
             }      
         }
 
-        private processDynamicLocations(htmlDoc: Document, game: IGame) {
+        private processTextFeatures(game: IGame) {
             var self = this;
 
-            if (!game.definitions.dynamicLocations) {
+            if (!game.currentLocation.text) {
                 return;
             }
 
-            game.currentLocation.destinations.length = 0;
-
-            // Add a 'back' destination for easy testing
-            if (game.previousLocation && game.previousLocation) {
-                var backLocation = {
-                    id: game.previousLocation.id,
-                    target: <any>game.previousLocation.id,
-                    name: 'back',
-                    style: 'dynamic-back-button'
-                };
-
-                game.currentLocation.destinations.push(backLocation);
-            }
-
-            self.processDynamicDestinations(htmlDoc, game);
-        }
-
-        private processDynamicDestinations(htmlDoc: Document, game: IGame) {
-            var self = this;
-
-            var destinationsNodes = htmlDoc.getElementsByTagName("destination");
-
-            for (var i = 0; i < destinationsNodes.length; i++) {
-                var node = destinationsNodes[i];
-                var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-
-                if (!nameAttribute)
-                {
-                    console.log('There is a destination without a name for location ' + game.currentLocation.id + '.');
-                    continue;
-                }
-
-                var targetExists = self._dataService.loadDescription('locations', { id: nameAttribute }) != null;
-
-                var locationToAdd = { id: nameAttribute, target: targetExists ? nameAttribute : null, name: node.innerHTML, destinations: [] };
-                self.initDestinations(locationToAdd);
-
-                game.locations.push(locationToAdd);
-                game.currentLocation.destinations.push(locationToAdd);
-            }
-        }
-
-        private processTextFeatures(htmlDoc: Document, game: IGame) {
-            var self = this;
+            var parser = new DOMParser();
+            var htmlDoc = parser.parseFromString(game.currentLocation.text, "text/html");
             var featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
-            if (game.currentLocation.features && game.currentLocation.features.length > 0) {
-                for (var i = 0; i < featureNodes.length; i++) {
-                    const node = featureNodes[i];
-                    const feature = self.getBasicFeatureData(game, node);
+            for (var i = 0; i < featureNodes.length; i++) {
+                const node = featureNodes[i];
+                const feature = self.getBasicFeatureData(game, node);
 
-                    if (feature) {
-                        feature.description = node.innerHTML;
-                    }
+                // If the feature is not present in code, clean the node html as the feature is either
+                // not yet added (the feature tag is a placeholder for a feature added at runtime) or it
+                // was deleted. Clean the node html to not show the feature text in case it was deleted.
+                if (!feature) {
+                    node.innerHTML = '';
+                }
+                else {
+                    feature.description = node.innerHTML || feature.description;
+                    node.innerHTML = addHtmlSpaces(feature.description);
                 }
             }
+         
+            game.currentLocation.text = htmlDoc.body.innerHTML;
         }
 
         private processVisualFeatures(htmlDoc: Document, game: IGame) {
@@ -403,21 +364,13 @@ namespace StoryScript {
 
         private getBasicFeatureData(game: IGame, node: HTMLElement): IFeature {
             var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
-            var displayNameAttribute = node.attributes['displayname'] && node.attributes['displayname'].nodeValue;
 
             if (!nameAttribute) {
                 throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
             }
 
             nameAttribute = nameAttribute.toLowerCase();
-            var feature = game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
-
-            if (!feature) {
-                return null;
-            }
-
-            feature.name = displayNameAttribute || feature.name;
-            return feature;
+            return game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
         }
 
         private selectLocationDescription(game: IGame) {
@@ -439,20 +392,20 @@ namespace StoryScript {
                 game.currentLocation.text = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
             }
             else {
-                game.currentLocation.text = game.currentLocation.text || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
+                game.currentLocation.text = game.currentLocation.text || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
             }
         }
     }
 
     function addKeyAction(game: IGame, destination: IDestination) {
         if (destination.barrier && destination.barrier.key) {
-            var keyEntity = typeof destination.barrier.key === 'function' ? destination.barrier.key() : destination.barrier.key;
+            var key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem( destination.barrier.key);
             var existingAction = null;
-            var keyActionHash = createFunctionHash(keyEntity.open.action);
+            var keyActionHash = createFunctionHash(key.open.execute);
 
             if (destination.barrier.actions) {
                 destination.barrier.actions.forEach(x => {
-                    if (createFunctionHash(x.action) === keyActionHash) {
+                    if (createFunctionHash(x.execute) === keyActionHash) {
                         existingAction = x;
                     };
                 });
@@ -465,7 +418,8 @@ namespace StoryScript {
                 destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
             }
 
-            var barrierKey = <IKey>(game.character.items.get(destination.barrier.key) || game.currentLocation.items.get(destination.barrier.key));
+            var keyId = key.id;
+            var barrierKey = <IKey>(game.character.items.get(keyId) || game.currentLocation.items.get(keyId));
 
             if (barrierKey) {
                 destination.barrier.actions.push(barrierKey.open);
@@ -479,9 +433,16 @@ namespace StoryScript {
         // Note that dynamically added destinations already have a string as target so use that one.
         // Also set the barrier selected actions to the first one available for each barrier.
         // Further, replace combine functions with their target ids.
-        destination.target = (destination.target && (<any>destination.target).name) || destination.target;
+        var target = destination.target;
+        target = typeof target === 'function' ? target.name || target.originalFunctionName : target;
+        destination.target = target && target.toLowerCase();
 
         if (destination.barrier) {
+            if (destination.barrier.key) {
+                var key = destination.barrier.key;
+                destination.barrier.key = typeof key === 'function' ? key.name || key.originalFunctionName : key;
+            }
+
             if (destination.barrier.actions && destination.barrier.actions.length > 0) {
                 destination.barrier.selectedAction = destination.barrier.actions[0];
             }
@@ -489,7 +450,8 @@ namespace StoryScript {
             if (destination.barrier.combinations && destination.barrier.combinations.combine) {
                 for (var n in destination.barrier.combinations.combine) {
                     var combination = destination.barrier.combinations.combine[n];
-                    combination.tool = combination.tool && (<any>combination.tool).name;
+                    var tool = <any>combination.tool;
+                    combination.tool = tool && (tool.name || tool.originalFunctionName).toLowerCase();
                 }
             }
         }

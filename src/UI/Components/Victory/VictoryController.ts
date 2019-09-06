@@ -11,7 +11,6 @@ namespace StoryScript {
 
         restart = (): void => {
             var self = this;
-            self._gameService.restart();
             self._scope.$emit('restart');
         }
     }

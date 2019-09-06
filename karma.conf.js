@@ -16,8 +16,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'test-main.js',
-      { pattern: 'dist/js/StoryScript.js', included: true },
-      { pattern: 'tests/TestGameFiles/game*.js', included: true },
+      './test/storyscript.js',
+      './test/game-descriptions.js',
+      './test/game.js',
       { pattern: 'tests/**/*Spec.js', included: false }
     ],
 
@@ -30,14 +31,19 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      './test/**/*.js': 'coverage'
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
+    coverageReporter: {
+      type : 'html',
+      dir : './tests/coverage/'
+    },
 
     // web server port
     port: 9876,
