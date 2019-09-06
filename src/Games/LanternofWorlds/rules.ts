@@ -99,7 +99,8 @@ namespace LanternofWorlds {
                 },
 
                 createCharacter: (game: IGame, characterData: StoryScript.ICreateCharacter): StoryScript.ICharacter => {
-                    var startChoice = characterData.steps[1].questions[0].selectedEntry.text === 'You are a druid' ? 'druid' :
+                    var startChoice = characterData.steps[1].questions[0].selectedEntry.text === 'You are a druid' ? 'Druidstart' :
+                    characterData.steps[1].questions[0].selectedEntry.text === 'You are a fisherman' ? 'Fishermanstart' :
                                         characterData.steps[1].questions[0].selectedEntry.text === 'You are a veteran warrior' ? 'forest' : 'lake';
                     
                     game.worldProperties.startChoice = startChoice;
