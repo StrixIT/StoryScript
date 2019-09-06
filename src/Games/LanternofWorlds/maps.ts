@@ -4,7 +4,7 @@ namespace LanternofWorlds {
     export function druidMap() {
         if (!_druidMap) {
             var mapData = <IMapData>{
-                picture: 'ForestMap1.png',
+                picture: 'Forest2.jpg',
                 tilePrefix: 'fm',
                 tileType: TileType.Hexagon,
                 rows: 4,
