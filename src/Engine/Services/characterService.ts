@@ -216,6 +216,8 @@ namespace StoryScript {
         }
 
         private prepareSheet = (sheet: ICreateCharacter): void => {
+            var self = this;
+
             if (sheet.steps.length == 0) {
                 return;
             }
@@ -226,7 +228,15 @@ namespace StoryScript {
                 sheet.steps[0].questions[0].selectedEntry = sheet.steps[0].questions[0].entries[0];
             }
 
-            sheet.nextStep = (data: ICreateCharacter) => {
+            self.setFinish(sheet);
+
+            sheet.nextStep = (data: ICreateCharacter, next: Boolean) => {
+                if (next !== undefined && next !== null && !next)
+                {
+                    self.setFinish(data);
+                    return;
+                }
+
                 var selector = data.steps[data.currentStep].nextStepSelector;
                 var previousStep = data.currentStep;
 
@@ -361,6 +371,16 @@ namespace StoryScript {
         private getEquipmentType = (slot: StoryScript.EquipmentType) => {
             var type = StoryScript.EquipmentType[slot];
             return type.substring(0, 1).toLowerCase() + type.substring(1);
+        }
+
+        private setFinish(data: ICreateCharacter): void {
+            if (data && data.steps) {
+                var activeStep = data.steps[data.currentStep];
+
+                if (activeStep.questions) {
+                    activeStep.finish = activeStep.questions.filter(q => q.selectedEntry.finish).length > 0;
+                }
+            }
         }
     }
 }

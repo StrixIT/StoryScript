@@ -3,7 +3,7 @@
         <div class="input-group-prepend">
             <label class="input-group-text">{{ question.question }}</label>
         </div>
-        <select class="custom-select" ng-model="question.selectedEntry" ng-options="q.text for q in question.entries"></select>
+        <select class="custom-select" ng-model="question.selectedEntry" ng-options="q.text for q in question.entries" ng-change="$ctrl.sheet.nextStep($ctrl.sheet, false)"></select>
     </div>
     <div ng-repeat="attribute in step.attributes">
         <div>
@@ -18,5 +18,5 @@
             <input class="form-control" type="number" ng-if="entry.min || entry.max" min="{{ entry.min }}" max="{{ entry.max }}" ng-model="entry.value" ng-blur="$ctrl.limitInput($event, attribute, entry)" />
         </div>
     </div>
-    <button type="button" class="btn btn-primary" ng-disabled="!$ctrl.distributionDone(step)" ng-click="$ctrl.sheet.nextStep($ctrl.sheet)" ng-show="$ctrl.sheet.currentStep < $ctrl.sheet.steps.length - 1">{{ $ctrl.texts.nextQuestion }}</button>
+    <button type="button" class="btn btn-primary" ng-disabled="!$ctrl.distributionDone(step)" ng-click="$ctrl.sheet.nextStep($ctrl.sheet)" ng-show="$ctrl.sheet.currentStep < $ctrl.sheet.steps.length - 1 && !$ctrl.sheet.steps[$ctrl.sheet.currentStep].finish">{{ $ctrl.texts.nextQuestion }}</button>
 </div>
