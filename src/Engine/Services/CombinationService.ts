@@ -68,23 +68,18 @@ namespace StoryScript {
                 return result;
             }
 
-            self.tagOrRemoveFeatures(target, true, false);
-
             result = self.performCombination(target, combo);
 
             if (result.success) {
                 if (result.removeTarget) {
-                    self.tagOrRemoveFeatures(target, false, true);
+                    self.removeFeature(target);
                 }
 
                 if (result.removeTool && combo.selectedTool.id != target.id) {
-                    self.tagOrRemoveFeatures(combo.selectedTool, false, true);
+                    self.removeFeature(combo.selectedTool);
                 }
 
                 SaveWorldState(self._dataService, self._locationService, self._game);
-            }
-            else {
-                self.tagOrRemoveFeatures(target, false, false);
             }
 
             return result;
@@ -152,46 +147,25 @@ namespace StoryScript {
             return tool.id.toLowerCase() === combineId.toLowerCase();
         }
 
-        private tagOrRemoveFeatures(feature: IFeature, tag: boolean, remove: boolean) {
+        private removeFeature(feature: IFeature) {
             var self = this;
 
             // Remove the feature from all possible locations. As we use the object
             // reference, objects of the same type should be left alone.
-            self.tagOrRemoveInCollection(self._game.currentLocation.features, feature, tag, remove);
-            self.tagOrRemoveInCollection(self._game.currentLocation.destinations, feature, tag, remove);
-            
-            self.tagOrRemoveInCollection(self._game.currentLocation.items, feature, tag, remove);
-            self.tagOrRemoveInCollection(self._game.character.items, feature, tag, remove);  
+            self._game.currentLocation.features.remove(feature);
+            self._game.currentLocation.destinations.forEach(d => {
+                if (d.barrier === feature) {
+                    d.barrier = null;
+                }
+            });
+
+            self._game.currentLocation.items.remove(<IItem>feature);
+            self._game.character.items.remove(<IItem>feature);
             // When equipment can be used in combinations, remove items from the
             // character's equipment as well.
 
-            self.tagOrRemoveInCollection(self._game.currentLocation.enemies, feature, tag, remove);
-            self.tagOrRemoveInCollection(self._game.currentLocation.persons, feature, tag, remove);
-        }
-
-        private tagOrRemoveInCollection(collection: ICollection<IFeature>, feature: IFeature, tag: boolean, remove: boolean) {
-            collection.forEach(f => {
-                var entry = <any>f;
-                entry = entry.barrier ? entry.barrier : entry;
-
-                if (tag) {
-                    entry.canRemove = true;
-                }
-                else {
-                    delete entry.canRemove;
-                }
-
-                if (remove && entry.canRemove) {
-                    if (entry.barrier) {
-                        if (entry.barrier === f) {
-                            entry.barrier = null;
-                        }
-                    }
-                    else {
-                        collection.remove(f);
-                    }
-                }
-            });
+            self._game.currentLocation.enemies.remove(<IEnemy>feature);
+            self._game.currentLocation.persons.remove(<IPerson>feature);
         }
     }
 
