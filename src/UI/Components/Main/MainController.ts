@@ -26,7 +26,6 @@ namespace StoryScript {
 
             self._game.dynamicStyles = self._game.dynamicStyles || [];
 
-            // Todo: improve this by using an object with deep watch?
             self._scope.$watchCollection('game.dynamicStyles', function(newForm, oldForm) {
                 self.applyDynamicStyling();
             });
