@@ -32,6 +32,7 @@
 namespace StoryScript {
     export class GameService implements IGameService {
         private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
+        private _musicStopped: boolean = false;
 
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
         }
@@ -277,8 +278,18 @@ namespace StoryScript {
 
         getCurrentMusic = (): string => {
             var self = this;
-            var currentEntry = self._rules.setup.playList && self._rules.setup.playList[self._game.state];
+            var currentEntry = !self._musicStopped && self._rules.setup.playList && self._rules.setup.playList[self._game.state];
             return <string>currentEntry[1];
+        }
+
+        startMusic = (): void => {
+            var self = this;
+            self._musicStopped = false;
+        }
+
+        stopMusic = (): void => {
+            var self = this;
+            self._musicStopped = true;
         }
 
         private initTexts(): void {
@@ -350,6 +361,8 @@ namespace StoryScript {
             var self = this;
             self.initLogs();
             self._game.fight = self.fight;
+            self._game.sounds.startMusic = self.startMusic;
+            self._game.sounds.stopMusic = self.stopMusic;
 
             // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
             if (!(<any>self._game).stateString) {
