@@ -138,4 +138,14 @@
         templateUrl: 'ui/LoadGameModalComponent.html',
         controller: LoadGameModalController
     });
+
+    storyScriptModule.component('sound', {
+        templateUrl: 'ui/SoundComponent.html',
+        controller: SoundController
+    });
+
+    storyScriptModule.component('intro', {
+        templateUrl: 'ui/IntroComponent.html',
+        controller: IntroController
+    });
 }

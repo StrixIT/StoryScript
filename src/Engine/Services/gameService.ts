@@ -12,7 +12,7 @@
         init(): void;
         startNewGame(characterData: any): void;
         reset(): void;
-        restart(): void;
+        restart(skipIntro?: boolean): void;
         saveGame(name?: string): void;
         getSaveGames(): string[];
         loadGame(name: string): void;
@@ -25,17 +25,19 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
+        getCurrentMusic(): string;
     }
 }
 
 namespace StoryScript {
     export class GameService implements IGameService {
         private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
+        private _musicStopped: boolean = false;
 
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
         }
 
-        init = (): void => {
+        init = (skipIntro?: boolean): void => {
             var self = this;
             self._game.helpers = self._helperService;
 
@@ -49,6 +51,12 @@ namespace StoryScript {
             self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
             self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
             self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
+            
+            if (!self._game.character && self._rules.setup.intro && !skipIntro) {
+                self._game.state = StoryScript.GameState.Intro;
+                return;
+            }
+            
             var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
             var characterSheet = self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet();
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
@@ -94,7 +102,7 @@ namespace StoryScript {
             self.saveGame();
         }
 
-        restart = (): void => {
+        restart = (skipIntro?: boolean): void => {
             var self = this;
             self._dataService.save(StoryScript.DataKeys.CHARACTER, {});
             self._dataService.save(StoryScript.DataKeys.STATISTICS, {});
@@ -102,7 +110,7 @@ namespace StoryScript {
             self._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
             self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, {});
             self._dataService.save(StoryScript.DataKeys.WORLD, {});
-            self.init();
+            self.init(skipIntro);
         }
 
         saveGame = (name?: string): void => {
@@ -274,6 +282,22 @@ namespace StoryScript {
             }
         }
 
+        getCurrentMusic = (): string => {
+            var self = this;
+            var currentEntry = !self._musicStopped && self._rules.setup.playList && self._rules.setup.playList.filter(e =>  e[0] === self._game.state)[0];
+            return currentEntry && <string>currentEntry[1];
+        }
+
+        startMusic = (): void => {
+            var self = this;
+            self._musicStopped = false;
+        }
+
+        stopMusic = (): void => {
+            var self = this;
+            self._musicStopped = true;
+        }
+
         private initTexts(): void {
             var self = this;
             var defaultTexts = new DefaultTexts();
@@ -343,6 +367,10 @@ namespace StoryScript {
             var self = this;
             self.initLogs();
             self._game.fight = self.fight;
+            self._game.sounds = { 
+                startMusic: self.startMusic,
+                stopMusic: self.stopMusic
+            };
 
             // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
             if (!(<any>self._game).stateString) {

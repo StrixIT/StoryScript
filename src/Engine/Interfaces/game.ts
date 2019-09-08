@@ -114,6 +114,11 @@
          */
         helpers: IHelperService;
 
+        sounds: {
+            startMusic() : void;
+            stopMusic() : void;
+        }
+
         /**
          * The function executed to change from one location to the next.
          * @param location The location to go to

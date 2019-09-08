@@ -34,6 +34,11 @@
         autoBackButton?: boolean;
 
         /**
+         * Set this to true if you want to show an intro screen when the game starts.
+         */
+        intro?: boolean;
+
+        /**
          * Run custom code to prepare the game before it begins, e.g. adding game-specific world properties to it.
          * @param game The game about to be started
          */
@@ -51,6 +56,15 @@
          * @param game The game about to be started
          */
         gameStart?(game: IGame): void;
+
+        /**
+         * When you want to play a music file when the game is in a certain state, use this list. Use it like this:
+            playList: [
+                [StoryScript.GameState.CreateCharacter, 'createCharacter.mp4'],
+                [StoryScript.GameState.Play, 'play.mp4']
+            ]
+         */
+        playList?: (GameState | string)[][];
     }
 
     export interface IGeneralRules {

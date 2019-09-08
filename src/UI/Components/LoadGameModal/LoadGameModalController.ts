@@ -1,6 +1,6 @@
 namespace StoryScript {   
     export class LoadGameModalController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.texts = _texts;
 
@@ -13,6 +13,8 @@ namespace StoryScript {
                 self.mode = 'save';
                 self.openModal();
             });
+
+            self._sharedMethodService.useSaveGames = true;
         }
 
         saveKeys: string[];
@@ -55,5 +57,5 @@ namespace StoryScript {
         }
     }
 
-    LoadGameModalController.$inject = ['$scope', 'gameService', 'game', 'customTexts'];
+    LoadGameModalController.$inject = ['$scope', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
 }

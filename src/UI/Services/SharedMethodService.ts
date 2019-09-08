@@ -13,6 +13,7 @@ namespace StoryScript
         useBackpack?: boolean;
         useQuests?: boolean;
         useGround?: boolean;
+        useSaveGames?: boolean;
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
@@ -43,6 +44,7 @@ namespace StoryScript
         useBackpack?: boolean;
         useQuests?: boolean;
         useGround?: boolean;
+        useSaveGames?: boolean;
 
         enemiesPresent = (): boolean => {
             var self = this;
