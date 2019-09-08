@@ -25,6 +25,7 @@
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
+        getCurrentMusic(): string;
     }
 }
 
@@ -272,6 +273,11 @@ namespace StoryScript {
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
+        }
+
+        getCurrentMusic = (): string => {
+            var self = this;
+            return <any>(self._rules.setup.playList && self._rules.setup.playList[self._game.state][1]);
         }
 
         private initTexts(): void {

@@ -51,6 +51,15 @@
          * @param game The game about to be started
          */
         gameStart?(game: IGame): void;
+
+        /**
+         * When you want to play a music file when the game is in a certain state, use this list. Use it like this:
+            playList: [
+                [StoryScript.GameState.CreateCharacter, 'createCharacter.mp4'],
+                [StoryScript.GameState.Play, 'play.mp4']
+            ]
+         */
+        playList?: (GameState | string)[][];
     }
 
     export interface IGeneralRules {
