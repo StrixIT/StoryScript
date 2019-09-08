@@ -277,7 +277,8 @@ namespace StoryScript {
 
         getCurrentMusic = (): string => {
             var self = this;
-            return <any>(self._rules.setup.playList && self._rules.setup.playList[self._game.state][1]);
+            var currentEntry = self._rules.setup.playList && self._rules.setup.playList[self._game.state];
+            return <string>currentEntry[1];
         }
 
         private initTexts(): void {
