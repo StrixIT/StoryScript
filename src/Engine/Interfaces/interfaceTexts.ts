@@ -75,6 +75,7 @@
         overwriteSaveGame?: string;
         loadSaveGame?: string;
         characterSheet?: string;
+        skipIntro?: string;
 
         // Todo: keep this, or solve showing world properties in another way?
         worldProperties?: {};

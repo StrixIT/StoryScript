@@ -34,6 +34,11 @@
         autoBackButton?: boolean;
 
         /**
+         * Set this to true if you want to show an intro screen when the game starts.
+         */
+        intro?: boolean;
+
+        /**
          * Run custom code to prepare the game before it begins, e.g. adding game-specific world properties to it.
          * @param game The game about to be started
          */

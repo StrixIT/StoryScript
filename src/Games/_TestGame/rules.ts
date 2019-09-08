@@ -7,6 +7,8 @@
                     [StoryScript.GameState.Play, 'play.mp3']
                 ],
 
+                intro: false,
+
                 getCombinationActions: (): StoryScript.ICombinationAction[] => {
                     return [
                         {

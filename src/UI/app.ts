@@ -143,4 +143,9 @@
         templateUrl: 'ui/SoundComponent.html',
         controller: SoundController
     });
+
+    storyScriptModule.component('intro', {
+        templateUrl: 'ui/IntroComponent.html',
+        controller: IntroController
+    });
 }
