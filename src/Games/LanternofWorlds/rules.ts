@@ -2,6 +2,7 @@ namespace LanternofWorlds {
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
+                intro: true,
                 gameStart: (game: IGame) => {
                     game.changeLocation(game.worldProperties.startChoice);
                 },
