@@ -5,3 +5,10 @@
 body {
     background-color: gold;
 }
+
+.encounters {
+    position: absolute;
+    top: 600px;
+    left: 800px;
+    background-color: white;
+}

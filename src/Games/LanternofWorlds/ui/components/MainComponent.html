@@ -13,10 +13,10 @@
                     {{ $ctrl.texts.loading }}
                 </div>
                 <div ng-if="$ctrl.game.stateString == 'Play'">
-                    <encounter></encounter>
+                    <encounter class="encounters"></encounter>
                     <location></location>
                     <exploration></exploration>
-                    <enemy></enemy>
+                    <enemy class="encounters"></enemy>
                 </div>
                 <create-character></create-character>
                 <level-up></level-up>

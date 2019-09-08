@@ -15,7 +15,7 @@ namespace LanternofWorlds {
                             failText: (game, target, tool): string => { return 'test'; },
                             isDefault: true,
                             defaultMatch: (game: IGame, target: IFeature, tool: StoryScript.ICombinable): string => {
-                                //setCoordinates(game, target);
+                                setCoordinates(game, target);
 
                                 if (target.linkToLocation) {
                                     game.changeLocation(target.linkToLocation);
@@ -144,22 +144,29 @@ namespace LanternofWorlds {
 
         function setCoordinates(game: IGame, target: IFeature) {  
             var coords = target.coords.split(',').map(c => parseInt(c));
-            var centerX = coords[6] - coords[0];
-            var centerY = coords[7] - coords[1];
+            //var centerX = coords[6] - coords[0];
+            //var centerY = coords[7] - coords[1];
     
-            game.worldProperties.mapLocationX = -(centerX + coords[0] - 800);
-            game.worldProperties.mapLocationY = -(centerY + coords[1] - 650);   
+            game.worldProperties.mapLocationX = coords[0];
+            game.worldProperties.mapLocationY = coords[1];   
     
             setDynamicStyles(game);
         }
     
         function setDynamicStyles(game: IGame) {
             game.dynamicStyles = [
+                // {
+                //     elementSelector: '#visual-features img',
+                //     styles: [
+                //         ['margin-top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
+                //         ['margin-left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
+                //     ]
+                // }
                 {
-                    elementSelector: '#visual-features img',
+                    elementSelector: '.encounters',
                     styles: [
-                        ['margin-top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
-                        ['margin-left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
+                        ['top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
+                        ['left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
                     ]
                 }
             ];   
