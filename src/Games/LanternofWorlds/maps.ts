@@ -9,22 +9,22 @@ namespace LanternofWorlds {
                 tileType: TileType.Hexagon,
                 rows: 4,
                 columns: 4,
-                startRow: 1,
                 tileHeight: 226,
                 tileWidth: 305,
-                tileGutter: 3,
+                offsetY: 169,
+                offsetX: 56,
                 missingTiles: [
-                    '11',
-                    '41',
-                    '42',
-                    '44'
+                    '1-1',
+                    '4-1',
+                    '4-2',
+                    '4-4'
                 ]
             };
 
             var tileAdditions = [
-                //['12', Locations.Plains],
-                //['22', Locations.Start],
-                //['31', Locations.Water],
+                //['1-2', Locations.Plains],
+                //['2-2', Locations.Start],
+                //['3-1', Locations.Water],
             ];
     
             _druidMap = createFeatureMap(mapData, tileAdditions);
@@ -50,9 +50,10 @@ namespace LanternofWorlds {
         tileType: TileType;
         rows: number;
         columns: number;
-        startRow: number;
         tileWidth: number;
         tileHeight: number;
+        offsetY: number,
+        offsetX: number,
         tileGutter?: number;
         height?: number;
         width?: number;
@@ -71,13 +72,13 @@ namespace LanternofWorlds {
             
         for (var i = 1; i <= mapData.rows; i++) {
             for (var j = 1; j <= mapData.columns; j++) {
-                var location = `${i}${j}`;
+                var location = `${i}-${j}`;
 
                 if (mapData.missingTiles.indexOf(location) != -1) {
                     continue;
                 }
 
-                var featureName = `${mapData.tilePrefix}${i}${j}`;
+                var featureName = `${mapData.tilePrefix}${location}`;
                 map.push(createTileFeature(mapData, featureName, i, j));
             }
         }
@@ -115,9 +116,10 @@ namespace LanternofWorlds {
         var edgeLength = mapData.tileWidth / 2;
         var halfEdge = edgeLength / 2;
         var halfHeight = mapData.tileHeight / 2;
+        var gutter = mapData.tileGutter || 0;
 
-        var offsetTop = (mapData.startRow === 1 ? 0 : (column % 2  * -halfHeight)) + (row - 1) * mapData.tileGutter;
-        var offsetleft = (column - 1) * mapData.tileGutter * 2;
+        var offsetTop = mapData.offsetY + (column % 2  * -halfHeight) + (row - 1) * gutter;
+        var offsetleft = mapData.offsetX + (column - 1) * gutter * 2;
         var topY = offsetTop + (row - 1) * mapData.tileHeight
         var topX = offsetleft + halfEdge + (column - 1) * (edgeLength + halfEdge);
 

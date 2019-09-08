@@ -8,6 +8,22 @@ namespace LanternofWorlds {
                 getCombinationActions: (): StoryScript.ICombinationAction[] => {
                     return [
                         // Add combination action names here if you want to use this feature.
+                        {
+                            text: 'Walk',
+                            preposition: 'to',
+                            requiresTool: false,
+                            failText: (game, target, tool): string => { return 'test'; },
+                            isDefault: true,
+                            defaultMatch: (game: IGame, target: IFeature, tool: StoryScript.ICombinable): string => {
+                                //setCoordinates(game, target);
+
+                                if (target.linkToLocation) {
+                                    game.changeLocation(target.linkToLocation);
+                                }
+
+                                return 'Ok';
+                            },
+                        }
                     ];
                 }
             },
@@ -125,5 +141,28 @@ namespace LanternofWorlds {
                 }
             }
         };
+
+        function setCoordinates(game: IGame, target: IFeature) {  
+            var coords = target.coords.split(',').map(c => parseInt(c));
+            var centerX = coords[6] - coords[0];
+            var centerY = coords[7] - coords[1];
+    
+            game.worldProperties.mapLocationX = -(centerX + coords[0] - 800);
+            game.worldProperties.mapLocationY = -(centerY + coords[1] - 650);   
+    
+            setDynamicStyles(game);
+        }
+    
+        function setDynamicStyles(game: IGame) {
+            game.dynamicStyles = [
+                {
+                    elementSelector: '#visual-features img',
+                    styles: [
+                        ['margin-top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
+                        ['margin-left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
+                    ]
+                }
+            ];   
+        }
     }
 }
