@@ -179,7 +179,7 @@ namespace StoryScript {
                     self.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
                 });
             }
-            else if (typeof value === "object") {
+            else if (typeof value === 'object') {
                 if (Array.isArray(clone)) {
                     clone.push({});
                 }

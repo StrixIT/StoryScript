@@ -61,6 +61,25 @@ describe("DataService", function() {
         expect(resultWithoutHashes).toBe(worldWithoutHashes);
     });
 
+    it("should create a clone with additional array properties when present", function() {
+        var service = getService();
+
+        var objectToCopy = {
+            testArray: [
+                1,
+                2,
+                3
+            ]
+        };
+
+        objectToCopy.testArray.mapPath = 'test';
+
+        var result = service.copy(objectToCopy, objectToCopy);
+        var resultText = JSON.stringify({ data: result });
+
+        expect(resultText).toContain('"testArray_arrProps":{"mapPath":"test"}');
+    });
+
     it("should return the storage keys", function() {
         var service = getService();
         var expected = saveKeys.sort();
