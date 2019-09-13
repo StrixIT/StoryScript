@@ -16,8 +16,6 @@
     export function createNamedFunction(proxyScope, proxyFunction: Function, name: string, ...params): Function {
         var namedFunction = {[name]: function () {
             var args = [].slice.call(arguments);
-            // Todo: what is the scope of this?
-            proxyScope = proxyScope || this;
             args.splice(0, 0, proxyScope);
             return proxyFunction.apply(this, args.concat(...params));
         }}[name];

@@ -118,7 +118,7 @@
         return selector ? collectionToFilter.filter(selector) : collectionToFilter;
     }
 
-    function extend(target, source) {
+    export function extend(target, source) {
         if (!source.length) {
             source = [source];
         }

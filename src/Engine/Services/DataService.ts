@@ -161,7 +161,17 @@ namespace StoryScript {
                 clone[key] = [];
                 self.buildClone(functionList, value, pristineValue, clone[key]);
 
-                var additionalArrayProperties = Object.keys(value).filter(v => isNaN(parseInt(v)) && !(value[v].isProxy && value[v].name === 'push'));
+                var additionalArrayProperties = Object.keys(value).filter(v => {
+                    var isAdditionalProperty = isNaN(parseInt(v));
+
+                    if (isAdditionalProperty) {
+                        if (v === 'push' || (value[v].name === 'push') && value[v].isProxy) {
+                            isAdditionalProperty = false;
+                        }
+                    }
+
+                    return isAdditionalProperty;
+                });
 
                 additionalArrayProperties.forEach(p => {
                     var arrayPropertyKey = `${key}_arrProps`;

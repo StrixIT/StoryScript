@@ -7,7 +7,7 @@ describe("ObjectFactory", function() {
 
     it("should create the Start location", function() {
         var game = StoryScript.ObjectFactory.GetGame();
-        var definition = game.definitions.locations.find(l => l.name === 'Start');
+        var definition = find(game.definitions.locations, 'Start');
         var result = definition();
 
         expect(result).not.toEqual(null);
@@ -21,7 +21,7 @@ describe("ObjectFactory", function() {
 
     it("should create a location with read-only properties", function() {
         var game = StoryScript.ObjectFactory.GetGame();
-        var definition = game.definitions.locations.find(l => l.name === 'Start');
+        var definition = find(game.definitions.locations, 'Start');
         var result = definition();
 
         expect(result.activeItems.length).toEqual(0);
@@ -35,7 +35,7 @@ describe("ObjectFactory", function() {
 
     it("should create a location with arrays that cannot be replaced and execute functions on push", function() {
         var game = StoryScript.ObjectFactory.GetGame();
-        var definition = game.definitions.locations.find(l => l.name === 'Start');
+        var definition = find(game.definitions.locations, 'Start');
         var result = definition();
 
         // Check that the items array cannot be replaced.
@@ -44,7 +44,7 @@ describe("ObjectFactory", function() {
         }).toThrow();
 
         // Add an item definition to the items array, and check that the function was executed.
-        var swordDef = game.definitions.items.find(l => l.name === 'Sword');
+        var swordDef = find(game.definitions.items, 'Sword');
         result.items.push(swordDef);
         var pushedItem = result.items[0];
         expect(typeof pushedItem).toBe('object');
@@ -90,4 +90,8 @@ describe("ObjectFactory", function() {
         delete functions.locations[keysToRemove.pop()];
         delete functions.locations[keysToRemove.pop()];
     });
+
+    function find(collection, name) {
+        return collection.find(l => l.name === name || l.originalFunctionName === name);
+    }
 });
