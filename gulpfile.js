@@ -15,6 +15,7 @@
     gulpIgnore = require('gulp-ignore'),
     sourcemaps = require('gulp-sourcemaps'),
     imagemin = require('gulp-imagemin'),
+    zip = require('gulp-zip'),
     angularTemplateCache = require('gulp-angular-templatecache'),
     gameDescriptionBundler = require('./src/gameDescriptionBundler');
 
@@ -35,6 +36,7 @@ exports.createGame = createGame;
 exports.buildGame = gulp.series(deleteFiles, compileEngine, fixPopper, buildGame, gameDescriptions, gameDescriptionsForTest);
 exports.start = gulp.series(exports.buildGame, start);
 exports.publishGame = gulp.series(deletePublishedFiles, exports.buildGame, function() {  return publishGameTask(false); });
+exports.publishGameWithSources = gulp.series(deletePublishedFiles, exports.buildGame, function() {  return publishGameTask(false, true); });
 exports.publishGameLocal = gulp.series(deletePublishedFiles, exports.buildGame, function() { return publishGameTask(true); });
 exports.compileEngine = compileEngine;
 
@@ -378,7 +380,7 @@ function getFolderAndFileName(path) {
     };
 }
 
-function publishGameTask(local) {
+function publishGameTask(local, includeSources) {
     var sourceMapRegex = /(\/[\*\/]# sourceMappingURL=\S*)(( \*\/)|\b)/g;
 
     var css = gulp.src([paths.webroot + 'css/game*.css'])
@@ -400,6 +402,9 @@ function publishGameTask(local) {
                         .pipe(gulp.dest(paths.publishroot + 'resources'));
 
     var config = gulp.src([paths.webroot + '*.json'])
+                .pipe(replace('"sourcesIncluded": false,', function(match) {
+                    return includeSources ? match.replace('false', 'true') : match;
+                }))
                 .pipe(gulp.dest(paths.publishroot));
     
     var index = gulp.src([paths.webroot + 'index.html'])
@@ -425,8 +430,15 @@ function publishGameTask(local) {
 
         return merge(css, js, templates, resources, config, index, libraries);
     }
-    else
-    {
+    else if (includeSources) {
+        var nameSpace = getNameSpace();
+        var sources = gulp.src([paths.sourceroot + 'Games/' + nameSpace + '/**/*.*'])
+                        .pipe(zip('sources.zip'))
+                        .pipe(gulp.dest(paths.publishroot));
+
+        return merge(css, js, templates, resources, config, index, sources);
+    }
+    else {
         return merge(css, js, templates, resources, config, index);
     }
 }
