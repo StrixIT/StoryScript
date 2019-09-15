@@ -130,17 +130,27 @@
         static GAME = 'game';
     }
 
+    export function compareString(left: string, right: string): boolean {
+        if ((left === undefined && right === undefined) || (left === null && right === null)) {
+            return true;
+        }
+        else if ((left === null || left === undefined) || (right === null  || right === undefined)) {
+            return false;
+        }
+
+        return left.toLowerCase() === right.toLowerCase();
+    }
+
     function find(id: any, array: any[]): any[] {
         if (typeof id === 'object') {
             return Array.prototype.filter.call(array, (x: object) => x === id);
         }
 
-        id = typeof id === 'function' ? (id.name || id.originalFunctionName).toLowerCase() : id.toLowerCase();
+        id = typeof id === 'function' ? id.name || id.originalFunctionName : id;
 
         return Array.prototype.filter.call(array, (x: any) => { 
             var target = typeof x.target === 'function' ? x.target.name || x.target.originalFunctionName : x.target;
-            target = target && target.toLowerCase();
-            return x.id === id  || target === id;
+            return compareString(x.id, id)  || compareString(target, id);
         });
     }
 }

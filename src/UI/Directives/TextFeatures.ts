@@ -61,8 +61,8 @@ namespace StoryScript
         };
 
         private isFeatureNode(ev: JQueryEventObject): boolean {
-            var nodeType = ev.target && ev.target.nodeName && ev.target.nodeName.toLowerCase();
-            return nodeType === 'feature';
+            var nodeType = ev.target && ev.target.nodeName;
+            return StoryScript.compareString(nodeType, 'feature');
         }
 
         private getFeature(ev: JQueryEventObject): IFeature {

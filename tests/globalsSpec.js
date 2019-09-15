@@ -258,6 +258,18 @@ describe("Utilities", function() {
         expect(testArray.length).toBe(2);
     });
 
+    it("should return correct results when comparing strings", function() {
+        expect(StoryScript.compareString(undefined, undefined)).toBeTruthy();
+        expect(StoryScript.compareString(null, null)).toBeTruthy();
+        expect(StoryScript.compareString(null, undefined)).toBeFalsy();
+        expect(StoryScript.compareString(undefined, null)).toBeFalsy();
+        expect(StoryScript.compareString('', null)).toBeFalsy();
+        expect(StoryScript.compareString(null, '')).toBeFalsy();
+        expect(StoryScript.compareString('', '')).toBeTruthy();
+        expect(StoryScript.compareString('Test', 'test')).toBeTruthy();
+        expect(StoryScript.compareString('Test', 'TEST')).toBeTruthy();
+    });
+
     function getTestArray() {
         return [
             _TestGame.Items.Sword(),

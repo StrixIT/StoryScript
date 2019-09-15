@@ -128,8 +128,7 @@ namespace StoryScript {
             }
 
             var match = (<[() => T]>collection).filter((definition: () => T) => {
-                var functionName = definition.name || definition.originalFunctionName;
-                return functionName.toLowerCase() === selector.toLowerCase();
+                return compareString(definition.name || definition.originalFunctionName, selector);
             });
 
             return match[0] ? match[0]() : null;

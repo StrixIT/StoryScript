@@ -369,8 +369,7 @@ namespace StoryScript {
                 throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
             }
 
-            nameAttribute = nameAttribute.toLowerCase();
-            return game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
+            return game.currentLocation.features.filter(f => compareString(f.id, nameAttribute))[0];
         }
 
         private selectLocationDescription(game: IGame) {
