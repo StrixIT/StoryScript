@@ -118,7 +118,7 @@ namespace StoryScript {
             var self = this;
 
             if (!clone) {
-                clone = Array.isArray(values) ? [] : typeof values === "object" ? {} : values;
+                clone = Array.isArray(values) ? [] : typeof values === 'object' ? {} : values;
                 if (clone == values) {
                     return clone;
                 }
@@ -218,7 +218,7 @@ namespace StoryScript {
                         }
 
                         if (match) {
-                            clone[key] = 'function#' + plural + '_' + match + '#' + parts.hash;
+                            clone[key] = 'function#' + plural + '|' + match + '#' + parts.hash;
                         }
                         else {
                             clone[key] = value.toString();
@@ -274,7 +274,7 @@ namespace StoryScript {
                         delete loaded[arrayPropertyKey];
                     }
                 }
-                else if (typeof value === "object") {
+                else if (typeof value === 'object') {
                     self.restoreObjects(functionList, value);
                 }
                 else if (typeof value === 'string') {
@@ -312,10 +312,10 @@ namespace StoryScript {
         private GetFunctionIdParts(value: string): IFunctionIdParts {
             var parts = value.split('#');
             var functionPart = parts[1];
-            var functionParts = functionPart.split('_');
+            var functionParts = functionPart.split('|');
             var type = functionParts[0];
             functionParts.splice(0, 1);
-            var functionId = functionParts.join('_');
+            var functionId = functionParts.join('|');
             var hash = parseInt(parts[2]);
 
             return {

@@ -96,7 +96,7 @@ describe("CombinationService", function() {
 
         it("should remove only the target feature, not all features of the type", function() {    
             var target = { name: 'Ball', type: 'item', id: 'ball' };
-            var ofSameType = StoryScript.extend({}, target);
+            var ofSameType = JSON.parse(JSON.stringify(target));
             
             var game = {
                 combinations: {

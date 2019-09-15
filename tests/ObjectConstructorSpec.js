@@ -14,7 +14,7 @@ describe("ObjectFactory", function() {
         expect(result.id).toEqual('start');
         expect(result.type).toEqual('location');
 
-        var hashMatch = new RegExp(/function#location_start_descriptionSelector#[0-9]{9}/g).exec(result.descriptionSelector.functionId).length;
+        var hashMatch = new RegExp(/function#location|start|descriptionSelector#[0-9]{9}/g).exec(result.descriptionSelector.functionId).length;
 
         expect(hashMatch).toEqual(1);
     });

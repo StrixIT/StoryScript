@@ -33,14 +33,14 @@ describe("ObjectFactory", function() {
         expect(Object.keys(result['actions']).length).toEqual(0);
 
         expect(locationFunctions).toEqual([
-            'dirtroad_combatActions_0_execute',
-            'garden_enterEvents_0',
-            'garden_actions_0_execute',
-            'garden_actions_1_execute',
-            'bedroom_trade_buy_itemSelector',
-            'bedroom_trade_sell_itemSelector',
-            'bedroom_trade_sell_priceModifier',
-            'start_descriptionSelector'
+            'dirtroad|combatActions|0|execute',
+            'garden|enterEvents|0',
+            'garden|actions|0|execute',
+            'garden|actions|1|execute',
+            'bedroom|trade|buy|itemSelector',
+            'bedroom|trade|sell|itemSelector',
+            'bedroom|trade|sell|priceModifier',
+            'start|descriptionSelector'
         ]);
     });
 });
