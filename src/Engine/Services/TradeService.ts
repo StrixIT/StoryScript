@@ -50,7 +50,7 @@ namespace StoryScript {
             };
 
             if ((trader.initCollection && trader.initCollection(self._game, trader) || !itemsForSale)) {
-                // Todo: change this when more than one trade per location is allowed.
+                // Change this when more than one trade per location is allowed.
                 var collection = <any>(trader.ownItemsOnly ? self._game.currentLocation.activePerson.items : self._game.definitions.items);
                 itemsForSale = StoryScript.randomList<IItem>(collection, trader.buy.maxItems, 'items', self._game.definitions, buySelector);
             }
