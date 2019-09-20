@@ -75,15 +75,15 @@
                                         entries: [
                                             {
                                                 text: 'Dolk',
-                                                value: (<any>Items.Dagger).name,
+                                                value: (<any>Items.Dagger).originalFunctionName,
                                             },
                                             {
                                                 text: 'Leren helm',
-                                                value: (<any>Items.LeatherHelmet).name,
+                                                value: (<any>Items.LeatherHelmet).originalFunctionName,
                                             },
                                             {
                                                 text: 'Lantaren',
-                                                value: (<any>Items.Lantern).name,
+                                                value: (<any>Items.Lantern).originalFunctionName,
                                             }
                                         ]
                                     }

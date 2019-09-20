@@ -1,6 +1,6 @@
 ﻿namespace DangerousCave.Actions {
     export function Inspect(text: string) {
-        return function (game: IGame, destination: StoryScript.IDestination, barrier: StoryScript.IBarrier, action: StoryScript.IBarrierAction): void {
+        return function (game: IGame, barrier: StoryScript.IBarrier, destination: StoryScript.IDestination): void {
             if (text) {
                 game.logToLocationLog(text);
             }
