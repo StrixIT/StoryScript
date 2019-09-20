@@ -12,7 +12,7 @@
         <ul class="list-unstyled">
             <li class="inline" ng-repeat="destination in $ctrl.game.currentLocation.activeDestinations">
                 <div class="barrier" ng-if="destination.barrier">
-                    <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination, destination.barrier)" ng-class="$ctrl.getCombineClass(destination.barrier)">{{ destination.barrier.name }}</button>
+                    <button type="button" class="btn btn-info" ng-click="$ctrl.executeBarrierAction(destination.barrier, destination)" ng-class="$ctrl.getCombineClass(destination.barrier)">{{ destination.barrier.name }}</button>
                     <select class="action-select" ng-show="destination.barrier.actions.length > 0" ng-model="destination.barrier.selectedAction" ng-options="a.text for a in destination.barrier.actions">
                     </select>
                 </div>

@@ -4,19 +4,19 @@
      * should keep the key after using it, it is removed from his item list.
      * @param callBack 
      */
-    export function OpenWithKey(callBack?: (game: IGame, destination: IDestination) => void) {
-        return (game: IGame, destination: IDestination) => {
-            var key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
+    export function OpenWithKey(callBack?: (game: IGame, barrier: IBarrier, destination: IDestination) => void) {
+        return (game: IGame, barrier: IBarrier, destination: IDestination) => {
+            var key = typeof barrier.key === 'function' ? barrier.key() : <IKey>game.helpers.getItem(barrier.key);
 
             if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {
-                game.character.items.remove(key);
-                game.currentLocation.items.remove(key);
+                game.character.items.remove(barrier.key);
+                game.currentLocation.items.remove(barrier.key);
             }
 
             delete destination.barrier;
 
             if (callBack) {
-                callBack(game, destination);
+                callBack(game, barrier, destination);
             }
         }
     }

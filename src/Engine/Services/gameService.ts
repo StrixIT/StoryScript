@@ -21,7 +21,7 @@
         initCombat(): void;
         fight(enemy: IEnemy, retaliate?: boolean): void;
         useItem(item: IItem): void;
-        executeBarrierAction(destination: IDestination, barrier: IBarrier): void;
+        executeBarrierAction(barrier: IBarrier, destination: IDestination): void;
         scoreChange(change: number): void;
         hitpointsChange(change: number): void;
         changeGameState(state: GameState): void;
@@ -229,17 +229,15 @@ namespace StoryScript {
             item.use(self._game, item);
         }
 
-        executeBarrierAction = (destination: IDestination, barrier: IBarrier): void => {
+        executeBarrierAction = (barrier: IBarrier, destination: IDestination, ): void => {
             var self = this;
 
-            // Todo: improve, use selected action as object.
-            if (!barrier.actions || !barrier.actions.length) {
+            if (isEmpty(barrier.actions)) {
                 return;
             }
 
-            var action = barrier.actions.filter((item: IBarrierAction) => { return item.text == barrier.selectedAction.text; })[0];
-            var actionIndex = barrier.actions.indexOf(action);
-            action.execute(self._game, destination, barrier, action);
+            var actionIndex = barrier.actions.indexOf(barrier.selectedAction);
+            barrier.selectedAction.execute(self._game, barrier, destination);
             barrier.actions.splice(actionIndex, 1);
 
             if (barrier.actions.length) {
@@ -252,7 +250,7 @@ namespace StoryScript {
         scoreChange = (change: number): void => {
             var self = this;
 
-            // Todo: change if xp can be lost.
+            // Change when xp can be lost.
             if (change > 0) {
                 var levelUp = self._rules.general && self._rules.general.scoreChange && self._rules.general.scoreChange(self._game, change);
 

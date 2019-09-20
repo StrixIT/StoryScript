@@ -42,10 +42,10 @@ namespace StoryScript
         }
 
         private getFeatureCoordinates = (feature: IFeature): { top: number, left: number } => {
-            var coords = feature.coords.split(",");
+            var coords = feature.coords.split(',');
             var top = null, left = null;
     
-            if (feature.shape.toLowerCase() === 'poly') {
+            if (StoryScript.compareString(feature.shape, 'poly')) {
                 var x = [], y = [];
     
                 for (var i = 0; i < coords.length; i++) {

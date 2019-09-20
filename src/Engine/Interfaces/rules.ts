@@ -160,8 +160,14 @@
          * @param travel True if the player arrived by travelling, false or undefined otherwise. A player can get
          * to a location without travelling when a game is loaded, for example.
          */
-        // Todo: should there not also be a leaveLocation counterpart? Should that not be used for QuestForTheKing?
         enterLocation?(game: IGame, location: ICompiledLocation, travel?: boolean): void;
+
+        /**
+         * When specified, this function will be called whenever the player enters a location.
+         * @param game The active game
+         * @param location The location the player leaves
+         */
+        leaveLocation?(game: IGame, location: ICompiledLocation): void;
 
         /**
          * Specify this function if you want to run custom logic to set the description selector when selecting the description when

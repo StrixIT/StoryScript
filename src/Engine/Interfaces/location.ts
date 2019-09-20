@@ -14,9 +14,8 @@
         enterEvents?: ICollection<((game: IGame) => void)>;
 
         /**
-         * When specified, the functions in this array will be called when the player leaves the location.
+         * When specified, the functions in this array will be called when the player leaves the location for the first time.
          */
-        // Todo: shouldn't they be called only one time, when the player first leaves the location?
         leaveEvents?: ICollection<((game: IGame) => void)>;
 
         /**
@@ -67,15 +66,6 @@
          * e.g. adding containers like closets to the game.
          */
         trade?: ITrade;
-
-        /**
-         * When specified, this function will be called on leaving a location to determine whether the player has done all
-         * there is to do on this location.
-         * @param game The game object
-         * @param location The location to check for completion
-         */
-        // Todo: keep this on the general code or is this game specific?
-        complete?(game: IGame, location: ICompiledLocation): boolean;
     }
 
     /**

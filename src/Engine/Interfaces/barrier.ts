@@ -31,10 +31,9 @@
         /**
          * The function to execute when the player selects this action.
          * @param game The game object
-         * @param params The parameters for the action
+         * @param barrier The barrier
+         * @param destination The destination the barrier is for
          */
-        // Todo: should the params collection be this generic or should it be more specific, e.g. just passing in the barrier
-        // the action is for? Right now only the game, the destination the action is for, the barrier and the action itself are passed in.
-        execute(game: IGame, ...params): void;
+        execute(game: IGame, barrier: IBarrier, destination: IDestination): void;
     }
 }

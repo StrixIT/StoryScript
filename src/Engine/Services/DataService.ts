@@ -118,7 +118,7 @@ namespace StoryScript {
             var self = this;
 
             if (!clone) {
-                clone = Array.isArray(values) ? [] : typeof values === "object" ? {} : values;
+                clone = Array.isArray(values) ? [] : typeof values === 'object' ? {} : values;
                 if (clone == values) {
                     return clone;
                 }
@@ -161,7 +161,17 @@ namespace StoryScript {
                 clone[key] = [];
                 self.buildClone(functionList, value, pristineValue, clone[key]);
 
-                var additionalArrayProperties = Object.keys(value).filter(v => isNaN(parseInt(v)) && !(value[v].isProxy && value[v].name === 'push'));
+                var additionalArrayProperties = Object.keys(value).filter(v => {
+                    var isAdditionalProperty = isNaN(parseInt(v));
+
+                    if (isAdditionalProperty) {
+                        if (v === 'push' || (value[v].name === 'push') && value[v].isProxy) {
+                            isAdditionalProperty = false;
+                        }
+                    }
+
+                    return isAdditionalProperty;
+                });
 
                 additionalArrayProperties.forEach(p => {
                     var arrayPropertyKey = `${key}_arrProps`;
@@ -169,7 +179,7 @@ namespace StoryScript {
                     self.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
                 });
             }
-            else if (typeof value === "object") {
+            else if (typeof value === 'object') {
                 if (Array.isArray(clone)) {
                     clone.push({});
                 }
@@ -208,7 +218,7 @@ namespace StoryScript {
                         }
 
                         if (match) {
-                            clone[key] = 'function#' + plural + '_' + match + '#' + parts.hash;
+                            clone[key] = 'function#' + plural + '|' + match + '#' + parts.hash;
                         }
                         else {
                             clone[key] = value.toString();
@@ -264,7 +274,7 @@ namespace StoryScript {
                         delete loaded[arrayPropertyKey];
                     }
                 }
-                else if (typeof value === "object") {
+                else if (typeof value === 'object') {
                     self.restoreObjects(functionList, value);
                 }
                 else if (typeof value === 'string') {
@@ -302,10 +312,10 @@ namespace StoryScript {
         private GetFunctionIdParts(value: string): IFunctionIdParts {
             var parts = value.split('#');
             var functionPart = parts[1];
-            var functionParts = functionPart.split('_');
+            var functionParts = functionPart.split('|');
             var type = functionParts[0];
             functionParts.splice(0, 1);
-            var functionId = functionParts.join('_');
+            var functionId = functionParts.join('|');
             var hash = parseInt(parts[2]);
 
             return {

@@ -145,7 +145,7 @@ namespace StoryScript {
 
         private isMatch(combineTool: any, tool: ICombinable) {
             var combineId = typeof combineTool === 'function' ? combineTool.name || combineTool.originalFunctionName : combineTool;
-            return tool.id.toLowerCase() === combineId.toLowerCase();
+            return compareString(tool.id, combineId);
         }
 
         private removeFeature(feature: IFeature) {

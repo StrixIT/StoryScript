@@ -44,7 +44,7 @@ namespace StoryScript {
             self._sharedMethodService.executeAction(action, self);
         }
 
-        executeBarrierAction = (destination: IDestination, barrier: IBarrier) => {
+        executeBarrierAction = (barrier: IBarrier, destination: IDestination) => {
             var self = this;
 
             if (self._game.combinations.tryCombine(barrier))
@@ -55,7 +55,7 @@ namespace StoryScript {
                 return;
             }
 
-            self._gameService.executeBarrierAction(destination, barrier);
+            self._gameService.executeBarrierAction(barrier, destination);
         }
 
         trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade) => {

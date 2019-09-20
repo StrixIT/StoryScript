@@ -152,9 +152,9 @@ namespace StoryScript {
             for (var j = 0; j < node.childNodes.length; j++) {
                 var replies = node.childNodes[j];
 
-                if (replies.nodeName.toLowerCase() == 'replies') {
+                if (compareString(replies.nodeName, 'replies')) {
                     var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
-                    var addDefaultReply = addDefaultValue && addDefaultValue.toLowerCase() === 'false' ? false : true;
+                    var addDefaultReply = compareString(addDefaultValue, 'false') ? false : true;
 
                     newNode.replies = <IConversationReplies>{
                         defaultReply: <boolean>addDefaultReply,
@@ -179,7 +179,7 @@ namespace StoryScript {
             for (var k = 0; k < replies.childNodes.length; k++) {
                 var replyNode = replies.childNodes[k];
 
-                if (replyNode.nodeName.toLowerCase() == 'reply') {
+                if (compareString(replyNode.nodeName, 'reply')) {
                     var requires = self.GetNodeValue(replyNode, 'requires');
                     var linkToNode = self.GetNodeValue(replyNode, 'node');
                     var trigger = self.GetNodeValue(replyNode, 'trigger');
@@ -242,7 +242,7 @@ namespace StoryScript {
             }
 
             if (!activeNode) {
-                activeNode = conversation.nodes.filter((node) => { return node.node && conversation.startNode && node.node.toLowerCase() === person.conversation.startNode.toLowerCase(); })[0];
+                activeNode = conversation.nodes.filter((node) => { return compareString(node.node, person.conversation.startNode); })[0];
             }
 
             if (!activeNode) {
@@ -331,7 +331,7 @@ namespace StoryScript {
                     if (!hasItem) {
                         for (var i in self._game.character.equipment) {
                             var slotItem = <IItem>self._game.character.equipment[i];
-                            hasItem = slotItem != undefined && slotItem != null && slotItem.id != undefined && slotItem.id.toLowerCase() === value;
+                            hasItem = slotItem != undefined && slotItem != null && compareString(slotItem.id, value);
                         }
                     }
 
