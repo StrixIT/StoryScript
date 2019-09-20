@@ -143,7 +143,7 @@
 
     function find(id: any, array: any[]): any[] {
         if (typeof id === 'object') {
-            return Array.prototype.filter.call(array, (x: any) => x === id || compareString(x.id || x, id.id || id));
+            return Array.prototype.filter.call(array, (x: any) => x === id );
         }
 
         id = typeof id === 'function' ? id.name || id.originalFunctionName : id;
