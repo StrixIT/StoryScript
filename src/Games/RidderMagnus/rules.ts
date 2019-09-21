@@ -122,21 +122,24 @@
                 initCombat: (game: IGame, location: ICompiledLocation): void => {
                     var self = this;
 
-                    if (game.currentLocation && game.currentLocation.sluipCheck && !game.currentLocation.hasVisited && !game.currentLocation.combatActions.some(a => (<IAction>a).isSneakAction)) {
+                    if (game.currentLocation && game.currentLocation.sluipCheck && !game.currentLocation.combatActions.some(a => (<IAction>a).isSneakAction)) {
                         // check stats
                         var roll = game.helpers.rollDice('1d6+' + (game.character.zoeken + game.character.sluipen));
 
                         if (roll >= game.currentLocation.sluipCheck) {
 
-                            game.currentLocation.activeEnemies.forEach((enemy: IEnemy, index: number) => {
+                            game.currentLocation.activeEnemies.forEach((enemy: IEnemy) => {
                                 var sneakAction = {
                                     isSneakAction: true,
+                                    enemyId: enemy.id,
                                     text: 'Besluip ' + enemy.name,
                                     type: StoryScript.ActionType.Combat,
-                                    execute: (game: IGame, actionIndex: number) => {
+
+                                    // Todo: this needs to be reworked so it works when the function is serialized.
+                                    execute: (game: IGame, action: IAction) => {
                                         var undef = typeof enemy === 'undefined';
 
-                                        var theEnemy = undef ? game.currentLocation.activeEnemies[actionIndex] : enemy;
+                                        var theEnemy = undef ? game.currentLocation.activeEnemies.get(action.enemyId) : enemy;
 
                                         // Do damage to sneaked enemy.
                                         game.fight(theEnemy, false);
@@ -145,7 +148,7 @@
                                     }
                                 };
 
-                                game.currentLocation.combatActions.splice(index, 0, sneakAction);
+                                game.currentLocation.combatActions.push(sneakAction);
                             });
                         }
                     }

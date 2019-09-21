@@ -5,5 +5,6 @@
 
     export interface IAction extends StoryScript.IAction {
         isSneakAction?: boolean;
+        enemyId?: string;
     }
 }
