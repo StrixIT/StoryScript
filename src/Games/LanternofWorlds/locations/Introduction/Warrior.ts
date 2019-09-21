@@ -1,7 +1,7 @@
 namespace LanternofWorlds.Locations {
-    export function Forest() {
+    export function Warrior() {
         return Location({
-            name: 'Forest',
+            name: 'Warrior',
             destinations: [
                 
             ],
