@@ -34,6 +34,11 @@
         autoBackButton?: boolean;
 
         /**
+         * Set this to true if you want to show an intro screen when the game starts.
+         */
+        intro?: boolean;
+
+        /**
          * Run custom code to prepare the game before it begins, e.g. adding game-specific world properties to it.
          * @param game The game about to be started
          */
@@ -51,6 +56,15 @@
          * @param game The game about to be started
          */
         gameStart?(game: IGame): void;
+
+        /**
+         * When you want to play a music file when the game is in a certain state, use this list. Use it like this:
+            playList: [
+                [StoryScript.GameState.CreateCharacter, 'createCharacter.mp4'],
+                [StoryScript.GameState.Play, 'play.mp4']
+            ]
+         */
+        playList?: (GameState | string)[][];
     }
 
     export interface IGeneralRules {
@@ -146,8 +160,14 @@
          * @param travel True if the player arrived by travelling, false or undefined otherwise. A player can get
          * to a location without travelling when a game is loaded, for example.
          */
-        // Todo: should there not also be a leaveLocation counterpart? Should that not be used for QuestForTheKing?
         enterLocation?(game: IGame, location: ICompiledLocation, travel?: boolean): void;
+
+        /**
+         * When specified, this function will be called whenever the player enters a location.
+         * @param game The active game
+         * @param location The location the player leaves
+         */
+        leaveLocation?(game: IGame, location: ICompiledLocation): void;
 
         /**
          * Specify this function if you want to run custom logic to set the description selector when selecting the description when

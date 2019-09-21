@@ -16,18 +16,11 @@
          /**
          * The action status or a function that returns an action status to set the status dynamically.
          */
-        status?: ActionStatus | ((game: IGame, ...params) => ActionStatus);
+        status?: ActionStatus | ((game: IGame) => ActionStatus);
 
          /**
          * The function to execute when the player selects the action.
          */
-        // Todo: it seems only the game parameter is used right now. Do we need the other arguments?
-        execute: string | ((game: IGame, actionIndex: number, ...params) => void);
-
-        /**
-         * Additional parameters to pass to the execute function.
-         */
-        // Todo: will this ever be used? Do we need this? Can this be used to make runtime functions more flexible (issue #93)
-        arguments?: any[];
+        execute: string | ((game: IGame) => void);
     }
 }

@@ -77,7 +77,7 @@ describe("CombinationService", function() {
                 format: new StoryScript.DefaultTexts().format
             }
 
-            var service = getService(game, texts);
+            var service = getService(game, null, texts);
             var result = service.tryCombination();
             expect(result.success).toBeFalsy();
 
@@ -93,6 +93,37 @@ describe("CombinationService", function() {
             expect(result.success).toBeFalsy();
             expect(result.text).toBe('Take Ball: You Take the Ball. Nothing happens.');
         });
+
+        it("should remove only the target feature, not all features of the type", function() {    
+            var target = { name: 'Ball', type: 'item', id: 'ball' };
+            var ofSameType = JSON.parse(JSON.stringify(target));
+            
+            var game = {
+                combinations: {
+                    activeCombination: {}
+                },
+                locations: [
+                    {
+                        items: [
+                            target
+                        ]
+                    }
+                ],
+                character: {
+                    items: [
+                        ofSameType
+                    ]
+                }
+            };
+
+            var rules = {
+
+            };
+
+            var service = getService(game, rules);
+            
+            var result = service.tryCombination(target);
+        });
     });
 
 
@@ -103,8 +134,8 @@ describe("CombinationService", function() {
         'Push'
     ];
 
-    function getService(game, texts) {
-        return new StoryScript.CombinationService({}, {}, game, new _TestGame.Rules(), texts || {});
+    function getService(game, rules, texts) {
+        return new StoryScript.CombinationService({}, {}, game, rules || _TestGame.Rules(), texts || {});
     }
 
 });

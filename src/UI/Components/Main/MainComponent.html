@@ -1,14 +1,15 @@
 <div ng-init="init()">
     <navigation></navigation>
     <div class="container-fluid body-content">
+        <sound></sound>
         <div class="row">
-            <div id="character-container" ng-if="$ctrl.game.stateString !== 'CreateCharacter'" id="character-container" ng-class="{ 'col-4': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterPane() }">
+            <div id="character-container" ng-if="game.stateString !== 'CreateCharacter' && game.stateString !== 'Intro'" id="character-container" ng-class="{ 'col-4': $ctrl.showCharacterPane() }">
                 <character-sheet></character-sheet>
                 <equipment></equipment>
                 <backpack></backpack>
                 <quests></quests>
             </div>
-            <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter' && $ctrl.showCharacterPane(), 'col-12': game.stateString === 'CreateCharacter' || !$ctrl.showCharacterPane() }">
+            <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter' && game.stateString !== 'Intro' && $ctrl.showCharacterPane(), 'col-12': game.stateString === 'CreateCharacter' || game.stateString === 'Intro' || !$ctrl.showCharacterPane() }">
                 <div ng-if="!$ctrl.game.stateString">
                     {{ $ctrl.texts.loading }}
                 </div>
@@ -20,13 +21,14 @@
                     <exploration></exploration>
                     <enemy></enemy>
                 </div>
+                <intro></intro>
                 <create-character></create-character>
                 <level-up></level-up>
                 <game-over></game-over>
                 <victory></victory>
             </div>
         </div>
-        <div class="row" ng-if="$ctrl.game.stateString !== 'CreateCharacter'">
+        <div class="row" ng-if="$ctrl.game.stateString !== 'CreateCharacter' && game.stateString !== 'Intro'">
             <div class="col-12">
                 <combination></combination>
             </div>

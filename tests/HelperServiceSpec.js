@@ -37,7 +37,7 @@ describe("HelperService", function() {
     it("should retrieve an item using its id", function() {
         var game = StoryScript.ObjectFactory.GetGame();
         var service = new StoryScript.HelperService(game);
-        var expected = game.definitions.items.find(l => l.name === 'Sword')();
+        var expected = find(game.definitions.items, 'Sword');
 
         var getWithId = service.getItem('Sword');
 
@@ -47,7 +47,7 @@ describe("HelperService", function() {
     it("should retrieve an enemy using its id", function() {
         var game = StoryScript.ObjectFactory.GetGame();
         var service = new StoryScript.HelperService(game);
-        var expected = game.definitions.enemies.find(l => l.name === 'Bandit')();
+        var expected = find(game.definitions.enemies, 'Bandit');  
 
         // Set the execute to null because comparing the action function fails.
         expected.items[1].open.execute = null;
@@ -142,4 +142,8 @@ describe("HelperService", function() {
         
         expect(result).toBe(6);
     });
+
+    function find(collection, name) {
+        return collection.find(l => l.name === name || l.originalFunctionName === name)();
+    }
 });

@@ -71,6 +71,11 @@ namespace StoryScript {
                         controller._game.currentLocation.activePerson.currency = controller._game.currentLocation.activeTrade.currency;
                     }
                 }
+
+                if (oldValue == GameState.LevelUp && newValue == GameState.Play) {
+                    // Level-up was just completed. Save the game from here, because the character service cannot depend on the game service.
+                    self._gameService.saveGame();
+                }
             }
             
             self.getStateSettings(controller, newValue);

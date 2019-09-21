@@ -74,16 +74,16 @@ describe("Utilities", function() {
         var result = testArray.get(_TestGame.Items.Journal);
 
         expect(result).not.toBeNull();
-        expect(result.id).toBe(_TestGame.Items.Journal.name.toLowerCase());
+        expect(compareId(result.id, _TestGame.Items.Journal)).toBeTruthy();
     });
 
     it("should get an entity using an id string", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(_TestGame.Items.Journal.name);
+        var result = testArray.get(_TestGame.Items.Journal.name || _TestGame.Items.Journal.originalFunctionName);
 
         expect(result).not.toBeNull();
-        expect(result.id).toBe(_TestGame.Items.Journal.name.toLowerCase());
+        expect(compareId(result.id, _TestGame.Items.Journal)).toBeTruthy();
     });
 
     it("should not get an entity when passing in a new object", function() {
@@ -100,7 +100,7 @@ describe("Utilities", function() {
         var result = testArray.get();
 
         expect(result).not.toBeUndefined();
-        expect(result.id).toBe(_TestGame.Items.Sword.name.toLowerCase());
+        expect(compareId(result.id, _TestGame.Items.Sword)).toBeTruthy();
     });
 
     it("should get an entity using its object reference", function() {
@@ -154,7 +154,7 @@ describe("Utilities", function() {
         var result = testArray.get(Garden);
 
         expect(result).not.toBeUndefined();
-        expect(result.target).toBe(Garden.name);
+        expect(compareId(result.target, Garden.name || Garden.originalFunctionName)).toBeTruthy();
     });
 
     it("should get all entities in the array matching the id", function() {
@@ -167,8 +167,8 @@ describe("Utilities", function() {
 
         expect(result).not.toBeUndefined();
         expect(result.length).toBe(2);
-        expect(result[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
-        expect(result[1].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
+        expect(compareId(result[0].id, _TestGame.Items.Sword)).toBeTruthy();
+        expect(compareId(result[1].id, _TestGame.Items.Sword)).toBeTruthy();
     });
 
     it("should remove an entity using the function name", function() {
@@ -177,16 +177,16 @@ describe("Utilities", function() {
         testArray.remove(_TestGame.Items.Journal);
 
         expect(testArray.length).toBe(1);
-        expect(testArray[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
+        expect(compareId(testArray[0].id, _TestGame.Items.Sword)).toBeTruthy();
     });
 
     it("should remove an entity using an id string", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(_TestGame.Items.Journal.name);
+        testArray.remove(_TestGame.Items.Journal.name || _TestGame.Items.Journal.originalFunctionName);
 
         expect(testArray.length).toBe(1);
-        expect(testArray[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
+        expect(compareId(testArray[0].id, _TestGame.Items.Sword)).toBeTruthy();
     });
 
     it("should not remove an entity when passing in a new object", function() {
@@ -195,7 +195,7 @@ describe("Utilities", function() {
         testArray.remove(_TestGame.Items.Journal());
 
         expect(testArray.length).toBe(2);
-        expect(testArray[1].id).toBe(_TestGame.Items.Journal.name.toLowerCase());
+        expect(compareId(testArray[1].id, _TestGame.Items.Journal)).toBeTruthy();
     });
 
     it("should remove an entity using its object reference", function() {
@@ -208,7 +208,7 @@ describe("Utilities", function() {
         testArray.remove(journal);
 
         expect(testArray.length).toBe(1);
-        expect(testArray[0].id).toBe(_TestGame.Items.Sword.name.toLowerCase());
+        expect(compareId(testArray[0].id, _TestGame.Items.Sword)).toBeTruthy();
     });
 
     it("should remove a destination using the string id of the destination", function() {
@@ -258,10 +258,27 @@ describe("Utilities", function() {
         expect(testArray.length).toBe(2);
     });
 
+    it("should return correct results when comparing strings", function() {
+        expect(StoryScript.compareString(undefined, undefined)).toBeTruthy();
+        expect(StoryScript.compareString(null, null)).toBeTruthy();
+        expect(StoryScript.compareString(null, undefined)).toBeFalsy();
+        expect(StoryScript.compareString(undefined, null)).toBeFalsy();
+        expect(StoryScript.compareString('', null)).toBeFalsy();
+        expect(StoryScript.compareString(null, '')).toBeFalsy();
+        expect(StoryScript.compareString('', '')).toBeTruthy();
+        expect(StoryScript.compareString('Test', 'test')).toBeTruthy();
+        expect(StoryScript.compareString('Test', 'TEST')).toBeTruthy();
+    });
+
     function getTestArray() {
         return [
             _TestGame.Items.Sword(),
             _TestGame.Items.Journal()
         ];
+    }
+
+    function compareId(id, func) {
+        var name = func.name || func.originalFunctionName || func;
+        return id.toLowerCase() === name.toLowerCase();
     }
 });

@@ -35,9 +35,9 @@ namespace StoryScript {
         changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
             var self = this;
 
-            // TODO: shouldn't these events be played only once?
             if (game.previousLocation && game.previousLocation.leaveEvents) {
                 self.playEvents(game, game.previousLocation.leaveEvents);
+                game.previousLocation.leaveEvents.length = 0;
             }
 
             // If there is no location, we are starting a new game and we're done here.
@@ -137,10 +137,6 @@ namespace StoryScript {
             self._dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
 
             if (game.previousLocation) {
-                if (game.previousLocation.complete) {
-                    game.previousLocation.complete(game, game.previousLocation);
-                }
-
                 self._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
         }
@@ -153,6 +149,7 @@ namespace StoryScript {
             if (!game.currentLocation.hasVisited) {
                 if (game.currentLocation.enterEvents) {
                     self.playEvents(game, game.currentLocation.enterEvents);
+                    game.currentLocation.enterEvents.length = 0;
                 }
 
                 game.currentLocation.hasVisited = true;
@@ -208,14 +205,12 @@ namespace StoryScript {
         }
 
         private initTrade(game: IGame) {
-            // Todo: better way to get action. Use action function name from function list?
             if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(a => a.actionType == ActionType.Trade))) {
 
                 game.currentLocation.actions.push({
                     text: game.currentLocation.trade.title,
                     actionType: ActionType.Trade,
                     execute: 'trade'
-                    // Arguments are ignored here. These are dealt with in the trade function on the main controller.
                 });
             }
         }
@@ -273,7 +268,7 @@ namespace StoryScript {
 
                 if (descriptions) {
                     var parser = new DOMParser();
-                    var htmlDoc = parser.parseFromString(descriptions, "text/html");
+                    var htmlDoc = parser.parseFromString(descriptions, 'text/html');
 
                     self.processVisualFeatures(htmlDoc, game);
                     self.processDescriptions(htmlDoc, game);
@@ -285,7 +280,7 @@ namespace StoryScript {
         }
 
         private processDescriptions(htmlDoc: Document, game: IGame) {
-            var descriptionNodes = htmlDoc.getElementsByTagName("description");
+            var descriptionNodes = htmlDoc.getElementsByTagName('description');
 
             if (!descriptionNodes || !descriptionNodes.length) {
                 return;
@@ -314,7 +309,7 @@ namespace StoryScript {
             }
 
             var parser = new DOMParser();
-            var htmlDoc = parser.parseFromString(game.currentLocation.text, "text/html");
+            var htmlDoc = parser.parseFromString(game.currentLocation.text, 'text/html');
             var featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
             for (var i = 0; i < featureNodes.length; i++) {
@@ -369,8 +364,7 @@ namespace StoryScript {
                 throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
             }
 
-            nameAttribute = nameAttribute.toLowerCase();
-            return game.currentLocation.features.filter(f => f.id.toLowerCase() === nameAttribute)[0];
+            return game.currentLocation.features.filter(f => compareString(f.id, nameAttribute))[0];
         }
 
         private selectLocationDescription(game: IGame) {

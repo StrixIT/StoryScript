@@ -5,8 +5,8 @@ namespace StoryScript {
         canPay(currency: number, value: number): boolean;
         actualPrice(item: IItem, modifier: number | (() => number)): number;
         displayPrice(item: IItem, actualPrice: number): string;
-        buy(item: IItem, trade: ITrade): void;
-        sell(item: IItem, trade: ITrade): void;
+        buy(item: IItem, trade: ITrade): boolean;
+        sell(item: IItem, trade: ITrade): boolean;
     }
 }
 
@@ -50,7 +50,7 @@ namespace StoryScript {
             };
 
             if ((trader.initCollection && trader.initCollection(self._game, trader) || !itemsForSale)) {
-                // Todo: change this when more than one trade per location is allowed.
+                // Change this when more than one trade per location is allowed.
                 var collection = <any>(trader.ownItemsOnly ? self._game.currentLocation.activePerson.items : self._game.definitions.items);
                 itemsForSale = StoryScript.randomList<IItem>(collection, trader.buy.maxItems, 'items', self._game.definitions, buySelector);
             }
@@ -87,22 +87,30 @@ namespace StoryScript {
             return actualPrice > 0 ? (item.name + ': ' + actualPrice + ' ' + self._texts.currency) : item.name;
         }
 
-        // Todo: check if the player can affort it!
-        buy = (item: IItem, trade: ITrade): void => {
+        buy = (item: IItem, trade: ITrade): boolean => {
             var self = this;
-            self.pay(item, trade, trade.buy, self._game.character, false);
+
+            if (!self.pay(item, trade, trade.buy, self._game.character, false)) {
+                return false;
+            }
+
             self._game.character.items.push(item);
             trade.buy.items.remove(item);
 
             if (trade.onBuy) {
                 trade.onBuy(self._game, item);
             }
+
+            return true;
         }
 
-        // Todo: check if the trader can affort it!
-        sell = (item: IItem, trade: ITrade): void => {
+        sell = (item: IItem, trade: ITrade): boolean => {
             var self = this;
-            self.pay(item, trade, trade.sell, self._game.character, true);
+
+            if (!self.pay(item, trade, trade.sell, self._game.character, true)) {
+                return false;
+            };
+
             self._game.character.items.remove(item);
             trade.sell.items.remove(item);
             trade.buy.items.push(item);
@@ -110,9 +118,11 @@ namespace StoryScript {
             if (trade.onSell) {
                 trade.onSell(self._game, item);
             }
+
+            return true;
         }
 
-        private pay(item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean): void {
+        private pay(item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean): boolean {
             var self = this;
 
             var price = item.value;
@@ -123,11 +133,19 @@ namespace StoryScript {
             }
 
             character.currency = character.currency || 0;
-            character.currency = characterSells ? character.currency + price : character.currency - price;
+            trader.currency = trader.currency || 0;
 
-            if (trader.currency != undefined) {
-                trader.currency = characterSells ? trader.currency - price : trader.currency + price;
+            var canAffort = characterSells ? trader.currency - price >= 0 : character.currency - price >= 0;
+
+            if (canAffort) {
+                character.currency = characterSells ? character.currency + price : character.currency - price;
+
+                if (trader.currency != undefined) {
+                    trader.currency = characterSells ? trader.currency - price : trader.currency + price;
+                }
             }
+
+            return canAffort;
         }
     }
 }

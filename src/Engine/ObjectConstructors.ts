@@ -223,8 +223,8 @@ namespace StoryScript {
             var propertyErrors = checkType.id && checkType.type ? ['id', 'type']
                                     : checkType.id ? ['id'] : ['type'];
 
-            var message = propertyErrors.length > 1 ? "Properties {0} are used by StoryScript. Don't use them on your own types." 
-                                                        : "Property {0} is used by StoryScript. Don't use it on your own types.";
+            var message = propertyErrors.length > 1 ? 'Properties {0} are used by StoryScript. Don\'t use them on your own types.'
+                                                        : 'Property {0} is used by StoryScript. Don\'t use it on your own types.';
 
             throw new Error(message.replace('{0}', propertyErrors.join(' and ')));
         }
@@ -242,16 +242,16 @@ namespace StoryScript {
         // Add the type to the object so we can distinguish between them in the combine functionality.
         compiledEntity.type = type;
 
-        if (_registeredIds.has(compiledEntity.id + '_' + compiledEntity.type + '_' +  !id)) {
+        if (_registeredIds.has(compiledEntity.id + '|' + compiledEntity.type + '|' +  !id)) {
             throw new Error('Duplicate id detected: ' + compiledEntity.id + '. You cannot use names for entities declared inline that are the same as the names of stand-alone entities.');
         }
 
-        _registeredIds.add(compiledEntity.id + '_' + compiledEntity.type);
+        _registeredIds.add(compiledEntity.id + '|' + compiledEntity.type);
 
         var functions = window.StoryScript.ObjectFactory.GetFunctions();
 
         // If this is the first time an object of this definition is created, get the functions.
-        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith(compiledEntity.id + '_'))) {
+        if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith(compiledEntity.id + '|'))) {
             getFunctions(plural, functions, definitionKeys, compiledEntity, null);
         }
 
@@ -320,12 +320,12 @@ namespace StoryScript {
             if (value == undefined) {
                 return;
             }
-            else if (typeof value === "object") {
+            else if (typeof value === 'object') {
                 addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
             }
             else if (typeof value === 'function' && !value.isProxy) {
-                var functionId = path ? path + '_' + key : key;
-                value.functionId = 'function#' + type + '_' + functionId + '#' + createFunctionHash(value);
+                var functionId = path ? path + '|' + key : key;
+                value.functionId = 'function#' + type + '|' + functionId + '#' + createFunctionHash(value);
             }
         }
     }
@@ -338,11 +338,11 @@ namespace StoryScript {
 
         }
         else {
-            path = path === undefined ? key : path + '_' + key;
+            path = path === undefined ? key : path + '|' + key;
         }
 
         if (value.id) {
-            path = path + '_' + value.id;
+            path = path + '|' + value.id;
         }
 
         return path;
@@ -403,11 +403,11 @@ namespace StoryScript {
             if (value == undefined) {
                 continue;
             }
-            else if (typeof value === "object") {
-                getFunctions(type, functionList, definitionKeys, entity[key], entity[key].id ? parentId + '_' + key + '_' + entity[key].id : parentId + '_' + key);
+            else if (typeof value === 'object') {
+                getFunctions(type, functionList, definitionKeys, entity[key], entity[key].id ? parentId + '|' + key + '|' + entity[key].id : parentId + '|' + key);
             }
             else if (typeof value == 'function' && !value.isProxy) {
-                var functionId = parentId + '_' + key;
+                var functionId = parentId + '|' + key;
 
                 if (!functionList[type]) {
                     functionList[type] = {};

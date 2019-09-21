@@ -2,6 +2,13 @@
     export function Rules(): StoryScript.IRules {
         return {
             setup: {
+                playList: [
+                    // [StoryScript.GameState.CreateCharacter, 'createCharacter.mp3'],
+                    // [StoryScript.GameState.Play, 'play.mp3']
+                ],
+
+                intro: false,
+
                 getCombinationActions: (): StoryScript.ICombinationAction[] => {
                     return [
                         {

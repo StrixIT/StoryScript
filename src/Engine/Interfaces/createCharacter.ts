@@ -47,7 +47,6 @@
          * The validation to perform before continuing to the next step.
          * @param character The character sheet filled in so far
          */
-        // Todo: this is not yet used. Apply it in PathOfHeroes
         validation?(character: ICreateCharacter): string;
 
         /**
