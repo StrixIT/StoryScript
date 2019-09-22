@@ -15,7 +15,7 @@ namespace StoryScript {
 
         getDescription = (entity: any, key: string): string => {
             var self = this;
-            return self._sce.trustAsHtml(self._gameService.getDescription('locations', entity, key));
+            return !entity ? '' : self._sce.trustAsHtml(self._gameService.getDescription('locations', entity, key));
         }
 
         getCombineClass = (feature: IFeature) => {

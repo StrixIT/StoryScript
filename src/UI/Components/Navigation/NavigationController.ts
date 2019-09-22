@@ -9,7 +9,6 @@ namespace StoryScript {
 
         menu = (): void => {
             var self = this;
-            self._game.state = GameState.Menu;
             self._scope.$emit('menu');
         }
 

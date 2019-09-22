@@ -10,10 +10,10 @@
                 <quests></quests>
             </div>
             <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter' && game.stateString !== 'Intro' && $ctrl.showCharacterPane(), 'col-12': game.stateString === 'CreateCharacter' || game.stateString === 'Intro' || !$ctrl.showCharacterPane() }">
-                <div ng-if="!$ctrl.game.stateString">
+                <div ng-if="!game.stateString">
                     {{ $ctrl.texts.loading }}
                 </div>
-                <div ng-if="$ctrl.game.stateString == 'Play'">
+                <div ng-if="game.stateString == 'Play' || game.stateString == 'Menu'">
                     <encounter></encounter>
                     <location></location>
                     <action-log></action-log>

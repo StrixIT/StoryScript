@@ -10,12 +10,19 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="mainmenu">
+                <div id="mainmenu" ng-if="!$ctrl.confirmRestart">
                     <div ng-if="$ctrl.useSaveGames()">
                         <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.save()">{{ $ctrl.texts.saveGame }}</button>
                         <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.load()">{{ $ctrl.texts.loadGame }}</button>
                     </div>
                     <button type="button" class="btn btn-outline-danger btn-lg" ng-click="$ctrl.restart()">{{ $ctrl.texts.startOver }}</button>
+                </div>
+                <div id="confirmrestart" ng-if="$ctrl.confirmRestart">
+                    <h4>
+                        {{ $ctrl.texts.confirmRestart }}
+                    </h4>
+                    <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.restartCancelled()">{{ $ctrl.texts.restartCancelled }}</button>
+                    <button type="button" class="btn btn-outline-danger btn-lg" ng-click="$ctrl.restartConfirmed()">{{ $ctrl.texts.restartConfirmed }}</button>
                 </div>
             </div>
             <div class="modal-footer">

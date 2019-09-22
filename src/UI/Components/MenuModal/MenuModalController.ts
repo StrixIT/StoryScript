@@ -1,23 +1,30 @@
 namespace StoryScript {
     export class MenuModalController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _texts: IInterfaceTexts) {
+        private _state: GameState;
+
+        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.texts = _texts;
 
             self._scope.$on('initMenu', (event, args) => {
                 self.openModal();
             });
-    
         }
 
         texts: IInterfaceTexts;
         game: IGame;
+        confirmRestart: boolean;
 
         openModal = () => {
+            var self = this;
+            self._state = self._game.state;
+            self._game.state = GameState.Menu;
             $('#menumodal').modal('show');
         }
 
         closeModal = () => {
+            var self = this;
+            self._game.state = self._state;
             $('#menumodal').modal('hide');
         }
 
@@ -28,8 +35,19 @@ namespace StoryScript {
 
         restart = (): void => {
             var self = this;
-            self._scope.$emit('restart');
+            self.confirmRestart = true;
+        }
+
+        restartCancelled = (): void => {
+            var self = this;
+            self.confirmRestart = false;
+        }
+
+        restartConfirmed = (): void => {
+            var self = this;
+            self.confirmRestart = false;
             self.closeModal();
+            self._scope.$emit('restart');
         }
 
         save = (): void => {
@@ -43,5 +61,5 @@ namespace StoryScript {
         }
     }
 
-    MenuModalController.$inject = ['$scope', 'sharedMethodService', 'customTexts'];
+    MenuModalController.$inject = ['$scope', 'sharedMethodService', 'game', 'customTexts'];
 }

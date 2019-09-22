@@ -75,7 +75,10 @@
             characterSheet: "Character sheet",
             skipIntro: "Skip intro",
             mainMenu: "Main menu",
-            mainMenuShort: "Menu"
+            mainMenuShort: "Menu",
+            confirmRestart: "Really restart?",
+            restartCancelled: "No",
+            restartConfirmed: "Yes"
         }
 
         format = (template: string, tokens: string[]): string => {
@@ -87,7 +90,7 @@
                     if (match) {
                         var matchReplacement = match[0].replace('{' + i + '}', '');
 
-                        if (tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
+                        if (tokens[i] && tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
                             template = template.replace(match[0], ' ');
                         }
                         else {

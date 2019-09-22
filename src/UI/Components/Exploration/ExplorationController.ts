@@ -11,7 +11,7 @@ namespace StoryScript {
 
         actionsPresent = () => {
             var self = this;
-            return !self.enemiesPresent() && !isEmpty(self.game.currentLocation.actions);
+            return self.game.currentLocation && !self.enemiesPresent() && !isEmpty(self.game.currentLocation.actions);
         }
 
         enemiesPresent = () => {
