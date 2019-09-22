@@ -16,9 +16,11 @@
             items: [
                 Items.Goldnecklace()
             ],
-            complete: (game, location) => {
-                return locationComplete(game, location, () => location.activeEnemies.length == 0, () => location.items.length == 0);
-            }
+            leaveEvents: [
+                (game: IGame) => {
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.activeEnemies.length == 0, () => game.currentLocation.items.length == 0);
+                }
+            ]
         });
     }
 }    

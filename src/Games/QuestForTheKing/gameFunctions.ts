@@ -6,7 +6,7 @@
         updateDestination(game, game.locations.get(Locations.HealersTent), game.worldProperties.currentDay);
     }
 
-    export function locationComplete(game: StoryScript.IGame, location: StoryScript.ICompiledLocation, completeDay: (() => boolean), completeNight: (() => boolean)) {
+    export function locationComplete(game: StoryScript.IGame, location: ILocation, completeDay: (() => boolean), completeNight: (() => boolean)) {
         var theLocation = location as ICompiledLocation;
 
         if (game.worldProperties.isDay) {
@@ -29,7 +29,7 @@
         var dayLocation = day === 2 ? Locations.NightInYourTent : <any>Locations['Day' + (day + 1)];
 
         if (dayLocation) {
-            var dayDestinations = location.destinations.filter(d => (<any>d.target).indexOf('Day') > -1 || (<any>d.target).indexOf('NightInYourTent') > -1);
+            var dayDestinations = location.destinations.filter(d => (<any>d.target).indexOf('day') > -1 || (<any>d.target).indexOf('nightinyourtent') > -1);
 
             dayDestinations.forEach(destination => {
                 location.destinations.remove(destination);

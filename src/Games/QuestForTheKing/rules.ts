@@ -277,15 +277,15 @@
                                             currentStep.questions[0].entries = [
                                                 {
                                                     text: Items.LongSword().name,
-                                                    value: (<any>Items.LongSword).name                                          
+                                                    value: (<any>Items.LongSword).originalFunctionName                                          
                                                 },
                                                 {
                                                     text: Items.Battleaxe().name,
-                                                    value: (<any>Items.Battleaxe).name
+                                                    value: (<any>Items.Battleaxe).originalFunctionName
                                                 },
                                                 {
                                                     text: Items.Warhammer().name,
-                                                    value: (<any>Items.Warhammer).name
+                                                    value: (<any>Items.Warhammer).originalFunctionName
                                                 }
                                             ];
                                         }; break;
@@ -293,15 +293,15 @@
                                             currentStep.questions[0].entries = [
                                                 {
                                                     text: Items.Dagger().name,
-                                                    value: (<any>Items.Dagger).name
+                                                    value: (<any>Items.Dagger).originalFunctionName
                                                 },
                                                 {
                                                     text: Items.Rapier().name,
-                                                    value: (<any>Items.Rapier).name
+                                                    value: (<any>Items.Rapier).originalFunctionName
                                                 },
                                                 {
                                                     text: Items.Shortsword().name,
-                                                    value: (<any>Items.Shortsword).name
+                                                    value: (<any>Items.Shortsword).originalFunctionName
                                                 }
                                             ];
                                         }; break;
@@ -309,15 +309,15 @@
                                             currentStep.questions[0].entries = [
                                                 {
                                                     text: Items.Fireball().name,
-                                                    value: (<any>Items.Fireball).name
+                                                    value: (<any>Items.Fireball).originalFunctionName
                                                 },
                                                 {
                                                     text: Items.Frostbite().name,
-                                                    value: (<any>Items.Frostbite).name
+                                                    value: (<any>Items.Frostbite).originalFunctionName
                                                 },
                                                 {
                                                     text: Items.Shockbolt().name,
-                                                    value: (<any>Items.Shockbolt).name
+                                                    value: (<any>Items.Shockbolt).originalFunctionName
                                                 }
                                             ];
                                         }; break;
