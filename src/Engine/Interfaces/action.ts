@@ -21,6 +21,6 @@
          /**
          * The function to execute when the player selects the action.
          */
-        execute: string | ((game: IGame) => void);
+        execute: string | ((game: IGame, action: IAction) => void);
     }
 }
