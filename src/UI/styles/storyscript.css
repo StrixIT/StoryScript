@@ -195,6 +195,10 @@ button.restart {
     border-radius: 5px;
 }
 
+.combine-active-selected {
+    color: red;
+}
+
 .combination-text, .combination-result-text {
     display: inline-block;
     margin-left: 20px;
