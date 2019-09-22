@@ -61,11 +61,17 @@ namespace StoryScript {
 
             var itemsToSell = StoryScript.randomList<IItem>(self._game.character.items, trader.sell.maxItems, 'items', self._game.definitions, sellSelector);
 
-            trader.buy.items = trader.buy.items || [];
+            if (!trader.buy.items) {
+                trader.buy.items = [];
+            }
+
             trader.buy.items.length = 0;
             itemsForSale.forEach(i => trader.buy.items.push(i));
 
-            trader.sell.items = trader.sell.items || [];
+            if (!trader.sell.items) {
+                trader.sell.items = [];
+            }
+
             trader.sell.items.length = 0;
             itemsToSell.forEach(i => trader.sell.items.push(i));
 
