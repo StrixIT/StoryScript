@@ -36,6 +36,10 @@ namespace StoryScript
                             featureElement[0].innerHTML = '';
                         }
                     });
+
+                element.find('feature').each((i, e) => {
+                    angular.element(e).removeClass(['combine-active-selected']);
+                });
             });
 
             element.on('click', function(ev) {
@@ -43,7 +47,10 @@ namespace StoryScript
                     var feature = self.getFeature(ev);
 
                     if (feature) {
+                        var node = angular.element(ev.target);
                         self._game.combinations.tryCombine(feature);
+                        var combineClass= self._combinationService.getCombineClass(feature);
+                        node.addClass(combineClass);
                         scope.$applyAsync();
                     }
                 }
@@ -57,7 +64,7 @@ namespace StoryScript
                     node.addClass(combineClass);
                 }
             });
-
+            
         };
 
         private isFeatureNode(ev: JQueryEventObject): boolean {
