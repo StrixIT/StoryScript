@@ -35,9 +35,9 @@ namespace StoryScript {
         changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
             var self = this;
 
-            if (game.previousLocation && game.previousLocation.leaveEvents) {
-                self.playEvents(game, game.previousLocation.leaveEvents);
-                game.previousLocation.leaveEvents.length = 0;
+            if (game.currentLocation && game.currentLocation.leaveEvents) {
+                self.playEvents(game, game.currentLocation.leaveEvents);
+                game.currentLocation.leaveEvents.length = 0;
             }
 
             // If there is no location, we are starting a new game and we're done here.
