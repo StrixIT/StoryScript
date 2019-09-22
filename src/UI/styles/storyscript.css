@@ -12,6 +12,11 @@ h2 {
     padding: 10px 15px 5px 30px;
 }
 
+#mainmenu .btn {
+    display: block;
+    margin-bottom: 10px;
+}
+
 .box-container {
     border: solid 1px rgb(72, 61, 139);
     padding: 10px;

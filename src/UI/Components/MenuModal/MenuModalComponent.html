@@ -1,0 +1,25 @@
+<div class="modal" id="menumodal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    {{ $ctrl.texts.mainMenu }}
+                </h4>
+                <button type="button" class="close" aria-label="Close" ng-click="$ctrl.closeModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="mainmenu">
+                    <div ng-if="$ctrl.useSaveGames()">
+                        <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.save()">{{ $ctrl.texts.saveGame }}</button>
+                        <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.load()">{{ $ctrl.texts.loadGame }}</button>
+                    </div>
+                    <button type="button" class="btn btn-outline-danger btn-lg" ng-click="$ctrl.restart()">{{ $ctrl.texts.startOver }}</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

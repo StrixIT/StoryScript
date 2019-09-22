@@ -16,6 +16,7 @@ namespace StoryScript {
             self._scope.$on('restart', () => self.init(true));
             self._scope.$on('showDescription', (event, args) => self._scope.$broadcast('initDescription', args));
             self._scope.$on('levelUp', () => self._scope.$broadcast('initLevelUp'));
+            self._scope.$on('menu', () => self._scope.$broadcast('initMenu'));
             self._scope.$on('saveGame', () => self._scope.$broadcast('initSaveGame'));
             self._scope.$on('loadGame', () => self._scope.$broadcast('initLoadGame'));
             (<any>self._scope).game = self._game;

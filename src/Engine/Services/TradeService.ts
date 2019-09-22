@@ -37,7 +37,7 @@ namespace StoryScript {
         initTrade = (): ITrade => {
             var self = this;
 
-            var trader = self._game.currentLocation.activeTrade;
+            var trader = self._game.currentLocation && self._game.currentLocation.activeTrade;
 
             if (!trader) {
                 return null;

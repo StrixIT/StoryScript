@@ -129,6 +129,7 @@ namespace StoryScript {
                 };
 
                 self._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
+                self._game.state = saveGame.state === GameState.Menu ? GameState.Play : saveGame.state;
             }
             else {
                 SaveWorldState(self._dataService, self._locationService, self._game);
@@ -155,7 +156,7 @@ namespace StoryScript {
                 SaveWorldState(self._dataService, self._locationService, self._game);
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
                 self._game.actionLog = [];
-                self._game.state = saveGame.state;
+                self._game.state = saveGame.state === GameState.Menu ? GameState.Play : saveGame.state;
 
                 setTimeout(() => {
                     self._game.loading = false;

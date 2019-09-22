@@ -30,8 +30,8 @@ namespace StoryScript {
         }
 
         closeModal = () => {
-            var self = this;
             $('#loadgame').modal('hide');
+            $('#menumodal').modal('hide');
         }
 
         setSelected = (name: string) => {

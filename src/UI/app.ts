@@ -59,6 +59,11 @@
         controller: NavigationController
     });
 
+    storyScriptModule.component('menuModal', {
+        templateUrl: 'ui/MenuModalComponent.html',
+        controller: MenuModalController
+    });
+
     storyScriptModule.component('encounter', {
         templateUrl: 'ui/EncounterComponent.html',
         controller: EncounterController

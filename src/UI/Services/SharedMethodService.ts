@@ -128,7 +128,7 @@ namespace StoryScript
 
         showEquipment = (): boolean => {
             var self = this;
-            return self.useEquipment && Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
+            return self.useEquipment && self._game.character && Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
         }
 
         private getActionIndex(game: IGame, action: IAction): { type: number, index: number} {

@@ -73,7 +73,9 @@
             overwriteSaveGame: "Overwrite saved game {0}?",
             loadSaveGame: "Load saved game {0}?",
             characterSheet: "Character sheet",
-            skipIntro: "Skip intro"
+            skipIntro: "Skip intro",
+            mainMenu: "Main menu",
+            mainMenuShort: "Menu"
         }
 
         format = (template: string, tokens: string[]): string => {
