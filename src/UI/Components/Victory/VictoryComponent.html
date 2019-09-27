@@ -1,4 +1,4 @@
-<div ng-if="$ctrl.game.stateString == 'Victory'">
+<div ng-if="$ctrl.game.state == 'Victory'">
     <h1>{{ $ctrl.texts.youWon }}</h1>
     <div><span>{{ $ctrl.texts.congratulations }}</span></div>
     <div><span>{{ $ctrl.texts.finalScore }}{{ $ctrl.game.character.score }}</span></div>

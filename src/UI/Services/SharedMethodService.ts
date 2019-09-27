@@ -102,7 +102,7 @@ namespace StoryScript
         startCombat = (): void => {
             var self = this;
             self._game.combatLog = [];
-            self._game.state = GameState.Combat;
+            self._game.playState = PlayState.Combat;
         }
 
         trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean => {
@@ -121,7 +121,6 @@ namespace StoryScript
             }
 
             if (item.description) {
-                self._game.state = GameState.Description;
                 scope.$emit('showDescription', { title: title, type: type, item: item });
             }
         }

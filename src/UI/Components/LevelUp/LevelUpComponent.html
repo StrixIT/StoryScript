@@ -1,4 +1,4 @@
-<div ng-if="$ctrl.game.stateString == 'LevelUp'">
+<div ng-if="$ctrl.game.state == 'LevelUp'">
     <h2>{{ $ctrl.texts.levelUp }}</h2>
     <p>{{ $ctrl.texts.format($ctrl.texts.levelUpDescription, [$ctrl.game.character.level]) }}</p>
     <build-character sheet="$ctrl.sheet"></build-character>

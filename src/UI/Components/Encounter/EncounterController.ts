@@ -32,7 +32,7 @@ namespace StoryScript {
         talk = (person: IPerson) => {
             var self = this;
             self._game.currentLocation.activePerson = person;
-            self._game.state = GameState.Conversation;
+            self._game.playState = PlayState.Conversation;
         }
 
         trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade) => {

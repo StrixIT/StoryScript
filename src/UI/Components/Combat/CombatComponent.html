@@ -1,4 +1,4 @@
-<div id="combat" ng-if="$ctrl.game.stateString == 'Combat'">
+<div id="combat" ng-if="$ctrl.game.playState == 'Combat'">
     <div ng-if="$ctrl.enemiesPresent()">
         <div>
             <ul class="list-unstyled" ng-show="$ctrl.game.currentLocation.activeEnemies.length > 0">

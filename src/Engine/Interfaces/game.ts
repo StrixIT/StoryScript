@@ -69,6 +69,11 @@
         state: StoryScript.GameState;
 
         /**
+         * The current state of play of the game.
+         */
+        playState: StoryScript.PlayState;
+
+        /**
          * True if a game is being loaded, false otherwise.
          */
         loading: boolean;

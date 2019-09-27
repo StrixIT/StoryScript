@@ -18,13 +18,13 @@ namespace StoryScript {
         openModal = () => {
             var self = this;
             self._state = self._game.state;
-            self._game.state = GameState.Menu;
+            self._game.playState = PlayState.Menu;
             $('#menumodal').modal('show');
         }
 
         closeModal = () => {
             var self = this;
-            self._game.state = self._state;
+            self._game.playState = null;
             $('#menumodal').modal('hide');
         }
 

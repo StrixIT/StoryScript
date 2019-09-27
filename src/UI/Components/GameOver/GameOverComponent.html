@@ -1,4 +1,4 @@
-<div ng-if="$ctrl.game.stateString == 'GameOver'">
+<div ng-if="$ctrl.game.state == 'GameOver'">
     <h2>{{ $ctrl.texts.youLost }}</h2>
     <p>{{ $ctrl.texts.questFailed }}</p>
     <div>{{ $ctrl.texts.finalScore }}{{ $ctrl.game.character.score }}</div>

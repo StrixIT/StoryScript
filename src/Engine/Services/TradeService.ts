@@ -31,7 +31,7 @@ namespace StoryScript {
                 }
             }
 
-            self._game.state = GameState.Trade;
+            self._game.playState = PlayState.Trade;
         }
 
         initTrade = (): ITrade => {

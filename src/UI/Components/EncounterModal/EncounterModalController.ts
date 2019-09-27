@@ -20,11 +20,12 @@ namespace StoryScript {
                 closeText: self.texts.closeModal
             }
 
-            self._scope.$watch('game.state', (newValue: GameState, oldValue: GameState) => {
-                self.watchGameState(newValue, oldValue, self);
+            self._scope.$watch('game.playState', (newValue: PlayState, oldValue: PlayState) => {
+                self.watchPlayState(newValue, oldValue, self);
             });
 
             self._scope.$on('initDescription', (event, args) => {
+                self._game.playState = PlayState.Description;
                 self.modalSettings.title = (<any>args).title;
                 self.modalSettings.descriptionEntity = {
                     type: args.type,
@@ -53,7 +54,7 @@ namespace StoryScript {
             }
 
             self._gameService.saveGame();
-            self._game.state = GameState.Play;
+            self._game.playState = null;
         }
 
         getDescription(entity: any, key: string) {
@@ -61,44 +62,42 @@ namespace StoryScript {
             return self._sce.trustAsHtml(self._gameService.getDescription(entity.type, entity.item, key));
         }
 
-        private watchGameState(newValue: GameState, oldValue: GameState, controller: EncounterModalController) {
+        private watchPlayState(newValue: PlayState, oldValue: PlayState, controller: EncounterModalController) {
             var self = this;
 
-            if (oldValue != undefined) {
-                // If there is a person trader, sync the money between him and the shop on trade end.
-                if (oldValue == GameState.Trade) {
-                    if (controller._game.currentLocation.activePerson && controller._game.currentLocation.activePerson.trade === controller._game.currentLocation.activeTrade) {
-                        controller._game.currentLocation.activePerson.currency = controller._game.currentLocation.activeTrade.currency;
+            if (newValue !== PlayState.Menu) {
+                // Todo: is this really necessary?
+                if (oldValue != undefined) {
+                    // If there is a person trader, sync the money between him and the shop on trade end.
+                    if (oldValue == PlayState.Trade) {
+                        if (controller._game.currentLocation.activePerson && controller._game.currentLocation.activePerson.trade === controller._game.currentLocation.activeTrade) {
+                            controller._game.currentLocation.activePerson.currency = controller._game.currentLocation.activeTrade.currency;
+                        }
                     }
                 }
-
-                if (oldValue == GameState.LevelUp && newValue == GameState.Play) {
-                    // Level-up was just completed. Save the game from here, because the character service cannot depend on the game service.
-                    self._gameService.saveGame();
-                }
+                
+                self.getStateSettings(controller, newValue);
+                self.switchState(controller, newValue);
             }
-            
-            self.getStateSettings(controller, newValue);
-            self.switchState(controller, newValue);
         }
 
-        private getStateSettings(controller: EncounterModalController, newValue: GameState): void {
+        private getStateSettings(controller: EncounterModalController, newValue: PlayState): void {
             switch (newValue) {
-                case GameState.Combat: {
+                case PlayState.Combat: {
                     controller.modalSettings.title = controller._texts.combatTitle;
                     controller.modalSettings.canClose = false;
                 } break;
-                case GameState.Conversation: {
+                case PlayState.Conversation: {
                     var person = controller._game.currentLocation.activePerson;
                     controller.modalSettings.title = person.conversation.title || controller._texts.format(controller._texts.talk, [person.name]);
                     controller.modalSettings.canClose = true;
                 } break;
-                case GameState.Trade: {
+                case PlayState.Trade: {
                     var trader = controller._game.currentLocation.activeTrade;
                     controller.modalSettings.title = trader.title;
                     controller.modalSettings.canClose = true;
                 } break;
-                case GameState.Description: {
+                case PlayState.Description: {
                     controller.modalSettings.canClose = true;
                 } break;
                 default: {
@@ -107,28 +106,16 @@ namespace StoryScript {
             }
         }
 
-        private switchState(controller: EncounterModalController, newValue: GameState): void {
-            if (newValue != undefined) {
-                var modalStates = [
-                    GameState.Combat,
-                    GameState.Trade,
-                    GameState.Conversation,
-                    GameState.Description
-                ];
-
-                if (modalStates.some(s => s == newValue)) {
-                    $('#encounters').modal('show');
-                    controller._scope.$broadcast('init');
-                }
-                else {
-                    $('#encounters').modal('hide');
-                }
-
-                if (newValue == GameState.LevelUp) {
-                    controller._scope.$emit('levelUp');
-                }
-
-                controller._gameService.changeGameState(newValue);
+        private switchState(controller: EncounterModalController, newValue: PlayState): void {
+            if (newValue === undefined) {
+                return;
+            }
+            else if (newValue === null) {
+                $('#encounters').modal('hide');
+            }        
+            else {
+                $('#encounters').modal('show');
+                controller._scope.$broadcast('init');
             }
         }
 
