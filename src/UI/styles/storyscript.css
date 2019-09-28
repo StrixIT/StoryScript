@@ -109,12 +109,17 @@ h2 {
     padding-left: 10px;
 }
 
+#save-game {
+    margin-bottom: 15px;
+}
+
 #save-game p {
     font-weight: bold;
 }
 
 #save-game li {
     margin-bottom: 5px;
+    cursor: pointer;
 }
 
 #start-adventure {

@@ -1,10 +1,10 @@
 namespace StoryScript {
     export class MenuModalController implements ng.IComponentController {
-        private _state: GameState;
 
-        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.texts = _texts;
+            self.state = 'Menu';
 
             self._scope.$on('initMenu', (event, args) => {
                 self.openModal();
@@ -13,53 +13,75 @@ namespace StoryScript {
 
         texts: IInterfaceTexts;
         game: IGame;
-        confirmRestart: boolean;
+        saveKeys: string[];
+        selectedGame: string;
+        state: string;
 
         openModal = () => {
             var self = this;
-            self._state = self._game.state;
             self._game.playState = PlayState.Menu;
             $('#menumodal').modal('show');
         }
 
         closeModal = () => {
             var self = this;
+            self.setSelected(null);
+            self.state = 'Menu';
             self._game.playState = null;
             $('#menumodal').modal('hide');
         }
 
-        useSaveGames = (): boolean => {
-            var self = this;
-            return self._sharedMethodService.useSaveGames;
-        }
-
         restart = (): void => {
             var self = this;
-            self.confirmRestart = true;
+            self.state = 'ConfirmRestart';
         }
 
-        restartCancelled = (): void => {
+        cancel = (): void => {
             var self = this;
-            self.confirmRestart = false;
+            self.setSelected(null);
+            self.state = 'Menu';
         }
 
         restartConfirmed = (): void => {
             var self = this;
-            self.confirmRestart = false;
             self.closeModal();
             self._scope.$emit('restart');
         }
 
         save = (): void => {
             var self = this;
-            self._scope.$emit('saveGame');
+            self.saveKeys = self._gameService.getSaveGames();
+            self.state = 'Save';
         }
 
         load = (): void => {
             var self = this;
-            self._scope.$emit('loadGame');
+            self.saveKeys = self._gameService.getSaveGames();
+            self.state = 'Load';
+        }
+
+        setSelected = (name: string) => {
+            var self = this;
+            self.selectedGame = name;
+        }
+
+        overwriteSelected = () => {
+            var self = this;
+            return self._gameService.getSaveGames().indexOf(this.selectedGame) > -1;
+        }
+
+        saveGame = () => {
+            var self = this;
+            self._gameService.saveGame(self.selectedGame);
+            self.closeModal();
+        }
+
+        loadGame = () => {
+            var self = this;
+            self._gameService.loadGame(self.selectedGame);
+            self.closeModal();
         }
     }
 
-    MenuModalController.$inject = ['$scope', 'sharedMethodService', 'game', 'customTexts'];
+    MenuModalController.$inject = ['$scope', 'sharedMethodService', 'gameService', 'game', 'customTexts'];
 }
