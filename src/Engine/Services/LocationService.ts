@@ -197,6 +197,19 @@ namespace StoryScript {
             // with the target id when adding destinations and enemies at runtime.
             location.destinations.push = location.destinations.push.proxy(location.destinations.push, self.addDestination, self._game);
 
+            // Set the selected action to an actual barrier action. This object reference is lost when serializing.
+            if (location.destinations) {
+                location.destinations.forEach(d => {
+                    if (d.barrier && d.barrier.actions) {
+                        d.barrier.actions.forEach(a => {
+                            if (a.text === (d.barrier.selectedAction && d.barrier.selectedAction.text)) {
+                                d.barrier.selectedAction = a;
+                            }
+                        })
+                    }
+                })
+            }
+
             Object.defineProperty(location, 'activeDestinations', {
                 get: function () {
                     return location.destinations.filter(e => { return !e.inactive; });

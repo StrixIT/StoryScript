@@ -31,12 +31,12 @@ namespace StoryScript {
 
         disableActionButton = (action: IAction) => {
             var self = this;
-            return typeof action.status === "function" ? (<any>action).status(self.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
+            return typeof action.status === 'function' ? (<any>action).status(self.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
         }
 
         hideActionButton = (action: IAction) => {
             var self = this;
-            return typeof action.status === "function" ? (<any>action).status(self.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
+            return typeof action.status === 'function' ? (<any>action).status(self.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
         }
 
         executeAction = (action: IAction): void => {
