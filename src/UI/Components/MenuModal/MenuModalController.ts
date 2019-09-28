@@ -4,6 +4,7 @@ namespace StoryScript {
         constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.texts = _texts;
+            self.game = _game;
             self.state = 'Menu';
 
             self._scope.$on('initMenu', (event, args) => {

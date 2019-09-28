@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 <div id="mainmenu" ng-if="$ctrl.state === 'Menu'">
-                    <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.save()">{{ $ctrl.texts.saveGame }}</button>
+                    <button type="button" class="btn btn-outline-dark btn-lg" ng-if="$ctrl.game.state !== 'CreateCharacter'" ng-click="$ctrl.save()">{{ $ctrl.texts.saveGame }}</button>
                     <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.load()">{{ $ctrl.texts.loadGame }}</button>
                     <button type="button" class="btn btn-outline-danger btn-lg" ng-click="$ctrl.restart()">{{ $ctrl.texts.startOver }}</button>
                 </div>

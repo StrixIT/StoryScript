@@ -123,7 +123,7 @@ namespace StoryScript {
                     world: self._locationService.copyWorld(),
                     worldProperties: self._game.worldProperties,
                     statistics: self._game.statistics,
-                    location: self._game.currentLocation.id,
+                    location: self._game.currentLocation && self._game.currentLocation.id,
                     previousLocation: self._game.previousLocation ? self._game.previousLocation.id : null,
                     state: self._game.state
                 };
