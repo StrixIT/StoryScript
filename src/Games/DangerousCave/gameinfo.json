@@ -2,6 +2,7 @@
     "name": "Dangerous cave",
     "description": "A dungeon crawler, still under construction",
     "picture": "",
+    "sourcesIncluded": false,
     "author": {
         "name": "Sanne Jense",
         "email": ""
