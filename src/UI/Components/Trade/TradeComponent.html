@@ -1,4 +1,4 @@
-<div ng-if="$ctrl.game.stateString == 'Trade' && $ctrl.trade" id="trade">
+<div ng-if="$ctrl.game.playState == 'Trade' && $ctrl.trade" id="trade">
     <p class="trade-description">{{ $ctrl.trade.description }}</p>
     <div ng-if="$ctrl.trade.buy">{{ $ctrl.trade.buy.description }}</div>
     <p class="trade-empty" ng-hide="$ctrl.trade.buy.items && $ctrl.trade.buy.items.length > 0">{{ $ctrl.trade.buy.emptyText }}</p>
@@ -15,5 +15,4 @@
         </li>
     </ul>
     <p ng-if="$ctrl.trade.currency != undefined">{{ $ctrl.texts.format($ctrl.texts.traderCurrency, [$ctrl.trade.currency, $ctrl.texts.currency]) }}</p>
-    <!-- <action-log></action-log> -->
 </div>

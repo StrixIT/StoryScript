@@ -1,19 +1,21 @@
 <div ng-init="init()">
+    <encounter-modal></encounter-modal>
+    <menu-modal></menu-modal>
     <navigation></navigation>
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="character-container" ng-if="game.stateString !== 'CreateCharacter' && game.stateString !== 'Intro'" id="character-container" ng-class="{ 'col-4': $ctrl.showCharacterPane() }">
+            <div id="character-container" ng-if="game.state === 'Play'" id="character-container" ng-class="{ 'col-4': $ctrl.showCharacterPane() }">
                 <character-sheet></character-sheet>
                 <equipment></equipment>
                 <backpack></backpack>
                 <quests></quests>
             </div>
-            <div id="location-container" ng-class="{ 'col-8': game.stateString !== 'CreateCharacter' && game.stateString !== 'Intro' && $ctrl.showCharacterPane(), 'col-12': game.stateString === 'CreateCharacter' || game.stateString === 'Intro' || !$ctrl.showCharacterPane() }">
-                <div ng-if="!$ctrl.game.stateString">
+            <div id="location-container" ng-class="{ 'col-8': game.state === 'Play' && $ctrl.showCharacterPane(), 'col-12': game.state !== 'Play' || !$ctrl.showCharacterPane() }">
+                <div ng-if="!game.state">
                     {{ $ctrl.texts.loading }}
                 </div>
-                <div ng-if="$ctrl.game.stateString == 'Play'">
+                <div ng-if="game.state == 'Play'">
                     <encounter></encounter>
                     <location></location>
                     <action-log></action-log>
@@ -28,12 +30,10 @@
                 <victory></victory>
             </div>
         </div>
-        <div class="row" ng-if="$ctrl.game.stateString !== 'CreateCharacter' && game.stateString !== 'Intro'">
+        <div class="row" ng-if="$ctrl.game.state === 'Play'">
             <div class="col-12">
                 <combination></combination>
             </div>
         </div>
     </div>
-    <encounter-modal></encounter-modal>
-    <load-game-modal></load-game-modal>
 </div>

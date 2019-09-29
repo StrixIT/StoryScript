@@ -14,15 +14,16 @@ namespace StoryScript {
 
         loadConversations = (): void => {
             var self = this;
+            var persons = self._game.currentLocation && self._game.currentLocation.persons;
 
-            if (!self._game.currentLocation.persons) {
+            if (!persons) {
                 return;
             }
 
-            self._game.currentLocation.persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
+            persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
                 var htmlDoc = self.loadConversationHtml(person);
                 var defaultReply = self.getDefaultReply(htmlDoc, person);
-                var conversationNodes = htmlDoc.getElementsByTagName("node");
+                var conversationNodes = htmlDoc.getElementsByTagName('node');
 
                 person.conversation.nodes = [];
                 self.processConversationNodes(conversationNodes, person, defaultReply);
@@ -35,7 +36,7 @@ namespace StoryScript {
 
         initConversation(): void {
             var self = this;
-            var person = self._game.currentLocation.activePerson;
+            var person = self._game.currentLocation && self._game.currentLocation.activePerson;
             var activeNode = self.getActiveNode(person);
 
             if (!activeNode) {
@@ -85,11 +86,11 @@ namespace StoryScript {
                 conversations = '<conversation>' + conversations + '</conversation>';
             }
 
-            return parser.parseFromString(conversations, "text/html");
+            return parser.parseFromString(conversations, 'text/html');
         }
 
         private getDefaultReply(htmlDoc: Document, person: IPerson): string {
-            var defaultReplyNodes = htmlDoc.getElementsByTagName("default-reply");
+            var defaultReplyNodes = htmlDoc.getElementsByTagName('default-reply');
             var defaultReply: string = null;
 
             if (defaultReplyNodes.length > 1) {
@@ -387,7 +388,7 @@ namespace StoryScript {
         private questProgress(type: string, person: IPerson, reply: IConversationReply) {
             var self = this;
             var quest: IQuest;
-            var start = type === "questStart";
+            var start = type === 'questStart';
 
             if (start) {
                 quest = person.quests.get(reply[type]);

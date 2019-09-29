@@ -64,7 +64,7 @@
                 [StoryScript.GameState.Play, 'play.mp4']
             ]
          */
-        playList?: (GameState | string)[][];
+        playList?: (GameState | PlayState | string)[][];
     }
 
     export interface IGeneralRules {

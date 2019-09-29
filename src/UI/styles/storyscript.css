@@ -12,6 +12,11 @@ h2 {
     padding: 10px 15px 5px 30px;
 }
 
+#mainmenu .btn {
+    display: block;
+    margin-bottom: 10px;
+}
+
 .box-container {
     border: solid 1px rgb(72, 61, 139);
     padding: 10px;
@@ -104,12 +109,17 @@ h2 {
     padding-left: 10px;
 }
 
+#save-game {
+    margin-bottom: 15px;
+}
+
 #save-game p {
     font-weight: bold;
 }
 
 #save-game li {
     margin-bottom: 5px;
+    cursor: pointer;
 }
 
 #start-adventure {

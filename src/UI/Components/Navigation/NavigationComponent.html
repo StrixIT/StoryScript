@@ -5,12 +5,8 @@
         </div>
         <div class="col-4">
             <div class="float-right">
-                <button type="button" class="btn btn-danger btn-sm" ng-click="$ctrl.restart()">{{ $ctrl.texts.startOver }}</button>
+                <button type="button" class="btn btn-dark btn-sm" ng-click="$ctrl.menu()">{{ $ctrl.texts.mainMenuShort }}</button>
                 <button id="resetbutton" type="button" class="btn btn-danger btn-sm" ng-click="$ctrl.reset()">{{ $ctrl.texts.resetWorld }}</button>
-                <span ng-if="$ctrl.useSaveGames()">
-                    <button type="button" class="btn btn-dark btn-sm" ng-click="$ctrl.save()">{{ $ctrl.texts.saveGame }}</button>
-                    <button type="button" class="btn btn-dark btn-sm" ng-click="$ctrl.load()">{{ $ctrl.texts.loadGame }}</button>
-                </span>
             </div>
             <div class="float-none"></div>
         </div>

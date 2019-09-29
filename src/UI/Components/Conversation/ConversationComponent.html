@@ -1,4 +1,4 @@
-<div id="conversation" ng-if="$ctrl.game.stateString == 'Conversation'">
+<div id="conversation" ng-if="$ctrl.game.playState == 'Conversation'">
     <div id="conversation-options" ng-show="$ctrl.conversation.activeNode">
         <div ng-bind-html="$ctrl.getLines($ctrl.conversation.activeNode)"></div>
         <div ng-repeat="reply in $ctrl.conversation.activeNode.replies.options">
@@ -18,5 +18,4 @@
             <div class="conversation-option" ng-bind-html="entry.reply"></div>
         </li>
     </ul>
-    <!-- <action-log></action-log> -->
 </div>

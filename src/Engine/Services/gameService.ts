@@ -123,12 +123,16 @@ namespace StoryScript {
                     world: self._locationService.copyWorld(),
                     worldProperties: self._game.worldProperties,
                     statistics: self._game.statistics,
-                    location: self._game.currentLocation.id,
+                    location: self._game.currentLocation && self._game.currentLocation.id,
                     previousLocation: self._game.previousLocation ? self._game.previousLocation.id : null,
                     state: self._game.state
                 };
 
                 self._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
+
+                if ( self._game.playState === PlayState.Menu) {
+                    self._game.playState = null;
+                }
             }
             else {
                 SaveWorldState(self._dataService, self._locationService, self._game);
@@ -156,6 +160,10 @@ namespace StoryScript {
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
                 self._game.actionLog = [];
                 self._game.state = saveGame.state;
+                
+                if ( self._game.playState === PlayState.Menu) {
+                    self._game.playState = null;
+                }
 
                 setTimeout(() => {
                     self._game.loading = false;
@@ -275,6 +283,7 @@ namespace StoryScript {
                 if (self._rules.general && self._rules.general.determineFinalScore) {
                     self._rules.general.determineFinalScore(self._game);
                 }
+                
                 self.updateHighScore();
                 self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
             }
@@ -282,7 +291,7 @@ namespace StoryScript {
 
         getCurrentMusic = (): string => {
             var self = this;
-            var currentEntry = !self._musicStopped && self._rules.setup.playList && self._rules.setup.playList.filter(e =>  e[0] === self._game.state)[0];
+            var currentEntry = !self._musicStopped && self._rules.setup.playList && self._rules.setup.playList.filter(e => self._game.playState ? e[0] === self._game.playState : e[0] === self._game.state)[0];
             return currentEntry && <string>currentEntry[1];
         }
 
@@ -369,16 +378,6 @@ namespace StoryScript {
                 startMusic: self.startMusic,
                 stopMusic: self.stopMusic
             };
-
-            // Add a string variant of the game state so the string representation can be used in HTML instead of a number.
-            if (!(<any>self._game).stateString) {
-                Object.defineProperty(self._game, 'stateString', {
-                    enumerable: true,
-                    get: function () {
-                        return GameState[self._game.state];
-                    }
-                });
-            }
 
             self.setupCombinations();
             self._locationService.init(self._game);

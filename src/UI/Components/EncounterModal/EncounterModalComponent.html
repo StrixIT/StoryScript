@@ -11,7 +11,7 @@
                 <combat></combat>
                 <trade></trade>
                 <conversation></conversation>
-                <div ng-if="$ctrl.game.stateString == 'Description'" class="description" ng-bind-html="$ctrl.getDescription($ctrl.modalSettings.descriptionEntity, 'description')"></div>
+                <div ng-if="$ctrl.game.playState == 'Description'" class="description" ng-bind-html="$ctrl.getDescription($ctrl.modalSettings.descriptionEntity, 'description')"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" ng-click="$ctrl.closeModal()" ng-show="$ctrl.modalSettings.canClose">{{ $ctrl.modalSettings.closeText }}</button>

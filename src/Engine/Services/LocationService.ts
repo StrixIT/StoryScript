@@ -35,9 +35,9 @@ namespace StoryScript {
         changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
             var self = this;
 
-            if (game.previousLocation && game.previousLocation.leaveEvents) {
-                self.playEvents(game, game.previousLocation.leaveEvents);
-                game.previousLocation.leaveEvents.length = 0;
+            if (game.currentLocation && game.currentLocation.leaveEvents) {
+                self.playEvents(game, game.currentLocation.leaveEvents);
+                game.currentLocation.leaveEvents.length = 0;
             }
 
             // If there is no location, we are starting a new game and we're done here.
@@ -196,6 +196,19 @@ namespace StoryScript {
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
             location.destinations.push = location.destinations.push.proxy(location.destinations.push, self.addDestination, self._game);
+
+            // Set the selected action to an actual barrier action. This object reference is lost when serializing.
+            if (location.destinations) {
+                location.destinations.forEach(d => {
+                    if (d.barrier && d.barrier.actions) {
+                        d.barrier.actions.forEach(a => {
+                            if (a.text === (d.barrier.selectedAction && d.barrier.selectedAction.text)) {
+                                d.barrier.selectedAction = a;
+                            }
+                        })
+                    }
+                })
+            }
 
             Object.defineProperty(location, 'activeDestinations', {
                 get: function () {

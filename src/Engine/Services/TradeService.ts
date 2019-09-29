@@ -31,13 +31,13 @@ namespace StoryScript {
                 }
             }
 
-            self._game.state = GameState.Trade;
+            self._game.playState = PlayState.Trade;
         }
 
         initTrade = (): ITrade => {
             var self = this;
 
-            var trader = self._game.currentLocation.activeTrade;
+            var trader = self._game.currentLocation && self._game.currentLocation.activeTrade;
 
             if (!trader) {
                 return null;

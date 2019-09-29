@@ -59,6 +59,11 @@
         controller: NavigationController
     });
 
+    storyScriptModule.component('menuModal', {
+        templateUrl: 'ui/MenuModalComponent.html',
+        controller: MenuModalController
+    });
+
     storyScriptModule.component('encounter', {
         templateUrl: 'ui/EncounterComponent.html',
         controller: EncounterController
@@ -132,11 +137,6 @@
     storyScriptModule.component('conversation', {
         templateUrl: 'ui/ConversationComponent.html',
         controller: ConversationController
-    });
-
-    storyScriptModule.component('loadGameModal', {
-        templateUrl: 'ui/LoadGameModalComponent.html',
-        controller: LoadGameModalController
     });
 
     storyScriptModule.component('sound', {

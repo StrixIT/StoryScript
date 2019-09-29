@@ -13,7 +13,6 @@ namespace StoryScript
         useBackpack?: boolean;
         useQuests?: boolean;
         useGround?: boolean;
-        useSaveGames?: boolean;
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
@@ -44,7 +43,6 @@ namespace StoryScript
         useBackpack?: boolean;
         useQuests?: boolean;
         useGround?: boolean;
-        useSaveGames?: boolean;
 
         enemiesPresent = (): boolean => {
             var self = this;
@@ -102,7 +100,7 @@ namespace StoryScript
         startCombat = (): void => {
             var self = this;
             self._game.combatLog = [];
-            self._game.state = GameState.Combat;
+            self._game.playState = PlayState.Combat;
         }
 
         trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean => {
@@ -121,14 +119,13 @@ namespace StoryScript
             }
 
             if (item.description) {
-                self._game.state = GameState.Description;
                 scope.$emit('showDescription', { title: title, type: type, item: item });
             }
         }
 
         showEquipment = (): boolean => {
             var self = this;
-            return self.useEquipment && Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
+            return self.useEquipment && self._game.character && Object.keys(self._game.character.equipment).some(k => self._game.character.equipment[k] !== undefined);
         }
 
         private getActionIndex(game: IGame, action: IAction): { type: number, index: number} {
