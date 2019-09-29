@@ -7,7 +7,7 @@ namespace StoryScript {
             self.game = _game;
             self.state = 'Menu';
 
-            self._scope.$on('initMenu', (event, args) => {
+            self._scope.$on('showMenu', (event, args) => {
                 self.openModal();
             });
         }
@@ -81,6 +81,7 @@ namespace StoryScript {
             var self = this;
             self._gameService.loadGame(self.selectedGame);
             self.closeModal();
+            self._scope.$emit('gameLoaded');
         }
     }
 
