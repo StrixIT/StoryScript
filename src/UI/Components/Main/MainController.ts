@@ -13,12 +13,15 @@ namespace StoryScript {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
-            self._scope.$on('restart', () => self.init(true));
-            self._scope.$on('showDescription', (event, args) => self._scope.$broadcast('initDescription', args));
-            self._scope.$on('menu', () => self._scope.$broadcast('initMenu'));
-            self._scope.$on('saveGame', () => self._scope.$broadcast('initSaveGame'));
-            self._scope.$on('loadGame', () => self._scope.$broadcast('initLoadGame'));
             (<any>self._scope).game = self._game;
+
+            self._scope.$on('restart', (ev) => { 
+                self.broadcast(ev, null, () => self.init(true));
+            });
+
+            self._scope.$on('gameLoaded', self.broadcast);
+            self._scope.$on('showDescription', self.broadcast);
+            self._scope.$on('showMenu', self.broadcast);
 
             self._scope.$watch('game.currentLocation', self.watchLocation);
             self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
@@ -58,6 +61,17 @@ namespace StoryScript {
 
             self._gameService.init();
             self._scope.$broadcast('createCharacter');
+        }
+
+        private broadcast(event: ng.IAngularEvent, args?: any[], callback?: Function)
+        {
+            if (event.currentScope !== event.targetScope) {
+                if (callback) {
+                    callback();
+                }
+
+                event.currentScope.$broadcast(event.name, args);
+            }
         }
 
         private watchCharacterHitpoints(newValue, oldValue, scope) {

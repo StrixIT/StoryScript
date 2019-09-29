@@ -2,6 +2,7 @@ namespace StoryScript {
     export interface ICombinationService {
         getCombinationActions(): ICombinationAction[];
         getCombineClass(tool: ICombinable): string;
+        setActiveCombination(combination: ICombinationAction): void;
         tryCombination(target: ICombinable): ICombineResult;
     }
 }
@@ -28,6 +29,27 @@ namespace StoryScript {
             }
 
             return className;
+        }
+
+        setActiveCombination = (combination: ICombinationAction): void => {
+            var self = this;
+
+            if (!combination) {
+                return;
+            }
+
+            if (self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === combination) {
+                self._game.combinations.activeCombination = null;
+                return;
+            }
+
+            combination.requiresTool = combination.requiresTool === undefined || combination.requiresTool === true ? true : false;
+
+            self._game.combinations.activeCombination = {
+                selectedCombinationAction: combination,
+                selectedTool: null,
+                combineText: combination.requiresTool ? combination.text : combination.text + ' ' + (combination.preposition || '')
+            };
         }
 
         tryCombination = (target: ICombinable): ICombineResult => {

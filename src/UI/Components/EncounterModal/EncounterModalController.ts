@@ -24,7 +24,7 @@ namespace StoryScript {
                 self.watchPlayState(newValue, oldValue, self);
             });
 
-            self._scope.$on('initDescription', (event, args) => {
+            self._scope.$on('showDescription', (event, args) => {
                 self._game.playState = PlayState.Description;
                 self.modalSettings.title = (<any>args).title;
                 self.modalSettings.descriptionEntity = {
