@@ -22,7 +22,7 @@ namespace LanternofWorlds {
             };
 
             var tileAdditions = [
-                ['1-3', Locations.Forest],
+                ['1-3', Locations.Warrior],
                 ['1-2', Locations.Druidstart],
                 //['3-1', Locations.Water],
             ];
