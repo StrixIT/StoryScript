@@ -33,8 +33,8 @@ namespace StoryScript {
 
             for (var n in self._game.worldProperties) {
                 if (self._game.worldProperties.hasOwnProperty(n)) {
-                    var value = self._game.worldProperties[n];
-                    self.worldProperties.push({ name: n, value: null});
+                    var value = self._texts.worldProperties[n];
+                    self.worldProperties.push({ name: n, value: value});
                 }
             }
         }

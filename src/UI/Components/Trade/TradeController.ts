@@ -25,10 +25,12 @@ namespace StoryScript {
             var self = this;
             return self._tradeService.displayPrice(item, actualPrice);
         }
+
         buy = (item: IItem, trade: ITrade): void => {
             var self = this;
             self._tradeService.buy(item, trade);
         }
+        
         sell = (item: IItem, trade: ITrade): void => {
             var self = this;
             self._tradeService.sell(item, trade);

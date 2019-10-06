@@ -7,6 +7,7 @@
         levelUp(game: IGame, characterData: any): ICharacter;
         limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
         distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
+        pickupItem(item: IItem): boolean;
         canEquip(item: IItem): boolean;
         equipItem(item: IItem): boolean;
         unequipItem(item: IItem): boolean;
@@ -121,6 +122,20 @@ namespace StoryScript {
 
             game.state = StoryScript.GameState.Play;
             return character;
+        }
+
+        pickupItem = (item: IItem): boolean => {
+            var self = this;
+            var isCombining = self._game.combinations && self._game.combinations.activeCombination;
+
+            if (isCombining) {
+                self._game.combinations.tryCombine(item)
+                return false;
+            }
+
+            self._game.character.items.push(item);
+            self._game.currentLocation.items.remove(item);
+            return true;
         }
 
         canEquip = (item: IItem): boolean => {

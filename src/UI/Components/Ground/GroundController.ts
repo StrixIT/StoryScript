@@ -1,6 +1,6 @@
 namespace StoryScript {   
     export class GroundController implements ng.IComponentController {
-        constructor(private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _sharedMethodService: ISharedMethodService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
@@ -22,17 +22,9 @@ namespace StoryScript {
 
         pickupItem = (item: IItem): void => {
             var self = this;
-            var isCombining = self._game.combinations.activeCombination;
-
-            if (isCombining) {
-                self._game.combinations.tryCombine(item)
-                return;
-            }
-
-            self.game.character.items.push(item);
-            self.game.currentLocation.items.remove(item);
+            self._characterService.pickupItem(item);
         }
     }
 
-    GroundController.$inject = ['sharedMethodService', 'game', 'customTexts'];
+    GroundController.$inject = ['sharedMethodService', 'characterService', 'game', 'customTexts'];
 }

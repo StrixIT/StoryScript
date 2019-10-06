@@ -23,8 +23,7 @@ namespace StoryScript {
             var self = this;
             self._conversationService.initConversation();
             var conversation = self._game.currentLocation 
-                                    && self._game.currentLocation.activePerson 
-                                    && self._game.currentLocation
+                                    && self._game.currentLocation.activePerson
                                     && self._game.currentLocation.activePerson.conversation;
 
             self.conversation = conversation;
