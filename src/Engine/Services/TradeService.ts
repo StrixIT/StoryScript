@@ -149,6 +149,11 @@ namespace StoryScript {
                 if (trader.currency != undefined) {
                     trader.currency = characterSells ? trader.currency - price : trader.currency + price;
                 }
+
+                if (self._game.currentLocation.activePerson && self._game.currentLocation.activePerson.trade === self._game.currentLocation.activeTrade) {
+                    self._game.currentLocation.activePerson.currency = self._game.currentLocation.activeTrade.currency;
+                }
+
             }
 
             return canAffort;

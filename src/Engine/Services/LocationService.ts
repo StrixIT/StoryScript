@@ -16,7 +16,6 @@ namespace StoryScript {
 
         init = (game: IGame, buildWorld?: boolean) => {
             var self = this;
-            game.changeLocation = (location, travel) => { self.changeLocation.call(self, location, travel, game); };
             game.currentLocation = null;
             game.previousLocation = null;
             game.locations = self.loadWorld(buildWorld === undefined || buildWorld);
@@ -195,7 +194,7 @@ namespace StoryScript {
 
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
-            location.destinations.push = location.destinations.push.proxy(location.destinations.push, self.addDestination, self._game);
+            location.destinations.push = location.destinations.push.proxy(self.addDestination, self._game);
 
             // Set the selected action to an actual barrier action. This object reference is lost when serializing.
             if (location.destinations) {
@@ -255,16 +254,10 @@ namespace StoryScript {
             }
         }
 
-        private addDestination() {
-            var args = [].slice.apply(arguments);
-            var originalFunction = args.shift();
-            var destination = <IDestination>args[0];
-            var game = <IGame>args[1];
-            args.splice(1, 1);
-
+        private addDestination(originalFunction, destination, game) {
             setDestination(destination);
             addKeyAction(game, destination);
-            originalFunction.apply(this, args);
+            originalFunction.apply(this, [destination]);
         }
 
         private playEvents(game: IGame, events: ICollection<((game: IGame) => void)>) {

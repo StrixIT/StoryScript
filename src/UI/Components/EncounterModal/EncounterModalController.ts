@@ -65,17 +65,7 @@ namespace StoryScript {
         private watchPlayState(newValue: PlayState, oldValue: PlayState, controller: EncounterModalController) {
             var self = this;
 
-            if (newValue !== PlayState.Menu) {
-                // Todo: is this really necessary?
-                if (oldValue != undefined) {
-                    // If there is a person trader, sync the money between him and the shop on trade end.
-                    if (oldValue == PlayState.Trade) {
-                        if (controller._game.currentLocation.activePerson && controller._game.currentLocation.activePerson.trade === controller._game.currentLocation.activeTrade) {
-                            controller._game.currentLocation.activePerson.currency = controller._game.currentLocation.activeTrade.currency;
-                        }
-                    }
-                }
-                
+            if (newValue !== PlayState.Menu) {          
                 self.getStateSettings(controller, newValue);
                 self.switchState(controller, newValue);
             }

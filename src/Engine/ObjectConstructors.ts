@@ -10,11 +10,11 @@ namespace StoryScript {
     }
 
     export function CreateEntityProxy<T>(entityFunction: (() => T)): () => T {
-        return entityFunction.proxy(entityFunction, (originalFunc, ...params) => {
+        return entityFunction.proxy((originalFunc, ...params) => {
             var id = params.splice(params.length - 1, 1)[0];
             var oldId = GetCurrentEntityId();
             SetCurrentEntityId(id);
-            var result = originalFunc.apply(this, params);
+            var result = originalFunc(params);
             SetCurrentEntityId(oldId);
             return result;
         }, entityFunction.name || entityFunction.originalFunctionName);
@@ -132,7 +132,7 @@ namespace StoryScript {
 
         Object.defineProperty(readOnlyCollection, 'push', {
             writable: true,
-            value: readOnlyCollection.push.proxy(readOnlyCollection.push, pushEntity)
+            value: readOnlyCollection.push.proxy(pushEntity)
         });
     }
 
@@ -365,18 +365,14 @@ namespace StoryScript {
         }
     }
 
-    function pushEntity() {
-        var args = [].slice.apply(arguments);
-        var originalFunction = args.shift();
-        var entity = args[0];
+    function pushEntity(originalFunction, entity) {
         entity = typeof entity === 'function' ? entity() : entity;
 
         if (!entity.id && entity.name) {
             entity.id = getIdFromName(entity);
         }
 
-        args[0] = entity;
-        originalFunction.apply(this, args);
+        originalFunction.apply(this, [entity]);
     };
 
     function getIdFromName<T extends { name: string, id? : string}>(entity: T): string {

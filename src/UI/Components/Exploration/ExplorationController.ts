@@ -65,10 +65,7 @@ namespace StoryScript {
 
         changeLocation = (location: string) => {
             var self = this;
-
-            // Call changeLocation without using the execute action as the game parameter is not needed.
             self.game.changeLocation(location, true);
-            self._gameService.saveGame();
         }
     }
 

@@ -7,13 +7,7 @@ namespace StoryScript {
             self.sheet = self._characterService.setupCharacter();
 
             self._scope.$on('createCharacter', function (event: ng.IAngularEvent) {
-                self.sheet = self._characterService.setupCharacter();
-
-                if (self.sheet.steps.length === 0) {
-                    self._gameService.startNewGame({ 
-                        steps:[]
-                    });
-                }
+                self.sheet = self._gameService.setupCharacter();
             });
         }
 

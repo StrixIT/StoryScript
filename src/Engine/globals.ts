@@ -1,22 +1,26 @@
 ﻿namespace StoryScript {
     if (Function.prototype.proxy === undefined) {
         // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
-        Function.prototype.proxy = function (originalFunction: Function, proxyFunction: Function, ...params) {
-            var proxyScope = this;
+        Function.prototype.proxy = function (proxyFunction: Function, ...params) {
+            var originalFunction = this;
 
             return (function () {
                 var name = originalFunction.name;           
-                var func = createNamedFunction(proxyScope, proxyFunction, name, params);
+                var func = createNamedFunction(originalFunction, proxyFunction, name, params);
                 func.isProxy = true;
                 return func;
             })();
         };
     }
 
-    export function createNamedFunction(proxyScope, proxyFunction: Function, name: string, ...params): Function {
+    export function createNamedFunction(originalFunction, proxyFunction: Function, name: string, ...params): Function {
         var namedFunction = {[name]: function () {
             var args = [].slice.call(arguments);
-            args.splice(0, 0, proxyScope);
+
+            if (originalFunction) {
+                args.splice(0, 0, originalFunction);
+            }
+            
             return proxyFunction.apply(this, args.concat(...params));
         }}[name];
 

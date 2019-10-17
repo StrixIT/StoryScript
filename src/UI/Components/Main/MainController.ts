@@ -97,11 +97,6 @@ namespace StoryScript {
                 scope.$broadcast('initLevelUp');
             }
             
-            if (oldValue == GameState.LevelUp && newValue == GameState.Play) {
-                // Level-up was just completed. Save the game from here, because the character service cannot depend on the game service.
-                scope.$ctrl._gameService.saveGame();
-            }
-
             scope.$ctrl._gameService.changeGameState(newValue);
         }
 

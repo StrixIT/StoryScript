@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class LevelUpController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: ng.IScope, private _gameService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
@@ -21,9 +21,9 @@ namespace StoryScript {
 
         levelUp = () => {
             var self = this;
-            self._characterService.levelUp(self._game, self.sheet);
+            self._gameService.levelUp(self.sheet);
         }
     }
 
-    LevelUpController.$inject = ['$scope', 'characterService', 'game', 'customTexts'];
+    LevelUpController.$inject = ['$scope', 'gameService', 'characterService', 'game', 'customTexts'];
 }
