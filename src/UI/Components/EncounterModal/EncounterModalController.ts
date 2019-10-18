@@ -97,10 +97,7 @@ namespace StoryScript {
         }
 
         private switchState(controller: EncounterModalController, newValue: PlayState): void {
-            if (newValue === undefined) {
-                return;
-            }
-            else if (newValue === null) {
+            if (newValue === null || newValue === undefined) {
                 $('#encounters').modal('hide');
             }        
             else {

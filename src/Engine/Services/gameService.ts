@@ -11,7 +11,6 @@
     export interface IGameService {
         init(): void;
         startNewGame(characterData: any): void;
-        setupCharacter(): ICreateCharacter;
         levelUp(sheet: ICreateCharacter): ICharacter;
         reset(): void;
         restart(skipIntro?: boolean): void;
@@ -102,19 +101,6 @@ namespace StoryScript {
 
             self._game.state = StoryScript.GameState.Play;
             self.saveGame();
-        }
-
-        setupCharacter = (): ICreateCharacter => {
-            var self = this;
-            var sheet = self._characterService.setupCharacter();
-
-            if (sheet.steps.length === 0) {
-                self.startNewGame({ 
-                    steps:[]
-                });
-            }
-
-            return sheet;
         }
 
         levelUp = (sheet: ICreateCharacter): ICharacter => {

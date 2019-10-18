@@ -9,11 +9,11 @@ namespace StoryScript {
     }
 
     export class MainController {
-        constructor(private _scope: ng.IScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: StoryScriptScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = self._game;
             self.texts = self._texts;
-            (<any>self._scope).game = self._game;
+            self._scope.game = self._game;
 
             self._scope.$on('restart', (ev) => { 
                 self.broadcast(ev, null, () => self.init(true));
@@ -23,16 +23,12 @@ namespace StoryScript {
             self._scope.$on('showDescription', self.broadcast);
             self._scope.$on('showMenu', self.broadcast);
 
-            self._scope.$watch('game.currentLocation', self.watchLocation);
             self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
             self._scope.$watch('game.character.score', self.watchCharacterScore);
-            self._scope.$watch('game.state', self.watchGameState);
 
             self._game.dynamicStyles = self._game.dynamicStyles || [];
 
-            self._scope.$watchCollection('game.dynamicStyles', function(newForm, oldForm) {
-                self.applyDynamicStyling();
-            });
+            self._scope.$watchCollection('game.dynamicStyles', () => self.applyDynamicStyling());
 
             _eventListener.addEventListener('combinationFinished', function(finishedEvent: StoryScript.CombinationFinishedEvent) {
                 var showEvent = new ShowCombinationTextEvent();
@@ -58,9 +54,9 @@ namespace StoryScript {
             if (restart) {
                 self._gameService.restart();
             }
-
-            self._gameService.init();
-            self._scope.$broadcast('createCharacter');
+            else {
+                self._gameService.init();
+            }
         }
 
         private broadcast(event: ng.IAngularEvent, args?: any[], callback?: Function)
@@ -88,26 +84,6 @@ namespace StoryScript {
                 if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
                     var increase = newValue - oldValue;
                     scope.$ctrl._gameService.scoreChange(increase);
-                }
-            }
-        }
-
-        private watchGameState(newValue: GameState, oldValue: GameState, scope) {
-            if (newValue == GameState.LevelUp) {
-                scope.$broadcast('initLevelUp');
-            }
-            
-            scope.$ctrl._gameService.changeGameState(newValue);
-        }
-
-        private watchLocation(newValue: ICompiledLocation, oldValue: ICompiledLocation, scope) {
-            if (!scope.$ctrl._game.loading) {
-                if (oldValue != undefined && newValue != undefined) {
-                    // Don't change the game state change to 'play' when a level-up is in progress. This level-up
-                    // can be triggered on location change.
-                    if (scope.$ctrl._game.state != StoryScript.GameState.LevelUp) {
-                        scope.$ctrl._game.state = GameState.Play;
-                    }
                 }
             }
         }

@@ -34,6 +34,9 @@ namespace StoryScript {
         changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
             var self = this;
 
+            // Clear the play state on travel.
+            game.playState = null;
+
             if (game.currentLocation && game.currentLocation.leaveEvents) {
                 self.playEvents(game, game.currentLocation.leaveEvents);
                 game.currentLocation.leaveEvents.length = 0;

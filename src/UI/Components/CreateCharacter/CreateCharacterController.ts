@@ -1,13 +1,15 @@
 namespace StoryScript {
     export class CreateCharacterController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: StoryScriptScope, private _characterService: ICharacterService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.game = _game;
             self.texts = _texts;
-            self.sheet = self._characterService.setupCharacter();
+            self._scope.game = self._game;
 
-            self._scope.$on('createCharacter', function (event: ng.IAngularEvent) {
-                self.sheet = self._gameService.setupCharacter();
+            self._scope.$watch('game.state', (newValue: GameState) => {
+                if (newValue == GameState.CreateCharacter) {
+                    self.sheet = self._characterService.setupCharacter();
+                }
             });
         }
 
