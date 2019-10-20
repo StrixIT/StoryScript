@@ -22,7 +22,7 @@ describe("Utilities", function() {
             return x + y;
         };
 
-        function AddOn(myFunction, x, y, z) {
+        function AddOn(myScope, myFunction, x, y, z) {
             var myFunctionResult = myFunction(x, y);
             return myFunctionResult * z;
         }

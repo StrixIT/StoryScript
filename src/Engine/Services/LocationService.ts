@@ -232,10 +232,10 @@ namespace StoryScript {
             }
         }
 
-        private addDestination = (originalFunction, destination, game): void => {
+        private addDestination = (originalScope, originalFunction, destination, game): void => {
             setDestination(destination);
             addKeyAction(game, destination);
-            originalFunction.apply(this, [destination]);
+            originalFunction.call(originalScope, destination);
         }
 
         private playEvents = (game: IGame, events: ICollection<((game: IGame) => void)>): void => {

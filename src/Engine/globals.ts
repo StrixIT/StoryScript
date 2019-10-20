@@ -18,7 +18,8 @@
             var args = [].slice.call(arguments);
 
             if (originalFunction) {
-                args.splice(0, 0, originalFunction);
+                args.splice(0, 0, this);
+                args.splice(1, 0, originalFunction);
             }
             
             return proxyFunction.apply(this, args.concat(...params));
