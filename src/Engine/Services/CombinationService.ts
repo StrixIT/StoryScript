@@ -12,40 +12,34 @@ namespace StoryScript {
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
         }
 
-        getCombinationActions = (): ICombinationAction[] => {
-            var self = this;
-            return self._rules.setup.getCombinationActions ? self._rules.setup.getCombinationActions() : [];
-        }
+        getCombinationActions = (): ICombinationAction[] => this._rules.setup.getCombinationActions ? this._rules.setup.getCombinationActions() : [];
 
         getCombineClass = (tool: ICombinable): string => {
-            var self = this;
             let className = '';
 
             if (tool) {
-                className = self._game.combinations.activeCombination ? self._game.combinations.activeCombination.selectedTool && self._game.combinations.activeCombination.selectedTool.id === tool.id ? 'combine-active-selected' : 'combine-selectable' : '';
+                className = this._game.combinations.activeCombination ? this._game.combinations.activeCombination.selectedTool && this._game.combinations.activeCombination.selectedTool.id === tool.id ? 'combine-active-selected' : 'combine-selectable' : '';
             }
             else {
-                className = self._game.combinations.activeCombination  ? 'combine-active-hide' : '';
+                className = this._game.combinations.activeCombination  ? 'combine-active-hide' : '';
             }
 
             return className;
         }
 
         setActiveCombination = (combination: ICombinationAction): void => {
-            var self = this;
-
             if (!combination) {
                 return;
             }
 
-            if (self._game.combinations.activeCombination && self._game.combinations.activeCombination.selectedCombinationAction === combination) {
-                self._game.combinations.activeCombination = null;
+            if (this._game.combinations.activeCombination && this._game.combinations.activeCombination.selectedCombinationAction === combination) {
+                this._game.combinations.activeCombination = null;
                 return;
             }
 
             combination.requiresTool = combination.requiresTool === undefined || combination.requiresTool === true ? true : false;
 
-            self._game.combinations.activeCombination = {
+            this._game.combinations.activeCombination = {
                 selectedCombinationAction: combination,
                 selectedTool: null,
                 combineText: combination.requiresTool ? combination.text : combination.text + ' ' + (combination.preposition || '')
@@ -53,8 +47,7 @@ namespace StoryScript {
         }
 
         tryCombination = (target: ICombinable): ICombineResult => {
-            var self = this;
-            var combo = self._game.combinations.activeCombination;
+            var combo = this._game.combinations.activeCombination;
             var result = <ICombineResult>{
                 success: false,
                 text: ''
@@ -65,7 +58,7 @@ namespace StoryScript {
             }
 
             if (!combo) {
-                var defaultAction = self.getCombinationActions().filter(c => c.isDefault)[0];
+                var defaultAction = this.getCombinationActions().filter(c => c.isDefault)[0];
 
                 if (defaultAction) {
                     combo = {
@@ -89,35 +82,34 @@ namespace StoryScript {
                 return result;
             }
 
-            result = self.performCombination(target, combo);
+            result = this.performCombination(target, combo);
 
             if (result.success) {
                 if (result.removeTarget) {
-                    self.removeFeature(target);
+                    this.removeFeature(target);
                 }
 
                 if (result.removeTool && combo.selectedTool.id != target.id) {
-                    self.removeFeature(combo.selectedTool);
+                    this.removeFeature(combo.selectedTool);
                 }
 
-                SaveWorldState(self._dataService, self._locationService, self._game);
+                SaveWorldState(this._dataService, this._locationService, this._game);
             }
 
             return result;
         }
 
-        private performCombination(target: ICombinable, combo: IActiveCombination): ICombineResult {
-            var self = this;
+        private performCombination = (target: ICombinable, combo: IActiveCombination): ICombineResult => {
             var tool = combo.selectedTool;
             var type = combo.selectedCombinationAction;
             var prepositionText = combo.selectedCombinationAction.preposition ? ' ' + combo.selectedCombinationAction.preposition + ' ' : ' '
             var text = combo.selectedCombinationAction.requiresTool ? combo.selectedCombinationAction.text + ' ' + tool.name + prepositionText + target.name:
                                                                         combo.selectedCombinationAction.text + prepositionText + target.name;
 
-            self._game.combinations.activeCombination = null;
+            this._game.combinations.activeCombination = null;
             
             var combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => {
-                var toolMatch = type.requiresTool && c.tool && self.isMatch(c.tool, tool);
+                var toolMatch = type.requiresTool && c.tool && this.isMatch(c.tool, tool);
                 return c.combinationType === type.text && (!type.requiresTool || toolMatch);
             })[0] : null;
             
@@ -126,7 +118,7 @@ namespace StoryScript {
                 var anyTool = <any>tool;
 
                 if (anyTool && anyTool.type === 'item' && target && anyTool.type === 'item') {
-                    combination = tool.combinations && tool.combinations.combine ? tool.combinations.combine.filter(c => c.combinationType === type.text && self.isMatch(c.tool, target))[0] : null;
+                    combination = tool.combinations && tool.combinations.combine ? tool.combinations.combine.filter(c => c.combinationType === type.text && this.isMatch(c.tool, target))[0] : null;
                 }
             }
             
@@ -136,8 +128,8 @@ namespace StoryScript {
             };
 
             if (combination) {
-                var matchResult = combination.match ? combination.match(self._game, target, tool) 
-                                    : combo.selectedCombinationAction.defaultMatch ? combo.selectedCombinationAction.defaultMatch(self._game, target, tool)
+                var matchResult = combination.match ? combination.match(this._game, target, tool) 
+                                    : combo.selectedCombinationAction.defaultMatch ? combo.selectedCombinationAction.defaultMatch(this._game, target, tool)
                                         : undefined;
 
                 if (matchResult === undefined) {
@@ -151,43 +143,41 @@ namespace StoryScript {
                 result.removeTool = typeof matchResult !== 'string' && matchResult.removeTool;
             }
             else if (target.combinations && target.combinations.failText) {
-                result.text = typeof target.combinations.failText === 'function' ? target.combinations.failText(self._game, target, tool) : target.combinations.failText;
+                result.text = typeof target.combinations.failText === 'function' ? target.combinations.failText(this._game, target, tool) : target.combinations.failText;
             }
             else if (type.failText) {
-                result.text = typeof type.failText === 'function' ? type.failText(self._game, target, tool) : type.failText;
+                result.text = typeof type.failText === 'function' ? type.failText(this._game, target, tool) : type.failText;
             }
             else {
-                result.text = tool ? self._texts.format(self._texts.noCombination, [tool.name, target.name, type.text, type.preposition]) : self._texts.format(self._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
+                result.text = tool ? this._texts.format(this._texts.noCombination, [tool.name, target.name, type.text, type.preposition]) : this._texts.format(this._texts.noCombinationNoTool, [target.name, type.text, type.preposition]);
             }
 
             result.text = text + (result.text ? ': ' + result.text : '')
             return result;
         }
 
-        private isMatch(combineTool: any, tool: ICombinable) {
+        private isMatch = (combineTool: any, tool: ICombinable): boolean => {
             var combineId = typeof combineTool === 'function' ? combineTool.name || combineTool.originalFunctionName : combineTool;
             return compareString(tool.id, combineId);
         }
 
-        private removeFeature(feature: IFeature) {
-            var self = this;
-
+        private removeFeature = (feature: IFeature): void => {
             // Remove the feature from all possible locations. As we use the object
             // reference, objects of the same type should be left alone.
-            self._game.currentLocation.features.remove(feature);
-            self._game.currentLocation.destinations.forEach(d => {
+            this._game.currentLocation.features.remove(feature);
+            this._game.currentLocation.destinations.forEach(d => {
                 if (d.barrier === feature) {
                     d.barrier = null;
                 }
             });
 
-            self._game.currentLocation.items.remove(<IItem>feature);
-            self._game.character.items.remove(<IItem>feature);
+            this._game.currentLocation.items.remove(<IItem>feature);
+            this._game.character.items.remove(<IItem>feature);
             // When equipment can be used in combinations, remove items from the
             // character's equipment as well.
 
-            self._game.currentLocation.enemies.remove(<IEnemy>feature);
-            self._game.currentLocation.persons.remove(<IPerson>feature);
+            this._game.currentLocation.enemies.remove(<IEnemy>feature);
+            this._game.currentLocation.persons.remove(<IPerson>feature);
         }
     }
 

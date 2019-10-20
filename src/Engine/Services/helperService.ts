@@ -46,25 +46,13 @@ namespace StoryScript {
         constructor(private _game: IGame) {
         }
 
-        randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => {
-            var self = this;
-            return random<IEnemy>('enemies', self._game.definitions, <(enemy: IEnemy) => boolean>selector);
-        }
+        randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => random<IEnemy>('enemies', this._game.definitions, <(enemy: IEnemy) => boolean>selector);
 
-        randomItem = (selector?: (item: IItem) => boolean): IItem => {
-            var self = this;
-            return random<IItem>('items', self._game.definitions, <(item: IItem) => boolean>selector);
-        }
+        randomItem = (selector?: (item: IItem) => boolean): IItem => random<IItem>('items', this._game.definitions, <(item: IItem) => boolean>selector);
      
-        getItem = (selector: string): IItem => {
-            var self = this;
-            return this.find<IItem>(selector, 'items', self._game.definitions);
-        }
+        getItem = (selector: string): IItem => this.find<IItem>(selector, 'items', this._game.definitions);
 
-        getEnemy = (selector: string): IEnemy => {
-            var self = this;
-            return this.find<IEnemy>(selector, 'enemies', self._game.definitions);
-        }
+        getEnemy = (selector: string): IEnemy => this.find<IEnemy>(selector, 'enemies', this._game.definitions);
 
         rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {
             var sides = <number>compositeOrSides;
@@ -109,7 +97,7 @@ namespace StoryScript {
             }
             else {
                 if (person.items) {
-                    person.items.forEach(function (item) {
+                    person.items.forEach(item => {
                         if (item && item.bonuses && item.bonuses[type]) {
                             bonus += item.bonuses[type];
                         }

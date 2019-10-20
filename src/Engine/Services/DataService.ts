@@ -16,33 +16,25 @@ namespace StoryScript {
         private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
 
         constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
-            var self = this;
-            self.descriptionBundle = window.StoryScript.GetGameDescriptions();
+            this.descriptionBundle = window.StoryScript.GetGameDescriptions();
         }
         
         save = <T>(key: string, value: T, pristineValues?: T): void => {
-            var self = this;
             var functions = window.StoryScript.ObjectFactory.GetFunctions();
-            var clone = self.buildClone(functions, value, pristineValues);
-            self._localStorageService.set(self._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
+            var clone = this.buildClone(functions, value, pristineValues);
+            this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
         }
 
         copy = <T>(value: T, pristineValue: T): T => {
-            var self = this;
             var functions = window.StoryScript.ObjectFactory.GetFunctions();
-            return self.buildClone(functions, value, pristineValue);
+            return this.buildClone(functions, value, pristineValue);
         }
 
-        getSaveKeys = (): string[] => {
-            var self = this;
-            return self._localStorageService.getKeys(self._gameNameSpace + '_' + DataKeys.GAME + '_');
-        }
+        getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');
 
         load = <T>(key: string): T => {
-            var self = this;
-
             try {
-                var jsonData = self._localStorageService.get(self._gameNameSpace + '_' + key);
+                var jsonData = this._localStorageService.get(this._gameNameSpace + '_' + key);
 
                 if (jsonData) {
                     var data = JSON.parse(jsonData).data;
@@ -52,7 +44,7 @@ namespace StoryScript {
                     }
 
                     var functionList = window.StoryScript.ObjectFactory.GetFunctions();
-                    self.restoreObjects(functionList, data);
+                    this.restoreObjects(functionList, data);
                     setReadOnlyProperties(key, data);
                     return data;
                 }
@@ -67,24 +59,23 @@ namespace StoryScript {
         }
 
         loadDescription = (type: string, item: { id?: string, description?: string, picture?: string, hasHtmlDescription?: boolean }): string => {
-            var self = this;
-            var identifier = self.GetIdentifier(type, item);
+            var identifier = this.GetIdentifier(type, item);
 
-            if (!self.loadedDescriptions) {
-                self.loadedDescriptions = {};
+            if (!this.loadedDescriptions) {
+                this.loadedDescriptions = {};
             }
 
-            var loadedDescription = self.loadedDescriptions[identifier];
+            var loadedDescription = this.loadedDescriptions[identifier];
 
             if (loadedDescription) {
                 return loadedDescription;
             }
             
-            var html = self.descriptionBundle.get(identifier);
+            var html = this.descriptionBundle.get(identifier);
 
             if (html === undefined) {
                 console.log('No file ' + identifier + '.html found. Did you create this file already?');
-                self.loadedDescriptions[identifier] = null;
+                this.loadedDescriptions[identifier] = null;
                 return null;
             }
 
@@ -100,23 +91,18 @@ namespace StoryScript {
             // Track that this item had a HTML description so it can be re-loaded later.
             item.hasHtmlDescription = true;
             item.description = html;
-            self.loadedDescriptions[identifier] = html;
+            this.loadedDescriptions[identifier] = html;
             return html;
         }
 
         hasDescription = (type: string, item: { id?: string, description?: string }): boolean => {
-            var self = this;
-            var identifier = self.GetIdentifier(type, item);
-            return self.descriptionBundle.get(identifier) != null;
+            var identifier = this.GetIdentifier(type, item);
+            return this.descriptionBundle.get(identifier) != null;
         }
 
-        private GetIdentifier(type: string, item: { id?: string; description?: string; picture?: string; hasHtmlDescription?: boolean; }) {
-            return (getPlural(type) + '/' + item.id).toLowerCase();
-        }
+        private GetIdentifier = (type: string, item: { id?: string; description?: string; picture?: string; hasHtmlDescription?: boolean; }) => (getPlural(type) + '/' + item.id).toLowerCase();
 
-        private buildClone(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, values, pristineValues, clone?) {
-            var self = this;
-
+        private buildClone = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, values, pristineValues, clone?): any => {
             if (!clone) {
                 clone = Array.isArray(values) ? [] : typeof values === 'object' ? {} : values;
                 if (clone == values) {
@@ -146,20 +132,18 @@ namespace StoryScript {
                     continue;
                 }
 
-                self.getClonedValue(functionList, clone, value, key, pristineValues);
+                this.getClonedValue(functionList, clone, value, key, pristineValues);
             }
 
             return clone;
         }
 
-        private getClonedValue(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string, pristineValues: any) {
-            var self = this;
-            
+        private getClonedValue = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string, pristineValues: any): void => {
             var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
 
             if (Array.isArray(value)) {
                 clone[key] = [];
-                self.buildClone(functionList, value, pristineValue, clone[key]);
+                this.buildClone(functionList, value, pristineValue, clone[key]);
 
                 var additionalArrayProperties = Object.keys(value).filter(v => {
                     var isAdditionalProperty = isNaN(parseInt(v));
@@ -176,7 +160,7 @@ namespace StoryScript {
                 additionalArrayProperties.forEach(p => {
                     var arrayPropertyKey = `${key}_arrProps`;
                     clone[arrayPropertyKey] = {};
-                    self.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
+                    this.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
                 });
             }
             else if (typeof value === 'object') {
@@ -187,22 +171,20 @@ namespace StoryScript {
                     clone[key] = {};
                 }
 
-                self.buildClone(functionList, value, pristineValue, clone[key]);
+                this.buildClone(functionList, value, pristineValue, clone[key]);
             }
             else if (typeof value === 'function') {
-                self.getClonedFunction(functionList, clone, value, key);
+                this.getClonedFunction(functionList, clone, value, key);
             }
             else {
                 clone[key] = value;
             }
         }
 
-        private getClonedFunction(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string) {
-            var self = this;
-
+        private getClonedFunction = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string): void => {
             if (!value.isProxy) {
                 if (value.functionId) {
-                    var parts = self.GetFunctionIdParts(value.functionId);
+                    var parts = this.GetFunctionIdParts(value.functionId);
                     var plural = getPlural(parts.type);
 
                     if (parts.type === 'action' && !functionList[plural][parts.functionId]) {
@@ -236,7 +218,7 @@ namespace StoryScript {
                     if (functionString.indexOf('function') == -1) {
                         var arrowIndex = functionString.indexOf('=>');
 
-                        functionString = 'function' + functionString.match(self.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
+                        functionString = 'function' + functionString.match(this.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
                     }
 
                     clone[key] = functionString;
@@ -244,11 +226,7 @@ namespace StoryScript {
             }
         }
 
-        private restoreObjects(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded) {
-            var self = this;
-
-            try
-            {
+        private restoreObjects = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded): void => {
             for (var key in loaded) {
                 if (!loaded.hasOwnProperty(key)) {
                     continue;
@@ -261,7 +239,7 @@ namespace StoryScript {
                 }
                 else if (Array.isArray(value)) {
                     initCollection(loaded, key);
-                    self.restoreObjects(functionList, value);
+                    this.restoreObjects(functionList, value);
 
                     var arrayPropertyKey = `${key}_arrProps`;
                     var additionalArrayProperties = loaded[arrayPropertyKey];
@@ -275,23 +253,17 @@ namespace StoryScript {
                     }
                 }
                 else if (typeof value === 'object') {
-                    self.restoreObjects(functionList, value);
+                    this.restoreObjects(functionList, value);
                 }
                 else if (typeof value === 'string') {
-                    self.restoreFunction(functionList, loaded, value, key);
+                    this.restoreFunction(functionList, loaded, value, key);
                 }
-            }
-            }
-            catch (ex) {
-                console.log(ex);
             }
         }
 
-        private restoreFunction(functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded: any, value: any, key: string) {
-            var self = this;
-
+        private restoreFunction = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded: any, value: any, key: string): void => {
             if (value.indexOf('function#') > -1) {
-                var parts = self.GetFunctionIdParts(value);
+                var parts = this.GetFunctionIdParts(value);
                 var type = getPlural(parts.type);
                 var typeList = functionList[type];
 
@@ -309,7 +281,7 @@ namespace StoryScript {
             }
         }
 
-        private GetFunctionIdParts(value: string): IFunctionIdParts {
+        private GetFunctionIdParts = (value: string): IFunctionIdParts => {
             var parts = value.split('#');
             var functionPart = parts[1];
             var functionParts = functionPart.split('|');

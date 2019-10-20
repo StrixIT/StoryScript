@@ -36,346 +36,307 @@ namespace StoryScript {
         }
 
         init = (skipIntro?: boolean): void => {
-            var self = this;
-            self._game.helpers = self._helperService;
+            this._game.helpers = this._helperService;
 
-            if (self._rules.setup && self._rules.setup.setupGame) {
-                self._rules.setup.setupGame(self._game);
+            if (this._rules.setup && this._rules.setup.setupGame) {
+                this._rules.setup.setupGame(this._game);
             }
 
-            self.setupGame();
-            self.initTexts();
-            self._game.highScores = self._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
-            self._game.character = self._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
-            self._game.statistics = self._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || self._game.statistics || {};
-            self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || self._game.worldProperties || {};
+            this.setupGame();
+            this.initTexts();
+            this._game.highScores = this._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
+            this._game.character = this._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
+            this._game.statistics = this._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || this._game.statistics || {};
+            this._game.worldProperties = this._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
             
-            if (!self._game.character && self._rules.setup.intro && !skipIntro) {
-                self._game.state = StoryScript.GameState.Intro;
+            if (!this._game.character && this._rules.setup.intro && !skipIntro) {
+                this._game.state = StoryScript.GameState.Intro;
                 return;
             }
             
-            var locationName = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
-            var characterSheet = self._rules.character.getCreateCharacterSheet && self._rules.character.getCreateCharacterSheet();
+            var locationName = this._dataService.load<string>(StoryScript.DataKeys.LOCATION);
+            var characterSheet = this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet();
             var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
 
-            if (!hasCreateCharacterSteps && !self._game.character) {
-                self.createCharacter(<ICharacter>{});
+            if (!hasCreateCharacterSteps && !this._game.character) {
+                this.createCharacter(<ICharacter>{});
                 locationName = 'Start';
             }
 
-            if (self._game.character && locationName) {
-                self.initSetInterceptors();
-                self.resume(locationName);
+            if (this._game.character && locationName) {
+                this.initSetInterceptors();
+                this.resume(locationName);
             }
             else {
-                self._game.state = StoryScript.GameState.CreateCharacter;
+                this._game.state = StoryScript.GameState.CreateCharacter;
             }
         }
 
-        reset = () => {
-            var self = this;
-            self._dataService.save(StoryScript.DataKeys.WORLD, {});
-            self._locationService.init(self._game);
-            self._game.worldProperties = self._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
-            var location = self._dataService.load<string>(StoryScript.DataKeys.LOCATION);
+        reset = (): void => {
+            this._dataService.save(StoryScript.DataKeys.WORLD, {});
+            this._locationService.init(this._game);
+            this._game.worldProperties = this._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES);
+            var location = this._dataService.load<string>(StoryScript.DataKeys.LOCATION);
 
             if (location) {
-                self._locationService.changeLocation(location, false, self._game);
+                this._locationService.changeLocation(location, false, this._game);
             }
         }
 
         startNewGame = (characterData: any): void => {
-            var self = this;
-            self.createCharacter(characterData);
+            this.createCharacter(characterData);
 
-            if (self._rules.setup.gameStart) {
-                self._rules.setup.gameStart(self._game);
+            if (this._rules.setup.gameStart) {
+                this._rules.setup.gameStart(this._game);
             }
 
-            if (!self._game.currentLocation) {
-                self._game.changeLocation('Start');
+            if (!this._game.currentLocation) {
+                this._game.changeLocation('Start');
             }
 
-            self.initSetInterceptors();
+            this.initSetInterceptors();
 
-            self._game.state = StoryScript.GameState.Play;
-            self.saveGame();
+            this._game.state = StoryScript.GameState.Play;
+            this.saveGame();
         }
 
         levelUp = (sheet: ICreateCharacter): ICharacter => {
-            var self = this;
-            var levelUpResult = self._characterService.levelUp(self._game, sheet);
-            self.saveGame();
+            var levelUpResult = this._characterService.levelUp(this._game, sheet);
+            this.saveGame();
             return levelUpResult;
         }
 
         restart = (skipIntro?: boolean): void => {
-            var self = this;
-            self._dataService.save(StoryScript.DataKeys.CHARACTER, {});
-            self._dataService.save(StoryScript.DataKeys.STATISTICS, {});
-            self._dataService.save(StoryScript.DataKeys.LOCATION, '');
-            self._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
-            self._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, {});
-            self._dataService.save(StoryScript.DataKeys.WORLD, {});
-            self.init(skipIntro);
+            this._dataService.save(StoryScript.DataKeys.CHARACTER, {});
+            this._dataService.save(StoryScript.DataKeys.STATISTICS, {});
+            this._dataService.save(StoryScript.DataKeys.LOCATION, '');
+            this._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
+            this._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, {});
+            this._dataService.save(StoryScript.DataKeys.WORLD, {});
+            this.init(skipIntro);
         }
 
         saveGame = (name?: string): void => {
-            var self = this;
-
             if (name) {
                 var saveGame = <ISaveGame>{
                     name: name,
-                    character: self._game.character,
-                    world: self._locationService.copyWorld(),
-                    worldProperties: self._game.worldProperties,
-                    statistics: self._game.statistics,
-                    location: self._game.currentLocation && self._game.currentLocation.id,
-                    previousLocation: self._game.previousLocation ? self._game.previousLocation.id : null,
-                    state: self._game.state
+                    character: this._game.character,
+                    world: this._locationService.copyWorld(),
+                    worldProperties: this._game.worldProperties,
+                    statistics: this._game.statistics,
+                    location: this._game.currentLocation && this._game.currentLocation.id,
+                    previousLocation: this._game.previousLocation ? this._game.previousLocation.id : null,
+                    state: this._game.state
                 };
 
-                self._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
+                this._dataService.save(StoryScript.DataKeys.GAME + '_' + name, saveGame);
 
-                if ( self._game.playState === PlayState.Menu) {
-                    self._game.playState = null;
+                if ( this._game.playState === PlayState.Menu) {
+                    this._game.playState = null;
                 }
             }
             else {
-                SaveWorldState(self._dataService, self._locationService, self._game);
+                SaveWorldState(this._dataService, this._locationService, this._game);
             }
         }
 
         loadGame = (name: string): void => {
-            var self = this;
-            var saveGame = self._dataService.load<ISaveGame>(StoryScript.DataKeys.GAME + '_' + name);
+            var saveGame = this._dataService.load<ISaveGame>(StoryScript.DataKeys.GAME + '_' + name);
 
             if (saveGame) {
-                self._game.loading = true;
-                self._game.character = saveGame.character;
-                self._game.locations = saveGame.world;
-                self._game.worldProperties = saveGame.worldProperties;
+                this._game.loading = true;
+                this._game.character = saveGame.character;
+                this._game.locations = saveGame.world;
+                this._game.worldProperties = saveGame.worldProperties;
             
-                self._locationService.init(self._game, false);
-                self._game.currentLocation = self._game.locations.get(saveGame.location);
+                this._locationService.init(this._game, false);
+                this._game.currentLocation = this._game.locations.get(saveGame.location);
 
                 if (saveGame.previousLocation) {
-                    self._game.previousLocation = self._game.locations.get(saveGame.previousLocation);
+                    this._game.previousLocation = this._game.locations.get(saveGame.previousLocation);
                 }
 
-                SaveWorldState(self._dataService, self._locationService, self._game);
-                self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
-                self._game.actionLog = [];
-                self._game.state = saveGame.state;
+                SaveWorldState(this._dataService, this._locationService, this._game);
+                this._dataService.save(StoryScript.DataKeys.LOCATION, this._game.currentLocation.id);
+                this._game.actionLog = [];
+                this._game.state = saveGame.state;
 
-                self.initSetInterceptors();
+                this.initSetInterceptors();
                 
-                if ( self._game.playState === PlayState.Menu) {
-                    self._game.playState = null;
+                if ( this._game.playState === PlayState.Menu) {
+                    this._game.playState = null;
                 }
 
                 setTimeout(() => {
-                    self._game.loading = false;
+                    this._game.loading = false;
                 }, 0);
             }
         }
 
-        getSaveGames = (): string[] => {
-            var self = this;
-            return self._dataService.getSaveKeys();
-        }
+        getSaveGames = (): string[] => this._dataService.getSaveKeys();
 
-        hasDescription = (type: string, item: { id?: string, description?: string }): boolean => {
-            var self = this;
-            return self._dataService.hasDescription(type, item);
-        }
+        hasDescription = (type: string, item: { id?: string, description?: string }): boolean => this._dataService.hasDescription(type, item);
 
         getDescription = (type: string, entity: any, key: string): string => {
-            var self = this;
             var description = entity && entity[key] ? entity[key] : null;
 
             if (!description) {
-                self._dataService.loadDescription(type, entity);
+                this._dataService.loadDescription(type, entity);
                 description = entity[key];
             }
 
             if (description) {
-                self.processMediaTags(entity, key);
+                this.processMediaTags(entity, key);
             }
 
             return description;
         }
 
         initCombat = (): void => {
-            var self = this;
-
-            if (self._rules.combat && self._rules.combat.initCombat) {
-                self._rules.combat.initCombat(self._game, self._game.currentLocation);
+            if (this._rules.combat && this._rules.combat.initCombat) {
+                this._rules.combat.initCombat(this._game, this._game.currentLocation);
             }
 
-            self._game.currentLocation.activeEnemies.forEach(enemy => {
+            this._game.currentLocation.activeEnemies.forEach(enemy => {
                 if (enemy.onAttack) {
-                    enemy.onAttack(self._game);
+                    enemy.onAttack(this._game);
                 }
             });
         }
 
         fight = (enemy: IEnemy, retaliate?: boolean) => {
-            var self = this;
-
-            if (!self._rules.combat || !self._rules.combat.fight)
+            if (!this._rules.combat || !this._rules.combat.fight)
             {
                 return;
             }
 
-            self._rules.combat.fight(self._game, enemy, retaliate);
+            this._rules.combat.fight(this._game, enemy, retaliate);
 
             if (enemy.hitpoints <= 0) {
-                self.enemyDefeated(enemy);
+                this.enemyDefeated(enemy);
             }
 
-            if (self._game.character.currentHitpoints <= 0) {
-                self._game.state = StoryScript.GameState.GameOver;
+            if (this._game.character.currentHitpoints <= 0) {
+                this._game.state = StoryScript.GameState.GameOver;
             }
 
-            self.saveGame();
+            this.saveGame();
         }
 
-        useItem = (item: IItem): void => {
-            var self = this;
-            item.use(self._game, item);
-        }
+        useItem = (item: IItem): void => item.use(this._game, item);
 
         executeBarrierAction = (barrier: IBarrier, destination: IDestination, ): void => {
-            var self = this;
-
             if (isEmpty(barrier.actions)) {
                 return;
             }
 
             var actionIndex = barrier.actions.indexOf(barrier.selectedAction);
-            barrier.selectedAction.execute(self._game, barrier, destination);
+            barrier.selectedAction.execute(this._game, barrier, destination);
             barrier.actions.splice(actionIndex, 1);
 
             if (barrier.actions.length) {
                 barrier.selectedAction = barrier.actions[0];
             }
 
-            self.saveGame();
+            this.saveGame();
         }
 
         getCurrentMusic = (): string => {
-            var self = this;
-            var currentEntry = !self._musicStopped && self._rules.setup.playList && self._rules.setup.playList.filter(e => self._game.playState ? e[0] === self._game.playState : e[0] === self._game.state)[0];
+            var currentEntry = !this._musicStopped && this._rules.setup.playList && this._rules.setup.playList.filter(e => this._game.playState ? e[0] === this._game.playState : e[0] === this._game.state)[0];
             return currentEntry && <string>currentEntry[1];
         }
 
-        startMusic = (): void => {
-            var self = this;
-            self._musicStopped = false;
-        }
+        startMusic = (): boolean => this._musicStopped = false;
 
-        stopMusic = (): void => {
-            var self = this;
-            self._musicStopped = true;
-        }
+        stopMusic = (): boolean => this._musicStopped = true;
 
-        private initTexts(): void {
-            var self = this;
+        private initTexts = (): void => {
             var defaultTexts = new DefaultTexts();
 
             for (var n in defaultTexts.texts) {
-                self._texts[n] = self._texts[n] ? self._texts[n] : defaultTexts.texts[n];
+                this._texts[n] = this._texts[n] ? this._texts[n] : defaultTexts.texts[n];
             }
 
-            self._texts.format = defaultTexts.format;
-            self._texts.titleCase = defaultTexts.titleCase;
+            this._texts.format = defaultTexts.format;
+            this._texts.titleCase = defaultTexts.titleCase;
         }
 
-        private resume(locationName: string) {
-            var self = this;
-            var lastLocation = self._game.locations.get(locationName) || self._game.locations.get('start');
-            var previousLocationName = self._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
+        private resume = (locationName: string): void => {
+            var lastLocation = this._game.locations.get(locationName) || this._game.locations.get('start');
+            var previousLocationName = this._dataService.load<string>(StoryScript.DataKeys.PREVIOUSLOCATION);
 
             if (previousLocationName) {
-                self._game.previousLocation = self._game.locations.get(previousLocationName);
+                this._game.previousLocation = this._game.locations.get(previousLocationName);
             }
 
             // Reset loading descriptions so changes to the descriptions are shown right away instead of requiring a world reset.
-            self.resetLoadedHtml(self._game.locations);
-            self.resetLoadedHtml(self._game.character);
+            this.resetLoadedHtml(this._game.locations);
+            this.resetLoadedHtml(this._game.character);
 
-            self._locationService.changeLocation(lastLocation.id, false, self._game);
+            this._locationService.changeLocation(lastLocation.id, false, this._game);
 
-            self._game.state = StoryScript.GameState.Play;
+            this._game.state = StoryScript.GameState.Play;
         }
 
-        private createCharacter(characterData : ICharacter) {
-            var self = this;
-            var character = self._characterService.createCharacter(self._game, characterData);
+        private createCharacter = (characterData : ICharacter): void => {
+            var character = this._characterService.createCharacter(this._game, characterData);
             character.items = character.items || [];
             character.quests = character.quests || [];
-            self._dataService.save(StoryScript.DataKeys.CHARACTER, character);
-            self._game.character = self._dataService.load(StoryScript.DataKeys.CHARACTER);
+            this._dataService.save(StoryScript.DataKeys.CHARACTER, character);
+            this._game.character = this._dataService.load(StoryScript.DataKeys.CHARACTER);
         }
 
-        private enemyDefeated(enemy: IEnemy) {
-            var self = this;
-
+        private enemyDefeated = (enemy: IEnemy): void => {
             if (enemy.items) {
                 enemy.items.forEach((item: IItem) => {
-                    self._game.currentLocation.items.push(item);
+                    this._game.currentLocation.items.push(item);
                 });
 
                 enemy.items.length = 0;
             }
 
-            self._game.character.currency = self._game.character.currency || 0;
-            self._game.character.currency += enemy.currency || 0;
-            self._game.statistics.enemiesDefeated = self._game.statistics.enemiesDefeated || 0;
-            self._game.statistics.enemiesDefeated += 1;
-            self._game.currentLocation.enemies.remove(enemy);
+            this._game.character.currency = this._game.character.currency || 0;
+            this._game.character.currency += enemy.currency || 0;
+            this._game.statistics.enemiesDefeated = this._game.statistics.enemiesDefeated || 0;
+            this._game.statistics.enemiesDefeated += 1;
+            this._game.currentLocation.enemies.remove(enemy);
 
-            if (self._rules.combat && self._rules.combat.enemyDefeated) {
-                self._rules.combat.enemyDefeated(self._game, enemy);
+            if (this._rules.combat && this._rules.combat.enemyDefeated) {
+                this._rules.combat.enemyDefeated(this._game, enemy);
             }
 
             if (enemy.onDefeat) {
-                enemy.onDefeat(self._game);
+                enemy.onDefeat(this._game);
             }
         }
 
-        private setupGame(): void {
-            var self = this;
-            self.initLogs();
-            self._game.fight = self.fight;
-            self._game.sounds = { 
-                startMusic: self.startMusic,
-                stopMusic: self.stopMusic
+        private setupGame = (): void => {
+            this.initLogs();
+            this._game.fight = this.fight;
+            this._game.sounds = { 
+                startMusic: this.startMusic,
+                stopMusic: this.stopMusic
             };
 
-            self.setupCombinations();
-            self._locationService.init(self._game);
+            this.setupCombinations();
+            this._locationService.init(this._game);
 
-            self._game.changeLocation = (location, travel) => 
+            this._game.changeLocation = (location, travel) => 
             { 
-                self._locationService.changeLocation(location, travel, self._game);
+                this._locationService.changeLocation(location, travel, this._game);
 
                 if (travel) {
-                    self.saveGame();
+                    this.saveGame();
                 }
             };
         }
 
-        private initSetInterceptors(): void {
-            var self = this;
+        private initSetInterceptors = (): void => {
+            let currentHitpoints = this._game.character.currentHitpoints || this._game.character.hitpoints;
+            let score = this._game.character.score || 0;
+            let gameState = this._game.state;
 
-            let currentHitpoints = self._game.character.currentHitpoints || self._game.character.hitpoints;
-            let score = self._game.character.score || 0;
-            let gameState = self._game.state;
-
-            Object.defineProperty(self._game.character, 'currentHitpoints', {
+            Object.defineProperty(this._game.character, 'currentHitpoints', {
                 get: function() {
                     return currentHitpoints;
                 },
@@ -383,14 +344,14 @@ namespace StoryScript {
                     var change = value - currentHitpoints;
                     currentHitpoints = value;
 
-                    if (self._rules.character.hitpointsChange) {
-                        self._rules.character.hitpointsChange(self._game, change);
+                    if (this._rules.character.hitpointsChange) {
+                        this._rules.character.hitpointsChange(this._game, change);
                     }
                 }
             });
 
-            if (!self._game.character.score) {
-                Object.defineProperty(self._game.character, 'score', {
+            if (!this._game.character.score) {
+                Object.defineProperty(this._game.character, 'score', {
                     get: function() {
                         return score;
                     },
@@ -400,32 +361,32 @@ namespace StoryScript {
 
                         // Change when xp can be lost.
                         if (change > 0) {
-                            var levelUp = self._rules.general && self._rules.general.scoreChange && self._rules.general.scoreChange(self._game, change);
+                            var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
             
                             if (levelUp) {
-                                self._game.state = StoryScript.GameState.LevelUp;
+                                this._game.state = StoryScript.GameState.LevelUp;
                             }
                         }
                     }
                 });
             }
      
-            if (!self._game.state) {
-                Object.defineProperty(self._game, 'state', {
+            if (!this._game.state) {
+                Object.defineProperty(this._game, 'state', {
                     get: function()
                     {
                         return gameState;
                     },
                     set: function (state) {
                         if (state === GameState.GameOver || state === GameState.Victory) {
-                            self._game.playState = null;
+                            this._game.playState = null;
 
-                            if (self._rules.general && self._rules.general.determineFinalScore) {
-                                self._rules.general.determineFinalScore(self._game);
+                            if (this._rules.general && this._rules.general.determineFinalScore) {
+                                this._rules.general.determineFinalScore(this._game);
                             }
                             
-                            self.updateHighScore();
-                            self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
+                            this.updateHighScore();
+                            this._dataService.save(StoryScript.DataKeys.HIGHSCORES, this._game.highScores);
                         }
 
                         gameState = state;
@@ -434,34 +395,30 @@ namespace StoryScript {
             }
         }
 
-        private initLogs() {
-            var self = this;
+        private initLogs = (): void => {
+            this._game.actionLog = [];
+            this._game.combatLog = [];
 
-            self._game.actionLog = [];
-            self._game.combatLog = [];
-
-            self._game.logToLocationLog = (message: string) => {
-                self._game.currentLocation.log = self._game.currentLocation.log || [];
-                self._game.currentLocation.log.push(message);
+            this._game.logToLocationLog = (message: string) => {
+                this._game.currentLocation.log = this._game.currentLocation.log || [];
+                this._game.currentLocation.log.push(message);
             }
 
-            self._game.logToActionLog = (message: string) => {
-                self._game.actionLog.splice(0, 0, message);
+            this._game.logToActionLog = (message: string) => {
+                this._game.actionLog.splice(0, 0, message);
             }
 
-            self._game.logToCombatLog = (message: string) => {
-                self._game.combatLog.splice(0, 0, message);
+            this._game.logToCombatLog = (message: string) => {
+                this._game.combatLog.splice(0, 0, message);
             }
         }
 
-        private setupCombinations() {
-            var self = this;
-
-            self._game.combinations = {
+        private setupCombinations = (): void => {
+            this._game.combinations = {
                 activeCombination: null,
                 tryCombine: (target: ICombinable): boolean => {
-                    var activeCombo = self._game.combinations.activeCombination;
-                    var result = self._combinationService.tryCombination(target);
+                    var activeCombo = this._game.combinations.activeCombination;
+                    var result = this._combinationService.tryCombination(target);
 
                     if (result.text) {
                         var evt = new CombinationFinishedEvent();
@@ -479,21 +436,19 @@ namespace StoryScript {
                             }
                         }
 
-                        self._events.dispatchEvent(evt);
+                        this._events.dispatchEvent(evt);
                         return true;
                     }
 
                     return false;
                 },
                 getCombineClass: (tool: ICombinable): string => {
-                    return self._combinationService.getCombineClass(tool);
+                    return this._combinationService.getCombineClass(tool);
                 }
             };
         }
 
-        private resetLoadedHtml(entity: any): void {
-            var self = this;
-
+        private resetLoadedHtml = (entity: any): void => {
             if (entity === null) {
                 return;
             }
@@ -527,14 +482,13 @@ namespace StoryScript {
             }
         }
 
-        private processMediaTags(parent: any, key: string) {
-            var self = this;
+        private processMediaTags = (parent: any, key: string): void => {
             var descriptionEntry = parent;
             var descriptionKey = key;
     
             // For locations, the descriptions collection must be updated as well as the text.
-            if (parent === self._game.currentLocation) {
-                var location = self._game.currentLocation;
+            if (parent === this._game.currentLocation) {
+                var location = this._game.currentLocation;
                 descriptionEntry = location.descriptions;
     
                 for (let n in location.descriptions) {
@@ -546,21 +500,19 @@ namespace StoryScript {
             }
 
             if (descriptionKey !== key) {
-                self.updateMediaTags(descriptionEntry, descriptionKey, self.mediaTags, '');
+                this.updateMediaTags(descriptionEntry, descriptionKey, this.mediaTags, '');
             }
 
-            var startPlay = self.updateMediaTags(parent, key, self.mediaTags, 'added="added"');
+            var startPlay = this.updateMediaTags(parent, key, this.mediaTags, 'added="added"');
 
             if (startPlay)
             {
-                self.startPlay('audio', parent, key);
-                self.startPlay('video', parent, key);
+                this.startPlay('audio', parent, key);
+                this.startPlay('video', parent, key);
             }
         }
 
-        private startPlay(type: string, parent: any, key: string): void {
-            var self = this;
-
+        private startPlay = (type: string, parent: any, key: string): void => {
             setTimeout(function () {
                 var mediaElements = document.getElementsByTagName(type);
 
@@ -572,10 +524,10 @@ namespace StoryScript {
                         var loop = element.getAttribute('loop');
 
                         if (loop != null) {
-                            self.updateMediaTags(parent, key, ['added="added"'], 'autoplay');
+                            this.updateMediaTags(parent, key, ['added="added"'], 'autoplay');
                         }
                         else {
-                            self.updateMediaTags(parent, key, ['added="added"'], '');
+                            this.updateMediaTags(parent, key, ['added="added"'], '');
                         }
 
                         // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
@@ -593,7 +545,7 @@ namespace StoryScript {
             }, 0);
         }
 
-        private updateMediaTags(entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean {
+        private updateMediaTags = (entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean => {
             let startPlay = false;
             var entry = entity[key];
 
@@ -612,36 +564,35 @@ namespace StoryScript {
             return startPlay;
         }
 
-        private updateHighScore(): void {
-            var self = this;
-            var scoreEntry = { name: self._game.character.name, score: self._game.character.score };
+        private updateHighScore = (): void => {
+            var scoreEntry = { name: this._game.character.name, score: this._game.character.score };
 
-            if (!self._game.highScores || !self._game.highScores.length) {
-                self._game.highScores = [];
+            if (!this._game.highScores || !this._game.highScores.length) {
+                this._game.highScores = [];
             }
 
             var scoreAdded = false;
 
-            self._game.highScores.forEach((entry) => {
-                if (self._game.character.score > entry.score && !scoreAdded) {
-                    var index = self._game.highScores.indexOf(entry);
+            this._game.highScores.forEach((entry) => {
+                if (this._game.character.score > entry.score && !scoreAdded) {
+                    var index = this._game.highScores.indexOf(entry);
 
-                    if (self._game.highScores.length >= 5) {
-                        self._game.highScores.splice(index, 1, scoreEntry);
+                    if (this._game.highScores.length >= 5) {
+                        this._game.highScores.splice(index, 1, scoreEntry);
                     }
                     else {
-                        self._game.highScores.splice(index, 0, scoreEntry);
+                        this._game.highScores.splice(index, 0, scoreEntry);
                     }
 
                     scoreAdded = true;
                 }
             });
 
-            if (self._game.highScores.length < 5 && !scoreAdded) {
-                self._game.highScores.push(scoreEntry);
+            if (this._game.highScores.length < 5 && !scoreAdded) {
+                this._game.highScores.push(scoreEntry);
             }
 
-            self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
+            this._dataService.save(StoryScript.DataKeys.HIGHSCORES, this._game.highScores);
         }
     }
 }

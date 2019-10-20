@@ -4,7 +4,7 @@
      * @param callback 
      */
     export function Open(callback?: (game: IGame, barrier: IBarrier, destination: IDestination) => void) {
-        return function (game: IGame, barrier: IBarrier, destination: IDestination) {
+        return (game: IGame, barrier: IBarrier, destination: IDestination): void => {
             delete destination.barrier;
 
             if (callback) {
