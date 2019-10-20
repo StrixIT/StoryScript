@@ -8,8 +8,6 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
-        trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(game, actionIndex, trade);
-
         changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
         actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
@@ -24,7 +22,7 @@ namespace StoryScript {
 
         hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
 
-        executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, self);
+        executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
 
         executeBarrierAction = (barrier: IBarrier, destination: IDestination): void => {
             if (this._game.combinations.tryCombine(barrier))

@@ -5,10 +5,9 @@ namespace StoryScript
         }
 
         link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
-            var self = this;
             var feature = <IFeature>(<any>scope).feature;
             var topElement = angular.element('#visual-features');
-            self.removeExistingElements(topElement, feature);
+            this.removeExistingElements(topElement, feature);
             var parentElement = null;
 
             scope.$on('showCombinationText', function(event, data: ShowCombinationTextEvent) {
@@ -20,7 +19,7 @@ namespace StoryScript
             if (feature.picture) {
                 parentElement = angular.element('<div name="' + feature.id + '"></div>');
                 topElement.append(parentElement);
-                var coords = self.getFeatureCoordinates(feature);
+                var coords = this.getFeatureCoordinates(feature);
                 var pictureElement = angular.element('<img class="feature-picture" name="' + feature.id + '" src="' + 'resources/' + feature.picture + '" style="top:' + coords.top + 'px' +'; left: '+ coords.left + 'px' + '" />');
                 parentElement.append(pictureElement);
                 pictureElement.on('click', function() { element.click(); });

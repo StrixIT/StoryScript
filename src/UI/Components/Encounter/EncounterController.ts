@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class EncounterController implements ng.IComponentController {
-        constructor(private _sharedMethodService: ISharedMethodService, private _conversationService: IConversationService, private _game: IGame, _texts: IInterfaceTexts) {
+        constructor(private _sharedMethodService: ISharedMethodService, private _tradeService: ITradeService, private _conversationService: IConversationService, private _game: IGame, _texts: IInterfaceTexts) {
             this.game = _game;
             this.texts = _texts;
         }
@@ -18,10 +18,15 @@ namespace StoryScript {
 
         talk = (person: IPerson): void => this._conversationService.talk(person);
 
-        trade = (actionIndex: number, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this._game, actionIndex, trade);
+        trade = (trade: IPerson | ITrade): boolean => {
+            this._tradeService.trade(trade);
+
+            // Return true to keep the action button for trade locations.
+            return true;
+        };
         
         startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(person);
     }
 
-    EncounterController.$inject = ['sharedMethodService', 'conversationService', 'game', 'customTexts'];
+    EncounterController.$inject = ['sharedMethodService', 'tradeService', 'conversationService', 'game', 'customTexts'];
 }
