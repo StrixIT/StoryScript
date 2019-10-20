@@ -4,7 +4,7 @@ namespace StoryScript
         enemiesPresent(): boolean;
         getButtonClass(action: IAction): string;
         executeAction(action: IAction, controller: ng.IComponentController): void;
-        startCombat(): void;
+        startCombat(person?: IPerson): void;
         trade(game: IGame, actionIndex: number, trade: IPerson | ITrade): boolean;
         showDescription(scope: ng.IScope, type: string, item: any, title: string, ): void;
         showEquipment(): boolean;
@@ -97,8 +97,15 @@ namespace StoryScript
             }
         }
 
-        startCombat = (): void => {
+        startCombat = (person?: IPerson): void => {
             var self = this;
+
+            if (person) {
+                // The person becomes an enemy when attacked!
+                self._game.currentLocation.persons.remove(person);
+                self._game.currentLocation.enemies.push(person);
+            }
+
             self._game.combatLog = [];
             self._game.playState = PlayState.Combat;
         }

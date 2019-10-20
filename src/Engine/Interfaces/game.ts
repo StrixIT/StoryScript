@@ -90,7 +90,7 @@
              * @param tool The tool of the combination. Pass this in to get the class name for the tool element. Pass nothing to
              * get the class name for the tool button bar.
              */
-            getCombineClass(tool: ICombinable): void,
+            getCombineClass(tool: ICombinable): string,
 
             /**
              * Try the combination the player has created.

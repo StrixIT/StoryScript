@@ -1,14 +1,13 @@
 namespace StoryScript {
     export class CreateCharacterController implements ng.IComponentController {
-        constructor(private _scope: StoryScriptScope, private _characterService: ICharacterService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = _game;
-            self.texts = _texts;
-            self._scope.game = self._game;
+        constructor(private _scope: StoryScriptScope, private _characterService: ICharacterService, private _gameService: IGameService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
+            this._scope.game = _game;
 
-            self._scope.$watch('game.state', (newValue: GameState) => {
+            this._scope.$watch('game.state', (newValue: GameState) => {
                 if (newValue == GameState.CreateCharacter) {
-                    self.sheet = self._characterService.setupCharacter();
+                    this.sheet = this._characterService.setupCharacter();
                 }
             });
         }
@@ -17,15 +16,9 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
-        startNewGame = () => {
-            var self = this;
-            self._gameService.startNewGame(self._game.createCharacterSheet);
-        }
+        startNewGame = () => this._gameService.startNewGame(this._game.createCharacterSheet);
 
-        distributionDone = (step: ICreateCharacterStep) => {
-            var self = this;
-            return self._characterService.distributionDone(self.sheet, step);
-        }
+        distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.sheet, step);
     }
 
     CreateCharacterController.$inject = ['$scope', 'characterService', 'gameService', 'game', 'customTexts'];

@@ -1,11 +1,10 @@
 namespace StoryScript {
     export class CharacterSheetController {
-        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = self._game;
-            self.texts = self._texts;
-            self.displayCharacterAttributes = self._characterService.getSheetAttributes();
-            self._sharedMethodService.useCharacterSheet = true;
+        constructor(private _characterService: ICharacterService, private _sharedMethodService: ISharedMethodService, _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
+            this.displayCharacterAttributes = this._characterService.getSheetAttributes();
+            this._sharedMethodService.useCharacterSheet = true;
         }
 
         game: IGame;
@@ -13,5 +12,5 @@ namespace StoryScript {
         displayCharacterAttributes: string[];
     }
 
-    CharacterSheetController.$inject = ['$scope', 'characterService', 'sharedMethodService', 'game', 'customTexts'];
+    CharacterSheetController.$inject = ['characterService', 'sharedMethodService', 'game', 'customTexts'];
 }

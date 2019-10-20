@@ -9,55 +9,49 @@ namespace StoryScript {
     }
 
     export class MainController {
-        constructor(private _scope: StoryScriptScope, private _timeout: ng.ITimeoutService, private _eventListener: EventTarget, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = self._game;
-            self.texts = self._texts;
-            self._scope.game = self._game;
+        constructor(private _scope: StoryScriptScope, private _timeout: ng.ITimeoutService, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _eventListener: EventTarget, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
+            this._scope.game = _game;
 
             // Events for combinations to clear the text shown. Todo: This can probably all be replaced with a flag on the game object.
-            self._scope.$on('restart', (ev) => { 
-                self.broadcast(ev, null, () => self.init(true));
+            this._scope.$on('restart', (ev) => { 
+                this.broadcast(ev, null, () => this.init(true));
             });
 
-            self._scope.$on('gameLoaded', self.broadcast);
-            self._scope.$on('showDescription', self.broadcast);
+            this._scope.$on('gameLoaded', this.broadcast);
+            this._scope.$on('showDescription', this.broadcast);
 
             // Event to inform the combination controller and directives to update their state.
             _eventListener.addEventListener('combinationFinished', function(finishedEvent: StoryScript.CombinationFinishedEvent) {
                 var showEvent = new ShowCombinationTextEvent();
                 showEvent.combineText = finishedEvent.combineText;
                 showEvent.featuresToRemove = finishedEvent.featuresToRemove;
-                self._scope.$broadcast(showEvent.type, showEvent);
+                this._scope.$broadcast(showEvent.type, showEvent);
             });
 
             // Watch for dynamic styling.
-            self._game.dynamicStyles = self._game.dynamicStyles || [];
-            self._scope.$watchCollection('game.dynamicStyles', () => self.applyDynamicStyling());
+            this._game.dynamicStyles = this._game.dynamicStyles || [];
+            this._scope.$watchCollection('game.dynamicStyles', () => this.applyDynamicStyling());
 
-            self.init();
+            this.init();
         }
-
-        showCharacterPane = () => {
-            var self = this;
-            return self._sharedMethodService.useCharacterSheet || self._sharedMethodService.useEquipment || self._sharedMethodService.useBackpack || self._sharedMethodService.useQuests;
-        }
-
+        
         game: IGame;
         texts: IInterfaceTexts;
 
-        private init(restart?: boolean) {
-            var self = this;
+        showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
 
+        private init = (restart?: boolean): void => {
             if (restart) {
-                self._gameService.restart();
+                this._gameService.restart();
             }
             else {
-                self._gameService.init();
+                this._gameService.init();
             }
         }
 
-        private broadcast(event: ng.IAngularEvent, args?: any[], callback?: Function)
+        private broadcast = (event: ng.IAngularEvent, args?: any[], callback?: Function): void =>
         {
             if (event.currentScope !== event.targetScope) {
                 if (callback) {
@@ -68,11 +62,9 @@ namespace StoryScript {
             }
         }
 
-        private applyDynamicStyling() {
-            var self = this;
-
-            self._timeout(() => {
-                self._game.dynamicStyles.forEach(s => {
+        private applyDynamicStyling = (): void => {
+            this._timeout(() => {
+                this._game.dynamicStyles.forEach(s => {
                     var element = angular.element(s.elementSelector);
 
                     if (element.length) {
@@ -86,5 +78,5 @@ namespace StoryScript {
         }
     }
 
-    MainController.$inject = ['$scope', '$timeout', 'eventListener', 'gameService', 'sharedMethodService', 'game', 'customTexts'];
+    MainController.$inject = ['$scope', '$timeout', 'gameService', 'sharedMethodService', 'game', 'eventListener', 'customTexts'];
 }

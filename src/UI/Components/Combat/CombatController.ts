@@ -1,38 +1,22 @@
 namespace StoryScript {   
     export class CombatController implements ng.IComponentController {
-        constructor(private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = _game;
-            self.texts = _texts;
+        constructor(private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
         }
 
         game: IGame;
         texts: IInterfaceTexts;
 
-        enemiesPresent = () => {
-            var self = this;
-            return self._sharedMethodService.enemiesPresent();
-        }
+        enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-        getButtonClass = (action: IAction): string => {
-            var self = this;
-            return self._sharedMethodService.getButtonClass(action);
-        }
+        getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
-        executeAction = (action: IAction): void => {
-            var self = this;
-            self._sharedMethodService.executeAction(action, self);
-        }
+        executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this); 
 
-        fight = (enemy: IEnemy): void => {
-            var self = this;
-            self._gameService.fight(enemy);
-        }
-
-        useItem = (item: IItem): void => {
-            var self = this;
-            self._gameService.useItem(item);
-        }
+        fight = (enemy: IEnemy): void => this._gameService.fight(enemy);
+        
+        useItem = (item: IItem): void => this._gameService.useItem(item);
     }
 
     CombatController.$inject = ['gameService', 'sharedMethodService', 'game', 'customTexts'];

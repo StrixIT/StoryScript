@@ -1,64 +1,33 @@
 namespace StoryScript {
     export class BackpackController {
-        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _gameService: IGameService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = self._game;
-            self.texts = self._texts;
-            self._sharedMethodService.useBackpack = true;
+        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _gameService: IGameService, private _characterService: ICharacterService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.game = this._game;
+            this.texts = _texts;
+            this._sharedMethodService.useBackpack = true;
         }
 
         game: IGame;
         texts: IInterfaceTexts;
 
-        hasDescription(type: string, item: { id?: string, description?: string }) {
-            var self = this;
-            return self._gameService.hasDescription(type, item);
-        }
+        hasDescription = (type: string, item: { id?: string, description?: string }): boolean => this._gameService.hasDescription(type, item);
 
-        showDescription(item: any, title: string) {
-            var self = this;
-            self._sharedMethodService.showDescription(self._scope, 'items', item, title);
-        }
+        showDescription = (item: any, title: string): void => this._sharedMethodService.showDescription(this._scope, 'items', item, title);
 
-        getCombineClass = (item: IItem) => {
-            var self = this;
-            return self._game.combinations.getCombineClass(item);
-        }
+        getCombineClass = (item: IItem): string => this._game.combinations.getCombineClass(item);
 
-        tryCombine = (item: IItem) => {
-            var self = this;
-            self._game.combinations.tryCombine(item);
-        }
+        tryCombine = (item: IItem): boolean => this._game.combinations.tryCombine(item);
 
-        showEquipment = (): boolean => {
-            var self = this;
-            return self._sharedMethodService.showEquipment();
-        }
+        showEquipment = (): boolean => this._sharedMethodService.showEquipment();
 
-        canEquip = (item: IItem): boolean => {
-            var self = this;
-            return self._characterService.canEquip(item);
-        }
+        canEquip = (item: IItem): boolean => this._characterService.canEquip(item);
+        
+        equipItem = (item: IItem): boolean => this._characterService.equipItem(item);
 
-        equipItem = (item: IItem): void => {
-            var self = this;
-            self._characterService.equipItem(item);
-        }
+        useItem = (item: IItem): void => this._gameService.useItem(item);
 
-        useItem = (item: IItem): void => {
-            var self = this;
-            self._gameService.useItem(item);
-        }
+        canDropItems = (): boolean => this._sharedMethodService.useGround;
 
-        canDropItems = (): boolean => {
-            var self = this;
-            return self._sharedMethodService.useGround;
-        }
-
-        dropItem = (item: IItem): void => {
-            var self = this;
-            self._characterService.dropItem(item);
-        }
+        dropItem = (item: IItem): void => this._characterService.dropItem(item);
     }
 
     BackpackController.$inject = ['$scope', 'sharedMethodService', 'gameService', 'characterService', 'game', 'customTexts'];

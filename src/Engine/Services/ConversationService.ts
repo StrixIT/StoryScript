@@ -2,6 +2,7 @@ namespace StoryScript {
     export interface IConversationService {
         loadConversations(): void;
         initConversation(): void;
+        talk(person: IPerson): void;
         answer(node: IConversationNode, reply: IConversationReply): void;
         getLines(nodeOrReply: IConversationNode | IConversationReply): string;
     }
@@ -46,6 +47,12 @@ namespace StoryScript {
             person.conversation.activeNode = activeNode;
             self.initReplies(person);
             self.setReplyStatus(person.conversation, activeNode);
+        }
+
+        talk = (person: IPerson): void => {
+            var self = this;
+            self._game.currentLocation.activePerson = person;
+            self._game.playState = PlayState.Conversation;
         }
 
         answer = (node: IConversationNode, reply: IConversationReply): void => {
