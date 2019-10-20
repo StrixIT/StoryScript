@@ -23,9 +23,6 @@
         fight(enemy: IEnemy, retaliate?: boolean): void;
         useItem(item: IItem): void;
         executeBarrierAction(barrier: IBarrier, destination: IDestination): void;
-        scoreChange(change: number): void;
-        hitpointsChange(change: number): void;
-        changeGameState(state: GameState): void;
         getCurrentMusic(): string;
     }
 }
@@ -68,6 +65,7 @@ namespace StoryScript {
             }
 
             if (self._game.character && locationName) {
+                self.initSetInterceptors();
                 self.resume(locationName);
             }
             else {
@@ -98,6 +96,8 @@ namespace StoryScript {
             if (!self._game.currentLocation) {
                 self._game.changeLocation('Start');
             }
+
+            self.initSetInterceptors();
 
             self._game.state = StoryScript.GameState.Play;
             self.saveGame();
@@ -168,6 +168,8 @@ namespace StoryScript {
                 self._dataService.save(StoryScript.DataKeys.LOCATION, self._game.currentLocation.id);
                 self._game.actionLog = [];
                 self._game.state = saveGame.state;
+
+                self.initSetInterceptors();
                 
                 if ( self._game.playState === PlayState.Menu) {
                     self._game.playState = null;
@@ -261,40 +263,6 @@ namespace StoryScript {
             }
 
             self.saveGame();
-        }
-
-        scoreChange = (change: number): void => {
-            var self = this;
-
-            // Change when xp can be lost.
-            if (change > 0) {
-                var levelUp = self._rules.general && self._rules.general.scoreChange && self._rules.general.scoreChange(self._game, change);
-
-                if (levelUp) {
-                    self._game.state = StoryScript.GameState.LevelUp;
-                }
-            }
-        }
-
-        hitpointsChange = (change: number): void => {
-            var self = this;
-
-            if (self._rules.character.hitpointsChange) {
-                self._rules.character.hitpointsChange(self._game, change);
-            }
-        }
-
-        changeGameState = (state: GameState) => {
-            var self = this;
-
-            if (state == StoryScript.GameState.GameOver || state == StoryScript.GameState.Victory) {
-                if (self._rules.general && self._rules.general.determineFinalScore) {
-                    self._rules.general.determineFinalScore(self._game);
-                }
-                
-                self.updateHighScore();
-                self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
-            }
         }
 
         getCurrentMusic = (): string => {
@@ -398,6 +366,72 @@ namespace StoryScript {
                     self.saveGame();
                 }
             };
+        }
+
+        private initSetInterceptors(): void {
+            var self = this;
+
+            let currentHitpoints = self._game.character.currentHitpoints || self._game.character.hitpoints;
+            let score = self._game.character.score || 0;
+            let gameState = self._game.state;
+
+            Object.defineProperty(self._game.character, 'currentHitpoints', {
+                get: function() {
+                    return currentHitpoints;
+                },
+                set: function (value) {
+                    var change = value - currentHitpoints;
+                    currentHitpoints = value;
+
+                    if (self._rules.character.hitpointsChange) {
+                        self._rules.character.hitpointsChange(self._game, change);
+                    }
+                }
+            });
+
+            if (!self._game.character.score) {
+                Object.defineProperty(self._game.character, 'score', {
+                    get: function() {
+                        return score;
+                    },
+                    set: function (value) {
+                        var change = value - score;
+                        score = value;
+
+                        // Change when xp can be lost.
+                        if (change > 0) {
+                            var levelUp = self._rules.general && self._rules.general.scoreChange && self._rules.general.scoreChange(self._game, change);
+            
+                            if (levelUp) {
+                                self._game.state = StoryScript.GameState.LevelUp;
+                            }
+                        }
+                    }
+                });
+            }
+     
+            if (!self._game.state) {
+                Object.defineProperty(self._game, 'state', {
+                    get: function()
+                    {
+                        return gameState;
+                    },
+                    set: function (state) {
+                        if (state === GameState.GameOver || state === GameState.Victory) {
+                            self._game.playState = null;
+
+                            if (self._rules.general && self._rules.general.determineFinalScore) {
+                                self._rules.general.determineFinalScore(self._game);
+                            }
+                            
+                            self.updateHighScore();
+                            self._dataService.save(StoryScript.DataKeys.HIGHSCORES, self._game.highScores);
+                        }
+
+                        gameState = state;
+                    }
+                });
+            }
         }
 
         private initLogs() {

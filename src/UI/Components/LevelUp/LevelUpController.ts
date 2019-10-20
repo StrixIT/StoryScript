@@ -9,6 +9,7 @@ namespace StoryScript {
             self._scope.$watch('game.state', (newValue: GameState) => {
                 if (newValue == GameState.LevelUp) {
                     self.sheet = self._characterService.setupLevelUp();
+                    self._game.playState = null;
                 }
             });
         }

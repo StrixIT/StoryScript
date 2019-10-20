@@ -9,7 +9,7 @@ namespace StoryScript {
 
         menu = (): void => {
             var self = this;
-            self._scope.$emit('showMenu');
+            self._game.playState = PlayState.Menu;
         }
 
         reset = (): void => {

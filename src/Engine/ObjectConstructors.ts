@@ -14,7 +14,7 @@ namespace StoryScript {
             var id = params.splice(params.length - 1, 1)[0];
             var oldId = GetCurrentEntityId();
             SetCurrentEntityId(id);
-            var result = originalFunc(params);
+            var result = originalFunc.apply(this, params);
             SetCurrentEntityId(oldId);
             return result;
         }, entityFunction.name || entityFunction.originalFunctionName);

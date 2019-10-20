@@ -15,27 +15,25 @@ namespace StoryScript {
             self.texts = self._texts;
             self._scope.game = self._game;
 
+            // Events for combinations to clear the text shown. Todo: This can probably all be replaced with a flag on the game object.
             self._scope.$on('restart', (ev) => { 
                 self.broadcast(ev, null, () => self.init(true));
             });
 
             self._scope.$on('gameLoaded', self.broadcast);
             self._scope.$on('showDescription', self.broadcast);
-            self._scope.$on('showMenu', self.broadcast);
 
-            self._scope.$watch('game.character.currentHitpoints', self.watchCharacterHitpoints);
-            self._scope.$watch('game.character.score', self.watchCharacterScore);
-
-            self._game.dynamicStyles = self._game.dynamicStyles || [];
-
-            self._scope.$watchCollection('game.dynamicStyles', () => self.applyDynamicStyling());
-
+            // Event to inform the combination controller and directives to update their state.
             _eventListener.addEventListener('combinationFinished', function(finishedEvent: StoryScript.CombinationFinishedEvent) {
                 var showEvent = new ShowCombinationTextEvent();
                 showEvent.combineText = finishedEvent.combineText;
                 showEvent.featuresToRemove = finishedEvent.featuresToRemove;
                 self._scope.$broadcast(showEvent.type, showEvent);
             });
+
+            // Watch for dynamic styling.
+            self._game.dynamicStyles = self._game.dynamicStyles || [];
+            self._scope.$watchCollection('game.dynamicStyles', () => self.applyDynamicStyling());
 
             self.init();
         }
@@ -67,24 +65,6 @@ namespace StoryScript {
                 }
 
                 event.currentScope.$broadcast(event.name, args);
-            }
-        }
-
-        private watchCharacterHitpoints(newValue, oldValue, scope) {
-            if (!scope.$ctrl._game.loading) {
-                if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
-                    var change = newValue - oldValue;
-                    scope.$ctrl._gameService.hitpointsChange(change);
-                }
-            }
-        }
-
-        private watchCharacterScore(newValue, oldValue, scope) {
-            if (!scope.$ctrl._game.loading) {
-                if (parseInt(newValue) && parseInt(oldValue) && newValue != oldValue) {
-                    var increase = newValue - oldValue;
-                    scope.$ctrl._gameService.scoreChange(increase);
-                }
             }
         }
 

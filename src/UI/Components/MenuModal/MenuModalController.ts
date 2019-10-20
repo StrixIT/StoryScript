@@ -1,14 +1,18 @@
 namespace StoryScript {
     export class MenuModalController implements ng.IComponentController {
 
-        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _scope: StoryScriptScope, private _sharedMethodService: ISharedMethodService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
             var self = this;
             self.texts = _texts;
             self.game = _game;
-            self.state = 'Menu';
+            self.state = PlayState.Menu;
 
-            self._scope.$on('showMenu', (event, args) => {
-                self.openModal();
+            self._scope.game = self._game;
+
+            self._scope.$watch('game.playState', (newValue: PlayState) => {
+                if (newValue == PlayState.Menu) {
+                    self.openModal();
+                }
             });
         }
 
@@ -19,8 +23,6 @@ namespace StoryScript {
         state: string;
 
         openModal = () => {
-            var self = this;
-            self._game.playState = PlayState.Menu;
             $('#menumodal').modal('show');
         }
 
