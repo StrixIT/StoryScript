@@ -123,17 +123,6 @@
         return hash;
     }
 
-    export class DataKeys {
-        static HIGHSCORES: string = 'highScores';
-        static CHARACTER: string = 'character';
-        static STATISTICS: string = 'statistics';
-        static LOCATION: string = 'location';
-        static PREVIOUSLOCATION: string = 'previousLocation';
-        static WORLD: string = 'world';
-        static WORLDPROPERTIES: string = 'worldProperties';
-        static GAME = 'game';
-    }
-
     export function compareString(left: string, right: string): boolean {
         if ((left === undefined && right === undefined) || (left === null && right === null)) {
             return true;

@@ -1,6 +1,5 @@
 namespace StoryScript {
     var _definitions: IDefinitions = null;
-    var _typeNames: string[] = null;
     var _registeredIds: Set<string> = new Set<string>();
     var _currentEntityId: string = null;
 

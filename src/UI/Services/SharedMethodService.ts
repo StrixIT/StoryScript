@@ -2,6 +2,7 @@ namespace StoryScript
 {
     export interface ISharedMethodService {
         enemiesPresent(): boolean;
+        trade(trade: IPerson | ITrade): boolean;
         getButtonClass(action: IAction): string;
         executeAction(action: IAction, controller: ng.IComponentController): void;
         startCombat(person?: IPerson): void;
@@ -15,16 +16,18 @@ namespace StoryScript
     }
 
     export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
-        constructor(private _gameService: IGameService, private _game: IGame) {
+        constructor(private _gameService: IGameService, private _tradeService: ITradeService, private _game: IGame) {
         }
 
         public $get(gameService: IGameService, tradeService: ITradeService, game: IGame, texts: IInterfaceTexts): ISharedMethodService {
             var self = this;
             self._gameService = gameService;
+            self._tradeService = tradeService;
             self._game = game;
 
             return {
                 enemiesPresent: self.enemiesPresent,
+                trade: self.trade,
                 getButtonClass: self.getButtonClass,
                 executeAction: self.executeAction,
                 startCombat: self.startCombat,
@@ -40,6 +43,13 @@ namespace StoryScript
         useGround?: boolean;
 
         enemiesPresent = (): boolean => this._game.currentLocation && this._game.currentLocation.activeEnemies && this._game.currentLocation.activeEnemies.length > 0;
+
+        trade = (trade: IPerson | ITrade): boolean => {
+            this._tradeService.trade(trade);
+
+            // Return true to keep the action button for trade locations.
+            return true;
+        };
 
         getButtonClass = (action: IAction): string => {
             var type = action.actionType || ActionType.Regular;
@@ -141,5 +151,5 @@ namespace StoryScript
         }
     }
 
-    SharedMethodService.$inject = ['gameService', 'game'];
+    SharedMethodService.$inject = ['gameService', 'tradeService', 'game'];
 }

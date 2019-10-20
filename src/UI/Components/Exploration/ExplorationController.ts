@@ -8,6 +8,8 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
+        trade = (game, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
+
         changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
         actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);

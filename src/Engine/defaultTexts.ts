@@ -91,7 +91,7 @@
                     if (match) {
                         var matchReplacement = match[0].replace('{' + i + '}', '');
 
-                        if (tokens[i] && tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
+                        if (tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
                             template = template.replace(match[0], ' ');
                         }
                         else {
@@ -104,8 +104,6 @@
             return template;
         }
 
-        titleCase = (text: string): string => {
-            return text.substring(0, 1).toUpperCase() + text.substring(1);
-        }
+        titleCase = (text: string): string => text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 }
