@@ -24,10 +24,9 @@ namespace StoryScript {
         private _combinationService: ICombinationService;
 
         constructor(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
-            var self = this;
-            self._nameSpace = nameSpace;
-            self._texts = texts;
-            self._rules = rules;
+            this._nameSpace = nameSpace;
+            this._texts = texts;
+            this._rules = rules;
         }
 
         GetEventListener = (): EventTarget => this._eventTarget;

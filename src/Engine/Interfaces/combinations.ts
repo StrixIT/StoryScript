@@ -30,11 +30,6 @@
          * The currently selected tool of the combination.
          */
         selectedTool: ICombinable;
-
-        /**
-         * The text displayed to the player for the current combine status.
-         */
-        combineText: string;
     }
 
     /**

@@ -4,7 +4,6 @@
             super('combinationFinished');
         }
 
-        combineText: string;
         featuresToRemove: string[];
     }
 
@@ -35,8 +34,13 @@ namespace StoryScript {
         constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
         }
 
-        init = (skipIntro?: boolean): void => {
+        init = (restart?: boolean, skipIntro?: boolean): void => {
             this._game.helpers = this._helperService;
+
+            if (restart) {
+                this._game.statistics = {};
+                this._game.worldProperties = {};
+            }
 
             if (this._rules.setup && this._rules.setup.setupGame) {
                 this._rules.setup.setupGame(this._game);
@@ -46,8 +50,11 @@ namespace StoryScript {
             this.initTexts();
             this._game.highScores = this._dataService.load<ScoreEntry[]>(StoryScript.DataKeys.HIGHSCORES);
             this._game.character = this._dataService.load<ICharacter>(StoryScript.DataKeys.CHARACTER);
-            this._game.statistics = this._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || this._game.statistics || {};
-            this._game.worldProperties = this._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
+
+            if (!restart) {
+                this._game.statistics = this._dataService.load<IStatistics>(StoryScript.DataKeys.STATISTICS) || this._game.statistics || {};
+                this._game.worldProperties = this._dataService.load(StoryScript.DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
+            }
             
             if (!this._game.character && this._rules.setup.intro && !skipIntro) {
                 this._game.state = StoryScript.GameState.Intro;
@@ -113,7 +120,7 @@ namespace StoryScript {
             this._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, '');
             this._dataService.save(StoryScript.DataKeys.WORLDPROPERTIES, {});
             this._dataService.save(StoryScript.DataKeys.WORLD, {});
-            this.init(skipIntro);
+            this.init(true, skipIntro);
         }
 
         saveGame = (name?: string): void => {
@@ -337,10 +344,10 @@ namespace StoryScript {
             let gameState = this._game.state;
 
             Object.defineProperty(this._game.character, 'currentHitpoints', {
-                get: function() {
+                get: () => {
                     return currentHitpoints;
                 },
-                set: function (value) {
+                set: value => {
                     var change = value - currentHitpoints;
                     currentHitpoints = value;
 
@@ -352,10 +359,10 @@ namespace StoryScript {
 
             if (!this._game.character.score) {
                 Object.defineProperty(this._game.character, 'score', {
-                    get: function() {
+                    get: () => {
                         return score;
                     },
-                    set: function (value) {
+                    set: value => {
                         var change = value - score;
                         score = value;
 
@@ -373,11 +380,11 @@ namespace StoryScript {
      
             if (!this._game.state) {
                 Object.defineProperty(this._game, 'state', {
-                    get: function()
+                    get: () =>
                     {
                         return gameState;
                     },
-                    set: function (state) {
+                    set: state => {
                         if (state === GameState.GameOver || state === GameState.Victory) {
                             this._game.playState = null;
 
@@ -415,6 +422,7 @@ namespace StoryScript {
 
         private setupCombinations = (): void => {
             this._game.combinations = {
+                combinationResultText: null,
                 activeCombination: null,
                 tryCombine: (target: ICombinable): boolean => {
                     var activeCombo = this._game.combinations.activeCombination;
@@ -422,7 +430,6 @@ namespace StoryScript {
 
                     if (result.text) {
                         var evt = new CombinationFinishedEvent();
-                        evt.combineText = result.text;
 
                         if (result.success) {
                             evt.featuresToRemove = [];

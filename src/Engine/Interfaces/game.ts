@@ -84,6 +84,11 @@
              * is not trying a combination.
              */
             activeCombination: IActiveCombination,
+     
+            /**
+             * The result text displayed to the player for a combination.
+             */
+            combinationResultText: string;
 
             /**
              * Get the class name to use for the current combine state.

@@ -9,9 +9,9 @@ namespace StoryScript
     }
 
     export class LocalStorageService implements ILocalStorageService {
-        get = (key: string): any => {
-            return localStorage.getItem(STORYSCRIPTKEY + '_' + key);
-        }
+        get = (key: string): any => localStorage.getItem(STORYSCRIPTKEY + '_' + key);
+
+        set = (key: string, value: any): void => localStorage.setItem(STORYSCRIPTKEY + '_' + key, value);
 
         getKeys = (prefix: string): string[] => {
             var result = [];
@@ -24,10 +24,6 @@ namespace StoryScript
              }
 
             return result;
-        }
-
-        set = (key: string, value: any): void => {
-            localStorage.setItem(STORYSCRIPTKEY + '_' + key, value);
         }
     }
 }

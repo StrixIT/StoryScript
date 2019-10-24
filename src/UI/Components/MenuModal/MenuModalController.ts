@@ -63,7 +63,7 @@ namespace StoryScript {
         loadGame = (): void => {
             this._gameService.loadGame(this.selectedGame);
             this.closeModal();
-            this._scope.$emit('gameLoaded');
+            this._game.combinations.combinationResultText = null;
         }
     }
 

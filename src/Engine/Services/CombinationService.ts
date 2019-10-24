@@ -28,6 +28,8 @@ namespace StoryScript {
         }
 
         setActiveCombination = (combination: ICombinationAction): void => {
+            this._game.combinations.combinationResultText = null;
+
             if (!combination) {
                 return;
             }
@@ -41,9 +43,10 @@ namespace StoryScript {
 
             this._game.combinations.activeCombination = {
                 selectedCombinationAction: combination,
-                selectedTool: null,
-                combineText: combination.requiresTool ? combination.text : combination.text + ' ' + (combination.preposition || '')
+                selectedTool: null
             };
+
+            this._game.combinations.combinationResultText = combination.requiresTool ? combination.text : combination.text + ' ' + (combination.preposition || '');
         }
 
         tryCombination = (target: ICombinable): ICombineResult => {
@@ -63,7 +66,6 @@ namespace StoryScript {
                 if (defaultAction) {
                     combo = {
                         selectedCombinationAction: defaultAction,
-                        combineText: '',
                         selectedTool: null
                     }
                 }
@@ -77,7 +79,7 @@ namespace StoryScript {
 
             if (combo.selectedCombinationAction.requiresTool && !combo.selectedTool) {
 
-                combo.combineText = combo.selectedCombinationAction.text + ' ' + target.name + ' ' + combo.selectedCombinationAction.preposition;
+                this._game.combinations.combinationResultText = combo.selectedCombinationAction.text + ' ' + target.name + ' ' + combo.selectedCombinationAction.preposition;
                 combo.selectedTool = target;
                 return result;
             }
@@ -95,6 +97,8 @@ namespace StoryScript {
 
                 SaveWorldState(this._dataService, this._locationService, this._game);
             }
+
+            this._game.combinations.combinationResultText = result.text;
 
             return result;
         }

@@ -1,33 +1,20 @@
 namespace StoryScript {
-    export class ShowCombinationTextEvent extends Event {
-        constructor() {
-            super('showCombinationText');
-        }
-
-        combineText: string;
-        featuresToRemove: string[];
-    }
-
     export class MainController {
         constructor(private _scope: StoryScriptScope, private _timeout: ng.ITimeoutService, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _eventListener: EventTarget, _texts: IInterfaceTexts) {
             this.game = _game;
             this.texts = _texts;
             this._scope.game = _game;
 
-            // Events for combinations to clear the text shown. Todo: This can probably all be replaced with a flag on the game object.
-            this._scope.$on('restart', (ev) => { 
+            this._scope.$on('restart', (ev) => {
+                this._game.combinations.combinationResultText = null; 
                 this.broadcast(ev, null, () => this.init(true));
             });
 
-            this._scope.$on('gameLoaded', this.broadcast);
             this._scope.$on('showDescription', this.broadcast);
 
-            // Event to inform the combination controller and directives to update their state.
-            _eventListener.addEventListener('combinationFinished', function(finishedEvent: StoryScript.CombinationFinishedEvent) {
-                var showEvent = new ShowCombinationTextEvent();
-                showEvent.combineText = finishedEvent.combineText;
-                showEvent.featuresToRemove = finishedEvent.featuresToRemove;
-                this._scope.$broadcast(showEvent.type, showEvent);
+            // Event to inform the combination directives to update their state.
+            _eventListener.addEventListener('combinationFinished', (finishedEvent: StoryScript.CombinationFinishedEvent) => {
+                this._scope.$broadcast(finishedEvent.type, finishedEvent);
             });
 
             // Watch for dynamic styling.

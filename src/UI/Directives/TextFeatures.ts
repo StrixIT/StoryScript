@@ -10,18 +10,16 @@ namespace StoryScript
         }
 
         link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
-            var self = this;
-
-            scope.$on('showCombinationText', function(event, data: ShowCombinationTextEvent) {
+            scope.$on('combinationFinished', (event, data: CombinationFinishedEvent) => {
                 // Show the text of added features.
                 element.find('feature')
                     .filter((i, e) => e.innerHTML.trim() === '')
                     .map((i, e) => {
                         var featureElement = angular.element(e);
-                        var feature = self._game.currentLocation.features.get(featureElement.attr('name'));
+                        var feature = this._game.currentLocation.features.get(featureElement.attr('name'));
 
                         if (feature) {
-                            self._game.currentLocation.text = self._game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
+                            this._game.currentLocation.text = this._game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
                         }
                     });
                 
@@ -42,40 +40,39 @@ namespace StoryScript
                 });
             });
 
-            element.on('click', function(ev) {
-                if (self.isFeatureNode(ev)) {
-                    var feature = self.getFeature(ev);
+            element.on('click', ev => {
+                if (this.isFeatureNode(ev)) {
+                    var feature = this.getFeature(ev);
 
                     if (feature) {
                         var node = angular.element(ev.target);
-                        self._game.combinations.tryCombine(feature);
-                        var combineClass= self._combinationService.getCombineClass(feature);
+                        this._game.combinations.tryCombine(feature);
+                        var combineClass= this._combinationService.getCombineClass(feature);
                         node.addClass(combineClass);
                         scope.$applyAsync();
                     }
                 }
             });
 
-            element.on('mouseover', function(ev) {
-                if (self.isFeatureNode(ev)) {
+            element.on('mouseover', ev => {
+                if (this.isFeatureNode(ev)) {
                     var node = angular.element(ev.target);
-                    var feature = self.getFeature(ev);
-                    var combineClass= self._combinationService.getCombineClass(feature);
+                    var feature = this.getFeature(ev);
+                    var combineClass= this._combinationService.getCombineClass(feature);
                     node.addClass(combineClass);
                 }
             });
             
         };
 
-        private isFeatureNode(ev: JQueryEventObject): boolean {
+        private isFeatureNode = (ev: JQueryEventObject): boolean  => {
             var nodeType = ev.target && ev.target.nodeName;
             return StoryScript.compareString(nodeType, 'feature');
         }
 
-        private getFeature(ev: JQueryEventObject): IFeature {
-            var self = this;
+        private getFeature = (ev: JQueryEventObject): IFeature => {
             var featureName = angular.element(ev.target).attr('name');
-            return self._game.currentLocation.features.get(featureName);
+            return this._game.currentLocation.features.get(featureName);
         }
 
         public static Factory()
