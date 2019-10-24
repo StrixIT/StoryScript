@@ -1,24 +1,19 @@
 namespace StoryScript {
     export class BuildCharacterController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.texts = _texts;
+        constructor(private _characterService: ICharacterService, _texts: IInterfaceTexts) {
+            this.texts = _texts;
         }
 
         sheet: ICreateCharacter;
         texts: IInterfaceTexts;
 
-        limitInput = (event: ng.IAngularEvent, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry) => {
-            var self = this;
+        limitInput = (event: ng.IAngularEvent, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
             var value = parseInt((<any>event).target.value);
-            self._characterService.limitSheetInput(value, attribute, entry);
+            this._characterService.limitSheetInput(value, attribute, entry);
         }
 
-        distributionDone = (step: ICreateCharacterStep) => {
-            var self = this;
-            return self._characterService.distributionDone(self.sheet, step);
-        }
+        distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.sheet, step);
     }
 
-    BuildCharacterController.$inject = ['$scope', 'characterService', 'customTexts'];
+    BuildCharacterController.$inject = ['characterService', 'customTexts'];
 }

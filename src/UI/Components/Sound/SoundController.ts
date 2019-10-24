@@ -1,15 +1,11 @@
 
 namespace StoryScript {
     export class SoundController {
-        constructor(private _scope: ng.IScope, private _gameService: IGameService) {
-            var self = this;
+        constructor(private _gameService: IGameService) {
         }
 
-        getCurrentMusic= (): string => {
-            var self = this;
-            return self._gameService.getCurrentMusic();
-        }
+        getCurrentMusic= (): string => this._gameService.getCurrentMusic();
     }
 
-    SoundController.$inject = ['$scope', 'gameService'];
+    SoundController.$inject = ['gameService'];
 }

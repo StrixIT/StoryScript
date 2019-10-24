@@ -2,6 +2,7 @@ namespace StoryScript {
     export interface IConversationService {
         loadConversations(): void;
         initConversation(): void;
+        talk(person: IPerson): void;
         answer(node: IConversationNode, reply: IConversationReply): void;
         getLines(nodeOrReply: IConversationNode | IConversationReply): string;
     }
@@ -13,21 +14,20 @@ namespace StoryScript {
         }
 
         loadConversations = (): void => {
-            var self = this;
-            var persons = self._game.currentLocation && self._game.currentLocation.persons;
+            var persons = this._game.currentLocation && this._game.currentLocation.persons;
 
             if (!persons) {
                 return;
             }
 
             persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
-                var htmlDoc = self.loadConversationHtml(person);
-                var defaultReply = self.getDefaultReply(htmlDoc, person);
+                var htmlDoc = this.loadConversationHtml(person);
+                var defaultReply = this.getDefaultReply(htmlDoc, person);
                 var conversationNodes = htmlDoc.getElementsByTagName('node');
 
                 person.conversation.nodes = [];
-                self.processConversationNodes(conversationNodes, person, defaultReply);
-                self.checkNodes(person);
+                this.processConversationNodes(conversationNodes, person, defaultReply);
+                this.checkNodes(person);
 
                 var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
                 person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
@@ -35,22 +35,25 @@ namespace StoryScript {
         }
 
         initConversation(): void {
-            var self = this;
-            var person = self._game.currentLocation && self._game.currentLocation.activePerson;
-            var activeNode = self.getActiveNode(person);
+            var person = this._game.currentLocation && this._game.currentLocation.activePerson;
+            var activeNode = this.getActiveNode(person);
 
             if (!activeNode) {
                 return;
             }
 
             person.conversation.activeNode = activeNode;
-            self.initReplies(person);
-            self.setReplyStatus(person.conversation, activeNode);
+            this.initReplies(person);
+            this.setReplyStatus(person.conversation, activeNode);
+        }
+
+        talk = (person: IPerson): void => {
+            this._game.currentLocation.activePerson = person;
+            this._game.playState = PlayState.Conversation;
         }
 
         answer = (node: IConversationNode, reply: IConversationReply): void => {
-            var self = this;
-            var person = self._game.currentLocation.activePerson;
+            var person = this._game.currentLocation.activePerson;
 
             person.conversation.conversationLog = person.conversation.conversationLog || [];
 
@@ -59,13 +62,13 @@ namespace StoryScript {
                 reply: reply.lines
             });
 
-            self.processReply(person, reply);
+            this.processReply(person, reply);
 
             var questProgress = reply.questStart || reply.questComplete;
 
             if (questProgress) {
                 var status = reply.questStart ? 'questStart' : 'questComplete';
-                self.questProgress(status, person, reply);
+                this.questProgress(status, person, reply);
             }
         }
 
@@ -77,9 +80,8 @@ namespace StoryScript {
             return null;
         }
 
-        private loadConversationHtml(person: IPerson): Document {
-            var self = this;
-            var conversations = self._dataService.loadDescription('persons', person);
+        private loadConversationHtml = (person: IPerson): Document => {
+            var conversations = this._dataService.loadDescription('persons', person);
             var parser = new DOMParser();
 
             if (conversations.indexOf('<conversation>') == -1) {
@@ -89,7 +91,7 @@ namespace StoryScript {
             return parser.parseFromString(conversations, 'text/html');
         }
 
-        private getDefaultReply(htmlDoc: Document, person: IPerson): string {
+        private getDefaultReply = (htmlDoc: Document, person: IPerson): string => {
             var defaultReplyNodes = htmlDoc.getElementsByTagName('default-reply');
             var defaultReply: string = null;
 
@@ -103,14 +105,12 @@ namespace StoryScript {
             return defaultReply;
         }
 
-        private processConversationNodes(conversationNodes: HTMLCollectionOf<Element>, person: IPerson, defaultReply: string) {
-            var self = this;
-
+        private processConversationNodes = (conversationNodes: HTMLCollectionOf<Element>, person: IPerson, defaultReply: string) => {
             for (var i = 0; i < conversationNodes.length; i++) {
                 var node = conversationNodes[i];
-                var newNode = self.getNewNode(person, node);
+                var newNode = this.getNewNode(person, node);
 
-                self.processReplyNodes(person, node, newNode, defaultReply);
+                this.processReplyNodes(person, node, newNode, defaultReply);
 
                 if (!newNode.replies && defaultReply) {
                     newNode.replies = {
@@ -128,7 +128,7 @@ namespace StoryScript {
             }
         }
 
-        private getNewNode(person: IPerson, node: Element): IConversationNode {
+        private getNewNode = (person: IPerson, node: Element): IConversationNode => {
             var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
 
             if (!nameAttribute && console) {
@@ -147,14 +147,12 @@ namespace StoryScript {
             };
         }
 
-        private processReplyNodes(person: IPerson, node: Element, newNode: IConversationNode, defaultReply: string) {
-            var self = this;
-
+        private processReplyNodes = (person: IPerson, node: Element, newNode: IConversationNode, defaultReply: string): void => {
             for (var j = 0; j < node.childNodes.length; j++) {
                 var replies = node.childNodes[j];
 
                 if (compareString(replies.nodeName, 'replies')) {
-                    var addDefaultValue = self.GetNodeValue(replies, 'default-reply');
+                    var addDefaultValue = this.GetNodeValue(replies, 'default-reply');
                     var addDefaultReply = compareString(addDefaultValue, 'false') ? false : true;
 
                     newNode.replies = <IConversationReplies>{
@@ -162,7 +160,7 @@ namespace StoryScript {
                         options: []
                     };
 
-                    self.buildReplies(person, newNode, replies);
+                    this.buildReplies(person, newNode, replies);
                     node.removeChild(replies);
 
                     if (defaultReply && newNode.replies.defaultReply) {
@@ -174,19 +172,17 @@ namespace StoryScript {
             }
         }
 
-        private buildReplies(person: IPerson, newNode: IConversationNode, replies: ChildNode) {
-            var self = this;
-
+        private buildReplies = (person: IPerson, newNode: IConversationNode, replies: ChildNode): void => {
             for (var k = 0; k < replies.childNodes.length; k++) {
                 var replyNode = replies.childNodes[k];
 
                 if (compareString(replyNode.nodeName, 'reply')) {
-                    var requires = self.GetNodeValue(replyNode, 'requires');
-                    var linkToNode = self.GetNodeValue(replyNode, 'node');
-                    var trigger = self.GetNodeValue(replyNode, 'trigger');
-                    var questStart = self.GetNodeValue(replyNode, 'quest-start');
-                    var questComplete = self.GetNodeValue(replyNode, 'quest-complete');
-                    var setStart = self.GetNodeValue(replyNode, 'set-start');
+                    var requires = this.GetNodeValue(replyNode, 'requires');
+                    var linkToNode = this.GetNodeValue(replyNode, 'node');
+                    var trigger = this.GetNodeValue(replyNode, 'trigger');
+                    var questStart = this.GetNodeValue(replyNode, 'quest-start');
+                    var questComplete = this.GetNodeValue(replyNode, 'quest-complete');
+                    var setStart = this.GetNodeValue(replyNode, 'set-start');
 
                     if (trigger && !person.conversation.actions[trigger]) {
                         console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
@@ -207,7 +203,7 @@ namespace StoryScript {
             }
         }
 
-        private checkNodes(person: IPerson) {
+        private checkNodes = (person: IPerson): void => {
             person.conversation.nodes.forEach(n => {
                 if (n.replies && n.replies.options)
                 {
@@ -224,13 +220,9 @@ namespace StoryScript {
             });
         }
 
-        private GetNodeValue(node: Node, attribute: string): string {
-            return (<any>node).attributes[attribute] && (<any>node).attributes[attribute].value
-        }
+        private GetNodeValue = (node: Node, attribute: string): string => (<any>node).attributes[attribute] && (<any>node).attributes[attribute].value
 
-        private getActiveNode(person: IPerson): IConversationNode {
-            var self = this;
-
+        private getActiveNode = (person: IPerson): IConversationNode => {
             if (!person || !person.conversation) {
                 return null;
             }
@@ -239,7 +231,7 @@ namespace StoryScript {
             var activeNode = conversation.activeNode;
 
             if (!activeNode) {
-                activeNode = conversation.selectActiveNode ? conversation.selectActiveNode(self._game, person) : null;
+                activeNode = conversation.selectActiveNode ? conversation.selectActiveNode(this._game, person) : null;
             }
 
             if (!activeNode) {
@@ -253,8 +245,7 @@ namespace StoryScript {
             return activeNode;
         }
 
-        private initReplies(person: IPerson): void {
-            var self = this;
+        private initReplies = (person: IPerson): void => {
             var activeNode = person.conversation.activeNode;
 
             if (activeNode.replies) {
@@ -268,17 +259,15 @@ namespace StoryScript {
                     }
 
                     if (reply.requires) {
-                        reply.available = self.checkReplyAvailability(activeNode, reply);
+                        reply.available = this.checkReplyAvailability(activeNode, reply);
                     }
                 }
             }
         }
 
-        private processReply(person: IPerson, reply: IConversationReply) {
-            var self = this;
-
+        private processReply = (person: IPerson, reply: IConversationReply) => {
             if (reply.trigger) {
-                person.conversation.actions[reply.trigger](self._game, person);
+                person.conversation.actions[reply.trigger](this._game, person);
             }
 
             if (reply.setStart) {
@@ -288,15 +277,14 @@ namespace StoryScript {
 
             if (reply.linkToNode) {
                 person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
-                self.setReplyStatus(person.conversation, person.conversation.activeNode);
+                this.setReplyStatus(person.conversation, person.conversation.activeNode);
             }
             else {
                 person.conversation.activeNode = null;
             }
         }
 
-        private checkReplyAvailability(activeNode: IConversationNode, reply: IConversationReply) : boolean {
-            var self = this;
+        private checkReplyAvailability = (activeNode: IConversationNode, reply: IConversationReply) : boolean => {
             var isAvailable = true;
             var requirements = reply.requires.split(',');
 
@@ -310,7 +298,7 @@ namespace StoryScript {
                     console.log('Invalid reply requirement for node ' + activeNode.node + '!');
                 }
 
-                isAvailable = self.checkReplyRequirements(activeNode, type, value);
+                isAvailable = this.checkReplyRequirements(activeNode, type, value);
 
                 if (!isAvailable) {
                     break;
@@ -320,18 +308,17 @@ namespace StoryScript {
             return isAvailable;
         }
 
-        private checkReplyRequirements(activeNode: IConversationNode, type: string, value: string): boolean {
-            var self = this;
+        private checkReplyRequirements = (activeNode: IConversationNode, type: string, value: string): boolean => {
             var isAvailable = true;
 
             switch (type) {
                 case 'item': {
                     // Check item available. Item list first, equipment second.
-                    var hasItem = self._game.character.items.get(value) != undefined;
+                    var hasItem = this._game.character.items.get(value) != undefined;
 
                     if (!hasItem) {
-                        for (var i in self._game.character.equipment) {
-                            var slotItem = <IItem>self._game.character.equipment[i];
+                        for (var i in this._game.character.equipment) {
+                            var slotItem = <IItem>this._game.character.equipment[i];
                             hasItem = slotItem != undefined && slotItem != null && compareString(slotItem.id, value);
                         }
                     }
@@ -340,7 +327,7 @@ namespace StoryScript {
                 } break;
                 case 'location': {
                     // Check location visited
-                    var location = self._game.locations.get(value);
+                    var location = this._game.locations.get(value);
 
                     if (!location) {
                         console.log('Invalid location ' + value + ' for reply requirement for node ' + activeNode.node + '!');
@@ -352,27 +339,27 @@ namespace StoryScript {
                 case 'quest-done':
                 case 'quest-complete': {
                     // Check quest start, quest done or quest complete.
-                    var quest = self._game.character.quests.get(value);
+                    var quest = this._game.character.quests.get(value);
                     isAvailable = quest != undefined &&
                         (type === 'quest-start' ? true : type === 'quest-done' ?
-                            quest.checkDone(self._game, quest) : quest.completed);
+                            quest.checkDone(this._game, quest) : quest.completed);
                 } break;
                 default: {
                     // Check attributes
-                    var attribute = self._game.character[type];
+                    var attribute = this._game.character[type];
 
                     if (!attribute) {
                         console.log('Invalid attribute ' + type + ' for reply requirement for node ' + activeNode.node + '!');
                     }
 
-                    isAvailable = isNaN(self._game.character[type]) ? self._game.character[type] === value : parseInt(self._game.character[type]) >= parseInt(value);
+                    isAvailable = isNaN(this._game.character[type]) ? this._game.character[type] === value : parseInt(this._game.character[type]) >= parseInt(value);
                 } break;
             }
 
             return isAvailable;
         }
 
-        private setReplyStatus(conversation: IConversation, node: IConversationNode) {
+        private setReplyStatus = (conversation: IConversation, node: IConversationNode): void => {
             if (node.replies && node.replies.options) {
                 node.replies.options.forEach(reply => {
                     if (reply.available == undefined) {
@@ -385,8 +372,7 @@ namespace StoryScript {
             }
         }
 
-        private questProgress(type: string, person: IPerson, reply: IConversationReply) {
-            var self = this;
+        private questProgress = (type: string, person: IPerson, reply: IConversationReply): void => {
             var quest: IQuest;
             var start = type === 'questStart';
 
@@ -395,12 +381,12 @@ namespace StoryScript {
 
                 if (!quest.started) {
                     quest.issuedBy = person.id;
-                    self._game.character.quests.push(quest);
+                    this._game.character.quests.push(quest);
                     person.quests.remove(quest);
                     quest.progress = quest.progress || {};
 
                     if (quest.start) {
-                        quest.start(self._game, quest, person);
+                        quest.start(this._game, quest, person);
                     }
 
                     quest.started = true;
@@ -408,11 +394,11 @@ namespace StoryScript {
                 }
             }
             else {
-                quest = self._game.character.quests.get(reply[type]);
+                quest = this._game.character.quests.get(reply[type]);
 
                 if (!quest.completed) {
                     if (quest.complete) {
-                        quest.complete(self._game, quest, person);
+                        quest.complete(this._game, quest, person);
                     }
 
                     quest.completed = true;

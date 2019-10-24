@@ -22,12 +22,12 @@ describe("Utilities", function() {
             return x + y;
         };
 
-        function AddOn(myFunction, x, y, z) {
+        function AddOn(myScope, myFunction, x, y, z) {
             var myFunctionResult = myFunction(x, y);
             return myFunctionResult * z;
         }
 
-        MyFunction = MyFunction.proxy(MyFunction, AddOn, 5);
+        MyFunction = MyFunction.proxy(AddOn, 5);
         var result = MyFunction(2, 6);
 
         expect(result).toEqual(40);

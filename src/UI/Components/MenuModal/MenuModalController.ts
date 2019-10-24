@@ -1,14 +1,16 @@
 namespace StoryScript {
     export class MenuModalController implements ng.IComponentController {
 
-        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _gameService: IGameService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.texts = _texts;
-            self.game = _game;
-            self.state = 'Menu';
+        constructor(private _scope: StoryScriptScope, private _gameService: IGameService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.texts = _texts;
+            this.game = _game;
+            this._scope.game = _game;
+            this.state = PlayState.Menu;
 
-            self._scope.$on('showMenu', (event, args) => {
-                self.openModal();
+            this._scope.$watch('game.playState', (newValue: PlayState) => {
+                if (newValue == PlayState.Menu) {
+                    this.openModal();
+                }
             });
         }
 
@@ -18,72 +20,52 @@ namespace StoryScript {
         selectedGame: string;
         state: string;
 
-        openModal = () => {
-            var self = this;
-            self._game.playState = PlayState.Menu;
-            $('#menumodal').modal('show');
-        }
+        openModal = (): JQLite => $('#menumodal').modal('show');
 
-        closeModal = () => {
-            var self = this;
-            self.setSelected(null);
-            self.state = 'Menu';
-            self._game.playState = null;
+        closeModal = (): void => {
+            this.setSelected(null);
+            this.state = 'Menu';
+            this._game.playState = null;
             $('#menumodal').modal('hide');
         }
 
-        restart = (): void => {
-            var self = this;
-            self.state = 'ConfirmRestart';
-        }
+        restart = (): string => this.state = 'ConfirmRestart';
 
         cancel = (): void => {
-            var self = this;
-            self.setSelected(null);
-            self.state = 'Menu';
+            this.setSelected(null);
+            this.state = 'Menu';
         }
 
         restartConfirmed = (): void => {
-            var self = this;
-            self.closeModal();
-            self._scope.$emit('restart');
+            this.closeModal();
+            this._scope.$emit('restart');
         }
 
         save = (): void => {
-            var self = this;
-            self.saveKeys = self._gameService.getSaveGames();
-            self.state = 'Save';
+            this.saveKeys = this._gameService.getSaveGames();
+            this.state = 'Save';
         }
 
         load = (): void => {
-            var self = this;
-            self.saveKeys = self._gameService.getSaveGames();
-            self.state = 'Load';
+            this.saveKeys = this._gameService.getSaveGames();
+            this.state = 'Load';
         }
 
-        setSelected = (name: string) => {
-            var self = this;
-            self.selectedGame = name;
+        setSelected = (name: string): string => this.selectedGame = name;
+
+        overwriteSelected = (): boolean => this._gameService.getSaveGames().indexOf(this.selectedGame) > -1;
+
+        saveGame = (): void => {
+            this._gameService.saveGame(this.selectedGame);
+            this.closeModal();
         }
 
-        overwriteSelected = () => {
-            var self = this;
-            return self._gameService.getSaveGames().indexOf(this.selectedGame) > -1;
-        }
-
-        saveGame = () => {
-            var self = this;
-            self._gameService.saveGame(self.selectedGame);
-            self.closeModal();
-        }
-
-        loadGame = () => {
-            var self = this;
-            self._gameService.loadGame(self.selectedGame);
-            self.closeModal();
-            self._scope.$emit('gameLoaded');
+        loadGame = (): void => {
+            this._gameService.loadGame(this.selectedGame);
+            this.closeModal();
+            this._game.combinations.combinationResultText = null;
         }
     }
 
-    MenuModalController.$inject = ['$scope', 'sharedMethodService', 'gameService', 'game', 'customTexts'];
+    MenuModalController.$inject = ['$scope', 'gameService', 'game', 'customTexts'];
 }

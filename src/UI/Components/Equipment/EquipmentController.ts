@@ -1,30 +1,20 @@
 namespace StoryScript {
     export class EquipmentController {
-        constructor(private _scope: ng.IScope, private _sharedMethodService: ISharedMethodService, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = self._game;
-            self.texts = self._texts;
-            self._sharedMethodService.useEquipment = true;
+        constructor(private _sharedMethodService: ISharedMethodService, private _characterService: ICharacterService, _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
+            this._sharedMethodService.useEquipment = true;
         }
 
         game: IGame;
         texts: IInterfaceTexts;
 
-        showEquipment = (): boolean => {
-            var self = this;
-            return self._sharedMethodService.showEquipment();
-        }
+        showEquipment = (): boolean => this._sharedMethodService.showEquipment();
 
-        unequipItem = (item: IItem): void => {
-            var self = this;
-            self._characterService.unequipItem(item);
-        }
+        unequipItem = (item: IItem): boolean => this._characterService.unequipItem(item);
 
-        isSlotUsed = (slot: string): boolean => {
-            var self = this;
-            return self._characterService.isSlotUsed(slot);
-        }
+        isSlotUsed = (slot: string): boolean => this._characterService.isSlotUsed(slot);
     }
 
-    EquipmentController.$inject = ['$scope', 'sharedMethodService', 'characterService', 'game', 'customTexts'];
+    EquipmentController.$inject = ['sharedMethodService', 'characterService', 'game', 'customTexts'];
 }

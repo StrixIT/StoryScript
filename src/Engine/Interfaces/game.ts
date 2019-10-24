@@ -84,13 +84,18 @@
              * is not trying a combination.
              */
             activeCombination: IActiveCombination,
+     
+            /**
+             * The result text displayed to the player for a combination.
+             */
+            combinationResultText: string;
 
             /**
              * Get the class name to use for the current combine state.
              * @param tool The tool of the combination. Pass this in to get the class name for the tool element. Pass nothing to
              * get the class name for the tool button bar.
              */
-            getCombineClass(tool: ICombinable): void,
+            getCombineClass(tool: ICombinable): string,
 
             /**
              * Try the combination the player has created.

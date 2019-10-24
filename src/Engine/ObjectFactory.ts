@@ -24,104 +24,81 @@ namespace StoryScript {
         private _combinationService: ICombinationService;
 
         constructor(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
-            var self = this;
-            self._nameSpace = nameSpace;
-            self._texts = texts;
-            self._rules = rules;
+            this._nameSpace = nameSpace;
+            this._texts = texts;
+            this._rules = rules;
         }
 
-        GetEventListener = (): EventTarget => {
-            var self = this;
-            return self._eventTarget;
-        }
+        GetEventListener = (): EventTarget => this._eventTarget;
 
-        GetNameSpace = (): string => {
-            var self = this;
-            return self._nameSpace;
-        }
+        GetNameSpace = (): string => this._nameSpace;
+
+        GetDefinitions = (): IDefinitions => this._definitions;
+
+        GetFunctions = (): { [type: string]: { [id: string]: { function: Function, hash: number } } } => this._functions;
 
         GetGame = (): IGame => {
-            var self = this;
-            self.init();
-            return self._game;
+            this.init();
+            return this._game;
         }
 
         GetTexts = (): IInterfaceTexts => {
-            var self = this;
-            self.init();
-            return self._texts;
+            this.init();
+            return this._texts;
         }
 
         GetGameService = (): IGameService => {
-            var self = this;
-            self.init();
-            return self._gameService;
+            this.init();
+            return this._gameService;
         }
 
         GetTradeService = (): ITradeService => {
-            var self = this;
-            self.init();
-            return self._tradeService;
+            this.init();
+            return this._tradeService;
         }
 
         GetConversationService = (): IConversationService => {
-            var self = this;
-            self.init();
-            return self._conversationService;
+            this.init();
+            return this._conversationService;
         }
 
         GetCharacterService = (): ICharacterService => {
-            var self = this;
-            self.init();
-            return self._characterService;
+            this.init();
+            return this._characterService;
         }
 
         GetCombinationService = (): ICombinationService => {
-            var self = this;
-            self.init();
-            return self._combinationService;
-        }
-
-        GetDefinitions = (): IDefinitions => {
-            var self = this;
-            return self._definitions;
-        }
-
-        GetFunctions = (): { [type: string]: { [id: string]: { function: Function, hash: number } } } => {
-            var self = this;
-            return self._functions;
+            this.init();
+            return this._combinationService;
         }
 
         private init = (): void => {
-            var self = this;
-
             if (!ObjectFactory._isInitialized)
             {
-                self.getDefinitions();
-                self.registerFunctions();
-                self._game.definitions = self._definitions;
-                self._helperService = new HelperService(self._game);
-                self._tradeService = new TradeService(self._game, self._texts);
-                self._dataService = new DataService(self._localStorageService, self._nameSpace);
-                self._conversationService = new ConversationService(self._dataService, self._game);
-                self._locationService = new LocationService(self._dataService, self._conversationService, self._rules, self._game, self._definitions);
-                self._combinationService = new CombinationService(self._dataService, self._locationService, self._game, self._rules, self._texts);
-                self._characterService = new CharacterService(self._game, self._rules);
-                self._gameService = new GameService(self._dataService, self._locationService, self._characterService, self._combinationService, self._eventTarget, self._rules, self._helperService, self._game, self._texts);
+                this.getDefinitions();
+                this.registerFunctions();
+                this._game.definitions = this._definitions;
+                this._helperService = new HelperService(this._game);
+                this._tradeService = new TradeService(this._game, this._texts);
+                this._dataService = new DataService(this._localStorageService, this._nameSpace);
+                this._conversationService = new ConversationService(this._dataService, this._game);
+                this._locationService = new LocationService(this._dataService, this._conversationService, this._rules, this._game, this._definitions);
+                this._combinationService = new CombinationService(this._dataService, this._locationService, this._game, this._rules, this._texts);
+                this._characterService = new CharacterService(this._game, this._rules);
+                this._gameService = new GameService(this._dataService, this._locationService, this._characterService, this._combinationService, this._eventTarget, this._rules, this._helperService, this._game, this._texts);
                 ObjectFactory._isInitialized = true;
             }
         }
 
-        private registerFunctions() {
-            var self = this;
-            var definitionKeys = getDefinitionKeys(self._definitions);
-            self._functions = {};
+        private registerFunctions = (): void => {
+            var definitionKeys = getDefinitionKeys(this._definitions);
+            this._functions = {};
             var index = 0;
 
-            for (var i in self._definitions) {
+            for (var i in this._definitions) {
                 var type = definitionKeys[index] || 'actions';
-                var definitions = self._definitions[i];
-                self._functions[type] = {};
+                var definitions = this._definitions[i];
+                this._functions[type] = {};
 
                 for (var j in definitions) {
                     var definition = <() => {}>definitions[j];
@@ -132,17 +109,16 @@ namespace StoryScript {
             }
         }
 
-        private getDefinitions() {
-            var self = this;
-            var nameSpaceObject = window[self._nameSpace];
-            self._definitions.locations = self.moveObjectPropertiesToArray(nameSpaceObject['Locations']);
-            self._definitions.features = self.moveObjectPropertiesToArray(nameSpaceObject['Features']);
-            self._definitions.enemies = self.moveObjectPropertiesToArray(nameSpaceObject['Enemies']);
-            self._definitions.persons = self.moveObjectPropertiesToArray(nameSpaceObject['Persons']);
-            self._definitions.items = self.moveObjectPropertiesToArray(nameSpaceObject['Items']);
-            self._definitions.quests = self.moveObjectPropertiesToArray(nameSpaceObject['Quests']);
-            self._definitions.actions = self.moveObjectPropertiesToArray(window['StoryScript']['Actions']);
-            self.moveObjectPropertiesToArray(nameSpaceObject['Actions'], self._definitions.actions);
+        private getDefinitions = (): void => {
+            var nameSpaceObject = window[this._nameSpace];
+            this._definitions.locations = this.moveObjectPropertiesToArray(nameSpaceObject['Locations']);
+            this._definitions.features = this.moveObjectPropertiesToArray(nameSpaceObject['Features']);
+            this._definitions.enemies = this.moveObjectPropertiesToArray(nameSpaceObject['Enemies']);
+            this._definitions.persons = this.moveObjectPropertiesToArray(nameSpaceObject['Persons']);
+            this._definitions.items = this.moveObjectPropertiesToArray(nameSpaceObject['Items']);
+            this._definitions.quests = this.moveObjectPropertiesToArray(nameSpaceObject['Quests']);
+            this._definitions.actions = this.moveObjectPropertiesToArray(window['StoryScript']['Actions']);
+            this.moveObjectPropertiesToArray(nameSpaceObject['Actions'], this._definitions.actions);
         }
 
         private moveObjectPropertiesToArray<T>(object: {}, collection?: (() => T)[]) {

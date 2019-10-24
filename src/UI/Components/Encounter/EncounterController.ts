@@ -1,54 +1,27 @@
 namespace StoryScript {
     export class EncounterController implements ng.IComponentController {
-        constructor(private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = _game;
-            self.texts = _texts;
+        constructor(private _sharedMethodService: ISharedMethodService, private _conversationService: IConversationService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
         }
 
         game: IGame;
         texts: IInterfaceTexts;
 
-        enemiesPresent = () => {
-            var self = this;
-            return self._sharedMethodService.enemiesPresent();
-        }
+        enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-        personsPresent = (): boolean => {
-            var self = this;
-            return self._game.currentLocation && self._game.currentLocation.activePersons && self._game.currentLocation.activePersons.length > 0;
-        }
+        personsPresent = (): boolean => this._game.currentLocation && this._game.currentLocation.activePersons && this._game.currentLocation.activePersons.length > 0;
 
-        getCombineClass = (item: IItem) => {
-            var self = this;
-            return self._game.combinations.getCombineClass(item);
-        }
+        getCombineClass = (item: IItem): string => this._game.combinations.getCombineClass(item);
 
-        tryCombine = (person: IPerson) => {
-            var self = this;
-            self._game.combinations.tryCombine(person);
-        }
+        tryCombine = (person: IPerson): boolean => this._game.combinations.tryCombine(person);
 
-        talk = (person: IPerson) => {
-            var self = this;
-            self._game.currentLocation.activePerson = person;
-            self._game.playState = PlayState.Conversation;
-        }
+        talk = (person: IPerson): void => this._conversationService.talk(person);
 
-        trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade) => {
-            var self = this;
-            return self._sharedMethodService.trade(self._game, actionIndex, trade);
-        }
-
-        startCombat = (person: IPerson) => {
-            var self = this;
-
-            // The person becomes an enemy when attacked!
-            self._game.currentLocation.persons.remove(person);
-            self._game.currentLocation.enemies.push(person);
-            self._sharedMethodService.startCombat();
-        }
+        trade = (trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
+        
+        startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(person);
     }
 
-    EncounterController.$inject = ['sharedMethodService', 'game', 'customTexts'];
+    EncounterController.$inject = ['sharedMethodService', 'conversationService', 'game', 'customTexts'];
 }

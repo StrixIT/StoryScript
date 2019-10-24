@@ -1,12 +1,15 @@
 namespace StoryScript {
     export class LevelUpController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = _game;
-            self.texts = _texts;
+        constructor(private _scope: StoryScriptScope, private _gameService: IGameService, private _characterService: ICharacterService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
+            this._scope.game = _game;
 
-            self._scope.$on('initLevelUp', function (event: ng.IAngularEvent) {
-                self.sheet = self._characterService.setupLevelUp();
+            this._scope.$watch('game.state', (newValue: GameState) => {
+                if (newValue == GameState.LevelUp) {
+                    this.sheet = this._characterService.setupLevelUp();
+                    this._game.playState = null;
+                }
             });
         }
 
@@ -14,16 +17,10 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
-        distributionDone = (step: ICreateCharacterStep) => {
-            var self = this;
-            return self._characterService.distributionDone(self.sheet, step);
-        }
+        distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.sheet, step);
 
-        levelUp = () => {
-            var self = this;
-            self._characterService.levelUp(self._game, self.sheet);
-        }
+        levelUp = (): ICharacter => this._gameService.levelUp(this.sheet);
     }
 
-    LevelUpController.$inject = ['$scope', 'characterService', 'game', 'customTexts'];
+    LevelUpController.$inject = ['$scope', 'gameService', 'characterService', 'game', 'customTexts'];
 }

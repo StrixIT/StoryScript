@@ -1,74 +1,41 @@
 namespace StoryScript {   
     export class ExplorationController implements ng.IComponentController {
-        constructor(private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = _game;
-            self.texts = _texts;
+        constructor(private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
         }
 
         game: IGame;
         texts: IInterfaceTexts;
 
-        actionsPresent = () => {
-            var self = this;
-            return self.game.currentLocation && !self.enemiesPresent() && !isEmpty(self.game.currentLocation.actions);
-        }
+        trade = (game, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
-        enemiesPresent = () => {
-            var self = this;
-            return self._sharedMethodService.enemiesPresent();
-        }
+        changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
-        getButtonClass = (action: IAction): string => {
-            var self = this;
-            return self._sharedMethodService.getButtonClass(action);
-        }
+        actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
 
-        getCombineClass = (barrier: IBarrier) => {
-            var self = this;
-            return self._game.combinations.getCombineClass(barrier);
-        }
+        enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-        disableActionButton = (action: IAction) => {
-            var self = this;
-            return typeof action.status === 'function' ? (<any>action).status(self.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
-        }
+        getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
-        hideActionButton = (action: IAction) => {
-            var self = this;
-            return typeof action.status === 'function' ? (<any>action).status(self.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
-        }
+        getCombineClass = (barrier: IBarrier): string => this._game.combinations.getCombineClass(barrier);
 
-        executeAction = (action: IAction): void => {
-            var self = this;
-            self._sharedMethodService.executeAction(action, self);
-        }
+        disableActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
 
-        executeBarrierAction = (barrier: IBarrier, destination: IDestination) => {
-            var self = this;
+        hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
 
-            if (self._game.combinations.tryCombine(barrier))
+        executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
+
+        executeBarrierAction = (barrier: IBarrier, destination: IDestination): void => {
+            if (this._game.combinations.tryCombine(barrier))
             {
                 return;
             }
-            else if (self._game.combinations.activeCombination) {
+            else if (this._game.combinations.activeCombination) {
                 return;
             }
 
-            self._gameService.executeBarrierAction(barrier, destination);
-        }
-
-        trade = (game: IGame, actionIndex: number, trade: IPerson | ITrade) => {
-            var self = this;
-            return self._sharedMethodService.trade(game, actionIndex, trade);
-        }
-
-        changeLocation = (location: string) => {
-            var self = this;
-
-            // Call changeLocation without using the execute action as the game parameter is not needed.
-            self.game.changeLocation(location, true);
-            self._gameService.saveGame();
+            this._gameService.executeBarrierAction(barrier, destination);
         }
     }
 

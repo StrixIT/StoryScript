@@ -14,51 +14,44 @@ namespace StoryScript {
         constructor(private _dataService: IDataService, private _conversationService: IConversationService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
 
-        init = (game: IGame, buildWorld?: boolean) => {
-            var self = this;
-            game.changeLocation = (location, travel) => { self.changeLocation.call(self, location, travel, game); };
+        init = (game: IGame, buildWorld?: boolean): void => {
             game.currentLocation = null;
             game.previousLocation = null;
-            game.locations = self.loadWorld(buildWorld === undefined || buildWorld);
+            game.locations = this.loadWorld(buildWorld === undefined || buildWorld);
         }
 
-        saveWorld = (locations: ICollection<ICompiledLocation>) => {
-            var self = this;
-            self._dataService.save(DataKeys.WORLD, locations, self.pristineLocations);
-        }
+        saveWorld = (locations: ICollection<ICompiledLocation>): void => this._dataService.save(DataKeys.WORLD, locations, this.pristineLocations);
 
-        copyWorld = (): ICollection<ICompiledLocation> => {
-            var self = this;
-            return self._dataService.copy(self._game.locations, self.pristineLocations);
-        }
+        copyWorld = (): ICollection<ICompiledLocation> => this._dataService.copy(this._game.locations, this.pristineLocations);
 
-        changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame) => {
-            var self = this;
+        changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
+            // Clear the play state on travel.
+            game.playState = null;
 
             if (game.currentLocation && game.currentLocation.leaveEvents) {
-                self.playEvents(game, game.currentLocation.leaveEvents);
+                this.playEvents(game, game.currentLocation.leaveEvents);
                 game.currentLocation.leaveEvents.length = 0;
             }
 
             // If there is no location, we are starting a new game and we're done here.
-            if (!self.switchLocation(game, location)) {
+            if (!this.switchLocation(game, location)) {
                 return;
             }
 
-            self.processDestinations(game);
-            self.saveLocations(game);
+            this.processDestinations(game);
+            this.saveLocations(game);
 
-            if (self._rules.exploration && self._rules.exploration.enterLocation) {
-                self._rules.exploration.enterLocation(game, game.currentLocation, travel);
+            if (this._rules.exploration && this._rules.exploration.enterLocation) {
+                this._rules.exploration.enterLocation(game, game.currentLocation, travel);
             }
 
-            self.loadLocationDescriptions(game);
-            self.initTrade(game);
-            self.playEnterEvents(game);
-            self._conversationService.loadConversations();
+            this.loadLocationDescriptions(game);
+            this.initTrade(game);
+            this.playEnterEvents(game);
+            this._conversationService.loadConversations();
 
             // Add the 'back' button for testing
-            if (self._rules.setup.autoBackButton && game.previousLocation && game.currentLocation.id != 'start') {
+            if (this._rules.setup.autoBackButton && game.previousLocation && game.currentLocation.id != 'start') {
                 var backTestDestinationName = 'testbackdestination';
                 var backDestination = game.currentLocation.destinations.get(game.previousLocation.id) 
                                         || game.currentLocation.destinations.get(backTestDestinationName);
@@ -76,7 +69,7 @@ namespace StoryScript {
             }
         }
 
-        private switchLocation(game: IGame, location: string | (() => ILocation)): boolean {
+        private switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
             var presentLocation: ICompiledLocation;
 
             // If no location is specified, go to the previous location.
@@ -100,11 +93,11 @@ namespace StoryScript {
             return true;
         }
 
-        private processDestinations(game: IGame) {
+        private processDestinations = (game: IGame) => {
             if (game.currentLocation.destinations) {
 
                 // remove the return message from the current location destinations.
-                game.currentLocation.destinations.forEach(function (destination) {
+                game.currentLocation.destinations.forEach(destination => {
                     if ((<any>destination).isPreviousLocation) {
                         (<any>destination).isPreviousLocation = false;
                     }
@@ -130,25 +123,21 @@ namespace StoryScript {
             }
         }
 
-        private saveLocations(game: IGame) {
-            var self = this;
-
+        private saveLocations = (game: IGame): void => {
             // Save the previous and current location, then get the location text.
-            self._dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
+            this._dataService.save(StoryScript.DataKeys.LOCATION, game.currentLocation.id);
 
             if (game.previousLocation) {
-                self._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
+                this._dataService.save(StoryScript.DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
             }
         }
 
-        private playEnterEvents(game: IGame) {
-            var self = this;
-
+        private playEnterEvents = (game: IGame): void => {
             // If the player hasn't been here before, play the location events. Also update
             // the visit statistics.
             if (!game.currentLocation.hasVisited) {
                 if (game.currentLocation.enterEvents) {
-                    self.playEvents(game, game.currentLocation.enterEvents);
+                    this.playEvents(game, game.currentLocation.enterEvents);
                     game.currentLocation.enterEvents.length = 0;
                 }
 
@@ -158,44 +147,35 @@ namespace StoryScript {
             }
         }
 
-        private loadWorld(buildWorld: boolean): ICollection<ICompiledLocation> {
-            var self = this;
-
-            const locations = self.getLocations(buildWorld);
-
-            locations.forEach(function (location) {
-                self.initDestinations(location);
-            });
-
+        private loadWorld = (buildWorld: boolean): ICollection<ICompiledLocation> => {
+            const locations = this.getLocations(buildWorld);
+            locations.forEach(l => this.initDestinations(l));
             return locations;
         }
 
-        private getLocations(buildWorld: boolean): ICollection<ICompiledLocation> {
-            var self = this;
+        private getLocations = (buildWorld: boolean): ICollection<ICompiledLocation> => {
             var locations = <ICollection<ICompiledLocation>>null;
 
             if (buildWorld) {
-                self.pristineLocations = self.buildWorld();
-                locations = self._dataService.load(DataKeys.WORLD);
+                this.pristineLocations = this.buildWorld();
+                locations = this._dataService.load(DataKeys.WORLD);
 
                 if (isEmpty(locations)) {
-                    self._dataService.save(DataKeys.WORLD, self.pristineLocations, self.pristineLocations);
-                    locations = self._dataService.load(DataKeys.WORLD);
+                    this._dataService.save(DataKeys.WORLD, this.pristineLocations, this.pristineLocations);
+                    locations = this._dataService.load(DataKeys.WORLD);
                 }
             }
             else {
-                locations = self._game.locations;
+                locations = this._game.locations;
             }
 
             return locations;
         }
 
-        private initDestinations(location: ICompiledLocation) {
-            var self = this;
-
+        private initDestinations = (location: ICompiledLocation): void => {
             // Add a proxy to the destination collection push function, to replace the target function pointer
             // with the target id when adding destinations and enemies at runtime.
-            location.destinations.push = location.destinations.push.proxy(location.destinations.push, self.addDestination, self._game);
+            location.destinations.push = location.destinations.push.proxy(this.addDestination, this._game);
 
             // Set the selected action to an actual barrier action. This object reference is lost when serializing.
             if (location.destinations) {
@@ -217,7 +197,7 @@ namespace StoryScript {
             });
         }
 
-        private initTrade(game: IGame) {
+        private initTrade = (game: IGame): void => {
             if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(a => a.actionType == ActionType.Trade))) {
 
                 game.currentLocation.actions.push({
@@ -228,26 +208,23 @@ namespace StoryScript {
             }
         }
 
-        private buildWorld(): ICollection<ICompiledLocation> {
-            var self = this;
-            var locations = self._definitions.locations;
+        private buildWorld = (): ICollection<ICompiledLocation> => {
+            var locations = this._definitions.locations;
             var compiledLocations = [];
-            self.processLocations(locations, compiledLocations);
+            this.processLocations(locations, compiledLocations);
             return compiledLocations;
         }
 
-        private processLocations(locations: (() => ILocation)[], compiledLocations: ICollection<ICompiledLocation>) {
-            var self = this;
-
+        private processLocations = (locations: (() => ILocation)[], compiledLocations: ICollection<ICompiledLocation>): void => {
             for (var n in locations) {
                 var definition = locations[n];
                 var location = <ICompiledLocation>definition();
-                self.setDestinations(location);
+                this.setDestinations(location);
                 compiledLocations.push(location);
             }
         }
 
-        private setDestinations(location: ICompiledLocation) {
+        private setDestinations = (location: ICompiledLocation): void => {
             if (location.destinations) {
                 location.destinations.forEach(destination => {
                     setDestination(destination);
@@ -255,44 +232,36 @@ namespace StoryScript {
             }
         }
 
-        private addDestination() {
-            var args = [].slice.apply(arguments);
-            var originalFunction = args.shift();
-            var destination = <IDestination>args[0];
-            var game = <IGame>args[1];
-            args.splice(1, 1);
-
+        private addDestination = (originalScope, originalFunction, destination, game): void => {
             setDestination(destination);
             addKeyAction(game, destination);
-            originalFunction.apply(this, args);
+            originalFunction.call(originalScope, destination);
         }
 
-        private playEvents(game: IGame, events: ICollection<((game: IGame) => void)>) {
+        private playEvents = (game: IGame, events: ICollection<((game: IGame) => void)>): void => {
             for (var n in events) {
                 events[n](game);
             }
         }
 
-        private loadLocationDescriptions(game: IGame) {
-            var self = this;
-
+        private loadLocationDescriptions = (game: IGame): void => {
             if (!game.currentLocation.descriptions) {
-                var descriptions = self._dataService.loadDescription('locations', game.currentLocation);
+                var descriptions = this._dataService.loadDescription('locations', game.currentLocation);
 
                 if (descriptions) {
                     var parser = new DOMParser();
                     var htmlDoc = parser.parseFromString(descriptions, 'text/html');
 
-                    self.processVisualFeatures(htmlDoc, game);
-                    self.processDescriptions(htmlDoc, game);
+                    this.processVisualFeatures(htmlDoc, game);
+                    this.processDescriptions(htmlDoc, game);
                 }
             }
 
-            self.selectLocationDescription(game);
-            self.processTextFeatures(game);
+            this.selectLocationDescription(game);
+            this.processTextFeatures(game);
         }
 
-        private processDescriptions(htmlDoc: Document, game: IGame) {
+        private processDescriptions = (htmlDoc: Document, game: IGame): void => {
             var descriptionNodes = htmlDoc.getElementsByTagName('description');
 
             if (!descriptionNodes || !descriptionNodes.length) {
@@ -314,9 +283,7 @@ namespace StoryScript {
             }      
         }
 
-        private processTextFeatures(game: IGame) {
-            var self = this;
-
+        private processTextFeatures = (game: IGame): void => {
             if (!game.currentLocation.text) {
                 return;
             }
@@ -327,7 +294,7 @@ namespace StoryScript {
 
             for (var i = 0; i < featureNodes.length; i++) {
                 const node = featureNodes[i];
-                const feature = self.getBasicFeatureData(game, node);
+                const feature = this.getBasicFeatureData(game, node);
 
                 // If the feature is not present in code, clean the node html as the feature is either
                 // not yet added (the feature tag is a placeholder for a feature added at runtime) or it
@@ -344,8 +311,7 @@ namespace StoryScript {
             game.currentLocation.text = htmlDoc.body.innerHTML;
         }
 
-        private processVisualFeatures(htmlDoc: Document, game: IGame) {
-            var self = this;
+        private processVisualFeatures = (htmlDoc: Document, game: IGame): void => {
             var visualFeatureNode = htmlDoc.getElementsByTagName('visual-features')[0];
 
             if (visualFeatureNode) {
@@ -356,7 +322,7 @@ namespace StoryScript {
 
                     for (var i = 0; i < areaNodes.length; i++) {
                         const node = areaNodes[i];
-                        const feature = self.getBasicFeatureData(game, node);
+                        const feature = this.getBasicFeatureData(game, node);
 
                         if (feature) {
                             feature.coords = feature.coords || node.attributes['coords'] && node.attributes['coords'].nodeValue;
@@ -370,7 +336,7 @@ namespace StoryScript {
             }
         }
 
-        private getBasicFeatureData(game: IGame, node: HTMLElement): IFeature {
+        private getBasicFeatureData = (game: IGame, node: HTMLElement): IFeature => {
             var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
 
             if (!nameAttribute) {
@@ -380,8 +346,7 @@ namespace StoryScript {
             return game.currentLocation.features.filter(f => compareString(f.id, nameAttribute))[0];
         }
 
-        private selectLocationDescription(game: IGame) {
-            var self = this;
+        private selectLocationDescription = (game: IGame): void => {
             var selector = null;
 
             if (!game.currentLocation.descriptions) {
@@ -395,7 +360,7 @@ namespace StoryScript {
                 selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
                 game.currentLocation.text = game.currentLocation.descriptions[selector];
             }
-            else if (self._rules.exploration && self._rules.exploration.descriptionSelector && (selector = self._rules.exploration.descriptionSelector(game))) {
+            else if (this._rules.exploration && this._rules.exploration.descriptionSelector && (selector = this._rules.exploration.descriptionSelector(game))) {
                 game.currentLocation.text = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
             }
             else {

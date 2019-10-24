@@ -1,33 +1,24 @@
 namespace StoryScript {
     export class ConversationController {
-        constructor(private _scope: ng.IScope, private _conversationService: IConversationService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = self._game;
-            self._scope.$on('init', () => self.init());
+        constructor(private _scope: ng.IScope, private _conversationService: IConversationService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.game = this._game;
+            this._scope.$on('init', () => this.init());
         }
 
         conversation: IConversation;
         game: IGame;
 
-        answer = (node: IConversationNode, reply: IConversationReply) => {
-            var self = this;
-            self._conversationService.answer(node, reply);
-        }
+        answer = (node: IConversationNode, reply: IConversationReply): void => this._conversationService.answer(node, reply);
 
-        getLines = (nodeOrReply: IConversationNode | IConversationReply) => {
-            var self = this;
-            return self._conversationService.getLines(nodeOrReply);
-        }
+        getLines = (nodeOrReply: IConversationNode | IConversationReply): string => this._conversationService.getLines(nodeOrReply);
 
-        private init(): void {
-            var self = this;
-            self._conversationService.initConversation();
-            var conversation = self._game.currentLocation 
-                                    && self._game.currentLocation.activePerson 
-                                    && self._game.currentLocation
-                                    && self._game.currentLocation.activePerson.conversation;
+        private init = (): void => {
+            this._conversationService.initConversation();
+            var conversation = this._game.currentLocation 
+                                    && this._game.currentLocation.activePerson
+                                    && this._game.currentLocation.activePerson.conversation;
 
-            self.conversation = conversation;
+            this.conversation = conversation;
         }
     }
 

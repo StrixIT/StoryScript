@@ -1,36 +1,23 @@
 
 namespace StoryScript {
     export class QuestController {
-        constructor(private _scope: ng.IScope, private _characterService: ICharacterService, private _sharedMethodService: ISharedMethodService, private _game: IGame, private _texts: IInterfaceTexts) {
-            var self = this;
-            self.game = self._game;
-            self.texts = self._texts;
-            self._sharedMethodService.useQuests = true;
+        constructor(private _characterService: ICharacterService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _texts: IInterfaceTexts) {
+            this.game = _game;
+            this.texts = _texts;
+            this._sharedMethodService.useQuests = true;
         }
 
         game: IGame;
         texts: IInterfaceTexts;
 
-        showQuests = (): boolean => {
-            var self = this;
-            return self._game.character && !isEmpty(self._game.character.quests);
-        }
+        showQuests = (): boolean => this._game.character && !isEmpty(this._game.character.quests);
 
-        showActiveQuests = (): boolean => {
-            var self = this;
-            return self._game.character.quests.filter(q => !q.completed).length > 0;
-        }
+        showActiveQuests = (): boolean => this._game.character.quests.filter(q => !q.completed).length > 0;
 
-        showCompletedQuests = (): boolean => {
-            var self = this;
-            return self._game.character.quests.filter(q => q.completed).length > 0;
-        }
+        showCompletedQuests = (): boolean => this._game.character.quests.filter(q => q.completed).length > 0;
 
-        questStatus = (quest: IQuest): string => {
-            var self = this;
-            return self._characterService.questStatus(quest);
-        }
+        questStatus = (quest: IQuest): string => this._characterService.questStatus(quest);
     }
 
-    QuestController.$inject = ['$scope', 'characterService', 'sharedMethodService', 'game', 'customTexts'];
+    QuestController.$inject = ['characterService', 'sharedMethodService', 'game', 'customTexts'];
 }

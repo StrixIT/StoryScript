@@ -234,3 +234,7 @@ table td {
 feature {
     cursor: pointer;
 }
+
+#level-up #create-character {
+    padding-left: 0px;
+}

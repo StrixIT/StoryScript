@@ -5,13 +5,12 @@ namespace StoryScript
         }
 
         link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
-            var self = this;
             var feature = <IFeature>(<any>scope).feature;
             var topElement = angular.element('#visual-features');
-            self.removeExistingElements(topElement, feature);
+            this.removeExistingElements(topElement, feature);
             var parentElement = null;
 
-            scope.$on('showCombinationText', function(event, data: ShowCombinationTextEvent) {
+            scope.$on('combinationFinished', (event, data: CombinationFinishedEvent) => {
                 if (parentElement && data.featuresToRemove && data.featuresToRemove.indexOf(feature.id) > -1) {
                     parentElement.remove();
                 }
@@ -20,17 +19,16 @@ namespace StoryScript
             if (feature.picture) {
                 parentElement = angular.element('<div name="' + feature.id + '"></div>');
                 topElement.append(parentElement);
-                var coords = self.getFeatureCoordinates(feature);
+                var coords = this.getFeatureCoordinates(feature);
                 var pictureElement = angular.element('<img class="feature-picture" name="' + feature.id + '" src="' + 'resources/' + feature.picture + '" style="top:' + coords.top + 'px' +'; left: '+ coords.left + 'px' + '" />');
                 parentElement.append(pictureElement);
-                pictureElement.on('click', function() { element.click(); });
+                pictureElement.on('click', () => { element.click(); });
             }
         };
 
-        private removeExistingElements(topElement, feature) {
-            var self = this;
+        private removeExistingElements = (topElement, feature) => {
             var existingElements = topElement.children('div[name]');
-            var currentFeatureIds = self._game.currentLocation.features.filter(f => f.id != feature.id).map(f => f.id);
+            var currentFeatureIds = this._game.currentLocation.features.filter(f => f.id != feature.id).map(f => f.id);
 
             for (var i = 0; i < existingElements.length; i++) {
                 var element = angular.element( existingElements[i]);
