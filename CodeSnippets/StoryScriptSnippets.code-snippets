@@ -265,6 +265,87 @@
 		"description": "Add a new StoryScript function"
 	},
 
+	"CreationAttributes": {
+		"scope": "javascript,typescript",
+		"prefix": "ssAttributes",
+		"body": [
+			"{",
+			"\tattributes: [",
+			"\t\t$1",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript attributes step for character creation"
+	},
+
+	"CreationAttribute": {
+		"scope": "javascript,typescript",
+		"prefix": "ssAttribute",
+		"body": [
+			"{",
+			"\tquestion: '$1',",
+			"\tentries: [",
+			"\t\t$2",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript character creation attribute list"
+	},
+	
+	"CreationAttributeEntry": {
+		"scope": "javascript,typescript",
+		"prefix": "ssAttributeEntry",
+		"body": [
+			"{",
+			"\tattribute: '$1',",
+			"\tmin: $2,",
+			"\tmax: $3,",
+			"\tvalue: '$4'",
+			"},",
+		],
+		"description": "Add a new StoryScript character creation attribute entry"
+	},
+
+	"CreationQuestions": {
+		"scope": "javascript,typescript",
+		"prefix": "ssQuestions",
+		"body": [
+			"{",
+			"\tquestions: [",
+			"\t\t$1",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript questions step for character creation"
+	},
+
+	"CreationQuestion": {
+		"scope": "javascript,typescript",
+		"prefix": "ssQuestion",
+		"body": [
+			"{",
+			"\tquestion: '$1',",
+			"\tentries: [",
+			"\t\t$2",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript character creation question"
+	},
+
+	"CreationQuestionEntry": {
+		"scope": "javascript,typescript",
+		"prefix": "ssQuestionEntry",
+		"body": [
+			"{",
+			"\ttext: '$1',",
+			"\tvalue: '$2',",
+			"\tbonus: $3",
+			"},",
+		],
+		"description": "Add a new StoryScript character creation question entry"
+	},
+
 	"Description": {
 		"scope": "html",
 		"prefix": "ssDescription",
