@@ -143,6 +143,27 @@
 		"description": "Add a new item"
 	},
 
+	"Keys": {
+		"scope": "javascript,typescript",
+		"prefix": "ssKey",
+		"body": [
+			"namespace ${TM_DIRECTORY/((^[\\\\\\\\:\\w]*Games\\\\)|(\\\\[\\w]*$))//g}.Items {",
+			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
+			"\t\treturn Key({",
+			"\t\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
+			"\t\t\tkeepAfterUse: $1true,",
+			"\t\t\tequipmentType: $2StoryScript.EquipmentType.Miscellaneous,",
+			"\t\t\topen: {",
+			"\t\t\t\ttext: '$3',",
+			"\t\t\t\texecute: $4",
+			"\t\t\t},",
+			"\t\t});",
+			"\t}",
+			"}"
+		],
+		"description": "Add a new item"
+	},
+
 	"Destinations": {
 		"scope": "javascript,typescript",
 		"prefix": "ssDestination",
@@ -241,15 +262,23 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssQuest",
 		"body": [
-			"{",
-				"\tname: '$1',",
-				"\tstatus: (game: IGame, quest: IQuest, done) => {",
-				"\t\treturn '$2';",
-				"\t},",
-				"\tcheckDone: (game: IGame, quest:IQuest) => {",
-				"\t\treturn false;",
-				"\t},",
-			"},",
+			"namespace ${TM_DIRECTORY/((^[\\\\\\\\:\\w]*Games\\\\)|(\\\\[\\w]*$))//g}.Quests {",
+			"\texport function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
+			"\t\treturn Quest({",
+			"\t\t\tname: '$1',",
+			"\t\t\tstatus: (game: IGame, quest: IQuest, done: boolean) => {",
+			"\t\t\t\treturn '$2';",
+			"\t\t\t},",
+			"\t\t\tstart: (game: IGame, quest: IQuest, person: IPerson) => {",
+			"\t\t\t},",
+			"\t\t\tcheckDone: (game: IGame, quest:IQuest): boolean => {",
+			"\t\t\t\treturn $3false;",
+			"\t\t\t},",
+			"\t\t\tcomplete: (game: IGame, quest: IQuest, person: IPerson) => {",
+			"\t\t\t},",
+			"\t\t});",
+			"\t}",
+			"}"
 		],
 		"description": "Add a new quest"
 	},
@@ -263,6 +292,116 @@
 			"},"
 		],
 		"description": "Add a new StoryScript function"
+	},
+
+	"CreationAttributes": {
+		"scope": "javascript,typescript",
+		"prefix": "ssAttributes",
+		"body": [
+			"{",
+			"\tattributes: [",
+			"\t\t$1",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript attributes step for character creation"
+	},
+
+	"CreationAttribute": {
+		"scope": "javascript,typescript",
+		"prefix": "ssAttribute",
+		"body": [
+			"{",
+			"\tquestion: '$1',",
+			"\tentries: [",
+			"\t\t$2",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript character creation attribute list"
+	},
+	
+	"CreationAttributeEntry": {
+		"scope": "javascript,typescript",
+		"prefix": "ssAttributeEntry",
+		"body": [
+			"{",
+			"\tattribute: '$1',",
+			"\tmin: $2,",
+			"\tmax: $3,",
+			"\tvalue: '$4'",
+			"},",
+		],
+		"description": "Add a new StoryScript character creation attribute entry"
+	},
+
+	"CreationQuestions": {
+		"scope": "javascript,typescript",
+		"prefix": "ssQuestions",
+		"body": [
+			"{",
+			"\tquestions: [",
+			"\t\t$1",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript questions step for character creation"
+	},
+
+	"CreationQuestion": {
+		"scope": "javascript,typescript",
+		"prefix": "ssQuestion",
+		"body": [
+			"{",
+			"\tquestion: '$1',",
+			"\tentries: [",
+			"\t\t$2",
+			"\t]",
+			"},"
+		],
+		"description": "Add a new StoryScript character creation question"
+	},
+
+	"CreationQuestionEntry": {
+		"scope": "javascript,typescript",
+		"prefix": "ssQuestionEntry",
+		"body": [
+			"{",
+			"\ttext: '$1',",
+			"\tvalue: '$2',",
+			"\tbonus: $3",
+			"},",
+		],
+		"description": "Add a new StoryScript character creation question entry"
+	},
+
+	"Trade": {
+		"scope": "javascript,typescript",
+		"prefix": "ssTrade",
+		"body": [
+			"trade: {",
+			"\ttitle: '$1',",
+			"\tdescription: '$2',",
+			"\townItemsOnly: $3true,",
+			"\tbuy: {",
+			"\t\tdescription: '$4',",
+			"\t\temptyText: '$5',",
+			"\t\titemSelector: (game: IGame, item: IItem): boolean => {",
+			"\t\t\treturn $6true;",
+			"\t\t},",
+			"\t\tmaxItems: $7,",
+			"\t},",
+			"\tsell: {",
+			"\t\tdescription: '$8',",
+			"\t\temptyText: '$9',",
+			"\t\titemSelector: (game: IGame, item: IItem): boolean => {",
+			"\t\t\treturn $10true;",
+			"\t\t},",
+			"\t\tmaxItems: $11,",
+			"\t}",
+			"},"
+		],
+		"description": "Add a new trade"
 	},
 
 	"Description": {

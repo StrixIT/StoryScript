@@ -20,19 +20,18 @@ namespace StoryScript
         }
 
         public $get(gameService: IGameService, tradeService: ITradeService, game: IGame, texts: IInterfaceTexts): ISharedMethodService {
-            var self = this;
-            self._gameService = gameService;
-            self._tradeService = tradeService;
-            self._game = game;
+            this._gameService = gameService;
+            this._tradeService = tradeService;
+            this._game = game;
 
             return {
-                enemiesPresent: self.enemiesPresent,
-                trade: self.trade,
-                getButtonClass: self.getButtonClass,
-                executeAction: self.executeAction,
-                startCombat: self.startCombat,
-                showDescription: self.showDescription,
-                showEquipment: self.showEquipment
+                enemiesPresent: this.enemiesPresent,
+                trade: this.trade,
+                getButtonClass: this.getButtonClass,
+                executeAction: this.executeAction,
+                startCombat: this.startCombat,
+                showDescription: this.showDescription,
+                showEquipment: this.showEquipment
             };
         }
 
