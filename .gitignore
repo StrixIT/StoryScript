@@ -9,6 +9,7 @@
 /pub/*
 /test/*
 /tests/coverage/*
+/tests/compiled/*
 /src/types/*
 /src/Games/**/resources/*
 /src/Games/QuestForTheKing/**/*.html
