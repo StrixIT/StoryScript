@@ -324,13 +324,14 @@ function gameDescriptionsForTest() {
 function compileGameDescriptions(test) {
     var nameSpace = getNameSpace();  
     var gameDir = 'src/games/' + nameSpace;
+    var testDir = paths.testroot + (nameSpace === '_TestGame' ? 'engine' : 'games/' + gameDir) + '/';
 
     var descriptionPipe = gulp
         .src([gameDir + '/**/*.html', '!' + gameDir + '/ui/**' ])
         .pipe(minifyHtml({ empty: true }))
         .pipe(gameDescriptionBundler(nameSpace));
 
-    return test ? descriptionPipe.pipe(gulp.dest(paths.testroot + 'compiled/')) : descriptionPipe.pipe(gulp.dest(paths.webroot + 'js/'));
+    return test ? descriptionPipe.pipe(gulp.dest(testDir + 'compiled/')) : descriptionPipe.pipe(gulp.dest(paths.webroot + 'js/'));
 }
 
 function addVersion(path, version) {

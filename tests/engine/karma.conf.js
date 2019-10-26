@@ -16,8 +16,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'test-main.js',
-      '../src/Engine/**/*.ts',
-      '../src/Games/_TestGame/**/*.ts',
+      '../../src/Engine/**/*.ts',
+      '../../src/Games/_TestGame/**/*.ts',
       'compiled/game-descriptions.js',
       { pattern: '**/*Spec.js', included: false }
     ],
@@ -32,8 +32,8 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       //'./test/**/*.js': 'coverage',
-      '../src/Engine/**/*.ts': "karma-typescript",
-      '../src/Games/_TestGame/**/*.ts': "karma-typescript"
+      '../../src/Engine/**/*.ts': "karma-typescript",
+      '../../src/Games/_TestGame/**/*.ts': "karma-typescript"
     },
 
 
@@ -49,7 +49,7 @@ module.exports = function(config) {
 
     coverageReporter: {
       type : 'html',
-      dir : './tests/coverage/'
+      dir : './coverage/'
     },
 
     // web server port
