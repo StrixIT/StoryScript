@@ -3,8 +3,7 @@
     "compilerOptions": {
     },
     "include": [
-        "../../../src/Engine/**/*.ts",
-        "../../../src/Games/_TestGame/**/*.ts",
-        "./specs/**/*.ts"
+        "../../../src/types/*.ts",
+        "../../../src/Games/_TestGame/**/*.ts"
     ]
 }

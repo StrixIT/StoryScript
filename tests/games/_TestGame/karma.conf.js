@@ -16,11 +16,10 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'test-main.js',
-      '../../../src/Engine/**/*.ts',
+      '../compiled/storyscript.js',
       '../../../src/Games/_TestGame/**/*.ts',
       'compiled/game-descriptions.js',
-      { pattern: '**/*Spec.js', included: false },
-      { pattern: '**/*Spec.ts', included: false }
+      { pattern: '**/*Spec.js', included: false }
     ],
 
 
@@ -32,10 +31,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      //'./test/**/*.js': 'coverage',
-      '../../../src/Engine/**/*.ts': "karma-typescript",
-      '../../../src/Games/_TestGame/**/*.ts': "karma-typescript",
-      './specs/**/*.ts': "karma-typescript"
+      '../../../src/Games/_TestGame/**/*.ts': "karma-typescript"
     },
 
 

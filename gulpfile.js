@@ -158,6 +158,7 @@ function compileStoryScript() {
 
     return merge(
         tsResult.js.pipe(concat('storyscript.' + version + '.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
+        tsResult.js.pipe(concat('storyscript.js')).pipe(gulp.dest(paths.testroot + 'games/compiled/')),
         tsResult.dts.pipe(concat('storyscript.d.ts')).pipe(gulp.dest(paths.typeroot))
     );
 }
