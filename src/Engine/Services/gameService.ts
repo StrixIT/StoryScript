@@ -1,12 +1,4 @@
 ﻿namespace StoryScript {
-    export class CombinationFinishedEvent extends Event {
-        constructor() {
-            super('combinationFinished');
-        }
-
-        featuresToRemove: string[];
-    }
-
     export interface IGameService {
         init(): void;
         startNewGame(characterData: any): void;
@@ -31,7 +23,7 @@ namespace StoryScript {
         private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
         private _musicStopped: boolean = false;
 
-        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
         }
 
         init = (restart?: boolean, skipIntro?: boolean): void => {
@@ -422,28 +414,29 @@ namespace StoryScript {
 
         private setupCombinations = (): void => {
             this._game.combinations = {
-                combinationResultText: null,
+                combinationResult: {
+                    text: null,
+                    featuresToRemove: []
+                },
                 activeCombination: null,
                 tryCombine: (target: ICombinable): boolean => {
                     var activeCombo = this._game.combinations.activeCombination;
                     var result = this._combinationService.tryCombination(target);
 
                     if (result.text) {
-                        var evt = new CombinationFinishedEvent();
+                        let featuresToRemove: string[] = [];
 
                         if (result.success) {
-                            evt.featuresToRemove = [];
-
                             if (result.removeTarget) {
-                                evt.featuresToRemove.push(target.id);
+                                featuresToRemove.push(target.id);
                             }
 
                             if (result.removeTool) {
-                                evt.featuresToRemove.push(activeCombo.selectedTool.id);
+                                featuresToRemove.push(activeCombo.selectedTool.id);
                             }
                         }
 
-                        this._events.dispatchEvent(evt);
+                        this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
                         return true;
                     }
 

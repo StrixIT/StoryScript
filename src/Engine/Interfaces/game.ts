@@ -86,9 +86,20 @@
             activeCombination: IActiveCombination,
      
             /**
-             * The result text displayed to the player for a combination.
+             * The result from the last attempted combination.
              */
-            combinationResultText: string;
+            combinationResult:
+            {
+                /**
+                 * The combination result text.
+                 */
+                text: string;
+
+                /**
+                 * The features to remove.
+                 */
+                featuresToRemove: string[]
+            }
 
             /**
              * Get the class name to use for the current combine state.

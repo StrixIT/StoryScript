@@ -63,7 +63,8 @@ namespace StoryScript {
         loadGame = (): void => {
             this._gameService.loadGame(this.selectedGame);
             this.closeModal();
-            this._game.combinations.combinationResultText = null;
+            this._game.combinations.combinationResult.text = null;
+            this._game.combinations.combinationResult.featuresToRemove.length = 0; 
         }
     }
 

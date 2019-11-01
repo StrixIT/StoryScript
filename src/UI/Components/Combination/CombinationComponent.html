@@ -5,7 +5,7 @@
             <button type="button" class="btn" ng-class="$ctrl.getCombineClass(c)" ng-repeat="c in $ctrl.combineActions" ng-click="$ctrl.selectCombinationAction(c)">{{c.text}}</button>
         </ul>
         <div class="col-9">
-            <p class="combination-result-text" ng-show="$ctrl.game.combinations.combinationResultText">{{$ctrl.game.combinations.combinationResultText}}</p>
+            <p class="combination-result-text" ng-show="$ctrl.game.combinations.combinationResult.text">{{$ctrl.game.combinations.combinationResult.text}}</p>
         </div>
     </div>
 </div>

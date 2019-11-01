@@ -1,7 +1,6 @@
 namespace StoryScript {
     export class ObjectFactory {
         static _isInitialized = false;
-        private _eventTarget = new EventTarget(null);
 
         private _game: IGame = <IGame>{};
         private _definitions: IDefinitions = <IDefinitions>{};
@@ -28,8 +27,6 @@ namespace StoryScript {
             this._texts = texts;
             this._rules = rules;
         }
-
-        GetEventListener = (): EventTarget => this._eventTarget;
 
         GetNameSpace = (): string => this._nameSpace;
 
@@ -85,7 +82,7 @@ namespace StoryScript {
                 this._locationService = new LocationService(this._dataService, this._conversationService, this._rules, this._game, this._definitions);
                 this._combinationService = new CombinationService(this._dataService, this._locationService, this._game, this._rules, this._texts);
                 this._characterService = new CharacterService(this._game, this._rules);
-                this._gameService = new GameService(this._dataService, this._locationService, this._characterService, this._combinationService, this._eventTarget, this._rules, this._helperService, this._game, this._texts);
+                this._gameService = new GameService(this._dataService, this._locationService, this._characterService, this._combinationService, this._rules, this._helperService, this._game, this._texts);
                 ObjectFactory._isInitialized = true;
             }
         }

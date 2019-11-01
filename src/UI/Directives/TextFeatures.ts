@@ -10,7 +10,7 @@ namespace StoryScript
         }
 
         link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
-            scope.$on('combinationFinished', (event, data: CombinationFinishedEvent) => {
+            scope.$watchCollection('game.combinationResult.featuresToRemove', () => {
                 // Show the text of added features.
                 element.find('feature')
                     .filter((i, e) => e.innerHTML.trim() === '')
@@ -29,7 +29,7 @@ namespace StoryScript
                     .map((i, e) => {
                         var featureElement = angular.element(e);
 
-                        if (data.featuresToRemove && data.featuresToRemove.indexOf(featureElement.attr('name')) > -1)
+                        if (this._game.combinations.combinationResult.featuresToRemove.indexOf(featureElement.attr('name')) > -1)
                         {
                             featureElement[0].innerHTML = '';
                         }
