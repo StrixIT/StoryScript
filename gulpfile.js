@@ -21,7 +21,7 @@
 
 var tsStoryScriptProject = ts.createProject("./src/Engine/tsconfig.json");
 var tsGameProject = ts.createProject("./src/Games/tsconfig.json");
-var tsUIProject = ts.createProject("./src/UI/tsconfig.json");
+var tsUIProject = ts.createProject("./src/UI/AngularJS/tsconfig.json");
 
 var paths = {
     packages: "./node_modules/",
@@ -85,11 +85,11 @@ function start(callBack) {
         return compileTs('Game', e.path, compileGame).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    gulp.watch(["src/UI/**/*.ts"], function watchUICode(e) {
+    gulp.watch(["src/UI/AngularJS/**/*.ts"], function watchUICode(e) {
         return compileTs('UI', e.path, compileUI, nameSpace).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
-    gulp.watch(['src/UI/**/*.html', 'src/Games/' + nameSpace + '/ui/**/*.html'], function watchUIHtml() {
+    gulp.watch(['src/UI/AngularJS/**/*.html', 'src/Games/' + nameSpace + '/ui/**/*.html'], function watchUIHtml() {
         return compileUITemplates(nameSpace).pipe(browserSync.stream());
     }).on('change', logFileChange);
 
@@ -209,7 +209,7 @@ function buildTemplateAndCopyLibraries() {
     var bootstrap = gulp.src([bootstrapPath + 'dist/js/bootstrap.min.js']).pipe((rename(function (path) { addVersion(path, bootstrapVersion); }))).pipe(gulp.dest(paths.webroot + 'js/lib'));
     var bootstrapCss = gulp.src([bootstrapPath + 'dist/css/bootstrap.min.css']).pipe((rename(function (path) { addVersion(path, bootstrapVersion); }))).pipe(gulp.dest(paths.webroot + 'css/lib'));
 
-    var template = gulp.src([paths.sourceroot + 'UI/index.html'])
+    var template = gulp.src([paths.sourceroot + 'UI/AngularJS/index.html'])
         .pipe(flatten())
         .pipe(replace('jquery.', 'jquery.' + jqueryversion + '.'))
         .pipe(replace('angular.', 'angular.' + angularVersion + '.'))
@@ -231,7 +231,7 @@ function copyResources(nameSpace) {
 function copyCss(nameSpace, path) {
     var version = getStoryScriptVersion();
 
-    return gulp.src([paths.sourceroot + 'UI/styles/*.css', paths.sourceroot + 'Games/' + nameSpace + '/ui/styles/*.css'])
+    return gulp.src([paths.sourceroot + 'UI/AngularJS/styles/*.css', paths.sourceroot + 'Games/' + nameSpace + '/ui/styles/*.css'])
         .pipe(flatten())
         .pipe(cssmin())
         .pipe(rename(function (path) {
@@ -271,7 +271,7 @@ function compileUITemplates(nameSpace) {
     var includedTemplates = [];
 
     return gulp
-        .src(['src/games/' + nameSpace + '/ui/**/*.html', 'src/ui/**/*.html'])
+        .src(['src/games/' + nameSpace + '/ui/**/*.html', 'src/UI/AngularJS/**/*.html'])
         // Remove duplicate components so game specific components override the default ones.
         .pipe(gulpIgnore.exclude(isDuplicate))
         .pipe(minifyHtml({ empty: true }))
