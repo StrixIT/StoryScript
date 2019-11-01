@@ -28,8 +28,7 @@ namespace StoryScript {
         }
 
         setActiveCombination = (combination: ICombinationAction): void => {
-            this._game.combinations.combinationResult.text = null;
-            this._game.combinations.combinationResult.featuresToRemove.length = 0;;
+            this._game.combinations.combinationResult.reset();
 
             if (!combination) {
                 return;
@@ -99,6 +98,7 @@ namespace StoryScript {
             }
 
             this._game.combinations.combinationResult.text = result.text;
+            this._game.combinations.combinationResult.done = true;
 
             return result;
         }

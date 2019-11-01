@@ -6,8 +6,7 @@ namespace StoryScript {
             this._scope.game = _game;
 
             this._scope.$on('restart', (ev) => {
-                this._game.combinations.combinationResult.text = null;
-                this._game.combinations.combinationResult.featuresToRemove.length = 0; 
+                this._game.combinations.combinationResult.reset();
                 this.broadcast(ev, null, () => this.init(true));
             });
 

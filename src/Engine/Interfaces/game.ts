@@ -91,6 +91,11 @@
             combinationResult:
             {
                 /**
+                 * Indicates whether the combination is done.
+                 */
+                done: boolean;
+
+                /**
                  * The combination result text.
                  */
                 text: string;
@@ -98,7 +103,12 @@
                 /**
                  * The features to remove.
                  */
-                featuresToRemove: string[]
+                featuresToRemove: string[];
+
+                /**
+                 * Resets the combination result.
+                 */
+                reset(): void;
             }
 
             /**

@@ -10,8 +10,8 @@ namespace StoryScript
             this.removeExistingElements(topElement, feature);
             var parentElement = null;
 
-            scope.$watchCollection('game.combinationResult.featuresToRemove', () => {
-                if (parentElement && this._game.combinations.combinationResult.featuresToRemove.indexOf(feature.id) > -1) {
+            scope.$watch('game.combinations.combinationResult.done', (newValue) => {
+                if (newValue && parentElement && this._game.combinations.combinationResult.featuresToRemove.indexOf(feature.id) > -1) {
                     parentElement.remove();
                 }
             });

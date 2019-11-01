@@ -415,8 +415,15 @@ namespace StoryScript {
         private setupCombinations = (): void => {
             this._game.combinations = {
                 combinationResult: {
+                    done: false,
                     text: null,
-                    featuresToRemove: []
+                    featuresToRemove: [],
+                    reset: (): void => {
+                        var result = this._game.combinations.combinationResult;
+                        result.done = false;
+                        result.text = null;
+                        result.featuresToRemove.length = 0;
+                    }
                 },
                 activeCombination: null,
                 tryCombine: (target: ICombinable): boolean => {
