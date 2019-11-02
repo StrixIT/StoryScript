@@ -48,6 +48,6 @@ describe("LocationService", function() {
             load: function(key) { return data; }
         }
 
-        return new StoryScript.LocationService(dataService, {}, {}, game, definitions);
+        return new StoryScript.LocationService(dataService, {}, game, definitions);
     }
 });
