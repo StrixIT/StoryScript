@@ -576,6 +576,7 @@ describe("CharacterService", function() {
 
             var sheet = levelUpSheet;
             levelUpSheet.steps[0].questions[0].selectedEntry = levelUpSheet.steps[0].questions[0].entries[0];
+            game.createCharacterSheet = sheet;
 
             var service = new StoryScript.CharacterService(game, rules);
             var result = service.levelUp(game, sheet);
