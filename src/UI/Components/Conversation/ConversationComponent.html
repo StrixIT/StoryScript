@@ -1,19 +1,19 @@
 <div id="conversation" ng-if="$ctrl.game.playState == 'Conversation'">
-    <div id="conversation-options" ng-show="$ctrl.conversation.activeNode">
-        <div ng-bind-html="$ctrl.getLines($ctrl.conversation.activeNode)"></div>
-        <div ng-repeat="reply in $ctrl.conversation.activeNode.replies.options">
+    <div id="conversation-options" ng-show="$ctrl.game.person.conversation.activeNode">
+        <div ng-bind-html="$ctrl.getLines($ctrl.game.person.conversation.activeNode)"></div>
+        <div ng-repeat="reply in $ctrl.game.person.conversation.activeNode.replies.options">
             <div ng-hide="!reply.available && !reply.showWhenUnavailable">
-                <input type="radio" ng-disabled="!reply.available" ng-click="$ctrl.answer($ctrl.conversation.activeNode, reply)" /><span ng-bind-html="$ctrl.getLines(reply)"></span>
+                <input type="radio" ng-disabled="!reply.available" ng-click="$ctrl.answer($ctrl.game.person.conversation.activeNode, reply)" /><span ng-bind-html="$ctrl.getLines(reply)"></span>
             </div>
         </div>
     </div>
-    <div ng-hide="$ctrl.conversation.activeNode">
+    <div ng-hide="$ctrl.game.person.conversation.activeNode">
         Your conversation has ended.
     </div>
     <hr />
     <strong>Conversation history</strong>
     <ul class="list-unstyled" id="conversation-history">
-        <li ng-repeat="entry in $ctrl.conversation.conversationLog track by $index">
+        <li ng-repeat="entry in $ctrl.game.person.conversation.conversationLog track by $index">
             <div class="conversation-lines" ng-bind-html="entry.lines"></div>
             <div class="conversation-option" ng-bind-html="entry.reply"></div>
         </li>

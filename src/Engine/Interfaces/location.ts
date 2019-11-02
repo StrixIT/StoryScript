@@ -113,16 +113,6 @@
         descriptions?: { [key: string] : string; };
 
         /**
-         * The person the player is currently talking to.
-         */
-        activePerson?: IPerson;
-
-         /**
-         * The trade object or person the player is currently trading with.
-         */
-        activeTrade?: ITrade;
-
-        /**
          * Messages logged to this location.
          */
         log?: string[];

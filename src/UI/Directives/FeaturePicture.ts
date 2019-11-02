@@ -8,13 +8,8 @@ namespace StoryScript
             var feature = <IFeature>(<any>scope).feature;
             var topElement = angular.element('#visual-features');
             this.removeExistingElements(topElement, feature);
+            var game = this._game;
             var parentElement = null;
-
-            scope.$on('combinationFinished', (event, data: CombinationFinishedEvent) => {
-                if (parentElement && data.featuresToRemove && data.featuresToRemove.indexOf(feature.id) > -1) {
-                    parentElement.remove();
-                }
-            });
 
             if (feature.picture) {
                 parentElement = angular.element('<div name="' + feature.id + '"></div>');
@@ -22,7 +17,13 @@ namespace StoryScript
                 var coords = this.getFeatureCoordinates(feature);
                 var pictureElement = angular.element('<img class="feature-picture" name="' + feature.id + '" src="' + 'resources/' + feature.picture + '" style="top:' + coords.top + 'px' +'; left: '+ coords.left + 'px' + '" />');
                 parentElement.append(pictureElement);
-                pictureElement.on('click', () => { element.click(); });
+                pictureElement.on('click', () => { 
+                    element.click();
+
+                    if (!game.currentLocation.features.some(f => f.id === feature.id)) {
+                        parentElement.remove();
+                    }
+                });
             }
         };
 

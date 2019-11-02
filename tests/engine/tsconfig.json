@@ -1,0 +1,10 @@
+{
+    "extends": "../../src/tsconfig",
+    "compilerOptions": {
+    },
+    "include": [
+        "../../src/Engine/**/*.ts",
+        "../../src/Games/_TestGame/**/*.ts",
+        "./specs/**/*.ts"
+    ]
+}

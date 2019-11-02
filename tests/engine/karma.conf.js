@@ -10,16 +10,16 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine', 'requirejs', 'karma-typescript'],
 
 
     // list of files / patterns to load in the browser
     files: [
       'test-main.js',
-      './test/storyscript.js',
-      './test/game-descriptions.js',
-      './test/game.js',
-      { pattern: 'tests/**/*Spec.js', included: false }
+      '../../src/Engine/**/*.ts',
+      '../../src/Games/_TestGame/**/*.ts',
+      'compiled/game-descriptions.js',
+      { pattern: '**/*Spec.js', included: false }
     ],
 
 
@@ -31,18 +31,24 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './test/**/*.js': 'coverage'
+      '../../src/Engine/**/*.ts': "karma-typescript",
+      '../../src/Games/_TestGame/**/*.ts': "karma-typescript"
     },
 
+
+    karmaTypescriptConfig: {
+
+      tsconfig: 'tsconfig.json',
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'karma-typescript'],
 
     coverageReporter: {
       type : 'html',
-      dir : './tests/coverage/'
+      dir : './coverage/'
     },
 
     // web server port

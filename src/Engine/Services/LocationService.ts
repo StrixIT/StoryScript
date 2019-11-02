@@ -11,7 +11,7 @@ namespace StoryScript {
     export class LocationService implements ILocationService {
         private pristineLocations: ICollection<ICompiledLocation>;
 
-        constructor(private _dataService: IDataService, private _conversationService: IConversationService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
+        constructor(private _dataService: IDataService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
         }
 
         init = (game: IGame, buildWorld?: boolean): void => {
@@ -48,7 +48,6 @@ namespace StoryScript {
             this.loadLocationDescriptions(game);
             this.initTrade(game);
             this.playEnterEvents(game);
-            this._conversationService.loadConversations();
 
             // Add the 'back' button for testing
             if (this._rules.setup.autoBackButton && game.previousLocation && game.currentLocation.id != 'start') {

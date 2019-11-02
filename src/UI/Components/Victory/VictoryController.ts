@@ -1,6 +1,6 @@
 namespace StoryScript {
     export class VictoryController implements ng.IComponentController {
-        constructor(private _scope: ng.IScope, _game: IGame, _texts: IInterfaceTexts) {
+        constructor(private _gameService: IGameService, _game: IGame, _texts: IInterfaceTexts) {
             this.game = _game;
             this.texts = _texts;
         }
@@ -8,8 +8,8 @@ namespace StoryScript {
         game: IGame;
         texts: IInterfaceTexts;
 
-        restart = (): ng.IAngularEvent => this._scope.$emit('restart');
+        restart = (): void => this._gameService.restart();
     }
 
-    VictoryController.$inject = ['$scope', 'game', 'customTexts'];
+    VictoryController.$inject = ['gameService', 'game', 'customTexts'];
 }

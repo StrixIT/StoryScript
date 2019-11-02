@@ -28,7 +28,7 @@ var paths = {
     webroot: "./dist/",
     sourceroot: "./src/",
     typeroot: "./src/types/",
-    testroot: "./test",
+    testroot: "./tests/",
     publishroot: "./pub/",
 };
 
@@ -158,8 +158,8 @@ function compileStoryScript() {
 
     return merge(
         tsResult.js.pipe(concat('storyscript.' + version + '.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
-        tsResult.dts.pipe(concat('storyscript.d.ts')).pipe(gulp.dest(paths.typeroot)),
-        tsResult.js.pipe(concat('storyscript.js')).pipe(gulp.dest(paths.testroot))
+        tsResult.js.pipe(concat('storyscript.js')).pipe(gulp.dest(paths.testroot + 'games/compiled/')),
+        tsResult.dts.pipe(concat('storyscript.d.ts')).pipe(gulp.dest(paths.typeroot))
     );
 }
 
@@ -310,8 +310,7 @@ function compileGame() {
         .pipe(tsGameProject());
 
     return merge(
-        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
-        tsResult.js.pipe(concat('game.js')).pipe(gulp.dest(paths.testroot))
+        tsResult.js.pipe(concat('game.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js'))
     );
 }
 
@@ -326,13 +325,14 @@ function gameDescriptionsForTest() {
 function compileGameDescriptions(test) {
     var nameSpace = getNameSpace();  
     var gameDir = 'src/games/' + nameSpace;
+    var testDir = paths.testroot + (nameSpace === '_TestGame' ? 'engine' : 'games/' + gameDir) + '/';
 
     var descriptionPipe = gulp
         .src([gameDir + '/**/*.html', '!' + gameDir + '/ui/**' ])
         .pipe(minifyHtml({ empty: true }))
         .pipe(gameDescriptionBundler(nameSpace));
 
-    return test ? descriptionPipe.pipe(gulp.dest(paths.testroot)) : descriptionPipe.pipe(gulp.dest(paths.webroot + 'js/'));
+    return test ? descriptionPipe.pipe(gulp.dest(testDir + 'compiled/')) : descriptionPipe.pipe(gulp.dest(paths.webroot + 'js/'));
 }
 
 function addVersion(path, version) {

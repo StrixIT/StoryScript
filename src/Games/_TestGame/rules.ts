@@ -130,7 +130,6 @@
 
             combat: {
                 fight: (game: IGame, enemy: IEnemy): void => {
-                    var self = this;
                     var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
                     game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                     enemy.hitpoints -= damage;

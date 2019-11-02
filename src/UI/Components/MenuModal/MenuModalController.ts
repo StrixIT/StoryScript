@@ -38,7 +38,7 @@ namespace StoryScript {
 
         restartConfirmed = (): void => {
             this.closeModal();
-            this._scope.$emit('restart');
+            this._gameService.restart();
         }
 
         save = (): void => {
@@ -63,7 +63,6 @@ namespace StoryScript {
         loadGame = (): void => {
             this._gameService.loadGame(this.selectedGame);
             this.closeModal();
-            this._game.combinations.combinationResultText = null;
         }
     }
 
