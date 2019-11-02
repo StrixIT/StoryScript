@@ -4,11 +4,11 @@ namespace StoryScript
         constructor(private _game: IGame) {
         }
 
-        link = (scope: StoryScriptScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
+        link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
             var feature = <IFeature>(<any>scope).feature;
             var topElement = angular.element('#visual-features');
             this.removeExistingElements(topElement, feature);
-            scope.game = this._game;
+            var game = this._game;
             var parentElement = null;
 
             if (feature.picture) {
@@ -20,7 +20,7 @@ namespace StoryScript
                 pictureElement.on('click', () => { 
                     element.click();
 
-                    if (!scope.game.currentLocation.features.some(f => f.id === feature.id)) {
+                    if (!game.currentLocation.features.some(f => f.id === feature.id)) {
                         parentElement.remove();
                     }
                 });

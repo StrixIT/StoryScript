@@ -10,6 +10,7 @@
         loadGame(name: string): void;
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         getDescription(type: string, entity: any, key: string): string;
+        setCurrentDescription(type: string, entity: any, key: string): void;
         initCombat(): void;
         fight(enemy: IEnemy, retaliate?: boolean): void;
         useItem(item: IItem): void;
@@ -192,6 +193,18 @@ namespace StoryScript {
             }
 
             return description;
+        }
+
+        setCurrentDescription = (type: string, item: any, title: string): void => {
+            if (item.description === undefined || item.description === null) {
+                item.description = this.getDescription(type, item, 'description');
+            }
+
+            this._game.currentDescription = {
+                title: title,
+                type: type, 
+                item: item
+            };
         }
 
         initCombat = (): void => {

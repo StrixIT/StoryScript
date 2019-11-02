@@ -19,7 +19,7 @@ namespace StoryScript
         constructor(private _gameService: IGameService, private _tradeService: ITradeService, private _game: IGame) {
         }
 
-        public $get(gameService: IGameService, tradeService: ITradeService, game: IGame, texts: IInterfaceTexts): ISharedMethodService {
+        public $get(gameService: IGameService, tradeService: ITradeService, game: IGame): ISharedMethodService {
             this._gameService = gameService;
             this._tradeService = tradeService;
             this._game = game;
@@ -107,19 +107,7 @@ namespace StoryScript
             this._game.playState = PlayState.Combat;
         }
 
-        showDescription = (type: string, item: any, title: string): void => {
-            if (item.description === undefined || item.description === null) {
-                item.description = this._gameService.getDescription(type, item, 'description');
-            }
-
-            if (item.description) {
-                this._game.currentDescription = {
-                    title: title,
-                    type: type, 
-                    item: item
-                };
-            }
-        }
+        showDescription = (type: string, item: any, title: string): void => this._gameService.setCurrentDescription(type, item, title);
 
         showEquipment = (): boolean => this.useEquipment && this._game.character && Object.keys(this._game.character.equipment).some(k => this._game.character.equipment[k] !== undefined);
         
