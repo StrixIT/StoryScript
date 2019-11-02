@@ -2,7 +2,7 @@
     <div class="col-12">
         <h2>{{ $ctrl.texts.levelUp }}</h2>
         <p>{{ $ctrl.texts.format($ctrl.texts.levelUpDescription, [$ctrl.game.character.level]) }}</p>
-        <build-character sheet="$ctrl.sheet"></build-character>
-        <button type="button" class="btn btn-primary" ng-disabled="!$ctrl.distributionDone()" ng-click="$ctrl.levelUp()" ng-show="$ctrl.sheet.currentStep >= $ctrl.sheet.steps.length - 1">{{ $ctrl.texts.completeLevelUp }}</button>
+        <build-character sheet="$ctrl.game.createCharacterSheet"></build-character>
+        <button type="button" class="btn btn-primary" ng-disabled="!$ctrl.distributionDone()" ng-click="$ctrl.levelUp()" ng-show="$ctrl.game.createCharacterSheet.currentStep >= $ctrl.game.createCharacterSheet.steps.length - 1">{{ $ctrl.texts.completeLevelUp }}</button>
     </div>
 </div>

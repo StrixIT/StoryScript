@@ -4,7 +4,7 @@
         setupCharacter(): ICreateCharacter;
         setupLevelUp(): ICreateCharacter;
         createCharacter(game: IGame, characterData: any): ICharacter;
-        levelUp(game: IGame, characterData: any): ICharacter;
+        levelUp(): ICharacter;
         limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
         distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
         pickupItem(item: IItem): boolean;
@@ -105,14 +105,15 @@ namespace StoryScript {
             return sheet;
         }
 
-        levelUp = (game: IGame, characterData: ICreateCharacter): ICharacter => {
+        levelUp = (): ICharacter => {
             var character = this._game.character;
+            var sheet = this._game.createCharacterSheet;
 
-            if (this._rules.character.levelUp && this._rules.character.levelUp(character, characterData)) {
-                this.processDefaultSettings(character, characterData);
+            if (this._rules.character.levelUp && this._rules.character.levelUp(character, sheet)) {
+                this.processDefaultSettings(character, sheet);
             }
 
-            game.state = GameState.Play;
+            this._game.state = GameState.Play;
             return character;
         }
 

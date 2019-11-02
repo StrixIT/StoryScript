@@ -2,7 +2,7 @@
     export interface IGameService {
         init(): void;
         startNewGame(characterData: any): void;
-        levelUp(sheet: ICreateCharacter): ICharacter;
+        levelUp(): ICharacter;
         reset(): void;
         restart(skipIntro?: boolean): void;
         saveGame(name?: string): void;
@@ -101,8 +101,8 @@ namespace StoryScript {
             this.saveGame();
         }
 
-        levelUp = (sheet: ICreateCharacter): ICharacter => {
-            var levelUpResult = this._characterService.levelUp(this._game, sheet);
+        levelUp = (): ICharacter => {
+            var levelUpResult = this._characterService.levelUp();
             this.saveGame();
             return levelUpResult;
         }
@@ -380,7 +380,9 @@ namespace StoryScript {
                             var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
             
                             if (levelUp) {
+                                this._game.playState = null;
                                 this._game.state = GameState.LevelUp;
+                                this._characterService.setupLevelUp();
                             }
                         }
                     }
