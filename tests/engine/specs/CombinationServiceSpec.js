@@ -67,7 +67,11 @@ describe("CombinationService", function() {
         it("should fail a combination when there is no target or active combination", function() {
             var game = {
                 combinations: {
-                    activeCombination: {}
+                    activeCombination: {},
+                    combinationResult: {
+                        text: null,
+                        done: false,
+                    }
                 }
             };
 

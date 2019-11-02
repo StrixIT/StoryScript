@@ -1,6 +1,5 @@
 namespace StoryScript {
     export interface ITradeService {
-        initTrade(): ITrade;
         trade(trade: IPerson | ITrade): void;
         canPay(currency: number, value: number): boolean;
         actualPrice(item: IItem, modifier: number | (() => number)): number;
@@ -18,61 +17,20 @@ namespace StoryScript {
         trade = (trade: IPerson | ITrade): void => {
             var isPerson = trade && trade['type'] === 'person';
 
-            this._game.currentLocation.activeTrade = isPerson ? (<IPerson>trade).trade : this._game.currentLocation.trade;
-            var trader = this._game.currentLocation.activeTrade;
+            this._game.trade = isPerson ? (<IPerson>trade).trade : this._game.currentLocation.trade;
+            var trader = this._game.trade;
 
             if (isPerson) {
                 trader.currency = (<IPerson>trade).currency;
-                this._game.currentLocation.activePerson = <IPerson>trade;
+                this._game.person = <IPerson>trade;
 
                 if (!trader.title) {
                     trader.title = this._texts.format(this._texts.trade, [(<IPerson>trade).name]);
                 }
             }
 
+            this.initTrade();
             this._game.playState = PlayState.Trade;
-        }
-
-        initTrade = (): ITrade => {
-            var trader = this._game.currentLocation && this._game.currentLocation.activeTrade;
-
-            if (!trader) {
-                return null;
-            }
-
-            var itemsForSale = trader.buy.items ? trader.buy.items.slice() : undefined;
-
-            var buySelector = (item: IItem) => {
-                return trader.buy.itemSelector(this._game, item);
-            };
-
-            if ((trader.initCollection && trader.initCollection(this._game, trader) || !itemsForSale)) {
-                // Change this when more than one trade per location is allowed.
-                var collection = <any>(trader.ownItemsOnly ? this._game.currentLocation.activePerson.items : this._game.definitions.items);
-                itemsForSale = StoryScript.randomList<IItem>(collection, trader.buy.maxItems, 'items', this._game.definitions, buySelector);
-            }
-
-            var sellSelector = (item: IItem) => {
-                return trader.sell.itemSelector(this._game, item);
-            };
-
-            var itemsToSell = StoryScript.randomList<IItem>(this._game.character.items, trader.sell.maxItems, 'items', this._game.definitions, sellSelector);
-
-            if (!trader.buy.items) {
-                trader.buy.items = [];
-            }
-
-            trader.buy.items.length = 0;
-            itemsForSale.forEach(i => trader.buy.items.push(i));
-
-            if (!trader.sell.items) {
-                trader.sell.items = [];
-            }
-
-            trader.sell.items.length = 0;
-            itemsToSell.forEach(i => trader.sell.items.push(i));
-
-            return trader;
         }
 
         canPay = (currency: number, value: number): boolean => (value != undefined && currency != undefined && currency >= value) || value == 0;
@@ -115,6 +73,48 @@ namespace StoryScript {
             return true;
         }
 
+        private initTrade = (): ITrade => {
+            var trader = this._game.trade;
+
+            if (!trader) {
+                return null;
+            }
+
+            var itemsForSale = trader.buy.items ? trader.buy.items.slice() : undefined;
+
+            var buySelector = (item: IItem) => {
+                return trader.buy.itemSelector(this._game, item);
+            };
+
+            if ((trader.initCollection && trader.initCollection(this._game, trader) || !itemsForSale)) {
+                // Change this when more than one trade per location is allowed.
+                var collection = <any>(trader.ownItemsOnly ? this._game.person.items : this._game.definitions.items);
+                itemsForSale = StoryScript.randomList<IItem>(collection, trader.buy.maxItems, 'items', this._game.definitions, buySelector);
+            }
+
+            var sellSelector = (item: IItem) => {
+                return trader.sell.itemSelector(this._game, item);
+            };
+
+            var itemsToSell = StoryScript.randomList<IItem>(this._game.character.items, trader.sell.maxItems, 'items', this._game.definitions, sellSelector);
+
+            if (!trader.buy.items) {
+                trader.buy.items = [];
+            }
+
+            trader.buy.items.length = 0;
+            itemsForSale.forEach(i => trader.buy.items.push(i));
+
+            if (!trader.sell.items) {
+                trader.sell.items = [];
+            }
+
+            trader.sell.items.length = 0;
+            itemsToSell.forEach(i => trader.sell.items.push(i));
+
+            return trader;
+        }
+
         private pay = (item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean): boolean => {
             var price = item.value;
 
@@ -135,8 +135,8 @@ namespace StoryScript {
                     trader.currency = characterSells ? trader.currency - price : trader.currency + price;
                 }
 
-                if (this._game.currentLocation.activePerson && this._game.currentLocation.activePerson.trade === this._game.currentLocation.activeTrade) {
-                    this._game.currentLocation.activePerson.currency = this._game.currentLocation.activeTrade.currency;
+                if (this._game.person && this._game.person.trade === this._game.trade) {
+                    this._game.person.currency = this._game.trade.currency;
                 }
 
             }

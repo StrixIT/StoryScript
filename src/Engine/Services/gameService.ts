@@ -1,16 +1,8 @@
 ﻿namespace StoryScript {
-    export class CombinationFinishedEvent extends Event {
-        constructor() {
-            super('combinationFinished');
-        }
-
-        featuresToRemove: string[];
-    }
-
     export interface IGameService {
         init(): void;
         startNewGame(characterData: any): void;
-        levelUp(sheet: ICreateCharacter): ICharacter;
+        levelUp(): ICharacter;
         reset(): void;
         restart(skipIntro?: boolean): void;
         saveGame(name?: string): void;
@@ -18,6 +10,7 @@
         loadGame(name: string): void;
         hasDescription(type: string, item: { id?: string, description?: string }): boolean;
         getDescription(type: string, entity: any, key: string): string;
+        setCurrentDescription(type: string, entity: any, key: string): void;
         initCombat(): void;
         fight(enemy: IEnemy, retaliate?: boolean): void;
         useItem(item: IItem): void;
@@ -31,7 +24,7 @@ namespace StoryScript {
         private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
         private _musicStopped: boolean = false;
 
-        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _events: EventTarget, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
+        constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
         }
 
         init = (restart?: boolean, skipIntro?: boolean): void => {
@@ -57,7 +50,7 @@ namespace StoryScript {
             }
             
             if (!this._game.character && this._rules.setup.intro && !skipIntro) {
-                this._game.state = StoryScript.GameState.Intro;
+                this._game.state = GameState.Intro;
                 return;
             }
             
@@ -75,7 +68,8 @@ namespace StoryScript {
                 this.resume(locationName);
             }
             else {
-                this._game.state = StoryScript.GameState.CreateCharacter;
+                this._characterService.setupCharacter();
+                this._game.state = GameState.CreateCharacter;
             }
         }
 
@@ -103,12 +97,12 @@ namespace StoryScript {
 
             this.initSetInterceptors();
 
-            this._game.state = StoryScript.GameState.Play;
+            this._game.state = GameState.Play;
             this.saveGame();
         }
 
-        levelUp = (sheet: ICreateCharacter): ICharacter => {
-            var levelUpResult = this._characterService.levelUp(this._game, sheet);
+        levelUp = (): ICharacter => {
+            var levelUpResult = this._characterService.levelUp();
             this.saveGame();
             return levelUpResult;
         }
@@ -174,6 +168,8 @@ namespace StoryScript {
                     this._game.playState = null;
                 }
 
+                this._game.combinations.combinationResult.reset(); 
+
                 setTimeout(() => {
                     this._game.loading = false;
                 }, 0);
@@ -197,6 +193,18 @@ namespace StoryScript {
             }
 
             return description;
+        }
+
+        setCurrentDescription = (type: string, item: any, title: string): void => {
+            if (item.description === undefined || item.description === null) {
+                item.description = this.getDescription(type, item, 'description');
+            }
+
+            this._game.currentDescription = {
+                title: title,
+                type: type, 
+                item: item
+            };
         }
 
         initCombat = (): void => {
@@ -224,7 +232,8 @@ namespace StoryScript {
             }
 
             if (this._game.character.currentHitpoints <= 0) {
-                this._game.state = StoryScript.GameState.GameOver;
+                this._game.playState = null;
+                this._game.state = GameState.GameOver;
             }
 
             this.saveGame();
@@ -282,7 +291,7 @@ namespace StoryScript {
 
             this._locationService.changeLocation(lastLocation.id, false, this._game);
 
-            this._game.state = StoryScript.GameState.Play;
+            this._game.state = GameState.Play;
         }
 
         private createCharacter = (characterData : ICharacter): void => {
@@ -371,7 +380,9 @@ namespace StoryScript {
                             var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
             
                             if (levelUp) {
-                                this._game.state = StoryScript.GameState.LevelUp;
+                                this._game.playState = null;
+                                this._game.state = GameState.LevelUp;
+                                this._characterService.setupLevelUp();
                             }
                         }
                     }
@@ -422,28 +433,36 @@ namespace StoryScript {
 
         private setupCombinations = (): void => {
             this._game.combinations = {
-                combinationResultText: null,
+                combinationResult: {
+                    done: false,
+                    text: null,
+                    featuresToRemove: [],
+                    reset: (): void => {
+                        var result = this._game.combinations.combinationResult;
+                        result.done = false;
+                        result.text = null;
+                        result.featuresToRemove.length = 0;
+                    }
+                },
                 activeCombination: null,
                 tryCombine: (target: ICombinable): boolean => {
                     var activeCombo = this._game.combinations.activeCombination;
                     var result = this._combinationService.tryCombination(target);
 
                     if (result.text) {
-                        var evt = new CombinationFinishedEvent();
+                        let featuresToRemove: string[] = [];
 
                         if (result.success) {
-                            evt.featuresToRemove = [];
-
                             if (result.removeTarget) {
-                                evt.featuresToRemove.push(target.id);
+                                featuresToRemove.push(target.id);
                             }
 
                             if (result.removeTool) {
-                                evt.featuresToRemove.push(activeCombo.selectedTool.id);
+                                featuresToRemove.push(activeCombo.selectedTool.id);
                             }
                         }
 
-                        this._events.dispatchEvent(evt);
+                        this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
                         return true;
                     }
 

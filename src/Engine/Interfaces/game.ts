@@ -66,12 +66,42 @@
         /**
          * The current state of the game.
          */
-        state: StoryScript.GameState;
+        state: GameState;
 
         /**
          * The current state of play of the game.
          */
-        playState: StoryScript.PlayState;
+        playState: PlayState;
+
+        /**
+         * The person the player is currently interacting with.
+         */
+        person: IPerson;
+
+        /**
+         * The trade object or person the player is currently trading with.
+         */
+        trade: ITrade;
+
+        /**
+         * The description currently shown to the player.
+         */
+        currentDescription: {
+            /**
+             * The description title.
+             */
+            title: string;
+
+            /**
+             * The type of the entity for which the description is shown.
+             */
+            type: string;
+
+            /**
+             * The feature of which to show the description.
+             */
+            item: IFeature;
+        };
 
         /**
          * True if a game is being loaded, false otherwise.
@@ -86,9 +116,30 @@
             activeCombination: IActiveCombination,
      
             /**
-             * The result text displayed to the player for a combination.
+             * The result from the last attempted combination.
              */
-            combinationResultText: string;
+            combinationResult:
+            {
+                /**
+                 * Indicates whether the combination is done.
+                 */
+                done: boolean;
+
+                /**
+                 * The combination result text.
+                 */
+                text: string;
+
+                /**
+                 * The features to remove.
+                 */
+                featuresToRemove: string[];
+
+                /**
+                 * Resets the combination result.
+                 */
+                reset(): void;
+            }
 
             /**
              * Get the class name to use for the current combine state.

@@ -275,16 +275,6 @@ namespace StoryScript {
                 return location.items.filter(e => { return !e.inactive; });
             }
         });
-
-        Object.defineProperty(location, 'activePerson', {
-            writable: true,
-            enumerable: false
-        });
-
-        Object.defineProperty(location, 'activeTrade', {
-            writable: true,
-            enumerable: false
-        });
     }
 
     function setReadOnlyCharacterProperties(character: ICharacter) {

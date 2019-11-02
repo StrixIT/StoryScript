@@ -14,6 +14,5 @@
         items?: StoryScript.ICollection<IItem>;
         activePersons?: StoryScript.ICollection<IPerson>;
         persons?: StoryScript.ICollection<IPerson>;
-        activePerson: IPerson;
     }
 }

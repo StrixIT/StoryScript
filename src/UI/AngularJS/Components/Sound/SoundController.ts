@@ -4,7 +4,7 @@ namespace StoryScript {
         constructor(private _gameService: IGameService) {
         }
 
-        getCurrentMusic= (): string => this._gameService.getCurrentMusic();
+        getCurrentMusic = (): string => this._gameService.getCurrentMusic();
     }
 
     SoundController.$inject = ['gameService'];
