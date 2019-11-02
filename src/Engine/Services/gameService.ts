@@ -49,7 +49,7 @@ namespace StoryScript {
             }
             
             if (!this._game.character && this._rules.setup.intro && !skipIntro) {
-                this._game.state = StoryScript.GameState.Intro;
+                this._game.state = GameState.Intro;
                 return;
             }
             
@@ -67,7 +67,8 @@ namespace StoryScript {
                 this.resume(locationName);
             }
             else {
-                this._game.state = StoryScript.GameState.CreateCharacter;
+                this._characterService.setupCharacter();
+                this._game.state = GameState.CreateCharacter;
             }
         }
 
@@ -95,7 +96,7 @@ namespace StoryScript {
 
             this.initSetInterceptors();
 
-            this._game.state = StoryScript.GameState.Play;
+            this._game.state = GameState.Play;
             this.saveGame();
         }
 
@@ -166,6 +167,8 @@ namespace StoryScript {
                     this._game.playState = null;
                 }
 
+                this._game.combinations.combinationResult.reset(); 
+
                 setTimeout(() => {
                     this._game.loading = false;
                 }, 0);
@@ -216,7 +219,8 @@ namespace StoryScript {
             }
 
             if (this._game.character.currentHitpoints <= 0) {
-                this._game.state = StoryScript.GameState.GameOver;
+                this._game.playState = null;
+                this._game.state = GameState.GameOver;
             }
 
             this.saveGame();
@@ -274,7 +278,7 @@ namespace StoryScript {
 
             this._locationService.changeLocation(lastLocation.id, false, this._game);
 
-            this._game.state = StoryScript.GameState.Play;
+            this._game.state = GameState.Play;
         }
 
         private createCharacter = (characterData : ICharacter): void => {
@@ -363,7 +367,7 @@ namespace StoryScript {
                             var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
             
                             if (levelUp) {
-                                this._game.state = StoryScript.GameState.LevelUp;
+                                this._game.state = GameState.LevelUp;
                             }
                         }
                     }

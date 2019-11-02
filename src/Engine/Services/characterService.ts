@@ -112,7 +112,7 @@ namespace StoryScript {
                 this.processDefaultSettings(character, characterData);
             }
 
-            game.state = StoryScript.GameState.Play;
+            game.state = GameState.Play;
             return character;
         }
 
