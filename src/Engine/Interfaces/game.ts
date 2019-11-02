@@ -74,6 +74,36 @@
         playState: PlayState;
 
         /**
+         * The person the player is currently interacting with.
+         */
+        person: IPerson;
+
+        /**
+         * The trade object or person the player is currently trading with.
+         */
+        trade: ITrade;
+
+        /**
+         * The description currently shown to the player.
+         */
+        currentDescription: {
+            /**
+             * The description title.
+             */
+            title: string;
+
+            /**
+             * The type of the entity for which the description is shown.
+             */
+            type: string;
+
+            /**
+             * The feature of which to show the description.
+             */
+            item: IFeature;
+        };
+
+        /**
          * True if a game is being loaded, false otherwise.
          */
         loading: boolean;

@@ -1,18 +1,18 @@
-<div ng-if="$ctrl.game.playState == 'Trade' && $ctrl.trade" id="trade">
-    <p class="trade-description">{{ $ctrl.trade.description }}</p>
-    <div ng-if="$ctrl.trade.buy">{{ $ctrl.trade.buy.description }}</div>
-    <p class="trade-empty" ng-hide="$ctrl.trade.buy.items && $ctrl.trade.buy.items.length > 0">{{ $ctrl.trade.buy.emptyText }}</p>
-    <ul class="list-unstyled" ng-show="$ctrl.trade.buy.items && $ctrl.trade.buy.items.length > 0">
-        <li class="inline" ng-repeat="item in $ctrl.trade.buy.items">
-            <button type="button" class="btn btn-success" ng-click="$ctrl.buy(item, $ctrl.trade)" ng-disabled="!$ctrl.canPay($ctrl.game.character.currency, $ctrl.actualPrice(item, $ctrl.trade.buy.priceModifier))">{{ $ctrl.displayPrice(item, $ctrl.trade.buy.priceModifier) }}</button>
+<div ng-if="$ctrl.game.playState == 'Trade' && $ctrl.game.trade" id="trade">
+    <p class="trade-description">{{ $ctrl.game.trade.description }}</p>
+    <div ng-if="$ctrl.game.trade.buy">{{ $ctrl.game.trade.buy.description }}</div>
+    <p class="trade-empty" ng-hide="$ctrl.game.trade.buy.items && $ctrl.game.trade.buy.items.length > 0">{{ $ctrl.game.trade.buy.emptyText }}</p>
+    <ul class="list-unstyled" ng-show="$ctrl.game.trade.buy.items && $ctrl.game.trade.buy.items.length > 0">
+        <li class="inline" ng-repeat="item in $ctrl.game.trade.buy.items">
+            <button type="button" class="btn btn-success" ng-click="$ctrl.buy(item, $ctrl.game.trade)" ng-disabled="!$ctrl.canPay($ctrl.game.character.currency, $ctrl.actualPrice(item, $ctrl.game.trade.buy.priceModifier))">{{ $ctrl.displayPrice(item, $ctrl.game.trade.buy.priceModifier) }}</button>
         </li>
     </ul>
-    <div ng-if="$ctrl.trade.sell">{{ $ctrl.trade.sell.description }}</div>
-    <p class="trade-empty" ng-hide="$ctrl.trade.sell.items && $ctrl.trade.sell.items.length > 0">{{ $ctrl.trade.sell.emptyText }}</p>
-    <ul class="list-unstyled" ng-show="$ctrl.trade.sell.items && $ctrl.trade.sell.items.length > 0">
-        <li class="inline" ng-repeat="item in $ctrl.trade.sell.items">
-            <button type="button" class="btn btn-warning" ng-click="$ctrl.sell(item, $ctrl.trade)" ng-disabled="!$ctrl.canPay($ctrl.trade.currency, $ctrl.actualPrice(item, $ctrl.trade.sell.priceModifier))">{{ $ctrl.displayPrice(item, $ctrl.trade.sell.priceModifier) }}</button>
+    <div ng-if="$ctrl.game.trade.sell">{{ $ctrl.game.trade.sell.description }}</div>
+    <p class="trade-empty" ng-hide="$ctrl.game.trade.sell.items && $ctrl.game.trade.sell.items.length > 0">{{ $ctrl.game.trade.sell.emptyText }}</p>
+    <ul class="list-unstyled" ng-show="$ctrl.game.trade.sell.items && $ctrl.game.trade.sell.items.length > 0">
+        <li class="inline" ng-repeat="item in $ctrl.game.trade.sell.items">
+            <button type="button" class="btn btn-warning" ng-click="$ctrl.sell(item, $ctrl.game.trade)" ng-disabled="!$ctrl.canPay($ctrl.game.trade.currency, $ctrl.actualPrice(item, $ctrl.game.trade.sell.priceModifier))">{{ $ctrl.displayPrice(item, $ctrl.game.trade.sell.priceModifier) }}</button>
         </li>
     </ul>
-    <p ng-if="$ctrl.trade.currency != undefined">{{ $ctrl.texts.format($ctrl.texts.traderCurrency, [$ctrl.trade.currency, $ctrl.texts.currency]) }}</p>
+    <p ng-if="$ctrl.game.trade.currency != undefined">{{ $ctrl.texts.format($ctrl.texts.traderCurrency, [$ctrl.game.trade.currency, $ctrl.texts.currency]) }}</p>
 </div>

@@ -6,7 +6,7 @@ namespace StoryScript
         getButtonClass(action: IAction): string;
         executeAction(action: IAction, controller: ng.IComponentController): void;
         startCombat(person?: IPerson): void;
-        showDescription(scope: ng.IScope, type: string, item: any, title: string, ): void;
+        showDescription(type: string, item: any, title: string): void;
         showEquipment(): boolean;
         useCharacterSheet?: boolean;
         useEquipment?: boolean;
@@ -107,13 +107,17 @@ namespace StoryScript
             this._game.playState = PlayState.Combat;
         }
 
-        showDescription = (scope: ng.IScope, type: string, item: any, title: string): void => {
+        showDescription = (type: string, item: any, title: string): void => {
             if (item.description === undefined || item.description === null) {
                 item.description = this._gameService.getDescription(type, item, 'description');
             }
 
             if (item.description) {
-                scope.$emit('showDescription', { title: title, type: type, item: item });
+                this._game.currentDescription = {
+                    title: title,
+                    type: type, 
+                    item: item
+                };
             }
         }
 

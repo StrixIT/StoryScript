@@ -79,7 +79,7 @@ namespace StoryScript {
                 this._tradeService = new TradeService(this._game, this._texts);
                 this._dataService = new DataService(this._localStorageService, this._nameSpace);
                 this._conversationService = new ConversationService(this._dataService, this._game);
-                this._locationService = new LocationService(this._dataService, this._conversationService, this._rules, this._game, this._definitions);
+                this._locationService = new LocationService(this._dataService, this._rules, this._game, this._definitions);
                 this._combinationService = new CombinationService(this._dataService, this._locationService, this._game, this._rules, this._texts);
                 this._characterService = new CharacterService(this._game, this._rules);
                 this._gameService = new GameService(this._dataService, this._locationService, this._characterService, this._combinationService, this._rules, this._helperService, this._game, this._texts);

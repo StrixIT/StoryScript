@@ -32,10 +32,10 @@ describe("TradeService", function() {
         var service = getService(game, texts);
 
         service.trade(trader);
-        var activeTrade = game.currentLocation.activeTrade;
+        var activeTrade = game.trade;
 
         expect(activeTrade).toBe(trader.trade);
-        expect(game.currentLocation.activePerson).toBe(trader);
+        expect(game.person).toBe(trader);
         expect(activeTrade.currency).toBe(trader.trade.currency);
         expect(activeTrade.title).toBe(trader.name);
         expect(game.state).toBe(StoryScript.GameState.Trade);

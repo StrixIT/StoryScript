@@ -5,8 +5,6 @@ namespace StoryScript {
             this.texts = _texts;
             this._scope.game = _game;
 
-            this._scope.$on('showDescription', this.broadcast);
-
             // Watch for dynamic styling.
             this._game.dynamicStyles = this._game.dynamicStyles || [];
             this._scope.$watchCollection('game.dynamicStyles', () => this.applyDynamicStyling());
@@ -18,17 +16,6 @@ namespace StoryScript {
         texts: IInterfaceTexts;
 
         showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
-
-        private broadcast = (event: ng.IAngularEvent, args?: any[], callback?: Function): void =>
-        {
-            if (event.currentScope !== event.targetScope) {
-                if (callback) {
-                    callback();
-                }
-
-                event.currentScope.$broadcast(event.name, args);
-            }
-        }
 
         private applyDynamicStyling = (): void => {
             this._timeout(() => {

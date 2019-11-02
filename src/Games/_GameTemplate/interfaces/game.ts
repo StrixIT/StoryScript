@@ -2,6 +2,7 @@
     // Your game-specific game interface.
     export interface IGame extends StoryScript.IGame {
         character: Character;
+        person: IPerson;
         locations: StoryScript.ICollection<ICompiledLocation>;
         currentLocation: ICompiledLocation;
         previousLocation: ICompiledLocation;

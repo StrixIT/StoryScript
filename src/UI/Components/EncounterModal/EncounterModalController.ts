@@ -20,16 +20,18 @@ namespace StoryScript {
             }
 
             this._scope.$watch('game.playState', (newValue: PlayState, oldValue: PlayState) => {
-                this.watchPlayState(newValue, oldValue, this);
+                this.watchPlayState(newValue, oldValue);
             });
 
-            this._scope.$on('showDescription', (event, args) => {
-                this._game.playState = PlayState.Description;
-                this.modalSettings.title = (<any>args).title;
-                this.modalSettings.descriptionEntity = {
-                    type: args.type,
-                    item: args.item
-                };
+            this._scope.$watch('game.currentDescription', (newValue: any, oldValue: any) => {
+                if (newValue) {
+                    this.game.playState = PlayState.Description;
+                    this.modalSettings.title = this.game.currentDescription.title;
+                    this.modalSettings.descriptionEntity = {
+                        type: this.game.currentDescription.type,
+                        item: this.game.currentDescription.item
+                    };
+                }
             });
 
             this._scope.$watchCollection('game.currentLocation.enemies', this.initCombat);
@@ -55,44 +57,43 @@ namespace StoryScript {
 
         getDescription = (entity: any, key: string): string => this._sce.trustAsHtml(this._gameService.getDescription(entity.type, entity.item, key));
         
-        private watchPlayState = (newValue: PlayState, oldValue: PlayState, controller: EncounterModalController): void => {
+        private watchPlayState = (newValue: PlayState, oldValue: PlayState): void => {
             if (newValue !== PlayState.Menu) {          
-                this.getStateSettings(controller, newValue);
-                this.switchState(controller, newValue);
+                this.getStateSettings(newValue);
+                this.switchState(newValue);
             }
         }
 
-        private getStateSettings = (controller: EncounterModalController, newValue: PlayState): void => {
+        private getStateSettings = (newValue: PlayState): void => {
             switch (newValue) {
                 case PlayState.Combat: {
-                    controller.modalSettings.title = controller._texts.combatTitle;
-                    controller.modalSettings.canClose = false;
+                    this.modalSettings.title = this._texts.combatTitle;
+                    this.modalSettings.canClose = false;
                 } break;
                 case PlayState.Conversation: {
-                    var person = controller._game.currentLocation.activePerson;
-                    controller.modalSettings.title = person.conversation.title || controller._texts.format(controller._texts.talk, [person.name]);
-                    controller.modalSettings.canClose = true;
+                    var person = this._game.person;
+                    this.modalSettings.title = person.conversation.title || this._texts.format(this._texts.talk, [person.name]);
+                    this.modalSettings.canClose = true;
                 } break;
                 case PlayState.Trade: {
-                    var trader = controller._game.currentLocation.activeTrade;
-                    controller.modalSettings.title = trader.title;
-                    controller.modalSettings.canClose = true;
+                    var trader = this._game.trade;
+                    this.modalSettings.title = trader.title;
+                    this.modalSettings.canClose = true;
                 } break;
                 case PlayState.Description: {
-                    controller.modalSettings.canClose = true;
+                    this.modalSettings.canClose = true;
                 } break;
                 default: {
                 } break;
             }
         }
 
-        private switchState = (controller: EncounterModalController, newValue: PlayState): void => {
+        private switchState = (newValue: PlayState): void => {
             if (newValue === null || newValue === undefined) {
                 $('#encounters').modal('hide');
             }        
             else {
                 $('#encounters').modal('show');
-                controller._scope.$broadcast('init');
             }
         }
 

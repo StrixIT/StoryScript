@@ -1,7 +1,5 @@
 namespace StoryScript {
     export interface IConversationService {
-        loadConversations(): void;
-        initConversation(): void;
         talk(person: IPerson): void;
         answer(node: IConversationNode, reply: IConversationReply): void;
         getLines(nodeOrReply: IConversationNode | IConversationReply): string;
@@ -13,47 +11,14 @@ namespace StoryScript {
         constructor(private _dataService: IDataService, private _game: IGame) {
         }
 
-        loadConversations = (): void => {
-            var persons = this._game.currentLocation && this._game.currentLocation.persons;
-
-            if (!persons) {
-                return;
-            }
-
-            persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
-                var htmlDoc = this.loadConversationHtml(person);
-                var defaultReply = this.getDefaultReply(htmlDoc, person);
-                var conversationNodes = htmlDoc.getElementsByTagName('node');
-
-                person.conversation.nodes = [];
-                this.processConversationNodes(conversationNodes, person, defaultReply);
-                this.checkNodes(person);
-
-                var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
-                person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
-            });
-        }
-
-        initConversation(): void {
-            var person = this._game.currentLocation && this._game.currentLocation.activePerson;
-            var activeNode = this.getActiveNode(person);
-
-            if (!activeNode) {
-                return;
-            }
-
-            person.conversation.activeNode = activeNode;
-            this.initReplies(person);
-            this.setReplyStatus(person.conversation, activeNode);
-        }
-
         talk = (person: IPerson): void => {
-            this._game.currentLocation.activePerson = person;
+            this.loadConversations();
+            this.initConversation(person);
             this._game.playState = PlayState.Conversation;
         }
 
         answer = (node: IConversationNode, reply: IConversationReply): void => {
-            var person = this._game.currentLocation.activePerson;
+            var person = this._game.person;
 
             person.conversation.conversationLog = person.conversation.conversationLog || [];
 
@@ -78,6 +43,40 @@ namespace StoryScript {
             }
 
             return null;
+        }
+
+        private loadConversations = (): void => {
+            var persons = this._game.currentLocation && this._game.currentLocation.persons;
+
+            if (!persons) {
+                return;
+            }
+
+            persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
+                var htmlDoc = this.loadConversationHtml(person);
+                var defaultReply = this.getDefaultReply(htmlDoc, person);
+                var conversationNodes = htmlDoc.getElementsByTagName('node');
+
+                person.conversation.nodes = [];
+                this.processConversationNodes(conversationNodes, person, defaultReply);
+                this.checkNodes(person);
+
+                var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
+                person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
+            });
+        }
+
+        private initConversation(person: IPerson): void {
+            this._game.person = person;
+            var activeNode = this.getActiveNode(person);
+
+            if (!activeNode) {
+                return;
+            }
+
+            person.conversation.activeNode = activeNode;
+            this.initReplies(person);
+            this.setReplyStatus(person.conversation, activeNode);
         }
 
         private loadConversationHtml = (person: IPerson): Document => {
