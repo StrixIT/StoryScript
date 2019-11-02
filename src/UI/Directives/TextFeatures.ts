@@ -9,7 +9,9 @@ namespace StoryScript
         constructor(private _combinationService: ICombinationService, private _game: IGame) {
         }
 
-        link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
+        link = (scope: StoryScriptScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
+            scope.game = this._game;
+
             scope.$watch('game.combinations.combinationResult.done', (newValue) => {
                 if (newValue) {
                     // Show the text of added features.
