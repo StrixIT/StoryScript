@@ -1,0 +1,24 @@
+{
+    "extends": "../../tsconfig",
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "typeRoots": [
+            "../../node_modules/@types",
+            "../../types/**/*.ts"
+        ],
+        "types": [
+            "jquery",
+            "angular",
+            "bootstrap"
+        ],
+    },
+    "include": [
+        "./src/Services/**/*.tss",
+        "./src/Components/**/*.ts",
+        "./src/Directives/**/*.ts",
+        "./app*.ts"
+    ]
+}

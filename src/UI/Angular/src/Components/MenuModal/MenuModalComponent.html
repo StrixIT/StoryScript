@@ -1,0 +1,55 @@
+<div class="modal" id="menumodal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    {{ $ctrl.texts.mainMenu }}
+                </h4>
+                <button type="button" class="close" aria-label="Close" ng-click="$ctrl.closeModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="mainmenu" ng-if="$ctrl.state === 'Menu'">
+                    <button type="button" class="btn btn-outline-dark btn-lg" ng-if="$ctrl.game.state !== 'CreateCharacter'" ng-click="$ctrl.save()">{{ $ctrl.texts.saveGame }}</button>
+                    <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.load()">{{ $ctrl.texts.loadGame }}</button>
+                    <button type="button" class="btn btn-outline-danger btn-lg" ng-click="$ctrl.restart()">{{ $ctrl.texts.startOver }}</button>
+                </div>
+                <div id="confirmrestart" ng-if="$ctrl.state === 'ConfirmRestart'">
+                    <h4>
+                        {{ $ctrl.texts.confirmRestart }}
+                    </h4>
+                    <button type="button" class="btn btn-outline-dark btn-lg" ng-click="$ctrl.cancel()">{{ $ctrl.texts.restartCancelled }}</button>
+                    <button type="button" class="btn btn-outline-danger btn-lg" ng-click="$ctrl.restartConfirmed()">{{ $ctrl.texts.restartConfirmed }}</button>
+                </div>
+                <div id="save-game" ng-if="$ctrl.state === 'Save' || $ctrl.state === 'Load'">
+                    <div class="row">
+                        <div id="save-game" class="col-12">
+                            <p>{{ $ctrl.texts.existingSaveGames }}</p>
+                            <ul class="list-unstyled">
+                                <li ng-repeat="key in $ctrl.saveKeys">
+                                    <span ng-click="$ctrl.setSelected(key)">{{ key }}</span>
+                                </li>
+                            </ul>
+                            <div ng-if="$ctrl.state === 'Save'">
+                                <p>{{ $ctrl.texts.newSaveGame }}</p>
+                                <input class="col-md-8 question-input" type="text" ng-model="$ctrl.selectedGame" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="alert alert-danger" ng-if="$ctrl.state === 'Save' && $ctrl.overwriteSelected()">{{ $ctrl.texts.format($ctrl.texts.overwriteSaveGame, [$ctrl.selectedGame]) }}</p>
+                            <p class="alert alert-success" ng-if="$ctrl.state === 'Load' && $ctrl.selectedGame">{{ $ctrl.texts.format($ctrl.texts.loadSaveGame, [$ctrl.selectedGame]) }}</p>
+                            <button ng-if="$ctrl.state === 'Save'" type="button" class="btn btn-primary save-button" ng-click="$ctrl.saveGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.save }}</button>
+                            <button ng-if="$ctrl.state === 'Load'" type="button" class="btn btn-primary save-button" ng-click="$ctrl.loadGame()" ng-disabled="!$ctrl.selectedGame">{{ $ctrl.texts.load }}</button>            
+                            <button type="button" class="btn btn-primary save-button" ng-click="$ctrl.cancel()">{{ $ctrl.texts.cancel }}</button>            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

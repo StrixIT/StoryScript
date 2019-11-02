@@ -1,0 +1,8 @@
+<div class="box-container" id="exploration-onground" ng-if="!$ctrl.enemiesPresent()">
+    <div class="box-title">{{ $ctrl.texts.onTheGround }}</div>
+    <ul class="list-unstyled">
+        <li ng-repeat="item in $ctrl.game.currentLocation.activeItems track by $index" ng-click="$ctrl.pickupItem(item)" ng-class="$ctrl.getCombineClass(item)">
+            {{ item.name }}
+        </li>
+    </ul>
+</div>
