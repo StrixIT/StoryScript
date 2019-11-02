@@ -38,7 +38,21 @@
             levelUpDescription: "Je hebt niveau {0} bereikt.",
             encounters: "Vijanden",
             combatTitle: "Gevecht",
-            combatWin: "Je hebt gewonnen!"
+            combatWin: "Je hebt gewonnen!",
+            mainMenu: "Hoofdmenu",
+            confirmRestart: "Echt overnieuw beginnen?",
+            restartConfirmed: "Ja",
+            restartCancelled: "Nee",
+            existingSaveGames: "Opgeslagen spellen",
+            newSaveGame: "Nieuw spel opslaan",
+            save: "Opslaan",
+            load: "Laden",
+            cancel: "Annuleren",
+            youLost: "Je hebt verloren!",
+            highScores: "Topscores:",
+            questFailed: "Je hebt gefaald...",
+            finalScore: "Je score: ",
+            tryAgain: "Nog eens proberen"
         };
     }
 }
