@@ -1,5 +1,3 @@
-import StoryScript from '../../../../../types/storyscript';
-
 export class BuildCharacterController implements ng.IComponentController {
     constructor(private _characterService: StoryScript.ICharacterService, _texts: StoryScript.IInterfaceTexts) {
         this.texts = _texts;

@@ -1,5 +1,3 @@
-import StoryScript from '../../../../../types/storyscript'
-
 export class ActionLogController implements ng.IComponentController {
     constructor(_game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
         this.game = _game;

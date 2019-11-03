@@ -1,5 +1,3 @@
-import StoryScript from '../../../../../types/storyscript';
-
 export class CombinationController implements ng.IComponentController {
     constructor(private _combinationService: StoryScript.ICombinationService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
         this.game = this._game;

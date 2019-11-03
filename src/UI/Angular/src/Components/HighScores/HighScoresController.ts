@@ -1,13 +1,12 @@
-namespace StoryScript {
-    export class HighScoresController implements ng.IComponentController {
-        constructor(_game: IGame, _texts: IInterfaceTexts) {
-            this.game = _game;
-            this.texts = _texts;
-        }
 
-        game: IGame;
-        texts: IInterfaceTexts;
+export class HighScoresController implements ng.IComponentController {
+    constructor(_game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+        this.game = _game;
+        this.texts = _texts;
     }
 
-    HighScoresController.$inject = ['game', 'customTexts'];
+    game: StoryScript.IGame;
+    texts: StoryScript.IInterfaceTexts;
 }
+
+HighScoresController.$inject = ['game', 'customTexts'];

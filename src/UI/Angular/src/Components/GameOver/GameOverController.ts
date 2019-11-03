@@ -1,15 +1,13 @@
-namespace StoryScript {
-    export class GameOverController implements ng.IComponentController {
-        constructor(private _gameService: IGameService, _game: IGame, _texts: IInterfaceTexts) {
-            this.game = _game;
-            this.texts = _texts;
-        }
-
-        game: IGame;
-        texts: IInterfaceTexts;
-
-        restart = (): void => this._gameService.restart();
+export class GameOverController implements ng.IComponentController {
+    constructor(private _gameService: StoryScript.IGameService, _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+        this.game = _game;
+        this.texts = _texts;
     }
 
-    GameOverController.$inject = ['gameService', 'game', 'customTexts'];
+    game: StoryScript.IGame;
+    texts: StoryScript.IInterfaceTexts;
+
+    restart = (): void => this._gameService.restart();
 }
+
+GameOverController.$inject = ['gameService', 'game', 'customTexts'];

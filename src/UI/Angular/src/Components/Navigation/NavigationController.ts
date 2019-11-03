@@ -1,15 +1,15 @@
-namespace StoryScript {
-    export class NavigationController implements ng.IComponentController {
-        constructor(private _gameService: IGameService, private _game: IGame, _texts: IInterfaceTexts) {
-            this.texts = _texts;
-        }
+import StoryScript from '../../../../../types/storyscript';
 
-        texts: IInterfaceTexts;
-
-        menu = (): PlayState => this._game.playState = PlayState.Menu;
-
-        reset = (): void => this._gameService.reset();
+export class NavigationController implements ng.IComponentController {
+    constructor(private _gameService: StoryScript.IGameService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+        this.texts = _texts;
     }
 
-    NavigationController.$inject = ['gameService', 'game', 'customTexts'];
+    texts: StoryScript.IInterfaceTexts;
+
+    menu = (): StoryScript.PlayState => this._game.playState = StoryScript.PlayState.Menu;
+
+    reset = (): void => this._gameService.reset();
 }
+
+NavigationController.$inject = ['gameService', 'game', 'customTexts'];

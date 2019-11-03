@@ -6,6 +6,28 @@ import { BuildCharacterController } from './Components/BuildCharacter/BuildChara
 import { CharacterSheetController } from './Components/CharacterSheet/CharacterSheetController';
 import { CombinationController } from './Components/Combination/CombinationController';
 import { CombatController } from './Components/Combat/CombatController';
+import { FeaturePicture } from './Directives/FeaturePicture';
+import { TextFeatures } from './Directives/TextFeatures';
+import { MainController } from './Components/Main/MainController';
+import { EquipmentController } from './Components/Equipment/EquipmentController';
+import { QuestController } from './Components/Quest/QuestController';
+import { LevelUpController } from './Components/LevelUp/LevelUpController';
+import { NavigationController } from './Components/Navigation/NavigationController';
+import { MenuModalController } from './Components/MenuModal/MenuModalController';
+import { EncounterController } from './Components/Encounter/EncounterController';
+import { LocationController } from './Components/Location/LocationController';
+import { ExplorationController } from './Components/Exploration/ExplorationController';
+import { GroundController } from './Components/Ground/GroundController';
+import { EnemyController } from './Components/Enemy/EnemyController';
+import { CreateCharacterController } from './Components/CreateCharacter/CreateCharacterController';
+import { GameOverController } from './Components/GameOver/GameOverController';
+import { VictoryController } from './Components/Victory/VictoryController';
+import { HighScoresController } from './Components/HighScores/HighScoresController';
+import { EncounterModalController } from './Components/EncounterModal/EncounterModalController';
+import { TradeController } from './Components/Trade/TradeController';
+import { ConversationController } from './Components/Conversation/ConversationController';
+import { SoundController } from './Components/Sound/SoundController';
+import { IntroController } from './Components/Intro/IntroController';
 
 const MODULE_NAME = 'storyscript';
 var storyScriptModule = angular.module(MODULE_NAME, ['ngSanitize']);

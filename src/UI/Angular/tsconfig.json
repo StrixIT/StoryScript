@@ -7,18 +7,20 @@
         "experimentalDecorators": true,
         "typeRoots": [
             "../../node_modules/@types",
-            "../../types/**/*.ts"
+            "../../types"
         ],
         "types": [
             "jquery",
             "angular",
-            "bootstrap"
+            "bootstrap",
+            "storyscript"
         ],
     },
     "include": [
         "./src/Services/**/*.tss",
         "./src/Components/**/*.ts",
         "./src/Directives/**/*.ts",
-        "./app*.ts"
+        "./app*.ts",
+        "./main.ts"
     ]
 }

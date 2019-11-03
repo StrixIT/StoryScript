@@ -1,4 +1,3 @@
-import StoryScript from '../../../../../types/storyscript';
 import { ISharedMethodService } from '../../Services/SharedMethodService';
 
 export class CombatController implements ng.IComponentController {
