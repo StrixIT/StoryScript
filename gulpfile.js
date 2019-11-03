@@ -10,6 +10,7 @@
     rename = require('gulp-rename'),
     replace = require('gulp-replace'),
     concat = require('gulp-concat'),
+    header = require('gulp-header'),
     cssmin = require("gulp-cssmin"),
     minifyHtml = require('gulp-minify-html'),
     gulpIgnore = require('gulp-ignore'),
@@ -27,7 +28,7 @@ var paths = {
     packages: "./node_modules/",
     webroot: "./dist/",
     sourceroot: "./src/",
-    typeroot: "./src/types/",
+    typeroot: "./src/types/StoryScript",
     testroot: "./tests/",
     publishroot: "./pub/",
 };
@@ -159,7 +160,8 @@ function compileStoryScript() {
     return merge(
         tsResult.js.pipe(concat('storyscript.' + version + '.js')).pipe(sourcemaps.write('./')).pipe(gulp.dest(paths.webroot + 'js')),
         tsResult.js.pipe(concat('storyscript.js')).pipe(gulp.dest(paths.testroot + 'games/compiled/')),
-        tsResult.dts.pipe(concat('storyscript.d.ts')).pipe(gulp.dest(paths.typeroot))
+        tsResult.js.pipe(concat('storyscript.js')).pipe(gulp.dest(paths.sourceroot + 'UI/Angular/compiled/')),
+        tsResult.dts.pipe(concat('index.d.ts')).pipe(header('export as namespace StoryScript;\r\nexport = StoryScript;\r\n\r\n')).pipe(gulp.dest(paths.typeroot))
     );
 }
 

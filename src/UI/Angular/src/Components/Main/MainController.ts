@@ -1,6 +1,6 @@
 import { ISharedMethodService } from '../../Services/SharedMethodService';
 import { StoryScriptScope } from '../StoryScriptScope';
-import angular from 'angular';
+import angular from '../../../../../../node_modules/angular/angular.js';
 
 export class MainController {
     constructor(private _scope: StoryScriptScope, private _timeout: ng.ITimeoutService, private _gameService: StoryScript.IGameService, private _sharedMethodService: ISharedMethodService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {

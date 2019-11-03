@@ -1,4 +1,4 @@
-import StoryScript from '../../../../../types/storyscript';
+import StoryScript from '../../../compiled/storyscript.js'
 
 export class NavigationController implements ng.IComponentController {
     constructor(private _gameService: StoryScript.IGameService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {

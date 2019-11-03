@@ -1,5 +1,4 @@
-
-import StoryScript from '../../../../../types/storyscript';
+import StoryScript from '../../../compiled/storyscript.js'
 import { ISharedMethodService } from '../../Services/SharedMethodService';
 
 export class QuestController {

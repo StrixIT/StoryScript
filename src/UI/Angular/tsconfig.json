@@ -5,6 +5,7 @@
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "typeRoots": [
             "../../node_modules/@types",
             "../../types"
@@ -13,11 +14,11 @@
             "jquery",
             "angular",
             "bootstrap",
-            "storyscript"
+            "StoryScript"
         ],
     },
     "include": [
-        "./src/Services/**/*.tss",
+        "./src/Services/**/*.ts",
         "./src/Components/**/*.ts",
         "./src/Directives/**/*.ts",
         "./app*.ts",

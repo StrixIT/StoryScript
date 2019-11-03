@@ -1,4 +1,4 @@
-import StoryScript from '../../../../../types/storyscript';
+import StoryScript from '../../../compiled/storyscript.js'
 import { StoryScriptScope } from '../StoryScriptScope';
 
 export class MenuModalController implements ng.IComponentController {

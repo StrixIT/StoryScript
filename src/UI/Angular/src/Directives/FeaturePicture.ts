@@ -1,5 +1,5 @@
-import StoryScript from '../../../../types/storyscript';
-import angular from 'angular';
+import StoryScript from '../../compiled/storyscript.js'
+import angular from '../../../../../node_modules/angular/angular.js';
 
 export class FeaturePicture implements ng.IDirective {
     constructor(private _game: StoryScript.IGame) {

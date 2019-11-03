@@ -1,4 +1,5 @@
-﻿import angular from 'angular';
+﻿import * as angular from '../../../../node_modules/angular';
+import * as angularSanitize from '../../../../node_modules/angular-sanitize';
 import { SharedMethodService } from './Services/SharedMethodService';
 import { BackpackController } from './Components/Backpack/BackpackController';
 import { ActionLogController } from './Components/ActionLog/ActionLogController';
@@ -29,9 +30,23 @@ import { ConversationController } from './Components/Conversation/ConversationCo
 import { SoundController } from './Components/Sound/SoundController';
 import { IntroController } from './Components/Intro/IntroController';
 
+// Todo: clean this mess
+// START
+import _TestGame from '../compiled/game.js'
+import Descriptions from '../compiled/game-descriptions.js'
+
 const MODULE_NAME = 'storyscript';
+var desc = Descriptions;
+var game = _TestGame;
+var san = angularSanitize;
 var storyScriptModule = angular.module(MODULE_NAME, ['ngSanitize']);
-var objectFactory = (<any>window).StoryScript.ObjectFactory;
+
+import templates from '../compiled/ui-templates.js'
+var temp = templates;
+
+var StoryScript = (<any>window).StoryScript;
+var objectFactory = StoryScript.ObjectFactory;
+// END
 
 export default MODULE_NAME;
 

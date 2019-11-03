@@ -1,4 +1,4 @@
-import StoryScript from '../../../../types/storyscript'
+import StoryScript from '../../compiled/storyscript.js'
 
 export interface ISharedMethodService {
     enemiesPresent(): boolean;

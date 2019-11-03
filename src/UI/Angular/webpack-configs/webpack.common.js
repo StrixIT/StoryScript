@@ -6,6 +6,11 @@ module.exports = {
     entry: {
         app: './src/main.ts',
     },
+    watch:true,
+    devServer: {
+        contentBase: path.join(__dirname, "../../dist/"),
+        port: 9000
+    },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, '../../', 'dist')

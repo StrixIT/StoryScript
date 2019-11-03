@@ -1,6 +1,6 @@
-import StoryScript from '../../../../types/storyscript';
+import StoryScript from '../../compiled/storyscript.js'
+import angular from '../../../../../node_modules/angular/angular.js';
 import { StoryScriptScope } from '../Components/StoryScriptScope';
-import angular from 'angular';
 
 export class TextFeatures implements ng.IDirective {
     restrict = 'A';

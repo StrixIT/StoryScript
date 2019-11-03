@@ -1,6 +1,9 @@
 {
     "version": "1.0.0",
     "private": true,
+    "scripts": {
+        "start": "cd src/UI/Angular && webpack-dev-server --config webpack.config.js"
+    },
     "devDependencies": {
         "@types/angular": "^1.6.55",
         "@types/bootstrap": "^4.3.1",
@@ -34,6 +37,7 @@
         "gulp-tslint": "^8.1.3",
         "gulp-typescript": "^5.0.0",
         "gulp-imagemin": "^6.1.0",
+        "gulp-header": "^2.0.9",
         "gulp-zip": "5.0.0",
         "tslint": "^5.19.0",
         "jasmine": "^3.4.0",
