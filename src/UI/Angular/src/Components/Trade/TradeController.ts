@@ -1,21 +1,24 @@
+import { IGame, IInterfaceTexts, IItem, ITrade } from '../../../../../Engine/Interfaces/storyScript';
+import { ITradeService } from '../../../../../Engine/Services/interfaces/services';
+
 export class TradeController {
-    constructor(private _tradeService: StoryScript.ITradeService, _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _tradeService: ITradeService, _game: IGame, _texts: IInterfaceTexts) {
         this.game = _game;
         this.texts = _texts;
     }
 
-    game: StoryScript.IGame;
-    texts: StoryScript.IInterfaceTexts;
+    game: IGame;
+    texts: IInterfaceTexts;
 
     canPay = (currency: number, value: number): boolean => this._tradeService.canPay(currency, value);
 
-    actualPrice = (item: StoryScript.IItem, modifier: number | (() => number)): number => this._tradeService.actualPrice(item, modifier);
+    actualPrice = (item: IItem, modifier: number | (() => number)): number => this._tradeService.actualPrice(item, modifier);
 
-    displayPrice = (item: StoryScript.IItem, actualPrice: number): string  => this._tradeService.displayPrice(item, actualPrice);
+    displayPrice = (item: IItem, actualPrice: number): string  => this._tradeService.displayPrice(item, actualPrice);
 
-    buy = (item: StoryScript.IItem, trade: StoryScript.ITrade): boolean => this._tradeService.buy(item, trade);
+    buy = (item: IItem, trade: ITrade): boolean => this._tradeService.buy(item, trade);
     
-    sell = (item: StoryScript.IItem, trade: StoryScript.ITrade): boolean => this._tradeService.sell(item, trade);
+    sell = (item: IItem, trade: ITrade): boolean => this._tradeService.sell(item, trade);
 }
 
 TradeController.$inject = ['tradeService', 'game', 'customTexts'];

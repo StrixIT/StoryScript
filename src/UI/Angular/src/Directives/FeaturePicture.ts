@@ -1,12 +1,13 @@
-import StoryScript from '../../compiled/storyscript.js'
-import angular from '../../../../../node_modules/angular/angular.js';
+import { IGame, IFeature } from '../../../../Engine/Interfaces/storyScript';
+import * as angular from 'angular';
+import { compareString } from '../../../../Engine/globals';
 
 export class FeaturePicture implements ng.IDirective {
-    constructor(private _game: StoryScript.IGame) {
+    constructor(private _game: IGame) {
     }
 
     link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
-        var feature = <StoryScript.IFeature>(<any>scope).feature;
+        var feature = <IFeature>(<any>scope).feature;
         var topElement = angular.element('#visual-features');
         this.removeExistingElements(topElement, feature);
         var game = this._game;
@@ -41,11 +42,11 @@ export class FeaturePicture implements ng.IDirective {
         };
     }
 
-    private getFeatureCoordinates = (feature: StoryScript.IFeature): { top: number, left: number } => {
+    private getFeatureCoordinates = (feature: IFeature): { top: number, left: number } => {
         var coords = feature.coords.split(',');
         var top = null, left = null;
 
-        if (StoryScript.compareString(feature.shape, 'poly')) {
+        if (compareString(feature.shape, 'poly')) {
             var x = [], y = [];
 
             for (var i = 0; i < coords.length; i++) {
@@ -76,6 +77,6 @@ export class FeaturePicture implements ng.IDirective {
 
     public static Factory()
     {
-        return (game: StoryScript.IGame) => new FeaturePicture(game);
+        return (game: IGame) => new FeaturePicture(game);
     }
 }

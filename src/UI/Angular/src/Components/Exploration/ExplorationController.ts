@@ -1,34 +1,37 @@
-import StoryScript from '../../../compiled/storyscript.js'
+import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, Enumerations, IDestination } from '../../../../../Engine/Interfaces/storyScript';
 import { ISharedMethodService } from '../../Services/SharedMethodService';
+import { IGameService } from '../../../../../Engine/Services/interfaces/services';
+import { IBarrier } from '../../../../../Engine/Interfaces/barrier';
+import { isEmpty } from '../../../../../Engine/utilities';
 
 export class ExplorationController implements ng.IComponentController {
-    constructor(private _gameService: StoryScript.IGameService, private _sharedMethodService: ISharedMethodService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _texts: IInterfaceTexts) {
         this.game = _game;
         this.texts = _texts;
     }
 
-    game: StoryScript.IGame;
-    texts: StoryScript.IInterfaceTexts;
+    game: IGame;
+    texts: IInterfaceTexts;
 
-    trade = (game, trade: StoryScript.IPerson | StoryScript.ITrade): boolean => this._sharedMethodService.trade(trade);
+    trade = (game, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
     changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
-    actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !StoryScript.isEmpty(this.game.currentLocation.actions);
+    actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-    getButtonClass = (action: StoryScript.IAction): string => this._sharedMethodService.getButtonClass(action);
+    getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
-    getCombineClass = (barrier: StoryScript.IBarrier): string => this._game.combinations.getCombineClass(barrier);
+    getCombineClass = (barrier: IBarrier): string => this._game.combinations.getCombineClass(barrier);
 
-    disableActionButton = (action: StoryScript.IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == StoryScript.ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == StoryScript.ActionStatus.Disabled;
+    disableActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == Enumerations.ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == Enumerations.ActionStatus.Disabled;
 
-    hideActionButton = (action: StoryScript.IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == StoryScript.ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == StoryScript.ActionStatus.Unavailable;
+    hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == Enumerations.ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == Enumerations.ActionStatus.Unavailable;
 
-    executeAction = (action: StoryScript.IAction): void => this._sharedMethodService.executeAction(action, this);
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
 
-    executeBarrierAction = (barrier: StoryScript.IBarrier, destination: StoryScript.IDestination): void => {
+    executeBarrierAction = (barrier: IBarrier, destination: IDestination): void => {
         if (this._game.combinations.tryCombine(barrier))
         {
             return;

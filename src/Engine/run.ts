@@ -3,6 +3,8 @@ import { addFunctionExtensions, addArrayExtensions } from './globals';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
 
+let _factory: ObjectFactory = null;
+
 /**
  * This function bootstraps and runs your game.
  * @param nameSpace Your game's namespace (e.g. '_GameTemplate')
@@ -13,5 +15,9 @@ export function Run(nameSpace: string, texts: IInterfaceTexts, rules: IRules) {
     addFunctionExtensions();
     addArrayExtensions();
 
-    window.StoryScript.ObjectFactory = new ObjectFactory(nameSpace, rules, texts);
+    _factory = new ObjectFactory(nameSpace, rules, texts);
+}
+
+export function GetObjectFactory() {
+    return _factory;
 }

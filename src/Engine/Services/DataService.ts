@@ -3,6 +3,8 @@ import { IFunctionIdParts } from './interfaces/functionIdParts';
 import { DataKeys } from '../DataKeys';
 import { getPlural, isEmpty } from '../utilities';
 import { initCollection, setReadOnlyProperties } from '../ObjectConstructors';
+import { GetObjectFactory } from '../run';
+import { parseFunction } from '../globals';
 
 export class DataService implements IDataService {
     private descriptionBundle: Map<string, string>;
@@ -14,13 +16,13 @@ export class DataService implements IDataService {
     }
     
     save = <T>(key: string, value: T, pristineValues?: T): void => {
-        var functions = window.StoryScript.ObjectFactory.GetFunctions();
+        var functions = GetObjectFactory().GetFunctions();
         var clone = this.buildClone(functions, value, pristineValues);
         this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
     }
 
     copy = <T>(value: T, pristineValue: T): T => {
-        var functions = window.StoryScript.ObjectFactory.GetFunctions();
+        var functions = GetObjectFactory().GetFunctions();
         return this.buildClone(functions, value, pristineValue);
     }
 
@@ -37,7 +39,7 @@ export class DataService implements IDataService {
                     return null;
                 }
 
-                var functionList = window.StoryScript.ObjectFactory.GetFunctions();
+                var functionList = GetObjectFactory().GetFunctions();
                 this.restoreObjects(functionList, data);
                 setReadOnlyProperties(key, data);
                 return data;
@@ -271,7 +273,7 @@ export class DataService implements IDataService {
             loaded[key] = typeList[parts.functionId].function;
         }
         else if (typeof value === 'string' && value.indexOf('function') > -1) {
-            loaded[key] = (<any>value).parseFunction();
+            loaded[key] = parseFunction(value);
         }
     }
 

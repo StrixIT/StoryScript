@@ -38,24 +38,21 @@ export function addFunctionExtensions() {
             }
         });
     }
-
-    // This allows deserializing functions added at runtime without using eval.
-    // Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
-    if (typeof String.prototype.parseFunction !== 'function') {
-        (String.prototype).parseFunction = function () {
-            var text = this.toString();
-            var funcReg = /function[\s]*([a-zA-Z0-9]*)(\([\s\w\d,]*\))[\s]*({[\S\s]*})/gmi;
-            var match = funcReg.exec(text);
-    
-            if (match) {
-                var args = match[2].substring(1, match[2].length - 1);
-                return new Function(args, match[3]);
-            }
-    
-            return null;
-        };
-    }
 }
+
+// This allows deserializing functions added at runtime without using eval.
+// Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
+export function parseFunction (text: string) {
+    var funcReg = /function[\s]*([a-zA-Z0-9]*)(\([\s\w\d,]*\))[\s]*({[\S\s]*})/gmi;
+    var match = funcReg.exec(text);
+
+    if (match) {
+        var args = match[2].substring(1, match[2].length - 1);
+        return new Function(args, match[3]);
+    }
+
+    return null;
+};
 
 export function addArrayExtensions() {
     if ((<any>Array.prototype).get === undefined) {

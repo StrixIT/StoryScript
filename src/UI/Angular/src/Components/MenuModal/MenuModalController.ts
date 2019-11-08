@@ -1,23 +1,24 @@
-import StoryScript from '../../../compiled/storyscript.js'
+import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
 import { StoryScriptScope } from '../StoryScriptScope';
+import { IGameService } from '../../../../../Engine/Services/interfaces/services';
 
 export class MenuModalController implements ng.IComponentController {
 
-    constructor(private _scope: StoryScriptScope, private _gameService: StoryScript.IGameService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _scope: StoryScriptScope, private _gameService: IGameService, private _game: IGame, _texts: IInterfaceTexts) {
         this.texts = _texts;
         this.game = _game;
         this._scope.game = _game;
-        this.state = StoryScript.PlayState.Menu;
+        this.state = Enumerations.PlayState.Menu;
 
-        this._scope.$watch('game.playState', (newValue: StoryScript.PlayState) => {
-            if (newValue == StoryScript.PlayState.Menu) {
+        this._scope.$watch('game.playState', (newValue: Enumerations.PlayState) => {
+            if (newValue == Enumerations.PlayState.Menu) {
                 this.openModal();
             }
         });
     }
 
-    texts: StoryScript.IInterfaceTexts;
-    game: StoryScript.IGame;
+    texts: IInterfaceTexts;
+    game: IGame;
     saveKeys: string[];
     selectedGame: string;
     state: string;

@@ -1,13 +1,16 @@
+import { IGame, IInterfaceTexts, Conversations } from '../../../../../Engine/Interfaces/storyScript';
+import { IConversationService } from '../../../../../Engine/Services/interfaces/services';
+
 export class ConversationController {
-    constructor(private _conversationService: StoryScript.IConversationService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _conversationService: IConversationService, private _game: IGame, _texts: IInterfaceTexts) {
         this.game = this._game;
     }
 
-    game: StoryScript.IGame;
+    game: IGame;
 
-    answer = (node: StoryScript.IConversationNode, reply: StoryScript.IConversationReply): void => this._conversationService.answer(node, reply);
+    answer = (node: Conversations.IConversationNode, reply: Conversations.IConversationReply): void => this._conversationService.answer(node, reply);
 
-    getLines = (nodeOrReply: StoryScript.IConversationNode | StoryScript.IConversationReply): string => this._conversationService.getLines(nodeOrReply);
+    getLines = (nodeOrReply: Conversations.IConversationNode | Conversations.IConversationReply): string => this._conversationService.getLines(nodeOrReply);
 }
 
 ConversationController.$inject = ['conversationService', 'game', 'customTexts'];

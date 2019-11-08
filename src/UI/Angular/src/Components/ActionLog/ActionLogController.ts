@@ -1,11 +1,13 @@
+import { IGame, IInterfaceTexts } from '../../../../../Engine/Interfaces/storyScript';
+
 export class ActionLogController implements ng.IComponentController {
-    constructor(_game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(_game: IGame, _texts: IInterfaceTexts) {
         this.game = _game;
         this.texts = _texts;
     }
 
-    game: StoryScript.IGame;
-    texts: StoryScript.IInterfaceTexts;
+    game: IGame;
+    texts: IInterfaceTexts;
 }
 
 ActionLogController.$inject = ['game', 'customTexts'];

@@ -12,6 +12,7 @@ import { getSingular, getPlural, getDefinitionKeys } from './utilities';
 import { ICharacter } from './Interfaces/character';
 import { createFunctionHash, createNamedFunction } from './globals';
 import { ICombinable, ICombine } from './Interfaces/combinations/combinations';
+import { GetObjectFactory } from './run';
 
 var _definitions: IDefinitions = null;
 var _registeredIds: Set<string> = new Set<string>();
@@ -261,7 +262,7 @@ function CreateObject<T>(entity: T, type: string, id?: string)
 
     _registeredIds.add(compiledEntity.id + '|' + compiledEntity.type);
 
-    var functions = window.StoryScript.ObjectFactory.GetFunctions();
+    var functions = GetObjectFactory().GetFunctions();
 
     // If this is the first time an object of this definition is created, get the functions.
     if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith(compiledEntity.id + '|'))) {
@@ -300,7 +301,7 @@ function setReadOnlyCharacterProperties(character: ICharacter) {
 }
 
 function getDefinitions(): IDefinitions {
-    _definitions = _definitions || window.StoryScript.ObjectFactory.GetDefinitions();
+    _definitions = _definitions || GetObjectFactory().GetDefinitions();
     return _definitions;
 }
 

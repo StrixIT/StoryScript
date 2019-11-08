@@ -1,8 +1,3 @@
-import { ObjectFactory } from './ObjectFactory';
-
-interface String {
-    parseFunction: Function;
-}
 
 interface Function {
     proxy: Function;
@@ -14,7 +9,6 @@ interface Function {
 
 interface Window {
     StoryScript: {
-        ObjectFactory: ObjectFactory;
         GetGameDescriptions(): Map<string, string>;
     }
 }

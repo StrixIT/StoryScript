@@ -1,23 +1,25 @@
-import StoryScript from '../../../compiled/storyscript.js'
+import { IGame, IInterfaceTexts, IQuest } from '../../../../../Engine/Interfaces/storyScript';
 import { ISharedMethodService } from '../../Services/SharedMethodService';
+import { ICharacterService } from '../../../../../Engine/Services/interfaces/services';
+import { isEmpty } from '../../../../../Engine/utilities';
 
 export class QuestController {
-    constructor(private _characterService: StoryScript.ICharacterService, private _sharedMethodService: ISharedMethodService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _characterService: ICharacterService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _texts: IInterfaceTexts) {
         this.game = _game;
         this.texts = _texts;
         this._sharedMethodService.useQuests = true;
     }
 
-    game: StoryScript.IGame;
-    texts: StoryScript.IInterfaceTexts;
+    game: IGame;
+    texts: IInterfaceTexts;
 
-    showQuests = (): boolean => this._game.character && !StoryScript.isEmpty(this._game.character.quests);
+    showQuests = (): boolean => this._game.character && !isEmpty(this._game.character.quests);
 
     showActiveQuests = (): boolean => this._game.character.quests.filter(q => !q.completed).length > 0;
 
     showCompletedQuests = (): boolean => this._game.character.quests.filter(q => q.completed).length > 0;
 
-    questStatus = (quest: StoryScript.IQuest): string => this._characterService.questStatus(quest);
+    questStatus = (quest: IQuest): string => this._characterService.questStatus(quest);
 }
 
 QuestController.$inject = ['characterService', 'sharedMethodService', 'game', 'customTexts'];

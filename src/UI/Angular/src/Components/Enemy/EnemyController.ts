@@ -1,17 +1,19 @@
+import { IGame, IInterfaceTexts, IItem, IEnemy } from '../../../../../Engine/Interfaces/storyScript';
+import { IGameService } from '../../../../../Engine/Services/interfaces/services';
 import { ISharedMethodService } from '../../Services/SharedMethodService';
 
 export class EnemyController implements ng.IComponentController {
-    constructor(private _gameService: StoryScript.IGameService, private _sharedMethodService: ISharedMethodService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _texts: IInterfaceTexts) {
         this.game = _game;
         this.texts = _texts;
     }
 
-    game: StoryScript.IGame;
-    texts: StoryScript.IInterfaceTexts;
+    game: IGame;
+    texts: IInterfaceTexts;
 
-    getCombineClass = (item: StoryScript.IItem): string => this._game.combinations.getCombineClass(item);
+    getCombineClass = (item: IItem): string => this._game.combinations.getCombineClass(item);
 
-    tryCombine = (enemy: StoryScript.IEnemy): boolean => this._game.combinations.tryCombine(enemy);
+    tryCombine = (enemy: IEnemy): boolean => this._game.combinations.tryCombine(enemy);
 
     hasDescription = (type: string, item: { id?: string, description?: string }): boolean => this._gameService.hasDescription(type, item);
 

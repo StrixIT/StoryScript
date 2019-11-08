@@ -1,6 +1,9 @@
-import StoryScript from '../../compiled/storyscript.js'
-import angular from '../../../../../node_modules/angular/angular.js';
+import { IGame, IFeature } from '../../../../Engine/Interfaces/storyScript';
+import * as angular from 'angular';
 import { StoryScriptScope } from '../Components/StoryScriptScope';
+import { ICombinationService } from '../../../../Engine/Services/interfaces/services';
+import { compareString } from '../../../../Engine/globals';
+import { addHtmlSpaces } from '../../../../Engine/utilities';
 
 export class TextFeatures implements ng.IDirective {
     restrict = 'A';
@@ -8,7 +11,7 @@ export class TextFeatures implements ng.IDirective {
         location: '='
     }
 
-    constructor(private _combinationService: StoryScript.ICombinationService, private _game: StoryScript.IGame) {
+    constructor(private _combinationService: ICombinationService, private _game: IGame) {
     }
 
     link = (scope: StoryScriptScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
@@ -24,7 +27,7 @@ export class TextFeatures implements ng.IDirective {
                         var feature = this._game.currentLocation.features.get(featureElement.attr('name'));
 
                         if (feature) {
-                            this._game.currentLocation.text = this._game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + StoryScript.addHtmlSpaces(feature.description) + '<\/feature>');
+                            this._game.currentLocation.text = this._game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
                         }
                     });
                 
@@ -73,16 +76,16 @@ export class TextFeatures implements ng.IDirective {
 
     private isFeatureNode = (ev: any): boolean  => {
         var nodeType = ev.target && ev.target.nodeName;
-        return StoryScript.compareString(nodeType, 'feature');
+        return compareString(nodeType, 'feature');
     }
 
-    private getFeature = (ev: any): StoryScript.IFeature => {
+    private getFeature = (ev: any): IFeature => {
         var featureName = angular.element(ev.target).attr('name');
         return this._game.currentLocation.features.get(featureName);
     }
 
     public static Factory()
     {
-        return (combinationService: StoryScript.ICombinationService, game: StoryScript.IGame) => new TextFeatures(combinationService, game);
+        return (combinationService: ICombinationService, game: IGame) => new TextFeatures(combinationService, game);
     }
 }

@@ -1,19 +1,22 @@
+import { IInterfaceTexts, IGame, Combinations } from '../../../../../Engine/Interfaces/storyScript';
+import { ICombinationService } from '../../../../../Engine/Services/interfaces/services';
+
 export class CombinationController implements ng.IComponentController {
-    constructor(private _combinationService: StoryScript.ICombinationService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _combinationService: ICombinationService, private _game: IGame, _texts: IInterfaceTexts) {
         this.game = this._game;
         this.texts = _texts;
         this.combineActions = this._combinationService.getCombinationActions();
     }
 
-    game: StoryScript.IGame;
-    texts: StoryScript.IInterfaceTexts;
-    combineActions: StoryScript.ICombinationAction[];
+    game: IGame;
+    texts: IInterfaceTexts;
+    combineActions: Combinations.ICombinationAction[];
 
-    selectCombinationAction = (combination: StoryScript.ICombinationAction) => this._combinationService.setActiveCombination(combination);
+    selectCombinationAction = (combination: Combinations.ICombinationAction) => this._combinationService.setActiveCombination(combination);
 
-    getCombineClass = (action: StoryScript.ICombinationAction): string => this._game.combinations.activeCombination && this._game.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
+    getCombineClass = (action: Combinations.ICombinationAction): string => this._game.combinations.activeCombination && this._game.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
     
-    tryCombination = (source: StoryScript.ICombinable): StoryScript.ICombineResult => this._combinationService.tryCombination(source);   
+    tryCombination = (source: Combinations.ICombinable): Combinations.ICombineResult => this._combinationService.tryCombination(source);   
 }
 
 CombinationController.$inject = ['combinationService', 'game', 'customTexts'];

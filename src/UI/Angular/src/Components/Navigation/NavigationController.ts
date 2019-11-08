@@ -1,13 +1,14 @@
-import StoryScript from '../../../compiled/storyscript.js'
+import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
+import { IGameService } from '../../../../../Engine/Services/interfaces/services';
 
 export class NavigationController implements ng.IComponentController {
-    constructor(private _gameService: StoryScript.IGameService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _gameService: IGameService, private _game: IGame, _texts: IInterfaceTexts) {
         this.texts = _texts;
     }
 
-    texts: StoryScript.IInterfaceTexts;
+    texts: IInterfaceTexts;
 
-    menu = (): StoryScript.PlayState => this._game.playState = StoryScript.PlayState.Menu;
+    menu = (): Enumerations.PlayState => this._game.playState = Enumerations.PlayState.Menu;
 
     reset = (): void => this._gameService.reset();
 }

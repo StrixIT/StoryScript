@@ -1,9 +1,11 @@
+import { IGame, IInterfaceTexts } from '../../../../../Engine/Interfaces/storyScript';
 import { ISharedMethodService } from '../../Services/SharedMethodService';
 import { StoryScriptScope } from '../StoryScriptScope';
-import angular from '../../../../../../node_modules/angular/angular.js';
+import * as angular from 'angular';
+import { IGameService } from '../../../../../Engine/Services/interfaces/services';
 
 export class MainController {
-    constructor(private _scope: StoryScriptScope, private _timeout: ng.ITimeoutService, private _gameService: StoryScript.IGameService, private _sharedMethodService: ISharedMethodService, private _game: StoryScript.IGame, _texts: StoryScript.IInterfaceTexts) {
+    constructor(private _scope: StoryScriptScope, private _timeout: ng.ITimeoutService, private _gameService: IGameService, private _sharedMethodService: ISharedMethodService, private _game: IGame, _texts: IInterfaceTexts) {
         this.game = _game;
         this.texts = _texts;
         this._scope.game = _game;
@@ -15,8 +17,8 @@ export class MainController {
         this._gameService.init();
     }
     
-    game: StoryScript.IGame;
-    texts: StoryScript.IInterfaceTexts;
+    game: IGame;
+    texts: IInterfaceTexts;
 
     showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
 
