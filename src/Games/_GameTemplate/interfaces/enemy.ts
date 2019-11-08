@@ -1,9 +1,10 @@
-﻿namespace GameTemplate {
-    export function Enemy(entity: IEnemy): IEnemy {
-        return StoryScript.Enemy(entity);
-    }
+﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
+import { IFeature } from '../types';
 
-    export interface IEnemy extends StoryScript.IEnemy {
-        // Add game-specific enemy properties here
-    }
+export function Enemy(entity: IEnemy): IEnemy {
+    return StoryScript.Enemy(entity);
+}
+
+export interface IEnemy extends IFeature, StoryScript.IEnemy {
+    // Add game-specific enemy properties here
 }

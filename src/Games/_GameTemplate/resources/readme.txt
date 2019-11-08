@@ -1,1 +1,0 @@
-This file is here to make gulp watch pick up changes to an empty directory. You can delete it once you add your own resources.

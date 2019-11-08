@@ -1,9 +1,10 @@
-﻿namespace GameTemplate {
-    export function Item(entity: IItem): IItem {
-        return StoryScript.Item(entity);
-    }
+﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
+import { IFeature } from '../types';
 
-    export interface IItem extends IFeature, StoryScript.IItem {
-        // Add game-specific item properties here
-    }
+export function Item(entity: IItem): IItem {
+    return StoryScript.Item(entity);
+}
+
+export interface IItem extends IFeature, StoryScript.IItem {
+    // Add game-specific item properties here
 }

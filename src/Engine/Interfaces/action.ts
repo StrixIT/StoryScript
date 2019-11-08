@@ -1,26 +1,27 @@
-﻿namespace StoryScript {
+﻿import { ActionType, ActionStatus } from './enumerations/enumerations';
+import { IGame } from './game';
+
+/**
+ * Actions available to the player when exploring the location.
+ */
+export interface IAction {
     /**
-     * Actions available to the player when exploring the location.
+     * The text shown for this action (e.g. 'Search').
      */
-    export interface IAction {
-        /**
-         * The text shown for this action (e.g. 'Search').
-         */
-        text?: string;
+    text?: string;
+
+    /**
+     * How to visually identify this action to the player.
+     */
+    actionType?: ActionType;
 
         /**
-         * How to visually identify this action to the player.
-         */
-        actionType?: ActionType;
+     * The action status or a function that returns an action status to set the status dynamically.
+     */
+    status?: ActionStatus | ((game: IGame) => ActionStatus);
 
-         /**
-         * The action status or a function that returns an action status to set the status dynamically.
-         */
-        status?: ActionStatus | ((game: IGame) => ActionStatus);
-
-         /**
-         * The function to execute when the player selects the action.
-         */
-        execute: string | ((game: IGame, action: IAction) => void);
-    }
+        /**
+     * The function to execute when the player selects the action.
+     */
+    execute: string | ((game: IGame, action: IAction) => void);
 }
