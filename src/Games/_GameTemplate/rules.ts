@@ -1,10 +1,10 @@
-﻿import { IRules, ICreateCharacter, ICharacter, ICombinationAction } from '../../Engine/Interfaces/storyScript';
+﻿import { IRules, CreateCharacters, ICharacter, Combinations } from '../../Engine/Interfaces/storyScript';
 import { IGame, IEnemy, Character } from './types';
 
 export function Rules(): IRules {
     return {
         setup: {
-            getCombinationActions: (): ICombinationAction[] => {
+            getCombinationActions: (): Combinations.ICombinationAction[] => {
                 return [
                     // Add combination action names here if you want to use this feature.
                 ];
@@ -25,7 +25,7 @@ export function Rules(): IRules {
                 ];
             },
 
-            getCreateCharacterSheet: (): ICreateCharacter => {
+            getCreateCharacterSheet: (): CreateCharacters.ICreateCharacter => {
                 return {
                     steps: [
                         // Add the character creation steps here, if you want to use character creation.
@@ -33,7 +33,7 @@ export function Rules(): IRules {
                 };
             },
 
-            createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
+            createCharacter: (game: IGame, characterData: CreateCharacters.ICreateCharacter): ICharacter => {
                 var character = new Character();
                 return character;
             }
