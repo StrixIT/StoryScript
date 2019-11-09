@@ -14,7 +14,7 @@ export class TextFeatures implements ng.IDirective {
     constructor(private _combinationService: ICombinationService, private _game: IGame) {
     }
 
-    link = (scope: StoryScriptScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
+    link = (scope: any, element: JQLite, attrs: ng.IAttributes): void => {
         scope.game = this._game;
 
         scope.$watch('game.combinations.combinationResult.done', (newValue) => {

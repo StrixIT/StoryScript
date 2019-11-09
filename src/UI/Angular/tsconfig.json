@@ -3,21 +3,24 @@
     "compilerOptions": {
         "module": "commonjs",
         "moduleResolution": "node",
+        "strict": true,
+        "noImplicitAny": false,
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "typeRoots": [
-            "../../node_modules/@types",
-            "../../types"
+            "../../node_modules/@types"
         ],
         "types": [
             "jquery",
             "angular",
-            "bootstrap",
-            "StoryScript"
+            "bootstrap"
+            
         ],
     },
     "include": [
+        "../../Engine/**/*.ts",
+        "../../Games/_GameTemplate/**/*.ts",
         "./src/Services/**/*.ts",
         "./src/Components/**/*.ts",
         "./src/Directives/**/*.ts",

@@ -1,9 +1,9 @@
-﻿namespace _TestGame {
-    export function Quest(entity: IQuest): IQuest {
-        return StoryScript.Quest(entity);
-    }
+﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
 
-    export interface IQuest extends StoryScript.IQuest {
-        // Add game-specific item properties here
-    }
+export function Quest(entity: IQuest): IQuest {
+    return StoryScript.Quest(entity);
+}
+
+export interface IQuest extends StoryScript.IQuest {
+    // Add game-specific item properties here
 }

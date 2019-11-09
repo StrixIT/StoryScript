@@ -1,6 +1,7 @@
 ﻿import { IGame } from '../Interfaces/game';
 import { IBarrier } from '../Interfaces/barrier';
 import { IDestination } from '../Interfaces/destination';
+import { RegisterAction } from '../ObjectConstructors';
 
 /**
  * A basic function to remove a barrier and then execute a callback function.
@@ -15,3 +16,5 @@ export function Open(callback?: (game: IGame, barrier: IBarrier, destination: ID
         }
     }
 }
+
+RegisterAction(Open);

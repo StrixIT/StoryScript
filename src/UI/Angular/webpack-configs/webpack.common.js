@@ -48,12 +48,16 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: [".ts", ".js"]
+        extensions: [".ts", ".js", ".css"]
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './index.html'
         }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery'
+          })
         // new optimization.splitChunks({
         //     name: 'vendor',
         //     filename: '[name].bundle.js',

@@ -1,9 +1,9 @@
-namespace _TestGame {
-    export function Feature(entity: IFeature): IFeature {
-        return StoryScript.Feature(entity);
-    }
+import * as StoryScript from '../../../Engine/Interfaces/storyScript';
 
-    export interface IFeature extends StoryScript.IFeature {
-        // Add game-specific item properties here
-    }
+export function Feature(entity: IFeature): IFeature {
+    return StoryScript.Feature(entity);
+}
+
+export interface IFeature extends StoryScript.IFeature {
+    // Add game-specific item properties here
 }

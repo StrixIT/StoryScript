@@ -2,9 +2,10 @@
 import { IFunctionIdParts } from './interfaces/functionIdParts';
 import { DataKeys } from '../DataKeys';
 import { getPlural, isEmpty } from '../utilities';
-import { initCollection, setReadOnlyProperties } from '../ObjectConstructors';
+import { initCollection, setReadOnlyProperties, GetFunctions } from '../ObjectConstructors';
 import { GetObjectFactory } from '../run';
 import { parseFunction } from '../globals';
+import * as templates from '../../../dist/js/game-descriptions.js'
 
 export class DataService implements IDataService {
     private descriptionBundle: Map<string, string>;
@@ -12,7 +13,7 @@ export class DataService implements IDataService {
     private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
 
     constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
-        this.descriptionBundle = window.StoryScript.GetGameDescriptions();
+        this.descriptionBundle = templates.GetGameDescriptions();
     }
     
     save = <T>(key: string, value: T, pristineValues?: T): void => {
@@ -39,7 +40,7 @@ export class DataService implements IDataService {
                     return null;
                 }
 
-                var functionList = GetObjectFactory().GetFunctions();
+                var functionList = GetFunctions();
                 this.restoreObjects(functionList, data);
                 setReadOnlyProperties(key, data);
                 return data;

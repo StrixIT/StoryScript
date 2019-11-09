@@ -1,5 +1,12 @@
-﻿import * as angular from '../../../../node_modules/angular';
-import * as angularSanitize from '../../../../node_modules/angular-sanitize';
+﻿import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../src/styles/storyscript.css'
+import '../../../Games/_TestGame/ui/styles/game.css'
+import * as angular from 'angular';
+import 'angular-sanitize';
+import '../../../Games/_TestGame/run.ts'
+import '../../../Games/_TestGame/all.ts'
+
 import { SharedMethodService } from './Services/SharedMethodService';
 import { BackpackController } from './Components/Backpack/BackpackController';
 import { ActionLogController } from './Components/ActionLog/ActionLogController';
@@ -29,26 +36,16 @@ import { TradeController } from './Components/Trade/TradeController';
 import { ConversationController } from './Components/Conversation/ConversationController';
 import { SoundController } from './Components/Sound/SoundController';
 import { IntroController } from './Components/Intro/IntroController';
-
-// Todo: clean this mess
-// START
-import _TestGame from '../compiled/game.js'
-import Descriptions from '../compiled/game-descriptions.js'
+import { GetObjectFactory } from '../../../Engine/run';
 
 const MODULE_NAME = 'storyscript';
-var desc = Descriptions;
-var game = _TestGame;
-var san = angularSanitize;
+export default MODULE_NAME;
+
 var storyScriptModule = angular.module(MODULE_NAME, ['ngSanitize']);
 
-import templates from '../compiled/ui-templates.js'
-var temp = templates;
+import '../../../../dist/js/ui-templates.js'
 
-var StoryScript = (<any>window).StoryScript;
-var objectFactory = StoryScript.ObjectFactory;
-// END
-
-export default MODULE_NAME;
+var objectFactory = GetObjectFactory();
 
 storyScriptModule.value('game', objectFactory.GetGame());
 storyScriptModule.value('customTexts', objectFactory.GetTexts());
@@ -60,8 +57,8 @@ storyScriptModule.value('combinationService', objectFactory.GetCombinationServic
 
 storyScriptModule.service('sharedMethodService', SharedMethodService);
 
-storyScriptModule.directive('featurePicture', FeaturePicture.Factory());
-storyScriptModule.directive('textFeatures', TextFeatures.Factory());
+storyScriptModule.directive('featurePicture', ['game', FeaturePicture.Factory()]);
+storyScriptModule.directive('textFeatures', ['combinationService', 'game', TextFeatures.Factory()]);
 
 storyScriptModule.component('main', {
     templateUrl: 'ui/MainComponent.html',

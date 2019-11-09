@@ -536,7 +536,7 @@ export class GameService implements IGameService {
     }
 
     private startPlay = (type: string, parent: any, key: string): void => {
-        setTimeout(function () {
+        setTimeout(() => {
             var mediaElements = document.getElementsByTagName(type);
 
             for (var i = 0; i < mediaElements.length; i++) {

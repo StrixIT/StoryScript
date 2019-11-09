@@ -17,10 +17,12 @@ import { IDestination } from './destination'
 import { IBarrier } from './barrier'
 import { IHelpers } from './helpers'
 import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../ObjectConstructors'
+import * as Actions from '../Actions/actions'
 import * as Combinations from './combinations/combinations'
 import * as CreateCharacters from './createCharacter/createCharacters'
 import * as Conversations from './conversations/conversations'
 import * as Enumerations from './enumerations/enumerations'
+import { RegisterLocation, RegisterItem, RegisterEnemy, RegisterPerson, RegisterQuest } from '../ObjectConstructors'
 
 export { 
     ICollection, 
@@ -50,7 +52,13 @@ export {
     Quest,
     IHelpers,
     CreateCharacters,
+    Actions,
     Combinations,
     Conversations,
-    Enumerations
+    Enumerations,
+    RegisterLocation, 
+    RegisterItem, 
+    RegisterEnemy, 
+    RegisterPerson,
+    RegisterQuest
 }

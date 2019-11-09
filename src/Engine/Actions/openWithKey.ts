@@ -2,6 +2,7 @@
 import { IBarrier } from '../Interfaces/barrier';
 import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
+import { RegisterAction } from '../ObjectConstructors';
 
 /**
  * A basic function to remove a barrier using a key and then execute a callback function. When it is not specified that the player
@@ -24,3 +25,5 @@ export function OpenWithKey(callBack?: (game: IGame, barrier: IBarrier, destinat
         }
     }
 }
+
+RegisterAction(OpenWithKey);

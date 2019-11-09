@@ -8,22 +8,41 @@ import { IFeature } from './Interfaces/feature';
 import { IQuest } from './Interfaces/quest';
 import { IAction } from './Interfaces/action';
 import { DataKeys } from './DataKeys';
-import { getSingular, getPlural, getDefinitionKeys } from './utilities';
+import { getSingular, getPlural } from './utilities';
 import { ICharacter } from './Interfaces/character';
 import { createFunctionHash, createNamedFunction } from './globals';
 import { ICombinable, ICombine } from './Interfaces/combinations/combinations';
 import { GetObjectFactory } from './run';
 
-var _definitions: IDefinitions = null;
 var _registeredIds: Set<string> = new Set<string>();
 var _currentEntityId: string = null;
 
-export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
-    var namedFunction = <() => T>createNamedFunction(null, entityFunction, getIdFromName({ id: '', name: name }));
+var _definitions: IDefinitions = {
+    actions: [],
+    locations: [],
+    features: [],
+    items: [],
+    enemies: [],
+    persons: [],
+    quests: []
+};
+
+const _functions = {};
+
+export function GetDefinitions(): IDefinitions { 
+    return _definitions; 
+}
+
+export function GetFunctions(): {} { 
+    return _functions; 
+}
+
+export function DynamicEntity(entityFunction: Function, name: string): Function {
+    var namedFunction = createNamedFunction(null, entityFunction, getIdFromName({ id: '', name: name }));
     return CreateEntityProxy(namedFunction)();
 }
 
-export function CreateEntityProxy<T>(entityFunction: (() => T)): () => T {
+export function CreateEntityProxy(entityFunction: Function): () => Function {
     return entityFunction.proxy((originalScope, originalFunc, ...params) => {
         var id = params.splice(params.length - 1, 1)[0];
         var oldId = GetCurrentEntityId();
@@ -40,6 +59,42 @@ export function GetCurrentEntityId() {
 
 export function SetCurrentEntityId(id: string) {
     _currentEntityId = id ? id.toLowerCase() : id;
+}
+
+export function RegisterAction(action: Function) {
+    Register<Function>('actions', action);
+}
+
+export function RegisterEnemy(entityFunc: () => IEnemy) {
+    Register<IEnemy>('enemies', entityFunc);
+}
+
+export function RegisterPerson(entityFunc: () => IPerson) {
+    Register<IPerson>('persons', entityFunc);
+}
+
+export function RegisterItem(entityFunc: () => IItem) {
+    Register<IItem>('items', entityFunc);
+}
+
+export function RegisterQuest(entityFunc: () => IQuest) {
+    Register<IQuest>('quests', entityFunc);
+}
+
+export function RegisterLocation(entityFunc: () => ILocation) {
+    Register<ILocation>('locations', entityFunc);
+}
+
+function Register<T>(type: string, entityFunc: Function) {
+    // Use the function reference to register the type and id of the entities
+    // instead of this. Then, we can look up the type and id directly instead
+    // of having to use the complicated logic in the createObject function.
+
+    _functions[type] = _functions[type] || {};
+    _definitions[type] = _definitions[type] || {};
+    var proxy = CreateEntityProxy(entityFunc);
+    var entity = proxy();
+    _definitions[type][(<any>entity).id] = proxy;
 }
 
 export function Location(entity: ILocation): ILocation {
@@ -244,11 +299,10 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     }
 
     var compiledEntity: { id: string, name: string, type: string } = typeof entity === 'function' ? entity() : entity;
-    var definitions = getDefinitions();
     
     compiledEntity.id = id ? id : GetCurrentEntityId();
 
-    var definitionKeys = getDefinitionKeys(definitions);
+    const definitionKeys = Object.getOwnPropertyNames(_definitions);
 
     addFunctionIds(compiledEntity, type, definitionKeys);
     var plural = getPlural(type);
@@ -262,11 +316,9 @@ function CreateObject<T>(entity: T, type: string, id?: string)
 
     _registeredIds.add(compiledEntity.id + '|' + compiledEntity.type);
 
-    var functions = GetObjectFactory().GetFunctions();
-
     // If this is the first time an object of this definition is created, get the functions.
-    if (!functions[plural] || !Object.getOwnPropertyNames(functions[plural]).find(e => e.startsWith(compiledEntity.id + '|'))) {
-        getFunctions(plural, functions, definitionKeys, compiledEntity, null);
+    if (!_functions[plural] || !Object.getOwnPropertyNames(_functions[plural]).find(e => e.startsWith(compiledEntity.id + '|'))) {
+        getFunctions(plural, _functions, definitionKeys, compiledEntity, null);
     }
 
     return <T><unknown>compiledEntity;
@@ -298,11 +350,6 @@ function setReadOnlyCharacterProperties(character: ICharacter) {
             return character.items.filter(e => { return e.useInCombat; });
         }
     });
-}
-
-function getDefinitions(): IDefinitions {
-    _definitions = _definitions || GetObjectFactory().GetDefinitions();
-    return _definitions;
 }
 
 function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
@@ -354,12 +401,12 @@ function getPath(value, key: string, path: string, definitionKeys: string[]): st
 
 function compileCombinations(entry: ICombinable) {
     if (entry.combinations) {
-        var combines = <ICombine<() => ICombinable>[]>[];
+        var combines = <ICombine<ICombinable>[]>[];
         var failText = entry.combinations.failText;
 
-        entry.combinations.combine.forEach((combine: ICombine<() => ICombinable>) => {
+        entry.combinations.combine.forEach((combine: ICombine<ICombinable>) => {
             var compiled = combine;
-            (<any>compiled).tool = compiled.tool && (compiled.tool.name || compiled.tool.originalFunctionName);
+            (<any>compiled).tool = compiled.tool && (compiled.tool.name || (<any>compiled.tool).originalFunctionName);
             combines.push(compiled);
         });
 

@@ -1,4 +1,5 @@
 ﻿import { Location } from '../types'
+import { RegisterLocation } from '../../../Engine/ObjectConstructors';
 
 export function Start() {
     return Location({
@@ -8,3 +9,5 @@ export function Start() {
         ]
     });
 }
+
+RegisterLocation(Start);

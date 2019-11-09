@@ -1,6 +1,5 @@
 import { ILocalStorageService, ILocationService, IDataService, ICharacterService, IHelperService, IGameService, ITradeService, IConversationService, ICombinationService } from './Services/interfaces/services';
 import { IGame } from './Interfaces/game';
-import { IDefinitions } from './Interfaces/definitions';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
 import { LocalStorageService } from './Services/LocalStorageService';
@@ -12,14 +11,12 @@ import { LocationService } from './Services/LocationService';
 import { CombinationService } from './Services/CombinationService';
 import { CharacterService } from './Services/characterService';
 import { GameService } from './Services/gameService';
-import { getDefinitionKeys } from './utilities';
-import { CreateEntityProxy } from './ObjectConstructors';
+import { GetDefinitions } from './ObjectConstructors';
 
 export class ObjectFactory {
     static _isInitialized = false;
 
     private _game: IGame = <IGame>{};
-    private _definitions: IDefinitions = <IDefinitions>{};
     private _functions: { [type: string]: { [id: string]: { function: Function, hash: number } } };
 
     private _nameSpace: string;
@@ -45,8 +42,6 @@ export class ObjectFactory {
     }
 
     GetNameSpace = (): string => this._nameSpace;
-
-    GetDefinitions = (): IDefinitions => this._definitions;
 
     GetFunctions = (): { [type: string]: { [id: string]: { function: Function, hash: number } } } => this._functions;
 
@@ -88,62 +83,16 @@ export class ObjectFactory {
     private init = (): void => {
         if (!ObjectFactory._isInitialized)
         {
-            this.getDefinitions();
-            this.registerFunctions();
-            this._game.definitions = this._definitions;
+            this._game.definitions = GetDefinitions();
             this._helperService = new HelperService(this._game);
             this._tradeService = new TradeService(this._game, this._texts);
             this._dataService = new DataService(this._localStorageService, this._nameSpace);
             this._conversationService = new ConversationService(this._dataService, this._game);
-            this._locationService = new LocationService(this._dataService, this._rules, this._game, this._definitions);
+            this._locationService = new LocationService(this._dataService, this._rules, this._game, this._game.definitions);
             this._combinationService = new CombinationService(this._dataService, this._locationService, this._game, this._rules, this._texts);
             this._characterService = new CharacterService(this._game, this._rules);
             this._gameService = new GameService(this._dataService, this._locationService, this._characterService, this._combinationService, this._rules, this._helperService, this._game, this._texts);
             ObjectFactory._isInitialized = true;
         }
-    }
-
-    private registerFunctions = (): void => {
-        var definitionKeys = getDefinitionKeys(this._definitions);
-        this._functions = {};
-        var index = 0;
-
-        for (var i in this._definitions) {
-            var type = definitionKeys[index] || 'actions';
-            var definitions = this._definitions[i];
-            this._functions[type] = {};
-
-            for (var j in definitions) {
-                var definition = <() => {}>definitions[j];
-                definition();
-            }
-
-            index++;
-        }
-    }
-
-    private getDefinitions = (): void => {
-        var nameSpaceObject = window[this._nameSpace];
-        this._definitions.locations = this.moveObjectPropertiesToArray(nameSpaceObject['Locations']);
-        this._definitions.features = this.moveObjectPropertiesToArray(nameSpaceObject['Features']);
-        this._definitions.enemies = this.moveObjectPropertiesToArray(nameSpaceObject['Enemies']);
-        this._definitions.persons = this.moveObjectPropertiesToArray(nameSpaceObject['Persons']);
-        this._definitions.items = this.moveObjectPropertiesToArray(nameSpaceObject['Items']);
-        this._definitions.quests = this.moveObjectPropertiesToArray(nameSpaceObject['Quests']);
-        this._definitions.actions = this.moveObjectPropertiesToArray(window['StoryScript']['Actions']);
-        this.moveObjectPropertiesToArray(nameSpaceObject['Actions'], this._definitions.actions);
-    }
-
-    private moveObjectPropertiesToArray<T>(object: {}, collection?: (() => T)[]) {
-        collection = collection || [];
-        
-        for (var n in object) {
-            if (object.hasOwnProperty(n)) {
-                object[n] = CreateEntityProxy(object[n]);
-                collection.push(object[n]);
-            }
-        }
-
-        return collection;
     }
 }
