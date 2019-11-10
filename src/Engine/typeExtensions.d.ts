@@ -12,3 +12,8 @@ interface Window {
         GetGameDescriptions(): Map<string, string>;
     }
 }
+
+declare module '*.html' {
+    const content: string
+    export default content
+}

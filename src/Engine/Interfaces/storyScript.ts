@@ -23,6 +23,10 @@ import * as CreateCharacters from './createCharacter/createCharacters'
 import * as Conversations from './conversations/conversations'
 import * as Enumerations from './enumerations/enumerations'
 import { RegisterLocation, RegisterItem, RegisterEnemy, RegisterPerson, RegisterQuest } from '../ObjectConstructors'
+import { IDefinitions } from './definitions'
+import { ScoreEntry } from './scoreEntry'
+import { IDynamicStyle } from './dynamicStyle'
+import { IStatistics } from './statistics'
 
 export { 
     ICollection, 
@@ -60,5 +64,9 @@ export {
     RegisterItem, 
     RegisterEnemy, 
     RegisterPerson,
-    RegisterQuest
+    RegisterQuest,
+    IDefinitions,
+    ScoreEntry,
+    IDynamicStyle,
+    IStatistics
 }

@@ -1,5 +1,5 @@
 ﻿import { IRules, Combinations, CreateCharacters, ICharacter } from '../../Engine/Interfaces/storyScript';
-import { IGame, Character, IEnemy } from './interfaces/types';
+import { Game, Character, IEnemy } from './interfaces/types';
 
 export function Rules(): IRules {
     return {
@@ -39,7 +39,7 @@ export function Rules(): IRules {
         },
 
         general: {
-            scoreChange: (game: IGame, change: number): boolean => {
+            scoreChange: (game: Game, change: number): boolean => {
                 // Implement logic to occur when the score changes. Return true when the character gains a level.
                 return false;
             }
@@ -121,14 +121,14 @@ export function Rules(): IRules {
                 };
             },
 
-            createCharacter: (game: IGame, characterData: CreateCharacters.ICreateCharacter): ICharacter => {
+            createCharacter: (game: Game, characterData: CreateCharacters.ICreateCharacter): ICharacter => {
                 var character = new Character();
                 return character;
             }
         },
 
         combat: {
-            fight: (game: IGame, enemy: IEnemy): void => {
+            fight: (game: Game, enemy: IEnemy): void => {
                 var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
                 game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;

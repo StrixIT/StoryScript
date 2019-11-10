@@ -1,5 +1,9 @@
-import { IGame, IPerson, ITrade, IAction, Enumerations } from '../../../../Engine/Interfaces/storyScript';
-import { IGameService, ITradeService } from '../../../../Engine/Services/interfaces/services';
+import { IGame, ITrade, IAction, Enumerations } from '../../../../Engine/Interfaces/storyScript';
+import { Injectable } from '@angular/core';
+import { GameService } from '../../../../Engine/Services/gameService';
+import { TradeService } from '../../../../Engine/Services/TradeService';
+import { Game } from '../../../../Games/_TestGame/interfaces/game';
+import { IPerson } from '../../../../Games/_TestGame/interfaces/types';
 
 export interface ISharedMethodService {
     enemiesPresent(): boolean;
@@ -16,24 +20,9 @@ export interface ISharedMethodService {
     useGround?: boolean;
 }
 
-export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
-    constructor(private _gameService: IGameService, private _tradeService: ITradeService, private _game: IGame) {
-    }
-
-    public $get(gameService: IGameService, tradeService: ITradeService, game: IGame): ISharedMethodService {
-        this._gameService = gameService;
-        this._tradeService = tradeService;
-        this._game = game;
-
-        return {
-            enemiesPresent: this.enemiesPresent,
-            trade: this.trade,
-            getButtonClass: this.getButtonClass,
-            executeAction: this.executeAction,
-            startCombat: this.startCombat,
-            showDescription: this.showDescription,
-            showEquipment: this.showEquipment
-        };
+@Injectable()
+export class SharedMethodService implements ISharedMethodService {
+    constructor(private _gameService: GameService, private _tradeService: TradeService, private _game: Game) {
     }
 
     useCharacterSheet?: boolean;

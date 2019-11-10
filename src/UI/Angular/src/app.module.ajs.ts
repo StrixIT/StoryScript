@@ -7,6 +7,8 @@ import 'angular-sanitize';
 import '../../../Games/_TestGame/run.ts'
 import '../../../Games/_TestGame/all.ts'
 
+import { downgradeComponent, downgradeInjectable } from '@angular/upgrade/static';
+
 import { SharedMethodService } from './Services/SharedMethodService';
 import { BackpackController } from './Components/Backpack/BackpackController';
 import { ActionLogController } from './Components/ActionLog/ActionLogController';
@@ -22,7 +24,7 @@ import { QuestController } from './Components/Quest/QuestController';
 import { LevelUpController } from './Components/LevelUp/LevelUpController';
 import { NavigationController } from './Components/Navigation/NavigationController';
 import { MenuModalController } from './Components/MenuModal/MenuModalController';
-import { EncounterController } from './Components/Encounter/EncounterController';
+import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { LocationController } from './Components/Location/LocationController';
 import { ExplorationController } from './Components/Exploration/ExplorationController';
 import { GroundController } from './Components/Ground/GroundController';
@@ -108,10 +110,9 @@ storyScriptModule.component('menuModal', {
     controller: MenuModalController
 });
 
-storyScriptModule.component('encounter', {
-    templateUrl: 'ui/EncounterComponent.html',
-    controller: EncounterController
-});
+storyScriptModule
+    .directive('encounter', downgradeComponent({component: EncounterComponent}))
+    .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('location', {
     templateUrl: 'ui/LocationComponent.html',
