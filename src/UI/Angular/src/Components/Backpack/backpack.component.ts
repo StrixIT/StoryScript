@@ -8,7 +8,7 @@ import { GameService } from '../../../../../Engine/Services/gameService';
 import { CharacterService } from '../../../../../Engine/Services/characterService';
 
 @Component({
-    selector: 'encounter',
+    selector: 'backpack',
     template: template,
 })
 export class BackpackComponent {

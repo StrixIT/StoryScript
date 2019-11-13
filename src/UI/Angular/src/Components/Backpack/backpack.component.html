@@ -2,13 +2,13 @@
         <div class="box-title" data-toggle="collapse" data-target="#backpack-panel">{{ texts.backpack }}</div>
         <ul id="backpack-panel" class="collapse show list-unstyled">
             <li *ngFor="let item of game.character.items">
-                <div (click)="tryCombine(item)" ng-class="getCombineClass(item)">
+                <div (click)="tryCombine(item)" [ngClass]="getCombineClass(item)">
                     <span>{{ item.name }}</span>
-                    <div id="backpack-button-row" class="inline" ng-class="getCombineClass()">
-                        <button type="button" class="btn btn-info btn-sm" ng-if="canEquip(item) && showEquipment()" (click)="equipItem(item)">{{ texts.equip }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="hasDescription('items', item)" (click)="showDescription(item, item.name)">{{ texts.view }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="item.use" (click)="useItem(item)">{{ texts.use }}</button>
-                        <button type="button" class="btn btn-info btn-sm" ng-if="canDropItems()" (click)="dropItem(item)">{{ texts.drop }}</button>
+                    <div id="backpack-button-row" class="inline" [ngClass]="getCombineClass()">
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="canEquip(item) && showEquipment()" (click)="equipItem(item)">{{ texts.equip }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="hasDescription('items', item)" (click)="showDescription(item, item.name)">{{ texts.view }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="item.use" (click)="useItem(item)">{{ texts.use }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="canDropItems()" (click)="dropItem(item)">{{ texts.drop }}</button>
                     </div>
                 </div>
             </li>

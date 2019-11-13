@@ -10,11 +10,8 @@ import '../../../Games/_TestGame/all.ts'
 import { downgradeComponent, downgradeInjectable } from '@angular/upgrade/static';
 
 import { SharedMethodService } from './Services/SharedMethodService';
-import { ActionLogController } from './Components/ActionLog/ActionLogController';
 import { BuildCharacterController } from './Components/BuildCharacter/BuildCharacterController';
-import { CharacterSheetController } from './Components/CharacterSheet/CharacterSheetController';
 import { CombinationController } from './Components/Combination/CombinationController';
-import { CombatController } from './Components/Combat/CombatController';
 import { FeaturePicture } from './Directives/FeaturePicture';
 import { TextFeatures } from './Directives/TextFeatures';
 import { MainController } from './Components/Main/MainController';
@@ -46,6 +43,9 @@ var storyScriptModule = angular.module(MODULE_NAME, ['ngSanitize']);
 import '../../../../dist/js/ui-templates.js'
 import { NavigationComponent } from './Components/Navigation/navigation.component';
 import { BackpackComponent } from './Components/Backpack/backpack.component';
+import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
+import { CharacterSheetComponent } from './Components/CharacterSheet/charactersheet.component';
+import { CombatComponent } from './Components/Combat/combat.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -66,6 +66,9 @@ storyScriptModule
     .directive('navigation', downgradeComponent({component: NavigationComponent}))
     .directive('encounter', downgradeComponent({component: EncounterComponent}))
     .directive('backpack', downgradeComponent({component: BackpackComponent}))
+    .directive('actionLog', downgradeComponent({component: ActionLogComponent}))
+    .directive('characterSheet', downgradeComponent({component: CharacterSheetComponent}))
+    .directive('combat', downgradeComponent({component: CombatComponent}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('main', {
@@ -79,11 +82,6 @@ storyScriptModule.component('buildCharacter', {
     bindings: {
         sheet: '<'
     }
-});
-
-storyScriptModule.component('characterSheet', {
-    templateUrl: 'ui/CharacterSheetComponent.html',
-    controller: CharacterSheetController
 });
 
 storyScriptModule.component('equipment', {
@@ -131,11 +129,6 @@ storyScriptModule.component('enemy', {
     controller: EnemyController
 });
 
-storyScriptModule.component('actionLog', {
-    templateUrl: 'ui/ActionLogComponent.html',
-    controller: ActionLogController
-});
-
 storyScriptModule.component('createCharacter', {
     templateUrl: 'ui/CreateCharacterComponent.html',
     controller: CreateCharacterController
@@ -159,11 +152,6 @@ storyScriptModule.component('highScores', {
 storyScriptModule.component('encounterModal', {
     templateUrl: 'ui/EncounterModalComponent.html',
     controller: EncounterModalController
-});
-
-storyScriptModule.component('combat', {
-    templateUrl: 'ui/CombatComponent.html',
-    controller: CombatController
 });
 
 storyScriptModule.component('trade', {
