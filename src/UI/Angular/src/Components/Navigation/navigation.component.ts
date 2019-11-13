@@ -1,19 +1,17 @@
 import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
-import { IGameService } from '../../../../../Engine/Services/interfaces/services';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import template from './navigation.component.html';
 import { Component } from '@angular/core';
 import { GameService } from '../../../../../Engine/Services/gameService';
-import { CustomTexts } from '../../../../../Games/_TestGame/interfaces/types';
 
 @Component({
     selector: 'navigation',
     template: template,
 })
 export class NavigationComponent {
-    constructor(private _gameService: GameService, _texts: CustomTexts, private _objectFactory: ObjectFactory) {
+    constructor(private _gameService: GameService, private _objectFactory: ObjectFactory) {
         this.game = _objectFactory.GetGame();
-        this.texts = _texts;
+        this.texts = _objectFactory.GetTexts();
     }
 
     game: IGame;

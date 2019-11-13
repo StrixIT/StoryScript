@@ -11,15 +11,15 @@ import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
     template: template,
 })
 export class EncounterComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _conversationService: ConversationService, private _texts: CustomTexts, private _objectFactory: ObjectFactory) {
+    constructor(private _sharedMethodService: SharedMethodService, private _conversationService: ConversationService, private _objectFactory: ObjectFactory) {
         this.game = _objectFactory.GetGame();
-        this.texts = _texts;
+        this.texts = _objectFactory.GetTexts();
     }
 
     game: IGame;
     texts: IInterfaceTexts;
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
 
     personsPresent = (): boolean => this.game.currentLocation && this.game.currentLocation.activePersons && this.game.currentLocation.activePersons.length > 0;
 
@@ -31,5 +31,5 @@ export class EncounterComponent {
 
     trade = (trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
     
-    startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(person);
+    startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(this.game, person);
 }

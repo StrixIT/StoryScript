@@ -19,7 +19,7 @@ export class ExplorationController implements ng.IComponentController {
 
     actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
 
     getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
@@ -29,7 +29,7 @@ export class ExplorationController implements ng.IComponentController {
 
     hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == Enumerations.ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == Enumerations.ActionStatus.Unavailable;
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this);
 
     executeBarrierAction = (barrier: IBarrier, destination: IDestination): void => {
         if (this._game.combinations.tryCombine(barrier))

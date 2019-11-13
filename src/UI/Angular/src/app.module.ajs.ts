@@ -10,7 +10,6 @@ import '../../../Games/_TestGame/all.ts'
 import { downgradeComponent, downgradeInjectable } from '@angular/upgrade/static';
 
 import { SharedMethodService } from './Services/SharedMethodService';
-import { BackpackController } from './Components/Backpack/BackpackController';
 import { ActionLogController } from './Components/ActionLog/ActionLogController';
 import { BuildCharacterController } from './Components/BuildCharacter/BuildCharacterController';
 import { CharacterSheetController } from './Components/CharacterSheet/CharacterSheetController';
@@ -46,6 +45,7 @@ var storyScriptModule = angular.module(MODULE_NAME, ['ngSanitize']);
 
 import '../../../../dist/js/ui-templates.js'
 import { NavigationComponent } from './Components/Navigation/navigation.component';
+import { BackpackComponent } from './Components/Backpack/backpack.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -65,6 +65,7 @@ storyScriptModule.directive('textFeatures', ['combinationService', 'game', TextF
 storyScriptModule
     .directive('navigation', downgradeComponent({component: NavigationComponent}))
     .directive('encounter', downgradeComponent({component: EncounterComponent}))
+    .directive('backpack', downgradeComponent({component: BackpackComponent}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('main', {
@@ -88,11 +89,6 @@ storyScriptModule.component('characterSheet', {
 storyScriptModule.component('equipment', {
     templateUrl: 'ui/EquipmentComponent.html',
     controller: EquipmentController
-});
-
-storyScriptModule.component('backpack', {
-    templateUrl: 'ui/BackpackComponent.html',
-    controller: BackpackController
 });
 
 storyScriptModule.component('quests', {

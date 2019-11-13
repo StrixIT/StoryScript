@@ -19,7 +19,7 @@ export class EnemyController implements ng.IComponentController {
 
     showDescription = (item: any, title: string): void => this._sharedMethodService.showDescription('enemies', item, title);  
 
-    startCombat = (): void => this._sharedMethodService.startCombat();
+    startCombat = (): void => this._sharedMethodService.startCombat(this.game);
 }
 
 EnemyController.$inject = ['gameService', 'sharedMethodService', 'game', 'customTexts'];

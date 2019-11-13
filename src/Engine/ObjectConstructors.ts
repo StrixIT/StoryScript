@@ -94,7 +94,7 @@ function Register<T>(type: string, entityFunc: Function) {
     _definitions[type] = _definitions[type] || {};
     var proxy = CreateEntityProxy(entityFunc);
     var entity = proxy();
-    _definitions[type][(<any>entity).id] = proxy;
+    _definitions[type].push(proxy);
 }
 
 export function Location(entity: ILocation): ILocation {

@@ -4,15 +4,16 @@ import { GameService } from '../../../../Engine/Services/gameService';
 import { TradeService } from '../../../../Engine/Services/TradeService';
 import { Game } from '../../../../Games/_TestGame/interfaces/game';
 import { IPerson } from '../../../../Games/_TestGame/interfaces/types';
+import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 
 export interface ISharedMethodService {
-    enemiesPresent(): boolean;
+    enemiesPresent(game: IGame): boolean;
     trade(trade: IPerson | ITrade): boolean;
     getButtonClass(action: IAction): string;
-    executeAction(action: IAction, controller: ng.IComponentController): void;
-    startCombat(person?: IPerson): void;
+    executeAction(game: IGame, action: IAction, controller: ng.IComponentController): void;
+    startCombat(game: IGame, person?: IPerson): void;
     showDescription(type: string, item: any, title: string): void;
-    showEquipment(): boolean;
+    showEquipment(game: IGame): boolean;
     useCharacterSheet?: boolean;
     useEquipment?: boolean;
     useBackpack?: boolean;
@@ -22,7 +23,8 @@ export interface ISharedMethodService {
 
 @Injectable()
 export class SharedMethodService implements ISharedMethodService {
-    constructor(private _gameService: GameService, private _tradeService: TradeService, private _game: Game) {
+
+    constructor(private _gameService: GameService, private _tradeService: TradeService) {
     }
 
     useCharacterSheet?: boolean;
@@ -31,7 +33,9 @@ export class SharedMethodService implements ISharedMethodService {
     useQuests?: boolean;
     useGround?: boolean;
 
-    enemiesPresent = (): boolean => this._game.currentLocation && this._game.currentLocation.activeEnemies && this._game.currentLocation.activeEnemies.length > 0;
+    enemiesPresent = (game: IGame): boolean => {
+        return game.currentLocation && game.currentLocation.activeEnemies && game.currentLocation.activeEnemies.length > 0;
+    }
 
     trade = (trade: IPerson | ITrade): boolean => {
         this._tradeService.trade(trade);
@@ -62,22 +66,22 @@ export class SharedMethodService implements ISharedMethodService {
         return buttonClass;
     }
 
-    executeAction = (action: IAction, controller: ng.IComponentController): void => {
+    executeAction = (game: IGame, action: IAction, controller: ng.IComponentController): void => {
         if (action && action.execute) {
             // Modify the arguments collection to add the game to the collection before calling the function specified.
-            var args = <any[]>[this._game, action];
+            var args = <any[]>[game, action];
 
             // Execute the action and when nothing or false is returned, remove it from the current location.
             var executeFunc = typeof action.execute !== 'function' ? controller[<string>action.execute] : action.execute;
             var result = executeFunc.apply(controller, args);
-            var typeAndIndex = this.getActionIndex(this._game, action);
+            var typeAndIndex = this.getActionIndex(game, action);
 
             if (!result && typeAndIndex.index !== -1) {
 
-                if (typeAndIndex.type === Enumerations.ActionType.Regular && this._game.currentLocation.actions) {
-                    this._game.currentLocation.actions.splice(typeAndIndex.index, 1);
-                } else if (typeAndIndex.type === Enumerations.ActionType.Combat && this._game.currentLocation.combatActions) {
-                    this._game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
+                if (typeAndIndex.type === Enumerations.ActionType.Regular && game.currentLocation.actions) {
+                    game.currentLocation.actions.splice(typeAndIndex.index, 1);
+                } else if (typeAndIndex.type === Enumerations.ActionType.Combat && game.currentLocation.combatActions) {
+                    game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
                 }
             }
 
@@ -86,20 +90,22 @@ export class SharedMethodService implements ISharedMethodService {
         }
     }
 
-    startCombat = (person?: IPerson): void => {
+    startCombat = (game: IGame, person?: IPerson): void => {
         if (person) {
             // The person becomes an enemy when attacked!
-            this._game.currentLocation.persons.remove(person);
-            this._game.currentLocation.enemies.push(person);
+            game.currentLocation.persons.remove(person);
+            game.currentLocation.enemies.push(person);
         }
 
-        this._game.combatLog = [];
-        this._game.playState = Enumerations.PlayState.Combat;
+        game.combatLog = [];
+        game.playState = Enumerations.PlayState.Combat;
     }
 
     showDescription = (type: string, item: any, title: string): void => this._gameService.setCurrentDescription(type, item, title);
 
-    showEquipment = (): boolean => this.useEquipment && this._game.character && Object.keys(this._game.character.equipment).some(k => this._game.character.equipment[k] !== undefined);
+    showEquipment = (game: IGame): boolean => {
+        return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => game.character.equipment[k] !== undefined);
+    }
     
     private getActionIndex = (game: IGame, action: IAction): { type: number, index: number} => {
         var index = -1;

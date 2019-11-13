@@ -12,7 +12,7 @@ export class EquipmentController {
     game: IGame;
     texts: IInterfaceTexts;
 
-    showEquipment = (): boolean => this._sharedMethodService.showEquipment();
+    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.game);
 
     unequipItem = (item: IItem): boolean => this._characterService.unequipItem(item);
 

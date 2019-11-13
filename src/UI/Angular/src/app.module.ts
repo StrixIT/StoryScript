@@ -12,6 +12,8 @@ import { Game } from '../../../Games/_TestGame/interfaces/game';
 import { ConversationService } from '../../../Engine/Services/ConversationService';
 import { CustomTexts } from '../../../Games/_TestGame/customTexts';
 import { ObjectFactory } from '../../../Engine/ObjectFactory';
+import { BackpackComponent } from './Components/Backpack/backpack.component';
+import { CharacterService } from '../../../Engine/Services/characterService';
 
 var objectFactory = GetObjectFactory();
 
@@ -22,20 +24,19 @@ var objectFactory = GetObjectFactory();
     ],
     declarations: [
         NavigationComponent,
-        EncounterComponent
+        EncounterComponent,
+        BackpackComponent
     ],
     providers:[
         SharedMethodService,
         { provide: ObjectFactory, useValue: GetObjectFactory() },
-        { provide: Game, useValue: objectFactory.GetGame() },
-        { provide: CustomTexts, useValue: objectFactory.GetTexts() },
         { provide: TradeService, useValue: objectFactory.GetTradeService() },
         { provide: ConversationService, useValue: objectFactory.GetConversationService() },
         { provide: GameService, useValue: objectFactory.GetGameService() },
-        // { provide: 'characterService', useValue: objectFactory.GetCharacterService() },
+        { provide: CharacterService, useValue: objectFactory.GetCharacterService() },
         // { provide: 'combinationService', useValue: objectFactory.GetCombinationService() }
     ],
-    entryComponents: [NavigationComponent, EncounterComponent],
+    entryComponents: [NavigationComponent, EncounterComponent, BackpackComponent],
 })
 
 export class AppModule {

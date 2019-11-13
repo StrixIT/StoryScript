@@ -11,11 +11,11 @@ export class CombatController implements ng.IComponentController {
     game: IGame;
     texts: IInterfaceTexts;
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
 
     getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this); 
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this); 
 
     fight = (enemy: IEnemy): void => this._gameService.fight(enemy);
     

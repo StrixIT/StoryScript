@@ -12,7 +12,7 @@ export class GroundController implements ng.IComponentController {
     game: IGame;
     texts: IInterfaceTexts;
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
 
     getCombineClass = (barrier: IBarrier): string => this._game.combinations.getCombineClass(barrier);
 
