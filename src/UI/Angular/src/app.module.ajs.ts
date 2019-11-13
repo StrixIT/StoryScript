@@ -22,7 +22,6 @@ import { MainController } from './Components/Main/MainController';
 import { EquipmentController } from './Components/Equipment/EquipmentController';
 import { QuestController } from './Components/Quest/QuestController';
 import { LevelUpController } from './Components/LevelUp/LevelUpController';
-import { NavigationController } from './Components/Navigation/NavigationController';
 import { MenuModalController } from './Components/MenuModal/MenuModalController';
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { LocationController } from './Components/Location/LocationController';
@@ -46,6 +45,7 @@ export default MODULE_NAME;
 var storyScriptModule = angular.module(MODULE_NAME, ['ngSanitize']);
 
 import '../../../../dist/js/ui-templates.js'
+import { NavigationComponent } from './Components/Navigation/navigation.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -61,6 +61,11 @@ storyScriptModule.service('sharedMethodService', SharedMethodService);
 
 storyScriptModule.directive('featurePicture', ['game', FeaturePicture.Factory()]);
 storyScriptModule.directive('textFeatures', ['combinationService', 'game', TextFeatures.Factory()]);
+
+storyScriptModule
+    .directive('navigation', downgradeComponent({component: NavigationComponent}))
+    .directive('encounter', downgradeComponent({component: EncounterComponent}))
+    .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('main', {
     templateUrl: 'ui/MainComponent.html',
@@ -100,19 +105,10 @@ storyScriptModule.component('levelUp', {
     controller: LevelUpController
 });
 
-storyScriptModule.component('navigation', {
-    templateUrl: 'ui/NavigationComponent.html',
-    controller: NavigationController
-});
-
 storyScriptModule.component('menuModal', {
     templateUrl: 'ui/MenuModalComponent.html',
     controller: MenuModalController
 });
-
-storyScriptModule
-    .directive('encounter', downgradeComponent({component: EncounterComponent}))
-    .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('location', {
     templateUrl: 'ui/LocationComponent.html',

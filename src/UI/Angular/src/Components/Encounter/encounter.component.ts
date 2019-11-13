@@ -4,14 +4,15 @@ import { IPerson, Game, CustomTexts } from '../../../../../Games/_TestGame/inter
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ConversationService } from '../../../../../Engine/Services/ConversationService';
 import template from './encounter.component.html';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 
 @Component({
     selector: 'encounter',
     template: template,
 })
 export class EncounterComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _conversationService: ConversationService, private _game: Game, private _texts: CustomTexts) {
-        this.game = _game;
+    constructor(private _sharedMethodService: SharedMethodService, private _conversationService: ConversationService, private _texts: CustomTexts, private _objectFactory: ObjectFactory) {
+        this.game = _objectFactory.GetGame();
         this.texts = _texts;
     }
 
@@ -20,11 +21,11 @@ export class EncounterComponent {
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-    personsPresent = (): boolean => this._game.currentLocation && this._game.currentLocation.activePersons && this._game.currentLocation.activePersons.length > 0;
+    personsPresent = (): boolean => this.game.currentLocation && this.game.currentLocation.activePersons && this.game.currentLocation.activePersons.length > 0;
 
-    getCombineClass = (item: IItem): string => this._game.combinations.getCombineClass(item);
+    getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
-    tryCombine = (person: IPerson): boolean => this._game.combinations.tryCombine(person);
+    tryCombine = (person: IPerson): boolean => this.game.combinations.tryCombine(person);
 
     talk = (person: IPerson): void => this._conversationService.talk(person);
 
@@ -32,5 +33,3 @@ export class EncounterComponent {
     
     startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(person);
 }
-
-EncounterComponent.$inject = ['sharedMethodService', 'conversationService', 'game', 'customTexts'];

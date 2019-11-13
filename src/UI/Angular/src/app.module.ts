@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { UpgradeModule } from '@angular/upgrade/static';
 import moduleName from './app.module.ajs';
 import { EncounterComponent } from './Components/Encounter/encounter.component';
+import { NavigationComponent } from './Components/Navigation/navigation.component';
 import { GetObjectFactory } from '../../../Engine/run';
 import { SharedMethodService } from './Services/SharedMethodService';
 import { GameService } from '../../../Engine/Services/gameService';
@@ -10,6 +11,7 @@ import { TradeService } from '../../../Engine/Services/TradeService';
 import { Game } from '../../../Games/_TestGame/interfaces/game';
 import { ConversationService } from '../../../Engine/Services/ConversationService';
 import { CustomTexts } from '../../../Games/_TestGame/customTexts';
+import { ObjectFactory } from '../../../Engine/ObjectFactory';
 
 var objectFactory = GetObjectFactory();
 
@@ -19,10 +21,12 @@ var objectFactory = GetObjectFactory();
         UpgradeModule
     ],
     declarations: [
+        NavigationComponent,
         EncounterComponent
     ],
     providers:[
         SharedMethodService,
+        { provide: ObjectFactory, useValue: GetObjectFactory() },
         { provide: Game, useValue: objectFactory.GetGame() },
         { provide: CustomTexts, useValue: objectFactory.GetTexts() },
         { provide: TradeService, useValue: objectFactory.GetTradeService() },
@@ -31,7 +35,7 @@ var objectFactory = GetObjectFactory();
         // { provide: 'characterService', useValue: objectFactory.GetCharacterService() },
         // { provide: 'combinationService', useValue: objectFactory.GetCombinationService() }
     ],
-    entryComponents: [EncounterComponent],
+    entryComponents: [NavigationComponent, EncounterComponent],
 })
 
 export class AppModule {
