@@ -17,6 +17,9 @@ import { CharacterService } from '../../../Engine/Services/characterService';
 import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
 import { CharacterSheetComponent } from './Components/CharacterSheet/charactersheet.component';
 import { CombatComponent } from './Components/Combat/combat.component';
+import { LocationComponent } from './Components/Location/location.component';
+import { GroundComponent } from './Components/Ground/ground.component';
+import { EquipmentComponent } from './Components/Equipment/equipment.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -31,7 +34,10 @@ var objectFactory = GetObjectFactory();
         BackpackComponent,
         ActionLogComponent,
         CharacterSheetComponent,
-        CombatComponent
+        CombatComponent,
+        LocationComponent,
+        GroundComponent,
+        EquipmentComponent
     ],
     providers:[
         SharedMethodService,
@@ -48,7 +54,11 @@ var objectFactory = GetObjectFactory();
         BackpackComponent, 
         ActionLogComponent, 
         CharacterSheetComponent, 
-        CombatComponent],
+        CombatComponent,
+        LocationComponent,
+        GroundComponent,
+        EquipmentComponent
+    ],
 })
 
 export class AppModule {

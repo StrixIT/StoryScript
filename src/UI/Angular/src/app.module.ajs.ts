@@ -15,14 +15,13 @@ import { CombinationController } from './Components/Combination/CombinationContr
 import { FeaturePicture } from './Directives/FeaturePicture';
 import { TextFeatures } from './Directives/TextFeatures';
 import { MainController } from './Components/Main/MainController';
-import { EquipmentController } from './Components/Equipment/EquipmentController';
+import { EquipmentComponent } from './Components/Equipment/equipment.component';
 import { QuestController } from './Components/Quest/QuestController';
 import { LevelUpController } from './Components/LevelUp/LevelUpController';
 import { MenuModalController } from './Components/MenuModal/MenuModalController';
 import { EncounterComponent } from './Components/Encounter/encounter.component';
-import { LocationController } from './Components/Location/LocationController';
 import { ExplorationController } from './Components/Exploration/ExplorationController';
-import { GroundController } from './Components/Ground/GroundController';
+import { GroundComponent } from './Components/Ground/ground.component';
 import { EnemyController } from './Components/Enemy/EnemyController';
 import { CreateCharacterController } from './Components/CreateCharacter/CreateCharacterController';
 import { GameOverController } from './Components/GameOver/GameOverController';
@@ -46,6 +45,7 @@ import { BackpackComponent } from './Components/Backpack/backpack.component';
 import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
 import { CharacterSheetComponent } from './Components/CharacterSheet/charactersheet.component';
 import { CombatComponent } from './Components/Combat/combat.component';
+import { LocationComponent } from './Components/Location/location.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -69,6 +69,9 @@ storyScriptModule
     .directive('actionLog', downgradeComponent({component: ActionLogComponent}))
     .directive('characterSheet', downgradeComponent({component: CharacterSheetComponent}))
     .directive('combat', downgradeComponent({component: CombatComponent}))
+    .directive('location', downgradeComponent({component: LocationComponent}))
+    .directive('ground', downgradeComponent({component: GroundComponent}))
+    .directive('equipment', downgradeComponent({component: EquipmentComponent}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('main', {
@@ -82,11 +85,6 @@ storyScriptModule.component('buildCharacter', {
     bindings: {
         sheet: '<'
     }
-});
-
-storyScriptModule.component('equipment', {
-    templateUrl: 'ui/EquipmentComponent.html',
-    controller: EquipmentController
 });
 
 storyScriptModule.component('quests', {
@@ -104,11 +102,6 @@ storyScriptModule.component('menuModal', {
     controller: MenuModalController
 });
 
-storyScriptModule.component('location', {
-    templateUrl: 'ui/LocationComponent.html',
-    controller: LocationController
-});
-
 storyScriptModule.component('combination', {
     templateUrl: 'ui/CombinationComponent.html',
     controller: CombinationController
@@ -117,11 +110,6 @@ storyScriptModule.component('combination', {
 storyScriptModule.component('exploration', {
     templateUrl: 'ui/ExplorationComponent.html',
     controller: ExplorationController
-});
-
-storyScriptModule.component('ground', {
-    templateUrl: 'ui/GroundComponent.html',
-    controller: GroundController
 });
 
 storyScriptModule.component('enemy', {
