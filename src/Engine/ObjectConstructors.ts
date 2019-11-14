@@ -302,7 +302,7 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     
     compiledEntity.id = id ? id : GetCurrentEntityId();
 
-    const definitionKeys = Object.getOwnPropertyNames(_definitions);
+    const definitionKeys = Object.getOwnPropertyNames(_definitions).filter(d => d !== 'actions');
 
     addFunctionIds(compiledEntity, type, definitionKeys);
     var plural = getPlural(type);

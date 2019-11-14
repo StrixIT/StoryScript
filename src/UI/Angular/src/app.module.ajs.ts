@@ -11,7 +11,6 @@ import { downgradeComponent, downgradeInjectable } from '@angular/upgrade/static
 
 import { SharedMethodService } from './Services/SharedMethodService';
 import { BuildCharacterController } from './Components/BuildCharacter/BuildCharacterController';
-import { CombinationController } from './Components/Combination/CombinationController';
 import { FeaturePicture } from './Directives/FeaturePicture';
 import { TextFeatures } from './Directives/TextFeatures';
 import { MainController } from './Components/Main/MainController';
@@ -20,15 +19,13 @@ import { QuestController } from './Components/Quest/QuestController';
 import { LevelUpController } from './Components/LevelUp/LevelUpController';
 import { MenuModalController } from './Components/MenuModal/MenuModalController';
 import { EncounterComponent } from './Components/Encounter/encounter.component';
-import { ExplorationController } from './Components/Exploration/ExplorationController';
+import { ExplorationComponent } from './Components/Exploration/exploration.component';
 import { GroundComponent } from './Components/Ground/ground.component';
-import { EnemyController } from './Components/Enemy/EnemyController';
 import { CreateCharacterController } from './Components/CreateCharacter/CreateCharacterController';
 import { GameOverController } from './Components/GameOver/GameOverController';
 import { VictoryController } from './Components/Victory/VictoryController';
 import { HighScoresController } from './Components/HighScores/HighScoresController';
 import { EncounterModalController } from './Components/EncounterModal/EncounterModalController';
-import { TradeController } from './Components/Trade/TradeController';
 import { ConversationController } from './Components/Conversation/ConversationController';
 import { SoundController } from './Components/Sound/SoundController';
 import { IntroController } from './Components/Intro/IntroController';
@@ -46,6 +43,9 @@ import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
 import { CharacterSheetComponent } from './Components/CharacterSheet/charactersheet.component';
 import { CombatComponent } from './Components/Combat/combat.component';
 import { LocationComponent } from './Components/Location/location.component';
+import { TradeComponent } from './Components/Trade/trade.component';
+import { EnemyComponent } from './Components/Enemy/enemy.component';
+import { CombinationComponent } from './Components/Combination/combination.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -72,6 +72,10 @@ storyScriptModule
     .directive('location', downgradeComponent({component: LocationComponent}))
     .directive('ground', downgradeComponent({component: GroundComponent}))
     .directive('equipment', downgradeComponent({component: EquipmentComponent}))
+    .directive('trade', downgradeComponent({component: TradeComponent}))
+    .directive('enemy', downgradeComponent({component: EnemyComponent}))
+    .directive('exploration', downgradeComponent({component: ExplorationComponent}))
+    .directive('combination', downgradeComponent({component: CombinationComponent}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('main', {
@@ -102,21 +106,6 @@ storyScriptModule.component('menuModal', {
     controller: MenuModalController
 });
 
-storyScriptModule.component('combination', {
-    templateUrl: 'ui/CombinationComponent.html',
-    controller: CombinationController
-});
-
-storyScriptModule.component('exploration', {
-    templateUrl: 'ui/ExplorationComponent.html',
-    controller: ExplorationController
-});
-
-storyScriptModule.component('enemy', {
-    templateUrl: 'ui/EnemyComponent.html',
-    controller: EnemyController
-});
-
 storyScriptModule.component('createCharacter', {
     templateUrl: 'ui/CreateCharacterComponent.html',
     controller: CreateCharacterController
@@ -140,11 +129,6 @@ storyScriptModule.component('highScores', {
 storyScriptModule.component('encounterModal', {
     templateUrl: 'ui/EncounterModalComponent.html',
     controller: EncounterModalController
-});
-
-storyScriptModule.component('trade', {
-    templateUrl: 'ui/TradeComponent.html',
-    controller: TradeController
 });
 
 storyScriptModule.component('conversation', {

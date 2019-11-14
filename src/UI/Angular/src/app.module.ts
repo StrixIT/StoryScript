@@ -8,9 +8,7 @@ import { GetObjectFactory } from '../../../Engine/run';
 import { SharedMethodService } from './Services/SharedMethodService';
 import { GameService } from '../../../Engine/Services/gameService';
 import { TradeService } from '../../../Engine/Services/TradeService';
-import { Game } from '../../../Games/_TestGame/interfaces/game';
 import { ConversationService } from '../../../Engine/Services/ConversationService';
-import { CustomTexts } from '../../../Games/_TestGame/customTexts';
 import { ObjectFactory } from '../../../Engine/ObjectFactory';
 import { BackpackComponent } from './Components/Backpack/backpack.component';
 import { CharacterService } from '../../../Engine/Services/characterService';
@@ -20,6 +18,11 @@ import { CombatComponent } from './Components/Combat/combat.component';
 import { LocationComponent } from './Components/Location/location.component';
 import { GroundComponent } from './Components/Ground/ground.component';
 import { EquipmentComponent } from './Components/Equipment/equipment.component';
+import { TradeComponent } from './Components/Trade/trade.component';
+import { EnemyComponent } from './Components/Enemy/enemy.component';
+import { ExplorationComponent } from './Components/Exploration/exploration.component';
+import { CombinationComponent } from './Components/Combination/combination.component';
+import { CombinationService } from '../../../Engine/Services/CombinationService';
 
 var objectFactory = GetObjectFactory();
 
@@ -37,7 +40,11 @@ var objectFactory = GetObjectFactory();
         CombatComponent,
         LocationComponent,
         GroundComponent,
-        EquipmentComponent
+        EquipmentComponent,
+        TradeComponent,
+        EnemyComponent,
+        ExplorationComponent,
+        CombinationComponent
     ],
     providers:[
         SharedMethodService,
@@ -46,7 +53,7 @@ var objectFactory = GetObjectFactory();
         { provide: ConversationService, useValue: objectFactory.GetConversationService() },
         { provide: GameService, useValue: objectFactory.GetGameService() },
         { provide: CharacterService, useValue: objectFactory.GetCharacterService() },
-        // { provide: 'combinationService', useValue: objectFactory.GetCombinationService() }
+        { provide: CombinationService, useValue: objectFactory.GetCombinationService() }
     ],
     entryComponents: [
         NavigationComponent, 
@@ -57,7 +64,11 @@ var objectFactory = GetObjectFactory();
         CombatComponent,
         LocationComponent,
         GroundComponent,
-        EquipmentComponent
+        EquipmentComponent,
+        TradeComponent,
+        EnemyComponent,
+        ExplorationComponent,
+        CombinationComponent
     ],
 })
 

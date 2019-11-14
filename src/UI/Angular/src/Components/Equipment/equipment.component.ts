@@ -2,7 +2,6 @@ import { IGame, IInterfaceTexts, IItem } from '../../../../../Engine/Interfaces/
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { CharacterService } from '../../../../../Engine/Services/characterService';
-
 import { Component } from '@angular/core';
 import template from './equipment.component.html';
 
