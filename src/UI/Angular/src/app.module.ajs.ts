@@ -23,8 +23,8 @@ import { ExplorationComponent } from './Components/Exploration/exploration.compo
 import { GroundComponent } from './Components/Ground/ground.component';
 import { CreateCharacterController } from './Components/CreateCharacter/CreateCharacterController';
 import { GameOverController } from './Components/GameOver/GameOverController';
-import { VictoryController } from './Components/Victory/VictoryController';
-import { HighScoresController } from './Components/HighScores/HighScoresController';
+import { VictoryComponent } from './Components/Victory/victory.component';
+import { HighScoresComponent } from './Components/HighScores/highscores.component';
 import { EncounterModalController } from './Components/EncounterModal/EncounterModalController';
 import { ConversationController } from './Components/Conversation/ConversationController';
 import { SoundController } from './Components/Sound/SoundController';
@@ -66,7 +66,7 @@ storyScriptModule
     .directive('navigation', downgradeComponent({component: NavigationComponent}))
     .directive('encounter', downgradeComponent({component: EncounterComponent}))
     .directive('backpack', downgradeComponent({component: BackpackComponent}))
-    .directive('actionLog', downgradeComponent({component: ActionLogComponent}))
+    .directive('actionlog', downgradeComponent({component: ActionLogComponent}))
     .directive('characterSheet', downgradeComponent({component: CharacterSheetComponent}))
     .directive('combat', downgradeComponent({component: CombatComponent}))
     .directive('location', downgradeComponent({component: LocationComponent}))
@@ -76,6 +76,8 @@ storyScriptModule
     .directive('enemy', downgradeComponent({component: EnemyComponent}))
     .directive('exploration', downgradeComponent({component: ExplorationComponent}))
     .directive('combination', downgradeComponent({component: CombinationComponent}))
+    .directive('victory', downgradeComponent({component: VictoryComponent}))
+    .directive('highscores', downgradeComponent({component: HighScoresComponent}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('main', {
@@ -114,16 +116,6 @@ storyScriptModule.component('createCharacter', {
 storyScriptModule.component('gameOver', {
     templateUrl: 'ui/GameOverComponent.html',
     controller: GameOverController
-});
-
-storyScriptModule.component('victory', {
-    templateUrl: 'ui/VictoryComponent.html',
-    controller: VictoryController
-});
-
-storyScriptModule.component('highScores', {
-    templateUrl: 'ui/HighScoresComponent.html',
-    controller: HighScoresController
 });
 
 storyScriptModule.component('encounterModal', {

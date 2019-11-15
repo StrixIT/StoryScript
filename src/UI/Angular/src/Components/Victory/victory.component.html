@@ -1,0 +1,9 @@
+<div *ngIf="game.state === 'Victory'" class="container-fluid">
+    <div class="col-12">
+        <h1>{{ texts.youWon }}</h1>
+        <div><span>{{ texts.congratulations }}</span></div>
+        <div><span>{{ texts.finalScore }}{{ game.character.score }}</span></div>
+        <button type="button" class="btn btn-primary" (click)="restart()">{{ texts.playAgain }}</button>
+        <highscores></highscores>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+<div id="highscores" *ngIf="game.character.score > 0">
+    <h3>{{ texts.highScores }}</h3>
+    <table>
+        <tr *ngFor="let score of game.highScores">
+            <td>{{ score.name }}</td>
+            <td>{{ score.score }}</td>
+        </tr>
+    </table>
+</div>

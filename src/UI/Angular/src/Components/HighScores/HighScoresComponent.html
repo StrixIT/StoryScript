@@ -1,9 +1,0 @@
-<div id="highscores" ng-show="$ctrl.game.character.score > 0">
-    <h3>{{ $ctrl.texts.highScores }}</h3>
-    <table>
-        <tr ng-repeat="score in $ctrl.game.highScores track by $index">
-            <td>{{ score.name }}</td>
-            <td>{{ score.score }}</td>
-        </tr>
-    </table>
-</div>

@@ -23,6 +23,8 @@ import { EnemyComponent } from './Components/Enemy/enemy.component';
 import { ExplorationComponent } from './Components/Exploration/exploration.component';
 import { CombinationComponent } from './Components/Combination/combination.component';
 import { CombinationService } from '../../../Engine/Services/CombinationService';
+import { VictoryComponent } from './Components/Victory/victory.component';
+import { HighScoresComponent } from './Components/HighScores/highscores.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -44,7 +46,9 @@ var objectFactory = GetObjectFactory();
         TradeComponent,
         EnemyComponent,
         ExplorationComponent,
-        CombinationComponent
+        CombinationComponent,
+        VictoryComponent,
+        HighScoresComponent
     ],
     providers:[
         SharedMethodService,
@@ -68,7 +72,9 @@ var objectFactory = GetObjectFactory();
         TradeComponent,
         EnemyComponent,
         ExplorationComponent,
-        CombinationComponent
+        CombinationComponent,
+        VictoryComponent,
+        HighScoresComponent
     ],
 })
 
