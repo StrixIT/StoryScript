@@ -1,19 +1,19 @@
-﻿import { Quest } from '../interfaces/types';
+﻿import { IGame, IQuest, Quest, IPerson } from '../interfaces/types';
 import { RegisterQuest } from '../../../Engine/Interfaces/storyScript'
 import * as Items from '../items/journal'
 
 export function Journal() {
     return Quest({
         name: 'Find Joe\'s journal',
-        status: (game, quest, done) => {
+        status: (game: IGame, quest: IQuest, done: boolean) => {
             return 'You have ' + (done ? '' : 'not ') + 'found Joe\'s journal' + (done ? '!' : ' yet.');
         },
-        start: (game, quest, person) => {
+        start: (game: IGame, quest: IQuest, person: IPerson) => {
         },
-        checkDone: (game, quest) => {
+        checkDone: (game: IGame, quest: IQuest) => {
             return quest.completed || game.character.items.get(Items.Journal) != null;
         },
-        complete: (game, quest, person) => {
+        complete: (game: IGame, quest: IQuest, person: IPerson) => {
             var ring = game.character.items.get(Items.Journal);
             game.character.items.remove(ring);
             game.character.currency += 5;

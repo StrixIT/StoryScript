@@ -1,5 +1,5 @@
-﻿import { Person, IItem } from '../interfaces/types';
-import { IGame, RegisterPerson } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame, IItem, Person } from '../interfaces/types';
+import { RegisterPerson } from '../../../Engine/Interfaces/storyScript'
 import { Sword } from '../items/sword';
 import { Garden } from '../locations/Garden';
 import { Journal } from '../quests/journal';

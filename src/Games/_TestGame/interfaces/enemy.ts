@@ -6,5 +6,5 @@ export function Enemy(entity: IEnemy): IEnemy {
 }
 
 export interface IEnemy extends IFeature, StoryScript.IEnemy {
-    attack: string;
+    attack?: string;
 }

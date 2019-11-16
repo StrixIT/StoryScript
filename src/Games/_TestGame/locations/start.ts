@@ -1,5 +1,5 @@
-﻿import { Location } from '../interfaces/types';
-import { IGame, RegisterLocation } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame, Location } from '../interfaces/types';
+import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
 import { Garden } from './Garden';
 import { Bedroom } from './bedroom';
 import { DirtRoad } from './DirtRoad';

@@ -5,7 +5,7 @@ import { IEnemy, Enemy } from './enemy'
 import { IPerson, Person } from './person'
 import { IQuest, Quest } from './quest'
 import { ICompiledLocation, Location } from './location'
-import { Game } from './game'
+import { IGame } from './game'
 import { CustomTexts } from '../customTexts'
 import { Rules } from '../rules'
 import { Character } from '../character'
@@ -25,7 +25,7 @@ export {
     Quest,
     ICompiledLocation, 
     Location, 
-    Game, 
+    IGame, 
     CustomTexts, 
     Rules, 
     Character 

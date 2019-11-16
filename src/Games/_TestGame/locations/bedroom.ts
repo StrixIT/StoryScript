@@ -1,5 +1,5 @@
-﻿import { Location, IItem } from '../interfaces/types';
-import { RegisterLocation, IGame } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame, IItem, Location } from '../interfaces/types';
+import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
 import { Start } from './start';
 
 export function Bedroom() {

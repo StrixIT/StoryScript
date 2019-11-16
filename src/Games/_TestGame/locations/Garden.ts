@@ -1,5 +1,5 @@
-﻿import { Location } from '../interfaces/types';
-import { IGame, RegisterLocation } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame, Location } from '../interfaces/types';
+import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
 import { Start } from './start';
 import { BasementKey } from '../items/basementKey';
 import { Basement } from './Basement';

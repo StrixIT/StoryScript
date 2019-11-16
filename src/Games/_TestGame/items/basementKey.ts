@@ -1,5 +1,5 @@
-﻿import { Key } from '../interfaces/types';
-import { Enumerations, IDestination, Actions, RegisterItem, IGame, IBarrier } from '../../../Engine/Interfaces/storyScript'
+﻿import { Key, IGame } from '../interfaces/types';
+import { Enumerations, IDestination, Actions, RegisterItem, IBarrier } from '../../../Engine/Interfaces/storyScript'
 
 export function BasementKey() {
     return Key({
