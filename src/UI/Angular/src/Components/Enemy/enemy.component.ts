@@ -22,8 +22,6 @@ export class EnemyComponent {
 
     tryCombine = (enemy: IEnemy): boolean => this.game.combinations.tryCombine(enemy);
 
-    hasDescription = (type: string, item: { id?: string, description?: string }): boolean => this._gameService.hasDescription(type, item);
-
     showDescription = (item: any, title: string): void => this._sharedMethodService.showDescription('enemies', item, title);  
 
     startCombat = (): void => this._sharedMethodService.startCombat(this.game);

@@ -1,10 +1,9 @@
-import { IGame, ITrade, IAction, Enumerations } from '../../../../Engine/Interfaces/storyScript';
+import { ITrade, IAction, Enumerations } from '../../../../Engine/Interfaces/storyScript';
 import { Injectable } from '@angular/core';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { TradeService } from '../../../../Engine/Services/TradeService';
-import { Game } from '../../../../Games/_TestGame/interfaces/game';
+import { IGame } from '../../../../Games/_TestGame/interfaces/game';
 import { IPerson } from '../../../../Games/_TestGame/interfaces/types';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 
 export interface ISharedMethodService {
     enemiesPresent(game: IGame): boolean;

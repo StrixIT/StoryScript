@@ -1,6 +1,5 @@
 import { IGame, IInterfaceTexts, IItem } from '../../../../../Engine/Interfaces/storyScript';
-import { ISharedMethodService, SharedMethodService } from '../../Services/SharedMethodService';
-import { IGameService, ICharacterService } from '../../../../../Engine/Services/interfaces/services';
+import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import template from './backpack.component.html';
 import { Component } from '@angular/core';
@@ -20,8 +19,6 @@ export class BackpackComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
-
-    hasDescription = (type: string, item: { id?: string, description?: string }): boolean => this._gameService.hasDescription(type, item);
 
     showDescription = (item: any, title: string): void => this._sharedMethodService.showDescription('items', item, title);
 

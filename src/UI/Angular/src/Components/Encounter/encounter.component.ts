@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import { IGame, IInterfaceTexts, IItem, ITrade } from '../../../../../Engine/Interfaces/storyScript';
-import { IPerson, Game, CustomTexts } from '../../../../../Games/_TestGame/interfaces/types';
+import { IPerson } from '../../../../../Games/_TestGame/interfaces/types';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ConversationService } from '../../../../../Engine/Services/ConversationService';
 import template from './encounter.component.html';

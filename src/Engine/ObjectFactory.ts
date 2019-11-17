@@ -14,8 +14,6 @@ import { GameService } from './Services/gameService';
 import { GetDefinitions } from './ObjectConstructors';
 
 export class ObjectFactory {
-    static _isInitialized = false;
-
     private _game: IGame = <IGame>{};
     private _functions: { [type: string]: { [id: string]: { function: Function, hash: number } } };
 
@@ -39,60 +37,32 @@ export class ObjectFactory {
         this._nameSpace = nameSpace;
         this._texts = texts;
         this._rules = rules;
+        this._game.definitions = GetDefinitions();
+        this._helperService = new HelperService(this._game);
+        this._tradeService = new TradeService(this._game, this._texts);
+        this._dataService = new DataService(this._localStorageService, this._nameSpace);
+        this._conversationService = new ConversationService(this._dataService, this._game);
+        this._locationService = new LocationService(this._dataService, this._rules, this._game, this._game.definitions);
+        this._combinationService = new CombinationService(this._dataService, this._locationService, this._game, this._rules, this._texts);
+        this._characterService = new CharacterService(this._game, this._rules);
+        this._gameService = new GameService(this._dataService, this._locationService, this._characterService, this._combinationService, this._rules, this._helperService, this._game, this._texts);
     }
 
     GetNameSpace = (): string => this._nameSpace;
 
     GetFunctions = (): { [type: string]: { [id: string]: { function: Function, hash: number } } } => this._functions;
 
-    GetGame = (): IGame => {
-        this.init();
-        return this._game;
-    }
+    GetGame = (): IGame => this._game;
 
-    GetTexts = (): IInterfaceTexts => {
-        this.init();
-        return this._texts;
-    }
+    GetTexts = (): IInterfaceTexts => this._texts;
 
-    GetGameService = (): IGameService => {
-        this.init();
-        return this._gameService;
-    }
+    GetGameService = (): IGameService => this._gameService;
 
-    GetTradeService = (): ITradeService => {
-        this.init();
-        return this._tradeService;
-    }
+    GetTradeService = (): ITradeService => this._tradeService;
 
-    GetConversationService = (): IConversationService => {
-        this.init();
-        return this._conversationService;
-    }
+    GetConversationService = (): IConversationService => this._conversationService;
 
-    GetCharacterService = (): ICharacterService => {
-        this.init();
-        return this._characterService;
-    }
+    GetCharacterService = (): ICharacterService => this._characterService;
 
-    GetCombinationService = (): ICombinationService => {
-        this.init();
-        return this._combinationService;
-    }
-
-    private init = (): void => {
-        if (!ObjectFactory._isInitialized)
-        {
-            this._game.definitions = GetDefinitions();
-            this._helperService = new HelperService(this._game);
-            this._tradeService = new TradeService(this._game, this._texts);
-            this._dataService = new DataService(this._localStorageService, this._nameSpace);
-            this._conversationService = new ConversationService(this._dataService, this._game);
-            this._locationService = new LocationService(this._dataService, this._rules, this._game, this._game.definitions);
-            this._combinationService = new CombinationService(this._dataService, this._locationService, this._game, this._rules, this._texts);
-            this._characterService = new CharacterService(this._game, this._rules);
-            this._gameService = new GameService(this._dataService, this._locationService, this._characterService, this._combinationService, this._rules, this._helperService, this._game, this._texts);
-            ObjectFactory._isInitialized = true;
-        }
-    }
+    GetCombinationService = (): ICombinationService => this._combinationService;
 }
