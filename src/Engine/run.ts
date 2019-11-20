@@ -11,7 +11,7 @@ let _factory: ObjectFactory = null;
  * @param texts Your game's custom interface texts
  * @param rules Your game rules
  */
-export function Run(nameSpace: string, texts: IInterfaceTexts, rules: IRules) {
+export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
     addFunctionExtensions();
     addArrayExtensions();
 

@@ -26,12 +26,17 @@ import { CombinationService } from '../../../Engine/Services/CombinationService'
 import { VictoryComponent } from './Components/Victory/victory.component';
 import { HighScoresComponent } from './Components/HighScores/highscores.component';
 
+import { FormsModule } from '@angular/forms';
+import { EncounterModalComponent } from './Components/EncounterModal/encountermodal.component';
+import { ConversationComponent } from './Components/Conversation/conversation.component';
+
 var objectFactory = GetObjectFactory();
 
 @NgModule({
     imports: [
         BrowserModule,
-        UpgradeModule
+        UpgradeModule,
+        FormsModule
     ],
     declarations: [
         NavigationComponent,
@@ -48,7 +53,9 @@ var objectFactory = GetObjectFactory();
         ExplorationComponent,
         CombinationComponent,
         VictoryComponent,
-        HighScoresComponent
+        HighScoresComponent,
+        EncounterModalComponent,
+        ConversationComponent
     ],
     providers:[
         SharedMethodService,
@@ -74,7 +81,9 @@ var objectFactory = GetObjectFactory();
         ExplorationComponent,
         CombinationComponent,
         VictoryComponent,
-        HighScoresComponent
+        HighScoresComponent,
+        EncounterModalComponent,
+        ConversationComponent
     ],
 })
 

@@ -25,8 +25,8 @@ import { CreateCharacterController } from './Components/CreateCharacter/CreateCh
 import { GameOverController } from './Components/GameOver/GameOverController';
 import { VictoryComponent } from './Components/Victory/victory.component';
 import { HighScoresComponent } from './Components/HighScores/highscores.component';
-import { EncounterModalController } from './Components/EncounterModal/EncounterModalController';
-import { ConversationController } from './Components/Conversation/ConversationController';
+import { EncounterModalComponent } from './Components/EncounterModal/encountermodal.component';
+import { ConversationComponent } from './Components/Conversation/conversation.component';
 import { SoundController } from './Components/Sound/SoundController';
 import { IntroController } from './Components/Intro/IntroController';
 import { GetObjectFactory } from '../../../Engine/run';
@@ -61,24 +61,6 @@ storyScriptModule.service('sharedMethodService', SharedMethodService);
 
 storyScriptModule.directive('featurePicture', ['game', FeaturePicture.Factory()]);
 storyScriptModule.directive('textFeatures', ['combinationService', 'game', TextFeatures.Factory()]);
-
-storyScriptModule
-    .directive('navigation', downgradeComponent({component: NavigationComponent}))
-    .directive('encounter', downgradeComponent({component: EncounterComponent}))
-    .directive('backpack', downgradeComponent({component: BackpackComponent}))
-    .directive('actionlog', downgradeComponent({component: ActionLogComponent}))
-    .directive('characterSheet', downgradeComponent({component: CharacterSheetComponent}))
-    .directive('combat', downgradeComponent({component: CombatComponent}))
-    .directive('location', downgradeComponent({component: LocationComponent}))
-    .directive('ground', downgradeComponent({component: GroundComponent}))
-    .directive('equipment', downgradeComponent({component: EquipmentComponent}))
-    .directive('trade', downgradeComponent({component: TradeComponent}))
-    .directive('enemy', downgradeComponent({component: EnemyComponent}))
-    .directive('exploration', downgradeComponent({component: ExplorationComponent}))
-    .directive('combination', downgradeComponent({component: CombinationComponent}))
-    .directive('victory', downgradeComponent({component: VictoryComponent}))
-    .directive('highscores', downgradeComponent({component: HighScoresComponent}))
-    .factory('SharedMethodService', downgradeInjectable(SharedMethodService));
 
 storyScriptModule.component('main', {
     templateUrl: 'ui/MainComponent.html',
@@ -118,16 +100,6 @@ storyScriptModule.component('gameOver', {
     controller: GameOverController
 });
 
-storyScriptModule.component('encounterModal', {
-    templateUrl: 'ui/EncounterModalComponent.html',
-    controller: EncounterModalController
-});
-
-storyScriptModule.component('conversation', {
-    templateUrl: 'ui/ConversationComponent.html',
-    controller: ConversationController
-});
-
 storyScriptModule.component('sound', {
     templateUrl: 'ui/SoundComponent.html',
     controller: SoundController
@@ -137,3 +109,23 @@ storyScriptModule.component('intro', {
     templateUrl: 'ui/IntroComponent.html',
     controller: IntroController
 });
+
+storyScriptModule
+    .directive('navigation', downgradeComponent({component: NavigationComponent}))
+    .directive('encounter', downgradeComponent({component: EncounterComponent}))
+    .directive('backpack', downgradeComponent({component: BackpackComponent}))
+    .directive('actionlog', downgradeComponent({component: ActionLogComponent}))
+    .directive('characterSheet', downgradeComponent({component: CharacterSheetComponent}))
+    .directive('combat', downgradeComponent({component: CombatComponent}))
+    .directive('location', downgradeComponent({component: LocationComponent}))
+    .directive('ground', downgradeComponent({component: GroundComponent}))
+    .directive('equipment', downgradeComponent({component: EquipmentComponent}))
+    .directive('trade', downgradeComponent({component: TradeComponent}))
+    .directive('enemy', downgradeComponent({component: EnemyComponent}))
+    .directive('exploration', downgradeComponent({component: ExplorationComponent}))
+    .directive('combination', downgradeComponent({component: CombinationComponent}))
+    .directive('victory', downgradeComponent({component: VictoryComponent}))
+    .directive('highscores', downgradeComponent({component: HighScoresComponent}))
+    .directive('encountermodal', downgradeComponent({component: EncounterModalComponent}))
+    .directive('conversation', downgradeComponent({component: ConversationComponent}))
+    .factory('SharedMethodService', downgradeInjectable(SharedMethodService));

@@ -3,10 +3,12 @@ import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
 import { Start } from './start';
 import { BasementKey } from '../items/basementKey';
 import { Basement } from './Basement';
+import description from './Garden.html';
 
 export function Garden() {
     return Location({
         name: 'Garden',
+        html: description,
         destinations: [
             {
                 name: 'Enter your home',

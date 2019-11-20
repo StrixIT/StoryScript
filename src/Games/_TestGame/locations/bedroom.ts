@@ -1,10 +1,12 @@
 ﻿import { IGame, IItem, Location } from '../interfaces/types';
 import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
 import { Start } from './start';
+import description from './Bedroom.html';
 
 export function Bedroom() {
     return Location({
         name: 'Bedroom',
+        html: description,
         destinations: [
             {
                 name: 'Back to the living room',

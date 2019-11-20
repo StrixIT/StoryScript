@@ -24,7 +24,7 @@ export class CombatComponent {
 
     executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this); 
 
-    fight = (enemy: IEnemy): void => this._gameService.fight(enemy);
+    fight = (enemy: IEnemy): void => this._sharedMethodService.fight(this.game, enemy);
     
     useItem = (item: IItem): void => this._gameService.useItem(item);
 }

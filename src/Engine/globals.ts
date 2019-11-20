@@ -4,7 +4,9 @@
         var originalFunction = this;
 
         return (function () {
-            var name = originalFunction.name;           
+            var name = originalFunction.name;      
+            
+            // Todo: rewrite this now that we don't need named proxies.
             var func = createNamedFunction(originalFunction, proxyFunction, name, params);
             func.isProxy = true;
             return func;
@@ -12,7 +14,7 @@
     };
 }
 
-export function createNamedFunction(originalFunction, proxyFunction: Function, name: string, ...params): Function {
+function createNamedFunction(originalFunction, proxyFunction: Function, name: string, ...params): Function {
     var namedFunction = {[name]: function () {
         var args = [].slice.call(arguments);
 

@@ -3,9 +3,11 @@ import { RegisterPerson } from '../../../Engine/Interfaces/storyScript'
 import { Sword } from '../items/sword';
 import { Garden } from '../locations/Garden';
 import { Journal } from '../quests/journal';
+import conversation from './Friend.html';
 
 export function Friend() {
     return Person({
+        html: conversation,
         name: 'Joe',
         hitpoints: 10,
         attack: '1d6',

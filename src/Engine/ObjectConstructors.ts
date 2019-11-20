@@ -10,14 +10,20 @@ import { IAction } from './Interfaces/action';
 import { DataKeys } from './DataKeys';
 import { getSingular, getPlural } from './utilities';
 import { ICharacter } from './Interfaces/character';
-import { createFunctionHash, createNamedFunction } from './globals';
+import { createFunctionHash } from './globals';
 import { ICombinable, ICombine } from './Interfaces/combinations/combinations';
-import { GetObjectFactory } from './run';
 
-var _registeredIds: Set<string> = new Set<string>();
-var _currentEntityId: string = null;
+// This flag indicates whether the registration phase is active.
+let _registration: boolean = true;
 
-var _definitions: IDefinitions = {
+// This string has the key of the current entity being registered.
+let _currentEntityKey: string = null;
+
+// The dictionary containing all registered entity keys and their corresponding ids.
+let _registeredIds: Map<string, string> = new Map<string, string>();
+
+// The object to hold all game entity definitions.
+const _definitions: IDefinitions = {
     actions: [],
     locations: [],
     features: [],
@@ -27,7 +33,12 @@ var _definitions: IDefinitions = {
     quests: []
 };
 
+// The object to hold all game entity functions.
 const _functions = {};
+
+export function registrationDone(): void {
+    _registration = false;
+}
 
 export function GetDefinitions(): IDefinitions { 
     return _definitions; 
@@ -37,64 +48,28 @@ export function GetFunctions(): {} {
     return _functions; 
 }
 
-export function DynamicEntity(entityFunction: Function, name: string): Function {
-    var namedFunction = createNamedFunction(null, entityFunction, getIdFromName({ id: '', name: name }));
-    return CreateEntityProxy(namedFunction)();
-}
-
-export function CreateEntityProxy(entityFunction: Function): () => Function {
-    return entityFunction.proxy((originalScope, originalFunc, ...params) => {
-        var id = params.splice(params.length - 1, 1)[0];
-        var oldId = GetCurrentEntityId();
-        SetCurrentEntityId(id);
-        var result = originalFunc.apply(originalScope, params);
-        SetCurrentEntityId(oldId);
-        return result;
-    }, entityFunction.name || entityFunction.originalFunctionName);
-}
-
-export function GetCurrentEntityId() {
-    return _currentEntityId;
-}
-
-export function SetCurrentEntityId(id: string) {
-    _currentEntityId = id ? id.toLowerCase() : id;
-}
-
 export function RegisterAction(action: Function) {
-    Register<Function>('actions', action);
+    Register('actions', action);
 }
 
 export function RegisterEnemy(entityFunc: () => IEnemy) {
-    Register<IEnemy>('enemies', entityFunc);
+    Register('enemies', entityFunc);
 }
 
 export function RegisterPerson(entityFunc: () => IPerson) {
-    Register<IPerson>('persons', entityFunc);
+    Register('persons', entityFunc);
 }
 
 export function RegisterItem(entityFunc: () => IItem) {
-    Register<IItem>('items', entityFunc);
+    Register('items', entityFunc);
 }
 
 export function RegisterQuest(entityFunc: () => IQuest) {
-    Register<IQuest>('quests', entityFunc);
+    Register('quests', entityFunc);
 }
 
 export function RegisterLocation(entityFunc: () => ILocation) {
-    Register<ILocation>('locations', entityFunc);
-}
-
-function Register<T>(type: string, entityFunc: Function) {
-    // Use the function reference to register the type and id of the entities
-    // instead of this. Then, we can look up the type and id directly instead
-    // of having to use the complicated logic in the createObject function.
-
-    _functions[type] = _functions[type] || {};
-    _definitions[type] = _definitions[type] || {};
-    var proxy = CreateEntityProxy(entityFunc);
-    var entity = proxy();
-    _definitions[type].push(proxy);
+    Register('locations', entityFunc);
 }
 
 export function Location(entity: ILocation): ILocation {
@@ -205,6 +180,18 @@ export function initCollection<T>(entity: any, property: string, buildInline?: b
     });
 }
 
+function Register(type: string, entityFunc: Function): void {
+    // Add the entity function to the definitions object for creating entities at run-time.
+    _definitions[type] = _definitions[type] || {};
+    _definitions[type].push(entityFunc);
+
+    // Execute the entity function to get the entity key.
+    entityFunc();
+
+    // Add the key/id registration record.
+    _registeredIds.set(_currentEntityKey, entityFunc.name.toLowerCase());
+}
+
 function Create(type: string, entity: any, id?: string) {
     switch (type) {
         case 'location': {
@@ -286,11 +273,18 @@ function EnemyBase<T extends IEnemy>(entity: T, type: string, id?: string): T {
 
 function CreateObject<T>(entity: T, type: string, id?: string)
 {
-    var checkType = <{ id: string, type: string}><unknown>entity;
+    var compiledEntity: { id: string, name: string, type: string };
+    
+    if (typeof entity === 'function') {
+        id = entity.name;
+        compiledEntity = entity();
+    } else {
+        compiledEntity = <any>entity;
+    }
 
-    if (checkType.id || checkType.type) {
-        var propertyErrors = checkType.id && checkType.type ? ['id', 'type']
-                                : checkType.id ? ['id'] : ['type'];
+    if (compiledEntity.id || compiledEntity.type) {
+        var propertyErrors = compiledEntity.id && compiledEntity.type ? ['id', 'type']
+                                : compiledEntity.id ? ['id'] : ['type'];
 
         var message = propertyErrors.length > 1 ? 'Properties {0} are used by StoryScript. Don\'t use them on your own types.'
                                                     : 'Property {0} is used by StoryScript. Don\'t use it on your own types.';
@@ -298,23 +292,45 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         throw new Error(message.replace('{0}', propertyErrors.join(' and ')));
     }
 
-    var compiledEntity: { id: string, name: string, type: string } = typeof entity === 'function' ? entity() : entity;
+    // Add the type to the object so we can distinguish between them in the combine functionality.
+    compiledEntity.type = type;
     
-    compiledEntity.id = id ? id : GetCurrentEntityId();
+    var entityKey = getEntityKey(compiledEntity);
+    _currentEntityKey = entityKey;
+
+    var inlineConflict = false;
+
+    if (id) {
+        _registeredIds.forEach((v, k) => {
+            if (v === id && entityKey !== k) {
+                inlineConflict = true;
+                return;
+            }
+        });
+
+        if (inlineConflict) {
+            throw new Error('Duplicate id detected: ' + compiledEntity.id + '. You cannot use names for entities declared inline that are the same as the names of stand-alone entities.');
+        }
+    }
+
+    var registeredId = _registeredIds.get(entityKey);
+
+    if (id || registeredId) {
+        compiledEntity.id = id || registeredId;
+    }
+
+    if (id && !registeredId) {
+        _registeredIds.set(entityKey, id);
+    }
+
+    if (_registration) {
+        return <T><unknown>compiledEntity;
+    }
 
     const definitionKeys = Object.getOwnPropertyNames(_definitions).filter(d => d !== 'actions');
 
     addFunctionIds(compiledEntity, type, definitionKeys);
     var plural = getPlural(type);
-
-    // Add the type to the object so we can distinguish between them in the combine functionality.
-    compiledEntity.type = type;
-
-    if (_registeredIds.has(compiledEntity.id + '|' + compiledEntity.type + '|' +  !id)) {
-        throw new Error('Duplicate id detected: ' + compiledEntity.id + '. You cannot use names for entities declared inline that are the same as the names of stand-alone entities.');
-    }
-
-    _registeredIds.add(compiledEntity.id + '|' + compiledEntity.type);
 
     // If this is the first time an object of this definition is created, get the functions.
     if (!_functions[plural] || !Object.getOwnPropertyNames(_functions[plural]).find(e => e.startsWith(compiledEntity.id + '|'))) {
@@ -322,6 +338,10 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     }
 
     return <T><unknown>compiledEntity;
+}
+
+function getEntityKey(entity: object) {
+    return Object.getOwnPropertyNames(entity).sort().join('|')
 }
 
 function setReadOnlyLocationProperties(location: ILocation) {
@@ -432,8 +452,10 @@ function getIdFromName<T extends { name: string, id? : string}>(entity: T): stri
 }
 
 function getFunctions(type: string, functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, definitionKeys: string[], entity: any, parentId: any) {
+    parentId = parentId || entity.id;
+
     if (!parentId) {
-        parentId = entity.id || entity.name;
+        return;
     }
 
     for (var key in entity) {

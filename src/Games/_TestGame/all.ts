@@ -10,3 +10,6 @@ import './items/leatherBoots'
 import './items/sword'
 import './persons/Friend'
 import './quests/journal'
+import { registrationDone } from '../../Engine/ObjectConstructors'
+
+registrationDone();

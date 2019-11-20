@@ -2,10 +2,12 @@
 import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
 import { Start } from './start';
 import { Bandit } from '../enemies/bandit';
+import description from './Dirtroad.html';
 
 export function DirtRoad() {
     return Location({
         name: 'Dirt road',
+        html: description,
         destinations: [
             {
                 name: 'Enter your home',
