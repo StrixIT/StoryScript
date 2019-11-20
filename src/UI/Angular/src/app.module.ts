@@ -29,6 +29,8 @@ import { HighScoresComponent } from './Components/HighScores/highscores.componen
 import { FormsModule } from '@angular/forms';
 import { EncounterModalComponent } from './Components/EncounterModal/encountermodal.component';
 import { ConversationComponent } from './Components/Conversation/conversation.component';
+import { BuildCharacterComponent } from './Components/BuildCharacter/buildcharacter.component';
+import { CreateCharacterComponent } from './Components/CreateCharacter/createcharacter.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -55,7 +57,9 @@ var objectFactory = GetObjectFactory();
         VictoryComponent,
         HighScoresComponent,
         EncounterModalComponent,
-        ConversationComponent
+        ConversationComponent,
+        CreateCharacterComponent,
+        BuildCharacterComponent
     ],
     providers:[
         SharedMethodService,
@@ -83,7 +87,9 @@ var objectFactory = GetObjectFactory();
         VictoryComponent,
         HighScoresComponent,
         EncounterModalComponent,
-        ConversationComponent
+        ConversationComponent,
+        CreateCharacterComponent,
+        BuildCharacterComponent
     ],
 })
 

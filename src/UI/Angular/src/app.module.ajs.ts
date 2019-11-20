@@ -10,7 +10,6 @@ import '../../../Games/_TestGame/all.ts'
 import { downgradeComponent, downgradeInjectable } from '@angular/upgrade/static';
 
 import { SharedMethodService } from './Services/SharedMethodService';
-import { BuildCharacterController } from './Components/BuildCharacter/BuildCharacterController';
 import { FeaturePicture } from './Directives/FeaturePicture';
 import { TextFeatures } from './Directives/TextFeatures';
 import { MainController } from './Components/Main/MainController';
@@ -21,7 +20,7 @@ import { MenuModalController } from './Components/MenuModal/MenuModalController'
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { ExplorationComponent } from './Components/Exploration/exploration.component';
 import { GroundComponent } from './Components/Ground/ground.component';
-import { CreateCharacterController } from './Components/CreateCharacter/CreateCharacterController';
+import { CreateCharacterComponent } from './Components/CreateCharacter/createcharacter.component';
 import { GameOverController } from './Components/GameOver/GameOverController';
 import { VictoryComponent } from './Components/Victory/victory.component';
 import { HighScoresComponent } from './Components/HighScores/highscores.component';
@@ -46,6 +45,7 @@ import { LocationComponent } from './Components/Location/location.component';
 import { TradeComponent } from './Components/Trade/trade.component';
 import { EnemyComponent } from './Components/Enemy/enemy.component';
 import { CombinationComponent } from './Components/Combination/combination.component';
+import { BuildCharacterComponent } from './Components/BuildCharacter/buildcharacter.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -67,14 +67,6 @@ storyScriptModule.component('main', {
     controller: MainController
 });
 
-storyScriptModule.component('buildCharacter', {
-    templateUrl: 'ui/BuildCharacterComponent.html',
-    controller: BuildCharacterController,
-    bindings: {
-        sheet: '<'
-    }
-});
-
 storyScriptModule.component('quests', {
     templateUrl: 'ui/QuestComponent.html',
     controller: QuestController
@@ -88,11 +80,6 @@ storyScriptModule.component('levelUp', {
 storyScriptModule.component('menuModal', {
     templateUrl: 'ui/MenuModalComponent.html',
     controller: MenuModalController
-});
-
-storyScriptModule.component('createCharacter', {
-    templateUrl: 'ui/CreateCharacterComponent.html',
-    controller: CreateCharacterController
 });
 
 storyScriptModule.component('gameOver', {
@@ -128,4 +115,6 @@ storyScriptModule
     .directive('highscores', downgradeComponent({component: HighScoresComponent}))
     .directive('encountermodal', downgradeComponent({component: EncounterModalComponent}))
     .directive('conversation', downgradeComponent({component: ConversationComponent}))
+    .directive('createcharacter', downgradeComponent({component: CreateCharacterComponent}))
+    .directive('buildcharacter', downgradeComponent({component: BuildCharacterComponent}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));

@@ -1,12 +1,20 @@
 import { IInterfaceTexts, CreateCharacters } from '../../../../../Engine/Interfaces/storyScript';
-import { ICharacterService } from '../../../../../Engine/Services/interfaces/services';
+import { CharacterService } from '../../../../../Engine/Services/characterService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
+import { Component, Input } from '@angular/core';
+import template from './buildcharacter.component.html';
 
-export class BuildCharacterController implements ng.IComponentController {
-    constructor(private _characterService: ICharacterService, _texts: IInterfaceTexts) {
-        this.texts = _texts;
+@Component({
+    selector: 'buildcharacter',
+    template: template,
+})
+export class BuildCharacterComponent {
+    @Input() sheet: CreateCharacters.ICreateCharacter;
+    
+    constructor(private _characterService: CharacterService, _objectFactory: ObjectFactory) {
+        this.texts = _objectFactory.GetTexts();
     }
 
-    sheet: CreateCharacters.ICreateCharacter;
     texts: IInterfaceTexts;
 
     limitInput = (event: ng.IAngularEvent, attribute: CreateCharacters.ICreateCharacterAttribute, entry: CreateCharacters.ICreateCharacterAttributeEntry): void => {
@@ -16,5 +24,3 @@ export class BuildCharacterController implements ng.IComponentController {
 
     distributionDone = (step: CreateCharacters.ICreateCharacterStep): boolean => this._characterService.distributionDone(this.sheet, step);
 }
-
-BuildCharacterController.$inject = ['characterService', 'customTexts'];
