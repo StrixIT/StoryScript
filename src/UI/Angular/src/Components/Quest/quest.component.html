@@ -7,7 +7,7 @@
                 <li *ngFor="let quest of currentQuests()">
                     <div>
                         <span>{{ quest.name }}</span>
-                        <div innerHTML="{{ questStatus(quest) }}"></div>
+                        <div [innerHTML]="questStatus(quest) | safe: 'html'"></div>
                     </div>
                 </li>
             </ul>
@@ -17,7 +17,7 @@
             <ul>
                 <li *ngFor="let quest of completedQuests()">
                     <div>
-                        <div innerHTML="{{ questStatus(quest) }}"></div>
+                        <div [innerHTML]="questStatus(quest) | safe: 'html'"></div>
                     </div>
                 </li>
             </ul>

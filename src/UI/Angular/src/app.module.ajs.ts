@@ -1,11 +1,15 @@
 ﻿import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styles/storyscript.css'
-import '../../../Games/_TestGame/ui/styles/game.css'
+import '../../../Games/MyAdventureGame/ui/styles/game.css'
 import * as angular from 'angular';
 import 'angular-sanitize';
-import '../../../Games/_TestGame/run.ts'
-import '../../../Games/_TestGame/all.ts'
+import '../../../Games/MyAdventureGame/run.ts'
+import '../../../Games/MyAdventureGame/all.ts'
+
+import { registrationDone } from '../../../Engine/ObjectConstructors'
+
+registrationDone();
 
 import { downgradeComponent, downgradeInjectable } from '@angular/upgrade/static';
 
@@ -60,7 +64,6 @@ storyScriptModule.value('combinationService', objectFactory.GetCombinationServic
 storyScriptModule.service('sharedMethodService', SharedMethodService);
 
 storyScriptModule.directive('featurePicture', ['game', FeaturePicture.Factory()]);
-storyScriptModule.directive('textFeatures', ['combinationService', 'game', TextFeatures.Factory()]);
 
 storyScriptModule
     .directive('main', downgradeComponent({component: MainComponent}))
@@ -89,4 +92,5 @@ storyScriptModule
     .directive('quests', downgradeComponent({component: QuestComponent}))
     .directive('sound', downgradeComponent({component: SoundComponent}))
     .directive('menumodal', downgradeComponent({component: MenuModalComponent}))
+    .directive('textFeatures', downgradeComponent({component: TextFeatures}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));

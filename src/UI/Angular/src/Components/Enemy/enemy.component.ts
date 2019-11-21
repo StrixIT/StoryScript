@@ -19,7 +19,7 @@ export class EnemyComponent {
 
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
-    tryCombine = (enemy: IEnemy): boolean => this.game.combinations.tryCombine(enemy);
+    tryCombine = (enemy: IEnemy): boolean => this._sharedMethodService.tryCombine(this.game, enemy);
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
 

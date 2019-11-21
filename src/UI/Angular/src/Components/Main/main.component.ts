@@ -15,6 +15,7 @@ export class MainComponent {
         this.game = _objectFactory.GetGame();
         this.texts = _objectFactory.GetTexts();
 
+        // TODO: fix this.
         // Watch for dynamic styling.
         this.game.dynamicStyles = this.game.dynamicStyles || [];
         //this._scope.$watchCollection('game.dynamicStyles', () => this.applyDynamicStyling());

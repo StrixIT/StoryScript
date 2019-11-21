@@ -24,7 +24,7 @@ export class BackpackComponent {
 
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
-    tryCombine = (item: IItem): boolean => this.game.combinations.tryCombine(item);
+    tryCombine = (item: IItem): boolean => this._sharedMethodService.tryCombine(this.game, item);
 
     showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.game);
 

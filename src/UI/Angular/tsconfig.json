@@ -20,7 +20,7 @@
     },
     "include": [
         "../../Engine/**/*.ts",
-        "../../Games/_GameTemplate/**/*.ts",
+        "../../Games/MyAdventureGame/**/*.ts",
         "./src/Services/**/*.ts",
         "./src/Components/**/*.ts",
         "./src/Directives/**/*.ts",

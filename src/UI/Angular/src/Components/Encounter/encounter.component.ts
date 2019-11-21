@@ -25,7 +25,7 @@ export class EncounterComponent {
 
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
-    tryCombine = (person: IPerson): boolean => this.game.combinations.tryCombine(person);
+    tryCombine = (person: IPerson): boolean => this._sharedMethodService.tryCombine(this.game, person);
 
     talk = (person: IPerson): void => this._sharedMethodService.talk(person);
 

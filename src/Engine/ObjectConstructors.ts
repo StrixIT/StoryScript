@@ -52,6 +52,10 @@ export function RegisterAction(action: Function) {
     Register('actions', action);
 }
 
+export function RegisterFeature(entityFunc: () => IFeature) {
+    Register('features', entityFunc);
+}
+
 export function RegisterEnemy(entityFunc: () => IEnemy) {
     Register('enemies', entityFunc);
 }
@@ -122,7 +126,7 @@ export function setReadOnlyProperties(key: string, data: any) {
     }
 }
 
-export function initCollection<T>(entity: any, property: string, buildInline?: boolean) {
+export function initCollection<T>(entity: any, property: string) {
     const _entityCollections: string[] = [
         'features',
         'items',
@@ -146,13 +150,17 @@ export function initCollection<T>(entity: any, property: string, buildInline?: b
     
     var collection= entity[property] || [];
 
-    if (entity[property] && buildInline) {
-        // Initialize any objects that have been declared inline (not a recommended but possible way to declare objects). Check
-        // for the existence of an id property to determine whether the object is already initialized.
-        var inlineCollection = (<[]>entity[property]).map((e: { id: string, name: string }) => e.id ? e : Create(getSingular(property), e, getIdFromName(e)));
+    if (property === 'features') {
+        // Initialize features that have been declared inline. Check for the existence of a type property to determine whether the object is already initialized.
+        // Store the current entity key, as it will be overridden when inline features are build.
+        const locationEntityKey = _currentEntityKey;
+
+        var inlineCollection = (<[]>entity[property]).map((e: { type: string, name: string }) => e.type ? e : Create(getSingular(property), e, getIdFromName(e)));
         collection.length = 0;
 
         inlineCollection.forEach(e => collection.push(e));
+
+        _currentEntityKey = locationEntityKey;
     }
 
     Object.defineProperty(entity, property, {
@@ -236,7 +244,7 @@ function createLocation(entity: ILocation) {
     initCollection(location, 'actions');
     initCollection(location, 'combatActions');
     initCollection(location, 'destinations');
-    initCollection(location, 'features', true);
+    initCollection(location, 'features');
     initCollection(location, 'items');
     initCollection(location, 'enemies');
     initCollection(location, 'persons');
@@ -282,14 +290,12 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         compiledEntity = <any>entity;
     }
 
-    if (compiledEntity.id || compiledEntity.type) {
-        var propertyErrors = compiledEntity.id && compiledEntity.type ? ['id', 'type']
-                                : compiledEntity.id ? ['id'] : ['type'];
+    if (compiledEntity.id) {
+        throw new Error('Property \'id\' is used by StoryScript. Don\'t use it on your own types.');
+    }
 
-        var message = propertyErrors.length > 1 ? 'Properties {0} are used by StoryScript. Don\'t use them on your own types.'
-                                                    : 'Property {0} is used by StoryScript. Don\'t use it on your own types.';
-
-        throw new Error(message.replace('{0}', propertyErrors.join(' and ')));
+    if (compiledEntity.type && compiledEntity.type !== type) {
+        throw new Error('Property \'type\' is used by StoryScript. Don\'t use it on your own types.');
     }
 
     // Add the type to the object so we can distinguish between them in the combine functionality.
@@ -340,8 +346,11 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     return <T><unknown>compiledEntity;
 }
 
-function getEntityKey(entity: object) {
-    return Object.getOwnPropertyNames(entity).sort().join('|')
+function getEntityKey(entity: object): string {
+    return Object.getOwnPropertyNames(entity).sort().map(p => {
+        const type = typeof entity[p];
+        return type === 'object' || type === 'function' ? p.toString() : p.toString() + '|' + entity[p].toString();
+    }).join('|');
 }
 
 function setReadOnlyLocationProperties(location: ILocation) {

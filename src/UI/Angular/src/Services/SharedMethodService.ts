@@ -1,4 +1,4 @@
-import { ITrade, IAction, Enumerations, IPerson, IEnemy } from '../../../../Engine/Interfaces/storyScript';
+import { ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from '../../../../Engine/Interfaces/storyScript';
 import { Injectable } from '@angular/core';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { TradeService } from '../../../../Engine/Services/TradeService';
@@ -6,23 +6,8 @@ import { IGame } from '../../../../Games/_TestGame/interfaces/game';
 import { Subject } from 'rxjs/Subject';
 import { ConversationService } from '../../../../Engine/Services/ConversationService';
 
-export interface ISharedMethodService {
-    enemiesPresent(game: IGame): boolean;
-    trade(trade: IPerson | ITrade): boolean;
-    getButtonClass(action: IAction): string;
-    executeAction(game: IGame, action: IAction, controller: ng.IComponentController): void;
-    startCombat(game: IGame, person?: IPerson): void;
-    showDescription(type: string, item: any, title: string): void;
-    showEquipment(game: IGame): boolean;
-    useCharacterSheet?: boolean;
-    useEquipment?: boolean;
-    useBackpack?: boolean;
-    useQuests?: boolean;
-    useGround?: boolean;
-}
-
 @Injectable()
-export class SharedMethodService implements ISharedMethodService {
+export class SharedMethodService {
 
     constructor(private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
     }
@@ -36,19 +21,31 @@ export class SharedMethodService implements ISharedMethodService {
     private playStateChangeSource = new Subject<Enumerations.PlayState>();
     private enemiesPresentSource = new Subject<boolean>();
     private descriptionSource = new Subject<string>();
+    private combinationSource = new Subject<boolean>();
 
     playStateChange$ = this.playStateChangeSource.asObservable();
     enemiesPresentChange$ = this.enemiesPresentSource.asObservable();
     descriptionChange$ = this.descriptionSource.asObservable();
+    combinationChange$ = this.combinationSource.asObservable();
 
     setPlayState = (game: IGame, value: Enumerations.PlayState): void => {
         game.playState = value;
         this.playStateChangeSource.next(value);
     }
 
+    setCombineState = (value: boolean): void => {
+        this.combinationSource.next(value);
+    }
+
     enemiesPresent = (game: IGame): boolean => {
         var result = game.currentLocation && game.currentLocation.activeEnemies && game.currentLocation.activeEnemies.length > 0;
         this.enemiesPresentSource.next(result);
+        return result;
+    }
+
+    tryCombine = (game: IGame, combinable: Combinations.ICombinable): boolean => {
+        var result = game.combinations.tryCombine(combinable);
+        this.combinationSource.next(result);
         return result;
     }
 
@@ -167,5 +164,3 @@ export class SharedMethodService implements ISharedMethodService {
         return result;
     }
 }
-
-SharedMethodService.$inject = ['gameService', 'tradeService', 'game'];

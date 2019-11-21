@@ -38,6 +38,8 @@ import { MainComponent } from './Components/Main/main.component';
 import { QuestComponent } from './Components/Quest/quest.component';
 import { SoundComponent } from './Components/Sound/sound.component';
 import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
+import { TextFeatures } from './Directives/TextFeatures';
+import { SafePipe } from './Pipes/sanitizationPipe';
 
 var objectFactory = GetObjectFactory();
 
@@ -73,7 +75,9 @@ var objectFactory = GetObjectFactory();
         IntroComponent,
         LevelUpComponent,
         QuestComponent,
-        SoundComponent
+        SoundComponent,
+        TextFeatures,
+        SafePipe
     ],
     providers:[
         SharedMethodService,

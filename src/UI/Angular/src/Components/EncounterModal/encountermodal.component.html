@@ -11,7 +11,7 @@
                 <combat></combat>
                 <trade></trade>
                 <conversation></conversation>
-                <div *ngIf="game.playState === 'Description'" class="description" innerHTML="{{ modalSettings.description }}"></div>
+                <div *ngIf="game.playState === 'Description'" class="description" [innerHTML]="modalSettings.description | safe: 'html'"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" (click)="closeModal()" *ngIf="modalSettings.canClose">{{ modalSettings.closeText }}</button>

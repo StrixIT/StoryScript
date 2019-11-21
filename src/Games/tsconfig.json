@@ -1,10 +1,13 @@
 {
     "extends": "../tsconfig",
     "compilerOptions": {
-        "lib": ["es2015", "dom"]
+        "lib": ["es2015", "dom"],
+        "types": [
+            "../Engine/*.d.ts"
+        ]
     },
     "include": [
         "../Engine/**/*.ts",
-        "./_GameTemplate/**/*.ts"
+        "./_TestGame/**/*.ts"
     ]
 }
