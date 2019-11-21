@@ -1,21 +1,21 @@
-<div ng-init="init()">
+<div>
     <encountermodal></encountermodal>
-    <menu-modal></menu-modal>
+    <menumodal></menumodal>
     <navigation></navigation>
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="character-container" ng-if="game.state === 'Play'" id="character-container" ng-class="{ 'col-4': $ctrl.showCharacterPane() }">
-                <character-sheet></character-sheet>
+            <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
+                <charactersheet></charactersheet>
                 <equipment></equipment>
                 <backpack></backpack>
                 <quests></quests>
             </div>
-            <div id="location-container" ng-class="{ 'col-8': game.state === 'Play' && $ctrl.showCharacterPane(), 'col-12': game.state !== 'Play' || !$ctrl.showCharacterPane() }">
-                <div ng-if="!game.state">
-                    {{ $ctrl.texts.loading }}
+            <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">
+                <div *ngIf="!game.state">
+                    {{ texts.loading }}
                 </div>
-                <div ng-if="game.state == 'Play'">
+                <div *ngIf="game.state == 'Play'">
                     <encounter></encounter>
                     <location></location>
                     <actionlog></actionlog>
@@ -25,12 +25,12 @@
                 </div>
                 <intro></intro>
                 <createcharacter></createcharacter>
-                <level-up></level-up>
-                <game-over></game-over>
+                <levelup></levelup>
+                <gameover></gameover>
                 <victory></victory>
             </div>
         </div>
-        <div class="row" ng-if="$ctrl.game.state === 'Play'">
+        <div class="row" *ngIf="game.state === 'Play'">
             <div class="col-12">
                 <combination></combination>
             </div>

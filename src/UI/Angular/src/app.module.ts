@@ -31,6 +31,13 @@ import { EncounterModalComponent } from './Components/EncounterModal/encountermo
 import { ConversationComponent } from './Components/Conversation/conversation.component';
 import { BuildCharacterComponent } from './Components/BuildCharacter/buildcharacter.component';
 import { CreateCharacterComponent } from './Components/CreateCharacter/createcharacter.component';
+import { GameOverComponent } from './Components/GameOver/gameover.component';
+import { IntroComponent } from './Components/Intro/intro.component';
+import { LevelUpComponent } from './Components/LevelUp/levelup.component';
+import { MainComponent } from './Components/Main/main.component';
+import { QuestComponent } from './Components/Quest/quest.component';
+import { SoundComponent } from './Components/Sound/sound.component';
+import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
 
 var objectFactory = GetObjectFactory();
 
@@ -41,6 +48,8 @@ var objectFactory = GetObjectFactory();
         FormsModule
     ],
     declarations: [
+        MainComponent,
+        MenuModalComponent,
         NavigationComponent,
         EncounterComponent,
         BackpackComponent,
@@ -59,7 +68,12 @@ var objectFactory = GetObjectFactory();
         EncounterModalComponent,
         ConversationComponent,
         CreateCharacterComponent,
-        BuildCharacterComponent
+        BuildCharacterComponent,
+        GameOverComponent,
+        IntroComponent,
+        LevelUpComponent,
+        QuestComponent,
+        SoundComponent
     ],
     providers:[
         SharedMethodService,
@@ -71,6 +85,8 @@ var objectFactory = GetObjectFactory();
         { provide: CombinationService, useValue: objectFactory.GetCombinationService() }
     ],
     entryComponents: [
+        MainComponent,
+        MenuModalComponent,
         NavigationComponent, 
         EncounterComponent, 
         BackpackComponent, 
@@ -89,7 +105,12 @@ var objectFactory = GetObjectFactory();
         EncounterModalComponent,
         ConversationComponent,
         CreateCharacterComponent,
-        BuildCharacterComponent
+        BuildCharacterComponent,
+        GameOverComponent,
+        IntroComponent,
+        LevelUpComponent,
+        QuestComponent,
+        SoundComponent
     ],
 })
 

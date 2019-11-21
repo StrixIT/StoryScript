@@ -56,6 +56,7 @@ export class EncounterModalComponent {
             this.game.playState = Enumerations.PlayState.Description;
             this.modalSettings.title = this.game.currentDescription.title;
             this.modalSettings.description = this.game.currentDescription.item.description;
+            this._sharedMethodService.setPlayState(this.game, Enumerations.PlayState.Description);
         }
     }
 

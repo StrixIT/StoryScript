@@ -1,20 +1,22 @@
 import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
-import { StoryScriptScope } from '../StoryScriptScope';
-import { IGameService } from '../../../../../Engine/Services/interfaces/services';
+import { GameService } from '../../../../../Engine/Services/gameService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
+import { Component } from '@angular/core';
+import template from './menumodal.component.html';
+import { SharedMethodService } from '../../Services/SharedMethodService';
 
-export class MenuModalController implements ng.IComponentController {
+@Component({
+    selector: 'menumodal',
+    template: template,
+})
+export class MenuModalComponent {
 
-    constructor(private _scope: StoryScriptScope, private _gameService: IGameService, private _game: IGame, _texts: IInterfaceTexts) {
-        this.texts = _texts;
-        this.game = _game;
-        this._scope.game = _game;
+    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, _objectFactory: ObjectFactory) {
+        this.game = _objectFactory.GetGame();
+        this.texts = _objectFactory.GetTexts();
         this.state = Enumerations.PlayState.Menu;
 
-        this._scope.$watch('game.playState', (newValue: Enumerations.PlayState) => {
-            if (newValue == Enumerations.PlayState.Menu) {
-                this.openModal();
-            }
-        });
+        this._sharedMethodService.playStateChange$.subscribe(p =>this.watchPlayState(p));
     }
 
     texts: IInterfaceTexts;
@@ -28,7 +30,7 @@ export class MenuModalController implements ng.IComponentController {
     closeModal = (): void => {
         this.setSelected(null);
         this.state = 'Menu';
-        this._game.playState = null;
+        this.game.playState = null;
         $('#menumodal').modal('hide');
     }
 
@@ -67,6 +69,10 @@ export class MenuModalController implements ng.IComponentController {
         this._gameService.loadGame(this.selectedGame);
         this.closeModal();
     }
-}
 
-MenuModalController.$inject = ['$scope', 'gameService', 'game', 'customTexts'];
+    private watchPlayState = (newValue: Enumerations.PlayState) => {
+        if (newValue == Enumerations.PlayState.Menu) {
+            this.openModal();
+        }
+    }
+}

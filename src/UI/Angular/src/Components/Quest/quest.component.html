@@ -1,0 +1,26 @@
+<div class="box-container" id="character-quests" *ngIf="showQuests()">
+    <div class="box-title" data-toggle="collapse" data-target="#quest-panel">{{ texts.quests }}</div>
+    <div id="quest-panel" class="collapse show">
+        <div *ngIf="showActiveQuests()">
+            <h4>{{ texts.currentQuests }}</h4>
+            <ul>
+                <li *ngFor="let quest of currentQuests()">
+                    <div>
+                        <span>{{ quest.name }}</span>
+                        <div innerHTML="{{ questStatus(quest) }}"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="showCompletedQuests()">
+            <h4>{{ texts.completedQuests }}</h4>
+            <ul>
+                <li *ngFor="let quest of completedQuests()">
+                    <div>
+                        <div innerHTML="{{ questStatus(quest) }}"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

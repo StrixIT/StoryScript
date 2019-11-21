@@ -12,22 +12,22 @@ import { downgradeComponent, downgradeInjectable } from '@angular/upgrade/static
 import { SharedMethodService } from './Services/SharedMethodService';
 import { FeaturePicture } from './Directives/FeaturePicture';
 import { TextFeatures } from './Directives/TextFeatures';
-import { MainController } from './Components/Main/MainController';
+import { MainComponent } from './Components/Main/main.component';
 import { EquipmentComponent } from './Components/Equipment/equipment.component';
-import { QuestController } from './Components/Quest/QuestController';
-import { LevelUpController } from './Components/LevelUp/LevelUpController';
-import { MenuModalController } from './Components/MenuModal/MenuModalController';
+import { QuestComponent } from './Components/Quest/quest.component';
+import { LevelUpComponent } from './Components/LevelUp/levelup.component';
+import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { ExplorationComponent } from './Components/Exploration/exploration.component';
 import { GroundComponent } from './Components/Ground/ground.component';
 import { CreateCharacterComponent } from './Components/CreateCharacter/createcharacter.component';
-import { GameOverController } from './Components/GameOver/GameOverController';
+import { GameOverComponent } from './Components/GameOver/gameover.component';
 import { VictoryComponent } from './Components/Victory/victory.component';
 import { HighScoresComponent } from './Components/HighScores/highscores.component';
 import { EncounterModalComponent } from './Components/EncounterModal/encountermodal.component';
 import { ConversationComponent } from './Components/Conversation/conversation.component';
-import { SoundController } from './Components/Sound/SoundController';
-import { IntroController } from './Components/Intro/IntroController';
+import { SoundComponent } from './Components/Sound/sound.component';
+import { IntroComponent } from './Components/Intro/intro.component';
 import { GetObjectFactory } from '../../../Engine/run';
 
 const MODULE_NAME = 'storyscript';
@@ -35,7 +35,7 @@ export default MODULE_NAME;
 
 var storyScriptModule = angular.module(MODULE_NAME, ['ngSanitize']);
 
-import '../../../../dist/js/ui-templates.js'
+
 import { NavigationComponent } from './Components/Navigation/navigation.component';
 import { BackpackComponent } from './Components/Backpack/backpack.component';
 import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
@@ -62,47 +62,13 @@ storyScriptModule.service('sharedMethodService', SharedMethodService);
 storyScriptModule.directive('featurePicture', ['game', FeaturePicture.Factory()]);
 storyScriptModule.directive('textFeatures', ['combinationService', 'game', TextFeatures.Factory()]);
 
-storyScriptModule.component('main', {
-    templateUrl: 'ui/MainComponent.html',
-    controller: MainController
-});
-
-storyScriptModule.component('quests', {
-    templateUrl: 'ui/QuestComponent.html',
-    controller: QuestController
-});
-
-storyScriptModule.component('levelUp', {
-    templateUrl: 'ui/LevelUpComponent.html',
-    controller: LevelUpController
-});
-
-storyScriptModule.component('menuModal', {
-    templateUrl: 'ui/MenuModalComponent.html',
-    controller: MenuModalController
-});
-
-storyScriptModule.component('gameOver', {
-    templateUrl: 'ui/GameOverComponent.html',
-    controller: GameOverController
-});
-
-storyScriptModule.component('sound', {
-    templateUrl: 'ui/SoundComponent.html',
-    controller: SoundController
-});
-
-storyScriptModule.component('intro', {
-    templateUrl: 'ui/IntroComponent.html',
-    controller: IntroController
-});
-
 storyScriptModule
+    .directive('main', downgradeComponent({component: MainComponent}))
     .directive('navigation', downgradeComponent({component: NavigationComponent}))
     .directive('encounter', downgradeComponent({component: EncounterComponent}))
     .directive('backpack', downgradeComponent({component: BackpackComponent}))
     .directive('actionlog', downgradeComponent({component: ActionLogComponent}))
-    .directive('characterSheet', downgradeComponent({component: CharacterSheetComponent}))
+    .directive('charactersheet', downgradeComponent({component: CharacterSheetComponent}))
     .directive('combat', downgradeComponent({component: CombatComponent}))
     .directive('location', downgradeComponent({component: LocationComponent}))
     .directive('ground', downgradeComponent({component: GroundComponent}))
@@ -117,4 +83,10 @@ storyScriptModule
     .directive('conversation', downgradeComponent({component: ConversationComponent}))
     .directive('createcharacter', downgradeComponent({component: CreateCharacterComponent}))
     .directive('buildcharacter', downgradeComponent({component: BuildCharacterComponent}))
+    .directive('gameover', downgradeComponent({component: GameOverComponent}))
+    .directive('intro', downgradeComponent({component: IntroComponent}))
+    .directive('levelup', downgradeComponent({component: LevelUpComponent}))
+    .directive('quests', downgradeComponent({component: QuestComponent}))
+    .directive('sound', downgradeComponent({component: SoundComponent}))
+    .directive('menumodal', downgradeComponent({component: MenuModalComponent}))
     .factory('SharedMethodService', downgradeInjectable(SharedMethodService));

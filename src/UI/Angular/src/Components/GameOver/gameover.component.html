@@ -1,0 +1,9 @@
+<div *ngIf="game.state === 'GameOver'" class="container-fluid">
+    <div class="col-12">
+        <h2>{{ texts.youLost }}</h2>
+        <p>{{ texts.questFailed }}</p>
+        <div>{{ texts.finalScore }}{{ game.character.score }}</div>
+        <button type="button" class="btn btn-primary restart" (click)="restart()">{{ texts.tryAgain }}</button>
+        <highscores></highscores>
+    </div>
+</div>

@@ -42,8 +42,8 @@ export class SharedMethodService implements ISharedMethodService {
     descriptionChange$ = this.descriptionSource.asObservable();
 
     setPlayState = (game: IGame, value: Enumerations.PlayState): void => {
-        game.playState = null;
-        this.playStateChangeSource.next(null);
+        game.playState = value;
+        this.playStateChangeSource.next(value);
     }
 
     enemiesPresent = (game: IGame): boolean => {

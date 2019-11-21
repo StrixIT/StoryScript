@@ -1,9 +1,9 @@
 import { IGame, IInterfaceTexts, CreateCharacters } from '../../../../../Engine/Interfaces/storyScript';
-import { Component } from '@angular/core';
-import template from './createcharacter.component.html';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { GameService } from '../../../../../Engine/Services/gameService';
 import { CharacterService } from '../../../../../Engine/Services/characterService';
+import { Component } from '@angular/core';
+import template from './createcharacter.component.html';
 
 @Component({
     selector: 'createcharacter',
