@@ -1,7 +1,10 @@
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../src/styles/storyscript.css'
+import '../../../Games/MyAdventureGame/ui/styles/game.css'
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
-import { UpgradeModule } from '@angular/upgrade/static';
-import moduleName from './app.module.ajs';
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { NavigationComponent } from './Components/Navigation/navigation.component';
 import { GetObjectFactory } from '../../../Engine/run';
@@ -39,15 +42,25 @@ import { QuestComponent } from './Components/Quest/quest.component';
 import { SoundComponent } from './Components/Sound/sound.component';
 import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
 import { TextFeatures } from './Directives/TextFeatures';
+import { FeaturePicture } from './Directives/FeaturePicture';
 import { SafePipe } from './Pipes/sanitizationPipe';
+
+import '../../../Games/MyAdventureGame/run.ts'
+import '../../../Games/MyAdventureGame/all.ts'
+
+import { registrationDone } from '../../../Engine/ObjectConstructors'
+
+registrationDone();
 
 var objectFactory = GetObjectFactory();
 
 @NgModule({
     imports: [
         BrowserModule,
-        UpgradeModule,
         FormsModule
+    ],
+    bootstrap: [
+        MainComponent
     ],
     declarations: [
         MainComponent,
@@ -77,6 +90,7 @@ var objectFactory = GetObjectFactory();
         QuestComponent,
         SoundComponent,
         TextFeatures,
+        FeaturePicture,
         SafePipe
     ],
     providers:[
@@ -87,42 +101,13 @@ var objectFactory = GetObjectFactory();
         { provide: GameService, useValue: objectFactory.GetGameService() },
         { provide: CharacterService, useValue: objectFactory.GetCharacterService() },
         { provide: CombinationService, useValue: objectFactory.GetCombinationService() }
-    ],
-    entryComponents: [
-        MainComponent,
-        MenuModalComponent,
-        NavigationComponent, 
-        EncounterComponent, 
-        BackpackComponent, 
-        ActionLogComponent, 
-        CharacterSheetComponent, 
-        CombatComponent,
-        LocationComponent,
-        GroundComponent,
-        EquipmentComponent,
-        TradeComponent,
-        EnemyComponent,
-        ExplorationComponent,
-        CombinationComponent,
-        VictoryComponent,
-        HighScoresComponent,
-        EncounterModalComponent,
-        ConversationComponent,
-        CreateCharacterComponent,
-        BuildCharacterComponent,
-        GameOverComponent,
-        IntroComponent,
-        LevelUpComponent,
-        QuestComponent,
-        SoundComponent
-    ],
+    ]
 })
 
 export class AppModule {
-    constructor(private upgrade: UpgradeModule){
+    constructor(){
     }
 
     ngDoBootstrap(){
-        this.upgrade.bootstrap(document.documentElement, [moduleName], {strictDi: true});
     }
 }

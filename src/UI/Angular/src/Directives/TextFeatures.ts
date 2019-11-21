@@ -30,11 +30,11 @@ export class TextFeatures {
 
     @HostListener('click', ['$event']) onClick($event) {
         this.click($event);
-      }
+    }
       
-      @HostListener('mouseover', ['$event']) onMouseOver($event) {
+    @HostListener('mouseover', ['$event']) onMouseOver($event) {
         this.mouseOver($event);
-      }
+    }
 
     private refreshFeatures = (newValue) => {
         if (newValue) {
