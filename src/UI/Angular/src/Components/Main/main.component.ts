@@ -1,5 +1,4 @@
 import { IGame, IInterfaceTexts } from '../../../../../Engine/Interfaces/storyScript';
-import { GameService } from '../../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { Component } from '@angular/core';
@@ -11,7 +10,7 @@ import * as angular from 'angular';
     template: template,
 })
 export class MainComponent {
-    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, _objectFactory: ObjectFactory) {
+    constructor(private _sharedMethodService: SharedMethodService, _objectFactory: ObjectFactory) {
         this.game = _objectFactory.GetGame();
         this.texts = _objectFactory.GetTexts();
 
@@ -19,8 +18,6 @@ export class MainComponent {
         // Watch for dynamic styling.
         this.game.dynamicStyles = this.game.dynamicStyles || [];
         //this._scope.$watchCollection('game.dynamicStyles', () => this.applyDynamicStyling());
-
-        this._gameService.init();
     }
     
     game: IGame;

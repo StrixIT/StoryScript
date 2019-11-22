@@ -42,7 +42,6 @@ import { QuestComponent } from './Components/Quest/quest.component';
 import { SoundComponent } from './Components/Sound/sound.component';
 import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
 import { TextFeatures } from './Directives/TextFeatures';
-import { FeaturePicture } from './Directives/FeaturePicture';
 import { SafePipe } from './Pipes/sanitizationPipe';
 
 import '../../../Games/MyAdventureGame/run.ts'
@@ -90,7 +89,6 @@ var objectFactory = GetObjectFactory();
         QuestComponent,
         SoundComponent,
         TextFeatures,
-        FeaturePicture,
         SafePipe
     ],
     providers:[
@@ -105,9 +103,7 @@ var objectFactory = GetObjectFactory();
 })
 
 export class AppModule {
-    constructor(){
-    }
-
-    ngDoBootstrap(){
+    constructor(private _gameService: GameService) {
+        this._gameService.init();
     }
 }
