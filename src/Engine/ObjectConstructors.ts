@@ -148,9 +148,9 @@ export function initCollection<T>(entity: any, property: string) {
         return;
     }
     
-    var collection= entity[property] || [];
+    var collection = entity[property] || [];
 
-    if (property === 'features') {
+    if (property === 'features' && entity[property]) {
         // Initialize features that have been declared inline. Check for the existence of a type property to determine whether the object is already initialized.
         // Store the current entity key, as it will be overridden when inline features are build.
         const locationEntityKey = _currentEntityKey;

@@ -2,7 +2,8 @@ import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Inte
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from '../../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import template from './encountermodal.component.html';
 
 export interface IModalSettings {
@@ -17,7 +18,7 @@ export interface IModalSettings {
     selector: 'encounter-modal',
     template: template,
 })
-export class EncounterModalComponent {
+export class EncounterModalComponent implements OnDestroy {
     constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
@@ -28,14 +29,24 @@ export class EncounterModalComponent {
             closeText: this.texts.closeModal
         }
 
-        this._sharedMethodService.playStateChange$.subscribe(p =>this.watchPlayState(p));
-        this._sharedMethodService.enemiesPresentChange$.subscribe(p => this.initCombat(p));
-        this._sharedMethodService.descriptionChange$.subscribe(p => this.showDescription(p));
+        this._playStateSubscription = this._sharedMethodService.playStateChange$.subscribe(p =>this.watchPlayState(p));
+        this._enemiesPresentSubscription = this._sharedMethodService.enemiesPresentChange$.subscribe(p => this.initCombat(p));
+        this._descriptionSubscription = this._sharedMethodService.descriptionChange$.subscribe(p => this.showDescription(p));
     }
+
+    private _playStateSubscription: Subscription;
+    private _enemiesPresentSubscription: Subscription;
+    private _descriptionSubscription: Subscription;
 
     modalSettings: IModalSettings;
     game: IGame;
     texts: IInterfaceTexts;
+
+    ngOnDestroy(): void {
+        this._playStateSubscription.unsubscribe();
+        this._enemiesPresentSubscription.unsubscribe();
+        this._descriptionSubscription.unsubscribe();
+    }
 
     openModal = (modalSettings: any): void => {
         this.modalSettings = modalSettings;

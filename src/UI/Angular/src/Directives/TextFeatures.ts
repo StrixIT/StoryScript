@@ -4,17 +4,14 @@ import { addHtmlSpaces } from '../../../../Engine/utilities';
 import { CombinationService } from '../../../../Engine/Services/CombinationService';
 import { SharedMethodService } from '../Services/SharedMethodService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
-import { Directive, ElementRef, Renderer2, HostListener } from '@angular/core';
+import { Directive, ElementRef, Renderer2, HostListener, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Directive({ selector: '[textFeatures]' })
-export class TextFeatures {
-    private changes: MutationObserver;
-    
-    game: IGame;
-
+export class TextFeatures  implements OnDestroy {
     constructor(private _sharedMethodService: SharedMethodService, private _combinationService: CombinationService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
-        this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
+        this._combinationSubscription = this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
         this.refreshFeatures(true);
 
         this.changes = new MutationObserver((mutations: MutationRecord[]) => {
@@ -26,6 +23,15 @@ export class TextFeatures {
             childList: true,
             characterData: true
         });
+    }
+
+    private changes: MutationObserver;
+    private _combinationSubscription: Subscription;
+    
+    game: IGame;
+
+    ngOnDestroy(): void {
+        this._combinationSubscription.unsubscribe();
     }
 
     @HostListener('click', ['$event']) onClick($event) {
