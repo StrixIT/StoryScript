@@ -1,18 +1,18 @@
 import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
-import template from './navigation.component.html';
-import { Component } from '@angular/core';
-import { GameService } from '../../../../../Engine/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
+import { GameService } from '../../../../../Engine/Services/gameService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
+import { Component } from '@angular/core';
+import template from './navigation.component.html';
 
 @Component({
     selector: 'navigation',
     template: template,
 })
 export class NavigationComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

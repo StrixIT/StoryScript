@@ -10,9 +10,9 @@ import template from './intro.component.html';
     template: template,
 })
 export class IntroComponent {
-    constructor(private _gameService: GameService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _gameService: GameService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

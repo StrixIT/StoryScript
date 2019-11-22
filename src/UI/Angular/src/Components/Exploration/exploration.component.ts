@@ -1,10 +1,8 @@
-import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, Enumerations, IDestination } from '../../../../../Engine/Interfaces/storyScript';
-import { IBarrier } from '../../../../../Engine/Interfaces/barrier';
+import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, Enumerations, IDestination, IBarrier } from '../../../../../Engine/Interfaces/storyScript';
 import { isEmpty } from '../../../../../Engine/utilities';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { GameService } from '../../../../../Engine/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './exploration.component.html';
 
@@ -13,9 +11,9 @@ import template from './exploration.component.html';
     template: template,
 })
 export class ExplorationComponent {
-    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, private _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

@@ -5,14 +5,14 @@ import { Component, Input } from '@angular/core';
 import template from './buildcharacter.component.html';
 
 @Component({
-    selector: 'buildcharacter',
+    selector: 'build-character',
     template: template,
 })
 export class BuildCharacterComponent {
     @Input() sheet: CreateCharacters.ICreateCharacter;
     
-    constructor(private _characterService: CharacterService, _objectFactory: ObjectFactory) {
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _characterService: CharacterService, objectFactory: ObjectFactory) {
+        this.texts = objectFactory.GetTexts();
     }
 
     texts: IInterfaceTexts;

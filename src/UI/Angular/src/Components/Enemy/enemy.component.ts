@@ -9,9 +9,9 @@ import template from './enemy.component.html';
     template: template,
 })
 export class EnemyComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _objectFacory: ObjectFactory) {
-        this.game = _objectFacory.GetGame();
-        this.texts = _objectFacory.GetTexts();
+    constructor(private _sharedMethodService: SharedMethodService, objectFacory: ObjectFactory) {
+        this.game = objectFacory.GetGame();
+        this.texts = objectFacory.GetTexts();
     }
 
     game: IGame;

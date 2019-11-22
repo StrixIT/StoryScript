@@ -1,7 +1,7 @@
 import { IGame, IInterfaceTexts, IItem } from '../../../../../Engine/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { CharacterService } from '../../../../../Engine/Services/characterService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './equipment.component.html';
 
@@ -10,9 +10,9 @@ import template from './equipment.component.html';
     template: template,
 })
 export class EquipmentComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _characterService: CharacterService, private _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _sharedMethodService: SharedMethodService, private _characterService: CharacterService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useEquipment = true;
     }
 

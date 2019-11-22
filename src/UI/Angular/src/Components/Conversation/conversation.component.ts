@@ -1,6 +1,6 @@
 import { IGame, Conversations } from '../../../../../Engine/Interfaces/storyScript';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { ConversationService } from '../../../../../Engine/Services/ConversationService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './conversation.component.html';
 
@@ -9,8 +9,8 @@ import template from './conversation.component.html';
     template: template,
 })
 export class ConversationComponent {
-    constructor(private _conversationService: ConversationService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
+    constructor(private _conversationService: ConversationService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
     }
 
     game: IGame;

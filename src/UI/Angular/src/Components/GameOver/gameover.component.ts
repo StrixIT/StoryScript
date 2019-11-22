@@ -5,13 +5,13 @@ import { Component } from '@angular/core';
 import template from './gameover.component.html';
 
 @Component({
-    selector: 'gameover',
+    selector: 'game-over',
     template: template,
 })
 export class GameOverComponent {
-    constructor(private _gameService: GameService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _gameService: GameService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

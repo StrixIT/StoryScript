@@ -1,18 +1,18 @@
 import { IGame, IInterfaceTexts, IFeature } from '../../../../../Engine/Interfaces/storyScript';
+import { compareString } from '../../../../../Engine/globals';
+import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import template from './location.component.html';
 import { Component } from '@angular/core';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { compareString } from '../../../../../Engine/globals';
 
 @Component({
     selector: 'location',
     template: template,
 })
 export class LocationComponent {
-    constructor(private _sharedMethodService: SharedMethodService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
         this.worldProperties = [];
 
         this.initWorldProperties();

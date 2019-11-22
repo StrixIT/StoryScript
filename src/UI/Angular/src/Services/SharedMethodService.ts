@@ -1,22 +1,15 @@
-import { ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from '../../../../Engine/Interfaces/storyScript';
-import { Injectable } from '@angular/core';
+import { IGame, ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from '../../../../Engine/Interfaces/storyScript';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { TradeService } from '../../../../Engine/Services/TradeService';
-import { IGame } from '../../../../Games/_TestGame/interfaces/game';
-import { Subject } from 'rxjs/Subject';
 import { ConversationService } from '../../../../Engine/Services/ConversationService';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class SharedMethodService {
 
     constructor(private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
     }
-
-    useCharacterSheet?: boolean;
-    useEquipment?: boolean;
-    useBackpack?: boolean;
-    useQuests?: boolean;
-    useGround?: boolean;
 
     private playStateChangeSource = new Subject<Enumerations.PlayState>();
     private enemiesPresentSource = new Subject<boolean>();
@@ -27,6 +20,12 @@ export class SharedMethodService {
     enemiesPresentChange$ = this.enemiesPresentSource.asObservable();
     descriptionChange$ = this.descriptionSource.asObservable();
     combinationChange$ = this.combinationSource.asObservable();
+
+    useCharacterSheet?: boolean;
+    useEquipment?: boolean;
+    useBackpack?: boolean;
+    useQuests?: boolean;
+    useGround?: boolean;
 
     setPlayState = (game: IGame, value: Enumerations.PlayState): void => {
         game.playState = value;

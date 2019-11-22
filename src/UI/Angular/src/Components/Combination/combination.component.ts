@@ -9,9 +9,9 @@ import template from './combination.component.html';
     template: template,
 })
 export class CombinationComponent {
-    constructor(private _combinationService: CombinationService, private _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _combinationService: CombinationService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
         this.combineActions = this._combinationService.getCombinationActions();
     }
 

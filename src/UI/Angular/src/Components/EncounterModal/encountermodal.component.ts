@@ -1,7 +1,7 @@
-import { IGame, IInterfaceTexts, Enumerations, IEnemy, ICollection } from '../../../../../Engine/Interfaces/storyScript';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
+import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from '../../../../../Engine/Services/gameService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './encountermodal.component.html';
 
@@ -14,13 +14,13 @@ export interface IModalSettings {
 }
 
 @Component({
-    selector: 'encountermodal',
+    selector: 'encounter-modal',
     template: template,
 })
 export class EncounterModalComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, private _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
 
         this.modalSettings = <IModalSettings>{
             title: '',

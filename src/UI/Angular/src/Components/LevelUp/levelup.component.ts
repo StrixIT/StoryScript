@@ -6,13 +6,13 @@ import { Component } from '@angular/core';
 import template from './levelup.component.html';
 
 @Component({
-    selector: 'levelup',
+    selector: 'level-up',
     template: template,
 })
 export class LevelUpComponent {
-    constructor(private _gameService: GameService, private _characterService: CharacterService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _gameService: GameService, private _characterService: CharacterService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     sheet: CreateCharacters.ICreateCharacter;

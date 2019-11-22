@@ -1,18 +1,17 @@
 import { IGame, IInterfaceTexts } from '../../../../../Engine/Interfaces/storyScript';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { SharedMethodService } from '../../Services/SharedMethodService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './main.component.html';
-import * as angular from 'angular';
 
 @Component({
     selector: 'main',
     template: template,
 })
 export class MainComponent {
-    constructor(private _sharedMethodService: SharedMethodService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
 
         // TODO: fix this.
         // Watch for dynamic styling.
@@ -28,7 +27,7 @@ export class MainComponent {
     private applyDynamicStyling = (): void => {
         setTimeout(() => {
             this.game.dynamicStyles.forEach(s => {
-                var element = angular.element(s.elementSelector);
+                var element = null;//;angular.element(s.elementSelector);
 
                 if (element.length) {
                     var styleText = '';

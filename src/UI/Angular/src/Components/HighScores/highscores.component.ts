@@ -9,9 +9,9 @@ import template from './highscores.component.html';
     template: template,
 })
 export class HighScoresComponent {
-    constructor(_objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

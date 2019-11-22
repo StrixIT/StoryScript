@@ -1,20 +1,20 @@
 import { IInterfaceTexts, IGame } from '../../../../../Engine/Interfaces/storyScript';
-import { Component } from '@angular/core';
-import template from './charactersheet.component.html';
+import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from '../../../../../Engine/Services/characterService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
-import { SharedMethodService } from '../../Services/SharedMethodService';
+import { Component } from '@angular/core';
+import template from './charactersheet.component.html';
 
 @Component({
-    selector: 'charactersheet',
+    selector: 'character-sheet',
     template: template,
 })
 export class CharacterSheetComponent {
-    constructor(private _characterService: CharacterService, private _sharedMethodService: SharedMethodService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
-        this.displayCharacterAttributes = this._characterService.getSheetAttributes();
-        this._sharedMethodService.useCharacterSheet = true;
+    constructor(sharedMethodService: SharedMethodService, characterService: CharacterService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
+        this.displayCharacterAttributes = characterService.getSheetAttributes();
+        sharedMethodService.useCharacterSheet = true;
     }
 
     game: IGame;

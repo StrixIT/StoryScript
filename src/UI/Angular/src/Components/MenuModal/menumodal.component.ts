@@ -1,22 +1,22 @@
 import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
+import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from '../../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './menumodal.component.html';
-import { SharedMethodService } from '../../Services/SharedMethodService';
 
 @Component({
-    selector: 'menumodal',
+    selector: 'menu-modal',
     template: template,
 })
 export class MenuModalComponent {
 
-    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _gameService: GameService, sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
         this.state = Enumerations.PlayState.Menu;
 
-        this._sharedMethodService.playStateChange$.subscribe(p =>this.watchPlayState(p));
+        sharedMethodService.playStateChange$.subscribe(p => this.watchPlayState(p));
     }
 
     texts: IInterfaceTexts;

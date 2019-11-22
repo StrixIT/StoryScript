@@ -1,19 +1,17 @@
-import { Component } from '@angular/core'
-import { IGame, IInterfaceTexts, IItem, ITrade } from '../../../../../Engine/Interfaces/storyScript';
-import { IPerson } from '../../../../../Games/_TestGame/interfaces/types';
+import { IGame, IInterfaceTexts, IItem, ITrade, IPerson } from '../../../../../Engine/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ConversationService } from '../../../../../Engine/Services/ConversationService';
-import template from './encounter.component.html';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
+import { Component } from '@angular/core'
+import template from './encounter.component.html';
 
 @Component({
     selector: 'encounter',
     template: template,
 })
 export class EncounterComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _conversationService: ConversationService, private _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

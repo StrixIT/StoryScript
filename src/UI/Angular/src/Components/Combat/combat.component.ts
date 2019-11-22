@@ -1,18 +1,18 @@
 import { IInterfaceTexts, IGame, IAction, IEnemy, IItem } from '../../../../../Engine/Interfaces/storyScript';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
+import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from '../../../../../Engine/Services/gameService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import template from './combat.component.html';
 import { Component } from '@angular/core';
-import { SharedMethodService } from '../../Services/SharedMethodService';
 
 @Component({
     selector: 'combat',
     template: template,
 })
 export class CombatComponent {
-    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

@@ -9,9 +9,9 @@ import template from './trade.component.html';
     template: template,
 })
 export class TradeComponent {
-    constructor(private _tradeService: TradeService, private _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _tradeService: TradeService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

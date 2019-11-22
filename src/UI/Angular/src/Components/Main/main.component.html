@@ -1,12 +1,12 @@
 <div>
-    <encountermodal></encountermodal>
-    <menumodal></menumodal>
+    <encounter-modal></encounter-modal>
+    <menu-modal></menu-modal>
     <navigation></navigation>
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
             <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
-                <charactersheet></charactersheet>
+                <character-sheet></character-sheet>
                 <equipment></equipment>
                 <backpack></backpack>
                 <quests></quests>
@@ -18,15 +18,15 @@
                 <div *ngIf="game.state == 'Play'">
                     <encounter></encounter>
                     <location></location>
-                    <actionlog></actionlog>
+                    <action-log></action-log>
                     <ground></ground>
                     <exploration></exploration>
                     <enemy></enemy>
                 </div>
                 <intro></intro>
-                <createcharacter></createcharacter>
-                <levelup></levelup>
-                <gameover></gameover>
+                <create-character></create-character>
+                <level-up></level-up>
+                <game-over></game-over>
                 <victory></victory>
             </div>
         </div>

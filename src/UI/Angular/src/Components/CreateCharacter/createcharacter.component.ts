@@ -1,18 +1,18 @@
 import { IGame, IInterfaceTexts, CreateCharacters } from '../../../../../Engine/Interfaces/storyScript';
-import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { GameService } from '../../../../../Engine/Services/gameService';
 import { CharacterService } from '../../../../../Engine/Services/characterService';
+import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './createcharacter.component.html';
 
 @Component({
-    selector: 'createcharacter',
+    selector: 'create-character',
     template: template,
 })
 export class CreateCharacterComponent {
-    constructor(private _characterService: CharacterService, private _gameService: GameService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
+    constructor(private _characterService: CharacterService, private _gameService: GameService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;

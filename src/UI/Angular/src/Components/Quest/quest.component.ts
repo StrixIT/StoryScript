@@ -1,9 +1,8 @@
 import { IGame, IInterfaceTexts, IQuest, ICollection } from '../../../../../Engine/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
 import { isEmpty } from '../../../../../Engine/utilities';
+import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from '../../../../../Engine/Services/characterService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
-
 import { Component } from '@angular/core';
 import template from './quest.component.html';
 
@@ -12,10 +11,10 @@ import template from './quest.component.html';
     template: template,
 })
 export class QuestComponent {
-    constructor(private _characterService: CharacterService, private _sharedMethodService: SharedMethodService, _objectFactory: ObjectFactory) {
-        this.game = _objectFactory.GetGame();
-        this.texts = _objectFactory.GetTexts();
-        this._sharedMethodService.useQuests = true;
+    constructor(private _characterService: CharacterService, sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
+        sharedMethodService.useQuests = true;
     }
 
     game: IGame;

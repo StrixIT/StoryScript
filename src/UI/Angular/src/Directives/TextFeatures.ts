@@ -1,10 +1,10 @@
 import { IGame, IFeature } from '../../../../Engine/Interfaces/storyScript';
 import { compareString } from '../../../../Engine/globals';
 import { addHtmlSpaces } from '../../../../Engine/utilities';
-import { Directive, ElementRef, Renderer2, HostListener } from '@angular/core';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 import { CombinationService } from '../../../../Engine/Services/CombinationService';
 import { SharedMethodService } from '../Services/SharedMethodService';
+import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { Directive, ElementRef, Renderer2, HostListener } from '@angular/core';
 
 @Directive({ selector: '[textFeatures]' })
 export class TextFeatures {
@@ -12,8 +12,8 @@ export class TextFeatures {
     
     game: IGame;
 
-    constructor(private _sharedMethodService: SharedMethodService, private _combinationService: CombinationService, _objectFactory: ObjectFactory, private _elem: ElementRef, private _renderer: Renderer2) {
-        this.game = _objectFactory.GetGame();
+    constructor(private _sharedMethodService: SharedMethodService, private _combinationService: CombinationService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
         this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
         this.refreshFeatures(true);
 
