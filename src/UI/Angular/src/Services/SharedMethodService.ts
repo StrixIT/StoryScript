@@ -3,7 +3,7 @@ import { GameService } from '../../../../Engine/Services/gameService';
 import { TradeService } from '../../../../Engine/Services/TradeService';
 import { ConversationService } from '../../../../Engine/Services/ConversationService';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class SharedMethodService {

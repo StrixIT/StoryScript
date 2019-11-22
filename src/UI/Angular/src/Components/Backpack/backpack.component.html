@@ -1,6 +1,6 @@
 <div class="box-container" id="character-backpack">
-        <div class="box-title" data-toggle="collapse" data-target="#backpack-panel">{{ texts.backpack }}</div>
-        <ul id="backpack-panel" class="collapse show list-unstyled">
+        <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.backpack }}</div>
+        <ul id="backpack-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
             <li *ngFor="let item of game.character.items">
                 <div (click)="tryCombine(item)" [ngClass]="getCombineClass(item)">
                     <span>{{ item.name }}</span>

@@ -1,6 +1,6 @@
 <div class="box-container" id="character-quests" *ngIf="showQuests()">
-    <div class="box-title" data-toggle="collapse" data-target="#quest-panel">{{ texts.quests }}</div>
-    <div id="quest-panel" class="collapse show">
+    <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.quests }}</div>
+    <div id="quest-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
         <div *ngIf="showActiveQuests()">
             <h4>{{ texts.currentQuests }}</h4>
             <ul>

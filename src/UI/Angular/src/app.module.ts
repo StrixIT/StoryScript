@@ -1,20 +1,24 @@
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styles/storyscript.css'
-import '../../../Games/MyAdventureGame/ui/styles/game.css'
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
-import { EncounterComponent } from './Components/Encounter/encounter.component';
-import { NavigationComponent } from './Components/Navigation/navigation.component';
+import { FormsModule } from '@angular/forms';
+import { NgbCollapseModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { GetObjectFactory } from '../../../Engine/run';
 import { SharedMethodService } from './Services/SharedMethodService';
 import { GameService } from '../../../Engine/Services/gameService';
 import { TradeService } from '../../../Engine/Services/TradeService';
-import { ConversationService } from '../../../Engine/Services/ConversationService';
-import { ObjectFactory } from '../../../Engine/ObjectFactory';
-import { BackpackComponent } from './Components/Backpack/backpack.component';
 import { CharacterService } from '../../../Engine/Services/characterService';
+import { ConversationService } from '../../../Engine/Services/ConversationService';
+import { CombinationService } from '../../../Engine/Services/CombinationService';
+import { ObjectFactory } from '../../../Engine/ObjectFactory';
+
+import { EncounterComponent } from './Components/Encounter/encounter.component';
+import { NavigationComponent } from './Components/Navigation/navigation.component';
+import { BackpackComponent } from './Components/Backpack/backpack.component';
 import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
 import { CharacterSheetComponent } from './Components/CharacterSheet/charactersheet.component';
 import { CombatComponent } from './Components/Combat/combat.component';
@@ -25,11 +29,8 @@ import { TradeComponent } from './Components/Trade/trade.component';
 import { EnemyComponent } from './Components/Enemy/enemy.component';
 import { ExplorationComponent } from './Components/Exploration/exploration.component';
 import { CombinationComponent } from './Components/Combination/combination.component';
-import { CombinationService } from '../../../Engine/Services/CombinationService';
 import { VictoryComponent } from './Components/Victory/victory.component';
 import { HighScoresComponent } from './Components/HighScores/highscores.component';
-
-import { FormsModule } from '@angular/forms';
 import { EncounterModalComponent } from './Components/EncounterModal/encountermodal.component';
 import { ConversationComponent } from './Components/Conversation/conversation.component';
 import { BuildCharacterComponent } from './Components/BuildCharacter/buildcharacter.component';
@@ -44,8 +45,9 @@ import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
 import { TextFeatures } from './Directives/TextFeatures';
 import { SafePipe } from './Pipes/sanitizationPipe';
 
-import '../../../Games/MyAdventureGame/run.ts'
-import '../../../Games/MyAdventureGame/all.ts'
+import '../../../Games/_TestGame/ui/styles/game.css'
+import '../../../Games/_TestGame/run.ts'
+import '../../../Games/_TestGame/all.ts'
 
 import { registrationDone } from '../../../Engine/ObjectConstructors'
 
@@ -56,7 +58,9 @@ var objectFactory = GetObjectFactory();
 @NgModule({
     imports: [
         BrowserModule,
-        FormsModule
+        FormsModule,
+        NgbCollapseModule,
+        NgbModalModule
     ],
     bootstrap: [
         MainComponent
