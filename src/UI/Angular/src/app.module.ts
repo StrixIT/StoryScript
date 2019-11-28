@@ -1,7 +1,3 @@
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../src/styles/storyscript.css'
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
 import { FormsModule } from '@angular/forms';
@@ -45,13 +41,11 @@ import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
 import { TextFeatures } from './Directives/TextFeatures';
 import { SafePipe } from './Pipes/sanitizationPipe';
 
-import '../../../Games/_TestGame/ui/styles/game.css'
-import '../../../Games/_TestGame/run.ts'
-import '../../../Games/_TestGame/all.ts'
-
-import { registrationDone } from '../../../Engine/ObjectConstructors'
-
-registrationDone();
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../src/styles/storyscript.css';
+import '../../../Games/_TestGame/ui/styles/game.css';
+import '../../../Games/_TestGame/run';
 
 var objectFactory = GetObjectFactory();
 
@@ -97,7 +91,7 @@ var objectFactory = GetObjectFactory();
     ],
     providers:[
         SharedMethodService,
-        { provide: ObjectFactory, useValue: GetObjectFactory() },
+        { provide: ObjectFactory, useValue: objectFactory },
         { provide: TradeService, useValue: objectFactory.GetTradeService() },
         { provide: ConversationService, useValue: objectFactory.GetConversationService() },
         { provide: GameService, useValue: objectFactory.GetGameService() },

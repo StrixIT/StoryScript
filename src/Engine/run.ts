@@ -2,6 +2,7 @@ import { ObjectFactory } from './ObjectFactory';
 import { addFunctionExtensions, addArrayExtensions } from './globals';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
+import { registrationDone } from './ObjectConstructors';
 
 let _factory: ObjectFactory = null;
 
@@ -16,6 +17,8 @@ export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
     addArrayExtensions();
 
     _factory = new ObjectFactory(nameSpace, rules, texts);
+
+    registrationDone();
 }
 
 export function GetObjectFactory() {

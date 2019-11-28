@@ -2,11 +2,19 @@ import { IGame, IInterfaceTexts } from '../../../../../Engine/Interfaces/storySc
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './main.component.html';
+
+// For some reason, I can't insert the name of the game in the require.context directory string.
+var template = require('./main.component.html').default;
+var userTemplate = null;
+var r = require.context('../../../../../Games/_TestGame/ui/components', false, /main.component.html$/);
+
+if (r.keys().length) {
+    userTemplate = r(r.keys()[0]).default;
+}
 
 @Component({
     selector: 'main',
-    template: template,
+    template: userTemplate || template,
 })
 export class MainComponent {
     constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

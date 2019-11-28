@@ -50,6 +50,7 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js", ".css"]
     },
+    node: { fs: 'empty' },
     plugins: [
         new HtmlWebpackPlugin({
             template: './index.html'

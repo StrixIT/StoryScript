@@ -94,6 +94,33 @@ export function equals<T extends { id?: string }>(entity: T, definition: () => T
     return entity.id ? entity.id === (definition.name || definition.originalFunctionName) : false;
 }
 
+export function importAssets(r, assetName?) {
+    let assets = {};
+    let folders = [
+        'actions',
+        'features',
+        'items',
+        'enemies',
+        'persons',
+        'quests',
+        'locations'
+    ]
+
+    r.keys().map(i => {
+        folders.forEach(f => {
+            console.log(i);
+            var trimmed = i.replace('./', '');
+
+            if (assetName && trimmed === assetName || trimmed.startsWith(f) || trimmed.startsWith('run')) { 
+                console.log(i);
+                assets[trimmed] = r(i);
+            }
+        });
+    });
+
+    return assets;
+}
+
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
     var collectionToFilter = <T[]>[]
 

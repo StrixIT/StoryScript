@@ -14,13 +14,14 @@
         "types": [
             "jquery",
             "angular",
-            "bootstrap"
-            
+            "bootstrap",
+            "node",
+            "webpack-env"   
         ],
     },
     "include": [
         "../../Engine/**/*.ts",
-        "../../Games/MyAdventureGame/**/*.ts",
+        "../../Games/_TestGame/**/*.ts",
         "./src/Services/**/*.ts",
         "./src/Components/**/*.ts",
         "./src/Directives/**/*.ts",
