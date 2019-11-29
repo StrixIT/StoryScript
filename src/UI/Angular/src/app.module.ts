@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgbCollapseModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { GetObjectFactory } from '../../../Engine/run';
 import { SharedMethodService } from './Services/SharedMethodService';
 import { GameService } from '../../../Engine/Services/gameService';
 import { TradeService } from '../../../Engine/Services/TradeService';
@@ -11,6 +10,7 @@ import { CharacterService } from '../../../Engine/Services/characterService';
 import { ConversationService } from '../../../Engine/Services/ConversationService';
 import { CombinationService } from '../../../Engine/Services/CombinationService';
 import { ObjectFactory } from '../../../Engine/ObjectFactory';
+import { GetObjectFactory } from '../../../Engine/run';
 
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { NavigationComponent } from './Components/Navigation/navigation.component';
@@ -44,8 +44,7 @@ import { SafePipe } from './Pipes/sanitizationPipe';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styles/storyscript.css';
-import '../../../Games/_TestGame/ui/styles/game.css';
-import '../../../Games/_TestGame/run';
+import './game';
 
 var objectFactory = GetObjectFactory();
 

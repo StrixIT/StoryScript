@@ -94,7 +94,7 @@ export function equals<T extends { id?: string }>(entity: T, definition: () => T
     return entity.id ? entity.id === (definition.name || definition.originalFunctionName) : false;
 }
 
-export function importAssets(r, assetName?) {
+export function importAssets(r) {
     let assets = {};
     let folders = [
         'actions',
@@ -108,10 +108,9 @@ export function importAssets(r, assetName?) {
 
     r.keys().map(i => {
         folders.forEach(f => {
-            console.log(i);
             var trimmed = i.replace('./', '');
 
-            if (assetName && trimmed === assetName || trimmed.startsWith(f) || trimmed.startsWith('run')) { 
+            if (trimmed.startsWith(f)) { 
                 console.log(i);
                 assets[trimmed] = r(i);
             }

@@ -59,13 +59,11 @@ module.exports = {
             $: 'jquery',
             jQuery: 'jquery'
           })
-        // new optimization.splitChunks({
-        //     name: 'vendor',
-        //     filename: '[name].bundle.js',
-        //     minChunks(module, count){
-        //         var context = module.context;
-        //         return context && context.indexOf('node_modules') >= 0;
-        //     }
-        // })
-    ]
+    ],
+    optimization: {
+        splitChunks: {
+            name: 'vendor',
+            filename: '[name].bundle.js'
+        }
+    }
 };
