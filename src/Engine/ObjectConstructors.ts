@@ -36,7 +36,16 @@ const _definitions: IDefinitions = {
 // The object to hold all game entity functions.
 const _functions = {};
 
-export function registrationDone(): void {
+export function registerEntities(): void {
+    Object.getOwnPropertyNames(_definitions).forEach(p => {
+        _definitions[p].forEach((f: Function) => {
+            f();
+
+            // Add the key/id registration record.
+            _registeredIds.set(_currentEntityKey, f.name.toLowerCase());
+        });
+    });
+
     _registration = false;
 }
 
@@ -191,13 +200,10 @@ export function initCollection<T>(entity: any, property: string) {
 function Register(type: string, entityFunc: Function): void {
     // Add the entity function to the definitions object for creating entities at run-time.
     _definitions[type] = _definitions[type] || {};
-    _definitions[type].push(entityFunc);
 
-    // Execute the entity function to get the entity key.
-    entityFunc();
-
-    // Add the key/id registration record.
-    _registeredIds.set(_currentEntityKey, entityFunc.name.toLowerCase());
+    if (_definitions[type].indexOf(entityFunc) === -1) {
+        _definitions[type].push(entityFunc);
+    }
 }
 
 function Create(type: string, entity: any, id?: string) {

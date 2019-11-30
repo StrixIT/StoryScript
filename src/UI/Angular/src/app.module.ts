@@ -44,7 +44,9 @@ import { SafePipe } from './Pipes/sanitizationPipe';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styles/storyscript.css';
-import './game';
+
+import 'game/ui/styles/game.css'
+import 'game/run';
 
 var objectFactory = GetObjectFactory();
 

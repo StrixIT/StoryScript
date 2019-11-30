@@ -1,8 +1,5 @@
-import '../../../Games/_TestGame/ui/styles/game.css';
-import '../../../Games/_TestGame/run';
-
 export function getUserTemplate(componentName: string) {
-    var r = require.context('../../../Games/_TestGame/ui/components', false, /.component.html$/);
+    var r = require.context('game/ui/components', false, /.component.html$/);
     let userTemplate = null;
 
     r.keys().map(i => {

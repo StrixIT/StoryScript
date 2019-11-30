@@ -20,12 +20,6 @@
         ],
     },
     "include": [
-        "../../Engine/**/*.ts",
-        "../../Games/_TestGame/**/*.ts",
-        "./src/Services/**/*.ts",
-        "./src/Components/**/*.ts",
-        "./src/Directives/**/*.ts",
-        "./app*.ts",
-        "./main.ts"
+        "../../Engine/**/*.ts"
     ]
 }

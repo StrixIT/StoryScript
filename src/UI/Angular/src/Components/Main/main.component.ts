@@ -2,7 +2,7 @@ import { IGame, IInterfaceTexts } from '../../../../../Engine/Interfaces/storySc
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
-import { getUserTemplate } from '../../game';
+import { getUserTemplate } from '../../helpers';
 
 // For some reason, I can't insert the name of the game in the require.context directory string.
 var template = require('./main.component.html').default;

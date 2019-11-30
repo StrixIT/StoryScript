@@ -1,5 +1,8 @@
+const gameName = 'MyAdventureGame';
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
@@ -48,7 +51,10 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: [".ts", ".js", ".css"]
+        extensions: [".ts", ".js", ".css"],
+        alias: {
+            'game': path.resolve(__dirname, `../../../Games/${gameName}/`)
+        }
     },
     node: { fs: 'empty' },
     plugins: [
@@ -58,7 +64,11 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery'
-          })
+        }),
+        new CopyWebpackPlugin([{ 
+            from: `../../Games/${gameName}/resources`,
+            to: 'resources' 
+        }]),
     ],
     optimization: {
         splitChunks: {
