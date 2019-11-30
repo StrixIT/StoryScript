@@ -1,14 +1,16 @@
-import { IGame, ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from '../../../../Engine/Interfaces/storyScript';
-import { GameService } from '../../../../Engine/Services/gameService';
-import { TradeService } from '../../../../Engine/Services/TradeService';
-import { ConversationService } from '../../../../Engine/Services/ConversationService';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { IGame, ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from 'storyScript/Interfaces/storyScript';
+import { GameService } from 'storyScript/Services/gameService';
+import { TradeService } from 'storyScript/Services/TradeService';
+import { ConversationService } from 'storyScript/Services/ConversationService';
+import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
 
 @Injectable()
 export class SharedMethodService {
 
-    constructor(private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
+    constructor(private _modalService: NgbModal, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
     }
 
     private playStateChangeSource = new Subject<Enumerations.PlayState>();
@@ -30,6 +32,10 @@ export class SharedMethodService {
     setPlayState = (game: IGame, value: Enumerations.PlayState): void => {
         game.playState = value;
         this.playStateChangeSource.next(value);
+
+        if (value === Enumerations.PlayState.Menu) {
+            this._modalService.open(MenuModalComponent);
+        }
     }
 
     setCombineState = (value: boolean): void => {

@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig",
     "compilerOptions": {
+        "baseUrl": ".",
         "module": "commonjs",
         "moduleResolution": "node",
         "strict": true,
@@ -12,12 +13,12 @@
             "../../node_modules/@types"
         ],
         "types": [
-            "jquery",
-            "angular",
-            "bootstrap",
             "node",
             "webpack-env"   
         ],
+        "paths": {
+            "storyScript/*": ["../../Engine/*"],
+        }
     },
     "include": [
         "../../Engine/**/*.ts"

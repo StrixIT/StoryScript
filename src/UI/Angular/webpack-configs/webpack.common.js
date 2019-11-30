@@ -1,4 +1,4 @@
-const gameName = 'MyAdventureGame';
+const gameName = '_TestGame';
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -53,17 +53,14 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js", ".css"],
         alias: {
-            'game': path.resolve(__dirname, `../../../Games/${gameName}/`)
+            storyScript: path.resolve(__dirname, '../../../Engine'),
+            game: path.resolve(__dirname, `../../../Games/${gameName}/`)
         }
     },
     node: { fs: 'empty' },
     plugins: [
         new HtmlWebpackPlugin({
             template: './index.html'
-        }),
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery'
         }),
         new CopyWebpackPlugin([{ 
             from: `../../Games/${gameName}/resources`,

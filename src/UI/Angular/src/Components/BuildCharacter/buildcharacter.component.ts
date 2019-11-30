@@ -17,7 +17,7 @@ export class BuildCharacterComponent {
 
     texts: IInterfaceTexts;
 
-    limitInput = (event: ng.IAngularEvent, attribute: CreateCharacters.ICreateCharacterAttribute, entry: CreateCharacters.ICreateCharacterAttributeEntry): void => {
+    limitInput = (event: any, attribute: CreateCharacters.ICreateCharacterAttribute, entry: CreateCharacters.ICreateCharacterAttributeEntry): void => {
         var value = parseInt((<any>event).target.value);
         this._characterService.limitSheetInput(value, attribute, entry);
     }

@@ -23,7 +23,7 @@ export class EnemyComponent {
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
 
-    showDescription = (item: any, title: string): void => this._sharedMethodService.showDescription('enemies', item, title);  
+    showDescription = (item: any, title: string): void => this._sharedMethodService.showDescription(this.game, this.texts, 'enemies', item, title);  
 
-    startCombat = (): void => this._sharedMethodService.startCombat(this.game);
+    startCombat = (): void => this._sharedMethodService.startCombat(this.game, this.texts);
 }

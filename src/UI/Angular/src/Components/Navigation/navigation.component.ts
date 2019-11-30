@@ -20,7 +20,7 @@ export class NavigationComponent {
 
     menu = (): void => {
         this.game.playState = Enumerations.PlayState.Menu;
-        this._sharedMethodService.setPlayState(this.game, Enumerations.PlayState.Menu);
+        this._sharedMethodService.setPlayState(this.game, this.texts, Enumerations.PlayState.Menu);
     }
 
     reset = (): void => this._gameService.reset();

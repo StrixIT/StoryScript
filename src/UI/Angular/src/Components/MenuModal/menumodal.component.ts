@@ -1,25 +1,20 @@
+import { Component } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from '../../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
-import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
 import template from './menumodal.component.html';
 
 @Component({
     selector: 'menu-modal',
     template: template,
 })
-export class MenuModalComponent implements OnDestroy {
-    constructor(private _gameService: GameService, sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+export class MenuModalComponent {
+    constructor(private _activeModal: NgbActiveModal, private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.state = Enumerations.PlayState.Menu;
-
-        this._playStateSubscription = sharedMethodService.playStateChange$.subscribe(p => this.watchPlayState(p));
     }
-
-    private _playStateSubscription: Subscription;
 
     texts: IInterfaceTexts;
     game: IGame;
@@ -27,17 +22,11 @@ export class MenuModalComponent implements OnDestroy {
     selectedGame: string;
     state: string;
 
-    ngOnDestroy(): void {
-        this._playStateSubscription.unsubscribe();
-    }
-
-    openModal = (): JQLite => $('#menumodal').modal('show');
-
     closeModal = (): void => {
         this.setSelected(null);
         this.state = 'Menu';
         this.game.playState = null;
-        $('#menumodal').modal('hide');
+        this._activeModal.close();
     }
 
     restart = (): string => this.state = 'ConfirmRestart';
@@ -74,11 +63,5 @@ export class MenuModalComponent implements OnDestroy {
     loadGame = (): void => {
         this._gameService.loadGame(this.selectedGame);
         this.closeModal();
-    }
-
-    private watchPlayState = (newValue: Enumerations.PlayState) => {
-        if (newValue == Enumerations.PlayState.Menu) {
-            this.openModal();
-        }
     }
 }

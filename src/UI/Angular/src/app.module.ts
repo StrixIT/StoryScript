@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
 import { FormsModule } from '@angular/forms';
-import { NgbCollapseModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbModalModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { SharedMethodService } from './Services/SharedMethodService';
-import { GameService } from '../../../Engine/Services/gameService';
-import { TradeService } from '../../../Engine/Services/TradeService';
-import { CharacterService } from '../../../Engine/Services/characterService';
-import { ConversationService } from '../../../Engine/Services/ConversationService';
-import { CombinationService } from '../../../Engine/Services/CombinationService';
-import { ObjectFactory } from '../../../Engine/ObjectFactory';
-import { GetObjectFactory } from '../../../Engine/run';
+import { GameService } from 'storyScript/Services/gameService';
+import { TradeService } from 'storyScript/Services/TradeService';
+import { CharacterService } from 'storyScript/Services/characterService';
+import { ConversationService } from 'storyScript/Services/ConversationService';
+import { CombinationService } from 'storyScript/Services/CombinationService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { GetObjectFactory } from 'storyScript/run';
 
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { NavigationComponent } from './Components/Navigation/navigation.component';
@@ -41,7 +41,6 @@ import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
 import { TextFeatures } from './Directives/TextFeatures';
 import { SafePipe } from './Pipes/sanitizationPipe';
 
-import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styles/storyscript.css';
 
@@ -59,6 +58,10 @@ var objectFactory = GetObjectFactory();
     ],
     bootstrap: [
         MainComponent
+    ],
+    entryComponents: [
+        MenuModalComponent,
+        EncounterModalComponent
     ],
     declarations: [
         MainComponent,
@@ -91,6 +94,7 @@ var objectFactory = GetObjectFactory();
         SafePipe
     ],
     providers:[
+        NgbActiveModal,
         SharedMethodService,
         { provide: ObjectFactory, useValue: objectFactory },
         { provide: TradeService, useValue: objectFactory.GetTradeService() },
