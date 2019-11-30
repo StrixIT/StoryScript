@@ -94,32 +94,6 @@ export function equals<T extends { id?: string }>(entity: T, definition: () => T
     return entity.id ? entity.id === (definition.name || definition.originalFunctionName) : false;
 }
 
-export function importAssets(r) {
-    let assets = {};
-    let folders = [
-        'actions',
-        'features',
-        'items',
-        'enemies',
-        'persons',
-        'quests',
-        'locations'
-    ]
-
-    r.keys().map(i => {
-        folders.forEach(f => {
-            var trimmed = i.replace('./', '');
-
-            if (trimmed.startsWith(f)) { 
-                console.log(i);
-                assets[trimmed] = r(i);
-            }
-        });
-    });
-
-    return assets;
-}
-
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
     var collectionToFilter = <T[]>[]
 

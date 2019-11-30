@@ -243,7 +243,7 @@ function createLocation(entity: ILocation) {
         });
     }
 
-    if (!location.destinations) {
+    if (!location.destinations && _registration) {
         console.log('No destinations specified for location ' + location.name);
     }
 

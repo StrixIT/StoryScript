@@ -15,6 +15,7 @@ let _factory: ObjectFactory = null;
 export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
     addFunctionExtensions();
     addArrayExtensions();
+    importAssets(require.context('game', true, /[a-zA-Z].ts$/));
     registerEntities();
 
     _factory = new ObjectFactory(nameSpace, rules, texts);
@@ -22,4 +23,29 @@ export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
 
 export function GetObjectFactory() {
     return _factory;
+}
+
+function importAssets(r) {
+    let assets = {};
+    let folders = [
+        'actions',
+        'features',
+        'items',
+        'enemies',
+        'persons',
+        'quests',
+        'locations'
+    ]
+
+    r.keys().map(i => {
+        folders.forEach(f => {
+            var trimmed = i.replace('./', '');
+
+            if (trimmed.startsWith(f)) { 
+                assets[trimmed] = r(i);
+            }
+        });
+    });
+
+    return assets;
 }
