@@ -1,27 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IGame, ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from 'storyScript/Interfaces/storyScript';
+import { ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
-import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
+import { IGame } from '../../../../Engine/Interfaces/game';
+import { EventService } from './EventService';
+import { ModalService } from './ModalService';
 
 @Injectable()
 export class SharedMethodService {
 
-    constructor(private _modalService: NgbModal, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
+    constructor(private _eventService: EventService, private _modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
     }
-
-    private playStateChangeSource = new Subject<Enumerations.PlayState>();
-    private enemiesPresentSource = new Subject<boolean>();
-    private descriptionSource = new Subject<string>();
-    private combinationSource = new Subject<boolean>();
-
-    playStateChange$ = this.playStateChangeSource.asObservable();
-    enemiesPresentChange$ = this.enemiesPresentSource.asObservable();
-    descriptionChange$ = this.descriptionSource.asObservable();
-    combinationChange$ = this.combinationSource.asObservable();
 
     useCharacterSheet?: boolean;
     useEquipment?: boolean;
@@ -29,47 +19,42 @@ export class SharedMethodService {
     useQuests?: boolean;
     useGround?: boolean;
 
-    setPlayState = (game: IGame, value: Enumerations.PlayState): void => {
-        game.playState = value;
-        this.playStateChangeSource.next(value);
-
-        if (value === Enumerations.PlayState.Menu) {
-            this._modalService.open(MenuModalComponent);
-        }
-    }
-
-    setCombineState = (value: boolean): void => {
-        this.combinationSource.next(value);
-    }
+    setCombineState = this._eventService.setCombineState;
 
     enemiesPresent = (game: IGame): boolean => {
         var result = game.currentLocation && game.currentLocation.activeEnemies && game.currentLocation.activeEnemies.length > 0;
-        this.enemiesPresentSource.next(result);
+
+        if (result) {
+            this._gameService.initCombat();
+        }
+
+        this._eventService.setEnemiesPresent(result);
+
         return result;
     }
 
     tryCombine = (game: IGame, combinable: Combinations.ICombinable): boolean => {
         var result = game.combinations.tryCombine(combinable);
-        this.combinationSource.next(result);
+        this._eventService.setCombineState(result);
         return result;
     }
 
-    talk = (person: IPerson): void => {
+    talk = (game: IGame, person: IPerson): void => {
         this._conversationService.talk(person);
-        this.playStateChangeSource.next(Enumerations.PlayState.Conversation);
+        this.setPlayState(game, Enumerations.PlayState.Conversation);
     }
 
-    trade = (trade: IPerson | ITrade): boolean => {
+    trade = (game: IGame, trade: IPerson | ITrade): boolean => {
         this._tradeService.trade(trade);
-        this.playStateChangeSource.next(Enumerations.PlayState.Trade);
+        this.setPlayState(game, Enumerations.PlayState.Trade);
 
         // Return true to keep the action button for trade locations.
         return true;
     };
 
-    showDescription = (type: string, item: any, title: string): void => {
+    showDescription = (game: IGame, type: string, item: any, title: string): void => {
         this._gameService.setCurrentDescription(type, item, title);
-        this.descriptionSource.next(item.description);
+        this.setPlayState(game, Enumerations.PlayState.Description);
     }
 
     startCombat = (game: IGame, person?: IPerson): void => {
@@ -81,7 +66,7 @@ export class SharedMethodService {
 
         game.combatLog = [];
         game.playState = Enumerations.PlayState.Combat;
-        this.playStateChangeSource.next(Enumerations.PlayState.Combat);
+        this.setPlayState(game, Enumerations.PlayState.Combat);
     }
 
     fight = (game: IGame, enemy: IEnemy): void => {
@@ -111,14 +96,16 @@ export class SharedMethodService {
         return buttonClass;
     }
 
-    executeAction = (game: IGame, action: IAction, controller: ng.IComponentController): void => {
+    executeAction = (game: IGame, action: IAction, component: any): void => {
         if (action && action.execute) {
+            var currentState = game.playState;
+
             // Modify the arguments collection to add the game to the collection before calling the function specified.
             var args = <any[]>[game, action];
 
             // Execute the action and when nothing or false is returned, remove it from the current location.
-            var executeFunc = typeof action.execute !== 'function' ? controller[<string>action.execute] : action.execute;
-            var result = executeFunc.apply(controller, args);
+            var executeFunc = typeof action.execute !== 'function' ? component[<string>action.execute] : action.execute;
+            var result = executeFunc.apply(component, args);
             var typeAndIndex = this.getActionIndex(game, action);
 
             if (!result && typeAndIndex.index !== -1) {
@@ -132,11 +119,20 @@ export class SharedMethodService {
 
             // After each action, save the game.
             this._gameService.saveGame();
+
+            if (currentState && currentState !== game.playState) {
+                this.setPlayState(game, game.playState);
+            }
         }
     }
 
     showEquipment = (game: IGame): boolean => {
         return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => game.character.equipment[k] !== undefined);
+    }
+
+    setPlayState = (game: IGame, value: Enumerations.PlayState): void => {
+        game.playState = value;
+        this._eventService.setPlayState(value);    
     }
     
     private getActionIndex = (game: IGame, action: IAction): { type: number, index: number} => {

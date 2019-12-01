@@ -1,6 +1,6 @@
 ﻿import { IGame, IHelpers, ICollection } from '../../../Engine/Interfaces/storyScript'
 import { Character } from '../character';
-import { ICompiledLocation, IEnemy, IPerson, IItem } from './types';
+import { ICompiledLocation, IEnemy, IPerson, IItem } from '../types';
 
 export interface IGame extends IGame {
     character: Character;

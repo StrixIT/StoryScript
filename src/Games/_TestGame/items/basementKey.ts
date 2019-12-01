@@ -1,5 +1,5 @@
-﻿import { Key, IGame } from '../interfaces/types';
-import { Enumerations, IDestination, Actions, RegisterItem, IBarrier } from '../../../Engine/Interfaces/storyScript'
+﻿import { Key, IGame } from '../types';
+import { Enumerations, IDestination, Actions, IBarrier } from '../../../Engine/Interfaces/storyScript'
 
 export function BasementKey() {
     return Key({
@@ -14,5 +14,3 @@ export function BasementKey() {
         equipmentType: Enumerations.EquipmentType.Miscellaneous
     });
 }
-
-RegisterItem(BasementKey);

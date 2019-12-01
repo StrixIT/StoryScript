@@ -1,5 +1,4 @@
-﻿import { IGame, Location } from '../interfaces/types';
-import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame, Location } from '../types';
 import { Start } from './start';
 import { Bandit } from '../enemies/bandit';
 import description from './Dirtroad.html';
@@ -30,5 +29,3 @@ export function DirtRoad() {
         ]
     });
 }
-
-RegisterLocation(DirtRoad);

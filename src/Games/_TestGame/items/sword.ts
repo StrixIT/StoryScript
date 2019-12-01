@@ -1,5 +1,5 @@
-﻿import { Item } from '../interfaces/types';
-import { Enumerations, RegisterItem } from '../../../Engine/Interfaces/storyScript'
+﻿import { Item } from '../types';
+import { Enumerations } from '../../../Engine/Interfaces/storyScript'
 import description from './sword.html';
 
 export function Sword() {
@@ -11,5 +11,3 @@ export function Sword() {
         value: 5
     });
 }
-
-RegisterItem(Sword);

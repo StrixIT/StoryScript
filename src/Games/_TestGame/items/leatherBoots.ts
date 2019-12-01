@@ -1,5 +1,5 @@
-﻿import { Item } from '../interfaces/types';
-import { Enumerations, RegisterItem } from '../../../Engine/Interfaces/storyScript'
+﻿import { Item } from '../types';
+import { Enumerations } from '../../../Engine/Interfaces/storyScript'
 
 export function LeatherBoots() {
     return Item({
@@ -9,5 +9,3 @@ export function LeatherBoots() {
         value: 2
     });
 }
-
-RegisterItem(LeatherBoots);

@@ -1,5 +1,5 @@
-﻿import { Item } from '../interfaces/types';
-import { Enumerations, RegisterItem } from '../../../Engine/Interfaces/storyScript'
+﻿import { Item } from '../types';
+import { Enumerations } from '../../../Engine/Interfaces/storyScript'
 
 export function Journal() {
     return Item({
@@ -7,5 +7,3 @@ export function Journal() {
         equipmentType: Enumerations.EquipmentType.Miscellaneous,
     });
 }
-
-RegisterItem(Journal);

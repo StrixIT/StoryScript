@@ -1,5 +1,5 @@
 ﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
-import { IFeature } from './types';
+import { IFeature } from '../types';
 
 export function Item(entity: IItem): IItem {
     return StoryScript.Item(entity);

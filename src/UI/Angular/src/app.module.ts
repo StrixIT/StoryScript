@@ -3,7 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgbCollapseModule, NgbModalModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
+import { EventService } from './Services/EventService';
 import { SharedMethodService } from './Services/SharedMethodService';
+import { ModalService } from './Services/ModalService';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { CharacterService } from 'storyScript/Services/characterService';
@@ -95,7 +97,9 @@ var objectFactory = GetObjectFactory();
     ],
     providers:[
         NgbActiveModal,
+        EventService,
         SharedMethodService,
+        ModalService,
         { provide: ObjectFactory, useValue: objectFactory },
         { provide: TradeService, useValue: objectFactory.GetTradeService() },
         { provide: ConversationService, useValue: objectFactory.GetConversationService() },

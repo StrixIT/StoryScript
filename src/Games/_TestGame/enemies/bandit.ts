@@ -1,5 +1,4 @@
-﻿import { Enemy } from '../interfaces/types';
-import { RegisterEnemy } from '../../../Engine/Interfaces/storyScript';
+﻿import { Enemy } from '../types';
 import { Sword } from '../items/sword';
 import { BasementKey } from '../items/basementKey';
 
@@ -14,5 +13,3 @@ export function Bandit() {
         ]
     });
 }
-
-RegisterEnemy(Bandit);

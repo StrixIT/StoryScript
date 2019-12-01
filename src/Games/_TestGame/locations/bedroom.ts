@@ -1,5 +1,4 @@
-﻿import { IGame, IItem, Location } from '../interfaces/types';
-import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame, IItem, Location } from '../types';
 import { Start } from './start';
 import description from './Bedroom.html';
 
@@ -39,5 +38,3 @@ export function Bedroom() {
         }
     });
 }
-
-RegisterLocation(Bedroom);

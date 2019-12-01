@@ -1,5 +1,4 @@
-﻿import { Location } from '../interfaces/types';
-import { RegisterLocation } from '../../../Engine/Interfaces/storyScript'
+﻿import { Location } from '../types';
 import { Garden } from './Garden';
 import { Journal } from '../items/journal';
 import description from './Basement.html';
@@ -19,5 +18,3 @@ export function Basement() {
         ]
     });
 }
-
-RegisterLocation(Basement);

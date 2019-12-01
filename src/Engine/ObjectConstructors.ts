@@ -36,7 +36,7 @@ const _definitions: IDefinitions = {
 // The object to hold all game entity functions.
 const _functions = {};
 
-export function registerEntities(): void {
+export function buildEntities(): void {
     Object.getOwnPropertyNames(_definitions).forEach(p => {
         _definitions[p].forEach((f: Function) => {
             f();
@@ -55,34 +55,6 @@ export function GetDefinitions(): IDefinitions {
 
 export function GetFunctions(): {} { 
     return _functions; 
-}
-
-export function RegisterAction(action: Function) {
-    Register('actions', action);
-}
-
-export function RegisterFeature(entityFunc: () => IFeature) {
-    Register('features', entityFunc);
-}
-
-export function RegisterEnemy(entityFunc: () => IEnemy) {
-    Register('enemies', entityFunc);
-}
-
-export function RegisterPerson(entityFunc: () => IPerson) {
-    Register('persons', entityFunc);
-}
-
-export function RegisterItem(entityFunc: () => IItem) {
-    Register('items', entityFunc);
-}
-
-export function RegisterQuest(entityFunc: () => IQuest) {
-    Register('quests', entityFunc);
-}
-
-export function RegisterLocation(entityFunc: () => ILocation) {
-    Register('locations', entityFunc);
 }
 
 export function Location(entity: ILocation): ILocation {
@@ -197,7 +169,7 @@ export function initCollection<T>(entity: any, property: string) {
     });
 }
 
-function Register(type: string, entityFunc: Function): void {
+export function Register(type: string, entityFunc: Function): void {
     // Add the entity function to the definitions object for creating entities at run-time.
     _definitions[type] = _definitions[type] || {};
 

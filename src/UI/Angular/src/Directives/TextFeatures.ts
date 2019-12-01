@@ -2,16 +2,16 @@ import { IGame, IFeature } from '../../../../Engine/Interfaces/storyScript';
 import { compareString } from '../../../../Engine/globals';
 import { addHtmlSpaces } from '../../../../Engine/utilities';
 import { CombinationService } from '../../../../Engine/Services/CombinationService';
-import { SharedMethodService } from '../Services/SharedMethodService';
+import { EventService } from '../Services/EventService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 import { Directive, ElementRef, Renderer2, HostListener, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Directive({ selector: '[textFeatures]' })
 export class TextFeatures  implements OnDestroy {
-    constructor(private _sharedMethodService: SharedMethodService, private _combinationService: CombinationService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
+    constructor(private _eventService: EventService, private _combinationService: CombinationService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
-        this._combinationSubscription = this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
+        this._combinationSubscription = this._eventService.combinationChange$.subscribe(p => this.refreshFeatures(p));
         this.refreshFeatures(true);
 
         this.changes = new MutationObserver((mutations: MutationRecord[]) => {
@@ -77,7 +77,7 @@ export class TextFeatures  implements OnDestroy {
 
             if (feature) {
                 var result = this.game.combinations.tryCombine(feature);
-                this._sharedMethodService.setCombineState(result);
+                this._eventService.setCombineState(result);
                 this.addCombineClass(ev, feature);
             }
         }

@@ -1,5 +1,5 @@
 ﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
-import { IEnemy } from './types';
+import { IEnemy } from '../types';
 
 export function Person(entity: IPerson): IPerson {
     return StoryScript.Person(entity);

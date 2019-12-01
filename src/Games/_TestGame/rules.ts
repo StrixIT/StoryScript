@@ -1,5 +1,5 @@
 ﻿import { IRules, Combinations, CreateCharacters, ICharacter } from '../../Engine/Interfaces/storyScript';
-import { IGame, IEnemy, Character } from './interfaces/types';
+import { IGame, IEnemy, Character } from './types';
 
 export function Rules(): IRules {
     return {

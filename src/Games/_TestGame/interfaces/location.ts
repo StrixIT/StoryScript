@@ -1,5 +1,5 @@
 ﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
-import { IEnemy, IItem, IPerson } from './types';
+import { IEnemy, IItem, IPerson } from '../types';
 
 export function Location(entity: ILocation): ILocation  {
     return StoryScript.Location(entity);

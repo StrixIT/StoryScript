@@ -1,7 +1,7 @@
 import { IGame, IInterfaceTexts, Enumerations } from '../../../../../Engine/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from '../../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../../Engine/ObjectFactory';
+import { EventService } from '../../Services/EventService';
 import { Component } from '@angular/core';
 import template from './navigation.component.html';
 
@@ -10,7 +10,7 @@ import template from './navigation.component.html';
     template: template,
 })
 export class NavigationComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor(private _eventService: EventService, private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }
@@ -20,7 +20,7 @@ export class NavigationComponent {
 
     menu = (): void => {
         this.game.playState = Enumerations.PlayState.Menu;
-        this._sharedMethodService.setPlayState(this.game, this.texts, Enumerations.PlayState.Menu);
+        this._eventService.setPlayState(Enumerations.PlayState.Menu);
     }
 
     reset = (): void => this._gameService.reset();

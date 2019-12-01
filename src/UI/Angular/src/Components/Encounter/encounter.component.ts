@@ -25,9 +25,9 @@ export class EncounterComponent {
 
     tryCombine = (person: IPerson): boolean => this._sharedMethodService.tryCombine(this.game, person);
 
-    talk = (person: IPerson): void => this._sharedMethodService.talk(person);
+    talk = (person: IPerson): void => this._sharedMethodService.talk(this.game, person);
 
-    trade = (trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
+    trade = (trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this.game, trade);
     
-    startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(this.game, this.texts, person);
+    startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(this.game, person);
 }

@@ -1,5 +1,4 @@
-﻿import { IGame, IQuest, Quest, IPerson } from '../interfaces/types';
-import { RegisterQuest } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame, IQuest, Quest, IPerson } from '../types';
 import * as Items from '../items/journal'
 
 export function Journal() {
@@ -20,5 +19,3 @@ export function Journal() {
         }
     });
 }
-
-RegisterQuest(Journal);
