@@ -18,6 +18,11 @@ export interface ILocation {
     name: string;
 
     /**
+     * The location description html file.
+     */
+    description: string;
+
+    /**
      * When specified, the functions in this array will be called when the player enters the location for the first time.
      */
     enterEvents?: ICollection<((game: IGame) => void)>;

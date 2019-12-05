@@ -5,7 +5,7 @@ import description from './Bedroom.html';
 export function Bedroom() {
     return Location({
         name: 'Bedroom',
-        html: description,
+        description: description,
         destinations: [
             {
                 name: 'Back to the living room',

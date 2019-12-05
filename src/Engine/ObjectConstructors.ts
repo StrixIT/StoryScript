@@ -21,6 +21,7 @@ let _currentEntityKey: string = null;
 
 // The dictionary containing all registered entity keys and their corresponding ids.
 let _registeredIds: Map<string, string> = new Map<string, string>();
+let _registeredDescriptions: Map<string, string> = new Map<string, string>();
 
 // The object to hold all game entity definitions.
 const _definitions: IDefinitions = {
@@ -51,6 +52,10 @@ export function buildEntities(): void {
 
 export function GetDefinitions(): IDefinitions { 
     return _definitions; 
+}
+
+export function GetDescriptions(): Map<string, string> { 
+    return _registeredDescriptions; 
 }
 
 export function GetFunctions(): {} { 
@@ -301,6 +306,11 @@ function CreateObject<T>(entity: T, type: string, id?: string)
 
     if (id || registeredId) {
         compiledEntity.id = id || registeredId;
+        var descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
+
+        if (compiledEntity['description'] && !_registeredDescriptions.get(descriptionKey)) {
+            _registeredDescriptions.set(descriptionKey, entity['description'])
+        }     
     }
 
     if (id && !registeredId) {

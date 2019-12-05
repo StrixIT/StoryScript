@@ -37,7 +37,7 @@ export interface ICompiledLocation extends ILocation {
     /**
      * The current description shown to the player for this location.
      */
-    text?: string;
+    description: string;
 
     /**
      * True if the player has visited this location, false otherwise.

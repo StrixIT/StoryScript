@@ -22,7 +22,6 @@ import * as Combinations from './combinations/combinations'
 import * as CreateCharacters from './createCharacter/createCharacters'
 import * as Conversations from './conversations/conversations'
 import * as Enumerations from './enumerations/enumerations'
-import { RegisterLocation, RegisterFeature, RegisterItem, RegisterEnemy, RegisterPerson, RegisterQuest } from '../ObjectConstructors'
 import { IDefinitions } from './definitions'
 import { ScoreEntry } from './scoreEntry'
 import { IDynamicStyle } from './dynamicStyle'
@@ -60,12 +59,6 @@ export {
     Combinations,
     Conversations,
     Enumerations,
-    RegisterLocation,
-    RegisterFeature,
-    RegisterItem, 
-    RegisterEnemy, 
-    RegisterPerson,
-    RegisterQuest,
     IDefinitions,
     ScoreEntry,
     IDynamicStyle,

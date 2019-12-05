@@ -6,7 +6,7 @@ import description from './Dirtroad.html';
 export function DirtRoad() {
     return Location({
         name: 'Dirt road',
-        html: description,
+        description: description,
         destinations: [
             {
                 name: 'Enter your home',

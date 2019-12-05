@@ -186,5 +186,3 @@ export class CombinationService implements ICombinationService {
         this._game.currentLocation.persons.remove(<IPerson>feature);
     }
 }
-
-CombinationService.$inject = ['dataService', 'locationService', 'game', 'rules', 'customTexts'];

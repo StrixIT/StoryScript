@@ -250,11 +250,9 @@ export class LocationService implements ILocationService {
 
     private loadLocationDescriptions = (game: IGame): void => {
         if (!game.currentLocation.descriptions) {
-            var descriptions = this._dataService.loadDescription('locations', game.currentLocation);
-
-            if (descriptions) {
+            if (game.currentLocation.description) {
                 var parser = new DOMParser();
-                var htmlDoc = parser.parseFromString(descriptions, 'text/html');
+                var htmlDoc = parser.parseFromString(game.currentLocation.description, 'text/html');
 
                 this.processVisualFeatures(htmlDoc, game);
                 this.processDescriptions(htmlDoc, game);
@@ -288,12 +286,12 @@ export class LocationService implements ILocationService {
     }
 
     private processTextFeatures = (game: IGame): void => {
-        if (!game.currentLocation.text) {
+        if (!game.currentLocation.description) {
             return;
         }
 
         var parser = new DOMParser();
-        var htmlDoc = parser.parseFromString(game.currentLocation.text, 'text/html');
+        var htmlDoc = parser.parseFromString(game.currentLocation.description, 'text/html');
         var featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
         for (var i = 0; i < featureNodes.length; i++) {
@@ -312,7 +310,7 @@ export class LocationService implements ILocationService {
             }
         }
         
-        game.currentLocation.text = htmlDoc.body.innerHTML;
+        game.currentLocation.description = htmlDoc.body.innerHTML;
     }
 
     private processVisualFeatures = (htmlDoc: Document, game: IGame): void => {
@@ -362,13 +360,13 @@ export class LocationService implements ILocationService {
         if (game.currentLocation.descriptionSelector) {
             // Use this casting to allow the description selector to be a function or a string.
             selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
-            game.currentLocation.text = game.currentLocation.descriptions[selector];
+            game.currentLocation.description = game.currentLocation.descriptions[selector];
         }
         else if (this._rules.exploration && this._rules.exploration.descriptionSelector && (selector = this._rules.exploration.descriptionSelector(game))) {
-            game.currentLocation.text = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
+            game.currentLocation.description = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
         }
         else {
-            game.currentLocation.text = game.currentLocation.text || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
+            game.currentLocation.description = game.currentLocation.description || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
         }
     }
 }

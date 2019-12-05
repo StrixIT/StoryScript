@@ -80,14 +80,16 @@ export class ConversationService implements IConversationService {
     }
 
     private loadConversationHtml = (person: IPerson): Document => {
-        var conversations = this._dataService.loadDescription('persons', person);
+        if (!person.description) {
+            return null;
+        }
         var parser = new DOMParser();
 
-        if (conversations.indexOf('<conversation>') == -1) {
-            conversations = '<conversation>' + conversations + '</conversation>';
+        if (person.description.indexOf('<conversation>') == -1) {
+            person.description = '<conversation>' + person.description + '</conversation>';
         }
 
-        return parser.parseFromString(conversations, 'text/html');
+        return parser.parseFromString(person.description, 'text/html');
     }
 
     private getDefaultReply = (htmlDoc: Document, person: IPerson): string => {

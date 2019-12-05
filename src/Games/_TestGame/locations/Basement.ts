@@ -6,7 +6,7 @@ import description from './Basement.html';
 export function Basement() {
     return Location({
         name: 'Basement',
-        html: description,
+        description: description,
         destinations: [
             {
                 name: 'To the garden',

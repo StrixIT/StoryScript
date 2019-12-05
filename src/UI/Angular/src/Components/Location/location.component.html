@@ -10,7 +10,7 @@
         </div>
     </div>
     <div *ngIf="!game.currentLocation.features.collectionPicture" textFeatures>
-        <div [innerHTML]="game.currentLocation.text | safe: 'html'"></div>
+        <div [innerHTML]="game.currentLocation.description | safe: 'html'"></div>
     </div>
     <ul id="location-log" class="list-unstyled">
         <li *ngFor="let message of game.currentLocation.log" [innerHTML]="message | safe: 'html'"></li>

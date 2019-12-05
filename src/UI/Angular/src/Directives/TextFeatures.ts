@@ -53,7 +53,7 @@ export class TextFeatures  implements OnDestroy {
                     var feature = this.game.currentLocation.features.get(e.getAttribute('name'));
 
                     if (feature) {
-                        this.game.currentLocation.text = this.game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
+                        this.game.currentLocation.description = this.game.currentLocation.description.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
                     }
                 });
             

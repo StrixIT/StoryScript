@@ -6,7 +6,7 @@ import conversation from './Friend.html';
 
 export function Friend() {
     return Person({
-        html: conversation,
+        description: conversation,
         name: 'Joe',
         hitpoints: 10,
         attack: '1d6',

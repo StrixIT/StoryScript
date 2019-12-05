@@ -8,7 +8,7 @@ import description from './Start.html';
 export function Start() {
     return Location({
         name: 'Home',
-        html: description,
+        description: description,
         descriptionSelector: (game: IGame) => {
             var date = new Date();
             var hour = date.getHours();

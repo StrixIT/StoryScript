@@ -22,7 +22,7 @@ namespace StoryScript
                             var feature = this._game.currentLocation.features.get(featureElement.attr('name'));
 
                             if (feature) {
-                                this._game.currentLocation.text = this._game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
+                                this._game.currentLocation.description = this._game.currentLocation.description.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
                             }
                         });
                     

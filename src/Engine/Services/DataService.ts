@@ -2,29 +2,25 @@
 import { IFunctionIdParts } from './interfaces/functionIdParts';
 import { DataKeys } from '../DataKeys';
 import { getPlural, isEmpty } from '../utilities';
-import { initCollection, setReadOnlyProperties, GetFunctions } from '../ObjectConstructors';
+import { initCollection, setReadOnlyProperties, GetFunctions, GetDescriptions } from '../ObjectConstructors';
 import { GetObjectFactory } from '../run';
 import { parseFunction } from '../globals';
-import * as templates from '../../../dist/js/game-descriptions.js'
 
 export class DataService implements IDataService {
-    private descriptionBundle: Map<string, string>;
-    private loadedDescriptions: { [id: string]: string };
     private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
 
     constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
-        this.descriptionBundle = templates.GetGameDescriptions();
     }
     
     save = <T>(key: string, value: T, pristineValues?: T): void => {
         var functions = GetObjectFactory().GetFunctions();
-        var clone = this.buildClone(functions, value, pristineValues);
+        var clone = this.buildClone(functions, null, value, pristineValues);
         this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
     }
 
     copy = <T>(value: T, pristineValue: T): T => {
         var functions = GetObjectFactory().GetFunctions();
-        return this.buildClone(functions, value, pristineValue);
+        return this.buildClone(functions, null, value, pristineValue);
     }
 
     getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');
@@ -41,7 +37,7 @@ export class DataService implements IDataService {
                 }
 
                 var functionList = GetFunctions();
-                this.restoreObjects(functionList, data);
+                this.restoreObjects(functionList, null, data);
                 setReadOnlyProperties(key, data);
                 return data;
             }
@@ -55,51 +51,7 @@ export class DataService implements IDataService {
         return null;
     }
 
-    loadDescription = (type: string, item: { id?: string, description?: string, picture?: string, hasHtmlDescription?: boolean }): string => {
-        var identifier = this.GetIdentifier(type, item);
-
-        if (!this.loadedDescriptions) {
-            this.loadedDescriptions = {};
-        }
-
-        var loadedDescription = this.loadedDescriptions[identifier];
-
-        if (loadedDescription) {
-            return loadedDescription;
-        }
-        
-        var html = this.descriptionBundle.get(identifier);
-
-        if (html === undefined) {
-            console.log('No file ' + identifier + '.html found. Did you create this file already?');
-            this.loadedDescriptions[identifier] = null;
-            return null;
-        }
-
-        var parser = new DOMParser();
-        var htmlDoc = parser.parseFromString(html, 'text/html');
-        var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
-        var pictureSrc = pictureElement && pictureElement.getAttribute('src');
-
-        if (pictureSrc) {
-            item.picture = pictureSrc;
-        }
-
-        // Track that this item had a HTML description so it can be re-loaded later.
-        item.hasHtmlDescription = true;
-        item.description = html;
-        this.loadedDescriptions[identifier] = html;
-        return html;
-    }
-
-    hasDescription = (type: string, item: { id?: string, description?: string }): boolean => {
-        var identifier = this.GetIdentifier(type, item);
-        return this.descriptionBundle.get(identifier) != null;
-    }
-
-    private GetIdentifier = (type: string, item: { id?: string; description?: string; picture?: string; hasHtmlDescription?: boolean; }) => (getPlural(type) + '/' + item.id).toLowerCase();
-
-    private buildClone = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, values, pristineValues, clone?): any => {
+    private buildClone = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, parentKey: string, values, pristineValues, clone?): any => {
         if (!clone) {
             clone = Array.isArray(values) ? [] : typeof values === 'object' ? {} : values;
             if (clone == values) {
@@ -124,8 +76,14 @@ export class DataService implements IDataService {
             else if (value.isProxy) {
                 continue;
             }
-            // Exclude hashkeys used by angularjs.
-            else if (key.indexOf('$$hashKey') > -1) {
+            // Exclude descriptions and conversation nodes from the save data so they
+            // are refreshed on every browser refresh.
+            else if (values.id && (key === 'description' || key === 'descriptions')) {
+                clone[key] = null;
+                continue;
+            }
+            else if (parentKey === 'conversation' && key === 'nodes') {
+                clone[key] = null;
                 continue;
             }
 
@@ -140,7 +98,7 @@ export class DataService implements IDataService {
 
         if (Array.isArray(value)) {
             clone[key] = [];
-            this.buildClone(functionList, value, pristineValue, clone[key]);
+            this.buildClone(functionList, key, value, pristineValue, clone[key]);
 
             var additionalArrayProperties = Object.keys(value).filter(v => {
                 var isAdditionalProperty = isNaN(parseInt(v));
@@ -168,7 +126,7 @@ export class DataService implements IDataService {
                 clone[key] = {};
             }
 
-            this.buildClone(functionList, value, pristineValue, clone[key]);
+            this.buildClone(functionList, key, value, pristineValue, clone[key]);
         }
         else if (typeof value === 'function') {
             this.getClonedFunction(functionList, clone, value, key);
@@ -223,9 +181,18 @@ export class DataService implements IDataService {
         }
     }
 
-    private restoreObjects = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded): void => {
+    private restoreObjects = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, descriptions: Map<string, string>, loaded): void => {
+        descriptions = descriptions || GetDescriptions();
+        
         for (var key in loaded) {
             if (!loaded.hasOwnProperty(key)) {
+                continue;
+            }
+
+            if (key === 'description' && loaded.id) {
+                var descriptionKey = `${loaded.type}_${loaded.id}`;
+                loaded[key] = descriptions.get(descriptionKey);
+                this.loadPictureFromDescription(loaded, key);
                 continue;
             }
 
@@ -236,7 +203,7 @@ export class DataService implements IDataService {
             }
             else if (Array.isArray(value)) {
                 initCollection(loaded, key);
-                this.restoreObjects(functionList, value);
+                this.restoreObjects(functionList, descriptions, value);
 
                 var arrayPropertyKey = `${key}_arrProps`;
                 var additionalArrayProperties = loaded[arrayPropertyKey];
@@ -250,7 +217,7 @@ export class DataService implements IDataService {
                 }
             }
             else if (typeof value === 'object') {
-                this.restoreObjects(functionList, value);
+                this.restoreObjects(functionList, descriptions, value);
             }
             else if (typeof value === 'string') {
                 this.restoreFunction(functionList, loaded, value, key);
@@ -291,6 +258,21 @@ export class DataService implements IDataService {
             type: type,
             functionId: functionId,
             hash: hash
+        }
+    }
+
+    private loadPictureFromDescription(loaded: any, key: string) {
+        if (!loaded[key]) {
+            return;
+        }
+
+        var parser = new DOMParser();
+        var htmlDoc = parser.parseFromString(loaded[key], 'text/html');
+        var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
+        var pictureSrc = pictureElement && pictureElement.getAttribute('src');
+
+        if (pictureSrc) {
+            loaded.picture = pictureSrc;
         }
     }
 }

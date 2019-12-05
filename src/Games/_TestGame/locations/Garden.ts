@@ -7,7 +7,7 @@ import description from './Garden.html';
 export function Garden() {
     return Location({
         name: 'Garden',
-        html: description,
+        description: description,
         destinations: [
             {
                 name: 'Enter your home',

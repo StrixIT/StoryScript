@@ -13,8 +13,6 @@ export interface IGameService {
     saveGame(name?: string): void;
     getSaveGames(): string[];
     loadGame(name: string): void;
-    hasDescription(type: string, item: { id?: string, description?: string }): boolean;
-    getDescription(type: string, entity: any, key: string): string;
     setCurrentDescription(type: string, entity: any, key: string): void;
     initCombat(): void;
     fight(enemy: IEnemy, retaliate?: boolean): void;
