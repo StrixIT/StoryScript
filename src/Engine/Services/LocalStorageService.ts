@@ -1,4 +1,4 @@
-import { ILocalStorageService } from './interfaces/services';
+import { ILocalStorageService } from '../Interfaces/services/localStorageService';
 
 const STORYSCRIPTKEY: string = 'StoryScript';
 

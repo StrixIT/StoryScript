@@ -1,4 +1,3 @@
-import { IConversationService, IDataService } from './interfaces/services';
 import { IConversationNode, IConversationReply, IConversation, IConversationReplies } from '../Interfaces/conversations/conversations';
 import { IGame } from '../Interfaces/game';
 import { IPerson } from '../Interfaces/person';
@@ -6,9 +5,10 @@ import { PlayState } from '../Interfaces/enumerations/enumerations';
 import { IItem } from '../Interfaces/item';
 import { IQuest } from '../Interfaces/quest';
 import { compareString } from '../globals';
+import { IConversationService } from '../Interfaces/services/conversationService';
 
 export class ConversationService implements IConversationService {
-    constructor(private _dataService: IDataService, private _game: IGame) {
+    constructor(private _game: IGame) {
     }
 
     talk = (person: IPerson): void => {

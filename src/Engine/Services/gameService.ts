@@ -1,5 +1,4 @@
-﻿import { IGameService, IDataService, ICharacterService, ICombinationService, IHelperService, ILocationService } from './interfaces/services';
-import { IRules } from '../Interfaces/rules/rules';
+﻿import { IRules } from '../Interfaces/rules/rules';
 import { IGame } from '../Interfaces/game';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
 import { GameState, PlayState } from '../Interfaces/enumerations/enumerations';
@@ -16,6 +15,12 @@ import { DataKeys } from '../DataKeys';
 import { SaveWorldState } from './sharedFunctions';
 import { DefaultTexts } from '../defaultTexts';
 import { isEmpty } from '../utilities';
+import { IGameService } from '../Interfaces/services//gameService';
+import { IDataService } from '../Interfaces/services//dataService';
+import { ILocationService } from '../Interfaces/services/locationService';
+import { ICharacterService } from '../Interfaces/services/characterService';
+import { ICombinationService } from '../Interfaces/services/combinationService';
+import { IHelperService } from '../Interfaces/services//helperService';
 
 export class GameService implements IGameService {
     private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
@@ -175,28 +180,7 @@ export class GameService implements IGameService {
 
     getSaveGames = (): string[] => this._dataService.getSaveKeys();
 
-    hasDescription = (type: string, item: { id?: string, description?: string }): boolean => this._dataService.hasDescription(type, item);
-
-    getDescription = (type: string, entity: any, key: string): string => {
-        var description = entity && entity[key] ? entity[key] : null;
-
-        if (!description) {
-            this._dataService.loadDescription(type, entity);
-            description = entity[key];
-        }
-
-        if (description) {
-            this.processMediaTags(entity, key);
-        }
-
-        return description;
-    }
-
     setCurrentDescription = (type: string, item: any, title: string): void => {
-        if (item.description === undefined || item.description === null) {
-            item.description = this.getDescription(type, item, 'description');
-        }
-
         this._game.currentDescription = {
             title: title,
             type: type, 
@@ -281,10 +265,6 @@ export class GameService implements IGameService {
         if (previousLocationName) {
             this._game.previousLocation = this._game.locations.get(previousLocationName);
         }
-
-        // Reset loading descriptions so changes to the descriptions are shown right away instead of requiring a world reset.
-        this.resetLoadedHtml(this._game.locations);
-        this.resetLoadedHtml(this._game.character);
 
         this._locationService.changeLocation(lastLocation.id, false, this._game);
 
@@ -469,122 +449,6 @@ export class GameService implements IGameService {
                 return this._combinationService.getCombineClass(tool);
             }
         };
-    }
-
-    private resetLoadedHtml = (entity: any): void => {
-        if (entity === null) {
-            return;
-        }
-
-        if (entity.hasHtmlDescription) {
-            if (entity.descriptions) {
-                entity.descriptions = null;
-                entity.text = null;
-            }
-            
-            if (entity.description) {
-                entity.description = null;
-            }
-
-            if (entity.conversation && entity.conversation.nodes) {
-                entity.conversation.nodes = null;
-            }
-        }
-
-        for (var i in Object.keys(entity))
-        {
-            var key = Object.keys(entity)[i];
-
-            if (entity.hasOwnProperty(key)) {
-                var nestedEntity = entity[key];
-
-                if (typeof nestedEntity === 'object') {
-                    this.resetLoadedHtml(entity[key]);
-                }
-            }
-        }
-    }
-
-    private processMediaTags = (parent: any, key: string): void => {
-        var descriptionEntry = parent;
-        var descriptionKey = key;
-
-        // For locations, the descriptions collection must be updated as well as the text.
-        if (parent === this._game.currentLocation) {
-            var location = this._game.currentLocation;
-            descriptionEntry = location.descriptions;
-
-            for (let n in location.descriptions) {
-                if (location.descriptions[n] === location.text) {
-                    descriptionKey = n;
-                    break;
-                }
-            }
-        }
-
-        if (descriptionKey !== key) {
-            this.updateMediaTags(descriptionEntry, descriptionKey, this.mediaTags, '');
-        }
-
-        var startPlay = this.updateMediaTags(parent, key, this.mediaTags, 'added="added"');
-
-        if (startPlay)
-        {
-            this.startPlay('audio', parent, key);
-            this.startPlay('video', parent, key);
-        }
-    }
-
-    private startPlay = (type: string, parent: any, key: string): void => {
-        setTimeout(() => {
-            var mediaElements = document.getElementsByTagName(type);
-
-            for (var i = 0; i < mediaElements.length; i++) {
-                var element = <HTMLMediaElement>mediaElements[i];
-                var added = element.getAttribute('added');
-
-                if (element.play && added === 'added') {
-                    var loop = element.getAttribute('loop');
-
-                    if (loop != null) {
-                        this.updateMediaTags(parent, key, ['added="added"'], 'autoplay');
-                    }
-                    else {
-                        this.updateMediaTags(parent, key, ['added="added"'], '');
-                    }
-
-                    // Chrome will block autoplay when the user hasn't interacted with the page yet, use this workaround to bypass that.
-                    const playPromise = element.play();
-
-                    if (playPromise !== null) {
-                        playPromise.catch(() => { 
-                            setTimeout(function () {
-                                element.play(); 
-                            }, 1000);
-                        });
-                    }
-                }
-            }
-        }, 0);
-    }
-
-    private updateMediaTags = (entity: any, key: string, tagToFind: string[], tagToReplace: string): boolean => {
-        let startPlay = false;
-        var entry = entity[key];
-
-        if (entry) {
-            for (var i in tagToFind)
-            {
-                var tag = tagToFind[i];
-
-                if (entry.indexOf(tag) > -1) {
-                    entity[key] = entry.replace(tag, tagToReplace);
-                    startPlay = true;
-                }
-            }
-        }
-
-        return startPlay;
     }
 
     private updateHighScore = (): void => {

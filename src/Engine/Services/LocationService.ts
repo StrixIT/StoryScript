@@ -1,5 +1,4 @@
-﻿import { ILocationService, IDataService } from './interfaces/services';
-import { ICollection } from '../Interfaces/collection';
+﻿import { ICollection } from '../Interfaces/collection';
 import { ILocation } from '../Interfaces/location';
 import { ICompiledLocation } from '../Interfaces/compiledLocation';
 import { IRules } from '../Interfaces/rules/rules';
@@ -12,6 +11,8 @@ import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
 import { createFunctionHash, compareString } from '../globals';
 import { addHtmlSpaces, isEmpty } from '../utilities';
+import { ILocationService } from '../Interfaces/services/locationService';
+import { IDataService } from '../Interfaces/services//dataService';
 
 export class LocationService implements ILocationService {
     private pristineLocations: ICollection<ICompiledLocation>;

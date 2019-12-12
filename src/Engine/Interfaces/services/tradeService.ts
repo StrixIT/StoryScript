@@ -1,6 +1,6 @@
-import { IPerson } from '../../Interfaces/person';
-import { IItem } from '../../Interfaces/item';
-import { ITrade } from '../../Interfaces/trade';
+import { IPerson } from '../person';
+import { IItem } from '../item';
+import { ITrade } from '../trade';
 
 export interface ITradeService {
     trade(trade: IPerson | ITrade): void;

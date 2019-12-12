@@ -1,7 +1,7 @@
-import { ICollection } from '../../Interfaces/collection';
-import { ILocation } from '../../Interfaces/location';
-import { ICompiledLocation } from '../../Interfaces/compiledLocation';
-import { IGame } from '../../Interfaces/game';
+import { ICollection } from '../collection';
+import { ILocation } from '../location';
+import { ICompiledLocation } from '../compiledLocation';
+import { IGame } from '../game';
 
 export interface ILocationService {
     init(game: IGame, buildWorld?: boolean): void;

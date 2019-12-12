@@ -1,4 +1,3 @@
-import { ITradeService } from './interfaces/services';
 import { IGame } from '../Interfaces/game';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
 import { IPerson } from '../Interfaces/person';
@@ -8,6 +7,7 @@ import { IItem } from '../Interfaces/item';
 import { IStock } from '../Interfaces/stock';
 import { ICharacter } from '../Interfaces/character';
 import { randomList } from '../utilities';
+import { ITradeService } from '../Interfaces/services/tradeService';
 
 export class TradeService implements ITradeService {
     constructor(private _game: IGame, private _texts: IInterfaceTexts) {

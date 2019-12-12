@@ -1,4 +1,3 @@
-import { ILocalStorageService, ILocationService, IDataService, ICharacterService, IHelperService, IGameService, ITradeService, IConversationService, ICombinationService } from './Services/interfaces/services';
 import { IGame } from './Interfaces/game';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
@@ -12,6 +11,15 @@ import { CombinationService } from './Services/CombinationService';
 import { CharacterService } from './Services/characterService';
 import { GameService } from './Services/gameService';
 import { GetDefinitions } from './ObjectConstructors';
+import { ILocalStorageService } from './Interfaces/services/localStorageService';
+import { IDataService } from './Interfaces/services/dataService';
+import { ILocationService } from './Interfaces/services/locationService';
+import { ICharacterService } from './Interfaces/services/characterService';
+import { IHelperService } from './Interfaces/services/helperService';
+import { IGameService } from './Interfaces/services//gameService';
+import { ITradeService } from './Interfaces/services/tradeService';
+import { IConversationService } from './Interfaces/services/conversationService';
+import { ICombinationService } from './Interfaces/services/combinationService';
 
 export class ObjectFactory {
     private _game: IGame = <IGame>{};
@@ -41,7 +49,7 @@ export class ObjectFactory {
         this._helperService = new HelperService(this._game);
         this._tradeService = new TradeService(this._game, this._texts);
         this._dataService = new DataService(this._localStorageService, this._nameSpace);
-        this._conversationService = new ConversationService(this._dataService, this._game);
+        this._conversationService = new ConversationService(this._game);
         this._locationService = new LocationService(this._dataService, this._rules, this._game, this._game.definitions);
         this._combinationService = new CombinationService(this._dataService, this._locationService, this._game, this._rules, this._texts);
         this._characterService = new CharacterService(this._game, this._rules);

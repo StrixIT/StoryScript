@@ -1,4 +1,3 @@
-import { ICombinationService, IDataService, ILocationService } from './interfaces/services';
 import { ICombinationAction, ICombinable, ICombineResult, IActiveCombination } from '../Interfaces/combinations/combinations';
 import { IFeature } from '../Interfaces/feature';
 import { IItem } from '../Interfaces/item';
@@ -9,6 +8,9 @@ import { IRules } from '../Interfaces/rules/rules';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
 import { SaveWorldState } from './sharedFunctions';
 import { compareString } from '../globals';
+import { ICombinationService } from '../Interfaces/services/combinationService';
+import { IDataService } from '../Interfaces/services//dataService';
+import { ILocationService } from '../Interfaces/services/locationService';
 
 export class CombinationService implements ICombinationService {
     constructor(private _dataService: IDataService, private _locationService: ILocationService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {

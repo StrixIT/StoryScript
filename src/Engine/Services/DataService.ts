@@ -1,10 +1,11 @@
-﻿import { IDataService, ILocalStorageService } from './interfaces/services';
-import { IFunctionIdParts } from './interfaces/functionIdParts';
+﻿import { IFunctionIdParts } from '../Interfaces/services/functionIdParts';
 import { DataKeys } from '../DataKeys';
 import { getPlural, isEmpty } from '../utilities';
 import { initCollection, setReadOnlyProperties, GetFunctions, GetDescriptions } from '../ObjectConstructors';
 import { GetObjectFactory } from '../run';
 import { parseFunction } from '../globals';
+import { IDataService } from '../Interfaces/services/dataService';
+import { ILocalStorageService } from '../Interfaces/services/localStorageService';
 
 export class DataService implements IDataService {
     private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
