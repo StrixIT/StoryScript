@@ -1,4 +1,4 @@
-const gameName = '_TestGame';
+const gameName = 'MyRolePlayingGame';
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
