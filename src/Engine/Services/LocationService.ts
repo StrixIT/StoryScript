@@ -143,7 +143,12 @@ export class LocationService implements ILocationService {
         if (!game.currentLocation.hasVisited) {
             if (game.currentLocation.enterEvents) {
                 this.playEvents(game, game.currentLocation.enterEvents);
-                game.currentLocation.enterEvents.length = 0;
+
+                // Make sure the location has enter events, it can be that one location that has
+                // an enter event changes location in that event to one that hasn't.
+                if (game.currentLocation.enterEvents) {
+                    game.currentLocation.enterEvents.length = 0;
+                }
             }
 
             game.currentLocation.hasVisited = true;

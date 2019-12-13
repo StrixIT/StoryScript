@@ -40,10 +40,7 @@ const _functions = {};
 export function buildEntities(): void {
     Object.getOwnPropertyNames(_definitions).forEach(p => {
         _definitions[p].forEach((f: Function) => {
-            f();
-
-            // Add the key/id registration record.
-            _registeredIds.set(_currentEntityKey, f.name.toLowerCase());
+            buildEntity(f, f.name);
         });
     });
 
@@ -181,6 +178,27 @@ export function Register(type: string, entityFunc: Function): void {
     if (_definitions[type].indexOf(entityFunc) === -1) {
         _definitions[type].push(entityFunc);
     }
+}
+
+export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
+    // When creating an entity dynamically, make sure we're in registration mode first. Store the
+    // old state so normal object creation is not messed up because of dynamic entities created
+    // during the normal registration phase.
+    var registrationState = _registration;
+    _registration = true;
+
+    buildEntity(entityFunction, getIdFromName({ id: '', name: name }));
+
+    _registration = registrationState;
+
+    return entityFunction();
+}
+
+function buildEntity(entityFunction: Function, functionName: string) {
+    entityFunction();
+
+    // Add the key/id registration record.
+    _registeredIds.set(_currentEntityKey, functionName.toLowerCase());
 }
 
 function Create(type: string, entity: any, id?: string) {
@@ -337,7 +355,9 @@ function CreateObject<T>(entity: T, type: string, id?: string)
 function getEntityKey(entity: object): string {
     return Object.getOwnPropertyNames(entity).sort().map(p => {
         const type = typeof entity[p];
-        return type === 'object' || type === 'function' ? p.toString() : p.toString() + '|' + entity[p].toString();
+        return type === 'object' || type === 'function' ? 
+            p.toString() 
+            : type !== "undefined" ? p.toString() + '|' + entity[p].toString() : '';
     }).join('|');
 }
 

@@ -5,6 +5,7 @@ import { ICollection } from './collection'
 import { ICharacter } from './character'
 import { IAction } from './action'
 import { IFeature } from './feature'
+import { IFeatureCollection } from './featureCollection'
 import { IItem } from './item'
 import { IEnemy } from './enemy'
 import { IPerson } from './person'
@@ -37,7 +38,8 @@ export {
     Action, 
     IItem, 
     Item, 
-    IFeature, 
+    IFeature,
+    IFeatureCollection, 
     Feature, 
     IEnemy, 
     Enemy, 

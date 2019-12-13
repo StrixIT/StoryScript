@@ -1,13 +1,12 @@
 ﻿import { Location } from '../types'
-import { RegisterLocation } from '../../../Engine/ObjectConstructors';
+import description from './Start.html'
 
 export function Start() {
     return Location({
         name: 'Start',
+        description: description,
         destinations: [
             
         ]
     });
 }
-
-RegisterLocation(Start);
