@@ -2,7 +2,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "start": "cd src/UI/Angular && webpack-dev-server --config webpack.config.js"
+        "start": "cd src/UI && webpack-dev-server --config webpack.config.js"
     },
     "devDependencies": {
         "@angular/common": "^8.2.14",
