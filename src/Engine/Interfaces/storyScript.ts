@@ -16,6 +16,7 @@ import { ILocation } from './location'
 import { ICompiledLocation } from './compiledLocation'
 import { IDestination } from './destination'
 import { IBarrier } from './barrier'
+import { IBarrierAction } from './barrierAction'
 import { IHelpers } from './helpers'
 import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../ObjectConstructors'
 import * as Actions from '../Actions/actions'
@@ -49,6 +50,7 @@ export {
     ICompiledLocation,
     IDestination,
     IBarrier,
+    IBarrierAction,
     Location, 
     IPerson,
     ITrade, 

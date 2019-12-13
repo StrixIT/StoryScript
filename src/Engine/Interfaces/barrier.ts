@@ -12,11 +12,6 @@ export interface IBarrier extends ICombinable {
     actions?: IBarrierAction[];
 
     /**
-     * The currently selected action for the barrier. Used during run-time only.
-     */
-    selectedAction?: IBarrierAction;
-
-    /**
      * The key to use to remove this barrier.
      */
     key?: (() => IKey) | string;

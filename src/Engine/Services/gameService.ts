@@ -21,6 +21,7 @@ import { ILocationService } from '../Interfaces/services/locationService';
 import { ICharacterService } from '../Interfaces/services/characterService';
 import { ICombinationService } from '../Interfaces/services/combinationService';
 import { IHelperService } from '../Interfaces/services//helperService';
+import { IBarrierAction } from '../Interfaces/barrierAction';
 
 export class GameService implements IGameService {
     private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
@@ -222,19 +223,10 @@ export class GameService implements IGameService {
 
     useItem = (item: IItem): void => item.use(this._game, item);
 
-    executeBarrierAction = (barrier: IBarrier, destination: IDestination, ): void => {
-        if (isEmpty(barrier.actions)) {
-            return;
-        }
-
-        var actionIndex = barrier.actions.indexOf(barrier.selectedAction);
-        barrier.selectedAction.execute(this._game, barrier, destination);
+    executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
+        action.execute(this._game, barrier, destination);
+        var actionIndex = barrier.actions.indexOf(action);
         barrier.actions.splice(actionIndex, 1);
-
-        if (barrier.actions.length) {
-            barrier.selectedAction = barrier.actions[0];
-        }
-
         this.saveGame();
     }
 

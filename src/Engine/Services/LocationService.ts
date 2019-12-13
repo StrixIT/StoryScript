@@ -119,12 +119,6 @@ export class LocationService implements ILocationService {
 
                 addKeyAction(game, destination);
             });
-
-            game.currentLocation.destinations.forEach(destination => {
-                if (destination.barrier && destination.barrier.actions) {
-                    destination.barrier.selectedAction = destination.barrier.actions[0];
-                }
-            });
         }
     }
 
@@ -186,19 +180,6 @@ export class LocationService implements ILocationService {
         // Add a proxy to the destination collection push function, to replace the target function pointer
         // with the target id when adding destinations and enemies at runtime.
         location.destinations.push = location.destinations.push.proxy(this.addDestination, this._game);
-
-        // Set the selected action to an actual barrier action. This object reference is lost when serializing.
-        if (location.destinations) {
-            location.destinations.forEach(d => {
-                if (d.barrier && d.barrier.actions) {
-                    d.barrier.actions.forEach(a => {
-                        if (a.text === (d.barrier.selectedAction && d.barrier.selectedAction.text)) {
-                            d.barrier.selectedAction = a;
-                        }
-                    })
-                }
-            })
-        }
 
         Object.defineProperty(location, 'activeDestinations', {
             get: function () {
@@ -421,10 +402,6 @@ function setDestination(destination: IDestination) {
         if (destination.barrier.key) {
             var key = destination.barrier.key;
             destination.barrier.key = typeof key === 'function' ? key.name : key;
-        }
-
-        if (destination.barrier.actions && destination.barrier.actions.length > 0) {
-            destination.barrier.selectedAction = destination.barrier.actions[0];
         }
 
         if (destination.barrier.combinations && destination.barrier.combinations.combine) {

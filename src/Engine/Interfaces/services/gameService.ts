@@ -3,6 +3,7 @@ import { IEnemy } from '../../Interfaces/enemy';
 import { IItem } from '../../Interfaces/item';
 import { IBarrier } from '../../Interfaces/barrier';
 import { IDestination } from '../../Interfaces/destination';
+import { IBarrierAction } from '../barrierAction';
 
 export interface IGameService {
     init(): void;
@@ -17,6 +18,6 @@ export interface IGameService {
     initCombat(): void;
     fight(enemy: IEnemy, retaliate?: boolean): void;
     useItem(item: IItem): void;
-    executeBarrierAction(barrier: IBarrier, destination: IDestination): void;
+    executeBarrierAction(barrier: IBarrier, action: IBarrierAction, destination: IDestination): void;
     getCurrentMusic(): string;
 }

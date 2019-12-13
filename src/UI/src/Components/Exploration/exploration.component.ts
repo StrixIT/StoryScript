@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, Enumerations, IDestination, IBarrier } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, Enumerations, IDestination, IBarrier, IBarrierAction } from '../../../../Engine/Interfaces/storyScript';
 import { isEmpty } from '../../../../Engine/utilities';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
@@ -37,7 +37,7 @@ export class ExplorationComponent {
 
     executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this);
 
-    executeBarrierAction = (barrier: IBarrier, destination: IDestination): void => {
+    executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         if (this.game.combinations.tryCombine(barrier))
         {
             return;
@@ -46,6 +46,6 @@ export class ExplorationComponent {
             return;
         }
 
-        this._gameService.executeBarrierAction(barrier, destination);
+        this._gameService.executeBarrierAction(barrier, action, destination);
     }
 }

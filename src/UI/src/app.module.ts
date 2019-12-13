@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
 import { FormsModule } from '@angular/forms';
-import { NgbCollapseModule, NgbModalModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbModalModule, NgbActiveModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { EventService } from './Services/EventService';
 import { SharedMethodService } from './Services/SharedMethodService';
@@ -56,7 +56,8 @@ var objectFactory = GetObjectFactory();
         BrowserModule,
         FormsModule,
         NgbCollapseModule,
-        NgbModalModule
+        NgbModalModule,
+        NgbDropdownModule
     ],
     bootstrap: [
         MainComponent
