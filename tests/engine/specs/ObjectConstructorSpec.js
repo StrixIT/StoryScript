@@ -92,6 +92,6 @@ describe("ObjectFactory", function() {
     });
 
     function find(collection, name) {
-        return collection.find(l => l.name === name || l.originalFunctionName === name);
+        return collection.find(l => l.name === name);
     }
 });

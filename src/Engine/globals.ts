@@ -4,32 +4,25 @@
         var originalFunction = this;
 
         return (function () {
-            var name = originalFunction.name;      
+            // Creating an object to attach the function to is a workaround to not
+            // trigger the TypeScript error TS2683: 'this' implicitly has type 'any'.
+            var func = { 
+                func: function () {
+                    var args = [].slice.call(arguments);
             
-            // Todo: rewrite this now that we don't need named proxies.
-            var func = createNamedFunction(originalFunction, proxyFunction, name, params);
-            func.isProxy = true;
-            return func;
+                    if (originalFunction) {
+                        args.splice(0, 0, this);
+                        args.splice(1, 0, originalFunction);
+                    }
+                    
+                    return proxyFunction.apply(this, args.concat(...params));
+                }
+            };
+
+            func.func.isProxy = true;
+            return func.func;
         })();
     };
-}
-
-function createNamedFunction(originalFunction, proxyFunction: Function, name: string, ...params): Function {
-    var namedFunction = {[name]: function () {
-        var args = [].slice.call(arguments);
-
-        if (originalFunction) {
-            args.splice(0, 0, this);
-            args.splice(1, 0, originalFunction);
-        }
-        
-        return proxyFunction.apply(this, args.concat(...params));
-    }}[name];
-
-    // Making the proxy a named function as done above doesn't work in Edge. Use an additional property as a workaround.
-    namedFunction.originalFunctionName = name;
-
-    return namedFunction;
 }
 
 export function addFunctionExtensions() {
@@ -138,10 +131,10 @@ function find(id: any, array: any[]): any[] {
         return Array.prototype.filter.call(array, (x: any) => x === id );
     }
 
-    id = typeof id === 'function' ? id.name || id.originalFunctionName : id;
+    id = typeof id === 'function' ? id.name : id;
 
     return Array.prototype.filter.call(array, (x: any) => { 
-        var target = typeof x.target === 'function' ? x.target.name || x.target.originalFunctionName : x.target;
+        var target = typeof x.target === 'function' ? x.target.name : x.target;
         return compareString(x.id, id)  || compareString(target, id);
     });
 }

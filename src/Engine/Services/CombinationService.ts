@@ -165,7 +165,7 @@ export class CombinationService implements ICombinationService {
     }
 
     private isMatch = (combineTool: any, tool: ICombinable): boolean => {
-        var combineId = typeof combineTool === 'function' ? combineTool.name || combineTool.originalFunctionName : combineTool;
+        var combineId = typeof combineTool === 'function' ? combineTool.name : combineTool;
         return compareString(tool.id, combineId);
     }
 

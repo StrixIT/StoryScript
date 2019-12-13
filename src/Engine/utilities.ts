@@ -91,7 +91,7 @@ export function custom<T>(definition: () => T, customData: {}): T {
 }
 
 export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
-    return entity.id ? entity.id === (definition.name || definition.originalFunctionName) : false;
+    return entity.id ? entity.id === (definition.name) : false;
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {

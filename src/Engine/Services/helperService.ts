@@ -81,7 +81,7 @@ export class HelperService implements IHelpers {
         }
 
         var match = (<[() => T]>collection).filter((definition: () => T) => {
-            return compareString(definition.name || definition.originalFunctionName, selector);
+            return compareString(definition.name, selector);
         });
 
         return match[0] ? match[0]() : null;

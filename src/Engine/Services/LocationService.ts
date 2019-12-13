@@ -93,7 +93,7 @@ export class LocationService implements ILocationService {
             return false;
         }
 
-        var key = typeof location == 'function' ? location.name || location.originalFunctionName : location ? location : presentLocation.id;
+        var key = typeof location == 'function' ? location.name : location ? location : presentLocation.id;
         game.currentLocation = game.locations.get(key);
         return true;
     }
@@ -414,13 +414,13 @@ function setDestination(destination: IDestination) {
     // Also set the barrier selected actions to the first one available for each barrier.
     // Further, replace combine functions with their target ids.
     var target = destination.target;
-    target = typeof target === 'function' ? target.name || target.originalFunctionName : target;
+    target = typeof target === 'function' ? target.name : target;
     destination.target = target && target.toLowerCase();
 
     if (destination.barrier) {
         if (destination.barrier.key) {
             var key = destination.barrier.key;
-            destination.barrier.key = typeof key === 'function' ? key.name || key.originalFunctionName : key;
+            destination.barrier.key = typeof key === 'function' ? key.name : key;
         }
 
         if (destination.barrier.actions && destination.barrier.actions.length > 0) {
@@ -431,7 +431,7 @@ function setDestination(destination: IDestination) {
             for (var n in destination.barrier.combinations.combine) {
                 var combination = destination.barrier.combinations.combine[n];
                 var tool = <any>combination.tool;
-                combination.tool = tool && (tool.name || tool.originalFunctionName).toLowerCase();
+                combination.tool = tool && (tool.name).toLowerCase();
             }
         }
     }

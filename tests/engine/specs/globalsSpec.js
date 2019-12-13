@@ -80,7 +80,7 @@ describe("Utilities", function() {
     it("should get an entity using an id string", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(_TestGame.Items.Journal.name || _TestGame.Items.Journal.originalFunctionName);
+        var result = testArray.get(_TestGame.Items.Journal.name);
 
         expect(result).not.toBeNull();
         expect(compareId(result.id, _TestGame.Items.Journal)).toBeTruthy();
@@ -154,7 +154,7 @@ describe("Utilities", function() {
         var result = testArray.get(Garden);
 
         expect(result).not.toBeUndefined();
-        expect(compareId(result.target, Garden.name || Garden.originalFunctionName)).toBeTruthy();
+        expect(compareId(result.target, Garden.name)).toBeTruthy();
     });
 
     it("should get all entities in the array matching the id", function() {
@@ -183,7 +183,7 @@ describe("Utilities", function() {
     it("should remove an entity using an id string", function() {
         StoryScript.addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(_TestGame.Items.Journal.name || _TestGame.Items.Journal.originalFunctionName);
+        testArray.remove(_TestGame.Items.Journal.name);
 
         expect(testArray.length).toBe(1);
         expect(compareId(testArray[0].id, _TestGame.Items.Sword)).toBeTruthy();
@@ -278,7 +278,7 @@ describe("Utilities", function() {
     }
 
     function compareId(id, func) {
-        var name = func.name || func.originalFunctionName || func;
+        var name = func.name || func;
         return id.toLowerCase() === name.toLowerCase();
     }
 });

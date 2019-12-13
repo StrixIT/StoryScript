@@ -233,7 +233,7 @@ function createLocation(entity: ILocation) {
     if (location.destinations) {
         location.destinations.forEach(d => {
             if (d.barrier && d.barrier.key && typeof(d.barrier.key) === 'function') {
-                d.barrier.key = d.barrier.key.name || d.barrier.key.originalFunctionName;
+                d.barrier.key = d.barrier.key.name;
             }
         });
     }
@@ -443,7 +443,7 @@ function compileCombinations(entry: ICombinable) {
 
         entry.combinations.combine.forEach((combine: ICombine<ICombinable>) => {
             var compiled = combine;
-            (<any>compiled).tool = compiled.tool && (compiled.tool.name || (<any>compiled.tool).originalFunctionName);
+            (<any>compiled).tool = compiled.tool && (compiled.tool.name);
             combines.push(compiled);
         });
 
