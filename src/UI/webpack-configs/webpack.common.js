@@ -12,7 +12,8 @@ module.exports = {
     watch:true,
     devServer: {
         contentBase: path.join(__dirname, "../../dist/"),
-        port: 9000
+        port: 9000,
+        hot: true
     },
     output: {
         filename: '[name].bundle.js',
