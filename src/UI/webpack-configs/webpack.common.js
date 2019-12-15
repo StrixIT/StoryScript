@@ -8,15 +8,9 @@ module.exports = {
     entry: {
         storyscript: './src/main.ts'
     },
-    watch: true,
-    devServer: {
-        contentBase: path.join(__dirname, "../../dist/"),
-        port: 9000,
-        hot: true
-    },
     output: {
         filename: '[name].[hash].js',
-        path: path.resolve(__dirname, '../../', 'dist')
+        path: path.resolve(__dirname, '../../../', 'dist')
     },
     module: {
         rules: [
