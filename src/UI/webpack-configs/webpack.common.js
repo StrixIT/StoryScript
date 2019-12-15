@@ -3,20 +3,19 @@ const gameName = 'MyRolePlayingGame';
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        app: './src/main.ts',
+        storyscript: './src/main.ts'
     },
-    watch:true,
+    watch: true,
     devServer: {
         contentBase: path.join(__dirname, "../../dist/"),
         port: 9000,
         hot: true
     },
     output: {
-        filename: '[name].bundle.js',
+        filename: '[name].[hash].js',
         path: path.resolve(__dirname, '../../', 'dist')
     },
     module: {
@@ -32,18 +31,6 @@ module.exports = {
                     'style-loader',
                     'css-loader'
                 ]
-            },
-            {
-                test: /\.scss?$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'sass-loader'
-                ]
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|svg)$/,
-                use: 'file-loader'
             },
             {
                 test: /\.html$/,
@@ -66,12 +53,19 @@ module.exports = {
         new CopyWebpackPlugin([{ 
             from: `../Games/${gameName}/resources`,
             to: 'resources' 
-        }]),
+        }])
     ],
     optimization: {
         splitChunks: {
-            name: 'vendor',
-            filename: '[name].bundle.js'
+            chunks: 'all',
+            automaticNameDelimiter: '-',
+            cacheGroups: {
+                vendor: {
+                    test: /node_modules/,
+                    name: 'vendor',
+                    enforce: true
+                }
+            }
         }
     }
 };
