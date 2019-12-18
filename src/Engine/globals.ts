@@ -99,15 +99,18 @@ export function addArrayExtensions() {
 }
 
 export function createFunctionHash(func: Function): number {
-    var hash = 0;
-    var functionString = func.toString();
+    return createHash(func.toString());
+}
 
-    if (functionString.length == 0) {
+export function createHash(value: string): number {
+    var hash = 0;
+
+    if (!value || value.length == 0) {
         return hash;
     }
 
-    for (var i = 0; i < functionString.length; i++) {
-        var char = functionString.charCodeAt(i);
+    for (var i = 0; i < value.length; i++) {
+        var char = value.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash = hash & hash; // Convert to 32bit integer
     }

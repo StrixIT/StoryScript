@@ -147,7 +147,7 @@ export interface IGame {
          * @param tool The tool of the combination. Pass this in to get the class name for the tool element. Pass nothing to
          * get the class name for the tool button bar.
          */
-        getCombineClass(tool: ICombinable): string,
+        getCombineClass(tool: ICombinable): string;
 
         /**
          * Try the combination the player has created.
@@ -177,8 +177,10 @@ export interface IGame {
     helpers: IHelpers;
 
     sounds: {
-        startMusic() : void;
-        stopMusic() : void;
+        startMusic(): void;
+        stopMusic(): void;
+        playSound(fileName: string): void;
+        soundQueue: string[];
     }
 
     /**

@@ -32,7 +32,7 @@ export class MainComponent {
             },
             set: value => {
                 dynamicStyles = value;
-                this.applyDynamicStyling()
+                this.applyDynamicStyling();
             }
         });
     }

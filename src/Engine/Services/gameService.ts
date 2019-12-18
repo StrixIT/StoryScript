@@ -14,7 +14,6 @@ import { IStatistics } from '../Interfaces/statistics';
 import { DataKeys } from '../DataKeys';
 import { SaveWorldState } from './sharedFunctions';
 import { DefaultTexts } from '../defaultTexts';
-import { isEmpty } from '../utilities';
 import { IGameService } from '../Interfaces/services//gameService';
 import { IDataService } from '../Interfaces/services//dataService';
 import { ILocationService } from '../Interfaces/services/locationService';
@@ -239,6 +238,10 @@ export class GameService implements IGameService {
 
     stopMusic = (): boolean => this._musicStopped = true;
 
+    playSound = (fileName: string): void => {
+        this._game.sounds.soundQueue.push(fileName);
+    }
+
     private initTexts = (): void => {
         var defaultTexts = new DefaultTexts();
 
@@ -273,6 +276,8 @@ export class GameService implements IGameService {
 
     private enemyDefeated = (enemy: IEnemy): void => {
         if (enemy.items) {
+            // Todo: if there is no ground, the items should be moved to the backpack.
+            // Can also use hook for that.
             enemy.items.forEach((item: IItem) => {
                 this._game.currentLocation.items.push(item);
             });
@@ -300,7 +305,9 @@ export class GameService implements IGameService {
         this._game.fight = this.fight;
         this._game.sounds = { 
             startMusic: this.startMusic,
-            stopMusic: this.stopMusic
+            stopMusic: this.stopMusic,
+            playSound: this.playSound,
+            soundQueue: []
         };
 
         this.setupCombinations();
