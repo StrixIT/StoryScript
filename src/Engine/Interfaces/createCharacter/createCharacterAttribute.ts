@@ -1,4 +1,4 @@
-import { ICreateCharacterAttributeEntry } from './createCharacters';
+import { ICreateCharacterAttributeEntry } from './createCharacterAttributeEntry';
 
 /**
  * An attribute entry for a create character question. 

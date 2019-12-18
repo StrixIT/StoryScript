@@ -1,6 +1,6 @@
 ﻿import { IFeature } from './feature';
-import { EquipmentType } from './enumerations/enumerations';
 import { IGame } from './game';
+import { EquipmentType } from './enumerations/equipmentType';
 
 /**
  * An item that can be found in the game and used by the character.

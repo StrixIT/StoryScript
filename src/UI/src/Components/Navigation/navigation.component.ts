@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, Enumerations } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, PlayState } from '../../../../Engine/Interfaces/storyScript';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 import { EventService } from '../../Services/EventService';
@@ -19,8 +19,8 @@ export class NavigationComponent {
     texts: IInterfaceTexts;
 
     menu = (): void => {
-        this.game.playState = Enumerations.PlayState.Menu;
-        this._eventService.setPlayState(Enumerations.PlayState.Menu);
+        this.game.playState = PlayState.Menu;
+        this._eventService.setPlayState(PlayState.Menu);
     }
 
     reset = (): void => this._gameService.reset();

@@ -1,6 +1,7 @@
-import { GameState, PlayState } from '../enumerations/enumerations';
 import { ICombinationAction } from '../combinations/combinations';
 import { IGame } from '../game';
+import { GameState } from '../enumerations/gameState';
+import { PlayState } from '../enumerations/playState';
 
 export interface ISetupRules {
     /**

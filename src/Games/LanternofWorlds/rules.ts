@@ -1,4 +1,4 @@
-﻿import { IRules, CreateCharacters, ICharacter, Combinations, Enumerations } from '../../Engine/Interfaces/storyScript';
+﻿import { IRules, ICharacter, ICreateCharacter, ICombinable, ICombinationAction, GameState, PlayState } from '../../Engine/Interfaces/storyScript';
 import { IGame, IFeature, IEnemy, Character } from './types';
 import { Constants } from './Constants';
 
@@ -7,13 +7,13 @@ export function Rules(): IRules {
         setup: {
             intro: true,
             playList: [
-                [Enumerations.GameState.Play, 'play.mp3'],
-                [Enumerations.PlayState.Combat, 'createCharacter.mp3'],
+                [GameState.Play, 'play.mp3'],
+                [PlayState.Combat, 'createCharacter.mp3'],
             ],
             gameStart: (game: IGame) => {
                 game.changeLocation(game.worldProperties.startChoice);
             },
-            getCombinationActions: (): Combinations.ICombinationAction[] => {
+            getCombinationActions: (): ICombinationAction[] => {
                 return [
                     // Add combination action names here if you want to use this feature.
                     {
@@ -22,7 +22,7 @@ export function Rules(): IRules {
                         requiresTool: false,
                         failText: (game, target, tool): string => { return 'test'; },
                         isDefault: true,
-                        defaultMatch: (game: IGame, target: IFeature, tool: Combinations.ICombinable): string => {
+                        defaultMatch: (game: IGame, target: IFeature, tool: ICombinable): string => {
                             setCoordinates(game, target);
 
                             if (target.linkToLocation) {
@@ -50,7 +50,7 @@ export function Rules(): IRules {
                 ];
             },
 
-            getCreateCharacterSheet: (): CreateCharacters.ICreateCharacter => {
+            getCreateCharacterSheet: (): ICreateCharacter => {
                 return {
                     steps: [
                         {
@@ -114,7 +114,7 @@ export function Rules(): IRules {
                 };
             },
 
-            createCharacter: (game: IGame, characterData: CreateCharacters.ICreateCharacter): ICharacter => {
+            createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
                 var selectedStart = characterData.steps[1].questions[0].selectedEntry;
                 var startChoice = 'start';
 

@@ -1,5 +1,5 @@
 ﻿import { Item } from '../types';
-import { Enumerations } from '../../../Engine/Interfaces/storyScript'
+import { EquipmentType } from '../../../Engine/Interfaces/storyScript'
 import description from './sword.html';
 
 export function Sword() {
@@ -7,7 +7,7 @@ export function Sword() {
         name: 'Sword',
         description: description,
         damage: '3',
-        equipmentType: Enumerations.EquipmentType.RightHand,
+        equipmentType: EquipmentType.RightHand,
         value: 5
     });
 }

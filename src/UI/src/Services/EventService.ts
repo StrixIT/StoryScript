@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Enumerations } from '../../../Engine/Interfaces/storyScript';
+import { PlayState } from '../../../Engine/Interfaces/storyScript';
 
 @Injectable()
 export class EventService {
-    private playStateSource = new Subject<Enumerations.PlayState>();
+    private playStateSource = new Subject<PlayState>();
     private enemiesPresentSource = new Subject<boolean>();
     private combinationSource = new Subject<boolean>();
 
@@ -16,5 +16,5 @@ export class EventService {
 
     setEnemiesPresent = (value: boolean): void => this.enemiesPresentSource.next(value);
 
-    setPlayState = (value: Enumerations.PlayState): void => this.playStateSource.next(value);
+    setPlayState = (value: PlayState): void => this.playStateSource.next(value);
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { IGame, IInterfaceTexts, Enumerations } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, PlayState } from '../../../../Engine/Interfaces/storyScript';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 import template from './menumodal.component.html';
@@ -13,7 +13,7 @@ export class MenuModalComponent {
     constructor(private _activeModal: NgbActiveModal, private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
-        this.state = Enumerations.PlayState.Menu;
+        this.state = PlayState.Menu;
     }
 
     texts: IInterfaceTexts;

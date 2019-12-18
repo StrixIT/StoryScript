@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { ObjectFactory } from '../../../Engine/ObjectFactory';
-import { IInterfaceTexts, Enumerations, IGame } from '../../../Engine/Interfaces/storyScript';
+import { IInterfaceTexts, PlayState, IGame } from '../../../Engine/Interfaces/storyScript';
 import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
 import { EncounterModalComponent } from '../Components/EncounterModal/encountermodal.component';
 import { IModalSettings } from '../Components/modalSettings';
@@ -15,7 +15,7 @@ export class ModalService implements OnDestroy {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
 
-        this._playStateSubscription = this._eventService.playStateChange$.subscribe((p: Enumerations.PlayState) => this.openModal(p));
+        this._playStateSubscription = this._eventService.playStateChange$.subscribe((p: PlayState) => this.openModal(p));
     }
 
     private _playStateSubscription: Subscription;
@@ -27,8 +27,8 @@ export class ModalService implements OnDestroy {
         this._playStateSubscription.unsubscribe();
     }
 
-    openModal = (state: Enumerations.PlayState): void => {
-        if (state === Enumerations.PlayState.Menu) {
+    openModal = (state: PlayState): void => {
+        if (state === PlayState.Menu) {
             this._modalService.open(MenuModalComponent);
         }
         else if (state) {
@@ -37,28 +37,28 @@ export class ModalService implements OnDestroy {
         }    
     }
 
-    private getStateSettings = (value: Enumerations.PlayState): IModalSettings => {
+    private getStateSettings = (value: PlayState): IModalSettings => {
         var modalSettings: IModalSettings = {
             title: '',
             closeText: this.texts.closeModal
         };
 
         switch (value) {
-            case Enumerations.PlayState.Combat: {
+            case PlayState.Combat: {
                 modalSettings.title = this.texts.combatTitle;
                 modalSettings.canClose = false;
             } break;
-            case Enumerations.PlayState.Conversation: {
+            case PlayState.Conversation: {
                 var person = this.game.person;
                 modalSettings.title = person.conversation.title || this.texts.format(this.texts.talk, [person.name]);
                 modalSettings.canClose = true;
             } break;
-            case Enumerations.PlayState.Trade: {
+            case PlayState.Trade: {
                 var trader = this.game.trade;
                 modalSettings.title = trader.title;
                 modalSettings.canClose = true;
             } break;
-            case Enumerations.PlayState.Description: {
+            case PlayState.Description: {
                 modalSettings.title = this.game.currentDescription.title;
                 modalSettings.description = this.game.currentDescription.item.description;
                 modalSettings.canClose = true;

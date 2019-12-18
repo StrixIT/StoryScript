@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, CreateCharacters, ICharacter } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICharacter } from '../../../../Engine/Interfaces/storyScript';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { CharacterService } from '../../../../Engine/Services/characterService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
@@ -15,11 +15,11 @@ export class LevelUpComponent {
         this.texts = objectFactory.GetTexts();
     }
 
-    sheet: CreateCharacters.ICreateCharacter;
+    sheet: ICreateCharacter;
     game: IGame;
     texts: IInterfaceTexts;
 
-    distributionDone = (step: CreateCharacters.ICreateCharacterStep): boolean => this._characterService.distributionDone(this.sheet, step);
+    distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.sheet, step);
 
     levelUp = (): ICharacter => this._gameService.levelUp();
 }

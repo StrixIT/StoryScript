@@ -19,11 +19,26 @@ import { IBarrier } from './barrier'
 import { IBarrierAction } from './barrierAction'
 import { IHelpers } from './helpers'
 import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../ObjectConstructors'
-import * as Actions from '../Actions/actions'
+import { Open } from '../Actions/open';
+import { OpenWithKey } from '../Actions/openWithKey';
+
 import * as Combinations from './combinations/combinations'
-import * as CreateCharacters from './createCharacter/createCharacters'
+
+import { ICombinable } from './combinations/combinable';
+import { ICombinationAction } from './combinations/combinationAction';
+import { ICombinationMatchResult }  from './combinations/combinationMatchResult';
+
+import { ICreateCharacter } from './createCharacter/createCharacter';
+import { ICreateCharacterStep } from './createCharacter/createCharacterStep';
+import { ICreateCharacterAttribute } from './createCharacter/createCharacterAttribute';
+import { ICreateCharacterAttributeEntry } from './createCharacter/createCharacterAttributeEntry';
+
 import * as Conversations from './conversations/conversations'
-import * as Enumerations from './enumerations/enumerations'
+import { EquipmentType } from './enumerations/equipmentType';
+import { PlayState } from './enumerations/playState';
+import { GameState } from './enumerations/gameState';
+import { ActionType } from './enumerations/actionType';
+import { ActionStatus } from './enumerations/actionStatus';
 import { IDefinitions } from './definitions'
 import { ScoreEntry } from './scoreEntry'
 import { IDynamicStyle } from './dynamicStyle'
@@ -58,11 +73,27 @@ export {
     IQuest,
     Quest,
     IHelpers,
-    CreateCharacters,
-    Actions,
+
+    ICreateCharacter,
+    ICreateCharacterStep,
+    ICreateCharacterAttribute,
+    ICreateCharacterAttributeEntry,
+
+    Open,
+    OpenWithKey,
+
     Combinations,
+    ICombinable,
+    ICombinationAction,
+    ICombinationMatchResult,
+
+
     Conversations,
-    Enumerations,
+    EquipmentType,
+    PlayState,
+    GameState,
+    ActionStatus,
+    ActionType,
     IDefinitions,
     ScoreEntry,
     IDynamicStyle,

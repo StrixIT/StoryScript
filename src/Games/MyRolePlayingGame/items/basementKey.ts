@@ -1,5 +1,5 @@
 ﻿import { Key, IGame } from '../types';
-import { Enumerations, IDestination, Actions, IBarrier } from '../../../Engine/Interfaces/storyScript'
+import { EquipmentType, IDestination, Actions, IBarrier } from '../../../Engine/Interfaces/storyScript'
 
 export function BasementKey() {
     return Key({
@@ -11,6 +11,6 @@ export function BasementKey() {
                 game.logToLocationLog('You open the trap door. A wooden staircase leads down into the darkness.');
             })
         },
-        equipmentType: Enumerations.EquipmentType.Miscellaneous
+        equipmentType: EquipmentType.Miscellaneous
     });
 }

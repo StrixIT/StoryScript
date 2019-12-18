@@ -1,11 +1,15 @@
-﻿import { ICreateCharacter, ICreateCharacterAttribute, ICreateCharacterAttributeEntry, ICreateCharacterStep } from '../Interfaces/createCharacter/createCharacters';
-import { IRules } from '../Interfaces/rules/rules';
+﻿import { IRules } from '../Interfaces/rules/rules';
 import { IGame } from '../Interfaces/game';
 import { ICharacter } from '../Interfaces/character';
-import { GameState, EquipmentType } from '../Interfaces/enumerations/enumerations';
 import { IItem } from '../Interfaces/item';
 import { IQuest } from '../Interfaces/quest';
 import { ICharacterService } from '../Interfaces/services/characterService';
+import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
+import { ICreateCharacterAttribute } from '../Interfaces/createCharacter/createCharacterAttribute';
+import { ICreateCharacterAttributeEntry } from '../Interfaces/createCharacter/createCharacterAttributeEntry';
+import { ICreateCharacterStep } from '../Interfaces/createCharacter/createCharacterStep';
+import { GameState } from '../Interfaces/enumerations/gameState';
+import { EquipmentType } from '../Interfaces/enumerations/equipmentType';
 
 export class CharacterService implements ICharacterService {
     constructor(private _game: IGame, private _rules: IRules) {

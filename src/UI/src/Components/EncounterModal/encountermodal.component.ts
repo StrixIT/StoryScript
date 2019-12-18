@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
-import { IGame, IInterfaceTexts, Enumerations } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, PlayState } from '../../../../Engine/Interfaces/storyScript';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 import { EventService } from '../../Services/EventService';
@@ -25,7 +25,7 @@ export class EncounterModalComponent implements OnDestroy {
             closeText: this.texts.closeModal
         }
 
-        this._playStateSubscription = this._eventService.playStateChange$.subscribe((p: Enumerations.PlayState) => this.closeModal(p));
+        this._playStateSubscription = this._eventService.playStateChange$.subscribe((p: PlayState) => this.closeModal(p));
         this._enemiesPresentSubscription = this._eventService.enemiesPresentChange$.subscribe((p: boolean) => this.settings.canClose = !p);
     }
 
@@ -40,7 +40,7 @@ export class EncounterModalComponent implements OnDestroy {
         this._enemiesPresentSubscription.unsubscribe();
     }
 
-    closeModal = (playState: Enumerations.PlayState): void => {
+    closeModal = (playState: PlayState): void => {
         if (!playState) {
             if (this.settings.closeAction) {
                 this.settings.closeAction(this.game);

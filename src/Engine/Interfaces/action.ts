@@ -1,5 +1,6 @@
-﻿import { ActionType, ActionStatus } from './enumerations/enumerations';
-import { IGame } from './game';
+﻿import { IGame } from './game';
+import { ActionType } from './enumerations/actionType';
+import { ActionStatus } from './enumerations/actionStatus';
 
 /**
  * Actions available to the player when exploring the location.

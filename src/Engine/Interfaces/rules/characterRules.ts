@@ -1,7 +1,7 @@
 import { ICharacter } from '../character';
 import { IItem } from '../item';
 import { IGame } from '../game';
-import { ICreateCharacter } from '../createCharacter/createCharacters';
+import { ICreateCharacter } from '../createCharacter/createCharacter';
 
 export interface ICharacterRules {
     /**

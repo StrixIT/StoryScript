@@ -1,5 +1,5 @@
 import { Item } from '../types';
-import { Enumerations } from '../../../Engine/Interfaces/storyScript';
+import { EquipmentType } from '../../../Engine/Interfaces/storyScript';
 import { Constants } from '../constants';
 import { Herbs } from './herbs';
 import { HealingPotion } from './healingPotion';
@@ -7,7 +7,7 @@ import { HealingPotion } from './healingPotion';
 export function Water() {
     return Item({
         name: 'Fountain water',
-        equipmentType: Enumerations.EquipmentType.Miscellaneous,
+        equipmentType: EquipmentType.Miscellaneous,
         combinations: {
             failText: 'You can\'t use the water like that',
             combine: [

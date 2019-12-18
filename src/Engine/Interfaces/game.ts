@@ -1,10 +1,8 @@
 ﻿import { IDefinitions } from './definitions';
-import { ICreateCharacter } from './createCharacter/createCharacters';
 import { ICharacter } from './character';
 import { ILocationCollection } from './locationCollection';
 import { ICompiledLocation } from './compiledLocation';
 import { ScoreEntry } from './scoreEntry';
-import { GameState, PlayState } from './enumerations/enumerations';
 import { IPerson } from './person';
 import { ITrade } from './trade';
 import { IFeature } from './feature';
@@ -14,6 +12,9 @@ import { ILocation } from './location';
 import { IEnemy } from './enemy';
 import { IStatistics } from './statistics';
 import { IHelpers } from './helpers';
+import { ICreateCharacter } from './createCharacter/createCharacter';
+import { GameState } from './enumerations/gameState';
+import { PlayState } from './enumerations/playState';
 
 /**
  * The StoryScript main game object.

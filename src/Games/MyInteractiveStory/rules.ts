@@ -1,4 +1,4 @@
-﻿import { IRules, CreateCharacters, ICharacter, Combinations, Enumerations } from '../../Engine/Interfaces/storyScript';
+﻿import { IRules, ICreateCharacter, ICharacter, ICombinationAction, GameState } from '../../Engine/Interfaces/storyScript';
 import { IGame, IEnemy, Character } from './types';
 
 export function Rules(): IRules {
@@ -6,9 +6,9 @@ export function Rules(): IRules {
         setup: {
             autoBackButton: true,
             playList: [
-                [Enumerations.GameState.Play, 'Contemplate_the_stars.mp3']
+                [GameState.Play, 'Contemplate_the_stars.mp3']
             ],
-            getCombinationActions: (): Combinations.ICombinationAction[] => {
+            getCombinationActions: (): ICombinationAction[] => {
                 return [
                     // Add combination action names here if you want to use this feature.
                 ];
@@ -29,7 +29,7 @@ export function Rules(): IRules {
                 ];
             },
 
-            getCreateCharacterSheet: (): CreateCharacters.ICreateCharacter => {
+            getCreateCharacterSheet: (): ICreateCharacter => {
                 return {
                     steps: [
                         // Add the character creation steps here, if you want to use character creation.
@@ -37,7 +37,7 @@ export function Rules(): IRules {
                 };
             },
 
-            createCharacter: (game: IGame, characterData: CreateCharacters.ICreateCharacter): ICharacter => {
+            createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
                 var character = new Character();
                 return character;
             }

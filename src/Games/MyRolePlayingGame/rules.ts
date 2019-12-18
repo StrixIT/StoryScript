@@ -1,12 +1,12 @@
-﻿import { IRules, Combinations, CreateCharacters, ICharacter } from '../../Engine/Interfaces/storyScript';
+﻿import { IRules, ICreateCharacter, ICharacter, GameState } from '../../Engine/Interfaces/storyScript';
 import { IGame, IEnemy, Character } from './types';
 
 export function Rules(): IRules {
     return {
         setup: {
             playList: [
-                // [StoryScript.GameState.CreateCharacter, 'createCharacter.mp3'],
-                // [StoryScript.GameState.Play, 'play.mp3']
+                // [GameState.CreateCharacter, 'createCharacter.mp3'],
+                // [GameState.Play, 'play.mp3']
             ],
 
             intro: false,
@@ -28,7 +28,7 @@ export function Rules(): IRules {
                 ]
             },
 
-            getCreateCharacterSheet: (): CreateCharacters.ICreateCharacter => {
+            getCreateCharacterSheet: (): ICreateCharacter => {
                 return {
                     steps: [
                         {
@@ -95,7 +95,7 @@ export function Rules(): IRules {
                 };
             },
 
-            createCharacter: (game: IGame, characterData: CreateCharacters.ICreateCharacter): ICharacter => {
+            createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
                 var character = new Character();
                 return character;
             }

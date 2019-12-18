@@ -1,8 +1,8 @@
 import { ICollection } from './collection';
 import { ICompiledLocation } from './compiledLocation';
-import { GameState } from './enumerations/enumerations';
 import { ICharacter } from './character';
 import { IStatistics } from './statistics';
+import { GameState } from './enumerations/gameState';
 
 /**
  * An object to save the game state.

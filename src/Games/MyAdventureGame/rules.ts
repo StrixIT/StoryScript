@@ -1,11 +1,11 @@
-import { IRules, Combinations, CreateCharacters, ICharacter } from '../../Engine/Interfaces/storyScript';
+import { IRules, ICombinationAction, ICreateCharacter, ICharacter } from '../../Engine/Interfaces/storyScript';
 import { Constants } from './constants';
 import { IGame, Character, IEnemy } from './types';
 
 export function Rules(): IRules {
     return {
         setup: {
-            getCombinationActions: (): Combinations.ICombinationAction[] => {
+            getCombinationActions: (): ICombinationAction[] => {
                 return [
                     {
                         text: Constants.WALK,
@@ -46,7 +46,7 @@ export function Rules(): IRules {
                 ];
             },
 
-            getCreateCharacterSheet: (): CreateCharacters.ICreateCharacter => {
+            getCreateCharacterSheet: (): ICreateCharacter => {
                 return {
                     steps: [
                         // Add the character creation steps here, if you want to use character creation.
@@ -54,7 +54,7 @@ export function Rules(): IRules {
                 };
             },
 
-            createCharacter: (game: IGame, characterData: CreateCharacters.ICreateCharacter): ICharacter => {
+            createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
                 var character = new Character();
                 return character;
             }

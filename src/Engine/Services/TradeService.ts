@@ -2,12 +2,12 @@ import { IGame } from '../Interfaces/game';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
 import { IPerson } from '../Interfaces/person';
 import { ITrade } from '../Interfaces/trade';
-import { PlayState } from '../Interfaces/enumerations/enumerations';
 import { IItem } from '../Interfaces/item';
 import { IStock } from '../Interfaces/stock';
 import { ICharacter } from '../Interfaces/character';
 import { randomList } from '../utilities';
 import { ITradeService } from '../Interfaces/services/tradeService';
+import { PlayState } from '../Interfaces/enumerations/playState';
 
 export class TradeService implements ITradeService {
     constructor(private _game: IGame, private _texts: IInterfaceTexts) {

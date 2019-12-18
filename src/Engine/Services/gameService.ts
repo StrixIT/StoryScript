@@ -1,7 +1,6 @@
 ﻿import { IRules } from '../Interfaces/rules/rules';
 import { IGame } from '../Interfaces/game';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
-import { GameState, PlayState } from '../Interfaces/enumerations/enumerations';
 import { ICharacter } from '../Interfaces/character';
 import { ISaveGame } from '../Interfaces/saveGame';
 import { IEnemy } from '../Interfaces/enemy';
@@ -21,6 +20,8 @@ import { ICharacterService } from '../Interfaces/services/characterService';
 import { ICombinationService } from '../Interfaces/services/combinationService';
 import { IHelperService } from '../Interfaces/services//helperService';
 import { IBarrierAction } from '../Interfaces/barrierAction';
+import { GameState } from '../Interfaces/enumerations/gameState';
+import { PlayState } from '../Interfaces/enumerations/playState';
 
 export class GameService implements IGameService {
     private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];

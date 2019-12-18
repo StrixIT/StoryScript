@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, Enumerations, IDestination, IBarrier, IBarrierAction } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, IDestination, IBarrier, IBarrierAction, ActionStatus } from '../../../../Engine/Interfaces/storyScript';
 import { isEmpty } from '../../../../Engine/utilities';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
@@ -31,9 +31,9 @@ export class ExplorationComponent {
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    disableActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == Enumerations.ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == Enumerations.ActionStatus.Disabled;
+    disableActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
 
-    hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == Enumerations.ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == Enumerations.ActionStatus.Unavailable;
+    hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
 
     executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this);
 

@@ -5,7 +5,6 @@ import { IRules } from '../Interfaces/rules/rules';
 import { IGame } from '../Interfaces/game';
 import { IDefinitions } from '../Interfaces/definitions';
 import { DataKeys } from '../DataKeys';
-import { ActionType } from '../Interfaces/enumerations/enumerations';
 import { IFeature } from '../Interfaces/feature';
 import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
@@ -13,6 +12,7 @@ import { createFunctionHash, compareString } from '../globals';
 import { addHtmlSpaces, isEmpty } from '../utilities';
 import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
+import { ActionType } from '../Interfaces/enumerations/actionType';
 
 export class LocationService implements ILocationService {
     private pristineLocations: ICollection<ICompiledLocation>;

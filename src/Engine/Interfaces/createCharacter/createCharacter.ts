@@ -1,4 +1,4 @@
-﻿import { ICreateCharacterStep } from './createCharacters';
+﻿import { ICreateCharacterStep } from './createCharacterStep';
 
 /**
  * The definition of the sheet to create a character for the game.

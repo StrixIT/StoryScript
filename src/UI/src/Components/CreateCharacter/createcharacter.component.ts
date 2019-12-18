@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, CreateCharacters } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, ICreateCharacterStep } from '../../../../Engine/Interfaces/storyScript';
 import { GameService } from '../../../../Engine/Services/gameService';
 import { CharacterService } from '../../../../Engine/Services/characterService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
@@ -20,5 +20,5 @@ export class CreateCharacterComponent {
 
     startNewGame = () => this._gameService.startNewGame(this.game.createCharacterSheet);
 
-    distributionDone = (step: CreateCharacters.ICreateCharacterStep): boolean => this._characterService.distributionDone(this.game.createCharacterSheet, step);
+    distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.game.createCharacterSheet, step);
 }

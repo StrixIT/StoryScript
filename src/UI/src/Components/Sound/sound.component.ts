@@ -1,5 +1,5 @@
 import { GameService } from '../../../../Engine/Services/gameService';
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import template from './sound.component.html';
 import { IGame } from '../../../../Engine/Interfaces/game';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
@@ -44,6 +44,8 @@ export class SoundComponent {
     watchSounds = () => {
         this._game.sounds.soundQueue.push = this._game.sounds.soundQueue.push.proxy((originalScope, originalFunction, sound: string) => {
             this.soundQueue.set(createHash(sound + Math.floor(Math.random() * 1000)), { value: sound, playing: false });
+
+            // I don't really need this. Clean it up.
             originalFunction.call(originalScope, sound);
         })
     }

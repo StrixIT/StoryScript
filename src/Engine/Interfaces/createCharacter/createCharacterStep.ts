@@ -1,4 +1,6 @@
-import { ICreateCharacter, ICreateCharacterQuestion, ICreateCharacterAttribute } from './createCharacters';
+import { ICreateCharacter } from './createCharacter';
+import { ICreateCharacterQuestion } from './createCharacterQuestion';
+import { ICreateCharacterAttribute } from './createCharacterAttribute';
 
 /**
  * The definition of a step in the character creation process.

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ITrade, IAction, Enumerations, IPerson, IEnemy, Combinations } from 'storyScript/Interfaces/storyScript';
+import { ITrade, IAction, PlayState, ActionType, IPerson, IEnemy, Combinations } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
@@ -41,12 +41,12 @@ export class SharedMethodService {
 
     talk = (game: IGame, person: IPerson): void => {
         this._conversationService.talk(person);
-        this.setPlayState(game, Enumerations.PlayState.Conversation);
+        this.setPlayState(game, PlayState.Conversation);
     }
 
     trade = (game: IGame, trade: IPerson | ITrade): boolean => {
         this._tradeService.trade(trade);
-        this.setPlayState(game, Enumerations.PlayState.Trade);
+        this.setPlayState(game, PlayState.Trade);
 
         // Return true to keep the action button for trade locations.
         return true;
@@ -54,7 +54,7 @@ export class SharedMethodService {
 
     showDescription = (game: IGame, type: string, item: any, title: string): void => {
         this._gameService.setCurrentDescription(type, item, title);
-        this.setPlayState(game, Enumerations.PlayState.Description);
+        this.setPlayState(game, PlayState.Description);
     }
 
     startCombat = (game: IGame, person?: IPerson): void => {
@@ -65,8 +65,8 @@ export class SharedMethodService {
         }
 
         game.combatLog = [];
-        game.playState = Enumerations.PlayState.Combat;
-        this.setPlayState(game, Enumerations.PlayState.Combat);
+        game.playState = PlayState.Combat;
+        this.setPlayState(game, PlayState.Combat);
     }
 
     fight = (game: IGame, enemy: IEnemy): void => {
@@ -75,20 +75,20 @@ export class SharedMethodService {
     }
 
     getButtonClass = (action: IAction): string => {
-        var type = action.actionType || Enumerations.ActionType.Regular;
+        var type = action.actionType || ActionType.Regular;
         var buttonClass = 'btn-';
 
         switch (type) {
-            case Enumerations.ActionType.Regular: {
+            case ActionType.Regular: {
                 buttonClass += 'info'
             } break;
-            case Enumerations.ActionType.Check: {
+            case ActionType.Check: {
                 buttonClass += 'warning';
             } break;
-            case Enumerations.ActionType.Combat: {
+            case ActionType.Combat: {
                 buttonClass += 'danger';
             } break;
-            case Enumerations.ActionType.Trade: {
+            case ActionType.Trade: {
                 buttonClass += 'secondary';
             } break;
         }
@@ -110,9 +110,9 @@ export class SharedMethodService {
 
             if (!result && typeAndIndex.index !== -1) {
 
-                if (typeAndIndex.type === Enumerations.ActionType.Regular && game.currentLocation.actions) {
+                if (typeAndIndex.type === ActionType.Regular && game.currentLocation.actions) {
                     game.currentLocation.actions.splice(typeAndIndex.index, 1);
-                } else if (typeAndIndex.type === Enumerations.ActionType.Combat && game.currentLocation.combatActions) {
+                } else if (typeAndIndex.type === ActionType.Combat && game.currentLocation.combatActions) {
                     game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
                 }
             }
@@ -130,7 +130,7 @@ export class SharedMethodService {
         return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => game.character.equipment[k] !== undefined);
     }
 
-    setPlayState = (game: IGame, value: Enumerations.PlayState): void => {
+    setPlayState = (game: IGame, value: PlayState): void => {
         game.playState = value;
         this._eventService.setPlayState(value);    
     }

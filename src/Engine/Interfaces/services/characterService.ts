@@ -1,8 +1,11 @@
-import { ICreateCharacter, ICreateCharacterAttribute, ICreateCharacterAttributeEntry, ICreateCharacterStep } from '../createCharacter/createCharacters';
 import { ICharacter } from '../character';
 import { IItem } from '../item';
 import { IQuest } from '../quest';
 import { IGame } from '../game';
+import { ICreateCharacter } from '../createCharacter/createCharacter';
+import { ICreateCharacterAttribute } from '../createCharacter/createCharacterAttribute';
+import { ICreateCharacterAttributeEntry } from '../createCharacter/createCharacterAttributeEntry';
+import { ICreateCharacterStep } from '../createCharacter/createCharacterStep';
 
 export interface ICharacterService {
     getSheetAttributes(): string[];
