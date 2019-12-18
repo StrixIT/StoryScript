@@ -6,6 +6,7 @@ import { NgbCollapseModule, NgbModalModule, NgbActiveModal, NgbDropdownModule } 
 import { EventService } from './Services/EventService';
 import { SharedMethodService } from './Services/SharedMethodService';
 import { ModalService } from './Services/ModalService';
+
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { CharacterService } from 'storyScript/Services/characterService';
@@ -20,7 +21,7 @@ import { BackpackComponent } from './Components/Backpack/backpack.component';
 import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
 import { CharacterSheetComponent } from './Components/CharacterSheet/charactersheet.component';
 import { CombatComponent } from './Components/Combat/combat.component';
-import { LocationTextComponent } from './Components/Location/locationtext.component';
+import { LocationTextComponent } from './Components/LocationText/locationtext.component';
 import { LocationVisualComponent } from './Components/LocationVisual/locationvisual.component';
 import { GroundComponent } from './Components/Ground/ground.component';
 import { EquipmentComponent } from './Components/Equipment/equipment.component';
