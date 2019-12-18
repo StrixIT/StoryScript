@@ -5,7 +5,7 @@ import description from './Start.html';
 export function Start() {
     return Location({
         name: 'Start',
-        html: description,
+        description: description,
         features: [
             Fountain()
         ]

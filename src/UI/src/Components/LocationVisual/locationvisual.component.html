@@ -1,0 +1,12 @@
+<div class="box-container" id="location-visual" *ngIf="game.currentLocation.features.collectionPicture">
+    <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
+    <div id="visual-features">
+        <img src="{{ 'resources/' + game.currentLocation.features.collectionPicture }}" [attr.usemap]="'#' + game.currentLocation.id">
+        <map name="{{ game.currentLocation.id }}">
+            <area *ngFor="let feature of game.currentLocation.features" href="#0" shape="{{feature.shape}}" coords="{{feature.coords}}" (click)="tryCombine(feature)" />
+        </map>
+        <div *ngFor="let feature of game.currentLocation.features">
+            <img *ngIf="feature.picture" class="feature-picture" name="feature.id" src="{{ 'resources/' + feature.picture }}" [ngStyle]="getFeatureCoordinates(feature)" (click)="tryCombine(feature)" />
+        </div>
+    </div>
+</div>

@@ -10,7 +10,7 @@ var userTemplate = getUserTemplate('main');
 
 @Component({
     selector: 'main',
-    template: userTemplate || template,
+    template: userTemplate || template
 })
 export class MainComponent {
     constructor(private hostElement: ElementRef, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

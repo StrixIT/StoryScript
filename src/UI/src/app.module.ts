@@ -20,7 +20,8 @@ import { BackpackComponent } from './Components/Backpack/backpack.component';
 import { ActionLogComponent } from './Components/ActionLog/actionlog.component';
 import { CharacterSheetComponent } from './Components/CharacterSheet/charactersheet.component';
 import { CombatComponent } from './Components/Combat/combat.component';
-import { LocationComponent } from './Components/Location/location.component';
+import { LocationTextComponent } from './Components/Location/locationtext.component';
+import { LocationVisualComponent } from './Components/LocationVisual/locationvisual.component';
 import { GroundComponent } from './Components/Ground/ground.component';
 import { EquipmentComponent } from './Components/Equipment/equipment.component';
 import { TradeComponent } from './Components/Trade/trade.component';
@@ -75,7 +76,8 @@ var objectFactory = GetObjectFactory();
         ActionLogComponent,
         CharacterSheetComponent,
         CombatComponent,
-        LocationComponent,
+        LocationTextComponent,
+        LocationVisualComponent,
         GroundComponent,
         EquipmentComponent,
         TradeComponent,

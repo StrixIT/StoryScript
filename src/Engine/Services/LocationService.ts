@@ -246,8 +246,9 @@ export class LocationService implements ILocationService {
             }
         }
 
-        this.selectLocationDescription(game);
-        this.processTextFeatures(game);
+        if (this.selectLocationDescription(game)) {
+            this.processTextFeatures(game);
+        }
     }
 
     private processDescriptions = (htmlDoc: Document, game: IGame): void => {
@@ -335,11 +336,12 @@ export class LocationService implements ILocationService {
         return game.currentLocation.features.filter(f => compareString(f.id, nameAttribute))[0];
     }
 
-    private selectLocationDescription = (game: IGame): void => {
+    private selectLocationDescription = (game: IGame): boolean => {
         var selector = null;
 
         if (!game.currentLocation.descriptions) {
-            return;
+            game.currentLocation.description = null;
+            return false;
         }
 
         // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
@@ -355,6 +357,8 @@ export class LocationService implements ILocationService {
         else {
             game.currentLocation.description = game.currentLocation.description || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
         }
+
+        return true;
     }
 }
 

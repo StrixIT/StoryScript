@@ -8,7 +8,7 @@ import description from './Passage.html';
 export function Passage() {
     return Location({
         name: 'A passage in the undergrowth',
-        html: description,
+        description: description,
         features: [
             Herbs(),
             WoundedWarrior(),
