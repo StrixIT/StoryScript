@@ -1,4 +1,4 @@
-import { IConversationReplies } from './conversations';
+import { IConversationReplies } from './conversationReplies';
 
 /**
  * A node of a conversation.

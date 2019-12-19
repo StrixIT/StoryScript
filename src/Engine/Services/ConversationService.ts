@@ -1,4 +1,3 @@
-import { IConversationNode, IConversationReply, IConversation, IConversationReplies } from '../Interfaces/conversations/conversations';
 import { IGame } from '../Interfaces/game';
 import { IPerson } from '../Interfaces/person';
 import { IItem } from '../Interfaces/item';
@@ -6,6 +5,10 @@ import { IQuest } from '../Interfaces/quest';
 import { compareString } from '../globals';
 import { IConversationService } from '../Interfaces/services/conversationService';
 import { PlayState } from '../Interfaces/enumerations/playState';
+import { IConversationNode } from '../Interfaces/conversations/conversationNode';
+import { IConversationReply } from '../Interfaces/conversations/conversationReply';
+import { IConversationReplies } from '../Interfaces/conversations/conversationReplies';
+import { IConversation } from '../Interfaces/conversations/conversation';
 
 export class ConversationService implements IConversationService {
     constructor(private _game: IGame) {

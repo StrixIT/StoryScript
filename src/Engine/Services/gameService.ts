@@ -7,7 +7,6 @@ import { IEnemy } from '../Interfaces/enemy';
 import { IItem } from '../Interfaces/item';
 import { IBarrier } from '../Interfaces/barrier';
 import { IDestination } from '../Interfaces/destination';
-import { ICombinable } from '../Interfaces/combinations/combinations';
 import { ScoreEntry } from '../Interfaces/scoreEntry';
 import { IStatistics } from '../Interfaces/statistics';
 import { DataKeys } from '../DataKeys';
@@ -22,6 +21,7 @@ import { IHelperService } from '../Interfaces/services//helperService';
 import { IBarrierAction } from '../Interfaces/barrierAction';
 import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
+import { ICombinable } from '../Interfaces/combinations/combinable';
 
 export class GameService implements IGameService {
     private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];

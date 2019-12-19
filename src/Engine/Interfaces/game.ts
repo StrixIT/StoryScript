@@ -6,7 +6,6 @@ import { ScoreEntry } from './scoreEntry';
 import { IPerson } from './person';
 import { ITrade } from './trade';
 import { IFeature } from './feature';
-import { IActiveCombination, ICombinable } from './combinations/combinations';
 import { IDynamicStyle } from './dynamicStyle';
 import { ILocation } from './location';
 import { IEnemy } from './enemy';
@@ -15,6 +14,8 @@ import { IHelpers } from './helpers';
 import { ICreateCharacter } from './createCharacter/createCharacter';
 import { GameState } from './enumerations/gameState';
 import { PlayState } from './enumerations/playState';
+import { IActiveCombination } from './combinations/activeCombination';
+import { ICombinable } from './combinations/combinable';
 
 /**
  * The StoryScript main game object.

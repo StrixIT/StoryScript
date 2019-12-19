@@ -11,7 +11,8 @@ import { DataKeys } from './DataKeys';
 import { getSingular, getPlural } from './utilities';
 import { ICharacter } from './Interfaces/character';
 import { createFunctionHash } from './globals';
-import { ICombinable, ICombine } from './Interfaces/combinations/combinations';
+import { ICombinable } from './Interfaces/combinations/combinable';
+import { ICombine } from './Interfaces/combinations/combine';
 
 // This flag indicates whether the registration phase is active.
 let _registration: boolean = true;

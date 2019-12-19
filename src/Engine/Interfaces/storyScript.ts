@@ -21,19 +21,16 @@ import { IHelpers } from './helpers'
 import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../ObjectConstructors'
 import { Open } from '../Actions/open';
 import { OpenWithKey } from '../Actions/openWithKey';
-
-import * as Combinations from './combinations/combinations'
-
 import { ICombinable } from './combinations/combinable';
 import { ICombinationAction } from './combinations/combinationAction';
+import { ICombineResult }  from './combinations/combineResult';
 import { ICombinationMatchResult }  from './combinations/combinationMatchResult';
-
 import { ICreateCharacter } from './createCharacter/createCharacter';
 import { ICreateCharacterStep } from './createCharacter/createCharacterStep';
 import { ICreateCharacterAttribute } from './createCharacter/createCharacterAttribute';
 import { ICreateCharacterAttributeEntry } from './createCharacter/createCharacterAttributeEntry';
-
-import * as Conversations from './conversations/conversations'
+import { IConversationNode } from './conversations/conversationNode';
+import { IConversationReply } from './conversations/conversationReply';
 import { EquipmentType } from './enumerations/equipmentType';
 import { PlayState } from './enumerations/playState';
 import { GameState } from './enumerations/gameState';
@@ -73,22 +70,18 @@ export {
     IQuest,
     Quest,
     IHelpers,
-
     ICreateCharacter,
     ICreateCharacterStep,
     ICreateCharacterAttribute,
     ICreateCharacterAttributeEntry,
-
     Open,
     OpenWithKey,
-
-    Combinations,
     ICombinable,
     ICombinationAction,
+    ICombineResult,
     ICombinationMatchResult,
-
-
-    Conversations,
+    IConversationNode,
+    IConversationReply,
     EquipmentType,
     PlayState,
     GameState,

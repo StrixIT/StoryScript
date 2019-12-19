@@ -1,5 +1,6 @@
 ﻿import { IGame } from '../game';
-import { ICombinable, ICombinationMatchResult } from './combinations';
+import { ICombinable } from './combinable';
+import { ICombinationMatchResult } from './combinationMatchResult';
 
 /**
  * Combination actions that can be tried in the game, e.g. throwing an object at another object.

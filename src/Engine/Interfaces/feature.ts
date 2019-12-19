@@ -1,4 +1,4 @@
-﻿import { ICombinable } from './combinations/combinations';
+﻿import { ICombinable } from './combinations/combinable';
 
 /**
  * A feature of a location, which can be anything the player can interact with using combinations.

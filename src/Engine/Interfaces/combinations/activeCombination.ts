@@ -1,4 +1,5 @@
-import { ICombinationAction, ICombinable } from './combinations';
+import { ICombinationAction } from './combinationAction';
+import { ICombinable } from './combinable';
 
 /**
  * The currently active combination when playing the game.

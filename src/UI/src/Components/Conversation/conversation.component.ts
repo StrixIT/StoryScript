@@ -1,4 +1,4 @@
-import { IGame, Conversations } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IConversationNode, IConversationReply } from '../../../../Engine/Interfaces/storyScript';
 import { ConversationService } from '../../../../Engine/Services/ConversationService';
 import { ObjectFactory } from '../../../../Engine/ObjectFactory';
 import { Component } from '@angular/core';
@@ -15,7 +15,7 @@ export class ConversationComponent {
 
     game: IGame;
 
-    answer = (node: Conversations.IConversationNode, reply: Conversations.IConversationReply): void => this._conversationService.answer(node, reply);
+    answer = (node: IConversationNode, reply: IConversationReply): void => this._conversationService.answer(node, reply);
 
-    getLines = (nodeOrReply: Conversations.IConversationNode | Conversations.IConversationReply): string => this._conversationService.getLines(nodeOrReply);
+    getLines = (nodeOrReply: IConversationNode | IConversationReply): string => this._conversationService.getLines(nodeOrReply);
 }

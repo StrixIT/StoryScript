@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ITrade, IAction, PlayState, ActionType, IPerson, IEnemy, Combinations } from 'storyScript/Interfaces/storyScript';
+import { ITrade, IAction, PlayState, ActionType, IPerson, IEnemy, ICombinable } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
@@ -33,7 +33,7 @@ export class SharedMethodService {
         return result;
     }
 
-    tryCombine = (game: IGame, combinable: Combinations.ICombinable): boolean => {
+    tryCombine = (game: IGame, combinable: ICombinable): boolean => {
         var result = game.combinations.tryCombine(combinable);
         this._eventService.setCombineState(result);
         return result;

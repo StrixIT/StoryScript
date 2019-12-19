@@ -1,6 +1,7 @@
-﻿import { IConversationNode, IConversationLogEntry } from './conversations';
-import { IGame } from '../game';
+﻿import { IGame } from '../game';
 import { IPerson } from '../person';
+import { IConversationNode } from './conversationNode';
+import { IConversationLogEntry } from './conversationLogEntry';
 
 /**
  * A conversation between the player and a person. The nodes are loaded at run-time from the HTML file of the person.

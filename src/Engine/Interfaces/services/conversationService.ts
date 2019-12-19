@@ -1,5 +1,6 @@
 import { IPerson } from '../../Interfaces/person';
-import { IConversationNode, IConversationReply } from '../../Interfaces/conversations/conversations';
+import { IConversationNode } from '../conversations/conversationNode';
+import { IConversationReply } from '../conversations/conversationReply';
 
 export interface IConversationService {
     talk(person: IPerson): void;

@@ -1,4 +1,6 @@
-import { ICombinationAction, ICombinable, ICombineResult } from '../combinations/combinations';
+import { ICombinationAction } from '../combinations/combinationAction';
+import { ICombinable } from '../combinations/combinable';
+import { ICombineResult } from '../combinations/combineResult';
 
 export interface ICombinationService {
     getCombinationActions(): ICombinationAction[];
