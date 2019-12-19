@@ -221,7 +221,13 @@ export class GameService implements IGameService {
         this.saveGame();
     }
 
-    useItem = (item: IItem): void => item.use(this._game, item);
+    useItem = (item: IItem): void => {
+        var useItem = (this._rules.exploration?.onUseItem(this._game, item) && item.use) ?? item.use;
+
+        if (useItem) {
+            item.use(this._game, item);
+        }
+    }
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         action.execute(this._game, barrier, destination);

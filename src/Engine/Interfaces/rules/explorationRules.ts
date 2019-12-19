@@ -1,5 +1,6 @@
 import { ICompiledLocation } from '../compiledLocation';
 import { IGame } from '../game';
+import { IItem } from '../item';
 
 export interface IExplorationRules {
     /**
@@ -25,4 +26,12 @@ export interface IExplorationRules {
      * @param game The active game
      */
     descriptionSelector?(game: IGame): string;
+
+    /**
+     * Use this hook to run code just before the player tries to use an item. Return true if the
+     * item's use function should be run after your code has run, false otherwise.
+     * @param game 
+     * @param item 
+     */
+    onUseItem?(game: IGame, item: IItem): boolean;
 }

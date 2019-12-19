@@ -7,4 +7,6 @@ export function Item(entity: IItem): IItem {
 
 export interface IItem extends IFeature, StoryScript.IItem {
     // Add game-specific item properties here
+    combatSound?: string;
+    useSound?: string;
 }

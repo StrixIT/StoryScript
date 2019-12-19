@@ -1,6 +1,8 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinable, ICombinationAction, GameState, PlayState } from '../../Engine/Interfaces/storyScript';
-import { IGame, IFeature, IEnemy, Character } from './types';
+import { IGame, IFeature, IEnemy, Character, IItem } from './types';
 import { Constants } from './Constants';
+import { Sword } from './items/sword';
+import { Potion } from './items/potion';
 
 export function Rules(): IRules {
     return {
@@ -11,6 +13,8 @@ export function Rules(): IRules {
                 [PlayState.Combat, 'createCharacter.mp3'],
             ],
             gameStart: (game: IGame) => {
+                game.character.items.push(Sword());
+                game.character.items.push(Potion());
                 game.changeLocation(game.worldProperties.startChoice);
             },
             getCombinationActions: (): ICombinationAction[] => {
@@ -132,13 +136,22 @@ export function Rules(): IRules {
         },
 
         exploration: {
-            
+            onUseItem: (game: IGame, item: IItem): boolean => {
+                if (item.useSound) {
+                    game.sounds.playSound(item.useSound);
+                }
+
+                return true;
+            }
         },
 
         combat: {     
             fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
                 retaliate = retaliate == undefined ? true : retaliate;
-                game.sounds.playSound('swing3.wav');
+
+                var playerAttackSound = game.character.equipment.hands?.combatSound ?? 'swing3.wav';
+
+                game.sounds.playSound(playerAttackSound);
 
                 // Implement character attack here.
 
