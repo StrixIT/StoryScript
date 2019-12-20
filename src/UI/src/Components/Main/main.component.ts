@@ -17,6 +17,7 @@ export class MainComponent {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.watchDynamicStyles();
+        this.applyDynamicStyling();
     }
     
     game: IGame;

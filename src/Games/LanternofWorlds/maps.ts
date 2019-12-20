@@ -84,7 +84,7 @@ function createFeatureMap(mapData: IMapData, tileAdditions: (string | (() => ILo
                 continue;
             }
 
-            var featureName = `${mapData.tilePrefix}${location}`;
+            var featureName = `${mapData.tilePrefix}_${location}`;
             map.push(createTileFeature(mapData, featureName, i, j));
         }
     }

@@ -35,6 +35,12 @@ export interface ISetupRules {
     gameStart?(game: IGame): void;
 
     /**
+     * Run custom code to prepare the game before resuming a game when loading a game.
+     * @param game The game about to be loaded
+     */
+    continueGame?(game: IGame): void;
+
+    /**
      * When you want to play a music file when the game is in a certain state, use this list. Use it like this:
         playList: [
             [StoryScript.GameState.CreateCharacter, 'createCharacter.mp4'],

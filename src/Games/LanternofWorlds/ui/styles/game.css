@@ -46,4 +46,5 @@ body {
     position: absolute;
     top: 280px;
     left: 600px;
+    display: none;
 }

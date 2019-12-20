@@ -69,6 +69,10 @@ export class GameService implements IGameService {
         if (this._game.character && locationName) {
             this.initSetInterceptors();
             this.resume(locationName);
+
+            if (this._rules.setup.continueGame) {
+                this._rules.setup.continueGame(this._game);
+            }
         }
         else {
             this._characterService.setupCharacter();
@@ -171,7 +175,11 @@ export class GameService implements IGameService {
                 this._game.playState = null;
             }
 
-            this._game.combinations.combinationResult.reset(); 
+            this._game.combinations.combinationResult.reset();
+
+            if (this._rules.setup.continueGame) {
+                this._rules.setup.continueGame(this._game);
+            }
 
             setTimeout(() => {
                 this._game.loading = false;

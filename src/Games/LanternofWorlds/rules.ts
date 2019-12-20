@@ -16,6 +16,10 @@ export function Rules(): IRules {
                 game.character.items.push(Sword());
                 game.character.items.push(Potion());
                 game.changeLocation(game.worldProperties.startChoice);
+                setPlayerPosition(game, 'fm_1-2');
+            },
+            continueGame: (game: IGame) => {
+                setPlayerPosition(game, getMapPosition(game));
             },
             getCombinationActions: (): ICombinationAction[] => {
                 return [
@@ -27,9 +31,14 @@ export function Rules(): IRules {
                         failText: (game, target, tool): string => { return 'test'; },
                         isDefault: true,
                         defaultMatch: (game: IGame, target: IFeature, tool: ICombinable): string => {
-                            // Check whether the player can move to the tile selected first.
-                            if ((<any>game.currentLocation.features).mapPosition === target.id) {
-                                showOverlay(game);
+                            // When not moving, re-show the overlay and quit.
+                            if (getMapPosition(game) === target.id) {
+                                showElements(game, false);
+                                return '';
+                            }
+
+                            //Check whether the player can move to the tile selected first.
+                            if (!canMoveToTile(game, target)) {
                                 return '';
                             }
 
@@ -42,11 +51,9 @@ export function Rules(): IRules {
                             }
 
                             // Hide the location overlay while the player is travelling.
-                            setTimeout(() => {
-                                showOverlay(game);
-                            }, 1000);
+                            showElements(game, true);
 
-                            return 'Ok';
+                            return '';
                         },
                     }
                 ];
@@ -177,15 +184,76 @@ export function Rules(): IRules {
         },
     };
 
-    function showOverlay(game: IGame) {
-        game.dynamicStyles = [
-            {
-                elementSelector: '#location-overlay',
-                styles: [
-                    ['display', 'block']
-                ]
-            },
+    function getMapPosition(game: IGame) {
+        return (<any>game.currentLocation.features).mapPosition;
+    }
+
+    function setPlayerPosition(game: IGame, position: string) {
+        var startFeature = game.currentLocation.features.get(position);
+        (<any>game.currentLocation.features).mapPosition = startFeature.id;
+        setCoordinates(game, startFeature);
+        showElements(game, true);
+    }
+
+    function showElements(game: IGame, timeout: boolean) {
+        var styles = [{
+            elementSelector: '#location-overlay',
+            styles: [
+                ['display', 'block']
+            ]
+        },
+        {
+            elementSelector: '#player-icon',
+            styles: [
+                ['display', 'block']
+            ]
+        }];
+
+        if (timeout) {
+            setTimeout(() => {
+                game.dynamicStyles = styles;
+            }, 1000);
+        } else {
+            game.dynamicStyles = styles;
+        }
+    }
+
+    function canMoveToTile(game: IGame, target: IFeature) {
+        var targetlocation = target.id.split('_')[1].split('-').map(c => parseInt(c));
+
+        var currentPosition= (<any>game.currentLocation.features).mapPosition;
+
+        if (!currentPosition) {
+            return false;
+        }
+        
+        var currentLocation = currentPosition.split('_')[1].split('-').map(c => parseInt(c));
+        var row = currentLocation[0];
+        var col = currentLocation[1];
+        var even = col % 2 === 0;
+
+        var allowedPositions =
+        even ? [
+            `${row}_${col - 1}`,
+            `${row + 1}_${col - 1}`,
+            `${row + 1}_${col + 1}`,
+            `${row}_${col + 1}`
+        ] : [
+            `${row - 1}_${col - 1}`,
+            `${row}_${col - 1}`,
+            `${row}_${col + 1}`,
+            `${row - 1}_${col + 1}`
         ];
+
+        // You can always go up or down one column
+        allowedPositions.push(`${row - 1}_${col}`);
+        allowedPositions.push(`${row + 1}_${col}`);
+
+        if (allowedPositions.indexOf(`${targetlocation[0]}_${targetlocation[1]}`) > -1) {
+            return true;
+        }
+
+        return false;
     }
 
     function setCoordinates(game: IGame, target: IFeature) {
@@ -210,21 +278,7 @@ export function Rules(): IRules {
                 styles: [
                     ['display', 'none']
                 ]
-            },
-            // {
-            //     elementSelector: '#location-overlay',
-            //     styles: [
-            //         ['top', (game.worldProperties.mapLocationY + 200 || 0).toString() + 'px'],
-            //         ['left', (game.worldProperties.mapLocationX + 100 || 0).toString() + 'px']
-            //     ]
-            // },
-            // {
-            //     elementSelector: '#player-icon',
-            //     styles: [
-            //         ['top', (game.worldProperties.mapLocationY + 400 || 0).toString() + 'px'],
-            //         ['left', (game.worldProperties.mapLocationX + 700 || 0).toString() + 'px']
-            //     ]
-            // }
+            }
         ];   
     }
 }
