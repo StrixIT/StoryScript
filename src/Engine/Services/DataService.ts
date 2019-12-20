@@ -115,7 +115,7 @@ export class DataService implements IDataService {
 
             additionalArrayProperties.forEach(p => {
                 var arrayPropertyKey = `${key}_arrProps`;
-                clone[arrayPropertyKey] = {};
+                clone[arrayPropertyKey] = clone[arrayPropertyKey] || {};
                 this.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
             });
         }

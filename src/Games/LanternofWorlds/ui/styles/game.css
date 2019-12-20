@@ -33,8 +33,9 @@ body {
     margin: 0;
 }
 
-.content-wrapper {
-    transition:all 1s ease 0s;top:0;left:0;
+.overlay-title .close {
+    color: white;
+    line-height: 1.2;
 }
 
 #location-overlay .box-container {
@@ -45,5 +46,4 @@ body {
     position: absolute;
     top: 280px;
     left: 600px;
-    transition:all 1s ease 0s;
 }

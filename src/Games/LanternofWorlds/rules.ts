@@ -27,11 +27,24 @@ export function Rules(): IRules {
                         failText: (game, target, tool): string => { return 'test'; },
                         isDefault: true,
                         defaultMatch: (game: IGame, target: IFeature, tool: ICombinable): string => {
+                            // Check whether the player can move to the tile selected first.
+                            if ((<any>game.currentLocation.features).mapPosition === target.id) {
+                                showOverlay(game);
+                                return '';
+                            }
+
+                            (<any>game.currentLocation.features).mapPosition = target.id;
+
                             setCoordinates(game, target);
 
                             if (target.linkToLocation) {
                                 game.changeLocation(target.linkToLocation);
                             }
+
+                            // Hide the location overlay while the player is travelling.
+                            setTimeout(() => {
+                                showOverlay(game);
+                            }, 1000);
 
                             return 'Ok';
                         },
@@ -164,6 +177,17 @@ export function Rules(): IRules {
         },
     };
 
+    function showOverlay(game: IGame) {
+        game.dynamicStyles = [
+            {
+                elementSelector: '#location-overlay',
+                styles: [
+                    ['display', 'block']
+                ]
+            },
+        ];
+    }
+
     function setCoordinates(game: IGame, target: IFeature) {
         var coords = target.coords.split(',').map(c => parseInt(c));
         game.worldProperties.mapLocationX = -(coords[0] - Constants.MAPOFFSETX);
@@ -179,6 +203,12 @@ export function Rules(): IRules {
                 styles: [
                     ['margin-top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
                     ['margin-left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
+                ]
+            },
+            {
+                elementSelector: '#location-overlay',
+                styles: [
+                    ['display', 'none']
                 ]
             },
             // {
