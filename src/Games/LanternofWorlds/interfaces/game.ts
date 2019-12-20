@@ -9,6 +9,12 @@ export interface IGame extends StoryScript.IGame {
     currentLocation: ICompiledLocation;
     previousLocation: ICompiledLocation;
     helpers: IHelpers;
+    worldProperties: {
+        startChoice: string,
+        mapPosition: string,
+        mapLocationY: number,
+        mapLocationX: number
+    }
 }
 
 export interface IHelpers extends StoryScript.IHelpers {

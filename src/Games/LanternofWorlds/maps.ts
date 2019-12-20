@@ -90,7 +90,7 @@ function createFeatureMap(mapData: IMapData, tileAdditions: (string | (() => ILo
     }
 
     tileAdditions.forEach(a => {
-        var tile = <IFeature>map.filter(t => t.name === `${mapData.tilePrefix}${a[0]}`)[0];
+        var tile = <IFeature>map.filter(t => t.name === `${mapData.tilePrefix}_${a[0]}`)[0];
 
         if (tile) {
             var link = typeof a[1] === 'function' ? (<Function>a[1]).name : a[1].toString();

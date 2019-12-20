@@ -19,7 +19,7 @@ export function Rules(): IRules {
                 setPlayerPosition(game, 'fm_1-2');
             },
             continueGame: (game: IGame) => {
-                setPlayerPosition(game, getMapPosition(game));
+                setPlayerPosition(game, game.worldProperties.mapPosition);
             },
             getCombinationActions: (): ICombinationAction[] => {
                 return [
@@ -32,7 +32,7 @@ export function Rules(): IRules {
                         isDefault: true,
                         defaultMatch: (game: IGame, target: IFeature, tool: ICombinable): string => {
                             // When not moving, re-show the overlay and quit.
-                            if (getMapPosition(game) === target.id) {
+                            if (game.worldProperties.mapPosition === target.id) {
                                 showElements(game, false);
                                 return '';
                             }
@@ -42,7 +42,7 @@ export function Rules(): IRules {
                                 return '';
                             }
 
-                            (<any>game.currentLocation.features).mapPosition = target.id;
+                            game.worldProperties.mapPosition = target.id;
 
                             setCoordinates(game, target);
 
@@ -184,13 +184,9 @@ export function Rules(): IRules {
         },
     };
 
-    function getMapPosition(game: IGame) {
-        return (<any>game.currentLocation.features).mapPosition;
-    }
-
     function setPlayerPosition(game: IGame, position: string) {
         var startFeature = game.currentLocation.features.get(position);
-        (<any>game.currentLocation.features).mapPosition = startFeature.id;
+        game.worldProperties.mapPosition = startFeature.id;
         setCoordinates(game, startFeature);
         showElements(game, true);
     }
@@ -221,7 +217,7 @@ export function Rules(): IRules {
     function canMoveToTile(game: IGame, target: IFeature) {
         var targetlocation = target.id.split('_')[1].split('-').map(c => parseInt(c));
 
-        var currentPosition= (<any>game.currentLocation.features).mapPosition;
+        var currentPosition= game.worldProperties.mapPosition;
 
         if (!currentPosition) {
             return false;
