@@ -3,7 +3,7 @@ import { ILocation, IFeature, Feature } from './types';
 import { Constants } from './Constants';
 import { Warrior } from './locations/Introduction/Warrior';
 import { Druidstart } from './locations/Introduction/Druidstart';
-import { DynamicEntity } from '../../Engine/ObjectConstructors';
+import { DynamicEntity } from 'storyScript/ObjectConstructors';
 
 var _druidMap: IFeatureCollection;
 

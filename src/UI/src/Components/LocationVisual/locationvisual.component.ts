@@ -1,7 +1,7 @@
-import { IGame, IInterfaceTexts, IFeature } from '../../../../Engine/Interfaces/storyScript';
-import { compareString } from '../../../../Engine/globals';
+import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
+import { compareString } from 'storyScript/globals';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import template from './locationvisual.component.html';
 import { Component } from '@angular/core';
 

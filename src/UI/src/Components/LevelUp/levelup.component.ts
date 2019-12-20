@@ -1,7 +1,7 @@
-import { IGame, IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICharacter } from '../../../../Engine/Interfaces/storyScript';
-import { GameService } from '../../../../Engine/Services/gameService';
-import { CharacterService } from '../../../../Engine/Services/characterService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { IGame, IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICharacter } from 'storyScript/Interfaces/storyScript';
+import { GameService } from 'storyScript/Services/gameService';
+import { CharacterService } from 'storyScript/Services/characterService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './levelup.component.html';
 

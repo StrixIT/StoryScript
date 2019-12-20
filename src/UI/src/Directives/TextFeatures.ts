@@ -1,9 +1,9 @@
-import { IGame, IFeature } from '../../../Engine/Interfaces/storyScript';
-import { compareString } from '../../../Engine/globals';
-import { addHtmlSpaces } from '../../../Engine/utilities';
-import { CombinationService } from '../../../Engine/Services/CombinationService';
+import { IGame, IFeature } from 'storyScript/Interfaces/storyScript';
+import { compareString } from 'storyScript/globals';
+import { addHtmlSpaces } from 'storyScript/utilities';
+import { CombinationService } from 'storyScript/Services/CombinationService';
 import { EventService } from '../Services/EventService';
-import { ObjectFactory } from '../../../Engine/ObjectFactory';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Directive, ElementRef, Renderer2, HostListener, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 

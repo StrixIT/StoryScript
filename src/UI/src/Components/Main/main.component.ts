@@ -1,6 +1,6 @@
-import { IGame, IInterfaceTexts } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, ElementRef } from '@angular/core';
 import { getUserTemplate } from '../../helpers';
 

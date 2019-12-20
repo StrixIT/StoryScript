@@ -1,5 +1,4 @@
-import { IFeature as StoryScriptIFeature } from 'storyScript/Interfaces/feature';
-import { Feature as StoryScriptFeature } from 'storyScript/ObjectConstructors';
+import { IFeature as StoryScriptIFeature, Feature as StoryScriptFeature } from 'storyScript/Interfaces/storyScript';
 
 export function Feature(entity: IFeature): IFeature {
     return StoryScriptFeature(entity);

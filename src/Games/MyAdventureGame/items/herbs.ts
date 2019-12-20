@@ -1,4 +1,4 @@
-import { EquipmentType, ICombinationMatchResult } from '../../../Engine/Interfaces/storyScript';
+import { EquipmentType, ICombinationMatchResult } from 'storyScript/Interfaces/storyScript';
 import { Item } from '../types';
 import { Constants } from '../constants';
 

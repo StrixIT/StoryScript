@@ -1,6 +1,6 @@
-import { IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from '../../../../Engine/Interfaces/storyScript';
-import { CharacterService } from '../../../../Engine/Services/characterService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
+import { CharacterService } from 'storyScript/Services/characterService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, Input } from '@angular/core';
 import template from './buildcharacter.component.html';
 

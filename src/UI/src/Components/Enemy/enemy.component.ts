@@ -1,6 +1,6 @@
-import { IGame, IInterfaceTexts, IItem, IEnemy } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, IItem, IEnemy } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './enemy.component.html';
 

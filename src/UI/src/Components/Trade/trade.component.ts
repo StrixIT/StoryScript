@@ -1,6 +1,6 @@
-import { IGame, IInterfaceTexts, IItem, ITrade } from '../../../../Engine/Interfaces/storyScript';
-import { TradeService } from '../../../../Engine/Services/TradeService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { IGame, IInterfaceTexts, IItem, ITrade } from 'storyScript/Interfaces/storyScript';
+import { TradeService } from 'storyScript/Services/TradeService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './trade.component.html';
 

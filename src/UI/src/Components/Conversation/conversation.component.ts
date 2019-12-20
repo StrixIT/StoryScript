@@ -1,6 +1,6 @@
-import { IGame, IConversationNode, IConversationReply } from '../../../../Engine/Interfaces/storyScript';
-import { ConversationService } from '../../../../Engine/Services/ConversationService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { IGame, IConversationNode, IConversationReply } from 'storyScript/Interfaces/storyScript';
+import { ConversationService } from 'storyScript/Services/ConversationService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './conversation.component.html';
 

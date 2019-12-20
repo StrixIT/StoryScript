@@ -1,9 +1,9 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
-import { IGame, IInterfaceTexts, PlayState } from '../../../../Engine/Interfaces/storyScript';
-import { GameService } from '../../../../Engine/Services/gameService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
+import { GameService } from 'storyScript/Services/gameService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { EventService } from '../../Services/EventService';
 import { IModalSettings } from '../modalSettings';
 import template from './encountermodal.component.html';

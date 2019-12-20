@@ -1,7 +1,7 @@
-import { IGame, IInterfaceTexts, IItem } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { CharacterService } from '../../../../Engine/Services/characterService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { CharacterService } from 'storyScript/Services/characterService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './equipment.component.html';
 

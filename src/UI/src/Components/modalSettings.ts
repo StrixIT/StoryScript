@@ -1,4 +1,4 @@
-import { IGame } from '../../../Engine/Interfaces/storyScript';
+import { IGame } from 'storyScript/Interfaces/storyScript';
 
 export interface IModalSettings {
     title: string;

@@ -1,8 +1,8 @@
-import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, IDestination, IBarrier, IBarrierAction, ActionStatus } from '../../../../Engine/Interfaces/storyScript';
-import { isEmpty } from '../../../../Engine/utilities';
-import { GameService } from '../../../../Engine/Services/gameService';
+import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, IDestination, IBarrier, IBarrierAction, ActionStatus } from 'storyScript/Interfaces/storyScript';
+import { isEmpty } from 'storyScript/utilities';
+import { GameService } from 'storyScript/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './exploration.component.html';
 

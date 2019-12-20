@@ -1,9 +1,9 @@
-import { GameService } from '../../../../Engine/Services/gameService';
+import { GameService } from 'storyScript/Services/gameService';
 import { Component, NgZone } from '@angular/core';
 import template from './sound.component.html';
-import { IGame } from '../../../../Engine/Interfaces/game';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
-import { createHash } from '../../../../Engine/globals';
+import { IGame } from 'storyScript/Interfaces/game';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { createHash } from 'storyScript/globals';
 
 @Component({
     selector: 'sound',

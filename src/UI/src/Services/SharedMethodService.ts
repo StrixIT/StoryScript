@@ -3,7 +3,7 @@ import { ITrade, IAction, PlayState, ActionType, IPerson, IEnemy, ICombinable } 
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
-import { IGame } from '../../../Engine/Interfaces/game';
+import { IGame } from 'storyScript/Interfaces/game';
 import { EventService } from './EventService';
 import { ModalService } from './ModalService';
 

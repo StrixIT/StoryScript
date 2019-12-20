@@ -1,8 +1,5 @@
-﻿import { IGame as StoryScriptIGame } from 'storyScript/Interfaces/game';
-import { IHelpers as StoryScriptIHelpers } from 'storyScript/Interfaces/helpers';
-import { ICollection } from 'storyScript/Interfaces/collection';
-import { Character } from '../character';
-import { ICompiledLocation, IEnemy, IPerson, IItem } from '../types';
+﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers, ICollection } from 'storyScript/Interfaces/storyScript';
+import { ICompiledLocation, IEnemy, IPerson, IItem, Character } from '../types';
 
 export interface IGame extends StoryScriptIGame {
     character: Character;

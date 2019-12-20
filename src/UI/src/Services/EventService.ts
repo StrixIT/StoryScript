@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { PlayState } from '../../../Engine/Interfaces/storyScript';
+import { PlayState } from 'storyScript/Interfaces/storyScript';
 
 @Injectable()
 export class EventService {

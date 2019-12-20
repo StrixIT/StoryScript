@@ -1,8 +1,8 @@
-import { IGame, IInterfaceTexts, IQuest, ICollection } from '../../../../Engine/Interfaces/storyScript';
-import { isEmpty } from '../../../../Engine/utilities';
+import { IGame, IInterfaceTexts, IQuest, ICollection } from 'storyScript/Interfaces/storyScript';
+import { isEmpty } from 'storyScript/utilities';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { CharacterService } from '../../../../Engine/Services/characterService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { CharacterService } from 'storyScript/Services/characterService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import template from './quest.component.html';
 

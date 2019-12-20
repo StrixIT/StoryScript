@@ -1,8 +1,8 @@
-import { IGame, IInterfaceTexts, IItem } from '../../../../Engine/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { GameService } from '../../../../Engine/Services/gameService';
-import { CharacterService } from '../../../../Engine/Services/characterService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { GameService } from 'storyScript/Services/gameService';
+import { CharacterService } from 'storyScript/Services/characterService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import template from './backpack.component.html';
 import { Component } from '@angular/core';
 

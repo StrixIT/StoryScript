@@ -1,6 +1,6 @@
-import { IInterfaceTexts, IGame, ICombinable, ICombinationAction, ICombineResult } from '../../../../Engine/Interfaces/storyScript';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
-import { CombinationService } from '../../../../Engine/Services/CombinationService';
+import { IInterfaceTexts, IGame, ICombinable, ICombinationAction, ICombineResult } from 'storyScript/Interfaces/storyScript';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { CombinationService } from 'storyScript/Services/CombinationService';
 import { Component } from '@angular/core';
 import template from './combination.component.html';
 

@@ -1,6 +1,6 @@
-import { IGame, IInterfaceTexts, PlayState } from '../../../../Engine/Interfaces/storyScript';
-import { GameService } from '../../../../Engine/Services/gameService';
-import { ObjectFactory } from '../../../../Engine/ObjectFactory';
+import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
+import { GameService } from 'storyScript/Services/gameService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { EventService } from '../../Services/EventService';
 import { Component } from '@angular/core';
 import template from './navigation.component.html';

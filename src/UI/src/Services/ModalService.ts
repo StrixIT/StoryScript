@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
-import { ObjectFactory } from '../../../Engine/ObjectFactory';
-import { IInterfaceTexts, PlayState, IGame } from '../../../Engine/Interfaces/storyScript';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { IInterfaceTexts, PlayState, IGame } from 'storyScript/Interfaces/storyScript';
 import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
 import { EncounterModalComponent } from '../Components/EncounterModal/encountermodal.component';
 import { IModalSettings } from '../Components/modalSettings';
