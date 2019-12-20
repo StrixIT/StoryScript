@@ -1,8 +1,10 @@
-﻿import { IGame, IHelpers, ICollection } from '../../../Engine/Interfaces/storyScript'
+﻿import { IGame as StoryScriptIGame } from 'storyScript/Interfaces/game';
+import { IHelpers as StoryScriptIHelpers } from 'storyScript/Interfaces/helpers';
+import { ICollection } from 'storyScript/Interfaces/collection';
 import { Character } from '../character';
 import { ICompiledLocation, IEnemy, IPerson, IItem } from '../types';
 
-export interface IGame extends IGame {
+export interface IGame extends StoryScriptIGame {
     character: Character;
     person: IPerson;
     locations: ICollection<ICompiledLocation>;
@@ -11,7 +13,7 @@ export interface IGame extends IGame {
     helpers: IHelpers;
 }
 
-export interface IHelpers extends IHelpers {
+export interface IHelpers extends StoryScriptIHelpers {
     randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
     randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
     getEnemy: (selector: string) => IEnemy;

@@ -1,10 +1,11 @@
-﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
+﻿import { IEnemy as StoryScriptIEnemy } from 'storyScript/Interfaces/enemy';
+import { Enemy as StoryScriptEnemy } from 'storyScript/ObjectConstructors';
 import { IFeature } from '../types';
 
 export function Enemy(entity: IEnemy): IEnemy {
-    return StoryScript.Enemy(entity);
+    return StoryScriptEnemy(entity);
 }
 
-export interface IEnemy extends IFeature, StoryScript.IEnemy {
+export interface IEnemy extends IFeature, StoryScriptIEnemy {
     attack?: string;
 }

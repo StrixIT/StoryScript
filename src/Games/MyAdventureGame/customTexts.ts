@@ -1,4 +1,4 @@
-import { IInterfaceTexts } from '../../Engine/Interfaces/storyScript';
+import { IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 
 export function CustomTexts(): IInterfaceTexts {
     return {

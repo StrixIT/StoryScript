@@ -1,7 +1,6 @@
 {
     "extends": "../tsconfig",
     "compilerOptions": {
-        "baseUrl": ".",
         "module": "commonjs",
         "moduleResolution": "node",
         "strict": true,
@@ -15,10 +14,7 @@
         "types": [
             "node",
             "webpack-env"   
-        ],
-        "paths": {
-            "storyScript/*": ["../Engine/*"],
-        }
+        ]
     },
     "include": [
         "../Engine/**/*.ts"

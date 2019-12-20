@@ -1,4 +1,4 @@
-import { IFeatureCollection } from '../../Engine/Interfaces/storyScript';
+import { IFeatureCollection } from 'storyScript/Interfaces/storyScript';
 import { ILocation, IFeature, Feature } from './types';
 import { Constants } from './Constants';
 import { Warrior } from './locations/Introduction/Warrior';

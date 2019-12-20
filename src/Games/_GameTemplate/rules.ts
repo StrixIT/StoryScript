@@ -1,4 +1,4 @@
-﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction } from '../../Engine/Interfaces/storyScript';
+﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character } from './types';
 
 export function Rules(): IRules {

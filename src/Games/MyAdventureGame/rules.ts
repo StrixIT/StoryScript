@@ -1,4 +1,4 @@
-import { IRules, ICombinationAction, ICreateCharacter, ICharacter } from '../../Engine/Interfaces/storyScript';
+import { IRules, ICombinationAction, ICreateCharacter, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { Constants } from './constants';
 import { IGame, Character, IEnemy } from './types';
 

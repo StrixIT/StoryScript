@@ -1,11 +1,12 @@
-﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
+﻿import { IItem as StoryScriptIItem } from 'storyScript/Interfaces/item';
+import { Item as StoryScriptItem } from 'storyScript/ObjectConstructors';
 import { IFeature } from '../types';
 
 export function Item(entity: IItem): IItem {
-    return StoryScript.Item(entity);
+    return StoryScriptItem(entity);
 }
 
-export interface IItem extends IFeature, StoryScript.IItem {
+export interface IItem extends IFeature, StoryScriptIItem {
     // Add game-specific item properties here
     combatSound?: string;
     useSound?: string;

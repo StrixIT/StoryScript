@@ -1,5 +1,6 @@
-import * as StoryScript from '../../../Engine/Interfaces/storyScript';
+import { IAction } from 'storyScript/Interfaces/action';
+import { Action as StoryScriptAction } from 'storyScript/ObjectConstructors';
 
-export function Action(action: StoryScript.IAction): StoryScript.IAction {
-    return StoryScript.Action(action);
+export function Action(action: IAction): IAction {
+    return StoryScriptAction(action);
 }

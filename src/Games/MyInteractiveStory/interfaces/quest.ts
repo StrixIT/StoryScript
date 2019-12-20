@@ -1,9 +1,10 @@
-﻿import * as StoryScript from '../../../Engine/Interfaces/storyScript';
+﻿import { IQuest as StoryScriptIQuest } from 'storyScript/Interfaces/quest';
+import { Quest as StoryScriptQuest } from 'storyScript/ObjectConstructors';
 
 export function Quest(entity: IQuest): IQuest {
-    return StoryScript.Quest(entity);
+    return StoryScriptQuest(entity);
 }
 
-export interface IQuest extends StoryScript.IQuest {
+export interface IQuest extends StoryScriptIQuest {
     // Add game-specific item properties here
 }

@@ -1,5 +1,5 @@
 import { IGame, Item } from '../types';
-import { EquipmentType } from '../../../Engine/Interfaces/storyScript';
+import { EquipmentType } from 'storyScript/Interfaces/enumerations/equipmentType';
 
 export function Potion() {
     return Item({

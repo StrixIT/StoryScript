@@ -1,5 +1,5 @@
 import { Item } from '../types';
-import { EquipmentType } from '../../../Engine/Interfaces/storyScript';
+import { EquipmentType } from 'storyScript/Interfaces/storyScript';
 
 export function HealingPotion() {
     return Item({

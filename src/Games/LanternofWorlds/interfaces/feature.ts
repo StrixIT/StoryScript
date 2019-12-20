@@ -1,10 +1,11 @@
-import * as StoryScript from '../../../Engine/Interfaces/storyScript';
+import { IFeature as StoryScriptIFeature } from 'storyScript/Interfaces/feature';
+import { Feature as StoryScriptFeature } from 'storyScript/ObjectConstructors';
 
 export function Feature(entity: IFeature): IFeature {
-    return StoryScript.Feature(entity);
+    return StoryScriptFeature(entity);
 }
 
-export interface IFeature extends StoryScript.IFeature {
+export interface IFeature extends StoryScriptIFeature {
     // Add game-specific item properties here
     linkToLocation?: string;
 }
