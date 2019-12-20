@@ -385,7 +385,21 @@ function setReadOnlyLocationProperties(location: ILocation) {
 function setReadOnlyCharacterProperties(character: ICharacter) {
     Object.defineProperty(character, 'combatItems', {
         get: function () {
-            return character.items.filter(e => { return e.useInCombat; });
+            var result = character.items.filter(e => { return e.useInCombat; });
+
+            for (var n in character.equipment) {
+                var item = <IItem>character.equipment[n];
+
+                if (item?.useInCombat) {
+                    if (!item.use) {
+                        console.log(`Item ${item.name} declares it can be used in combat but has no use function.`)
+                    }
+
+                    result.push(item);
+                }
+            }
+
+            return result;
         }
     });
 }
