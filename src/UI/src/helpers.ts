@@ -1,4 +1,4 @@
-export function getUserTemplate(componentName: string) {
+export function getUserTemplate(componentName: string): string {
     var r = require.context('game/ui/components', false, /.component.html$/);
     let userTemplate = null;
 

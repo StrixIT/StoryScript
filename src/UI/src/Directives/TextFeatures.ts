@@ -34,15 +34,15 @@ export class TextFeatures  implements OnDestroy {
         this._combinationSubscription.unsubscribe();
     }
 
-    @HostListener('click', ['$event']) onClick($event) {
+    @HostListener('click', ['$event']) onClick($event: any) {
         this.click($event);
     }
       
-    @HostListener('mouseover', ['$event']) onMouseOver($event) {
+    @HostListener('mouseover', ['$event']) onMouseOver($event: any) {
         this.mouseOver($event);
     }
 
-    private refreshFeatures = (newValue) => {
+    private refreshFeatures = (newValue: boolean) => {
         if (newValue) {
             // Show the text of added features.
             const features = this._elem.nativeElement.getElementsByTagName('feature');
@@ -71,7 +71,7 @@ export class TextFeatures  implements OnDestroy {
         }
     };
 
-    private click = ev => {
+    private click = (ev: any) => {
         if (this.isFeatureNode(ev)) {
             var feature = this.getFeature(ev);
 
@@ -83,7 +83,7 @@ export class TextFeatures  implements OnDestroy {
         }
     }
 
-    private mouseOver = ev => {
+    private mouseOver = (ev: any) => {
         if (this.isFeatureNode(ev)) {
             var feature = this.getFeature(ev);
             this.addCombineClass(ev, feature);
@@ -100,7 +100,7 @@ export class TextFeatures  implements OnDestroy {
         return this.game.currentLocation.features.get(featureName);
     }
 
-    private addCombineClass = (ev, feature) => {
+    private addCombineClass = (ev: any, feature: IFeature) => {
         var combineClass= this._combinationService.getCombineClass(feature);
 
         if (combineClass) {

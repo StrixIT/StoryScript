@@ -42,7 +42,7 @@ export class SoundComponent {
     soundCompleted = (sound: { key: number, value: string }) => this.soundQueue.delete(sound.key);
 
     watchSounds = () => {
-        this._game.sounds.soundQueue.push = this._game.sounds.soundQueue.push.proxy((originalScope, originalFunction, sound: string) => {
+        this._game.sounds.soundQueue.push = this._game.sounds.soundQueue.push.proxy((originalScope: any, originalFunction: any, sound: string) => {
             this.soundQueue.set(createHash(sound + Math.floor(Math.random() * 1000)), { value: sound, playing: false });
 
             // I don't really need this. Clean it up.

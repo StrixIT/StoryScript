@@ -1,12 +1,7 @@
 {
     "extends": "../tsconfig",
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "strict": true,
-        "noImplicitAny": false,
         "allowSyntheticDefaultImports": true,
-        "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "typeRoots": [
             "../../node_modules/@types"

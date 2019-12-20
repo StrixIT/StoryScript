@@ -1,15 +1,21 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
         "baseUrl": ".",
+        "target": "es6",
+        "strict": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noEmitOnError": true,
-        "removeComments": false,
+        "noImplicitAny": false,
         "strictNullChecks": false,
-        "target": "es6",
+        "removeComments": false,
         "sourceMap": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
         "paths": {
-            "storyScript/*": ["./Engine/*"]
+            "storyScript/*": ["./Engine/*"],
+            "@angular/*": ["../node_modules/@angular/*"]
         }
     }
 }

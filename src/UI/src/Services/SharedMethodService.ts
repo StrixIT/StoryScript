@@ -127,7 +127,7 @@ export class SharedMethodService {
     }
 
     showEquipment = (game: IGame): boolean => {
-        return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => game.character.equipment[k] !== undefined);
+        return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => (<any>game.character.equipment)[k] !== undefined);
     }
 
     setPlayState = (game: IGame, value: PlayState): void => {

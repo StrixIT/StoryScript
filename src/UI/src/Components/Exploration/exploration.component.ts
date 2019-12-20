@@ -19,7 +19,7 @@ export class ExplorationComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    trade = (game, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this.game, trade);
+    trade = (game: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this.game, trade);
 
     changeLocation = (location: string): void => this.game.changeLocation(location, true);
 

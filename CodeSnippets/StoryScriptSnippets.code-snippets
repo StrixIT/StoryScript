@@ -138,7 +138,7 @@
 		"prefix": "ssItem",
 		"body": [
 			"import { IGame, Item } from '../types';",
-			"import { EquipmentType } from '../../../Engine/Interfaces/storyScript';",
+			"import { EquipmentType } from 'storyScript/Interfaces/storyScript';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Item({",
@@ -155,7 +155,7 @@
 		"prefix": "ssKey",
 		"body": [
 			"import { IGame, Key } from '../types';",
-			"import { EquipmentType } from '../../../Engine/Interfaces/storyScript';",
+			"import { EquipmentType } from 'storyScript/Interfaces/storyScript';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Key({",
