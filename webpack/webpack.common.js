@@ -1,10 +1,9 @@
-const gameName = 'LanternOfWorlds';
 
+const gameName = require('./gameName.js');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = {
     entry: {
@@ -52,13 +51,9 @@ module.exports = {
             to: 'resources'
         },
         { 
-            from: `src/Games/${gameName}/gameinfo.json`,
+            from: path.resolve(__dirname, `../src/Games/${gameName}/gameinfo.json`),
             to: '[name].[ext]'
-        }]),
-        new ImageminPlugin({
-            disable: process.env.NODE_ENV !== 'production',
-            test: /\.(jpe?g|png|gif|svg)$/i 
-        })
+        }])
     ],
     optimization: {
         splitChunks: {
