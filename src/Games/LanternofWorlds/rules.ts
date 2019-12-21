@@ -15,8 +15,8 @@ export function Rules(): IRules {
             gameStart: (game: IGame) => {
                 game.character.items.push(Sword());
                 game.character.items.push(Potion());
-                game.changeLocation(game.worldProperties.startChoice);
-                setPlayerPosition(game, 'fm_1-2');
+                game.changeLocation(game.worldProperties.startChoice.name);
+                setPlayerPosition(game, game.worldProperties.startChoice.tile);
             },
             continueGame: (game: IGame) => {
                 setPlayerPosition(game, game.worldProperties.mapPosition);
@@ -140,12 +140,12 @@ export function Rules(): IRules {
 
             createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
                 var selectedStart = characterData.steps[1].questions[0].selectedEntry;
-                var startChoice = 'start';
+                var startChoice = { name: 'start', tile: 'ca_3-6' };
 
                 if (selectedStart && selectedStart.text) {
-                    startChoice = selectedStart.text === 'You are a druid' ? 'Druidstart'
-                        : selectedStart.text === 'You are a fisherman' ? 'Fishermanstart' 
-                        : selectedStart.text === 'You are a veteran warrior' ? 'forest' : 'start';
+                    startChoice = selectedStart.text === 'You are a druid' ? { name: 'druidstart', tile: 'fo_1-2' }
+                        : selectedStart.text === 'You are a fisherman' ? { name: 'druidstart', tile: 'fo_1-2' }
+                        : selectedStart.text === 'You are a veteran warrior' ?{ name: 'druidstart', tile: 'fo_1-2' } : startChoice;
                 }
 
                 game.worldProperties.startChoice = startChoice;
@@ -180,6 +180,11 @@ export function Rules(): IRules {
                         // Implement monster attack here
                     });
                 }
+            },
+            beforeDrop: (game: IGame, enemy: IEnemy, item: IItem): boolean => {
+                // Instead of dropping items to the ground, put them in the character inventory.
+                game.character.items.push(item);
+                return false;
             }
         },
     };

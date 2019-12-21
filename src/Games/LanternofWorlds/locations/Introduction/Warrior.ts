@@ -1,7 +1,7 @@
 import { Location } from '../../types'
 import description from './Warrior.html'
 import { Tiger } from '../../enemies/Tiger';
-import { druidMap } from '../../maps';
+import { forestMap } from '../../maps/forest';
 
 export function Warrior() {
     return Location({
@@ -10,7 +10,7 @@ export function Warrior() {
         destinations: [
             
         ],
-        features: druidMap(),
+        features: forestMap(),
         items: [
         ],
         enemies: [

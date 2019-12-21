@@ -1,6 +1,7 @@
 import { ICompiledLocation } from '../compiledLocation';
 import { IEnemy } from '../enemy';
 import { IGame } from '../game';
+import { IItem } from '../item';
 
 export interface ICombatRules {
     /**
@@ -24,4 +25,13 @@ export interface ICombatRules {
      * @param enemy The enemy just defeated
      */
     enemyDefeated?(game: IGame, enemy: IEnemy): void;
+
+    /**
+     * Specify this function if you want to apply custom rules before an enemy drops an item when defeated.
+     * Return false if the enemy should not drop the item.
+     * @param game The active game
+     * @param character The player character
+     * @param item The item about to be unequipped
+     */
+    beforeDrop?(game: IGame, enemy: IEnemy, item: IItem): boolean;
 }

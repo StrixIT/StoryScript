@@ -1,6 +1,6 @@
 import { Location } from '../../types'
 import description from './Druidstart.html'
-import { druidMap } from '../../maps';
+import { forestMap } from '../../maps/forest';
 
 export function Druidstart() {
     return Location({
@@ -9,7 +9,7 @@ export function Druidstart() {
         destinations: [
             
         ],
-        features: druidMap(),
+        features: forestMap(),
         items: [
         ],
         enemies: [

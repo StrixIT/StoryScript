@@ -291,10 +291,10 @@ export class GameService implements IGameService {
 
     private enemyDefeated = (enemy: IEnemy): void => {
         if (enemy.items) {
-            // Todo: if there is no ground, the items should be moved to the backpack.
-            // Can also use hook for that.
             enemy.items.forEach((item: IItem) => {
-                this._game.currentLocation.items.push(item);
+                if (this._rules.combat?.beforeDrop(this._game, enemy, item)) {
+                    this._game.currentLocation.items.push(item);
+                }
             });
 
             enemy.items.length = 0;

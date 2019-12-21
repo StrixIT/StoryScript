@@ -10,7 +10,7 @@ export interface IGame extends StoryScriptIGame {
     previousLocation: ICompiledLocation;
     helpers: IHelpers;
     worldProperties: {
-        startChoice: string,
+        startChoice: { name: string, tile: string },
         mapPosition: string,
         mapLocationY: number,
         mapLocationX: number

@@ -1,44 +1,7 @@
 import { IFeatureCollection } from 'storyScript/Interfaces/storyScript';
 import { ILocation, IFeature, Feature } from './types';
 import { Constants } from './Constants';
-import { Warrior } from './locations/Introduction/Warrior';
-import { Druidstart } from './locations/Introduction/Druidstart';
 import { DynamicEntity } from 'storyScript/ObjectConstructors';
-
-var _druidMap: IFeatureCollection;
-
-export function druidMap() {
-    if (!_druidMap) {
-        var mapData = <IMapData>{
-            picture: 'Forest2.jpg',
-            tilePrefix: 'fm',
-            tileType: TileType.Hexagon,
-            rows: 4,
-            columns: 4,
-            tileHeight: 226,
-            tileWidth: 305,
-            tileOffsetY: 169,
-            tileOffsetX: 56,
-            missingTiles: [
-                '1-1',
-                '4-1',
-                '4-2',
-                '4-4'
-            ]
-        };
-
-        var tileAdditions = [
-            ['1-3', Warrior],
-            ['1-2', Druidstart],
-            //['3-1', Locations.Water],
-        ];
-
-        _druidMap = createFeatureMap(mapData, tileAdditions);
-    }
-
-    // Todo: this does not get reset on game restart. Use one of the setup rules?
-    return _druidMap;
-}
 
 export enum TileType {
     Square,
@@ -66,7 +29,7 @@ export interface IMapData {
     missingTiles: string[];
 } 
 
-function createFeatureMap(mapData: IMapData, tileAdditions: (string | (() => ILocation))[][]): IFeatureCollection {
+export function createFeatureMap(mapData: IMapData, tileAdditions: (string | (() => ILocation))[][]): IFeatureCollection {
     var map: IFeatureCollection = [];
     map.collectionPicture = mapData.picture;
 
