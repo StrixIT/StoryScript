@@ -8,7 +8,7 @@ const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = {
     entry: {
-        storyscript: './src/UI/src/main.ts'
+        storyscript: './src/UI/main.ts'
     },
     output: {
         filename: '[name].[hash].js',
@@ -49,8 +49,7 @@ module.exports = {
         }),
         new CopyWebpackPlugin([{ 
             from: path.resolve(__dirname, `../src/Games/${gameName}/resources`),
-            to: 'resources/[path][name].[contenthash].[ext]',
-            test: /(\/resources\/[\w]{1,}\/)/
+            to: 'resources'
         },
         { 
             from: `src/Games/${gameName}/gameinfo.json`,
