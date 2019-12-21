@@ -2,8 +2,10 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "start": "cd src/UI && webpack-dev-server --config webpack-configs/webpack.development.js",
-        "deploy": "cd src/UI && webpack --config webpack-configs/webpack.production.js"
+        "start": "webpack-dev-server --config webpack/webpack.development.js",
+        "engine-tests": "cd src/Tests/Engine && karma start",
+        "deploy-test": "webpack --config webpack/webpack.test.js",
+        "deploy-prod": "webpack --config webpack/webpack.production.js"
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
@@ -19,8 +21,8 @@
         "zone.js": "^0.10.2",
         "rxjs": "^6.5.3",
         "reflect-metadata": "^0.1.12",
-        "typescript": "^3.3.3",
-        "tslint": "^5.19.0",
+        "typescript": "^3.7.3",
+        "tslint": "^5.20.1",
         "webpack": "^4.41.2",
         "webpack-cli": "^3.3.10",
         "webpack-dev-server": "^3.9.0",
@@ -33,11 +35,15 @@
         "file-loader": "^4.2.0",
         "html-webpack-plugin": "^3.2.0",
         "copy-webpack-plugin": "^5.0.5",
+        "terser-webpack-plugin": "^2.3.1",
+        "clean-webpack-plugin": "^3.0.0",
+        "imagemin-webpack-plugin": "^2.4.2",
         "bootstrap": "^4.4.1",
         "gulp": "^4.0.2",
         "gulp-imagemin": "^6.1.0",
         "gulp-zip": "5.0.0",
         "jasmine": "^3.5.0",
+        "requirejs": "^2.3.6",
         "karma": "^4.4.1",
         "karma-jasmine": "^2.0.1",
         "karma-requirejs": "^1.1.0",
@@ -45,6 +51,7 @@
         "karma-coverage": "^2.0.1",
         "karma-chrome-launcher": "^3.1.0",
         "karma-edge-launcher": "^0.4.2",
-        "karma-firefox-launcher": "^1.2.0"
+        "karma-firefox-launcher": "^1.2.0",
+        "karma-webpack": "^4.0.2"
     }
 }

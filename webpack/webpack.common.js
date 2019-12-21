@@ -1,16 +1,18 @@
-const gameName = 'MyRolePlayingGame';
+const gameName = 'LanternOfWorlds';
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = {
     entry: {
-        storyscript: './src/main.ts'
+        storyscript: './src/UI/src/main.ts'
     },
     output: {
         filename: '[name].[hash].js',
-        path: path.resolve(__dirname, '../../../', 'dist')
+        path: path.resolve(__dirname, '../dist')
     },
     module: {
         rules: [
@@ -35,19 +37,29 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js", ".css"],
         alias: {
-            storyScript: path.resolve(__dirname, '../../Engine'),
-            game: path.resolve(__dirname, `../../Games/${gameName}/`)
+            storyScript: path.resolve(__dirname, '../src/Engine'),
+            game: path.resolve(__dirname, `../src/Games/${gameName}/`)
         }
     },
     node: { fs: 'empty' },
     plugins: [
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            template: './index.html'
+            template: 'src/UI/index.html'
         }),
         new CopyWebpackPlugin([{ 
-            from: `../Games/${gameName}/resources`,
-            to: 'resources' 
-        }])
+            from: path.resolve(__dirname, `../src/Games/${gameName}/resources`),
+            to: 'resources/[path][name].[contenthash].[ext]',
+            test: /(\/resources\/[\w]{1,}\/)/
+        },
+        { 
+            from: `src/Games/${gameName}/gameinfo.json`,
+            to: '[name].[ext]'
+        }]),
+        new ImageminPlugin({
+            disable: process.env.NODE_ENV !== 'production',
+            test: /\.(jpe?g|png|gif|svg)$/i 
+        })
     ],
     optimization: {
         splitChunks: {
@@ -56,8 +68,7 @@ module.exports = {
             cacheGroups: {
                 vendor: {
                     test: /node_modules/,
-                    name: 'vendor',
-                    enforce: true
+                    name: 'vendor'
                 }
             }
         }
