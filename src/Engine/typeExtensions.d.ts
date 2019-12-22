@@ -4,16 +4,7 @@ interface Function {
     isProxy: boolean;
 }
 
-interface Window {
-    StoryScript: {
-        GetGameDescriptions(): Map<string, string>;
-    }
-}
-
-interface String {
-    parseFunction(): Function;
-}
-
+// These are needed to create collection mocks in testing.
 interface Array<T> {
     get?(id?: string | ((...params: any) => T) | T): T;
     remove?(id: string | ((...params: any) => T) | T): void;

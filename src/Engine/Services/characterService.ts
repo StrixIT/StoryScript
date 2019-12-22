@@ -52,7 +52,7 @@ export class CharacterService implements ICharacterService {
         }
     }
 
-    distributionDone = (sheet: ICreateCharacter, step: ICreateCharacterStep): boolean => {
+    distributionDone = (sheet: ICreateCharacter, step?: ICreateCharacterStep): boolean => {
         var done = true;
 
         if (step) {

@@ -1,9 +1,17 @@
+import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState } from 'storyScript/Interfaces/storyScript';
+import { CharacterService } from 'storyScript/Services/characterService';
+import { Rules } from '../../Games/MyRolePlayingGame/rules';
+import { LeatherBoots } from '../../Games/MyRolePlayingGame/items/leatherBoots';
+import { Journal } from '../../Games/MyRolePlayingGame/items/journal';
+import { Sword } from '../../Games/MyRolePlayingGame/items/sword';
+import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
+
 describe("CharacterService", function() {
 
-    beforeEach(() => {
-        // Trigger object factory initialization.
-        StoryScript.ObjectFactory.GetGame();
-    });
+    // beforeEach(() => {
+    //     // Trigger object factory initialization.
+    //     StoryScript.ObjectFactory.GetGame();
+    // });
 
     describe("Character sheet", function() {
 
@@ -15,12 +23,12 @@ describe("CharacterService", function() {
         });
 
         it("should set the first step of the character sheet as the selected step when starting character creation", function() {    
-            var game = {};
+            var game = <IGame>{};
 
             var service = getService(game);
             var result = service.setupCharacter();
             var gameSheet = game.createCharacterSheet;
-            var createSheet = new _TestGame.Rules().character.getCreateCharacterSheet();
+            var createSheet = Rules().character.getCreateCharacterSheet();
             createSheet.currentStep = 0;
 
             // Remove the next step function from the object for comparison.
@@ -45,7 +53,7 @@ describe("CharacterService", function() {
                 }
             };
 
-            var game = {};
+            var game = <IGame>{};
 
             var service = getService(game, rules);
             var result = service.setupLevelUp();
@@ -57,16 +65,16 @@ describe("CharacterService", function() {
         });
 
         it("should use a value of 1 when a non-number value was specified", function() {
-            var service = new StoryScript.CharacterService();
+            var service = new CharacterService(null, null);
             var value = 'test';
             var attribute = getAttributes();
             var entry = attribute.entries[0]
-            service.limitSheetInput(value, attribute, entry);
+            service.limitSheetInput(parseInt(value), attribute, entry);
             expect(entry.value).toBe(1);
         });
 
         it("should not allow an attribute to go above the maximum", function() {
-            var service = new StoryScript.CharacterService();
+            var service = new CharacterService(null, null);
             var value = 5;
             var attribute = getAttributes();
             var entry = attribute.entries[0]
@@ -75,7 +83,7 @@ describe("CharacterService", function() {
         });
 
         it("should not allow an attribute to go below the maximum", function() {
-            var service = new StoryScript.CharacterService();
+            var service = new CharacterService(null, null);
             var value = -5;
             var attribute = getAttributes();
             var entry = attribute.entries[0]
@@ -84,7 +92,7 @@ describe("CharacterService", function() {
         });
 
         it("should not allow the total to go above the amount of points to distribute", function() {
-            var service = new StoryScript.CharacterService();
+            var service = new CharacterService(null, null);
             var value = 5;
             var attribute = getAttributes();
 
@@ -101,7 +109,7 @@ describe("CharacterService", function() {
         });
 
         it("should return true when distribution is done", function() {
-            var service = new StoryScript.CharacterService();
+            var service = new CharacterService(null, null);
             var options = {
                 steps: [
                     {
@@ -133,7 +141,7 @@ describe("CharacterService", function() {
         });
 
         it("should return true when text questions have been answered", function() {
-            var service = new StoryScript.CharacterService();
+            var service = new CharacterService(null, null);
             var options = {
                 steps: [
                     {
@@ -175,10 +183,10 @@ describe("CharacterService", function() {
     describe("Create character", function() {
 
         it("Should return a created character with attribute and text values filled", function() {
-            var rules = {
-                character: {
+            var rules = <IRules>{
+                character: <ICharacterRules>{
                     createCharacter: () => {
-                        return {
+                        return <any>{
                             name: 'Test',
                             strength: 1,
                             agility: 1
@@ -187,10 +195,10 @@ describe("CharacterService", function() {
                 }
             }
             
-            var game = {};
-            var service = new StoryScript.CharacterService(game, rules);
+            var game = <IGame>{};
+            var service = new CharacterService(game, rules);
 
-            var sheet = {
+            var sheet = <ICreateCharacter>{
                 steps: [
                     {
                         questions: [
@@ -217,7 +225,7 @@ describe("CharacterService", function() {
                 ]
             }
 
-            var result = service.createCharacter(game, sheet);
+            var result = <any>service.createCharacter(game, sheet);
 
             expect(result.name).toBe('Test');
             expect(result.strength).toBe(2);
@@ -225,9 +233,9 @@ describe("CharacterService", function() {
         });
 
         it("Should return an empty character when no create character rule is available", function() {
-            var game = {};
-            var service = new StoryScript.CharacterService(game, { character: {} });
-            var result = service.createCharacter(game, {});
+            var game = <IGame>{};
+            var service = new CharacterService(game, <IRules>{ character: {} });
+            var result = service.createCharacter(game, <ICreateCharacter>{});
 
             expect(result).not.toBeNull();
             expect(result.name).toBe(null);
@@ -238,14 +246,14 @@ describe("CharacterService", function() {
     describe("Equip", function() {
 
         it("should allow equipping a non-miscellaneous item", function() {
-            var boots = _TestGame.Items.LeatherBoots();
+            var boots = LeatherBoots();
             var service = getService();
             var result = service.canEquip(boots);
             expect(result).toBeTruthy();
         });
 
         it("should disallow equipping a miscellaneous item", function() {
-            var journal = _TestGame.Items.Journal();
+            var journal = Journal();
             var service = getService();
             var result = service.canEquip(journal);
 
@@ -255,13 +263,13 @@ describe("CharacterService", function() {
         it("should equip an item to the right slot and remove the item from the inventory", function() {
             var game = {
                 character: {
-                    equipment: {},
+                    equipment: <any>{},
                     items: []
                 }
             }
 
             var service = getService(game);
-            var boots = _TestGame.Items.LeatherBoots();
+            var boots = LeatherBoots();
             game.character.items.push(boots);
             service.equipItem(boots);
 
@@ -273,16 +281,16 @@ describe("CharacterService", function() {
         it("should equip a two-handed weapon to both hand slots", function() {
             var game = {
                 character: {
-                    equipment: {},
+                    equipment: <any>{},
                     items: []
                 }
             }
 
             var service = getService(game);
-            var twoHandedSword = {
+            var twoHandedSword = <IItem>{
                 equipmentType: [
-                    StoryScript.EquipmentType.RightHand,
-                    StoryScript.EquipmentType.LeftHand
+                    EquipmentType.RightHand,
+                    EquipmentType.LeftHand
                 ]
             };
             service.equipItem(twoHandedSword);
@@ -303,14 +311,14 @@ describe("CharacterService", function() {
 
             var service = getService(game);
 
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
             sword.unequip = function(item, game) {
                 return false;
             }
 
             game.character.equipment.rightHand = sword;
 
-            var newSword = _TestGame.Items.Sword();
+            var newSword = Sword();
             var result = service.equipItem(newSword);
 
             expect(result).toBeFalsy();
@@ -320,7 +328,7 @@ describe("CharacterService", function() {
         it("should block equipping a new two-handed item when an existing item cannot be unequipped", function() {
             var game = {
                 character: {
-                    equipment: {
+                    equipment: <any>{
                         rightHand: null
                     },
                     items: []
@@ -329,17 +337,17 @@ describe("CharacterService", function() {
 
             var service = getService(game);
 
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
             sword.unequip = function(item, game) {
                 return false;
             }
 
             game.character.equipment.rightHand = sword;
 
-            var twoHandedSword = {
+            var twoHandedSword = <IItem>{
                 equipmentType: [
-                    StoryScript.EquipmentType.RightHand,
-                    StoryScript.EquipmentType.LeftHand
+                    EquipmentType.RightHand,
+                    EquipmentType.LeftHand
                 ]
             };
             var result = service.equipItem(twoHandedSword);
@@ -352,7 +360,7 @@ describe("CharacterService", function() {
         it("should block equipping a new item when an existing two-handed item cannot be unequipped", function() {
             var game = {
                 character: {
-                    equipment: {
+                    equipment: <any>{
                         rightHand: null
                     },
                     items: []
@@ -363,15 +371,15 @@ describe("CharacterService", function() {
 
             var twoHandedSword = {
                 equipmentType: [
-                    StoryScript.EquipmentType.RightHand,
-                    StoryScript.EquipmentType.LeftHand
+                    EquipmentType.RightHand,
+                    EquipmentType.LeftHand
                 ],
                 unequip: function(item, game) {
                     return false;
                 }
             };
 
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
 
             game.character.equipment.rightHand = twoHandedSword;
             game.character.equipment.leftHand = twoHandedSword;
@@ -386,13 +394,13 @@ describe("CharacterService", function() {
         it("should block equipping an item which disallows equipping", function() {
             var game = {
                 character: {
-                    equipment: {}
+                    equipment: <any>{}
                 }
             }
 
             var service = getService(game);
 
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
             sword.equip = function(item, game) {
                 return false;
             }
@@ -406,13 +414,13 @@ describe("CharacterService", function() {
         it("should move an equipped item back to the backpack when equipping an item of the same type", function() {
             var game = {
                 character: {
-                    equipment: {},
+                    equipment: <any>{},
                     items: []
                 }
             }
             var service = getService(game);
-            var equippedBoots = _TestGame.Items.LeatherBoots();
-            var backPackBoots = _TestGame.Items.LeatherBoots();
+            var equippedBoots = LeatherBoots();
+            var backPackBoots = LeatherBoots();
             game.character.equipment.feet = equippedBoots;
             game.character.items.push(backPackBoots);
             service.equipItem(backPackBoots);
@@ -427,7 +435,7 @@ describe("CharacterService", function() {
         it("should block equipping an item when game rules disallow it", function() {
             var game = {
                 character: {
-                    equipment: {},
+                    equipment: <any>{},
                     items: []
                 }
             }
@@ -441,7 +449,7 @@ describe("CharacterService", function() {
             }
 
             var service = getService(game, rules);
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
 
             var result = service.equipItem(sword);
 
@@ -452,7 +460,7 @@ describe("CharacterService", function() {
         it("should block unequipping an item when game rules disallow it", function() {
             var game = {
                 character: {
-                    equipment: {},
+                    equipment: <any>{},
                     items: []
                 }
             }
@@ -466,7 +474,7 @@ describe("CharacterService", function() {
             }
 
             var service = getService(game, rules);
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
             game.character.equipment.rightHand = sword;
 
             var result = service.unequipItem(sword);
@@ -492,7 +500,7 @@ describe("CharacterService", function() {
         });
 
         it("should return true when an equipment slot is used", function() {
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
 
             var game = {
                 character: {
@@ -510,7 +518,7 @@ describe("CharacterService", function() {
         });
 
         it("should drop an item the character has in his backpack", function() {
-            var sword = _TestGame.Items.Sword();
+            var sword = Sword();
 
             var game = {
                 character: {
@@ -532,18 +540,18 @@ describe("CharacterService", function() {
         });
 
         it("should return the status of a quest when it is a string", function() {
-            var quest = {
+            var quest = <IQuest>{
                 status: 'Started'
             }
 
             var service = getService();
             var result = service.questStatus(quest);
 
-            expect(result).toBe(quest.status);
+            expect(result).toBe(<string>quest.status);
         });
 
         it("should return the status of a quest when it is returned by a function", function() {
-            var quest = {
+            var quest = <any>{
                 status: function() { return 'Started' },
                 checkDone: function() { return true }
             }
@@ -560,14 +568,14 @@ describe("CharacterService", function() {
         it("Should call level up and if true is returned process the default settings", function() {
             var valueToReturn = true;
             
-            var game = {
-                character: {
+            var game = <IGame>{
+                character: <any>{
                     strength: 1
                 }
             };
-            var rules = {
-                character: {
-                    levelUp: (character) => {
+            var rules = <IRules>{
+                character: <ICharacterRules>{
+                    levelUp: (character: any) => {
                         character.isLevelled = true;
                         return valueToReturn;
                     }
@@ -578,8 +586,8 @@ describe("CharacterService", function() {
             levelUpSheet.steps[0].questions[0].selectedEntry = levelUpSheet.steps[0].questions[0].entries[0];
             game.createCharacterSheet = sheet;
 
-            var service = new StoryScript.CharacterService(game, rules);
-            var result = service.levelUp(game, sheet);
+            var service = new CharacterService(game, rules);
+            var result = <any>service.levelUp();
 
             expect(result).not.toBeNull();
             expect(result.isLevelled).toBeTruthy();
@@ -587,20 +595,20 @@ describe("CharacterService", function() {
 
             valueToReturn = false;
 
-            game.character = { strength: 1 };
-            var result = service.levelUp(game, sheet);
+            game.character = <any>{ strength: 1 };
+            result = service.levelUp();
 
             expect(result).not.toBeNull();
             expect(result.isLevelled).toBeTruthy();
             expect(result.strength).toBe(1);
 
-            expect(game.state).toEqual(StoryScript.GameState.Play);
+            expect(game.state).toEqual(GameState.Play);
         });
 
     });
 
-    function getAttributes() {
-        return  {
+    function getAttributes(): ICreateCharacterAttribute {
+        return  <ICreateCharacterAttribute>{
             numberOfPointsToDistribute: 10,
             entries: [
                 {
@@ -631,7 +639,7 @@ describe("CharacterService", function() {
         'intelligence'
     ];
 
-    var levelUpSheet = {
+    var levelUpSheet = <ICreateCharacter>{
         steps: [
             {
                 questions: [
@@ -660,8 +668,8 @@ describe("CharacterService", function() {
         ]
     };
 
-    function getService(game, rules) {
-        return new StoryScript.CharacterService(game || {}, rules || new _TestGame.Rules());
+    function getService(game?: any, rules?: any) {
+        return new CharacterService(game || {}, rules || Rules());
     }
 
 });
