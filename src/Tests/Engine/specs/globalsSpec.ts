@@ -1,8 +1,8 @@
 import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareString, parseFunction } from 'storyScript/globals';
-import { Journal } from '../../Games/MyRolePlayingGame/items/journal';
-import { Sword } from '../../Games/MyRolePlayingGame/items/sword';
+import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
+import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
-import '../../Games/MyRolePlayingGame/run';
+import '../../../Games/MyRolePlayingGame/run';
 
 describe("Utilities", function() {
 

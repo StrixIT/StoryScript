@@ -1,8 +1,8 @@
 const path = require('path');
-var webPackConfig = require('../../webpack/webpack.base');
+var webPackConfig = require('../../../../webpack/webpack.base');
 
 // Fix the game alias to the game to use in testing.
-webPackConfig.resolve.alias.game =  path.resolve(__dirname, '../Games/MyRolePlayingGame');
+webPackConfig.resolve.alias.game =  path.resolve(__dirname, '../../../Games/MyRolePlayingGame');
 
 module.exports = function(config) {
   config.set({

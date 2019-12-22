@@ -1,17 +1,17 @@
 import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
-import { Rules } from '../../Games/MyRolePlayingGame/rules';
-import { LeatherBoots } from '../../Games/MyRolePlayingGame/items/leatherBoots';
-import { Journal } from '../../Games/MyRolePlayingGame/items/journal';
-import { Sword } from '../../Games/MyRolePlayingGame/items/sword';
+import { Rules } from '../../../Games/MyRolePlayingGame/rules';
+import { LeatherBoots } from '../../../Games/MyRolePlayingGame/items/leatherBoots';
+import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
+import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
+import { addArrayExtensions } from 'storyScript/globals';
 
 describe("CharacterService", function() {
 
-    // beforeEach(() => {
-    //     // Trigger object factory initialization.
-    //     StoryScript.ObjectFactory.GetGame();
-    // });
+    beforeEach(() => {
+        addArrayExtensions();
+    });
 
     describe("Character sheet", function() {
 

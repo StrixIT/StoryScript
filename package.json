@@ -5,9 +5,10 @@
         "create-game": "node createGame.js",
         "create-asset": "node createAsset.js",
         "start": "webpack-dev-server --config webpack/webpack.development.js",
-        "tests": "cd src/Tests && karma start",
         "deploy-test": "webpack --config webpack/webpack.test.js",
-        "deploy-prod": "webpack --config webpack/webpack.production.js"
+        "deploy-prod": "webpack --config webpack/webpack.production.js",
+        "engine-tests": "cd src/Tests/Engine && karma start",
+        "myroleplayinggame-tests": "cd src/Tests/Games/MyRolePlayingGame && karma start"
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
