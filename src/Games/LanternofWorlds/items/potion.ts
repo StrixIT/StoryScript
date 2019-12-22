@@ -6,6 +6,7 @@ export function Potion() {
         name: 'Potion',
         equipmentType: EquipmentType.Miscellaneous,
         useInCombat: true,
-        useSound: 'metal-ringing.wav'
+        useSound: 'metal-ringing.wav',
+        value: 5
     });
 }

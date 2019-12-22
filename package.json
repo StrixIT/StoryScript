@@ -7,8 +7,7 @@
         "start": "webpack-dev-server --config webpack/webpack.development.js",
         "tests": "cd src/Tests && karma start",
         "deploy-test": "webpack --config webpack/webpack.test.js",
-        "deploy-prod": "webpack --config webpack/webpack.production.js",
-        "deploy-prod-shared": "webpack --config webpack/webpack.production.js"
+        "deploy-prod": "webpack --config webpack/webpack.production.js"
     },
     "devDependencies": {
         "@types/node": "^12.12.14",

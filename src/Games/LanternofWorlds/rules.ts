@@ -140,7 +140,7 @@ export function Rules(): IRules {
 
             createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
                 var selectedStart = characterData.steps[1].questions[0].selectedEntry;
-                var startChoice = { name: 'start', tile: 'ca_3-6' };
+                var startChoice = { name: 'start', tile: 'ca_1-1' };
 
                 if (selectedStart && selectedStart.text) {
                     startChoice = selectedStart.text === 'You are a druid' ? { name: 'druidstart', tile: 'fo_1-2' }

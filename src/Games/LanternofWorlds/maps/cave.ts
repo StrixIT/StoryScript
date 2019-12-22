@@ -29,7 +29,7 @@ export function caveMap() {
         };
 
         var tileAdditions = [
-            ['3-6', Start]
+            ['1-1', Start]
         ];
 
         _caveMap = createFeatureMap(mapData, tileAdditions);

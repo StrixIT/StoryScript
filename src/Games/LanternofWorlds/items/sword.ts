@@ -6,6 +6,7 @@ export function Sword() {
         name: 'Sword',
         equipmentType: EquipmentType.Hands,
         useInCombat: true,
-        combatSound: 'sword-unsheathe5.wav'
+        combatSound: 'sword-unsheathe5.wav',
+        value: 10
     });
 }

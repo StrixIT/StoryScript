@@ -96,16 +96,18 @@ export class SharedMethodService {
         return buttonClass;
     }
 
-    executeAction = (game: IGame, action: IAction, component: any): void => {
+    executeAction = (game: IGame, action: IAction): void => {
         if (action && action.execute) {
             var currentState = game.playState;
 
-            // Modify the arguments collection to add the game to the collection before calling the function specified.
-            var args = <any[]>[game, action];
-
             // Execute the action and when nothing or false is returned, remove it from the current location.
-            var executeFunc = typeof action.execute !== 'function' ? component[<string>action.execute] : action.execute;
-            var result = executeFunc.apply(component, args);
+            var result = action.execute(game);
+
+            // For trade actions, set the play state to trade to trigger the modal.
+            if (action.actionType === ActionType.Trade) {
+                this.setPlayState(game, PlayState.Trade);
+            }
+
             var typeAndIndex = this.getActionIndex(game, action);
 
             if (!result && typeAndIndex.index !== -1) {

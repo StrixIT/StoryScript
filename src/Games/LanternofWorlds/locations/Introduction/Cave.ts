@@ -1,5 +1,5 @@
-﻿import { Location } from '../../types'
-import description from './Cave.html'
+﻿import { Location } from '../../types';
+import description from './Cave.html';
 import { caveMap } from '../../maps/cave';
 
 export function Cave() {

@@ -21,8 +21,9 @@ export interface IAction {
      */
     status?: ActionStatus | ((game: IGame) => ActionStatus);
 
-        /**
-     * The function to execute when the player selects the action.
+    /**
+     * The function to execute when the player selects the action. Return true if the action should
+     * be allowed to execute more than once.
      */
-    execute: string | ((game: IGame, action: IAction) => void);
+    execute: (game: IGame) => boolean | void;
 }

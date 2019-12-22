@@ -19,8 +19,6 @@ export class ExplorationComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    trade = (game: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this.game, trade);
-
     changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
     actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
@@ -35,7 +33,7 @@ export class ExplorationComponent {
 
     hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this);
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action);
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         if (this.game.combinations.tryCombine(barrier))

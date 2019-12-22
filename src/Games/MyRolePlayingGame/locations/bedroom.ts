@@ -12,7 +12,7 @@ export function Bedroom() {
                 target: Start
             }
         ],
-        trade: {
+        trade: [{
             title: 'Your personal closet',
             description: 'Do you want to take something out of your closet or put it back in?',
             buy: {
@@ -35,6 +35,6 @@ export function Bedroom() {
                     return 0;
                 }
             }
-        }
+        }]
     });
 }

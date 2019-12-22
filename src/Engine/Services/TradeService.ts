@@ -16,7 +16,7 @@ export class TradeService implements ITradeService {
     trade = (trade: IPerson | ITrade): void => {
         var isPerson = trade && trade['type'] === 'person';
 
-        this._game.trade = isPerson ? (<IPerson>trade).trade : this._game.currentLocation.trade;
+        this._game.trade = isPerson ? (<IPerson>trade).trade : trade;
         var trader = this._game.trade;
 
         if (isPerson) {
@@ -26,6 +26,8 @@ export class TradeService implements ITradeService {
             if (!trader.title) {
                 trader.title = this._texts.format(this._texts.trade, [(<IPerson>trade).name]);
             }
+        } else {
+            trader.ownItemsOnly = false;
         }
 
         this.initTrade();
@@ -86,7 +88,6 @@ export class TradeService implements ITradeService {
         };
 
         if ((trader.initCollection && trader.initCollection(this._game, trader) || !itemsForSale)) {
-            // Change this when more than one trade per location is allowed.
             var collection = <any>(trader.ownItemsOnly ? this._game.person.items : this._game.definitions.items);
             itemsForSale = randomList<IItem>(collection, trader.buy.maxItems, 'items', this._game.definitions, buySelector);
         }

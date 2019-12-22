@@ -22,7 +22,7 @@ export function Garden() {
         actions: [
             {
                 text: 'Search the Shed',
-                execute: (game) => {
+                execute: (game: IGame) => {
                     // Add a new destination.
                     game.currentLocation.destinations.push({
                         name: 'Enter the basement',

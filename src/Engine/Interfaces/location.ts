@@ -76,8 +76,8 @@ export interface ILocation {
     destinations?: ICollection<IDestination>;
 
     /**
-     * Trade objects present at this location. If you don't want to use persons to trade with, you can use this object. Useful for
-     * e.g. adding containers like closets to the game.
+     * Trade objects present at this location. If you don't want to use persons to trade with, you can use this array.
+     * Useful for e.g. adding containers like chests to the game.
      */
-    trade?: ITrade;
+    trade?: ITrade[];
 }

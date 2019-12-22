@@ -13,11 +13,12 @@ import { addHtmlSpaces, isEmpty } from '../utilities';
 import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
 import { ActionType } from '../Interfaces/enumerations/actionType';
+import { ITradeService } from 'storyScript/Interfaces/services/tradeService';
 
 export class LocationService implements ILocationService {
     private pristineLocations: ICollection<ICompiledLocation>;
 
-    constructor(private _dataService: IDataService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
+    constructor(private _dataService: IDataService, private _tradeService: ITradeService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
     }
 
     init = (game: IGame, buildWorld?: boolean): void => {
@@ -189,12 +190,18 @@ export class LocationService implements ILocationService {
     }
 
     private initTrade = (game: IGame): void => {
-        if (game.currentLocation.trade && (!game.currentLocation.actions || !game.currentLocation.actions.some(a => a.actionType == ActionType.Trade))) {
-
-            game.currentLocation.actions.push({
-                text: game.currentLocation.trade.title,
-                actionType: ActionType.Trade,
-                execute: 'trade'
+        if (game.currentLocation.trade?.length > 0) {
+            game.currentLocation.trade.forEach(t => {
+                if (!game.currentLocation.actions.find(a => a.actionType === ActionType.Trade && a.text === t.title)) {
+                    game.currentLocation.actions.push({
+                        text: t.title,
+                        actionType: ActionType.Trade,
+                        execute: (game: IGame) => {
+                            this._tradeService.trade(t);
+                            return true;
+                        },
+                    });
+                }
             });
         }
     }
