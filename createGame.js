@@ -1,7 +1,4 @@
-﻿const gulp = require("gulp"),
-    replace = require('gulp-replace');
-
-const sourceroot = "./src/";
+﻿const fs = require('fs-extra')
 
 var gameName = process.argv[2];
 
@@ -10,14 +7,16 @@ if (!gameName) {
     return;
 }
 
-var templateRoot = sourceroot + 'Games/_GameTemplate/';
-var sources = [templateRoot + '**/*'];
-var destination = sourceroot + 'Games/' + gameName;
+var templateRoot = './src/Games/_GameTemplate/';
+var destination = './src/Games/' + gameName;
 
-gulp.src('gameName.js')
-    .pipe(replace(/gameName\s{0,}=\s{0,}[\w\']{0,};/g, 'gameName = \'' + gameName + '\';'))
-    .pipe(gulp.dest('./'));
+var gameNameData = fs.readFileSync('gameName.js', 'utf8');
+gameNameData = gameNameData.replace(/gameName\s{0,}=\s{0,}[\w\']{0,};/g, 'gameName = \'' + gameName + '\';');
+fs.writeFileSync('gameName.js', gameNameData);
 
-gulp.src(sources, {base: templateRoot })
-    .pipe(replace('Run(\'GameTemplate\',', 'Run(\'' + gameName + '\','))
-    .pipe(gulp.dest(destination));
+fs.copySync(templateRoot, destination);
+
+const runFile = `${destination}/run.ts`;
+var runData = fs.readFileSync(runFile, 'utf8');
+runData = runData.replace('Run(\'GameTemplate\',', 'Run(\'' + gameName + '\',');
+fs.writeFileSync(runFile, runData);
