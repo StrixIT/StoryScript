@@ -1,5 +1,5 @@
 
-const gameName = require('./gameName.js');
+const gameName = require('../gameName.js');
 const path = require('path');
 
 module.exports = {

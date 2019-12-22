@@ -1,4 +1,4 @@
-const gameName = require('./gameName.js');
+const gameName = require('../gameName.js');
 const path = require('path');
 const jf = require('jsonfile');
 const merge = require('webpack-merge');
