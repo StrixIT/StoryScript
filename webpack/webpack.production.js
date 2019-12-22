@@ -1,6 +1,7 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const TerserPlugin = require('terser-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = merge(common, {
     mode: 'development',
@@ -15,6 +16,9 @@ module.exports = merge(common, {
                 keep_fnames: true,
                 sourceMap: true,
             }
+        }),
+        new ImageminPlugin({
+            test: /\.(jpe?g|png|gif|svg)$/i 
         })
     ]
 });

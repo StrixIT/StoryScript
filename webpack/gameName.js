@@ -1,3 +1,3 @@
-const gameName = 'LanternOfWorlds';
+const gameName = 'MyRolePlayingGame';
 
 module.exports = gameName;

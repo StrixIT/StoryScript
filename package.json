@@ -3,7 +3,7 @@
     "private": true,
     "scripts": {
         "start": "webpack-dev-server --config webpack/webpack.development.js",
-        "engine-tests": "cd src/Tests/Engine && karma start",
+        "tests": "cd src/Tests && karma start",
         "deploy-test": "webpack --config webpack/webpack.test.js",
         "deploy-prod": "webpack --config webpack/webpack.production.js"
     },

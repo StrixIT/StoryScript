@@ -29,6 +29,7 @@ import { ICreateCharacter } from './createCharacter/createCharacter';
 import { ICreateCharacterStep } from './createCharacter/createCharacterStep';
 import { ICreateCharacterAttribute } from './createCharacter/createCharacterAttribute';
 import { ICreateCharacterAttributeEntry } from './createCharacter/createCharacterAttributeEntry';
+import { IConversation } from './conversations/conversation';
 import { IConversationNode } from './conversations/conversationNode';
 import { IConversationReply } from './conversations/conversationReply';
 import { EquipmentType } from './enumerations/equipmentType';
@@ -80,6 +81,7 @@ export {
     ICombinationAction,
     ICombineResult,
     ICombinationMatchResult,
+    IConversation,
     IConversationNode,
     IConversationReply,
     EquipmentType,

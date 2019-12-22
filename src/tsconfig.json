@@ -24,7 +24,8 @@
         ],
         "types": [
             "node",
-            "webpack-env"   
+            "webpack-env",
+            "jasmine"
         ]
     }
 }

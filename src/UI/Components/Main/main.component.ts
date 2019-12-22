@@ -4,7 +4,6 @@ import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, ElementRef } from '@angular/core';
 import { getUserTemplate } from '../../helpers';
 
-// For some reason, I can't insert the name of the game in the require.context directory string.
 var template = require('./main.component.html').default;
 var userTemplate = getUserTemplate('main');
 

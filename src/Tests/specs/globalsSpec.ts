@@ -1,12 +1,13 @@
+import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareString, parseFunction } from 'storyScript/globals';
+import { Journal } from '../../Games/MyRolePlayingGame/items/journal';
+import { Sword } from '../../Games/MyRolePlayingGame/items/sword';
+import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
+import '../../Games/MyRolePlayingGame/run';
+
 describe("Utilities", function() {
 
-    beforeEach(() => {
-        // Trigger object factory initialization.
-        StoryScript.ObjectFactory.GetGame();
-    });
-
     it("named functions should have a name property", function() {
-        StoryScript.addFunctionExtensions();
+        addFunctionExtensions();
 
         function MyFunction() {
         };
@@ -16,9 +17,9 @@ describe("Utilities", function() {
     });
 
     it("should create a proxy that is called when calling the function and is identifiable as a proxy", function() {
-        StoryScript.addFunctionExtensions();
+        addFunctionExtensions();
 
-        function MyFunction(x, y) {
+        let MyFunction = function(x, y) {
             return x + y;
         };
 
@@ -35,23 +36,23 @@ describe("Utilities", function() {
     });
 
     it("Deserializing function should get working function", function() {
-        StoryScript.addFunctionExtensions();
+        addFunctionExtensions();
 
         var functionString = 'function MyFunction(x, y) { return x + y; }';
-        var myFunction = functionString.parseFunction();
+        var myFunction = parseFunction(functionString);
         var result = myFunction(2, 3);
         
         expect(result).toEqual(5);
     });
 
     it("Deserializing a multiline function should get a working function", function() {
-        StoryScript.addFunctionExtensions();
+        addFunctionExtensions();
 
         var functionString = `function MyFunction(x, y) { 
                                 return x + y; 
                             }`;
                             
-        var myFunction = functionString.parseFunction();
+        var myFunction = parseFunction(functionString);
         var result = myFunction(2, 3);
         
         expect(result).toEqual(5);
@@ -60,55 +61,55 @@ describe("Utilities", function() {
     it("Creating a function hash should get a unique hash for each function", function() {
         function FirstFunction(x, y) { return x + y; };
         function SecondFunction(x, y) { if (x === null && y === null) { return null; } else { return x > y; } };
-        var firstFunctionHash = StoryScript.createFunctionHash(FirstFunction);
-        var secondFunctionHash = StoryScript.createFunctionHash(SecondFunction);
+        var firstFunctionHash = createFunctionHash(FirstFunction);
+        var secondFunctionHash = createFunctionHash(SecondFunction);
 
         expect(firstFunctionHash).toEqual(-601740997);
-        expect(secondFunctionHash).toEqual(-2091158808);
+        expect(secondFunctionHash).toEqual(-1465843121);
         expect(firstFunctionHash).not.toEqual(secondFunctionHash);
     });
 
     it("should get an entity using the function name", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(_TestGame.Items.Journal);
+        var result = testArray.get(Journal);
 
         expect(result).not.toBeNull();
-        expect(compareId(result.id, _TestGame.Items.Journal)).toBeTruthy();
+        expect(compareId(result.id, Journal)).toBeTruthy();
     });
 
     it("should get an entity using an id string", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(_TestGame.Items.Journal.name);
+        var result = testArray.get(Journal.name);
 
         expect(result).not.toBeNull();
-        expect(compareId(result.id, _TestGame.Items.Journal)).toBeTruthy();
+        expect(compareId(result.id, Journal)).toBeTruthy();
     });
 
     it("should not get an entity when passing in a new object", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = getTestArray();
-        var result = testArray.get(_TestGame.Items.Journal());
+        var result = testArray.get(Journal());
 
         expect(result).toBeUndefined();
     });
 
     it("should get the first entity in the array when no parameter is passed", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = getTestArray();
         var result = testArray.get();
 
         expect(result).not.toBeUndefined();
-        expect(compareId(result.id, _TestGame.Items.Sword)).toBeTruthy();
+        expect(compareId(result.id, Sword)).toBeTruthy();
     });
 
     it("should get an entity using its object reference", function() {
-        StoryScript.addArrayExtensions();
-        var journal = _TestGame.Items.Journal();
+        addArrayExtensions();
+        var journal = Journal();
 
         var testArray = [
-            _TestGame.Items.Sword(),
+            Sword(),
             journal
         ];
         var result = testArray.get(journal);
@@ -118,7 +119,7 @@ describe("Utilities", function() {
     });
 
     it("should get a destination matching a string id to the destination target", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var gardenDestination = {
             name: 'To the garden',
             target: 'Garden'
@@ -138,8 +139,8 @@ describe("Utilities", function() {
     });
 
     it("should get a destination matching a function to the destination target", function() {
-        StoryScript.addArrayExtensions();
-        function Garden() {};           
+        addArrayExtensions();
+        const Garden = () => <ILocation>{};           
 
         var testArray = [
             {
@@ -151,68 +152,68 @@ describe("Utilities", function() {
                 target: 'Garden'
             }
         ];
-        var result = testArray.get(Garden);
+        var result = testArray.get(<any>Garden);
 
         expect(result).not.toBeUndefined();
         expect(compareId(result.target, Garden.name)).toBeTruthy();
     });
 
     it("should get all entities in the array matching the id", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = [
-            _TestGame.Items.Sword(),
-            _TestGame.Items.Sword()
+            Sword(),
+            Sword()
         ];;
-        var result = testArray.all(_TestGame.Items.Sword);
+        var result = testArray.all(Sword);
 
         expect(result).not.toBeUndefined();
         expect(result.length).toBe(2);
-        expect(compareId(result[0].id, _TestGame.Items.Sword)).toBeTruthy();
-        expect(compareId(result[1].id, _TestGame.Items.Sword)).toBeTruthy();
+        expect(compareId(result[0].id, Sword)).toBeTruthy();
+        expect(compareId(result[1].id, Sword)).toBeTruthy();
     });
 
     it("should remove an entity using the function name", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(_TestGame.Items.Journal);
+        testArray.remove(Journal);
 
         expect(testArray.length).toBe(1);
-        expect(compareId(testArray[0].id, _TestGame.Items.Sword)).toBeTruthy();
+        expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
     it("should remove an entity using an id string", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(_TestGame.Items.Journal.name);
+        testArray.remove(Journal.name);
 
         expect(testArray.length).toBe(1);
-        expect(compareId(testArray[0].id, _TestGame.Items.Sword)).toBeTruthy();
+        expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
     it("should not remove an entity when passing in a new object", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var testArray = getTestArray();
-        testArray.remove(_TestGame.Items.Journal());
+        testArray.remove(Journal());
 
         expect(testArray.length).toBe(2);
-        expect(compareId(testArray[1].id, _TestGame.Items.Journal)).toBeTruthy();
+        expect(compareId(testArray[1].id, Journal)).toBeTruthy();
     });
 
     it("should remove an entity using its object reference", function() {
-        StoryScript.addArrayExtensions();
-        var journal = _TestGame.Items.Journal();
+        addArrayExtensions();
+        var journal = Journal();
         var testArray = [
-            _TestGame.Items.Sword(),
+            Sword(),
             journal
         ];
         testArray.remove(journal);
 
         expect(testArray.length).toBe(1);
-        expect(compareId(testArray[0].id, _TestGame.Items.Sword)).toBeTruthy();
+        expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
     it("should remove a destination using the string id of the destination", function() {
-        StoryScript.addArrayExtensions();
+        addArrayExtensions();
         var gardenDestination = {
             name: 'To the garden',
             target: 'Garden'
@@ -232,9 +233,10 @@ describe("Utilities", function() {
     });
 
     it("should remove a destination using the function of the destination", function() {
-        StoryScript.addArrayExtensions();
-        function Garden() {};     
-        var testArray = [
+        addArrayExtensions();
+        const Garden = () => <ILocation>{};  
+
+        var testArray = <ICollection<IDestination>>[
             {
                 name: 'To the bedroom',
                 target: 'Bedroom'
@@ -244,36 +246,29 @@ describe("Utilities", function() {
                 target: 'Garden'
             }
         ];
-        testArray.remove(Garden);
+
+        testArray.remove(<any>Garden);
 
         expect(testArray.length).toBe(1);
         expect(testArray[0].target).toBe('Bedroom');
     });
 
-    it("should remove nothing when no parameter is passed", function() {
-        StoryScript.addArrayExtensions();
-        var testArray = getTestArray();
-        testArray.remove();
-
-        expect(testArray.length).toBe(2);
-    });
-
     it("should return correct results when comparing strings", function() {
-        expect(StoryScript.compareString(undefined, undefined)).toBeTruthy();
-        expect(StoryScript.compareString(null, null)).toBeTruthy();
-        expect(StoryScript.compareString(null, undefined)).toBeFalsy();
-        expect(StoryScript.compareString(undefined, null)).toBeFalsy();
-        expect(StoryScript.compareString('', null)).toBeFalsy();
-        expect(StoryScript.compareString(null, '')).toBeFalsy();
-        expect(StoryScript.compareString('', '')).toBeTruthy();
-        expect(StoryScript.compareString('Test', 'test')).toBeTruthy();
-        expect(StoryScript.compareString('Test', 'TEST')).toBeTruthy();
+        expect(compareString(undefined, undefined)).toBeTruthy();
+        expect(compareString(null, null)).toBeTruthy();
+        expect(compareString(null, undefined)).toBeFalsy();
+        expect(compareString(undefined, null)).toBeFalsy();
+        expect(compareString('', null)).toBeFalsy();
+        expect(compareString(null, '')).toBeFalsy();
+        expect(compareString('', '')).toBeTruthy();
+        expect(compareString('Test', 'test')).toBeTruthy();
+        expect(compareString('Test', 'TEST')).toBeTruthy();
     });
 
     function getTestArray() {
         return [
-            _TestGame.Items.Sword(),
-            _TestGame.Items.Journal()
+            Sword(),
+            Journal()
         ];
     }
 
