@@ -10,10 +10,6 @@ module.exports = merge(base, {
     entry: {
         storyscript: './src/UI/main.ts'
     },
-    output: {
-        filename: '[name].[hash].js',
-        path: path.resolve(__dirname, '../dist')
-    },
     module: {
         rules: [
             {

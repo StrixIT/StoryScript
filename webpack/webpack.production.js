@@ -8,6 +8,9 @@ const ZipPlugin = require('zip-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const gameInfo = jf.readFileSync(path.resolve(__dirname, `../src/Games/${gameName}`, 'gameinfo.json'));
 const cleanConfig = {
@@ -17,16 +20,32 @@ const cleanConfig = {
 };
 
 var plugins = [
-        new TerserPlugin({
-            terserOptions: {
-                parallel: true,
-                keep_fnames: true
-            }
-        }),
-        new ImageminPlugin({
-            test: /\.(jpe?g|png|gif|svg)$/i 
-        })
-    ];
+    new MiniCssExtractPlugin({
+        filename: '[name].[contenthash].css',
+        chunkFilename: '[name].[contenthash].css',
+    }),
+    new TerserPlugin({
+        terserOptions: {
+            parallel: true,
+            keep_fnames: true
+        }
+    }),
+    new ImageminPlugin({
+        test: /\.(jpe?g|png|gif|svg)$/i 
+    }),
+    new ReplaceInFileWebpackPlugin([{
+        dir: 'dist',
+        test: [/\.js$/],
+        rules: [{
+            search: /<button id="resetbutton"[^>]*>(.*?)<\/button>/g,
+            replace: ''
+        },
+        {
+            search: /autoBackButton\s*:[!\s\w]*,/g,
+            replace: ''
+        }]
+    }])
+];
 
 if (gameInfo.sourcesIncluded) {
     cleanConfig['after'] = {
@@ -46,8 +65,26 @@ if (gameInfo.sourcesIncluded) {
 
 plugins.push(new RemovePlugin(cleanConfig));
 
+var cssRule = common.module.rules.pop();
+
+console.log(cssRule);
+
 module.exports = merge(common, {
-    mode: 'development',
-    devtool: 'source-map',
+    output: {
+        filename: '[name].[contenthash].js'
+    },
+    mode: 'none',
+    optimization: {
+        minimizer: [new TerserPlugin({}), new OptimizeCSSAssetsPlugin({})],
+        nodeEnv: 'production'
+    },
+    module: {
+        rules: [
+          {
+            test: /\.css$/,
+            use: [MiniCssExtractPlugin.loader, 'css-loader'],
+          },
+        ],
+      },
     plugins: plugins
 });
