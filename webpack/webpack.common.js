@@ -5,7 +5,6 @@ const merge = require('webpack-merge');
 const base = require('./webpack.base.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = merge(base, {
     entry: {
@@ -27,7 +26,6 @@ module.exports = merge(base, {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: 'src/UI/index.html'
         }),
