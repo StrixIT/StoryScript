@@ -1,57 +1,54 @@
+import { getPlural, getSingular, isEmpty } from 'storyScript/utilities';
+
 describe("Utilities", function() {
 
     it("should get the correct plural of enemy", function() {
-        var result = StoryScript.getPlural('enemy');
+        var result = getPlural('enemy');
         expect(result).toEqual('enemies');
     });
 
     it("should get the correct plural of item", function() {
-        var result = StoryScript.getPlural('item');
+        var result = getPlural('item');
         expect(result).toEqual('items');
     });
 
     it("should get the correct singular of items", function() {
-        var result = StoryScript.getSingular('items');
+        var result = getSingular('items');
         expect(result).toEqual('item');
     });
 
     it("should get the correct singular of items", function() {
-        var result = StoryScript.getSingular('enemies');
+        var result = getSingular('enemies');
         expect(result).toEqual('enemy');
     });
 
-    it("should return true when undefined", function() {
-        var result = StoryScript.isEmpty();
-        expect(result).toEqual(true);
-    });
-
     it("should return true when null", function() {
-        var result = StoryScript.isEmpty(null);
+        var result = isEmpty(null);
         expect(result).toEqual(true);
     });
 
     it("should return true when an object has no properties", function() {
-        var result = StoryScript.isEmpty({});
+        var result = isEmpty({});
         expect(result).toEqual(true);
     });
 
     it("should return true when a property is not present", function() {
-        var result = StoryScript.isEmpty({}, 'test');
+        var result = isEmpty({}, 'test');
         expect(result).toEqual(true);
     });
 
     it("should return true when an array is empty", function() {
-        var result = StoryScript.isEmpty([]);
+        var result = isEmpty([]);
         expect(result).toEqual(true);
     });
 
     it("should return true when a property array is empty", function() {
-        var result = StoryScript.isEmpty({ test: []}, 'test');
+        var result = isEmpty({ test: []}, 'test');
         expect(result).toEqual(true);
     });
 
     it("should return false when an object is not undefined, null or empty", function() {
-        var result = StoryScript.isEmpty({ test: null });
+        var result = isEmpty({ test: null });
         expect(result).toEqual(false);
     });
 });
