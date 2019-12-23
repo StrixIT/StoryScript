@@ -2,7 +2,6 @@
 import { DataKeys } from '../DataKeys';
 import { getPlural, isEmpty } from '../utilities';
 import { initCollection, setReadOnlyProperties, GetFunctions, GetDescriptions } from '../ObjectConstructors';
-import { GetObjectFactory } from '../run';
 import { parseFunction } from '../globals';
 import { IDataService } from '../Interfaces/services/dataService';
 import { ILocalStorageService } from '../Interfaces/services/localStorageService';
@@ -14,14 +13,12 @@ export class DataService implements IDataService {
     }
     
     save = <T>(key: string, value: T, pristineValues?: T): void => {
-        var functions = GetObjectFactory().GetFunctions();
-        var clone = this.buildClone(functions, null, value, pristineValues);
+        var clone = this.buildClone(null, value, pristineValues);
         this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
     }
 
     copy = <T>(value: T, pristineValue: T): T => {
-        var functions = GetObjectFactory().GetFunctions();
-        return this.buildClone(functions, null, value, pristineValue);
+        return this.buildClone(null, value, pristineValue);
     }
 
     getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');
@@ -52,7 +49,7 @@ export class DataService implements IDataService {
         return null;
     }
 
-    private buildClone = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, parentKey: string, values, pristineValues, clone?): any => {
+    private buildClone = (parentKey: string, values, pristineValues, clone?): any => {
         if (!clone) {
             clone = Array.isArray(values) ? [] : typeof values === 'object' ? {} : values;
             if (clone == values) {
@@ -88,18 +85,18 @@ export class DataService implements IDataService {
                 continue;
             }
 
-            this.getClonedValue(functionList, clone, value, key, pristineValues);
+            this.getClonedValue(clone, value, key, pristineValues);
         }
 
         return clone;
     }
 
-    private getClonedValue = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string, pristineValues: any): void => {
+    private getClonedValue = (clone: any, value: any, key: string, pristineValues: any): void => {
         var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
 
         if (Array.isArray(value)) {
             clone[key] = [];
-            this.buildClone(functionList, key, value, pristineValue, clone[key]);
+            this.buildClone(key, value, pristineValue, clone[key]);
 
             var additionalArrayProperties = Object.keys(value).filter(v => {
                 var isAdditionalProperty = isNaN(parseInt(v));
@@ -116,7 +113,7 @@ export class DataService implements IDataService {
             additionalArrayProperties.forEach(p => {
                 var arrayPropertyKey = `${key}_arrProps`;
                 clone[arrayPropertyKey] = clone[arrayPropertyKey] || {};
-                this.getClonedValue(functionList, clone[arrayPropertyKey], value[p], p, pristineValue);
+                this.getClonedValue(clone[arrayPropertyKey], value[p], p, pristineValue);
             });
         }
         else if (typeof value === 'object') {
@@ -127,44 +124,20 @@ export class DataService implements IDataService {
                 clone[key] = {};
             }
 
-            this.buildClone(functionList, key, value, pristineValue, clone[key]);
+            this.buildClone(key, value, pristineValue, clone[key]);
         }
         else if (typeof value === 'function') {
-            this.getClonedFunction(functionList, clone, value, key);
+            this.getClonedFunction(clone, value, key);
         }
         else {
             clone[key] = value;
         }
     }
 
-    private getClonedFunction = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, clone: any, value: any, key: string): void => {
+    private getClonedFunction = (clone: any, value: any, key: string): void => {
         if (!value.isProxy) {
             if (value.functionId) {
-                var parts = this.GetFunctionIdParts(value.functionId);
-                var plural = getPlural(parts.type);
-
-                if (parts.type === 'action' && !functionList[plural][parts.functionId]) {
-                    var match: string = null;
-
-                    for (var n in functionList[plural]) {
-                        var entry = functionList[plural][n];
-
-                        if (entry.hash === parts.hash) {
-                            match = n;
-                            break;
-                        }
-                    }
-
-                    if (match) {
-                        clone[key] = 'function#' + plural + '|' + match + '#' + parts.hash;
-                    }
-                    else {
-                        clone[key] = value.toString();
-                    }
-                }
-                else {
-                    clone[key] = value.functionId;
-                }
+                clone[key] = value.functionId;
             }
             else {
                 // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
@@ -236,7 +209,7 @@ export class DataService implements IDataService {
                 console.log('Function with key: ' + parts.functionId + ' could not be found!');
             }
             else if (typeList[parts.functionId].hash != parts.hash) {
-                console.log('Function with key: ' + parts.functionId + ' was found but the hash does not match the stored hash!');
+                console.warn(`Function with key: ${parts.functionId} was found but the hash does not match the stored hash! Did you change the order of actions in an array and/or change the function content? If you changed the order, you need to reset the game world. If you changed only the content, you can ignore this warning.`);
             }
 
             loaded[key] = typeList[parts.functionId].function;
