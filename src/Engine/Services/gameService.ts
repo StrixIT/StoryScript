@@ -292,7 +292,7 @@ export class GameService implements IGameService {
     private enemyDefeated = (enemy: IEnemy): void => {
         if (enemy.items) {
             enemy.items.forEach((item: IItem) => {
-                if (this._rules.combat?.beforeDrop(this._game, enemy, item)) {
+                if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, enemy, item)) {
                     this._game.currentLocation.items.push(item);
                 }
             });

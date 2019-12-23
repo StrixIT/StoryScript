@@ -46,7 +46,10 @@ if (snippetKey === 'Persons') {
 }
 
 var snippet = snippets[snippetKey];
-var assetDir = `${gameDir}\\${snippetKey.toLowerCase()}`;
+
+// Keys go into the items folder.
+var dirName = snippetKey === 'Keys' ? 'Items' : snippetKey;
+var assetDir = `${gameDir}\\${dirName.toLowerCase()}`;
 var assetBaseFileName = `${assetDir}\\${assetName}`;
 
 if (!fs.existsSync(assetDir)){

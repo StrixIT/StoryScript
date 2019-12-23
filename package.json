@@ -8,6 +8,7 @@
         "create-enemy": "node createAsset.js enemy",
         "create-person": "node createAsset.js person",
         "create-item": "node createAsset.js item",
+        "create-key": "node createAsset.js key",
         "create-quest": "node createAsset.js quest",
         "start": "webpack-dev-server --config webpack/webpack.development.js",
         "deploy-test": "webpack --config webpack/webpack.test.js",
