@@ -1,7 +1,45 @@
+import { CombinationService } from 'storyScript/Services/CombinationService';
+import { ICombinable, IGame, ICombinationAction } from 'storyScript/Interfaces/storyScript';
+import { Rules } from '../../../Games/MyRolePlayingGame/types';
+import { DefaultTexts } from 'storyScript/defaultTexts';
+import { ICombinations } from 'storyScript/Interfaces/combinations/combination';
+import { ICombine } from 'storyScript/Interfaces/combinations/combine';
+import { Constants } from '../../../Games/MyAdventureGame/constants';
+
 describe("CombinationService", function() {
 
     it("should return the combinations defined for the game", function() {
-        var service = getService();
+        var rules = {
+            setup: {
+                getCombinationActions: (): ICombinationAction[] => {
+                    return [
+                        {
+                            text: Constants.WALK,
+                            preposition: 'to',
+                            requiresTool: false
+                        },
+                        {
+                            text: Constants.USE,
+                            preposition: 'on'
+                        },
+                        {
+                            text: Constants.TOUCH,
+                            requiresTool: false
+                        },
+                        {
+                            text: Constants.LOOKAT,
+                            preposition: 'at',
+                            requiresTool: false,
+                            failText: (game, target, tool): string => { 
+                                return 'You look at the ' + target.name + '. There is nothing special about it';
+                            }
+                        }
+                    ];
+                }
+            }
+        };
+
+        var service = getService(null, rules);
         var result = service.getCombinationActions();
         var names = result.map(c => c.text);
         expect(names).toEqual(combinationActionNames);
@@ -13,7 +51,7 @@ describe("CombinationService", function() {
             var service = getService({
                 combinations: {}
             });
-            var result = service.getCombineClass();
+            var result = service.getCombineClass(null);
             expect(result).toBe('');
         });
 
@@ -23,7 +61,7 @@ describe("CombinationService", function() {
                     activeCombination: {}
                 }
             });
-            var result = service.getCombineClass();
+            var result = service.getCombineClass(null);
             expect(result).toBe('combine-active-hide');
         });
 
@@ -32,7 +70,7 @@ describe("CombinationService", function() {
                 combinations: {
                 }
             });
-            var result = service.getCombineClass({});
+            var result = service.getCombineClass(<ICombinable>{});
             expect(result).toBe('');
         });
 
@@ -42,7 +80,7 @@ describe("CombinationService", function() {
                     activeCombination: {}
                 }
             });
-            var result = service.getCombineClass({});
+            var result = service.getCombineClass(<ICombinable>{});
             expect(result).toBe('combine-selectable');
         });
 
@@ -56,7 +94,7 @@ describe("CombinationService", function() {
                     }
                 }
             });
-            var result = service.getCombineClass({ id: 'test' });
+            var result = service.getCombineClass(<ICombinable>{ id: 'test' });
             expect(result).toBe('combine-active-selected');
         });
 
@@ -65,24 +103,26 @@ describe("CombinationService", function() {
     describe("Try combinations", function() {
 
         it("should fail a combination when there is no target or active combination", function() {
-            var game = {
-                combinations: {
-                    activeCombination: {},
+            var game = <IGame><unknown>{
+                combinations: <ICombinations<ICombinable>>{
+                    activeCombination: {
+                    },
                     combinationResult: {
-                        text: null,
-                        done: false,
-                    }
+                    },
+                    combine: [
+                        <ICombine<ICombinable>><unknown>{         
+                    }]
                 }
             };
 
             var texts = {
                 noCombination: "You {2} the {0} {3} the {1}. Nothing happens.",
                 noCombinationNoTool: "You {1} {2} the {0}. Nothing happens.",
-                format: new StoryScript.DefaultTexts().format
+                format: new DefaultTexts().format
             }
 
             var service = getService(game, null, texts);
-            var result = service.tryCombination();
+            var result = service.tryCombination(<ICombinable>{});
             expect(result.success).toBeFalsy();
 
             var target = { name: 'Ball' };
@@ -132,14 +172,14 @@ describe("CombinationService", function() {
 
 
     var combinationActionNames = [
+        'Walk',
         'Use',
-        'Look',
-        'Pull',
-        'Push'
+        'Touch',
+        'Look'
     ];
 
-    function getService(game, rules, texts) {
-        return new StoryScript.CombinationService({}, {}, game, rules || _TestGame.Rules(), texts || {});
+    function getService(game?, rules?, texts?, dataService?, locationService?) {
+        return new CombinationService(dataService || {}, locationService || {}, game || {}, rules || Rules(), texts || {});
     }
 
 });
