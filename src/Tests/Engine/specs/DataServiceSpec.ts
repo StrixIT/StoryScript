@@ -2,10 +2,9 @@ import { GetObjectFactory } from 'storyScript/run';
 import { DataService } from 'storyScript/Services/DataService';
 import { IDataService } from 'storyScript/Interfaces/services/dataService';
 import { IGame } from 'storyScript/Interfaces/storyScript';
-import '../../../Games/MyRolePlayingGame/run';
-import { Garden } from '../../../Games/MyRolePlayingGame/locations/Garden';
 import { ILocationCollection } from 'storyScript/Interfaces/locationCollection';
 import { GetFunctions } from 'storyScript/ObjectConstructors';
+import '../../../Games/MyRolePlayingGame/run';
 
 describe("DataService", function() {
     const originalWarn = console.warn
@@ -54,7 +53,7 @@ describe("DataService", function() {
         var old0Hash = gardenFunction0.hash;
         gardenFunction0.hash = gardenFunction1.hash;
         gardenFunction1.hash = old0Hash;
-
+        
         <ILocationCollection>service.load('game');
 
         expect(consoleOutput).toEqual([

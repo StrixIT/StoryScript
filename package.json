@@ -3,7 +3,11 @@
     "private": true,
     "scripts": {
         "create-game": "node createGame.js",
-        "create-asset": "node createAsset.js",
+        "create-location": "node createAsset.js location",
+        "create-enemy": "node createAsset.js enemy",
+        "create-person": "node createAsset.js person",
+        "create-item": "node createAsset.js item",
+        "create-quest": "node createAsset.js quest",
         "start": "webpack-dev-server --config webpack/webpack.development.js",
         "deploy-test": "webpack --config webpack/webpack.test.js",
         "deploy-prod": "webpack --config webpack/webpack.production.js",
@@ -58,6 +62,8 @@
         "karma-chrome-launcher": "^3.1.0",
         "karma-edge-launcher": "^0.4.2",
         "karma-firefox-launcher": "^1.2.0",
-        "karma-webpack": "^4.0.2"
+        "karma-webpack": "^4.0.2",
+        "karma-coverage-istanbul-reporter": "^2.1.1",
+        "istanbul-instrumenter-loader": "^3.0.1"
     }
 }

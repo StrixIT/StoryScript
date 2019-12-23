@@ -4,6 +4,13 @@ var webPackConfig = require('../../../../webpack/webpack.base');
 // Fix the game alias to the game to use in testing.
 webPackConfig.resolve.alias.game =  path.resolve(__dirname, '../../../Games/MyRolePlayingGame');
 
+webPackConfig.module.rules.push({
+  enforce: 'post',
+  test: /\.ts$/,
+  loader: 'istanbul-instrumenter-loader',
+  include: path.resolve(__dirname, '../../../Games/MyRolePlayingGame')
+});
+
 module.exports = function(config) {
   config.set({
 
@@ -46,11 +53,15 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage-istanbul'],
 
-    coverageReporter: {
-      type : 'html',
-      dir : './coverage/'
+    coverageIstanbulReporter: {
+      reports: [ 'html', 'text-summary', 'lcovonly' ],
+      dir: path.join(__dirname, 'coverage'),
+      fixWebpackSourcePaths: true,
+      'report-config': {
+        html: { outdir: 'html' }
+      }
     },
 
     // web server port

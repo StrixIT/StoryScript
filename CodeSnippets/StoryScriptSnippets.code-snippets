@@ -21,6 +21,8 @@
 			"\t\t],",
 			"\t\tpersons: [",
 			"\t\t],",
+			"\t\ttrade: [",
+			"\t\t],",
 			"\t\tenterEvents: [",
 			"\t\t],",
 			"\t\tleaveEvents: [",
@@ -373,7 +375,7 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssTrade",
 		"body": [
-			"trade: {",
+			"{",
 			"\ttitle: '$1',",
 			"\tdescription: '$2',",
 			"\townItemsOnly: $3true,",
