@@ -62,6 +62,11 @@ var tsString = snippet.body
 // Write ts file
 fs.writeFileSync(assetBaseFileName + '.ts', tsString);
 
+// Don't generate an html file for features.
+if (snippetKey === 'Features') {
+    return;
+}
+
 var htmlString = removePlaceholders(descriptionSnippet);
 
 if (conversationSnippet) {

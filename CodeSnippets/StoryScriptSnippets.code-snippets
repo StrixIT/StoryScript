@@ -130,6 +130,7 @@
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Item({",
 			"\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
+			"\t\tdescription: description,",
 			"\t\tequipmentType: $1EquipmentType.Miscellaneous,",
 			"\t});",
 			"}"
@@ -148,6 +149,7 @@
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Key({",
 			"\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
+			"\t\tdescription: description,",
 			"\t\tkeepAfterUse: $1true,",
 			"\t\tequipmentType: $2EquipmentType.Miscellaneous,",
 			"\t\topen: {",

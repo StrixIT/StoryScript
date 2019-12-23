@@ -4,6 +4,7 @@
     "scripts": {
         "create-game": "node createGame.js",
         "create-location": "node createAsset.js location",
+        "create-feature": "node createAsset.js feature",
         "create-enemy": "node createAsset.js enemy",
         "create-person": "node createAsset.js person",
         "create-item": "node createAsset.js item",

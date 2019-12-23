@@ -1,8 +1,8 @@
 import { Feature } from '../types';
 import { Constants } from '../constants';
 import { Flask } from '../items/flask';
-import { Passage } from './passage';
 import { Water } from '../items/water';
+import { Corridor } from './corridor';
 
 export function Fountain() {
     return Feature({
@@ -18,8 +18,8 @@ export function Fountain() {
                 {
                     combinationType: Constants.TOUCH,
                     match: (game, target, tool): string => {
-                        if (!game.currentLocation.features.get('passage')) {
-                            game.currentLocation.features.push(Passage);
+                        if (!game.currentLocation.features.get(Corridor)) {
+                            game.currentLocation.features.push(Corridor);
                             return `You walk towards the fountain and touch the fountain water.
                                 It is a little cold. When you pull back your hand, you hear a soft
                                 muttering. It is coming from a small passage in the undergrowth.`;
