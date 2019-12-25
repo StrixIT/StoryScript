@@ -11,8 +11,7 @@
         "create-key": "node createAsset.js key",
         "create-quest": "node createAsset.js quest",
         "start": "webpack-dev-server --config webpack/webpack.development.js",
-        "deploy-test": "webpack --config webpack/webpack.test.js",
-        "deploy-prod": "webpack --config webpack/webpack.production.js",
+        "publish": "webpack --config webpack/webpack.production.js",
         "engine-tests": "cd src/Tests/Engine && karma start",
         "myroleplayinggame-tests": "cd src/Tests/Games/MyRolePlayingGame && karma start"
     },

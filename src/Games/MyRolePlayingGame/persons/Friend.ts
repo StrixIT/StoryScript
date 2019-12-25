@@ -38,7 +38,6 @@ export function Friend() {
                 'addHedgehog': (game, person) => {
                     var garden = game.locations.get(Garden);
                     garden.hasVisited = false;
-                    garden.enterEvents.length = 0;
 
                     garden.enterEvents.push((game: IGame) => {
                         game.logToLocationLog('Ah! There is the hedgehog Joe was talking about.');

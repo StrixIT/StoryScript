@@ -19,6 +19,7 @@ if (!assetName) {
 }
 
 var snippetKey =  assetType.substring(0, 1).toUpperCase() + assetType.substring(1) + 's';
+snippetKey = snippetKey.endsWith('ys') ? snippetKey.substring(0, snippetKey.length - 2) + 'ies' : snippetKey; 
 var assetNameCapital = assetName.substring(0, 1).toUpperCase() + assetName.substring(1);
 
 var snippets = jf.readFileSync('CodeSnippets\\StoryScriptSnippets.code-snippets');
@@ -34,6 +35,9 @@ if (!descriptionSnippet) {
     console.log('The description snippet doesn\'t exist.');
     return;
 }
+
+var includeDescription = !process.argv[4] || process.argv[4].toLowerCase() !== 'p';
+includeDescription = (snippetKey === 'Locations' || snippetKey === 'Persons') || ((snippetKey === 'Items' || snippetKey === 'Enemies') && includeDescription);
 
 var conversationSnippet = null;
 
@@ -56,17 +60,29 @@ if (!fs.existsSync(assetDir)){
     fs.mkdirSync(assetDir);
 }
 
+if (!includeDescription) {
+    var cleaned = [];
+
+    snippet.body = Object.keys(snippet.body).forEach(k => { 
+        l = snippet.body[k]; 
+        if (!l.match(/import description from \'\.\/\$\{TM_FILENAME_BASE\}\.html';/g) && !l.match(/[\\t]{0,}description:/g)) {
+            cleaned.push(l);
+        } 
+    });
+
+    snippet.body = cleaned;
+}
+
 var tsString = snippet.body
                 .join('\n')
                 .replace(/\${TM_FILENAME_BASE}/g, assetName)
                 .replace(/\${TM_FILENAME_BASE\/\(\.\*\)\/\${1:\/capitalize}\/}/g, assetNameCapital)
-                .replace(/\$[0-9]{1,}/g, '')
+                .replace(/\$[0-9]{1,}/g, '');
 
 // Write ts file
 fs.writeFileSync(assetBaseFileName + '.ts', tsString);
 
-// Don't generate an html file for features.
-if (snippetKey === 'Features') {
+if (!includeDescription) {
     return;
 }
 
