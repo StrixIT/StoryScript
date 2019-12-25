@@ -1,6 +1,9 @@
 ﻿import { IGame, Location } from '../types';
 import description from './crossRoads.html'
 import { DarkCorridor } from './darkCorridor';
+import { Temp } from './temp';
+import { WestCrossing } from './westCrossing';
+import { RightCorridor } from './rightCorridor';
 
 export function CrossRoads() {
     return Location({

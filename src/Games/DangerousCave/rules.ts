@@ -1,5 +1,9 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, ICompiledLocation } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character } from './types';
+import { Dagger } from './items/dagger';
+import { LeatherHelmet } from './items/leatherHelmet';
+import { Lantern } from './items/lantern';
+import { Flee } from './actions/flee';
 
 export function Rules(): IRules {
     return {
