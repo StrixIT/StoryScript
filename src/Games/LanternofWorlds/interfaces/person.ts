@@ -1,9 +1,10 @@
-namespace LanternofWorlds {
-    export function Person(entity: IPerson): IPerson {
-        return StoryScript.Person(entity);
-    }
+﻿import { IPerson as StoryScriptIPerson, Person as StoryScriptPerson } from 'storyScript/Interfaces/storyScript';
+import { IEnemy } from '../types';
 
-    export interface IPerson extends IEnemy, StoryScript.IPerson {
-        // Add game-specific person properties here
-    }
+export function Person(entity: IPerson): IPerson {
+    return StoryScriptPerson(entity);
+}
+
+export interface IPerson extends IEnemy, StoryScriptIPerson {
+    // Add game-specific person properties here
 }

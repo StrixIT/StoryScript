@@ -6,9 +6,45 @@ body {
     background-color: gold;
 }
 
-.encounters {
+#visual-features img {
+    transition:all 1s ease 0s;top:0;left:0;
+}
+
+#location-overlay {
     position: absolute;
-    top: 600px;
-    left: 800px;
+    top: 450px;
+    left: 250px;
     background-color: white;
+    width: 800px;
+}
+
+#location-overlay #location {
+    min-height: 50px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#location-overlay .box-title {
+    display: none;
+}
+
+#location-overlay .overlay-title {
+    display: block;
+    margin: 0;
+}
+
+.overlay-title .close {
+    color: white;
+    line-height: 1.2;
+}
+
+#location-overlay .box-container {
+    border: none;
+}
+
+#player-icon {
+    position: absolute;
+    top: 260px;
+    left: 615px;
+    display: none;
 }

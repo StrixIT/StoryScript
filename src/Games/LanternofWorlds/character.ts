@@ -1,31 +1,33 @@
-namespace LanternofWorlds {
-    export class Character implements StoryScript.ICharacter {
-        name: string = "";
-        score: number = 0;
-        hitpoints: number = 10;
-        currentHitpoints: number = 10;
-        currency: number = 0;
+﻿
+import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
+import { IItem } from './types';
 
-        // Add character properties here.
+export class Character implements ICharacter {
+    name: string = '';
+    score: number = 0;
+    hitpoints: number = 10;
+    currentHitpoints: number = 10;
+    currency: number = 50;
 
-        items: StoryScript.ICollection<IItem> = [];
+    // Add character properties here.
 
-        equipment: {
+    items: ICollection<IItem> = [];
+
+    equipment: {
+        // Remove the slots you don't want to use
+        head: IItem,
+        body: IItem,
+        hands: IItem,
+        feet: IItem
+    };
+
+    constructor() {
+        this.equipment = {
             // Remove the slots you don't want to use
-            head: IItem,
-            body: IItem,
-            hands: IItem,
-            feet: IItem
-        };
-
-        constructor() {
-            this.equipment = {
-                // Remove the slots you don't want to use
-                head: null,
-                body: null,
-                hands: null,
-                feet: null
-            }
+            head: null,
+            body: null,
+            hands: null,
+            feet: null
         }
     }
 }

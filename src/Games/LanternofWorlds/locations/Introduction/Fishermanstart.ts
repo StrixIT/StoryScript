@@ -1,26 +1,30 @@
-namespace LanternofWorlds.Locations {
-    export function Fishermanstart() {
-        return Location({
-            name: 'The great lake',
-            destinations: [
-                
-            ],
-            features: [
-            ],
-            items: [
-            ],
-            enemies: [
-            ],
-            persons: [
-            ],
-            enterEvents: [
-            ],
-            leaveEvents: [
-            ],
-            actions: [
-            ],
-            combatActions: [
-            ],
-        });
-    }
+import { IGame, Location } from '../../types';
+import description from './fishermanstart.html';
+
+export function Fishermanstart() {
+	return Location({
+		name: 'The great lake',
+		description: description,
+		destinations: [
+			
+		],
+		features: [
+		],
+		items: [
+		],
+		enemies: [
+		],
+		persons: [
+		],
+		trade: [
+		],
+		enterEvents: [
+		],
+		leaveEvents: [
+		],
+		actions: [
+		],
+		combatActions: [
+		],
+	});
 }

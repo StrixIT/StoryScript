@@ -1,9 +1,10 @@
-namespace LanternofWorlds {
-    export function Enemy(entity: IEnemy): IEnemy {
-        return StoryScript.Enemy(entity);
-    }
+﻿import { IEnemy as StoryScriptIEnemy, Enemy as StoryScriptEnemy } from 'storyScript/Interfaces/storyScript';
+import { IFeature } from '../types';
 
-    export interface IEnemy extends StoryScript.IEnemy {
-        // Add game-specific enemy properties here
-    }
+export function Enemy(entity: IEnemy): IEnemy {
+    return StoryScriptEnemy(entity);
+}
+
+export interface IEnemy extends IFeature, StoryScriptIEnemy {
+    // Add game-specific enemy properties here
 }

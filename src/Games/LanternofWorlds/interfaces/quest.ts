@@ -1,9 +1,9 @@
-namespace LanternofWorlds {
-    export function Quest(entity: IQuest): IQuest {
-        return StoryScript.Quest(entity);
-    }
+﻿import { IQuest as StoryScriptIQuest, Quest as StoryScriptQuest } from 'storyScript/Interfaces/storyScript';
 
-    export interface IQuest extends StoryScript.IQuest {
-        // Add game-specific item properties here
-    }
+export function Quest(entity: IQuest): IQuest {
+    return StoryScriptQuest(entity);
+}
+
+export interface IQuest extends StoryScriptIQuest {
+    // Add game-specific item properties here
 }
