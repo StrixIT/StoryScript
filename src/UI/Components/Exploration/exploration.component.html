@@ -1,0 +1,26 @@
+<div id="exploration">
+    <div class="box-container" id="exploration-actions" *ngIf="actionsPresent()">
+        <div class="box-title">{{ texts.actions }}</div>
+        <ul class="list-unstyled">
+            <li class="inline" *ngFor="let action of game.currentLocation.actions">
+                <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="disableActionButton(action)" *ngIf="!hideActionButton(action)">{{ action.text }}</button>
+            </li>
+        </ul>
+    </div>
+    <div class="box-container" id="exploration-destinations" *ngIf="!enemiesPresent()">
+        <div class="box-title">{{ texts.destinations }}</div>
+        <ul class="list-unstyled">
+            <li class="inline" *ngFor="let destination of game.currentLocation.activeDestinations">
+                <div class="barrier" *ngIf="destination.barrier">
+                    <div ngbDropdown class="d-inline-block" class="action-select">
+                        <button class="btn btn-outline-primary" id="barrierdropdown" ngbDropdownToggle>{{ destination.barrier.name }}</button>
+                        <div ngbDropdownMenu aria-labelledby="barrierdropdown">
+                            <button ngbDropdownItem *ngFor="let action of destination.barrier.actions" (click)="executeBarrierAction(destination.barrier, action, destination)">{{ action.text }}</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-info" [ngClass]="destination.style" (click)="changeLocation(destination.target)" [disabled]="!destination.target || destination.barrier || game.currentLocation.navigationDisabled"><span class="back-label" *ngIf="destination.isPreviousLocation">{{ texts.back }}</span> {{ destination.name }}</button>
+            </li>
+        </ul>
+    </div>
+</div>

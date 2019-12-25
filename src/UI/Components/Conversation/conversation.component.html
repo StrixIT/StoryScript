@@ -1,0 +1,22 @@
+<div id="conversation" *ngIf="game.playState === 'Conversation'">
+    <div id="conversation-options" *ngIf="game.person.conversation.activeNode">
+        <div [innerHTML]="getLines(game.person.conversation.activeNode) | safe: 'html'"></div>
+        <div *ngFor="let reply of game.person.conversation.activeNode.replies.options">
+            <div *ngIf="reply.available || reply.showWhenUnavailable">
+                <input type="radio" [disabled]="!reply.available" (click)="answer(game.person.conversation.activeNode, reply)" />
+                <span [innerHTML]="getLines(reply) | safe: 'html'"></span>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!game.person.conversation.activeNode">
+        Your conversation has ended.
+    </div>
+    <hr />
+    <strong>Conversation history</strong>
+    <ul class="list-unstyled" id="conversation-history">
+        <li *ngFor="let entry of game.person.conversation.conversationLog">
+            <div class="conversation-lines" [innerHTML]="entry.lines | safe: 'html'"></div>
+            <div class="conversation-option" [innerHTML]="entry.reply | safe: 'html'"></div>
+        </li>
+    </ul>
+</div>

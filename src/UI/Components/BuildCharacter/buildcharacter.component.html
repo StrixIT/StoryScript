@@ -1,0 +1,24 @@
+<div id="create-character" class="container-fluid" *ngFor="let step of sheet.steps; let i = index" [hidden]="sheet.currentStep !== i">
+    <div class="input-group mb-3" *ngFor="let question of step.questions">
+        <div class="input-group-prepend">
+            <label class="input-group-text">{{ question.question }}</label>
+        </div>
+        <select class="custom-select" [(ngModel)]="question.selectedEntry" (ngModelChange)="sheet.nextStep(sheet, false)">
+            <option *ngFor="let entry of question.entries" [ngValue]="entry" >{{ entry.text }}</option>
+        </select>
+    </div>
+    <div *ngFor="let attribute of step.attributes">
+        <div>
+            <span class="attribute-header" *ngIf="attribute.entries.length > 1">{{ attribute.question }}</span>
+        </div>
+        <div class="input-group mb-3" *ngFor="let entry of attribute.entries">
+            <div class="input-group-prepend">
+                <label class="input-group-text" *ngIf="attribute.entries.length !== 1">{{ texts.titleCase(entry.attribute) }}</label>
+                <label class="input-group-text" *ngIf="attribute.entries.length === 1">{{ attribute.question }}</label>
+            </div>
+            <input class="form-control" type="text" *ngIf="!entry.min && !entry.max" [(ngModel)]="entry.value" />
+            <input class="form-control" type="number" *ngIf="entry.min || entry.max" min="{{ entry.min }}" max="{{ entry.max }}" [(ngModel)]="entry.value" (blur)="limitInput($event, attribute, entry)" />
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" [disabled]="!distributionDone(step)" (click)="sheet.nextStep(sheet)" *ngIf="sheet.currentStep < sheet.steps.length - 1 && !sheet.steps[sheet.currentStep].finish">{{ texts.nextQuestion }}</button>
+</div>

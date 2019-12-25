@@ -1,0 +1,33 @@
+<div id="combat" *ngIf="game.playState == 'Combat'">
+    <div *ngIf="enemiesPresent()">
+        <div>
+            <ul class="list-unstyled" *ngIf="game.currentLocation.activeEnemies.length > 0">
+                <li *ngFor="let enemy of game.currentLocation.activeEnemies">
+                    <button type="button" class="btn btn-danger" (click)="fight(enemy)">{{ texts.format(texts.attack, [enemy.name]) }}</button>
+                    <img src="{{ enemy.picture }}" *ngIf="enemy.picture" />
+                </li>
+            </ul>
+            <ul class="list-unstyled">
+                <li *ngFor="let action of game.currentLocation.combatActions">
+                    <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)">{{ action.text }}</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <ul class="list-unstyled">
+            <li *ngFor="let item of game.character.combatItems">
+                <button type="button" class="btn btn-info" (click)="useItem(item)">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="!enemiesPresent()" class="combat-win">
+        {{ texts.combatWin }}
+    </div>
+    <fieldset class="combatlog">
+        <legend>{{ texts.messages }}</legend>
+        <ul class="list-unstyled action-log">
+            <li *ngFor="let message of game.combatLog">{{ message }}</li>
+        </ul>
+    </fieldset>
+</div>

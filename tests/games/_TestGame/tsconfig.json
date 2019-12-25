@@ -1,9 +1,0 @@
-{
-    "extends": "../../../src/tsconfig",
-    "compilerOptions": {
-    },
-    "include": [
-        "../../../src/types/*.ts",
-        "../../../src/Games/_TestGame/**/*.ts"
-    ]
-}

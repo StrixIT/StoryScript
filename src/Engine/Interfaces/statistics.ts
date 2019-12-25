@@ -1,16 +1,14 @@
-﻿namespace StoryScript {
+﻿/**
+ * Statistics tracked during the game.
+ */
+export interface IStatistics {
     /**
-     * Statistics tracked during the game.
+     * The number of enemies the player defeated.
      */
-    export interface IStatistics {
-        /**
-         * The number of enemies the player defeated.
-         */
-        enemiesDefeated?: number;
+    enemiesDefeated?: number;
 
-        /** 
-         * The number of locations the player visited 
-         * */
-        LocationsVisited?: number;
-    }
+    /** 
+     * The number of locations the player visited 
+     * */
+    LocationsVisited?: number;
 }

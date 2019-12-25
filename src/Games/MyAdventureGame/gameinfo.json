@@ -1,0 +1,10 @@
+{
+    "name": "My Adventure Game",
+    "description": "The StoryScript Tutorial example of an adventure game.",
+    "picture": "",
+    "sourcesIncluded": true,
+    "author": {
+        "name": "Rutger Schurgers",
+        "email": "rutger@strixit.com"
+    }
+}

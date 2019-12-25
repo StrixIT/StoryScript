@@ -1,0 +1,16 @@
+<div class="box-container" id="character-backpack">
+        <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.backpack }}</div>
+        <ul id="backpack-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
+            <li *ngFor="let item of game.character.items">
+                <div (click)="tryCombine(item)" [ngClass]="getCombineClass(item)">
+                    <span>{{ item.name }}</span>
+                    <div id="backpack-button-row" class="inline" [ngClass]="getCombineClass()">
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="canEquip(item) && showEquipment()" (click)="equipItem(item)">{{ texts.equip }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="item.description" (click)="showDescription(item, item.name)">{{ texts.view }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="item.use" (click)="useItem(item)">{{ texts.use }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="canDropItems()" (click)="dropItem(item)">{{ texts.drop }}</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>

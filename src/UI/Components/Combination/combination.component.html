@@ -1,0 +1,11 @@
+<div class="box-container" id="combinations" *ngIf="combineActions.length > 0">
+    <div class="box-title">{{ texts.combinations }}</div>
+    <div class="row">
+        <ul class="list-unstyled col-3">
+            <button type="button" class="btn" [ngClass]="getCombineClass(c)" *ngFor="let c of combineActions" (click)="selectCombinationAction(c)">{{c.text}}</button>
+        </ul>
+        <div class="col-9">
+            <p class="combination-result-text" *ngIf="game.combinations.combinationResult.text">{{game.combinations.combinationResult.text}}</p>
+        </div>
+    </div>
+</div>

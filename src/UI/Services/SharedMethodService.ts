@@ -1,146 +1,169 @@
-namespace StoryScript 
-{
-    export interface ISharedMethodService {
-        enemiesPresent(): boolean;
-        trade(trade: IPerson | ITrade): boolean;
-        getButtonClass(action: IAction): string;
-        executeAction(action: IAction, controller: ng.IComponentController): void;
-        startCombat(person?: IPerson): void;
-        showDescription(type: string, item: any, title: string): void;
-        showEquipment(): boolean;
-        useCharacterSheet?: boolean;
-        useEquipment?: boolean;
-        useBackpack?: boolean;
-        useQuests?: boolean;
-        useGround?: boolean;
+import { Injectable } from '@angular/core';
+import { ITrade, IAction, PlayState, ActionType, IPerson, IEnemy, ICombinable } from 'storyScript/Interfaces/storyScript';
+import { GameService } from 'storyScript/Services/gameService';
+import { TradeService } from 'storyScript/Services/TradeService';
+import { ConversationService } from 'storyScript/Services/ConversationService';
+import { IGame } from 'storyScript/Interfaces/game';
+import { EventService } from './EventService';
+import { ModalService } from './ModalService';
+
+@Injectable()
+export class SharedMethodService {
+
+    constructor(private _eventService: EventService, private _modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
     }
 
-    export class SharedMethodService implements ng.IServiceProvider, ISharedMethodService {
-        constructor(private _gameService: IGameService, private _tradeService: ITradeService, private _game: IGame) {
+    useCharacterSheet?: boolean;
+    useEquipment?: boolean;
+    useBackpack?: boolean;
+    useQuests?: boolean;
+    useGround?: boolean;
+
+    setCombineState = this._eventService.setCombineState;
+
+    enemiesPresent = (game: IGame): boolean => {
+        var result = game.currentLocation && game.currentLocation.activeEnemies && game.currentLocation.activeEnemies.length > 0;
+
+        if (result) {
+            this._gameService.initCombat();
         }
 
-        public $get(gameService: IGameService, tradeService: ITradeService, game: IGame): ISharedMethodService {
-            this._gameService = gameService;
-            this._tradeService = tradeService;
-            this._game = game;
+        this._eventService.setEnemiesPresent(result);
 
-            return {
-                enemiesPresent: this.enemiesPresent,
-                trade: this.trade,
-                getButtonClass: this.getButtonClass,
-                executeAction: this.executeAction,
-                startCombat: this.startCombat,
-                showDescription: this.showDescription,
-                showEquipment: this.showEquipment
-            };
+        return result;
+    }
+
+    tryCombine = (game: IGame, combinable: ICombinable): boolean => {
+        var result = game.combinations.tryCombine(combinable);
+        this._eventService.setCombineState(result);
+        return result;
+    }
+
+    talk = (game: IGame, person: IPerson): void => {
+        this._conversationService.talk(person);
+        this.setPlayState(game, PlayState.Conversation);
+    }
+
+    trade = (game: IGame, trade: IPerson | ITrade): boolean => {
+        this._tradeService.trade(trade);
+        this.setPlayState(game, PlayState.Trade);
+
+        // Return true to keep the action button for trade locations.
+        return true;
+    };
+
+    showDescription = (game: IGame, type: string, item: any, title: string): void => {
+        this._gameService.setCurrentDescription(type, item, title);
+        this.setPlayState(game, PlayState.Description);
+    }
+
+    startCombat = (game: IGame, person?: IPerson): void => {
+        if (person) {
+            // The person becomes an enemy when attacked!
+            game.currentLocation.persons.remove(person);
+            game.currentLocation.enemies.push(person);
         }
 
-        useCharacterSheet?: boolean;
-        useEquipment?: boolean;
-        useBackpack?: boolean;
-        useQuests?: boolean;
-        useGround?: boolean;
+        game.combatLog = [];
+        game.playState = PlayState.Combat;
+        this.setPlayState(game, PlayState.Combat);
+    }
 
-        enemiesPresent = (): boolean => this._game.currentLocation && this._game.currentLocation.activeEnemies && this._game.currentLocation.activeEnemies.length > 0;
+    fight = (game: IGame, enemy: IEnemy): void => {
+         this._gameService.fight(enemy);
+         this.enemiesPresent(game);
+    }
 
-        trade = (trade: IPerson | ITrade): boolean => {
-            this._tradeService.trade(trade);
+    getButtonClass = (action: IAction): string => {
+        var type = action.actionType || ActionType.Regular;
+        var buttonClass = 'btn-';
 
-            // Return true to keep the action button for trade locations.
-            return true;
+        switch (type) {
+            case ActionType.Regular: {
+                buttonClass += 'info'
+            } break;
+            case ActionType.Check: {
+                buttonClass += 'warning';
+            } break;
+            case ActionType.Combat: {
+                buttonClass += 'danger';
+            } break;
+            case ActionType.Trade: {
+                buttonClass += 'secondary';
+            } break;
+        }
+
+        return buttonClass;
+    }
+
+    executeAction = (game: IGame, action: IAction): void => {
+        if (action && action.execute) {
+            var currentState = game.playState;
+
+            // Execute the action and when nothing or false is returned, remove it from the current location.
+            var result = action.execute(game);
+
+            // For trade actions, set the play state to trade to trigger the modal.
+            if (action.actionType === ActionType.Trade) {
+                this.setPlayState(game, PlayState.Trade);
+            }
+
+            var typeAndIndex = this.getActionIndex(game, action);
+
+            if (!result && typeAndIndex.index !== -1) {
+
+                if (typeAndIndex.type === ActionType.Regular && game.currentLocation.actions) {
+                    game.currentLocation.actions.splice(typeAndIndex.index, 1);
+                } else if (typeAndIndex.type === ActionType.Combat && game.currentLocation.combatActions) {
+                    game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
+                }
+            }
+
+            // After each action, save the game.
+            this._gameService.saveGame();
+
+            if (currentState && currentState !== game.playState) {
+                this.setPlayState(game, game.playState);
+            }
+        }
+    }
+
+    showEquipment = (game: IGame): boolean => {
+        return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => (<any>game.character.equipment)[k] !== undefined);
+    }
+
+    setPlayState = (game: IGame, value: PlayState): void => {
+        game.playState = value;
+        this._eventService.setPlayState(value);    
+    }
+    
+    private getActionIndex = (game: IGame, action: IAction): { type: number, index: number} => {
+        var index = -1;
+        var result = {
+            index: index,
+            type: 0
         };
 
-        getButtonClass = (action: IAction): string => {
-            var type = action.actionType || ActionType.Regular;
-            var buttonClass = 'btn-';
-
-            switch (type) {
-                case ActionType.Regular: {
-                    buttonClass += 'info'
-                } break;
-                case ActionType.Check: {
-                    buttonClass += 'warning';
-                } break;
-                case ActionType.Combat: {
-                    buttonClass += 'danger';
-                } break;
-                case ActionType.Trade: {
-                    buttonClass += 'secondary';
-                } break;
-            }
-
-            return buttonClass;
-        }
-
-        executeAction = (action: IAction, controller: ng.IComponentController): void => {
-            if (action && action.execute) {
-                // Modify the arguments collection to add the game to the collection before calling the function specified.
-                var args = <any[]>[this._game, action];
-
-                // Execute the action and when nothing or false is returned, remove it from the current location.
-                var executeFunc = typeof action.execute !== 'function' ? controller[<string>action.execute] : action.execute;
-                var result = executeFunc.apply(controller, args);
-                var typeAndIndex = this.getActionIndex(this._game, action);
-
-                if (!result && typeAndIndex.index !== -1) {
-
-                    if (typeAndIndex.type === ActionType.Regular && this._game.currentLocation.actions) {
-                        this._game.currentLocation.actions.splice(typeAndIndex.index, 1);
-                    } else if (typeAndIndex.type === ActionType.Combat && this._game.currentLocation.combatActions) {
-                        this._game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
-                    }
+        game.currentLocation.actions.forEach((a, i) => {
+            if (a === action) {
+                result = {
+                    index: i,
+                    type: 0
                 }
-
-                // After each action, save the game.
-                this._gameService.saveGame();
             }
-        }
+        });
 
-        startCombat = (person?: IPerson): void => {
-            if (person) {
-                // The person becomes an enemy when attacked!
-                this._game.currentLocation.persons.remove(person);
-                this._game.currentLocation.enemies.push(person);
-            }
-
-            this._game.combatLog = [];
-            this._game.playState = PlayState.Combat;
-        }
-
-        showDescription = (type: string, item: any, title: string): void => this._gameService.setCurrentDescription(type, item, title);
-
-        showEquipment = (): boolean => this.useEquipment && this._game.character && Object.keys(this._game.character.equipment).some(k => this._game.character.equipment[k] !== undefined);
-        
-        private getActionIndex = (game: IGame, action: IAction): { type: number, index: number} => {
-            var index = -1;
-            var result = {
-                index: index,
-                type: 0
-            };
-
-            game.currentLocation.actions.forEach((a, i) => {
+        if (index == -1) {
+            game.currentLocation.combatActions.forEach((a, i) => {
                 if (a === action) {
                     result = {
                         index: i,
-                        type: 0
+                        type: 2
                     }
                 }
             });
-
-            if (index == -1) {
-                game.currentLocation.combatActions.forEach((a, i) => {
-                    if (a === action) {
-                        result = {
-                            index: i,
-                            type: 2
-                        }
-                    }
-                });
-            }
-
-            return result;
         }
-    }
 
-    SharedMethodService.$inject = ['gameService', 'tradeService', 'game'];
+        return result;
+    }
 }

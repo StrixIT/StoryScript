@@ -1,0 +1,16 @@
+<div class="box-container" id="character-attributes">
+    <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ game.character.name || texts.characterSheet }}</div>
+    <div id="character-info" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
+        <div id="portraitFrame">
+            <img class="portrait" src="{{game.character.portraitFileName}}" />
+        </div>
+        <ul id="attributes-panel" class="list-unstyled">
+            <li *ngFor="let attribute of displayCharacterAttributes">
+                {{ texts.titleCase(texts.format(attribute)) }} {{ game.character[attribute] }}
+            </li>
+            <li>{{ texts.hitpoints }} {{ game.character.currentHitpoints }} / {{ game.character.hitpoints }}</li>
+            <li>{{ texts.currency }} {{ game.character.currency }}</li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+</div>

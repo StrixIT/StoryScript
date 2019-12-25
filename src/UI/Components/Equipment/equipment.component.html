@@ -1,0 +1,70 @@
+<div class="box-container" id="character-equipment" *ngIf="showEquipment()">
+    <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
+    <div id="equipment-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
+        <div class="row" *ngIf="isSlotUsed('head')">
+            <div class="col-12">
+                <div>
+                    {{ texts.head }}
+                </div>
+                <div class="item-box" (click)="unequipItem(game.character.equipment.head)">
+                    {{ game.character.equipment.head?.name }}
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="isSlotUsed('amulet')">
+            <div class="col-12">
+                <div>
+                    {{ texts.amulet }}
+                </div>
+                <div class="item-box" (click)="unequipItem(game.character.equipment.amulet)">
+                    {{ game.character.equipment.amulet?.name }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <span *ngIf="isSlotUsed('hands') || isSlotUsed('rightHand') || isSlotUsed('rightRing')">{{ texts.rightHand }}</span>
+            </div>
+            <div class="col-6">
+                <span *ngIf="isSlotUsed('body')">{{ texts.body }}</span>
+            </div>
+            <div class="col-3">
+                <span *ngIf="isSlotUsed('hands') || isSlotUsed('leftHand') || isSlotUsed('leftRing')">{{ texts.leftHand }}</span>
+            </div>
+            <div class="col-3">
+                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(game.character.equipment.hands)">{{ game.character.equipment.hands?.name }}</div>
+                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed('hands') || isSlotUsed('rightRing') }" *ngIf="isSlotUsed('rightHand')" (click)="unequipItem(game.character.equipment.rightHand)">{{ game.character.equipment.rightHand?.name }}</div>
+                <div class="item-box" *ngIf="isSlotUsed('rightRing')" (click)="unequipItem(game.character.equipment.rightRing)">{{ game.character.equipment.rightRing?.name }}</div>
+            </div>
+            <div class="col-6">
+                <div class="item-box no-border" *ngIf="(isSlotUsed('rightHand') || isSlotUsed('leftHand')) && isSlotUsed('hands')"></div>
+                <div class="item-box" *ngIf="isSlotUsed('body')" (click)="unequipItem(game.character.equipment.body)">{{ game.character.equipment.body?.name }}</div>
+            </div>
+            <div class="col-3">
+                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(game.character.equipment.hands)">{{ game.character.equipment.hands?.name }}</div>
+                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed('hands') || isSlotUsed('leftRing') }" *ngIf="isSlotUsed('leftHand')" (click)="unequipItem(game.character.equipment.leftHand)">{{ game.character.equipment.leftHand?.name }}</div>
+                <div class="item-box" *ngIf="isSlotUsed('leftRing')" (click)="unequipItem(game.character.equipment.leftRing)">{{ game.character.equipment.leftRing?.name }}</div>
+            </div>
+        </div>
+        <div class="row" *ngIf="isSlotUsed('legs')">
+            <div class="col-12">
+                <div>
+                    {{ texts.legs }}
+                </div>
+                <div class="item-box" (click)="unequipItem(game.character.equipment.legs)">
+                    {{ game.character.equipment.legs?.name }}
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="isSlotUsed('feet')">
+            <div class="col-12">
+                <div>
+                    {{ texts.feet }}
+                </div>
+                <div class="item-box" (click)="unequipItem(game.character.equipment.feet)">
+                    {{ game.character.equipment.feet?.name }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

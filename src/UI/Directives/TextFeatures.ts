@@ -1,87 +1,110 @@
-namespace StoryScript
-{
-    export class TextFeatures implements ng.IDirective {
-        restrict = 'A';
-        scope = {
-            location: '='
-        }
+import { IGame, IFeature } from 'storyScript/Interfaces/storyScript';
+import { compareString } from 'storyScript/globals';
+import { addHtmlSpaces } from 'storyScript/utilities';
+import { CombinationService } from 'storyScript/Services/CombinationService';
+import { EventService } from '../Services/EventService';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { Directive, ElementRef, Renderer2, HostListener, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+@Directive({ selector: '[textFeatures]' })
+export class TextFeatures  implements OnDestroy {
+    constructor(private _eventService: EventService, private _combinationService: CombinationService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
+        this._combinationSubscription = this._eventService.combinationChange$.subscribe(p => this.refreshFeatures(p));
+        this.refreshFeatures(true);
+
+        this.changes = new MutationObserver((mutations: MutationRecord[]) => {
+            mutations.forEach((mutation: MutationRecord) => this.refreshFeatures(true));
+        });
+  
+        this.changes.observe(_elem.nativeElement, {
+            attributes: true,
+            childList: true,
+            characterData: true
+        });
+    }
+
+    private changes: MutationObserver;
+    private _combinationSubscription: Subscription;
     
-        constructor(private _combinationService: ICombinationService, private _game: IGame) {
-        }
+    game: IGame;
 
-        link = (scope: StoryScriptScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void => {
-            scope.game = this._game;
+    ngOnDestroy(): void {
+        this._combinationSubscription.unsubscribe();
+    }
 
-            scope.$watch('game.combinations.combinationResult.done', (newValue) => {
-                if (newValue) {
-                    // Show the text of added features.
-                    element.find('feature')
-                        .filter((i, e) => e.innerHTML.trim() === '')
-                        .map((i, e) => {
-                            var featureElement = angular.element(e);
-                            var feature = this._game.currentLocation.features.get(featureElement.attr('name'));
+    @HostListener('click', ['$event']) onClick($event: any) {
+        this.click($event);
+    }
+      
+    @HostListener('mouseover', ['$event']) onMouseOver($event: any) {
+        this.mouseOver($event);
+    }
 
-                            if (feature) {
-                                this._game.currentLocation.text = this._game.currentLocation.text.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
-                            }
-                        });
-                    
-                    // Remove the text of deleted features.
-                    element.find('feature')
-                        .filter((i, e) => e.innerHTML.trim() !== '')
-                        .map((i, e) => {
-                            var featureElement = angular.element(e);
+    private refreshFeatures = (newValue: boolean) => {
+        if (newValue) {
+            // Show the text of added features.
+            const features = this._elem.nativeElement.getElementsByTagName('feature');
+            const featureArray = Array.prototype.slice.call(features);
 
-                            if (this._game.combinations.combinationResult.featuresToRemove.indexOf(featureElement.attr('name')) > -1)
-                            {
-                                featureElement[0].innerHTML = '';
-                            }
-                        });
-
-                    element.find('feature').each((i, e) => {
-                        angular.element(e).removeClass(['combine-active-selected']);
-                    });
-                }
-            });
-
-            element.on('click', ev => {
-                if (this.isFeatureNode(ev)) {
-                    var feature = this.getFeature(ev);
+            featureArray.filter((e) => e.innerHTML.trim() === '')
+                .map((e) => {
+                    var feature = this.game.currentLocation.features.get(e.getAttribute('name'));
 
                     if (feature) {
-                        var node = angular.element(ev.target);
-                        this._game.combinations.tryCombine(feature);
-                        var combineClass= this._combinationService.getCombineClass(feature);
-                        node.addClass(combineClass);
-                        scope.$applyAsync();
+                        this.game.currentLocation.description = this.game.currentLocation.description.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
                     }
-                }
-            });
-
-            element.on('mouseover', ev => {
-                if (this.isFeatureNode(ev)) {
-                    var node = angular.element(ev.target);
-                    var feature = this.getFeature(ev);
-                    var combineClass= this._combinationService.getCombineClass(feature);
-                    node.addClass(combineClass);
-                }
-            });
+                });
             
-        };
+            // Remove the text of deleted features.
+            featureArray.filter((e) => e.innerHTML.trim() !== '')
+                .map((e) => {
+                    if (this.game.combinations.combinationResult.featuresToRemove.indexOf(e.getAttribute('name')) > -1) {
+                        e.innerHTML = '';
+                    }
+                });
 
-        private isFeatureNode = (ev: JQueryEventObject): boolean  => {
-            var nodeType = ev.target && ev.target.nodeName;
-            return StoryScript.compareString(nodeType, 'feature');
+            featureArray.forEach((e) => {
+                this._renderer.removeClass(e, 'combine-active-selected');
+            });
         }
+    };
 
-        private getFeature = (ev: JQueryEventObject): IFeature => {
-            var featureName = angular.element(ev.target).attr('name');
-            return this._game.currentLocation.features.get(featureName);
+    private click = (ev: any) => {
+        if (this.isFeatureNode(ev)) {
+            var feature = this.getFeature(ev);
+
+            if (feature) {
+                var result = this.game.combinations.tryCombine(feature);
+                this._eventService.setCombineState(result);
+                this.addCombineClass(ev, feature);
+            }
         }
+    }
 
-        public static Factory()
-        {
-            return (combinationService: ICombinationService, game: IGame) => new TextFeatures(combinationService, game);
+    private mouseOver = (ev: any) => {
+        if (this.isFeatureNode(ev)) {
+            var feature = this.getFeature(ev);
+            this.addCombineClass(ev, feature);
+        }
+    };
+
+    private isFeatureNode = (ev: any): boolean  => {
+        var nodeType = ev.target && ev.target.nodeName;
+        return compareString(nodeType, 'feature');
+    }
+
+    private getFeature = (ev: any): IFeature => {
+        var featureName = ev.target.getAttribute('name');
+        return this.game.currentLocation.features.get(featureName);
+    }
+
+    private addCombineClass = (ev: any, feature: IFeature) => {
+        var combineClass= this._combinationService.getCombineClass(feature);
+
+        if (combineClass) {
+            this._renderer.addClass(ev.target, combineClass);
         }
     }
 }

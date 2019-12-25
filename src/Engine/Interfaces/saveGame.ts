@@ -1,46 +1,50 @@
-namespace StoryScript {
+import { ICollection } from './collection';
+import { ICompiledLocation } from './compiledLocation';
+import { ICharacter } from './character';
+import { IStatistics } from './statistics';
+import { GameState } from './enumerations/gameState';
+
+/**
+ * An object to save the game state.
+ */
+export interface ISaveGame {
     /**
-     * An object to save the game state.
+     * The save game name.
      */
-    export interface ISaveGame {
-        /**
-         * The save game name.
-         */
-        name?: string;
+    name?: string;
 
-        /**
-         * The character to save
-         */
-        character: ICharacter;
+    /**
+     * The character to save
+     */
+    character: ICharacter;
 
-        /**
-         * The statistics to save.
-         */
-        statistics: IStatistics;
+    /**
+     * The statistics to save.
+     */
+    statistics: IStatistics;
 
-        /**
-         * The id of the location the player is currently at.
-         */
-        location: string;
+    /**
+     * The id of the location the player is currently at.
+     */
+    location: string;
 
-        /**
-         * The id of the location the player visited previous to the current one.
-         */
-        previousLocation: string;
+    /**
+     * The id of the location the player visited previous to the current one.
+     */
+    previousLocation: string;
 
-        /**
-         * The properties of the world to save.
-         */
-        worldProperties: any;
+    /**
+     * The properties of the world to save.
+     */
+    worldProperties: any;
 
-        /**
-         * The world locations to save.
-         */
-        world: ICollection<ICompiledLocation>;
+    /**
+     * The world locations to save.
+     */
+    world: ICollection<ICompiledLocation>;
 
-        /**
-         * The state of the game when saved.
-         */
-        state: GameState
-    }
+    /**
+     * The state of the game when saved.
+     */
+    state: GameState
 }
