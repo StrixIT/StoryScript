@@ -1,19 +1,19 @@
-﻿namespace DangerousCave {
-    export function Location(entity: ILocation): ILocation {
-        return StoryScript.Location(entity);
-    }
+﻿import { ILocation as StoryScriptILocation, Location as StoryScriptLocation, ICompiledLocation as StoryScriptICompiledLocation, ICollection } from 'storyScript/Interfaces/storyScript';
+import { IEnemy, IItem, IPerson } from '../types';
 
-    export interface ILocation extends StoryScript.ILocation {
-        // Add game-specific location properties here
-    }
+export function Location(entity: ILocation): ILocation  {
+    return StoryScriptLocation(entity);
+}
 
-    export interface ICompiledLocation extends ILocation, StoryScript.ICompiledLocation {
-        activeEnemies?: StoryScript.ICollection<IEnemy>;
-        enemies?: StoryScript.ICollection<IEnemy>;
-        activeItems?: StoryScript.ICollection<IItem>;
-        items?: StoryScript.ICollection<IItem>;
-        activePersons?: StoryScript.ICollection<IPerson>;
-        persons?: StoryScript.ICollection<IPerson>;
-        activePerson: IPerson;
-    }
+export interface ILocation extends StoryScriptILocation {
+    // Add game-specific location properties here
+}
+
+export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {
+    activeEnemies?: ICollection<IEnemy>;
+    enemies?: ICollection<IEnemy>;
+    activeItems?: ICollection<IItem>;
+    items?: ICollection<IItem>;
+    activePersons?: ICollection<IPerson>;
+    persons?: ICollection<IPerson>;
 }

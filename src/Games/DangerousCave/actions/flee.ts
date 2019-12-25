@@ -1,29 +1,31 @@
-﻿namespace DangerousCave.Actions {
-    export function Flee(text: string): StoryScript.IAction {
-        return Action({
-            text: text || 'Vluchten!',
-            actionType: StoryScript.ActionType.Check,
-            status: function (game: IGame) {
-                return StoryScript.isEmpty(game.currentLocation.activeEnemies) ? StoryScript.ActionStatus.Unavailable : StoryScript.ActionStatus.Available;
-            },
-            execute: function (game: IGame) {
-                var check = game.helpers.rollDice(game.character.vlugheid + 'd6');
-                var result = check * game.character.vlugheid;
-                var totalHitpoints = 0;
+﻿import { IAction, Action, ActionType, ActionStatus } from 'storyScript/Interfaces/storyScript';
+import { IGame } from '../types';
+import { isEmpty } from 'storyScript/utilities';
 
-                game.currentLocation.activeEnemies.forEach(function (enemy) {
-                    totalHitpoints += enemy.hitpoints;
-                });
+export function Flee(text: string): IAction {
+    return Action({
+        text: text || 'Vluchten!',
+        actionType: ActionType.Check,
+        status: (game: IGame) => {
+            return isEmpty(game.currentLocation.activeEnemies) ? ActionStatus.Unavailable : ActionStatus.Available;
+        },
+        execute: (game: IGame) => {
+            var check = game.helpers.rollDice(game.character.vlugheid + 'd6');
+            var result = check * game.character.vlugheid;
+            var totalHitpoints = 0;
 
-                if (result >= totalHitpoints / 2) {
-                    game.changeLocation();
-                }
-                else {
-                    game.logToCombatLog('Je ontsnapping mislukt!');
-                };
+            game.currentLocation.activeEnemies.forEach(function (enemy) {
+                totalHitpoints += enemy.hitpoints;
+            });
 
-                return true;
+            if (result >= totalHitpoints / 2) {
+                game.changeLocation();
             }
-        });
-    }
+            else {
+                game.logToCombatLog('Je ontsnapping mislukt!');
+            };
+
+            return true;
+        }
+    });
 }

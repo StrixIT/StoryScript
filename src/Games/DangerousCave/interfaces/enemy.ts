@@ -1,10 +1,11 @@
-﻿namespace DangerousCave {
-    export function Enemy(entity: IEnemy): IEnemy {
-        return StoryScript.Enemy(entity);
-    }
+﻿import { IEnemy as StoryScriptIEnemy, Enemy as StoryScriptEnemy } from 'storyScript/Interfaces/storyScript';
+import { IFeature } from '../types';
 
-    export interface IEnemy extends StoryScript.IEnemy {
-        attack: string;
-        reward: number;
-    }
+export function Enemy(entity: IEnemy): IEnemy {
+    return StoryScriptEnemy(entity);
+}
+
+export interface IEnemy extends IFeature, StoryScriptIEnemy {
+    attack?: string;
+    reward?: number;
 }

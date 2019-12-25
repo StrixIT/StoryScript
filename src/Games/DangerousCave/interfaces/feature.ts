@@ -1,9 +1,9 @@
-namespace DangerousCave {
-    export function Feature(entity: IFeature): IFeature {
-        return StoryScript.Feature(entity);
-    }
+import { IFeature as StoryScriptIFeature, Feature as StoryScriptFeature } from 'storyScript/Interfaces/storyScript';
 
-    export interface IFeature extends StoryScript.IFeature {
-        // Add game-specific item properties here
-    }
+export function Feature(entity: IFeature): IFeature {
+    return StoryScriptFeature(entity);
+}
+
+export interface IFeature extends StoryScriptIFeature {
+    // Add game-specific item properties here
 }

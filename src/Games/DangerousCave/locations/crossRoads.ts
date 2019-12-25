@@ -1,35 +1,38 @@
-﻿namespace DangerousCave.Locations {
-    export function CrossRoads() {
-        return Location({
-            name: 'Een kruispunt',
-            enterEvents: [
-                (game: IGame) => {
-                    var orkCorridor = game.locations.get(Locations.DarkCorridor);
-                    var orkPresent = !orkCorridor.hasVisited;
+﻿import { IGame, Location } from '../types';
+import description from './crossRoads.html'
+import { DarkCorridor } from './darkCorridor';
 
-                    if (game.character.oplettendheid > 2 && orkPresent) {
-                        game.logToLocationLog('Je hoort vanuit de westelijke gang een snuivende ademhaling.');
-                    }
+export function CrossRoads() {
+    return Location({
+        name: 'Een kruispunt',
+        description: description,
+        enterEvents: [
+            (game: IGame) => {
+                var orkCorridor = game.locations.get(DarkCorridor);
+                var orkPresent = !orkCorridor.hasVisited;
+
+                if (game.character.oplettendheid > 2 && orkPresent) {
+                    game.logToLocationLog('Je hoort vanuit de westelijke gang een snuivende ademhaling.');
                 }
-            ],
-            destinations: [
-                {
-                    name: 'Donkere tunnel (oost)',
-                    target: Locations.DarkCorridor
-                },
-                {
-                    name: 'Nog niet! Gang (noord)',
-                    target: Locations.Temp
-                },
-                {
-                    name: 'Donkere tunnel (west)',
-                    target: Locations.WestCrossing
-                },
-                {
-                    name: 'Gang (zuid)',
-                    target: Locations.RightCorridor
-                }
-            ],
-        });
-    }
+            }
+        ],
+        destinations: [
+            {
+                name: 'Donkere tunnel (oost)',
+                target: DarkCorridor
+            },
+            {
+                name: 'Nog niet! Gang (noord)',
+                target: Temp
+            },
+            {
+                name: 'Donkere tunnel (west)',
+                target: WestCrossing
+            },
+            {
+                name: 'Gang (zuid)',
+                target: RightCorridor
+            }
+        ],
+    });
 }

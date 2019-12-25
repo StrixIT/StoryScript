@@ -1,46 +1,47 @@
-﻿namespace DangerousCave {
-    export class Character implements StoryScript.ICharacter {
-        name: string = "";
-        score: number = 0;
-        hitpoints: number = 20;
-        currentHitpoints: number = 20;
-        currency: number = 0;
-        scoreToNextLevel: number = 0;
-        level: number = 1;
+﻿import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
+import { IItem } from './types';
 
-        kracht: number = 1;
-        vlugheid: number = 1;
-        oplettendheid: number = 1;
-        defense: number = 1;
+export class Character implements ICharacter {
+    name: string = "";
+    score: number = 0;
+    hitpoints: number = 20;
+    currentHitpoints: number = 20;
+    currency: number = 0;
+    scoreToNextLevel?: number = 0;
+    level?: number = 1;
 
-        items: StoryScript.ICollection<IItem> = [];
+    kracht?: number = 1;
+    vlugheid?: number = 1;
+    oplettendheid?: number = 1;
+    defense?: number = 1;
 
-        equipment: {
-            head: StoryScript.IItem,
-            amulet: StoryScript.IItem,
-            body: StoryScript.IItem,
-            hands: StoryScript.IItem,
-            leftHand: StoryScript.IItem,
-            leftRing: StoryScript.IItem,
-            rightHand: StoryScript.IItem,
-            rightRing: StoryScript.IItem,
-            legs: StoryScript.IItem,
-            feet: StoryScript.IItem
-        };
+    items: ICollection<IItem> = [];
 
-        constructor() {
-            this.equipment = {
-                head: null,
-                amulet: null,
-                body: null,
-                hands: null,
-                leftHand: null,
-                leftRing: null,
-                rightHand: null,
-                rightRing: null,
-                legs: null,
-                feet: null
-            }
+    equipment: {
+        head?: IItem,
+        amulet?: IItem,
+        body?: IItem,
+        hands?: IItem,
+        leftHand?: IItem,
+        leftRing?: IItem,
+        rightHand?: IItem,
+        rightRing?: IItem,
+        legs?: IItem,
+        feet?: IItem
+    };
+
+    constructor() {
+        this.equipment = {
+            head: null,
+            amulet: null,
+            body: null,
+            hands: null,
+            leftHand: null,
+            leftRing: null,
+            rightHand: null,
+            rightRing: null,
+            legs: null,
+            feet: null
         }
     }
 }
