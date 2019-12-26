@@ -12,10 +12,10 @@ body {
 
 #location-overlay {
     position: absolute;
-    top: 450px;
-    left: 250px;
+    top: 80px;
+    left: 350px;
     background-color: white;
-    width: 800px;
+    width: 600px;
 }
 
 #location-overlay #location {

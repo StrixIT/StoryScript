@@ -33,7 +33,7 @@ export function Rules(): IRules {
                         defaultMatch: (game: IGame, target: IFeature, tool: ICombinable): string => {
                             // When not moving, re-show the overlay and quit.
                             if (game.worldProperties.mapPosition === target.id) {
-                                showElements(game, false);
+                                showElements(game, false, target.linkToLocation);
                                 return '';
                             }
 
@@ -51,7 +51,7 @@ export function Rules(): IRules {
                             }
 
                             // Hide the location overlay while the player is travelling.
-                            showElements(game, true);
+                            showElements(game, true, target.linkToLocation);
 
                             return '';
                         },
@@ -196,19 +196,24 @@ export function Rules(): IRules {
         showElements(game, true);
     }
 
-    function showElements(game: IGame, timeout: boolean) {
-        var styles = [{
-            elementSelector: '#location-overlay',
-            styles: [
-                ['display', 'block']
-            ]
-        },
-        {
+    function showElements(game: IGame, timeout: boolean, location?: string) {
+        var styles = [];
+
+        if (location) {
+            styles.push({
+                elementSelector: '#location-overlay',
+                styles: [
+                    ['display', 'block']
+                ]
+            });
+        }
+
+        styles.push({
             elementSelector: '#player-icon',
             styles: [
                 ['display', 'block']
             ]
-        }];
+        });
 
         if (timeout) {
             setTimeout(() => {
