@@ -53,6 +53,7 @@ export function CustomTexts(): IInterfaceTexts {
         highScores: "Topscores:",
         questFailed: "Je hebt gefaald...",
         finalScore: "Je score: ",
-        tryAgain: "Nog eens proberen"
+        tryAgain: "Nog eens proberen",
+        view: "Bekijken"
     };
 }
