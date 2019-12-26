@@ -1,0 +1,17 @@
+<div class="box-container" id="create-character" *ngIf="game.state === 'Intro'">
+    <h2>New Game introduction</h2>
+    <p>
+        You have always dreamed of adventure. You have read about the great adventurers of the past, marveled at their deeds, envied their experiences. 
+        As long as you can remember, you have wished to become an adventurer yourself.
+    </p>
+    <p>
+        Now, finally, your time has come!
+A strange man has arrived in your village. A wizard, he claims to be, seeking young, able bodied warriors to protect him on his journey. 
+He has promised good pay, and exciting adventures.
+    </p>
+    <p>
+        Your parents, understanding that the rural, quiet life was never for you, have given you their blessing. 
+Your father imparted his old sword upon you, and your mother an old family heirloom, a necklace that will protect you against the dangers ahead.
+    </p>
+    <button type="button" class="btn btn-primary" (click)="endIntro()">{{ texts.skipIntro }}</button>
+</div>
