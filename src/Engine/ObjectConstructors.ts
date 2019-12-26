@@ -196,10 +196,14 @@ export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
 }
 
 function buildEntity(entityFunction: Function, functionName: string) {
+    _currentEntityKey = null;
+
     entityFunction();
 
-    // Add the key/id registration record.
-    _registeredIds.set(_currentEntityKey, functionName.toLowerCase());
+    if (_currentEntityKey) {
+        // Add the key/id registration record.
+        _registeredIds.set(_currentEntityKey, functionName.toLowerCase());
+    }
 }
 
 function Create(type: string, entity: any, id?: string) {
