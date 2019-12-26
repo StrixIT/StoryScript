@@ -23,8 +23,8 @@ export class TradeService implements ITradeService {
             trader.currency = (<IPerson>trade).currency;
             this._game.person = <IPerson>trade;
 
-            if (!trader.title) {
-                trader.title = this._texts.format(this._texts.trade, [(<IPerson>trade).name]);
+            if (!trader.name) {
+                trader.name = this._texts.format(this._texts.trade, [(<IPerson>trade).name]);
             }
         } else {
             trader.ownItemsOnly = false;

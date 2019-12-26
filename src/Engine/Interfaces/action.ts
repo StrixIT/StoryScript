@@ -7,6 +7,11 @@ import { ActionStatus } from './enumerations/actionStatus';
  */
 export interface IAction {
     /**
+     * The id of the action, set at runtime.
+     */
+    id?: string;
+
+    /**
      * The text shown for this action (e.g. 'Search').
      */
     text?: string;
@@ -25,5 +30,5 @@ export interface IAction {
      * The function to execute when the player selects the action. Return true if the action should
      * be allowed to execute more than once.
      */
-    execute: (game: IGame) => boolean | void;
+    execute: string | ((game: IGame) => boolean | void);
 }

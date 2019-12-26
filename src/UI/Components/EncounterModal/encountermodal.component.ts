@@ -26,7 +26,7 @@ export class EncounterModalComponent implements OnDestroy {
         }
 
         this._playStateSubscription = this._eventService.playStateChange$.subscribe((p: PlayState) => this.closeModal(p));
-        this._enemiesPresentSubscription = this._eventService.enemiesPresentChange$.subscribe((p: boolean) => this.settings.canClose = !p);
+        this._enemiesPresentSubscription = this._eventService.enemiesPresentChange$.subscribe((p: boolean) => this.settings.canClose = !p || this.settings.description !== undefined);
     }
 
     private _playStateSubscription: Subscription;

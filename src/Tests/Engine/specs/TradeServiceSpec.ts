@@ -69,7 +69,7 @@ describe("TradeService", function() {
         expect(activeTrade).toBe(trader.trade);
         expect(game.person).toBe(trader);
         expect(activeTrade.currency).toBe(trader.trade.currency);
-        expect(activeTrade.title).toBe(trader.name);
+        expect(activeTrade.name).toBe(trader.name);
         expect(game.playState).toBe(PlayState.Trade);
     });
 

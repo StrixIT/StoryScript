@@ -22,7 +22,7 @@ export class CombatComponent {
 
     getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action); 
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this); 
 
     fight = (enemy: IEnemy): void => this._sharedMethodService.fight(this.game, enemy);
     

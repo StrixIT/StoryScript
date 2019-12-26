@@ -7,9 +7,16 @@ import { IGame } from './game';
  */
 export interface ITrade {
     /**
-     * The title as shown to the player in the trade dialog.
+     * The id of the trade, set at runtime.
      */
-    title?: string;
+    id?: string;
+
+    /**
+     * The title as shown to the player in the trade dialog. If the trade is defined
+     * for a person, omitting the name will have StoryScript use the person name for
+     * the trade.
+     */
+    name?: string;
 
     /**
      * The description of the trade as shown to the player.

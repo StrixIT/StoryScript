@@ -55,7 +55,7 @@ export class ModalService implements OnDestroy {
             } break;
             case PlayState.Trade: {
                 var trader = this.game.trade;
-                modalSettings.title = trader.title;
+                modalSettings.title = trader.name;
                 modalSettings.canClose = true;
             } break;
             case PlayState.Description: {

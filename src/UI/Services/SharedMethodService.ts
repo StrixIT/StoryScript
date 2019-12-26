@@ -9,8 +9,10 @@ import { ModalService } from './ModalService';
 
 @Injectable()
 export class SharedMethodService {
+    private _playState: PlayState = null;
 
-    constructor(private _eventService: EventService, private _modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
+    // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
+    constructor(private _eventService: EventService, _modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
     }
 
     useCharacterSheet?: boolean;
@@ -41,12 +43,18 @@ export class SharedMethodService {
 
     talk = (game: IGame, person: IPerson): void => {
         this._conversationService.talk(person);
-        this.setPlayState(game, PlayState.Conversation);
+        this.setPlayState(game, PlayState.Conversation, true);
     }
 
     trade = (game: IGame, trade: IPerson | ITrade): boolean => {
+        var locationTrade = <ITrade>trade;
+
+        if (locationTrade && !(<any>locationTrade).type && locationTrade.id) {
+            trade = game.currentLocation.trade.find(t => t.id === locationTrade.id);
+        }
+
         this._tradeService.trade(trade);
-        this.setPlayState(game, PlayState.Trade);
+        this.setPlayState(game, PlayState.Trade, true);
 
         // Return true to keep the action button for trade locations.
         return true;
@@ -54,7 +62,7 @@ export class SharedMethodService {
 
     showDescription = (game: IGame, type: string, item: any, title: string): void => {
         this._gameService.setCurrentDescription(type, item, title);
-        this.setPlayState(game, PlayState.Description);
+        this.setPlayState(game, PlayState.Description, true);
     }
 
     startCombat = (game: IGame, person?: IPerson): void => {
@@ -65,13 +73,12 @@ export class SharedMethodService {
         }
 
         game.combatLog = [];
-        game.playState = PlayState.Combat;
         this.setPlayState(game, PlayState.Combat);
     }
 
     fight = (game: IGame, enemy: IEnemy): void => {
-         this._gameService.fight(enemy);
-         this.enemiesPresent(game);
+        this._gameService.fight(enemy);
+        this.setPlayState(game, game.playState);
     }
 
     getButtonClass = (action: IAction): string => {
@@ -96,17 +103,14 @@ export class SharedMethodService {
         return buttonClass;
     }
 
-    executeAction = (game: IGame, action: IAction): void => {
+    executeAction = (game: IGame, action: IAction, component: any): void => {
         if (action && action.execute) {
-            var currentState = game.playState;
+            // Modify the arguments collection to add the game to the collection before calling the function specified.
+            var args = <any[]>[game, action];
 
             // Execute the action and when nothing or false is returned, remove it from the current location.
-            var result = action.execute(game);
-
-            // For trade actions, set the play state to trade to trigger the modal.
-            if (action.actionType === ActionType.Trade) {
-                this.setPlayState(game, PlayState.Trade);
-            }
+            var executeFunc = typeof action.execute !== 'function' ? component[action.execute] : action.execute;
+            var result = executeFunc.apply(component, args);
 
             var typeAndIndex = this.getActionIndex(game, action);
 
@@ -122,7 +126,7 @@ export class SharedMethodService {
             // After each action, save the game.
             this._gameService.saveGame();
 
-            if (currentState && currentState !== game.playState) {
+            if (this._playState !== game.playState) {
                 this.setPlayState(game, game.playState);
             }
         }
@@ -132,9 +136,12 @@ export class SharedMethodService {
         return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => (<any>game.character.equipment)[k] !== undefined);
     }
 
-    setPlayState = (game: IGame, value: PlayState): void => {
-        game.playState = value;
-        this._eventService.setPlayState(value);    
+    private setPlayState = (game: IGame, value: PlayState, force?: boolean): void => {
+        if (this._playState !== value || force) {
+            game.playState = value;
+            this._playState = value;
+            this._eventService.setPlayState(value);   
+        } 
     }
     
     private getActionIndex = (game: IGame, action: IAction): { type: number, index: number} => {

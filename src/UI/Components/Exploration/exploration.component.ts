@@ -33,7 +33,9 @@ export class ExplorationComponent {
 
     hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action);
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this);
+
+    trade = (game: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this.game, trade);
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         if (this.game.combinations.tryCombine(barrier))

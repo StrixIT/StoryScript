@@ -11,7 +11,8 @@ export function getPlural(name: string): string {
 export function getSingular(name: string): string {
     return name.endsWith('ies') ? 
             name.substring(0, name.length - 3) + 'y' 
-            : name.substring(0, name.length - 1);
+            : name.endsWith('e') ? name
+                : name.substring(0, name.length - 1);
 }
 
 export function addHtmlSpaces(text: string): string {

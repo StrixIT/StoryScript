@@ -23,7 +23,7 @@ describe("LocationService", function() {
             definitions: {}
         };
 
-        var service = getService(dataService, {}, {}, game, definitions);
+        var service = getService(dataService, {}, game, definitions);
         service.init(game);
 
         expect(game.changeLocation).not.toBeNull();
@@ -56,7 +56,7 @@ describe("LocationService", function() {
         expect(dataService.copy).toHaveBeenCalled();
     });
 
-    function getService(dataService?, tradeService?, rules?, game?, definitions?, ) {
+    function getService(dataService?, rules?, game?, definitions?, ) {
         var data = null;
 
         var dataService = dataService || {
@@ -64,6 +64,6 @@ describe("LocationService", function() {
             load: function(key) { return data; }
         }
 
-        return new LocationService(dataService, tradeService || {}, rules || {}, game || {}, definitions || {});
+        return new LocationService(dataService, rules || {}, game || {}, definitions || {});
     }
 });

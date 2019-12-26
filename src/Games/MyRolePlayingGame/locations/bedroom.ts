@@ -13,7 +13,7 @@ export function Bedroom() {
             }
         ],
         trade: [{
-            title: 'Your personal closet',
+            name: 'Your personal closet',
             description: 'Do you want to take something out of your closet or put it back in?',
             buy: {
                 description: 'Take out of closet',

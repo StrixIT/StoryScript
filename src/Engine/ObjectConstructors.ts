@@ -120,6 +120,7 @@ export function initCollection<T>(entity: any, property: string) {
     ];
 
     const _gameCollections: string[] = _entityCollections.concat([
+        'trade',
         'actions',
         'combatActions',
         'destinations',
@@ -134,7 +135,7 @@ export function initCollection<T>(entity: any, property: string) {
     
     var collection = entity[property] || [];
 
-    if (property === 'features' && entity[property]) {
+    if ((property === 'features' || property === 'trade') && entity[property]) {
         // Initialize features that have been declared inline. Check for the existence of a type property to determine whether the object is already initialized.
         // Store the current entity key, as it will be overridden when inline features are build.
         const locationEntityKey = _currentEntityKey;
@@ -229,6 +230,9 @@ function Create(type: string, entity: any, id?: string) {
         case 'action': {
             return CreateObject(entity, 'action', id);
         }
+        case 'trade': {
+            return CreateObject(entity, 'trade', id);
+        }
     }
 }
 
@@ -251,6 +255,7 @@ function createLocation(entity: ILocation) {
     initCollection(location, 'combatActions');
     initCollection(location, 'destinations');
     initCollection(location, 'features');
+    initCollection(location, 'trade');
     initCollection(location, 'items');
     initCollection(location, 'enemies');
     initCollection(location, 'persons');

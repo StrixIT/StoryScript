@@ -8,6 +8,10 @@ h2 {
     color: #483D8B;
 }
 
+button {
+    margin-right: 10px;
+}
+
 .menu-bar {
     padding: 10px 15px 5px 30px;
 }
