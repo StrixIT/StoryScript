@@ -16,7 +16,7 @@ export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocati
     items?: ICollection<IItem>;
     activePersons?: ICollection<IPerson>;
     persons?: ICollection<IPerson>;
-    activePerson: IPerson;
+    activePerson?: IPerson;
     destinations?: ICollection<IDestination>;
     completedDay?: boolean;
     completedNight?: boolean;

@@ -4,18 +4,18 @@ import { Class } from './classes';
 
 export class Character implements ICharacter {
     name: string = "";
-    portraitFileName = "resources/Hero1.png";
+    portraitFileName?: string = "resources/Hero1.png";
     hitpoints: number = 200;
     currentHitpoints: number = 200;
     score: number = 0;
     currency: number = 3;
 
-    strength: number = 1;
-    agility: number = 1;
-    intelligence: number = 1;
-    charisma: number = 1;
+    strength?: number = 1;
+    agility?: number = 1;
+    intelligence?: number = 1;
+    charisma?: number = 1;
 
-    class: Class;
+    class?: Class;
 
     items: ICollection<IItem> = [];
 

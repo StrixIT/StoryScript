@@ -1,35 +1,37 @@
-﻿module QuestForTheKing.Locations {
-    export function Day1() {
-        return Location({
-            name: 'Day 1',
-            destinations: [
-                {
-                    name: 'Day 2',
-                    target: Locations.Day2
-                },
-                {
+﻿import { Location, IGame } from '../../types';
+import description from './Day1.html';
 
-                    name: 'Weapon Smith',
-                    target: Locations.WeaponSmith
-                },
-                {
+export function Day1() {
+    return Location({
+        name: 'Day 1',
+        description: description,
+        destinations: [
+            {
+                name: 'Day 2',
+                target: Day2
+            },
+            {
 
-                    name: 'The Storyteller',
-                    target: Locations.Fasold1
-                },
-                {
+                name: 'Weapon Smith',
+                target: WeaponSmith
+            },
+            {
 
-                    name: 'Healers Tent',
-                    target: Locations.HealersTent
-                }
+                name: 'The Storyteller',
+                target: Fasold1
+            },
+            {
 
-            ],
-            enemies: [
-                Enemies.Farmboy()
-            ],
-            enterEvents: [
-                changeDay
-            ]
-        });
-    }
+                name: 'Healers Tent',
+                target: HealersTent
+            }
+
+        ],
+        enemies: [
+            Farmboy()
+        ],
+        enterEvents: [
+            changeDay
+        ]
+    });
 }
