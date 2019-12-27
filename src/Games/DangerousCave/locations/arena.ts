@@ -33,7 +33,7 @@ export function Arena() {
     });
 
     function onDefeat(game: IGame) {
-        game.state = GameState.Play;
+        game.playState = null;
         var randomEnemy = game.helpers.randomEnemy();
         game.currentLocation.enemies.push(randomEnemy);
         randomEnemy.onDefeat = game.worldProperties.onDefeat;
