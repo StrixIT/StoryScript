@@ -1,0 +1,14 @@
+<div class="container-fluid menu-bar">
+    <div class="row">
+        <div class="col-8">
+            <h1>{{ texts.gameName }}</h1>
+        </div>
+        <div class="col-4">
+            <div class="float-right">
+                <button type="button" class="btn btn-dark btn-sm" (click)="menu()">{{ texts.mainMenuShort }}</button>
+                <button id="resetbutton" type="button" class="btn btn-danger btn-sm" (click)="reset()">{{ texts.resetWorld }}</button>
+            </div>
+            <div class="float-none"></div>
+        </div>
+    </div>
+</div>

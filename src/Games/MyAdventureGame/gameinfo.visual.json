@@ -1,0 +1,10 @@
+{
+    "name": "Visual Adventure Game demo",
+    "description": "A demo to showcase the StoryScript building blocks for Visual Adventure Games",
+    "picture": "",
+    "sourcesIncluded": true,
+    "author": {
+        "name": "Rutger Schurgers",
+        "email": "rutger@strixit.com"
+    }
+}

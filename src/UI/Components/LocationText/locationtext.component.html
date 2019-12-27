@@ -1,0 +1,9 @@
+<div class="box-container" id="location" *ngIf="game.currentLocation?.description">
+    <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
+    <div textFeatures>
+        <div [innerHTML]="game.currentLocation.description | safe: 'html'"></div>
+    </div>
+    <ul id="location-log" class="list-unstyled">
+        <li *ngFor="let message of game.currentLocation.log" [innerHTML]="message | safe: 'html'"></li>
+    </ul>
+</div>

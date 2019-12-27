@@ -1,0 +1,5 @@
+<div class="box-container" id="create-character" *ngIf="game.state === 'CreateCharacter'">
+    <div class="box-title">{{ texts.newGame }}</div>
+    <build-character [sheet]="game.createCharacterSheet"></build-character>
+    <button type="button" id="start-adventure" class="btn btn-primary" [disabled]="!distributionDone()" (click)="startNewGame()" *ngIf="game.createCharacterSheet.currentStep >= game.createCharacterSheet.steps.length - 1 || game.createCharacterSheet.steps[game.createCharacterSheet.currentStep].finish">{{ texts.startAdventure }}</button>
+</div>

@@ -8,8 +8,17 @@ h2 {
     color: #483D8B;
 }
 
+button {
+    margin-right: 10px;
+}
+
 .menu-bar {
     padding: 10px 15px 5px 30px;
+}
+
+#mainmenu .btn {
+    display: block;
+    margin-bottom: 10px;
 }
 
 .box-container {
@@ -104,12 +113,17 @@ h2 {
     padding-left: 10px;
 }
 
+#save-game {
+    margin-bottom: 15px;
+}
+
 #save-game p {
     font-weight: bold;
 }
 
 #save-game li {
     margin-bottom: 5px;
+    cursor: pointer;
 }
 
 #start-adventure {
@@ -195,6 +209,10 @@ button.restart {
     border-radius: 5px;
 }
 
+.combine-active-selected {
+    color: red;
+}
+
 .combination-text, .combination-result-text {
     display: inline-block;
     margin-left: 20px;
@@ -219,4 +237,8 @@ table td {
 
 feature {
     cursor: pointer;
+}
+
+#level-up #create-character {
+    padding-left: 0px;
 }

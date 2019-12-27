@@ -1,11 +1,9 @@
-﻿namespace StoryScript {
-    /**
-     * Used to differentiate between actions visually (e.g. color).
-     */
-    export enum ActionType {
-        Regular,
-        Check,
-        Combat,
-        Trade
-    }
+﻿/**
+ * Used to differentiate between actions visually (e.g. color).
+ */
+export enum ActionType {
+    Regular,
+    Check,
+    Combat,
+    Trade
 }

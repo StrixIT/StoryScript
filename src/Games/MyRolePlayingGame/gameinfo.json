@@ -1,0 +1,10 @@
+{
+    "name": "Role Playing Game demo",
+    "description": "A demo to showcase the StoryScript building blocks for Role Playing Games",
+    "picture": "",
+    "sourcesIncluded": true,
+    "author": {
+        "name": "Rutger Schurgers",
+        "email": "rutger@strixit.com"
+    }
+}

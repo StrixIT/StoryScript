@@ -1,0 +1,13 @@
+<div class="box-container" id="enemies" *ngIf="enemiesPresent()">
+    <div class="box-title">{{ texts.encounters }}</div>
+    <p>{{ texts.enemiesToFight }}</p>
+    <ul class="list-unstyled">
+        <li *ngFor="let enemy of game.currentLocation.activeEnemies" (click)="tryCombine(enemy)" [ngClass]="getCombineClass(enemy)">
+            <span>{{ enemy.name }}</span>
+            <div class="inline" [ngClass]="getCombineClass()">
+                <button type="button" class="btn btn-info btn-sm" *ngIf="hasDescription(enemy)" (click)="showDescription(enemy, enemy.name)">{{ texts.view }}</button>
+            </div>
+        </li>
+    </ul>
+    <button type="button" class="btn btn-danger" id="start-combat" (click)="startCombat()">{{ texts.startCombat }}</button>
+</div>
