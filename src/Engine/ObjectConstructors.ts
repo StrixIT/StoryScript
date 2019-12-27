@@ -39,6 +39,7 @@ const _definitions: IDefinitions = {
 const _functions = {};
 
 export function buildEntities(): void {
+    // Build all entities once to register them with their id.
     Object.getOwnPropertyNames(_definitions).forEach(p => {
         _definitions[p].forEach((f: Function) => {
             buildEntity(f, f.name);
@@ -46,6 +47,13 @@ export function buildEntities(): void {
     });
 
     _registration = false;
+
+    // Build all entities again to register their functions.
+    Object.getOwnPropertyNames(_definitions).forEach(p => {
+        _definitions[p].forEach((f: Function) => {
+            f();
+        });
+    });
 }
 
 export function GetDefinitions(): IDefinitions { 
