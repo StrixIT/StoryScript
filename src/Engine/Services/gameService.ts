@@ -197,7 +197,7 @@ export class GameService implements IGameService {
 
         if (!this._parsedDescriptions.get(entity.id)) {
             var descriptionNode = getParsedDocument('description', entity.description)[0];
-            this._parsedDescriptions.set(entity.id, descriptionNode.innerHTML.trim() !== '');
+            this._parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
         }
 
         return this._parsedDescriptions.get(entity.id);
@@ -223,6 +223,8 @@ export class GameService implements IGameService {
                 enemy.onAttack(this._game);
             }
         });
+
+        this._game.playState = PlayState.Combat;
     }
 
     fight = (enemy: IEnemy, retaliate?: boolean) => {

@@ -64,7 +64,7 @@ export class SharedMethodService {
         }
 
         game.combatLog = [];
-        game.playState = PlayState.Combat;
+        this._gameService.initCombat();
     }
 
     fight = (game: IGame, enemy: IEnemy): void => {
