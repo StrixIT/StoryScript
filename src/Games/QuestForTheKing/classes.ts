@@ -1,7 +1,5 @@
-﻿module QuestForTheKing {
-    export enum Class {
-        Warrior,
-        Rogue,
-        Wizard
-    }
+﻿export enum Class {
+    Warrior,
+    Rogue,
+    Wizard
 }

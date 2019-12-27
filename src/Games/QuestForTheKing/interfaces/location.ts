@@ -1,22 +1,23 @@
-﻿module QuestForTheKing {
-    export function Location(entity: ILocation): ILocation  {
-        return StoryScript.Location(entity);
-    }
+﻿import { ILocation as StoryScriptILocation, Location as StoryScriptLocation, ICompiledLocation as StoryScriptICompiledLocation, ICollection } from 'storyScript/Interfaces/storyScript';
+import { IEnemy, IItem, IPerson, IDestination } from '../types';
 
-    export interface ILocation extends StoryScript.ILocation {
-        destinations?: StoryScript.ICollection<IDestination>;
-    }
+export function Location(entity: ILocation): ILocation  {
+    return StoryScriptLocation(entity);
+}
 
-    export interface ICompiledLocation extends ILocation, StoryScript.ICompiledLocation {
-        activeEnemies?: StoryScript.ICollection<IEnemy>;
-        enemies?: StoryScript.ICollection<IEnemy>;
-        activeItems?: StoryScript.ICollection<IItem>;
-        items?: StoryScript.ICollection<IItem>;
-        activePersons?: StoryScript.ICollection<IPerson>;
-        persons?: StoryScript.ICollection<IPerson>;
-        activePerson: IPerson;
-        destinations?: StoryScript.ICollection<IDestination>;
-        completedDay?: boolean;
-        completedNight?: boolean;
-    }
+export interface ILocation extends StoryScriptILocation {
+    destinations?: ICollection<IDestination>;
+}
+
+export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {
+    activeEnemies?: ICollection<IEnemy>;
+    enemies?: ICollection<IEnemy>;
+    activeItems?: ICollection<IItem>;
+    items?: ICollection<IItem>;
+    activePersons?: ICollection<IPerson>;
+    persons?: ICollection<IPerson>;
+    activePerson: IPerson;
+    destinations?: ICollection<IDestination>;
+    completedDay?: boolean;
+    completedNight?: boolean;
 }

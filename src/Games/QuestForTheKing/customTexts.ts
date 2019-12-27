@@ -1,7 +1,7 @@
-﻿module QuestForTheKing {
-    export function CustomTexts(): StoryScript.IInterfaceTexts {
-        return {
-            gameName: 'Quests for the King',
-        };
-    }
+﻿import { IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
+
+export function CustomTexts(): IInterfaceTexts {
+return {
+        gameName: 'Quests for the King',
+    };
 }

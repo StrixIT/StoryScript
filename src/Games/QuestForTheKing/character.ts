@@ -1,37 +1,39 @@
-﻿module QuestForTheKing {
-    export class Character implements StoryScript.ICharacter {
-        name: string = "";
-        portraitFileName = "resources/Hero1.png";
-        hitpoints: number = 200;
-        currentHitpoints: number = 200;
-        score: number = 0;
-        currency: number = 3;
+﻿import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
+import { IItem } from './types';
+import { Class } from './classes';
 
-        strength: number = 1;
-        agility: number = 1;
-        intelligence: number = 1;
-        charisma: number = 1;
+export class Character implements ICharacter {
+    name: string = "";
+    portraitFileName = "resources/Hero1.png";
+    hitpoints: number = 200;
+    currentHitpoints: number = 200;
+    score: number = 0;
+    currency: number = 3;
 
-        class: Class;
+    strength: number = 1;
+    agility: number = 1;
+    intelligence: number = 1;
+    charisma: number = 1;
 
-        items: StoryScript.ICollection<StoryScript.IItem> = [];
+    class: Class;
 
-        equipment: {
-            head: IItem,
-            body: IItem,
-            leftHand: IItem,
-            rightHand: IItem,
-            feet: IItem
-        };
+    items: ICollection<IItem> = [];
 
-        constructor() {
-            this.equipment = {
-                head: null,
-                body: null,
-                leftHand: null,
-                rightHand: null,
-                feet: null
-            }
+    equipment: {
+        head?: IItem,
+        body?: IItem,
+        leftHand?: IItem,
+        rightHand?: IItem,
+        feet?: IItem
+    };
+
+    constructor() {
+        this.equipment = {
+            head: null,
+            body: null,
+            leftHand: null,
+            rightHand: null,
+            feet: null
         }
     }
 }
