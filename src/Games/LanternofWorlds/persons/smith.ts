@@ -16,8 +16,6 @@ export function Smith() {
 			}
 		},
 		trade: {
-			title: 'Smithy',
-			description: '',
 			ownItemsOnly: false,
 			buy: {
 				description: '',

@@ -16,8 +16,6 @@ export function Magician() {
 			}
 		},
 		trade: {
-			title: 'Magic shop',
-			description: '',
 			ownItemsOnly: false,
 			buy: {
 				description: '',

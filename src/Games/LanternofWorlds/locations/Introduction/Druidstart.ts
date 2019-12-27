@@ -22,7 +22,7 @@ export function Druidstart() {
         ],
         trade: [
             {
-                title: 'Treasure chest',
+                name: 'Treasure chest',
                 description: 'A wooden chest',
                 buy: {
                     description: 'Take from the chest',
@@ -44,7 +44,7 @@ export function Druidstart() {
                 }
             },
             {
-                title: 'Black closet',
+                name: 'Black closet',
                 description: 'A dark closet',
                 buy: {
                     description: 'take from the closet',
