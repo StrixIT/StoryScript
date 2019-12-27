@@ -9,6 +9,7 @@ import { IConversationNode } from '../Interfaces/conversations/conversationNode'
 import { IConversationReply } from '../Interfaces/conversations/conversationReply';
 import { IConversationReplies } from '../Interfaces/conversations/conversationReplies';
 import { IConversation } from '../Interfaces/conversations/conversation';
+import { getParsedDocument } from './sharedFunctions';
 
 export class ConversationService implements IConversationService {
     constructor(private _game: IGame) {
@@ -56,9 +57,9 @@ export class ConversationService implements IConversationService {
         }
 
         persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
-            var htmlDoc = this.loadConversationHtml(person);
-            var defaultReply = this.getDefaultReply(htmlDoc, person);
-            var conversationNodes = htmlDoc.getElementsByTagName('node');
+            var conversationElement = getParsedDocument('conversation', person.description)[0];
+            var defaultReply = this.getDefaultReply(conversationElement, person);
+            var conversationNodes = conversationElement.getElementsByTagName('node');
 
             person.conversation.nodes = [];
             this.processConversationNodes(conversationNodes, person, defaultReply);
@@ -82,21 +83,8 @@ export class ConversationService implements IConversationService {
         this.setReplyStatus(person.conversation, activeNode);
     }
 
-    private loadConversationHtml = (person: IPerson): Document => {
-        if (!person.description) {
-            return null;
-        }
-        var parser = new DOMParser();
-
-        if (person.description.indexOf('<conversation>') == -1) {
-            person.description = '<conversation>' + person.description + '</conversation>';
-        }
-
-        return parser.parseFromString(person.description, 'text/html');
-    }
-
-    private getDefaultReply = (htmlDoc: Document, person: IPerson): string => {
-        var defaultReplyNodes = htmlDoc.getElementsByTagName('default-reply');
+    private getDefaultReply = (conversationElement: Element, person: IPerson): string => {
+        var defaultReplyNodes = conversationElement.getElementsByTagName('default-reply');
         var defaultReply: string = null;
 
         if (defaultReplyNodes.length > 1) {

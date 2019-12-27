@@ -1,7 +1,6 @@
 import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { EventService } from '../../Services/EventService';
 import { Component } from '@angular/core';
 import template from './navigation.component.html';
 
@@ -10,7 +9,7 @@ import template from './navigation.component.html';
     template: template,
 })
 export class NavigationComponent {
-    constructor(private _eventService: EventService, private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor(private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

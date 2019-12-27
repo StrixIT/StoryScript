@@ -20,7 +20,9 @@ export class BackpackComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    showDescription = (item: any, title: string): void => this._sharedMethodService.showDescription(this.game, 'items', item, title);
+    hasDescription = (item: IItem): boolean => this._sharedMethodService.hasDescription(item);
+
+    showDescription = (item: IItem, title: string): void => this._sharedMethodService.showDescription(this.game, 'items', item, title);
 
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 

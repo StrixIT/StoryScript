@@ -4,13 +4,15 @@ import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { IGame } from 'storyScript/Interfaces/game';
-import { EventService } from './EventService';
 import { ModalService } from './ModalService';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class SharedMethodService {
+    private combinationSource = new Subject<boolean>();
+
     // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
-    constructor(private _eventService: EventService, _modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
+    constructor(_modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
     }
 
     useCharacterSheet?: boolean;
@@ -19,13 +21,15 @@ export class SharedMethodService {
     useQuests?: boolean;
     useGround?: boolean;
 
-    setCombineState = this._eventService.setCombineState;
+    combinationChange$ = this.combinationSource.asObservable();
+
+    setCombineState = (value: boolean): void => this.combinationSource.next(value);
 
     enemiesPresent = (game: IGame): boolean => game.currentLocation?.activeEnemies?.length > 0;
 
     tryCombine = (game: IGame, combinable: ICombinable): boolean => {
         var result = game.combinations.tryCombine(combinable);
-        this._eventService.setCombineState(result);
+        this.combinationSource.next(result);
         return result;
     }
 
@@ -45,6 +49,8 @@ export class SharedMethodService {
         // Return true to keep the action button for trade locations.
         return true;
     };
+
+    hasDescription = (entity: { id?: string, description?: string }): boolean => this._gameService.hasDescription(entity);
 
     showDescription = (game: IGame, type: string, item: any, title: string): void => {
         this._gameService.setCurrentDescription(type, item, title);

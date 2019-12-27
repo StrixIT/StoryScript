@@ -6,7 +6,7 @@
                     <span>{{ item.name }}</span>
                     <div id="backpack-button-row" class="inline" [ngClass]="getCombineClass()">
                         <button type="button" class="btn btn-info btn-sm" *ngIf="canEquip(item) && showEquipment()" (click)="equipItem(item)">{{ texts.equip }}</button>
-                        <button type="button" class="btn btn-info btn-sm" *ngIf="item.description" (click)="showDescription(item, item.name)">{{ texts.view }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="hasDescription(item)" (click)="showDescription(item, item.name)">{{ texts.view }}</button>
                         <button type="button" class="btn btn-info btn-sm" *ngIf="item.use" (click)="useItem(item)">{{ texts.use }}</button>
                         <button type="button" class="btn btn-info btn-sm" *ngIf="canDropItems()" (click)="dropItem(item)">{{ texts.drop }}</button>
                     </div>

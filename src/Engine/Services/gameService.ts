@@ -10,7 +10,7 @@ import { IDestination } from '../Interfaces/destination';
 import { ScoreEntry } from '../Interfaces/scoreEntry';
 import { IStatistics } from '../Interfaces/statistics';
 import { DataKeys } from '../DataKeys';
-import { SaveWorldState } from './sharedFunctions';
+import { SaveWorldState, getParsedDocument } from './sharedFunctions';
 import { DefaultTexts } from '../defaultTexts';
 import { IGameService } from '../Interfaces/services//gameService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -24,6 +24,7 @@ import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
 
 export class GameService implements IGameService {
+    private _parsedDescriptions = new Map<string, boolean>();
     private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
     private _musicStopped: boolean = false;
 
@@ -188,6 +189,19 @@ export class GameService implements IGameService {
     }
 
     getSaveGames = (): string[] => this._dataService.getSaveKeys();
+
+    hasDescription = (entity: { id?: string, description?: string }): boolean => {
+        if (!entity.description) {
+            return false;
+        }
+
+        if (!this._parsedDescriptions.get(entity.id)) {
+            var descriptionNode = getParsedDocument('description', entity.description)[0];
+            this._parsedDescriptions.set(entity.id, descriptionNode.innerHTML.trim() !== '');
+        }
+
+        return this._parsedDescriptions.get(entity.id);
+    }
 
     setCurrentDescription = (type: string, item: any, title: string): void => {
         this._game.currentDescription = {

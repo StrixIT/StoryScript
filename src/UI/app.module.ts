@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgbCollapseModule, NgbModalModule, NgbActiveModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { EventService } from './Services/EventService';
 import { SharedMethodService } from './Services/SharedMethodService';
 import { ModalService } from './Services/ModalService';
 
@@ -101,7 +100,6 @@ var objectFactory = GetObjectFactory();
     ],
     providers:[
         NgbActiveModal,
-        EventService,
         SharedMethodService,
         ModalService,
         { provide: ObjectFactory, useValue: objectFactory },

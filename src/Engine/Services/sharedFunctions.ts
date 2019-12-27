@@ -9,3 +9,13 @@ export function SaveWorldState(dataService: IDataService, locationService: ILoca
     dataService.save(DataKeys.WORLDPROPERTIES, game.worldProperties);
     locationService.saveWorld(game.locations);
 }
+
+export function getParsedDocument(tag: string, value?: string) {
+    if (!value) {
+        return null;
+    }
+
+    var parser = new DOMParser();
+    var htmlDoc = parser.parseFromString(value, 'text/html');
+    return htmlDoc.getElementsByTagName(tag);
+}

@@ -5,7 +5,7 @@
         <li *ngFor="let enemy of game.currentLocation.activeEnemies" (click)="tryCombine(enemy)" [ngClass]="getCombineClass(enemy)">
             <span>{{ enemy.name }}</span>
             <div class="inline" [ngClass]="getCombineClass()">
-                <button type="button" class="btn btn-info btn-sm" *ngIf="enemy.description" (click)="showDescription(enemy, enemy.name)">{{ texts.view }}</button>
+                <button type="button" class="btn btn-info btn-sm" *ngIf="hasDescription(enemy)" (click)="showDescription(enemy, enemy.name)">{{ texts.view }}</button>
             </div>
         </li>
     </ul>
