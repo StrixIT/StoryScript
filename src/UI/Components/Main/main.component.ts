@@ -22,7 +22,20 @@ export class MainComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    watchDynamicStyles = () => {
+    showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
+
+    applyDynamicStyle = (selector: string, setting: string, value: string): void => {
+        this.game.dynamicStyles = [
+            {
+                elementSelector: selector,
+                styles: [
+                    [setting, value]
+                ]
+            },
+        ];
+    }
+
+    private watchDynamicStyles = () => {
         var dynamicStyles = this.game.dynamicStyles || [];
 
         Object.defineProperty(this.game, 'dynamicStyles', {
@@ -35,19 +48,6 @@ export class MainComponent {
                 this.applyDynamicStyling();
             }
         });
-    }
-
-    showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
-
-    applyDynamicStyle = (selector: string, setting: string, value: string): void => {
-        this.game.dynamicStyles = [
-            {
-                elementSelector: selector,
-                styles: [
-                    [setting, value]
-                ]
-            },
-        ];
     }
 
     private applyDynamicStyling = (): void => {

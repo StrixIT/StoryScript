@@ -19,7 +19,7 @@ export class NavigationComponent {
     texts: IInterfaceTexts;
 
     menu = (): void => {
-        this._eventService.setPlayState(PlayState.Menu);
+        this.game.playState = PlayState.Menu;
     }
 
     reset = (): void => this._gameService.reset();

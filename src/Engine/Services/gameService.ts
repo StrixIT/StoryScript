@@ -195,6 +195,8 @@ export class GameService implements IGameService {
             type: type, 
             item: item
         };
+
+        this._game.playState = PlayState.Description;
     }
 
     initCombat = (): void => {

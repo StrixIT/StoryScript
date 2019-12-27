@@ -1,10 +1,6 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
-import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
-import { GameService } from 'storyScript/Services/gameService';
+import { Component, Input } from '@angular/core';
+import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { EventService } from '../../Services/EventService';
 import { IModalSettings } from '../modalSettings';
 import template from './encountermodal.component.html';
 
@@ -12,10 +8,10 @@ import template from './encountermodal.component.html';
     selector: 'encounter-modal',
     template: template,
 })
-export class EncounterModalComponent implements OnDestroy {
+export class EncounterModalComponent {
     @Input() settings: IModalSettings;
 
-    constructor(private _activeModal: NgbActiveModal, private _eventService: EventService, private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor(objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
 
@@ -24,34 +20,14 @@ export class EncounterModalComponent implements OnDestroy {
             canClose: false,
             closeText: this.texts.closeModal
         }
-
-        this._playStateSubscription = this._eventService.playStateChange$.subscribe((p: PlayState) => this.closeModal(p));
-        this._enemiesPresentSubscription = this._eventService.enemiesPresentChange$.subscribe((p: boolean) => this.settings.canClose = !p || this.settings.description !== undefined);
     }
-
-    private _playStateSubscription: Subscription;
-    private _enemiesPresentSubscription: Subscription;
 
     game: IGame;
     texts: IInterfaceTexts;
 
-    ngOnDestroy(): void {
-        this,this._playStateSubscription.unsubscribe();
-        this._enemiesPresentSubscription.unsubscribe();
-    }
+    canClose = (): boolean => this.settings.canClose = this.game.currentLocation?.activeEnemies?.length === 0 || this.settings.description !== undefined;
 
-    closeModal = (playState: PlayState): void => {
-        if (!playState) {
-            if (this.settings.closeAction) {
-                this.settings.closeAction(this.game);
-            }
-
-            this.game.playState = null;
-        }
-
-        if (!playState || playState == null) {
-            this._gameService.saveGame();
-            this._activeModal.close();
-        }
+    closeModal = (): void => {
+        this.game.playState = null;
     }
 }

@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h4 class="modal-title">{{ settings.title }}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="closeModal()" *ngIf="settings.canClose">
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()" *ngIf="canClose()">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>

@@ -1,40 +1,62 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
+import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { IInterfaceTexts, PlayState, IGame } from 'storyScript/Interfaces/storyScript';
 import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
 import { EncounterModalComponent } from '../Components/EncounterModal/encountermodal.component';
 import { IModalSettings } from '../Components/modalSettings';
-import { EventService } from './EventService';
 
 @Injectable()
-export class ModalService implements OnDestroy {
+export class ModalService {
+    private _activeModal = null;
 
-    constructor(private _modalService: NgbModal, private _eventService: EventService , objectFactory: ObjectFactory) {
+    constructor(private _modalService: NgbModal, private _gameService: GameService , objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
 
-        this._playStateSubscription = this._eventService.playStateChange$.subscribe((p: PlayState) => this.openModal(p));
+        this.watchPlayState();
     }
-
-    private _playStateSubscription: Subscription;
 
     private game: IGame;
     private texts: IInterfaceTexts;
 
-    ngOnDestroy(): void {
-        this._playStateSubscription.unsubscribe();
+    private watchPlayState = () => {
+        var playState = this.game.playState;
+
+        Object.defineProperty(this.game, 'playState', {
+            enumerable: true,
+            get: () => {
+                return playState;
+            },
+            set: value => {
+                playState = value;
+                this.openOrCloseModal(playState);
+            }
+        });
     }
 
-    openModal = (state: PlayState): void => {
+    private openOrCloseModal = (state: PlayState): void => {
         if (state === PlayState.Menu) {
-            this._modalService.open(MenuModalComponent);
+            this._activeModal = this._modalService.open(MenuModalComponent);
         }
         else if (state) {
-            var modal = this._modalService.open(EncounterModalComponent);
-            modal.componentInstance.settings = this.getStateSettings(state);
-        }    
+            this._activeModal = this._modalService.open(EncounterModalComponent);
+            this._activeModal.componentInstance.settings = this.getStateSettings(state);
+        }
+        else if (this._activeModal) {
+            // The menu modal doesn't have settings and we don't need to save when closing the menu.
+            if (this._activeModal.componentInstance.settings) {
+                if (this._activeModal.componentInstance.settings.closeAction) {
+                    this._activeModal.componentInstance.closeAction(this.game);
+                }
+
+                this._gameService.saveGame();
+            }
+
+            this._modalService.dismissAll();
+            this._activeModal = null;
+        }
     }
 
     private getStateSettings = (value: PlayState): IModalSettings => {
