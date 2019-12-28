@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './ForestPond.html';
+import description from './Quest1map3.html';
 import { Quest1map2 } from './Quest1map2';
 import { Quest1map4 } from './Quest1map4';
 import { Oceanshrine } from '../Oceanshrine/Oceanshrine';

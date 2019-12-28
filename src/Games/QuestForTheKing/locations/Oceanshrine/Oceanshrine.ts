@@ -2,6 +2,7 @@
 import description from './Oceanshrine.html';
 import { Quest1map3 } from '../Maps/Quest1map3';
 import { ActionType } from 'storyScript/Interfaces/storyScript';
+import { Magicring } from '../../items/Magicring';
 
 export function Oceanshrine() {
     return Location({

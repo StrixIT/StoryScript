@@ -1,6 +1,7 @@
 ﻿import { Location, IGame, ITrade, IItem } from '../../types';
 import description from './HealersTent.html';
 import { WeaponSmith } from './WeaponSmith';
+import { Class } from '../../classes';
 
 export function HealersTent() {
     return Location({

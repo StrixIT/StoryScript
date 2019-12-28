@@ -1,36 +1,28 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Day3.html';
-import { Day4 } from './Day4';
+import description from './FasoldStoryteller.html';
+import { Day2 } from './Day2';
 import { WeaponSmith } from './WeaponSmith';
 import { HealersTent } from './HealersTent';
-import { Shieldmaiden } from '../../enemies/Shieldmaiden';
-import { changeDay } from '../../gameFunctions';
 
-export function Day3() {
+export function FasoldStoryteller() {
     return Location({
-        name: 'Day 3',
+        name: 'Fasold the Storyteller',
         description: description,
         destinations: [
             {
-                name: 'Day 4',
-                target: Day4
+                name: 'Day 2',
+                target: Day2
             },
             {
 
                 name: 'Weapon Smith',
                 target: WeaponSmith
-            },
+            },            
             {
 
                 name: 'Healers Tent',
                 target: HealersTent
-            },
-        ],
-        enemies: [
-            Shieldmaiden()
-        ],
-        enterEvents: [
-            changeDay
+            } 
         ]
     });
 }

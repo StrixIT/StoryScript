@@ -1,6 +1,7 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Stonemount.html';
 import { Quest1map1 } from '../Maps/Quest1map1';
+import { Wolf } from '../../enemies/Wolf';
 
 export function Stonemount() {
     return Location({

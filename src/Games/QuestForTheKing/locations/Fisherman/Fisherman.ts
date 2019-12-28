@@ -1,5 +1,6 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Fisherman.html';
+import { Quest1map2 } from '../Maps/Quest1map2';
 
 export function Fisherman() {
     return Location({

@@ -1,5 +1,8 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './ForestPond.html';
+import description from './Magicflowers.html';
+import { Quest1map2 } from '../Maps/Quest1map2';
+import { Brownbear } from '../../enemies/Brownbear';
+import { Magicflower } from '../../items/Magicflower';
 
 export function Magicflowers() {
     return Location({

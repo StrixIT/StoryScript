@@ -1,5 +1,7 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Darkmagic.html';
+import { Quest1map4 } from '../Maps/Quest1map4';
+import { Mirrorimage } from '../../enemies/Mirrorimage';
 
 export function Darkmagic() {
     return Location({

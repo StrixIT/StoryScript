@@ -2,6 +2,7 @@
 import description from './NightInYourTent.html';
 import { custom } from 'storyScript/utilities';
 import { Day3 } from './Day3';
+import { Assassin } from '../../enemies/Assassin';
 
 export function NightInYourTent() {
     return Location({

@@ -1,9 +1,12 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './ForestPond.html';
+import description from './Quest1map2.html';
 import { Magicflowers } from '../Magicflower/Magicflowers';
 import { Fisherman } from '../Fisherman/Fisherman';
 import { ForestPond } from '../Forestpond/ForestPond';
 import { Honeycastle } from '../Honeycombcastle/Honeycastle';
+import { Octopus } from '../Octopus/Octopus';
+import { Quest1map1 } from './Quest1map1';
+import { Quest1map3 } from './Quest1map3';
 
 export function Quest1map2() {
     return Location({
@@ -20,7 +23,7 @@ export function Quest1map2() {
             },
             {
                 name: 'Go to the Mermaid',
-                target: MermaidDay
+                target: null//MermaidDay
             },       
             {
                 name: 'Go to the Forest Pond',
@@ -43,8 +46,7 @@ export function Quest1map2() {
                 name: 'Go to the Eastern Forest',
                 target: Quest1map3,
                 style: 'location-danger'
-            }
-        
+            }      
         ]
     });
 }

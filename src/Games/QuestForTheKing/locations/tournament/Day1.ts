@@ -1,5 +1,11 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Day1.html';
+import { Day2 } from './Day2';
+import { WeaponSmith } from './WeaponSmith';
+import { HealersTent } from './HealersTent';
+import { Farmboy } from '../../enemies/Farmboy';
+import { changeDay } from '../../gameFunctions';
+import { FasoldStoryteller } from './FasoldStoryteller';
 
 export function Day1() {
     return Location({
@@ -18,7 +24,7 @@ export function Day1() {
             {
 
                 name: 'The Storyteller',
-                target: Fasold1
+                target: FasoldStoryteller
             },
             {
 

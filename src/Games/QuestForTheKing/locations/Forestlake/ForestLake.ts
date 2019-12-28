@@ -1,5 +1,10 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './ForestLake.html';
+import { Quest1map1 } from '../Maps/Quest1map1';
+import { Bandit } from '../../enemies/Bandit';
+import { Ghost } from '../../enemies/Ghost';
+import { Goldnecklace } from '../../items/Goldnecklace';
+import { locationComplete } from '../../gameFunctions';
 
 export function ForestLake() {
     return Location({

@@ -1,5 +1,10 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Day2.html';
+import { Nobleman } from '../../enemies/Nobleman';
+import { NightInYourTent } from './NightInYourTent';
+import { WeaponSmith } from './WeaponSmith';
+import { HealersTent } from './HealersTent';
+import { changeDay } from '../../gameFunctions';
 
 export function Day2() {
     return Location({

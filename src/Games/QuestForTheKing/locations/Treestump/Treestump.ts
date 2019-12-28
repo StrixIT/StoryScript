@@ -1,6 +1,7 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Treestump.html';
 import { Quest1map3 } from '../Maps/Quest1map3';
+import { Satyr } from '../../enemies/Satyr';
 
 export function Treestump() {
     return Location({

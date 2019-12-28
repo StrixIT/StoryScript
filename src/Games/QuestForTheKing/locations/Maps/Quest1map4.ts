@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './ForestPond.html';
+import description from './Quest1map4.html';
 import { Necromancer } from '../Necromancer/Necromancer';
 import { Darkmagic } from '../Darkmagic/Darkmagic';
 import { Guardians } from '../Treeguardians/Guardians';

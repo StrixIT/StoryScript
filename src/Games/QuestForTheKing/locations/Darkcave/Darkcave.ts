@@ -1,5 +1,6 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Darkcave.html';
+import { Enchantress } from '../../enemies/Enchantress';
 
 export function Darkcave() {
     return Location({
