@@ -1,4 +1,8 @@
 ﻿import { IGame, ILocation, ICompiledLocation } from './types';
+import { NightInYourTent } from './locations/tournament/NightInYourTent';
+import { GetDefinitions } from '../../Engine/ObjectConstructors';
+import { WeaponSmith } from './locations/tournament/WeaponSmith';
+import { HealersTent } from './locations/tournament/HealersTent';
 
 export function changeDay(game: IGame) {
     var day = parseInt(game.currentLocation.name.toLowerCase().replace('day', ''));
@@ -27,7 +31,7 @@ export function locationComplete(game: IGame, location: ILocation, completeDay: 
 }
 
 function updateDestination(game: IGame, location: ICompiledLocation, day: number) {
-    var dayLocation = day === 2 ? NightInYourTent : <any>Locations['Day' + (day + 1)];
+    var dayLocation = day === 2 ? NightInYourTent : GetDefinitions().locations.find(l => l.name === ('Day' + (day + 1)));
 
     if (dayLocation) {
         var dayDestinations = location.destinations.filter(d => (<any>d.target).indexOf('day') > -1 || (<any>d.target).indexOf('nightinyourtent') > -1);

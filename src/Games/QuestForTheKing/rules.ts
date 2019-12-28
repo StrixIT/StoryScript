@@ -2,6 +2,15 @@
 import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination } from './types';
 import { Class } from './classes';
 import { changeDay } from './gameFunctions';
+import { LongSword } from './items/LongSword';
+import { Battleaxe } from './items/BattleAxe';
+import { Warhammer } from './items/Warhammer';
+import { Dagger } from './items/Dagger';
+import { Rapier } from './items/Rapier';
+import { Shortsword } from './items/Shortsword';
+import { Fireball } from './items/Fireball';
+import { Frostbite } from './items/Frostbite';
+import { Shockbolt } from './items/Shockbolt';
 
 export function Rules(): IRules {
     return {
