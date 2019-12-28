@@ -1,6 +1,7 @@
 {
     "version": "1.0.0",
     "private": true,
+    "main": "./src/UI/electron.js",
     "scripts": {
         "create-game": "node createGame.js",
         "create-location": "node createAsset.js location",
@@ -13,7 +14,9 @@
         "start": "webpack-dev-server --config webpack/webpack.development.js",
         "publish": "webpack --config webpack/webpack.production.js",
         "engine-tests": "cd src/Tests/Engine && karma start",
-        "myroleplayinggame-tests": "cd src/Tests/Games/MyRolePlayingGame && karma start"
+        "myroleplayinggame-tests": "cd src/Tests/Games/MyRolePlayingGame && karma start",
+        "electron": "electron .",
+        "electron-build": "webpack --config webpack/webpack.production.js && npm run electron ."
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
@@ -65,6 +68,7 @@
         "karma-firefox-launcher": "^1.2.0",
         "karma-webpack": "^4.0.2",
         "karma-coverage-istanbul-reporter": "^2.1.1",
-        "istanbul-instrumenter-loader": "^3.0.1"
+        "istanbul-instrumenter-loader": "^3.0.1",
+        "electron": "^7.1.7"
     }
 }

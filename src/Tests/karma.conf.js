@@ -1,8 +1,6 @@
 const path = require('path');
 
 module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gamePath, codePath) {
-  console.log(path.resolve(__dirname, gamePath));
-  
   webPackConfig.resolve.alias.game = path.resolve(__dirname, gamePath);
 
   webPackConfig.module.rules.push({
@@ -11,8 +9,6 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
     loader: 'istanbul-instrumenter-loader',
     include: path.resolve(__dirname, codePath)
   });
-
-  console.log(path.resolve(__dirname, codePath));
 
   return {
     // base path that will be used to resolve all patterns (eg. files, exclude)
