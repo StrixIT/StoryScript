@@ -1,6 +1,8 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Brennus.html';
 import { Brennus as BrennusEnemy } from './../../enemies/Brennus';
+import { Quest1map1 } from '../Maps/Quest1map1';
+import { BrennusApproach } from './BrennusApproach';
 
 export function Brennus() {
     return Location({

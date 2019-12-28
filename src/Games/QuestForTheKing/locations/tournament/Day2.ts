@@ -1,30 +1,32 @@
-﻿module QuestForTheKing.Locations {
-    export function Day2() {
-        return Location({
-            name: 'Day 2',
-            enemies: [
-                Enemies.Nobleman()
-            ],
-            destinations: [
-                {
-                    name: 'Night in your Tent',
-                    target: Locations.NightInYourTent
-                },
-                {
+﻿import { Location, IGame } from '../../types';
+import description from './Day2.html';
 
-                    name: 'Weapon Smith',
-                    target: Locations.WeaponSmith
-                },
-                {
+export function Day2() {
+    return Location({
+        name: 'Day 2',
+        description: description,
+        enemies: [
+            Nobleman()
+        ],
+        destinations: [
+            {
+                name: 'Night in your Tent',
+                target: NightInYourTent
+            },
+            {
 
-                    name: 'Healers Tent',
-                    target: Locations.HealersTent
-                }
+                name: 'Weapon Smith',
+                target: WeaponSmith
+            },
+            {
 
-            ],
-            enterEvents: [
-                changeDay
-            ]
-        });
-    }
+                name: 'Healers Tent',
+                target: HealersTent
+            }
+
+        ],
+        enterEvents: [
+            changeDay
+        ]
+    });
 }

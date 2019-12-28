@@ -1,5 +1,7 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Guardians.html';
+import { Quest1map4 } from '../Maps/Quest1map4';
+import { Cliffwall } from '../Cliffwall/Cliffwall';
 
 export function Guardians() {
     return Location({

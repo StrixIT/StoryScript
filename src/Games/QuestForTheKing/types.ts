@@ -10,6 +10,7 @@ import { CustomTexts } from './customTexts'
 import { Rules } from './rules'
 import { Character } from './character'
 import { IDestination } from './interfaces/destination';
+import { ITrade } from './interfaces/trade';
 
 export { 
     IFeature,
@@ -31,5 +32,6 @@ export {
     CustomTexts, 
     Rules, 
     Character,
-    IDestination
+    IDestination,
+    ITrade
 }

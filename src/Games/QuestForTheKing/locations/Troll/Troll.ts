@@ -1,6 +1,7 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Troll.html';
 import { Troll as TrollEnemy } from '../../enemies/Troll';
+import { Quest1map3 } from '../Maps/Quest1map3';
 
 export function Troll() {
     return Location({

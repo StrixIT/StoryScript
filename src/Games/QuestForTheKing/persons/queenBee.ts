@@ -1,11 +1,12 @@
 ﻿import { Person } from 'storyScript/Interfaces/storyScript';
 import { Beesting } from '../items/Beesting';
 import { Magicflower } from '../items/Magicflower';
+import description from './QueenBee.html';
 
 export function QueenBee() {
     return Person({
         name: 'Queen Bee',
-        //picture: 'bandit.jpg',
+        description: description,
         hitpoints: 10,
         attack: '1d6',
         reward: 5,

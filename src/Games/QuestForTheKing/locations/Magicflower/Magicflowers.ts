@@ -1,20 +1,22 @@
-﻿module QuestForTheKing.Locations {
-    export function Magicflowers() {
-        return Location({
-            name: 'The Magic Flowers',
-            destinations: [
-                {
-                    name: 'Back to the Map',
-                    target: Locations.Quest1map2
-                }              
-            ],            
-            enemies: [
-                Enemies.Brownbear()
+﻿import { Location, IGame } from '../../types';
+import description from './ForestPond.html';
 
-            ],
-            items: [
-                Items.Magicflower(),                
-            ]
-        });
-    }
+export function Magicflowers() {
+    return Location({
+        name: 'The Magic Flowers',
+        description: description,
+        destinations: [
+            {
+                name: 'Back to the Map',
+                target: Quest1map2
+            }              
+        ],            
+        enemies: [
+            Brownbear()
+
+        ],
+        items: [
+            Magicflower(),                
+        ]
+    });
 }

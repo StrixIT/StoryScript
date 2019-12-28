@@ -1,17 +1,20 @@
-﻿module QuestForTheKing.Locations {
-    export function Honeycastle() {
-        return Location({
-            name: 'The Honeycomb Castle',
-            destinations: [
-                {
-                    name: 'Back to the Map',
-                    target: Locations.Quest1map2
-                },   
-                {
-                    name: 'Approach the Castle',
-                    target: Locations.Castleapproach
-                }            
-            ],             
-        });
-    }
-}    
+﻿import { Location, IGame } from '../../types';
+import description from './Honeycastle.html';
+import { Quest1map2 } from '../Maps/Quest1map2';
+
+export function Honeycastle() {
+    return Location({
+        name: 'The Honeycomb Castle',
+        description: description,
+        destinations: [
+            {
+                name: 'Back to the Map',
+                target: Quest1map2
+            },   
+            {
+                name: 'Approach the Castle',
+                target: Castleapproach
+            }            
+        ],             
+    });
+}

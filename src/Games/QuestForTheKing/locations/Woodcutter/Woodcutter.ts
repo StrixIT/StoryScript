@@ -1,5 +1,6 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Woodcutter.html';
+import { Quest1map1 } from '../Maps/Quest1map1';
 
 export function Woodcutter() {
     return Location({

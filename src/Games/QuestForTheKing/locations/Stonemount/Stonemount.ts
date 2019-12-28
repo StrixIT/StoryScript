@@ -1,26 +1,29 @@
-﻿module QuestForTheKing.Locations {
-    export function Stonemount() {
-        return Location({
-            name: 'The Stone Mount',
-            destinations: [
-                {
-                    name: 'Back to the Map',
-                    target: Locations.Quest1map1
-                },             
-            ],
-            enemies: [
-                Enemies.Wolf(),
-                Enemies.Wolf()
-            ],
-            actions: [
-                {
-                    text: 'Search the stone mount',
-                    execute: (game: IGame) => {
-                        game.character.currency += 35;
-                        game.logToLocationLog(game.currentLocation.descriptions['search']);
-                    }
+﻿import { Location, IGame } from '../../types';
+import description from './Stonemount.html';
+import { Quest1map1 } from '../Maps/Quest1map1';
+
+export function Stonemount() {
+    return Location({
+        name: 'The Stone Mount',
+        description: description,
+        destinations: [
+            {
+                name: 'Back to the Map',
+                target: Quest1map1
+            },             
+        ],
+        enemies: [
+            Wolf(),
+            Wolf()
+        ],
+        actions: [
+            {
+                text: 'Search the stone mount',
+                execute: (game: IGame) => {
+                    game.character.currency += 35;
+                    game.logToLocationLog(game.currentLocation.descriptions['search']);
                 }
-            ]
-        });
-    }
-}    
+            }
+        ]
+    });
+}
