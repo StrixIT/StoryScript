@@ -15,7 +15,7 @@ let _factory: ObjectFactory = null;
 export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
     addFunctionExtensions();
     addArrayExtensions();
-    importAssets(require.context('game', true, /[a-zA-Z].ts$/));
+    importAssets(require.context('game', true, /[a-zA-Z0-9].ts$/));
     buildEntities();
 
     _factory = new ObjectFactory(nameSpace, rules, texts);
