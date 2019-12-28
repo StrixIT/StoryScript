@@ -353,7 +353,7 @@ export class LocationService implements ILocationService {
             game.currentLocation.description = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
         }
         else {
-            game.currentLocation.description = game.currentLocation.description || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
+            game.currentLocation.description = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
         }
 
         return true;
