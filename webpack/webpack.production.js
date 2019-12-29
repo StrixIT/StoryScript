@@ -19,17 +19,20 @@ const cleanConfig = {
     }
 };
 
+const terser = new TerserPlugin({
+    terserOptions: {
+        parallel: true,
+        keep_fnames: true,
+        sourceMap: true
+    }
+});
+
 var plugins = [
     new MiniCssExtractPlugin({
         filename: '[name].[contenthash].css',
         chunkFilename: '[name].[contenthash].css',
     }),
-    new TerserPlugin({
-        terserOptions: {
-            parallel: true,
-            keep_fnames: true
-        }
-    }),
+    terser,
     new ImageminPlugin({
         test: /\.(jpe?g|png|gif|svg)$/i 
     }),
@@ -37,10 +40,12 @@ var plugins = [
         dir: 'dist',
         test: [/\.js$/],
         rules: [{
+            test: '/storyscript/g',
             search: /<button id="resetbutton"[^>]*>(.*?)<\/button>/g,
             replace: ''
         },
         {
+            test: '/storyscript/g',
             search: /autoBackButton\s*:[!\s\w]*,/g,
             replace: ''
         }]
@@ -65,17 +70,18 @@ if (gameInfo.sourcesIncluded) {
 
 plugins.push(new RemovePlugin(cleanConfig));
 
+// This assumes the first rule imported is the css rule. Enable the log statement to check.
 var cssRule = common.module.rules.pop();
-
-console.log(cssRule);
+//console.log(cssRule);
 
 module.exports = merge(common, {
     output: {
         filename: '[name].[contenthash].js'
     },
-    mode: 'none',
+    mode: 'production',
+    //devtool: 'source-map',
     optimization: {
-        minimizer: [new TerserPlugin({}), new OptimizeCSSAssetsPlugin({})],
+        minimizer: [terser, new OptimizeCSSAssetsPlugin({})],
         nodeEnv: 'production'
     },
     module: {
