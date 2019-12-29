@@ -147,7 +147,10 @@ export class DataService implements IDataService {
                 if (functionString.indexOf('function') == -1) {
                     var arrowIndex = functionString.indexOf('=>');
 
-                    functionString = 'function' + functionString.match(this.functionArgumentRegex)[0] + functionString.substring(arrowIndex + 2).trim();
+                    // The arguments regex will fail when no arguments are used in production mode. Use empty brackets in that case.
+                    var args = functionString.match(this.functionArgumentRegex)?.[0] || '()';
+
+                    functionString = 'function' + args + functionString.substring(arrowIndex + 2).trim();
                 }
 
                 clone[key] = functionString;

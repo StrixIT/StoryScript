@@ -22,7 +22,8 @@ const cleanConfig = {
 const terser = new TerserPlugin({
     terserOptions: {
         parallel: true,
-        keep_fnames: true
+        keep_fnames: true,
+        sourceMap: true
     }
 });
 
@@ -78,6 +79,7 @@ module.exports = merge(common, {
         filename: '[name].[contenthash].js'
     },
     mode: 'production',
+    //devtool: 'source-map',
     optimization: {
         minimizer: [terser, new OptimizeCSSAssetsPlugin({})],
         nodeEnv: 'production'
