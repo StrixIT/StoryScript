@@ -1,7 +1,21 @@
 {
+    "name": "StoryScript",
+    "description": "StoryScript Adventure",
     "version": "1.0.0",
+    "author": "Rutger Schurgers",
     "private": true,
     "main": "./src/UI/electron.js",
+    "build": {
+        "appId": "storyscript.id",
+        "files": [
+            "./src/UI/electron.js",
+            "dist/**/*"
+        ],
+        "win": {
+            "target": "portable",
+            "icon": "build/icon.ico"
+        }
+    },
     "scripts": {
         "create-game": "node createGame.js",
         "create-location": "node createAsset.js location",
@@ -15,8 +29,8 @@
         "publish": "webpack --config webpack/webpack.production.js",
         "engine-tests": "cd src/Tests/Engine && karma start",
         "myroleplayinggame-tests": "cd src/Tests/Games/MyRolePlayingGame && karma start",
-        "electron": "electron .",
-        "electron-build": "webpack --config webpack/webpack.production.js && npm run electron ."
+        "electron-start": "webpack --config webpack/webpack.production.js && electron .",
+        "electron-publish": "webpack --config webpack/webpack.production.js && electron-builder"
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
