@@ -1,9 +1,11 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { Class } from '../classes';
+import description from './Leatherboots.html';
 
 export function Leatherboots() {
     return Item({
         name: 'Leather Boots',
+        description: description,
         damage: '2',
         equipmentType: EquipmentType.Feet,
         dayAvailable: 1,

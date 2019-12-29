@@ -1,9 +1,11 @@
 ﻿import { Key, EquipmentType, OpenWithKey, IBarrier } from 'storyScript/Interfaces/storyScript';
 import { IGame, IDestination } from '../types';
+import description from './Parchment.html';
 
 export function Parchment() {
     return Key( {
         name: 'Old Parchment',
+        description: description,
         damage: '0',
         equipmentType: EquipmentType.Miscellaneous,
         open: {

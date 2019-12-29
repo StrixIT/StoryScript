@@ -1,9 +1,11 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { Class } from '../classes';
+import description from './Healthpotion.html';
 
 export function Healthpotion() {
     return Item({
         name: 'Health Potion',
+        description: description,
         damage: '2',
         equipmentType: EquipmentType.Miscellaneous,
         dayAvailable: 1,
