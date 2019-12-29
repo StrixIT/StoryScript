@@ -39,10 +39,12 @@ var plugins = [
         dir: 'dist',
         test: [/\.js$/],
         rules: [{
+            test: '/storyscript/g',
             search: /<button id="resetbutton"[^>]*>(.*?)<\/button>/g,
             replace: ''
         },
         {
+            test: '/storyscript/g',
             search: /autoBackButton\s*:[!\s\w]*,/g,
             replace: ''
         }]
