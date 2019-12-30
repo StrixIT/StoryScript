@@ -83,6 +83,7 @@ export class GameService implements IGameService {
 
     reset = (): void => {
         this._dataService.save(DataKeys.WORLD, {});
+        this._dataService.save(DataKeys.PLAYEDMEDIA, []);
         this._locationService.init(this._game);
         this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES);
         var location = this._dataService.load<string>(DataKeys.LOCATION);
@@ -122,6 +123,7 @@ export class GameService implements IGameService {
         this._dataService.save(DataKeys.PREVIOUSLOCATION, '');
         this._dataService.save(DataKeys.WORLDPROPERTIES, {});
         this._dataService.save(DataKeys.WORLD, {});
+        this._dataService.save(DataKeys.PLAYEDMEDIA, []);
         this.init(true, skipIntro);
     }
 
