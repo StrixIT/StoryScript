@@ -408,7 +408,7 @@ export function Rules(): IRules {
                         var currentSelector = descriptionSelector(game);
                         var selector = currentSelector ? currentSelector + 'after' : 'after';
                         game.currentLocation.descriptionSelector = selector;
-                        game.currentLocation.description = game.currentLocation.descriptions[selector] ? game.currentLocation.descriptions[selector] : game.currentLocation.descriptions['after'];
+                        //game.currentLocation.description = game.currentLocation.descriptions[selector] ? game.currentLocation.descriptions[selector] : game.currentLocation.descriptions['after'];
                     }
                 }
 
