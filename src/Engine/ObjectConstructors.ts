@@ -397,6 +397,12 @@ function setReadOnlyLocationProperties(location: ILocation) {
             return location.items.filter(e => { return !e.inactive; });
         }
     });
+
+    Object.defineProperty(location, 'activeActions', {
+        get: function () {
+            return location.actions.filter(e => { return !e.inactive; });
+        }
+    });
 }
 
 function setReadOnlyCharacterProperties(character: ICharacter) {

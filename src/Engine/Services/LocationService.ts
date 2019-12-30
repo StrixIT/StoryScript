@@ -35,10 +35,7 @@ export class LocationService implements ILocationService {
         // Clear the play state on travel.
         game.playState = null;
 
-        if (game.currentLocation && game.currentLocation.leaveEvents) {
-            this.playEvents(game, game.currentLocation.leaveEvents);
-            game.currentLocation.leaveEvents.length = 0;
-        }
+        this.playEvents(game, 'leaveEvents');
 
         // If there is no location, we are starting a new game and we're done here.
         if (!this.switchLocation(game, location)) {
@@ -54,7 +51,10 @@ export class LocationService implements ILocationService {
 
         this.loadLocationDescriptions(game);
         this.initTrade(game);
-        this.playEnterEvents(game);
+
+        this.playEvents(game, 'enterEvents');
+
+        this.markCurrentLocationAsVisited(game);
 
         // Add the 'back' button for testing
         if (this._rules.setup.autoBackButton && game.previousLocation && game.currentLocation.id != 'start') {
@@ -132,20 +132,8 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private playEnterEvents = (game: IGame): void => {
-        // If the player hasn't been here before, play the location events. Also update
-        // the visit statistics.
+    private markCurrentLocationAsVisited = (game: IGame): void => {
         if (!game.currentLocation.hasVisited) {
-            if (game.currentLocation.enterEvents) {
-                this.playEvents(game, game.currentLocation.enterEvents);
-
-                // Make sure the location has enter events, it can be that one location that has
-                // an enter event changes location in that event to one that hasn't.
-                if (game.currentLocation.enterEvents) {
-                    game.currentLocation.enterEvents.length = 0;
-                }
-            }
-
             game.currentLocation.hasVisited = true;
             game.statistics.LocationsVisited = game.statistics.LocationsVisited || 0;
             game.statistics.LocationsVisited += 1;
@@ -185,6 +173,16 @@ export class LocationService implements ILocationService {
         Object.defineProperty(location, 'activeDestinations', {
             get: function () {
                 return location.destinations.filter(e => { return !e.inactive; });
+            }
+        });
+
+        var selector = location.descriptionSelector;
+
+        Object.defineProperty(location, 'descriptionSelector', {
+            get: () => selector,
+            set: (value) => {
+                selector = value;
+                this.selectLocationDescription(this._game);
             }
         });
     }
@@ -234,10 +232,24 @@ export class LocationService implements ILocationService {
         originalFunction.call(originalScope, destination);
     }
 
-    private playEvents = (game: IGame, events: ICollection<((game: IGame) => void)>): void => {
-        for (var n in events) {
-            events[n](game);
+    private playEvents = (game: IGame, eventProperty: string): void => {
+        if (!game.currentLocation?.[eventProperty]) {
+            return;
         }
+
+        var eventsToKeep = [];
+
+        game.currentLocation[eventProperty].forEach((e: (game: IGame) => void | boolean) => {
+            var result = e(game);
+
+            if (result) {
+                eventsToKeep.push(e);
+            }
+        });
+
+        game.currentLocation[eventProperty].length = 0;
+        
+        eventsToKeep.forEach(e => game.currentLocation[eventProperty].push(e));
     }
 
     private loadLocationDescriptions = (game: IGame): void => {
