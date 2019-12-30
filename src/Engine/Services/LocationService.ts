@@ -388,16 +388,17 @@ export class LocationService implements ILocationService {
 
     private checkAutoplayProperties = (location: ILocation, playedAudio: string[], elements: HTMLCollectionOf<HTMLElement>): void => {
         Array.from(elements).forEach(e => {
-            var originalText = e.innerHTML;
+            var originalText = e.outerHTML;
+            var source = e.getElementsByTagName('source')?.[0].getAttribute('src')?.toLowerCase();
 
-            var source = e.getAttribute('src')?.toLowerCase();
-
-            if (playedAudio.indexOf(source) < 0) {
-                playedAudio.push(source);
-            } 
-            else {
-                e.removeAttribute('autplay');
-                location.description.replace(originalText, e.innerHTML);
+            if (originalText && source) {
+                if (playedAudio.indexOf(source) < 0) {
+                    playedAudio.push(source);
+                } 
+                else {
+                    e.removeAttribute('autoplay');
+                    location.description = location.description.replace(originalText, e.outerHTML);
+                }
             }
         });
     }
