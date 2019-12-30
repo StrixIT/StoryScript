@@ -11,6 +11,18 @@ export function Dryad() {
                 name: 'Back to the Map',
                 target: Quest1map3
             }           
+        ],
+        leaveEvents: [
+            (game: IGame) => {
+                if (game.currentLocation.descriptionSelector === 'return') {
+                    game.currentLocation.descriptionSelector = null;
+                    game.currentLocation.completedDay = true;
+                    game.currentLocation.completedNight = true;
+                    return false;
+                }
+
+                return true;
+            }
         ]
     });
 }

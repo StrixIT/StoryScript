@@ -3,6 +3,7 @@ import description from './ForestPond.html';
 import { Quest1map2 } from '../Maps/Quest1map2';
 import { DarkDryad } from '../../enemies/DarkDryad';
 import { Magicshield } from '../../items/Magicshield';
+import { Dryad } from '../Dryad/Dryad';
 
 export function ForestPond() {
     return Location({
@@ -19,6 +20,14 @@ export function ForestPond() {
         ],
         items: [
             Magicshield(),
+        ],
+        leaveEvents: [
+            (game: IGame) => {
+                var dryadLocation = game.locations.get(Dryad);
+                dryadLocation.descriptionSelector = 'return';
+                game.currentLocation.completedDay = true;
+                game.currentLocation.completedNight = true;
+            }
         ]
     });
 }

@@ -27,6 +27,7 @@ export function ForestLake() {
         leaveEvents: [
             (game: IGame) => {
                 locationComplete(game, game.currentLocation, () => game.currentLocation.activeEnemies.length == 0, () => game.currentLocation.items.length == 0);
+                return true;
             }
         ]
     });
