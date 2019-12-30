@@ -11,6 +11,7 @@ import { Rules } from './rules'
 import { Character } from './character'
 import { IDestination } from './interfaces/destination';
 import { ITrade } from './interfaces/trade';
+import { IAction } from './interfaces/action';
 
 export { 
     IFeature,
@@ -33,5 +34,6 @@ export {
     Rules, 
     Character,
     IDestination,
-    ITrade
+    ITrade,
+    IAction
 }

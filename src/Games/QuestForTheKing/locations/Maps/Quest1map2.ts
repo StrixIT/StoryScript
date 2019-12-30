@@ -7,6 +7,7 @@ import { Honeycastle } from '../Honeycombcastle/Honeycastle';
 import { Octopus } from '../Octopus/Octopus';
 import { Quest1map1 } from './Quest1map1';
 import { Quest1map3 } from './Quest1map3';
+import { Mermaid } from '../Mermaid/mermaid';
 
 export function Quest1map2() {
     return Location({
@@ -23,7 +24,7 @@ export function Quest1map2() {
             },
             {
                 name: 'Go to the Mermaid',
-                target: null//MermaidDay
+                target: Mermaid
             },       
             {
                 name: 'Go to the Forest Pond',

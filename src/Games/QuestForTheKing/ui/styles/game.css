@@ -81,7 +81,3 @@ blockquote {
 .portraitFrame {
     color:#0000FF;
 }
-
-img .night {
-    filter: brightness(50%);
-}

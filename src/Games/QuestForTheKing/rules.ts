@@ -1,5 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination } from './types';
+import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction } from './types';
 import { Class } from './classes';
 import { changeDay } from './gameFunctions';
 import { LongSword } from './items/LongSword';
@@ -445,18 +445,17 @@ export function Rules(): IRules {
                     location.destinations.forEach(destination => destination.inactive = !isEntityActive(game, destination));
                 }
 
-                if (game.worldProperties.isNight) {
-                    // Need timeout to do this after angular processes the location description.
-                    setTimeout(() => {
-                        var images = document.getElementsByTagName('img');
+                if (location.actions && location.actions.length > 0) {
+                    location.actions.forEach(action => action.inactive = !isEntityActive(game, action));
+                }
 
-                        for (var i = 0; i < images.length; i++) {
-                            var element = images[i];
-                                if (element.getAttribute('src').toLowerCase().indexOf('resources/map') === 0) {
-                                    element.classList.add('night');
-                                }
-                        };
-                    }, 0);
+                if (game.worldProperties.isNight) {
+                    game.dynamicStyles = [            {
+                        elementSelector: 'img.map',
+                        styles: [
+                            ['filter', 'brightness(50%)']
+                        ]
+                    }];
                 }
 
                 changeDay(game);
@@ -476,7 +475,7 @@ export function Rules(): IRules {
             null;
     }
 
-    function isEntityActive (game: IGame, entity: IItem | IEnemy | IDestination): boolean {
+    function isEntityActive (game: IGame, entity: IItem | IEnemy | IDestination | IAction): boolean {
         return (!entity.activeNight && !entity.activeDay) || (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay)
     }
 }
