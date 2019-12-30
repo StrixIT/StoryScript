@@ -7,4 +7,5 @@ export class DataKeys {
     static WORLD: string = 'world';
     static WORLDPROPERTIES: string = 'worldProperties';
     static GAME = 'game';
+    static PLAYEDMEDIA = 'playedMedia';
 }

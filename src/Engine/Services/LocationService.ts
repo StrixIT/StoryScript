@@ -372,7 +372,34 @@ export class LocationService implements ILocationService {
             game.currentLocation.description = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
         }
 
+        this.checkAutoplay(game.currentLocation);
+
         return true;
+    }
+
+    private checkAutoplay = (location: ILocation): void => {
+        // Check media with the autoplay property to play only once.
+        var descriptionDocument = new DOMParser().parseFromString(location.description, 'text/html');
+        var playedAudio = this._dataService.load<string[]>(DataKeys.PLAYEDMEDIA) || [];
+        this.checkAutoplayProperties(location, playedAudio, descriptionDocument.getElementsByTagName('audio'));
+        this.checkAutoplayProperties(location, playedAudio, descriptionDocument.getElementsByTagName('video'));
+        this._dataService.save(DataKeys.PLAYEDMEDIA, playedAudio);
+    }
+
+    private checkAutoplayProperties = (location: ILocation, playedAudio: string[], elements: HTMLCollectionOf<HTMLElement>): void => {
+        Array.from(elements).forEach(e => {
+            var originalText = e.innerHTML;
+
+            var source = e.getAttribute('src')?.toLowerCase();
+
+            if (playedAudio.indexOf(source) < 0) {
+                playedAudio.push(source);
+            } 
+            else {
+                e.removeAttribute('autplay');
+                location.description.replace(originalText, e.innerHTML);
+            }
+        });
     }
 }
 
