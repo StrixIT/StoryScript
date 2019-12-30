@@ -239,7 +239,11 @@ export class LocationService implements ILocationService {
 
         var eventsToKeep = [];
 
-        game.currentLocation[eventProperty].forEach((e: (game: IGame) => void | boolean) => {
+        // Keep a reference to the location being processed. When the location is changed in the
+        // event, we want tostill update the events in the originating location.
+        var location = game.currentLocation;
+
+        location[eventProperty].forEach((e: (game: IGame) => void | boolean) => {
             var result = e(game);
 
             if (result) {
@@ -247,9 +251,9 @@ export class LocationService implements ILocationService {
             }
         });
 
-        game.currentLocation[eventProperty].length = 0;
+        location[eventProperty].length = 0;
         
-        eventsToKeep.forEach(e => game.currentLocation[eventProperty].push(e));
+        eventsToKeep.forEach(e => location[eventProperty].push(e));
     }
 
     private loadLocationDescriptions = (game: IGame): void => {
