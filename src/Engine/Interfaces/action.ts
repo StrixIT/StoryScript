@@ -21,7 +21,12 @@ export interface IAction {
      */
     actionType?: ActionType;
 
-        /**
+    /**
+     * True if the action is inactive and not visible, false otherwise.
+     */
+    inactive?: boolean;
+
+    /**
      * The action status or a function that returns an action status to set the status dynamically.
      */
     status?: ActionStatus | ((game: IGame) => ActionStatus);

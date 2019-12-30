@@ -4,6 +4,7 @@ import { IEnemy } from './enemy';
 import { IPerson } from './person';
 import { IItem } from './item';
 import { IDestination } from './destination';
+import { IAction } from './storyScript';
 
 /**
  * A location compiled for runtime.
@@ -33,6 +34,11 @@ export interface ICompiledLocation extends ILocation {
      * The other locations in the game world that are reachable (active) from this one.
      */
     activeDestinations?: ICollection<IDestination>;
+
+    /**
+     * The actions the player can choose from (active) at this location.
+     */
+    activeActions?: ICollection<IAction>;
 
     /**
      * The current description shown to the player for this location.

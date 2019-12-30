@@ -23,14 +23,18 @@ export interface ILocation {
     description: string;
 
     /**
-     * When specified, the functions in this array will be called when the player enters the location for the first time.
+     * When specified, the functions in this array will be called when the player enters the location.
+     * If nothing or false is returned, the function will be removed once it completed. Return true
+     * to keep the function and call it every time the player enters the location.
      */
-    enterEvents?: ICollection<((game: IGame) => void)>;
+    enterEvents?: ICollection<((game: IGame) => void | boolean)>;
 
     /**
-     * When specified, the functions in this array will be called when the player leaves the location for the first time.
+     * When specified, the functions in this array will be called when the player leaves the location.
+     * If nothing or false is returned, the function will be removed once it completed. Return true
+     * to keep the function and call it every time the player leaves the location.
      */
-    leaveEvents?: ICollection<((game: IGame) => void)>;
+    leaveEvents?: ICollection<((game: IGame) => void | boolean)>;
 
     /**
      * Actions that the player can perform at this location.

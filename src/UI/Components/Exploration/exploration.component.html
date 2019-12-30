@@ -2,7 +2,7 @@
     <div class="box-container" id="exploration-actions" *ngIf="actionsPresent()">
         <div class="box-title">{{ texts.actions }}</div>
         <ul class="list-unstyled">
-            <li class="inline" *ngFor="let action of game.currentLocation.actions">
+            <li class="inline" *ngFor="let action of game.currentLocation.activeActions">
                 <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="disableActionButton(action)" *ngIf="!hideActionButton(action)">{{ action.text }}</button>
             </li>
         </ul>
