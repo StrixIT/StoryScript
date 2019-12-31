@@ -1,4 +1,5 @@
 import { ConversationService } from 'storyScript/Services/ConversationService';
+import { IDataService } from '../../../Engine/Interfaces/services/dataService';
 
 describe("ConversationService", function() {
 
@@ -12,7 +13,7 @@ describe("ConversationService", function() {
         expect(result).toBe(node.lines);
     });
 
-    function getService(game?: any) {
-        return new ConversationService(game || {});
+    function getService(dataService?, game?: any) {
+        return new ConversationService(dataService || {}, game || {});
     }
 });

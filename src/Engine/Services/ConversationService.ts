@@ -9,10 +9,11 @@ import { IConversationNode } from '../Interfaces/conversations/conversationNode'
 import { IConversationReply } from '../Interfaces/conversations/conversationReply';
 import { IConversationReplies } from '../Interfaces/conversations/conversationReplies';
 import { IConversation } from '../Interfaces/conversations/conversation';
-import { getParsedDocument } from './sharedFunctions';
+import { getParsedDocument, checkAutoplay } from './sharedFunctions';
+import { IDataService } from '../Interfaces/services/dataService';
 
 export class ConversationService implements IConversationService {
-    constructor(private _game: IGame) {
+    constructor(private _dataService: IDataService, private _game: IGame) {
     }
 
     talk = (person: IPerson): void => {
@@ -27,7 +28,7 @@ export class ConversationService implements IConversationService {
         person.conversation.conversationLog = person.conversation.conversationLog || [];
 
         person.conversation.conversationLog.push({
-            lines: node.lines,
+            lines: checkAutoplay(this._dataService, node.lines),
             reply: reply.lines
         });
 
@@ -78,7 +79,9 @@ export class ConversationService implements IConversationService {
             return;
         }
 
+        activeNode.lines = checkAutoplay(this._dataService, activeNode.lines);
         person.conversation.activeNode = activeNode;
+
         this.initReplies(person);
         this.setReplyStatus(person.conversation, activeNode);
     }
@@ -273,6 +276,10 @@ export class ConversationService implements IConversationService {
         }
         else {
             person.conversation.activeNode = null;
+        }
+
+        if (person.conversation.activeNode?.lines) {
+            person.conversation.activeNode.lines = checkAutoplay(this._dataService, person.conversation.activeNode.lines);
         }
     }
 

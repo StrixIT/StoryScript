@@ -242,3 +242,7 @@ feature {
 #level-up #create-character {
     padding-left: 0px;
 }
+
+.modal-dialog {
+    max-width: 50%;
+}

@@ -36,7 +36,7 @@ export class ObjectFactory {
         const helperService = new HelperService(this._game);
         const dataService = new DataService(localStorageService, nameSpace);
         this._tradeService = new TradeService(this._game, this._texts);
-        this._conversationService = new ConversationService(this._game);
+        this._conversationService = new ConversationService(dataService, this._game);
         this._characterService = new CharacterService(this._game, this._rules);
         const locationService = new LocationService(dataService, this._rules, this._game, this._game.definitions);
         this._combinationService = new CombinationService(dataService, locationService, this._game, this._rules, this._texts);
