@@ -19,3 +19,32 @@ export function getParsedDocument(tag: string, value?: string) {
     var htmlDoc = parser.parseFromString(value, 'text/html');
     return htmlDoc.getElementsByTagName(tag);
 }
+
+export function checkAutoplay(dataService: IDataService, value: string) {
+    // Check media with the autoplay property to play only once.
+    var descriptionDocument = new DOMParser().parseFromString(value, 'text/html');
+    var playedAudio = dataService.load<string[]>(DataKeys.PLAYEDMEDIA) || [];
+    value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('audio'), playedAudio);
+    value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('video'), playedAudio);
+    dataService.save(DataKeys.PLAYEDMEDIA, playedAudio);
+    return value;
+}
+
+function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLElement>, playedAudio: string[]) {
+    Array.from(elements).forEach(e => {
+        var originalText = e.outerHTML;
+        var source = e.getElementsByTagName('source')?.[0].getAttribute('src')?.toLowerCase();
+
+        if (originalText && source) {
+            if (playedAudio.indexOf(source) < 0) {
+                playedAudio.push(source);
+            } 
+            else {
+                e.removeAttribute('autoplay');
+                value = value.replace(originalText, e.outerHTML);
+            }
+        }
+    });
+
+    return value;
+}
