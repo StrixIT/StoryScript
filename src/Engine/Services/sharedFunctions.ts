@@ -10,14 +10,23 @@ export function SaveWorldState(dataService: IDataService, locationService: ILoca
     locationService.saveWorld(game.locations);
 }
 
-export function getParsedDocument(tag: string, value?: string) {
+export function getParsedDocument(tag: string, value?: string, wrapIfNotFound?: boolean) {
     if (!value) {
         return null;
     }
 
     var parser = new DOMParser();
     var htmlDoc = parser.parseFromString(value, 'text/html');
-    return htmlDoc.getElementsByTagName(tag);
+
+    var elements = htmlDoc.getElementsByTagName(tag);
+
+    if (!elements.length && wrapIfNotFound) {
+        value = `<${tag}>${value}</${tag}>`;
+        htmlDoc = parser.parseFromString(value, 'text/html');
+        elements = htmlDoc.getElementsByTagName(tag);
+    }
+
+    return elements;
 }
 
 export function checkAutoplay(dataService: IDataService, value: string) {

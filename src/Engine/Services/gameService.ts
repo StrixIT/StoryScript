@@ -10,7 +10,7 @@ import { IDestination } from '../Interfaces/destination';
 import { ScoreEntry } from '../Interfaces/scoreEntry';
 import { IStatistics } from '../Interfaces/statistics';
 import { DataKeys } from '../DataKeys';
-import { SaveWorldState, getParsedDocument } from './sharedFunctions';
+import { SaveWorldState, getParsedDocument, checkAutoplay } from './sharedFunctions';
 import { DefaultTexts } from '../defaultTexts';
 import { IGameService } from '../Interfaces/services//gameService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -206,6 +206,8 @@ export class GameService implements IGameService {
     }
 
     setCurrentDescription = (type: string, item: any, title: string): void => {
+        item.description = checkAutoplay(this._dataService, getParsedDocument('description', item.description, true)[0].innerHTML);
+
         this._game.currentDescription = {
             title: title,
             type: type, 
