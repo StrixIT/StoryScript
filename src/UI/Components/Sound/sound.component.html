@@ -1,2 +1,2 @@
-<audio *ngIf="getCurrentMusic()" src="resources/{{ getCurrentMusic() }}" autoplay loop></audio>
-<audio *ngFor="let sound of getSoundQueue()" src="resources/{{ sound.value }}" autoplay (ended)="soundCompleted(sound)"></audio>
+<audio class="storyscript-player" *ngIf="getCurrentMusic()" src="resources/{{ getCurrentMusic() }}" autoplay loop></audio>
+<audio class="storyscript-player" *ngFor="let sound of getSoundQueue()" src="resources/{{ sound.value }}" autoplay (ended)="soundCompleted(sound)"></audio>
