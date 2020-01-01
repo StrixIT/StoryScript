@@ -1,4 +1,4 @@
-<div class="box-container" id="location-visual" *ngIf="game.currentLocation.features.collectionPicture">
+<div class="box-container" id="location-visual" *ngIf="game.currentLocation.features?.collectionPicture">
     <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
     <div id="visual-features">
         <img src="{{ 'resources/' + game.currentLocation.features.collectionPicture }}" [attr.usemap]="'#' + game.currentLocation.id">

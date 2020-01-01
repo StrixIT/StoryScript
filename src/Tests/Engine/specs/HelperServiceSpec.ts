@@ -98,18 +98,14 @@ describe("HelperService", function() {
         var service = getService();
 
         var enemy = <IEnemy>{
-            items: [
+            items: <any>[
                 {
                     name: 'Left dagger',
-                    bonuses: {
-                        attack: 3
-                    }
+                    attack: 3
                 },
                 {
                     name: 'Right dagger',
-                    bonuses: {
-                        attack: 2
-                    }
+                    attack: 2
                 }
             ]
         }
@@ -126,15 +122,11 @@ describe("HelperService", function() {
             items: [
                 <IItem>{
                     name: 'Chain mail',
-                    bonuses: {
-                        defense: 3
-                    }
+                    defense: 3
                 },
                 <IItem>{
                     name: 'Small shield',
-                    bonuses: {
-                        defense: 2
-                    }
+                    defense: 2
                 }
             ]
         }

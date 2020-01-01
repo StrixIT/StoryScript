@@ -54,17 +54,16 @@ export class HelperService implements IHelpers {
         if (person.equipment) {
             for (var n in person.equipment) {
                 var item = person.equipment[n];
-
-                if (item && item.bonuses && item.bonuses[type]) {
-                    bonus += item.bonuses[type];
+                if (item?.[type] && !isNaN(item[type])) {
+                    bonus += item[type];
                 }
             };
         }
         else {
             if (person.items) {
                 person.items.forEach(item => {
-                    if (item && item.bonuses && item.bonuses[type]) {
-                        bonus += item.bonuses[type];
+                    if (item?.[type] && !isNaN(item[type])) {
+                        bonus += item[type];
                     }
                 });
             }

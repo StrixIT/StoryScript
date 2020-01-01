@@ -16,7 +16,7 @@ export function getUserTemplate(componentName: string): string {
     return userTemplate;
 }
 
-export function watchPlayState(game: IGame, callBack: (playState: PlayState) => void) {
+export function watchPlayState(game: IGame, callBack: (newPlayState: PlayState, oldPlayState: PlayState) => void) {
     if (_playStateWatchers.length === 0) {
         var playState = game.playState;
 
@@ -26,8 +26,9 @@ export function watchPlayState(game: IGame, callBack: (playState: PlayState) => 
                 return playState;
             },
             set: value => {
+                const oldState = playState;
                 playState = value;
-                _playStateWatchers.forEach(w => w(playState));
+                _playStateWatchers.forEach(w => w(playState, oldState));
             }
         });
     }

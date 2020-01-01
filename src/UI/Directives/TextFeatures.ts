@@ -1,4 +1,4 @@
-import { IGame, IFeature } from 'storyScript/Interfaces/storyScript';
+import { IGame, IFeature, PlayState } from 'storyScript/Interfaces/storyScript';
 import { compareString } from 'storyScript/globals';
 import { addHtmlSpaces } from 'storyScript/utilities';
 import { CombinationService } from 'storyScript/Services/CombinationService';
@@ -6,6 +6,7 @@ import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Directive, ElementRef, Renderer2, HostListener, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedMethodService } from '../Services/SharedMethodService';
+import { watchPlayState } from '../helpers';
 
 @Directive({ selector: '[textFeatures]' })
 export class TextFeatures  implements OnDestroy {
@@ -22,6 +23,15 @@ export class TextFeatures  implements OnDestroy {
             attributes: true,
             childList: true,
             characterData: true
+        });
+
+        // This watcher is needed to show hidden features when a game is loaded.
+        watchPlayState(this.game, (newPlayState: PlayState, oldplayState: PlayState) => {
+            if (oldplayState === PlayState.Menu && newPlayState === null) {
+                setTimeout(() => {
+                    this.refreshFeatures(true);
+                }, 0);
+            }
         });
     }
 

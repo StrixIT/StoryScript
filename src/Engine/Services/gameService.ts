@@ -10,7 +10,7 @@ import { IDestination } from '../Interfaces/destination';
 import { ScoreEntry } from '../Interfaces/scoreEntry';
 import { IStatistics } from '../Interfaces/statistics';
 import { DataKeys } from '../DataKeys';
-import { SaveWorldState, getParsedDocument, checkAutoplay } from './sharedFunctions';
+import { SaveWorldState, getParsedDocument, checkAutoplay, removeItemFromItemsAndEquipment } from './sharedFunctions';
 import { DefaultTexts } from '../defaultTexts';
 import { IGameService } from '../Interfaces/services//gameService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -253,10 +253,20 @@ export class GameService implements IGameService {
     }
 
     useItem = (item: IItem): void => {
-        var useItem = (this._rules.exploration?.onUseItem(this._game, item) && item.use) ?? item.use;
+        var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, item) && item.use) ?? item.use;
 
         if (useItem) {
             item.use(this._game, item);
+
+            if (item.charges !== undefined) {
+                if (!isNaN(item.charges)) {
+                    item.charges--;
+                }
+        
+                if (item.charges <= 0) {
+                    removeItemFromItemsAndEquipment(this._game.character, item);
+                }
+            }
         }
     }
 
@@ -400,51 +410,47 @@ export class GameService implements IGameService {
             }
         });
 
-        if (!this._game.character.score) {
-            Object.defineProperty(this._game.character, 'score', {
-                get: () => {
-                    return score;
-                },
-                set: value => {
-                    var change = value - score;
-                    score = value;
+        Object.defineProperty(this._game.character, 'score', {
+            get: () => {
+                return score;
+            },
+            set: value => {
+                var change = value - score;
+                score = value;
 
-                    // Change when xp can be lost.
-                    if (change > 0) {
-                        var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
-        
-                        if (levelUp) {
-                            this._game.playState = null;
-                            this._game.state = GameState.LevelUp;
-                            this._characterService.setupLevelUp();
-                        }
-                    }
-                }
-            });
-        }
+                // Change when xp can be lost.
+                if (change > 0) {
+                    var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
     
-        if (!this._game.state) {
-            Object.defineProperty(this._game, 'state', {
-                get: () =>
-                {
-                    return gameState;
-                },
-                set: state => {
-                    if (state === GameState.GameOver || state === GameState.Victory) {
+                    if (levelUp) {
                         this._game.playState = null;
-
-                        if (this._rules.general && this._rules.general.determineFinalScore) {
-                            this._rules.general.determineFinalScore(this._game);
-                        }
-                        
-                        this.updateHighScore();
-                        this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+                        this._game.state = GameState.LevelUp;
+                        this._characterService.setupLevelUp();
                     }
-
-                    gameState = state;
                 }
-            });
-        }
+            }
+        });
+    
+        Object.defineProperty(this._game, 'state', {
+            get: () =>
+            {
+                return gameState;
+            },
+            set: state => {
+                if (state === GameState.GameOver || state === GameState.Victory) {
+                    this._game.playState = null;
+
+                    if (this._rules.general && this._rules.general.determineFinalScore) {
+                        this._rules.general.determineFinalScore(this._game);
+                    }
+                    
+                    this.updateHighScore();
+                    this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+                }
+
+                gameState = state;
+            }
+        });
     }
 
     private initLogs = (): void => {

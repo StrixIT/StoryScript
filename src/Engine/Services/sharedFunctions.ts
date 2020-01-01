@@ -2,6 +2,8 @@ import { IGame } from '../Interfaces/game';
 import { DataKeys } from '../DataKeys';
 import { IDataService } from '../Interfaces/services/dataService';
 import { ILocationService } from '../Interfaces/services/locationService';
+import { ICharacter } from '../Interfaces/character';
+import { IItem } from '../Interfaces/item';
 
 export function SaveWorldState(dataService: IDataService, locationService: ILocationService, game: IGame) {
     dataService.save(DataKeys.CHARACTER, game.character);
@@ -37,6 +39,18 @@ export function checkAutoplay(dataService: IDataService, value: string) {
     value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('video'), playedAudio);
     dataService.save(DataKeys.PLAYEDMEDIA, playedAudio);
     return value;
+}
+
+export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem) {
+    character.items.remove(item);
+
+    if (character.equipment) {
+        for (var n in character.equipment) {
+            if (item === character.equipment[n]) {
+                character.equipment[n] = null;
+            }
+        };
+    }
 }
 
 function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLElement>, playedAudio: string[]) {
