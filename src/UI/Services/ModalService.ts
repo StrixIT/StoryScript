@@ -32,7 +32,7 @@ export class ModalService {
         }
         else if (this._activeModal) {
             // The menu modal doesn't have settings and we don't need to save when closing the menu.
-            if (this._activeModal.componentInstance.settings) {
+            if (this._activeModal.componentInstance?.settings) {
                 if (this._activeModal.componentInstance.settings.closeAction) {
                     this._activeModal.componentInstance.closeAction(this.game);
                 }
