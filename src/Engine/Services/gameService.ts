@@ -253,7 +253,7 @@ export class GameService implements IGameService {
     }
 
     useItem = (item: IItem): void => {
-        var useItem = (this._rules.exploration?.onUseItem(this._game, item) && item.use) ?? item.use;
+        var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, item) && item.use) ?? item.use;
 
         if (useItem) {
             item.use(this._game, item);
