@@ -2,7 +2,7 @@ import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, ElementRef } from '@angular/core';
-import { getUserTemplate } from '../../helpers';
+import { getUserTemplate, watchPlayState } from '../../helpers';
 
 var template = require('./main.component.html').default;
 var userTemplate = getUserTemplate('main');
@@ -17,6 +17,7 @@ export class MainComponent {
         this.texts = objectFactory.GetTexts();
         this.watchDynamicStyles();
         this.applyDynamicStyling();
+        watchPlayState(this.game, this.stopAutoplay);
     }
     
     game: IGame;
@@ -53,15 +54,20 @@ export class MainComponent {
     private applyDynamicStyling = (): void => {
         setTimeout(() => {
             this.game.dynamicStyles.forEach(s => {
-                var element = this.hostElement.nativeElement.querySelector(s.elementSelector);
+                var elements = this.hostElement.nativeElement.querySelectorAll(s.elementSelector);
 
-                if (element) {
+                elements.forEach((e: HTMLElement) => {
                     var styleText = '';
                     s.styles.forEach(e => styleText += e[0] + ': ' + e[1] + ';' );
-                    element.style.cssText = styleText;
-                }
+                    e.style.cssText = styleText;
+                });
 
             });
         }, 0, false);
+    }
+
+    private stopAutoplay = () => {
+        var mediaElements = this.hostElement.nativeElement.querySelectorAll('audio, video');
+        mediaElements.forEach((m: HTMLAudioElement) => m.pause());
     }
 }
