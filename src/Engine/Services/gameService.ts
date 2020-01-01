@@ -410,51 +410,47 @@ export class GameService implements IGameService {
             }
         });
 
-        if (!this._game.character.score) {
-            Object.defineProperty(this._game.character, 'score', {
-                get: () => {
-                    return score;
-                },
-                set: value => {
-                    var change = value - score;
-                    score = value;
+        Object.defineProperty(this._game.character, 'score', {
+            get: () => {
+                return score;
+            },
+            set: value => {
+                var change = value - score;
+                score = value;
 
-                    // Change when xp can be lost.
-                    if (change > 0) {
-                        var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
-        
-                        if (levelUp) {
-                            this._game.playState = null;
-                            this._game.state = GameState.LevelUp;
-                            this._characterService.setupLevelUp();
-                        }
-                    }
-                }
-            });
-        }
+                // Change when xp can be lost.
+                if (change > 0) {
+                    var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
     
-        if (!this._game.state) {
-            Object.defineProperty(this._game, 'state', {
-                get: () =>
-                {
-                    return gameState;
-                },
-                set: state => {
-                    if (state === GameState.GameOver || state === GameState.Victory) {
+                    if (levelUp) {
                         this._game.playState = null;
-
-                        if (this._rules.general && this._rules.general.determineFinalScore) {
-                            this._rules.general.determineFinalScore(this._game);
-                        }
-                        
-                        this.updateHighScore();
-                        this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+                        this._game.state = GameState.LevelUp;
+                        this._characterService.setupLevelUp();
                     }
-
-                    gameState = state;
                 }
-            });
-        }
+            }
+        });
+    
+        Object.defineProperty(this._game, 'state', {
+            get: () =>
+            {
+                return gameState;
+            },
+            set: state => {
+                if (state === GameState.GameOver || state === GameState.Victory) {
+                    this._game.playState = null;
+
+                    if (this._rules.general && this._rules.general.determineFinalScore) {
+                        this._rules.general.determineFinalScore(this._game);
+                    }
+                    
+                    this.updateHighScore();
+                    this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+                }
+
+                gameState = state;
+            }
+        });
     }
 
     private initLogs = (): void => {
