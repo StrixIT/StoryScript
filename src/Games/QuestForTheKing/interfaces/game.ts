@@ -13,6 +13,15 @@ export interface IGame extends StoryScriptIGame {
     currentLocation: ICompiledLocation;
     previousLocation: ICompiledLocation;
     helpers: IHelpers;
+    worldProperties: {
+        startLocation: string,
+        travelCounter: number,
+        timeOfDay: string,
+        isDay: boolean,
+        isNight: boolean,
+        currentDay: number,
+        freedFaeries: boolean
+    }
 }
 
 export interface IHelpers extends StoryScriptIHelpers {

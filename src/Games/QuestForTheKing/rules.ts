@@ -11,18 +11,27 @@ import { Shortsword } from './items/Shortsword';
 import { Fireball } from './items/Fireball';
 import { Frostbite } from './items/Frostbite';
 import { Shockbolt } from './items/Shockbolt';
+import { Start } from './locations/tournament/start';
+import { Quest1 } from './locations/Quest1';
 
 export function Rules(): IRules {
     return {
         setup: {
             setupGame: (game: IGame): void => {
                 game.worldProperties = {
+                    startLocation: Start.name,
                     currentDay: 0,
                     isDay: true,
                     isNight: false,
                     timeOfDay: 'day',
-                    freedFaeries: false
+                    freedFaeries: false,
+                    travelCounter: 0
                 };
+            },
+            gameStart: (game: IGame): void => {
+                if (game.worldProperties.startLocation !== Start.name) {
+                    game.changeLocation(game.worldProperties.startLocation);
+                }
             }
         },
 
@@ -344,6 +353,23 @@ export function Rules(): IRules {
                                     ]
                                 }
                             ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'Start the tournament or begin the quest?',
+                                    entries: [
+                                        {
+                                            text: 'Fight in the tournament',
+                                            value: Start.name
+                                        },
+                                        {
+                                            text: 'Begin the quest',
+                                            value: Quest1.name
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 };
@@ -378,9 +404,11 @@ export function Rules(): IRules {
                     }; break;
                 }
 
-                var weaponStep = characterData.steps[characterData.steps.length - 1];
+                var weaponStep = characterData.steps[characterData.steps.length - 2];
                 var chosenItem = weaponStep.questions[0].selectedEntry;
                 character.items.push(game.helpers.getItem(chosenItem.value));
+
+                game.worldProperties.startLocation = characterData.steps[characterData.steps.length - 1].questions[0].selectedEntry.value;
 
                 return character;
             }
