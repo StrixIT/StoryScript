@@ -10,7 +10,7 @@ import { IDestination } from '../Interfaces/destination';
 import { ScoreEntry } from '../Interfaces/scoreEntry';
 import { IStatistics } from '../Interfaces/statistics';
 import { DataKeys } from '../DataKeys';
-import { SaveWorldState, getParsedDocument, checkAutoplay } from './sharedFunctions';
+import { SaveWorldState, getParsedDocument, checkAutoplay, removeItemFromItemsAndEquipment } from './sharedFunctions';
 import { DefaultTexts } from '../defaultTexts';
 import { IGameService } from '../Interfaces/services//gameService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -257,6 +257,16 @@ export class GameService implements IGameService {
 
         if (useItem) {
             item.use(this._game, item);
+
+            if (item.charges !== undefined) {
+                if (!isNaN(item.charges)) {
+                    item.charges--;
+                }
+        
+                if (item.charges <= 0) {
+                    removeItemFromItemsAndEquipment(this._game.character, item);
+                }
+            }
         }
     }
 

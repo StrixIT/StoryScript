@@ -18,6 +18,11 @@ export interface IItem extends IFeature {
     description?: string;
 
     /**
+     * The number of times the item can be used before disappearing. If not specified, the item can be used indefinitely.
+     */
+    charges?: number;
+
+    /**
      * When this flag is set to true and the item has a use function specified, the use action will also be available during combat.
      */
     useInCombat?: boolean;

@@ -5,7 +5,7 @@ import { IPerson } from '../Interfaces/person';
 import { IGame } from '../Interfaces/game';
 import { IRules } from '../Interfaces/rules/rules';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
-import { SaveWorldState } from './sharedFunctions';
+import { SaveWorldState, removeItemFromItemsAndEquipment } from './sharedFunctions';
 import { compareString } from '../globals';
 import { ICombinationService } from '../Interfaces/services/combinationService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -182,11 +182,8 @@ export class CombinationService implements ICombinationService {
             }
         });
 
+        removeItemFromItemsAndEquipment(this._game.character, <IItem>feature);
         this._game.currentLocation.items.remove(<IItem>feature);
-        this._game.character.items.remove(<IItem>feature);
-        // When equipment can be used in combinations, remove items from the
-        // character's equipment as well.
-
         this._game.currentLocation.enemies.remove(<IEnemy>feature);
         this._game.currentLocation.persons.remove(<IPerson>feature);
     }
