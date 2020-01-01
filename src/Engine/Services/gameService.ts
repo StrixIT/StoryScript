@@ -22,6 +22,7 @@ import { IBarrierAction } from '../Interfaces/barrierAction';
 import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
+import { compareString } from '../globals';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -267,8 +268,28 @@ export class GameService implements IGameService {
     }
 
     getCurrentMusic = (): string => {
-        var currentEntry = !this._musicStopped && this._rules.setup.playList && this._rules.setup.playList.filter(e => this._game.playState ? e[0] === this._game.playState : e[0] === this._game.state)[0];
-        return currentEntry && <string>currentEntry[1];
+        if (this._musicStopped || this._rules.setup.playList?.length === 0) {
+            return null;
+        }
+
+        var currentEntry = this._rules.setup.playList.filter(e => e[0] === this._game.playState || e[0] === this._game.state || compareString((<Function>e[0]).name, this._game.currentLocation.id))[0];
+        
+        if (currentEntry) {
+            return <string>currentEntry[1];
+        }
+
+        var customFunctions = this._rules.setup.playList.filter(e => typeof e[0] === 'function' && (<string>e[1]).trim() === '').map(e => e[0]);
+        let result = null;
+
+        for (var n in customFunctions) {
+            result = (<((game: IGame) => string)><unknown>customFunctions[n])(this._game);
+
+            if (result) {
+                break;
+            }
+        }
+
+        return result;
     }
 
     startMusic = (): boolean => this._musicStopped = false;

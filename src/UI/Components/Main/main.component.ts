@@ -67,7 +67,7 @@ export class MainComponent {
     }
 
     private stopAutoplay = () => {
-        var mediaElements = this.hostElement.nativeElement.querySelectorAll('audio, video');
+        var mediaElements = this.hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
         mediaElements.forEach((m: HTMLAudioElement) => m.pause());
     }
 }
