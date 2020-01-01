@@ -9,5 +9,4 @@ export interface IItem extends IFeature, StoryScriptIItem {
     schade?: number;
     verdediging?: number;
     oplettendheid?: number;
-    charges?: number;
 }
