@@ -16,26 +16,6 @@ export interface IItem extends IFeature {
      * will be used to set this property at run-time.
      */
     description?: string;
-    
-    /**
-     * The damage done by this item when used in combat.
-     */
-    damage?: string;
-
-    /**
-     * The defense offered by this item.
-     */
-    defense?: number;
-
-    /**
-     * The number of times the item can be used before disappearing. If not specified, the item can be used indefinitely.
-     */
-    charges?: number;
-
-    /**
-     * Any bonuses the item offers to the player.
-     */
-    bonuses?: any;
 
     /**
      * When this flag is set to true and the item has a use function specified, the use action will also be available during combat.
