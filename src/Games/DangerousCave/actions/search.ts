@@ -14,8 +14,9 @@ export function Search(settings: SearchSettings): IAction {
         actionType: ActionType.Check,
         execute: function (game: IGame) {
             var result;
+            var bonus = game.helpers.calculateBonus(game.character, 'oplettendheid') - 1;
             var check = game.helpers.rollDice(game.character.oplettendheid + 'd6');
-            result = check * game.character.oplettendheid;
+            result = check * game.character.oplettendheid + bonus;
 
             if (result >= settings.difficulty) {
                 settings.success(game);

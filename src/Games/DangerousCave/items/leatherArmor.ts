@@ -4,7 +4,7 @@ import { Item } from '../types';
 export function LeatherArmor() {
     return Item({
         name: 'Harnas van leer',
-        defense: 2,
+        verdediging: 2,
         equipmentType: EquipmentType.Body
     });
 }

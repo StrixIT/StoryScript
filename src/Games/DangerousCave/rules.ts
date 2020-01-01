@@ -34,7 +34,7 @@ export function Rules(): IRules {
                     'kracht',
                     'vlugheid',
                     'oplettendheid',
-                    'defense'
+                    'verdediging'
                 ];
             },
 
@@ -187,7 +187,7 @@ export function Rules(): IRules {
 
             fight: (game: IGame, enemy: IEnemy): void => {
                 var check = game.helpers.rollDice(6, game.character.kracht);
-                var characterDamage = check + game.character.oplettendheid + game.helpers.calculateBonus(game.character, 'attack') - game.helpers.calculateBonus(enemy, 'defense');
+                var characterDamage = check + game.character.oplettendheid + game.helpers.calculateBonus(game.character, 'schade') - game.helpers.calculateBonus(enemy, 'verdediging');
                 game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
                 enemy.hitpoints -= characterDamage;
 
@@ -199,7 +199,7 @@ export function Rules(): IRules {
 
                 game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
                     var check = game.helpers.rollDice(enemy.attack);
-                    var enemyDamage = Math.max(0, (check - (game.character.vlugheid + game.helpers.calculateBonus(game.character, 'defense'))) + game.helpers.calculateBonus(enemy, 'damage'));
+                    var enemyDamage = Math.max(0, (check - (game.character.vlugheid + game.helpers.calculateBonus(game.character, 'verdediging'))) + game.helpers.calculateBonus(enemy, 'schade'));
                     game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
                     game.character.currentHitpoints -= enemyDamage;
                 });

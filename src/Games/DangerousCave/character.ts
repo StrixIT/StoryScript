@@ -13,7 +13,7 @@ export class Character implements ICharacter {
     kracht?: number = 1;
     vlugheid?: number = 1;
     oplettendheid?: number = 1;
-    defense?: number = 1;
+    verdediging?: number = 1;
 
     items: ICollection<IItem> = [];
 

@@ -4,7 +4,7 @@ import { Item } from '../types';
 export function Dagger() {
     return Item({
         name: 'Dolk',
-        damage: '1',
-        equipmentType: EquipmentType.LeftHand
+        schade: 1,
+        equipmentType: EquipmentType.RightHand
     });
 }

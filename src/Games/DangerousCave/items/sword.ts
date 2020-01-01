@@ -4,7 +4,7 @@ import { Item } from '../types';
 export function Sword() {
     return Item({
         name: 'Zwaard',
-        damage: '3',
+        schade: 3,
         equipmentType: EquipmentType.RightHand
     });
 }

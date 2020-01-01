@@ -6,5 +6,8 @@ export function Item(entity: IItem): IItem {
 }
 
 export interface IItem extends IFeature, StoryScriptIItem {
-    // Add game-specific item properties here
+    schade?: number;
+    verdediging?: number;
+    oplettendheid?: number;
+    charges?: number;
 }

@@ -54,6 +54,9 @@ export function CustomTexts(): IInterfaceTexts {
         questFailed: "Je hebt gefaald...",
         finalScore: "Je score: ",
         tryAgain: "Nog eens proberen",
-        view: "Bekijken"
+        view: "Bekijken",
+        closeModal: "Sluiten",
+        enemiesToFight: "Je ziet deze vijanden:",
+        startCombat: "Begin het gevecht"
     };
 }
