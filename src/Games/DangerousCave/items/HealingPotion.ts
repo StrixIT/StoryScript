@@ -7,6 +7,7 @@ export function HealingPotion() {
         name: 'Toverdrank',
         equipmentType: EquipmentType.Miscellaneous,
         use: Heal('1d8'),
-        useInCombat: true
+        useInCombat: true,
+        charges: 1
     });
 }
