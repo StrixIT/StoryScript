@@ -11,7 +11,7 @@ import { IModalSettings } from '../Components/modalSettings';
 export class ModalService {
     private _activeModal = null;
 
-    constructor(private _modalService: NgbModal, private _gameService: GameService , objectFactory: ObjectFactory) {
+    constructor(private _modalService: NgbModal, private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
 
