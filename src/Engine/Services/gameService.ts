@@ -268,7 +268,7 @@ export class GameService implements IGameService {
     }
 
     getCurrentMusic = (): string => {
-        if (this._musicStopped || this._rules.setup.playList?.length === 0) {
+        if (this._musicStopped || this._rules.setup.playList?.length === undefined) {
             return null;
         }
 
