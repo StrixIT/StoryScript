@@ -1,12 +1,12 @@
 import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import template from './locationtext.component.html';
 import { Component } from '@angular/core';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'location-text',
-    template: template,
+    template: getTemplate('locationtext', require('./locationtext.component.html'))
 })
 export class LocationTextComponent {
     constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

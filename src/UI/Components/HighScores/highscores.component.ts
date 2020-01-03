@@ -2,11 +2,11 @@
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './highscores.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'highscores',
-    template: template,
+    template: getTemplate('highscores', require('./highscores.component.html'))
 })
 export class HighScoresComponent {
     constructor(objectFactory: ObjectFactory) {

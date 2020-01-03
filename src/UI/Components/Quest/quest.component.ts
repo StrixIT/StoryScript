@@ -4,11 +4,11 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './quest.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'quests',
-    template: template,
+    template: getTemplate('quest', require('./quest.component.html'))
 })
 export class QuestComponent {
     constructor(private _characterService: CharacterService, sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

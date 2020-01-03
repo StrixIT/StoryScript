@@ -3,11 +3,11 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './charactersheet.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'character-sheet',
-    template: template,
+    template: getTemplate('charactersheet', require('./charactersheet.component.html'))
 })
 export class CharacterSheetComponent {
     constructor(sharedMethodService: SharedMethodService, characterService: CharacterService, objectFactory: ObjectFactory) {

@@ -2,11 +2,11 @@ import { Component, Input } from '@angular/core';
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { IModalSettings } from '../modalSettings';
-import template from './encountermodal.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'encounter-modal',
-    template: template,
+    template: getTemplate('encountermodal', require('./encountermodal.component.html'))
 })
 export class EncounterModalComponent {
     @Input() settings: IModalSettings;

@@ -1,12 +1,13 @@
 ﻿import { IRules, ICreateCharacter, ICharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character } from './types';
+import { Start } from './locations/Start';
 
 export function Rules(): IRules {
     return {
         setup: {
             autoBackButton: true,
             playList: [
-                [GameState.Play, 'Contemplate_the_stars.mp3']
+                [Start, 'Contemplate_the_stars.mp3']
             ],
             getCombinationActions: (): ICombinationAction[] => {
                 return [

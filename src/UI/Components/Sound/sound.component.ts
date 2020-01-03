@@ -1,13 +1,13 @@
 import { GameService } from 'storyScript/Services/gameService';
 import { Component, NgZone } from '@angular/core';
-import template from './sound.component.html';
 import { IGame } from 'storyScript/Interfaces/game';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { createHash } from 'storyScript/globals';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'sound',
-    template: template,
+    template: getTemplate('sound', require('./sound.component.html'))
 })
 export class SoundComponent {
     private _game: IGame;

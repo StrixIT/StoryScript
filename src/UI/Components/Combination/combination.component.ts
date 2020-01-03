@@ -2,11 +2,11 @@ import { IInterfaceTexts, IGame, ICombinable, ICombinationAction, ICombineResult
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { Component } from '@angular/core';
-import template from './combination.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'combination',
-    template: template,
+    template: getTemplate('combination', require('./combination.component.html'))
 })
 export class CombinationComponent {
     constructor(private _combinationService: CombinationService, objectFactory: ObjectFactory) {
