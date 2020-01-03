@@ -297,9 +297,9 @@ export class GameService implements IGameService {
         // Next, get the entries in this order: Location, PlayState, GameState.
         var currentEntry = this._rules.setup.playList
                             .map(e => {
-                                (<any>e).order = e[0] === this._game.state ? 1 
+                                (<any>e).order = e[0] === this._game.state ? 3 
                                                 : e[0] === this._game.playState ? 2 
-                                                : compareString((<Function>e[0]).name, this._game.currentLocation.id) ? 3 
+                                                : compareString((<Function>e[0]).name, this._game.currentLocation?.id) ? 1 
                                                 : 0;
                                 return e;
                             })

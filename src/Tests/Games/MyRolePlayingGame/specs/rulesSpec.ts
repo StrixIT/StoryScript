@@ -7,7 +7,7 @@ describe("Rules", function() {
         var service = Rules();
         var character = new Character();
 
-        var game = <IGame>{
+        var game = {
             character: <ICharacter>character,
             currentLocation: <ICompiledLocation>{
                 activeEnemies: []
@@ -26,7 +26,7 @@ describe("Rules", function() {
         };
         var enemy = <IEnemy>{};
 
-        service.combat.fight(game, enemy);
+        service.combat.fight(<IGame>game, enemy);
         var expected = true;
         var result = true;
 
