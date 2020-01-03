@@ -15,7 +15,7 @@ export function Rules(): IRules {
             gameStart: (game: IGame) => {
                 game.character.items.push(Sword());
                 game.character.items.push(Potion());
-                game.changeLocation(game.worldProperties.startChoice.name);
+                game.changeLocation(game.worldProperties.startChoice.name, true);
                 setPlayerPosition(game, game.worldProperties.startChoice.tile);
             },
             continueGame: (game: IGame) => {

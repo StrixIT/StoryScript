@@ -1,6 +1,6 @@
 import { IFeatureCollection } from 'storyScript/Interfaces/storyScript';
 import { IMapData, TileType, createFeatureMap } from '../maps';
-import { Start } from '../locations/start';
+import { Cave } from '../locations/Introduction/Cave';
 
 var _caveMap: IFeatureCollection;
 
@@ -29,7 +29,7 @@ export function caveMap() {
         };
 
         var tileAdditions = [
-            ['1-1', Start]
+            ['1-1', Cave]
         ];
 
         _caveMap = createFeatureMap(mapData, tileAdditions);
