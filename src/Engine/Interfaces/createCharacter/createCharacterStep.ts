@@ -25,10 +25,9 @@ export interface ICreateCharacterStep {
     attributes?: ICreateCharacterAttribute[];
 
     /**
-     * The validation to perform before continuing to the next step.
-     * @param character The character sheet filled in so far
+     * The total numner of points to distribute over multiple attributes.
      */
-    validation?(character: ICreateCharacter): string;
+    numberOfAttributePoints?: number;
 
     /**
      * The selector that determines what step will be activated after the current one.
