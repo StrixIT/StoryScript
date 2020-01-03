@@ -282,12 +282,7 @@ export class GameService implements IGameService {
             return null;
         }
 
-        var currentEntry = this._rules.setup.playList.filter(e => e[0] === this._game.playState || e[0] === this._game.state || compareString((<Function>e[0]).name, this._game.currentLocation.id))[0];
-        
-        if (currentEntry) {
-            return <string>currentEntry[1];
-        }
-
+        // Evaluate custom functions first.
         var customFunctions = this._rules.setup.playList.filter(e => typeof e[0] === 'function' && (<string>e[1]).trim() === '').map(e => e[0]);
         let result = null;
 
@@ -295,8 +290,24 @@ export class GameService implements IGameService {
             result = (<((game: IGame) => string)><unknown>customFunctions[n])(this._game);
 
             if (result) {
-                break;
+                return result;
             }
+        }
+
+        // Next, get the entries in this order: Location, PlayState, GameState.
+        var currentEntry = this._rules.setup.playList
+                            .map(e => {
+                                (<any>e).order = e[0] === this._game.state ? 1 
+                                                : e[0] === this._game.playState ? 2 
+                                                : compareString((<Function>e[0]).name, this._game.currentLocation.id) ? 3 
+                                                : 0;
+                                return e;
+                            })
+                            .filter(e => (<any>e).order > 0)
+                            .sort((a, b) => (<any>a).order - (<any>b).order)[0];
+        
+        if (currentEntry) {
+            return <string>currentEntry[1];
         }
 
         return result;
