@@ -4,11 +4,11 @@ import { GameService } from 'storyScript/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './exploration.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'exploration',
-    template: template,
+    template: getTemplate('exploration', require('./exploration.component.html'))
 })
 export class ExplorationComponent {
     constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

@@ -2,14 +2,11 @@ import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, ElementRef } from '@angular/core';
-import { getUserTemplate, watchPlayState } from '../../helpers';
-
-var template = require('./main.component.html').default;
-var userTemplate = getUserTemplate('main');
+import { getTemplate, watchPlayState } from '../../helpers';
 
 @Component({
     selector: 'main',
-    template: userTemplate || template
+    template: getTemplate('main', require('./main.component.html'))
 })
 export class MainComponent {
     constructor(private hostElement: ElementRef, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

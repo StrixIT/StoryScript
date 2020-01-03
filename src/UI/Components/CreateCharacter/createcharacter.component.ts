@@ -3,11 +3,11 @@ import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './createcharacter.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'create-character',
-    template: template,
+    template: getTemplate('createcharacter', require('./createcharacter.component.html'))
 })
 export class CreateCharacterComponent {
     constructor(private _characterService: CharacterService, private _gameService: GameService, objectFactory: ObjectFactory) {

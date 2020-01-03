@@ -1,11 +1,11 @@
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './actionlog.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'action-log',
-    template: template,
+    template: getTemplate('actionlog', require('./actionlog.component.html'))
 })
 export class ActionLogComponent {
     constructor(objectFactory: ObjectFactory) {

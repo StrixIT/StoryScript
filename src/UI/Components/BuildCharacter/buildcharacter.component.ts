@@ -2,11 +2,11 @@ import { IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICreateCharact
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, Input } from '@angular/core';
-import template from './buildcharacter.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'build-character',
-    template: template,
+    template: getTemplate('buildcharacter', require('./buildcharacter.component.html'))
 })
 export class BuildCharacterComponent {
     @Input() sheet: ICreateCharacter;

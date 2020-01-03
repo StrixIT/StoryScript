@@ -3,11 +3,11 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './ground.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'ground',
-    template: template,
+    template: getTemplate('ground', require('./ground.component.html'))
 })
 export class GroundComponent {
     constructor(private _sharedMethodService: SharedMethodService, private _characterService: CharacterService, objectFactory: ObjectFactory) {

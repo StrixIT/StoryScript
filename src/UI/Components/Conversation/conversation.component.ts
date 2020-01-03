@@ -2,11 +2,11 @@ import { IGame, IConversationNode, IConversationReply } from 'storyScript/Interf
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './conversation.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'conversation',
-    template: template,
+    template: getTemplate('conversation', require('./conversation.component.html'))
 })
 export class ConversationComponent {
     constructor(private _conversationService: ConversationService, objectFactory: ObjectFactory) {

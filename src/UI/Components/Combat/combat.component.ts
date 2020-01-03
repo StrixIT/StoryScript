@@ -2,12 +2,12 @@ import { IInterfaceTexts, IGame, IAction, IEnemy, IItem } from 'storyScript/Inte
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import template from './combat.component.html';
 import { Component } from '@angular/core';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'combat',
-    template: template,
+    template: getTemplate('combat', require('./combat.component.html'))
 })
 export class CombatComponent {
     constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

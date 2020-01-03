@@ -2,11 +2,11 @@ import { IGame, IInterfaceTexts, IItem, ITrade, IPerson } from 'storyScript/Inte
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core'
-import template from './encounter.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'encounter',
-    template: template,
+    template: getTemplate('encounter', require('./encounter.component.html'))
 })
 export class EncounterComponent {
     constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

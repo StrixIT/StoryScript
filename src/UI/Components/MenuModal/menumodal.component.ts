@@ -3,11 +3,11 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import template from './menumodal.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'menu-modal',
-    template: template,
+    template: getTemplate('menumodal', require('./menumodal.component.html'))
 })
 export class MenuModalComponent {
     constructor(private _activeModal: NgbActiveModal, private _gameService: GameService, objectFactory: ObjectFactory) {

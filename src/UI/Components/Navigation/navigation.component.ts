@@ -2,11 +2,11 @@ import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyS
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './navigation.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'navigation',
-    template: template,
+    template: getTemplate('navigation', require('./navigation.component.html'))
 })
 export class NavigationComponent {
     constructor(private _gameService: GameService, objectFactory: ObjectFactory) {

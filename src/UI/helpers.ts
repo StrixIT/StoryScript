@@ -1,19 +1,21 @@
 import { PlayState } from '../Engine/Interfaces/storyScript';
 import { IGame } from '../Engine/Interfaces/storyScript';
 
+const _templates = new Map<string, string>();
 const _playStateWatchers = [];
 
-export function getUserTemplate(componentName: string): string {
-    var r = require.context('game/ui/components', false, /.component.html$/);
-    let userTemplate = null;
+export function getTemplate(componentName: string, defaultTemplate?: any): string {
+    if (_templates.size === 0) {
+        var r = require.context('game/ui/components', false, /.component.html$/);
 
-    r.keys().map(i => {
-        if (i.endsWith(`${componentName}.component.html`)) {
-            userTemplate = r(i).default;
-        }
-    });
+        r.keys().map(i => {
+            if (i.endsWith(`${componentName}.component.html`)) {
+                _templates.set(componentName, r(i).default);
+            }
+        });
+    }
 
-    return userTemplate;
+    return _templates.get(componentName) || defaultTemplate?.default;
 }
 
 export function watchPlayState(game: IGame, callBack: (newPlayState: PlayState, oldPlayState: PlayState) => void) {

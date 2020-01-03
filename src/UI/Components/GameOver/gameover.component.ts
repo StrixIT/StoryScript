@@ -2,11 +2,11 @@ import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
-import template from './gameover.component.html';
+import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'game-over',
-    template: template,
+    template: getTemplate('gameover', require('./gameover.component.html'))
 })
 export class GameOverComponent {
     constructor(private _gameService: GameService, objectFactory: ObjectFactory) {
