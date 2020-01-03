@@ -263,6 +263,8 @@ export class CharacterService implements ICharacterService {
         var done = true;
 
         if (step.attributes) {
+            let totalAssignedAll = 0;
+
             step.attributes.forEach(attr => {
                 var totalAssigned = 0;
                 var textChoicesFilled = 0;
@@ -274,12 +276,17 @@ export class CharacterService implements ICharacterService {
                         }
                     }
                     else {
-                        totalAssigned += <number>entry.value || 1;
+                        totalAssigned += <number>entry.value || 0;
                     }
                 });
 
+                totalAssignedAll += totalAssigned;
                 done = totalAssigned === attr.numberOfPointsToDistribute || textChoicesFilled === attr.entries.length;
             });
+
+            if (step.numberOfAttributePoints) {
+                done = totalAssignedAll === step.numberOfAttributePoints;
+            }
         }
 
         return done;
