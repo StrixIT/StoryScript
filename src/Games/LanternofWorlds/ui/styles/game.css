@@ -10,36 +10,9 @@ body {
     transition:all 1s ease 0s;top:0;left:0;
 }
 
-#location-overlay {
-    position: absolute;
-    top: 80px;
-    left: 350px;
-    background-color: white;
-    width: 600px;
-}
-
-#location-overlay #location {
-    min-height: 50px;
-    max-height: 250px;
-    overflow-y: auto;
-}
-
-#location-overlay .box-title {
-    display: none;
-}
-
-#location-overlay .overlay-title {
-    display: block;
-    margin: 0;
-}
-
 .overlay-title .close {
     color: white;
     line-height: 1.2;
-}
-
-#location-overlay .box-container {
-    border: none;
 }
 
 #player-icon {
@@ -47,4 +20,22 @@ body {
     top: 260px;
     left: 615px;
     display: none;
+}
+
+.modal-content {
+    border-image-source: url('resources/ui/frame.png');
+    border-image-slice: 30;
+    border-image-width: 30;
+    padding: 28px 15px 23px 15px;
+    background-color: transparent;
+    background-clip: content-box;
+}
+
+.modal-backdrop.show {
+    opacity: 0;
+}
+
+encounter-modal {
+    background-color: white;
+    border-radius: 20px;
 }

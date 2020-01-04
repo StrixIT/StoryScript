@@ -16,20 +16,6 @@
                 <div *ngIf="game.state == 'Play'" id="play-container">                 
                     <location-visual></location-visual>
                     <img id="player-icon" src="resources/hero.png" />
-                    <div id="location-overlay">
-                        <div class="box-title overlay-title">
-                            <span [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></span>
-                            <button type="button" class="close" aria-label="Close" (click)="applyDynamicStyle('#location-overlay', 'display', 'none')">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <encounter></encounter>
-                        <location-text></location-text>
-                        <!-- <action-log></action-log> 
-                        <ground></ground>-->
-                        <exploration></exploration>
-                        <enemy></enemy>
-                    </div>
                 </div>
                 <intro></intro>
                 <create-character></create-character>

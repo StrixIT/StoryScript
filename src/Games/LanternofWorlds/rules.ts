@@ -197,30 +197,33 @@ export function Rules(): IRules {
     }
 
     function showElements(game: IGame, timeout: boolean, location?: string) {
-        var styles = [];
-
-        if (location) {
-            styles.push({
-                elementSelector: '#location-overlay',
-                styles: [
-                    ['display', 'block']
-                ]
-            });
-        }
-
-        styles.push({
+        var styles = [{
             elementSelector: '#player-icon',
             styles: [
                 ['display', 'block']
             ]
-        });
+        }];
 
         if (timeout) {
             setTimeout(() => {
+                setLocationDescription(game);
                 game.dynamicStyles = styles;
+
             }, 1000);
         } else {
+            setLocationDescription(game);
             game.dynamicStyles = styles;
+        }
+    }
+
+    function setLocationDescription(game: IGame) {
+        game.currentDescription = {
+            title: game.currentLocation.name,
+            type: 'Location',
+            item: {
+                name: '',
+                description: game.currentLocation.description
+            }
         }
     }
 
@@ -277,12 +280,6 @@ export function Rules(): IRules {
                 styles: [
                     ['margin-top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
                     ['margin-left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
-                ]
-            },
-            {
-                elementSelector: '#location-overlay',
-                styles: [
-                    ['display', 'none']
                 ]
             }
         ];   
