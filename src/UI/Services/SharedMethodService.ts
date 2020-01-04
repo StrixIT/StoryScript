@@ -53,7 +53,7 @@ export class SharedMethodService {
     hasDescription = (entity: { id?: string, description?: string }): boolean => this._gameService.hasDescription(entity);
 
     showDescription = (game: IGame, type: string, item: any, title: string): void => {
-        this._gameService.setCurrentDescription(type, item, title);
+        game.currentDescription = { title: title, type: type, item: item };
     }
 
     startCombat = (game: IGame, person?: IPerson): void => {
