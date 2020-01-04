@@ -23,6 +23,7 @@ import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
 import { compareString } from '../globals';
+import { IFeature } from '../Interfaces/feature';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -204,18 +205,6 @@ export class GameService implements IGameService {
         }
 
         return this._parsedDescriptions.get(entity.id);
-    }
-
-    setCurrentDescription = (type: string, item: any, title: string): void => {
-        item.description = checkAutoplay(this._dataService, getParsedDocument('description', item.description, true)[0].innerHTML);
-
-        this._game.currentDescription = {
-            title: title,
-            type: type, 
-            item: item
-        };
-
-        this._game.playState = PlayState.Description;
     }
 
     initCombat = (): void => {
@@ -406,6 +395,7 @@ export class GameService implements IGameService {
         let currentHitpoints = this._game.character.currentHitpoints || this._game.character.hitpoints;
         let score = this._game.character.score || 0;
         let gameState = this._game.state;
+        let currentDescription = this._game.currentDescription;
 
         Object.defineProperty(this._game.character, 'currentHitpoints', {
             get: () => {
@@ -460,6 +450,18 @@ export class GameService implements IGameService {
                 }
 
                 gameState = state;
+            }
+        });
+
+        Object.defineProperty(this._game, 'currentDescription', {
+            get: () =>
+            {
+                return currentDescription;
+            },
+            set: (value: { title: string, type: string, item: IFeature }) => {
+                currentDescription = value;
+                currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+                this._game.playState = PlayState.Description;
             }
         });
     }

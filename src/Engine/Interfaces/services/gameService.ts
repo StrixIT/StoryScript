@@ -15,7 +15,6 @@ export interface IGameService {
     getSaveGames(): string[];
     loadGame(name: string): void;
     hasDescription(entity: { id?: string, description?: string }): boolean;
-    setCurrentDescription(type: string, entity: any, key: string): void;
     initCombat(): void;
     fight(enemy: IEnemy, retaliate?: boolean): void;
     useItem(item: IItem): void;
