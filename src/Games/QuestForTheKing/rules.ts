@@ -435,8 +435,8 @@ export function Rules(): IRules {
                     if (!game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
                         var currentSelector = descriptionSelector(game);
                         var selector = currentSelector ? currentSelector + 'after' : 'after';
+                        selector = game.currentLocation.descriptions[selector] ? selector : 'after';
                         game.currentLocation.descriptionSelector = selector;
-                        //game.currentLocation.description = game.currentLocation.descriptions[selector] ? game.currentLocation.descriptions[selector] : game.currentLocation.descriptions['after'];
                     }
                 }
 
