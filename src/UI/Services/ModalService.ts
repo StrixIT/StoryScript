@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { IInterfaceTexts, PlayState, IGame } from 'storyScript/Interfaces/storyScript';
@@ -24,14 +24,16 @@ export class ModalService {
     private texts: IInterfaceTexts;
 
     private openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {
+        const modalOptions = <NgbModalOptions>{ backdrop: 'static', keyboard: false };
+
         // 1. Just opening the menu
         if (newState === PlayState.Menu) {
-            this._activeModal = this._modalService.open(MenuModalComponent);
+            this._activeModal = this._modalService.open(MenuModalComponent, modalOptions);
             watchDynamicStyles(this.game, this._activeModal.componentInstance.element);
         }
         // 2. When opening the encounter modal
         else if (newState && !oldState && !this._previousModalState) {
-            this._activeModal = this._modalService.open(EncounterModalComponent);
+            this._activeModal = this._modalService.open(EncounterModalComponent, modalOptions);
             this._activeModal.componentInstance.settings = this.getStateSettings(newState);
             watchDynamicStyles(this.game, this._activeModal.componentInstance.element);
         }
