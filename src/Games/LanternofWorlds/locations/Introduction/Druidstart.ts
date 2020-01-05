@@ -1,8 +1,6 @@
 import { Location, IGame, IItem } from '../../types'
 import description from './Druidstart.html'
 import { forestMap } from '../../maps/forest';
-import { Magician } from '../../persons/magician';
-import { Smith } from '../../persons/smith';
 
 export function Druidstart() {
     return Location({
