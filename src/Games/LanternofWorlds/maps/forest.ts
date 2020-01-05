@@ -2,6 +2,7 @@ import { IFeatureCollection } from 'storyScript/Interfaces/storyScript';
 import { IMapData, TileType, createFeatureMap } from '../maps';
 import { Warrior } from '../locations/Introduction/Warrior';
 import { Druidstart } from '../locations/Introduction/Druidstart';
+import { Village } from '../locations/Village';
 
 var _forestMap: IFeatureCollection;
 
@@ -27,7 +28,8 @@ export function forestMap() {
 
         var tileAdditions = [
             ['1-3', Warrior],
-            ['1-2', Druidstart]
+            ['1-2', Village],
+            ['2-2', Druidstart]
         ];
 
         _forestMap = createFeatureMap(mapData, tileAdditions);

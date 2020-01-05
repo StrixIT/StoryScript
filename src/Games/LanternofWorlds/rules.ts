@@ -46,10 +46,6 @@ export function Rules(): IRules {
 
                             setCoordinates(game, target);
 
-                            if (target.linkToLocation) {
-                                game.changeLocation(target.linkToLocation);
-                            }
-
                             // Hide the location overlay while the player is travelling.
                             showElements(game, true, target.linkToLocation);
 
@@ -143,9 +139,9 @@ export function Rules(): IRules {
                 var startChoice = { name: 'start', tile: 'ca_1-1' };
 
                 if (selectedStart && selectedStart.text) {
-                    startChoice = selectedStart.text === 'You are a druid' ? { name: 'druidstart', tile: 'fo_1-2' }
-                        : selectedStart.text === 'You are a fisherman' ? { name: 'druidstart', tile: 'fo_1-2' }
-                        : selectedStart.text === 'You are a veteran warrior' ?{ name: 'druidstart', tile: 'fo_1-2' } : startChoice;
+                    startChoice = selectedStart.text === 'You are a druid' ? { name: 'druidstart', tile: 'fo_2-2' }
+                        : selectedStart.text === 'You are a fisherman' ? { name: 'druidstart', tile: 'fo_2-2' }
+                        : selectedStart.text === 'You are a veteran warrior' ?{ name: 'druidstart', tile: 'fo_2-2' } : startChoice;
                 }
 
                 game.worldProperties.startChoice = startChoice;
@@ -191,44 +187,22 @@ export function Rules(): IRules {
 
     function setPlayerPosition(game: IGame, position: string) {
         var startFeature = game.currentLocation.features.get(position);
-        game.worldProperties.mapPosition = startFeature.id;
-        setCoordinates(game, startFeature);
-        showElements(game, true);
-    }
 
-    function showElements(game: IGame, timeout: boolean, location?: string) {
-        var styles = [{
-            elementSelector: '#player-icon',
-            styles: [
-                ['display', 'block']
-            ]
-        }];
-
-        if (timeout) {
-            setTimeout(() => {
-                setLocationDescription(game);
-                game.dynamicStyles = styles;
-
-            }, 1000);
-        } else {
-            setLocationDescription(game);
-            game.dynamicStyles = styles;
-        }
-    }
-
-    function setLocationDescription(game: IGame) {
-        game.currentDescription = {
-            title: game.currentLocation.name,
-            type: 'Location',
-            item: {
-                name: '',
-                description: game.currentLocation.description
-            }
+        if (startFeature) {
+            game.worldProperties.mapPosition = startFeature.id;
+            setCoordinates(game, startFeature);
+            showElements(game, true);
         }
     }
 
     function canMoveToTile(game: IGame, target: IFeature) {
-        var targetlocation = target.id.split('_')[1].split('-').map(c => parseInt(c));
+        var targetParts = target.id.split('_');
+
+        if (targetParts.length === 1) {
+            return true;
+        }
+
+        var targetlocation = targetParts[1].split('-').map(c => parseInt(c));
 
         var currentPosition= game.worldProperties.mapPosition;
 
@@ -264,24 +238,71 @@ export function Rules(): IRules {
 
         return false;
     }
+}
 
-    function setCoordinates(game: IGame, target: IFeature) {
-        var coords = target.coords.split(',').map(c => parseInt(c));
-        game.worldProperties.mapLocationX = -(coords[0] - Constants.MAPOFFSETX);
-        game.worldProperties.mapLocationY = -(coords[1] - Constants.MAPOFFSETY);   
+export function setCoordinates(game: IGame, target: IFeature) {
+    var coords = target.coords.split(',').map(c => parseInt(c));
+    game.worldProperties.mapLocationX = -(coords[0] - Constants.MAPOFFSETX);
+    game.worldProperties.mapLocationY = -(coords[1] - Constants.MAPOFFSETY);   
 
-        setDynamicStyles(game);
-    }
+    setDynamicStyles(game);
+}
 
-    function setDynamicStyles(game: IGame) {
-        game.dynamicStyles = [
-            {
-                elementSelector: '#visual-features img',
-                styles: [
-                    ['margin-top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
-                    ['margin-left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
-                ]
+export function showElements(game: IGame, timeout: boolean, location?: string) {
+    let showOnMap = game.locations.get(location).showOnMap;
+    showOnMap = showOnMap === undefined ? true : showOnMap;
+
+    var styles = [{
+        elementSelector: '#player-icon',
+        styles: [
+            ['display', showOnMap ? 'block' : 'none']
+        ]
+    }];
+    
+    styles.push({
+        elementSelector: '.modal-content-wrapper',
+        styles: [
+            ['background-image', 'url(\'resources/maps/CaveBackground.png\')']
+        ]
+    });
+
+    if (timeout) {
+        setTimeout(() => {
+            if (location) {
+                game.changeLocation(location);
             }
-        ];   
+
+            if (location && showOnMap) {
+                setLocationDescription(game);
+            }
+            game.dynamicStyles = styles;
+
+        }, 1000);
+    } else {
+        setLocationDescription(game);
+        game.dynamicStyles = styles;
     }
+}
+
+function setLocationDescription(game: IGame) {
+    game.currentDescription = {
+        title: game.currentLocation.name,
+        type: 'location',
+        item: {
+            name: '',
+            description: game.currentLocation.description
+        }
+    }
+}
+
+function setDynamicStyles(game: IGame) {
+    game.dynamicStyles = [
+        {
+            elementSelector: '#visual-features img',
+            styles: [
+                ['margin-top', (game.worldProperties.mapLocationY || 0).toString() + 'px'],
+                ['margin-left', (game.worldProperties.mapLocationX || 0).toString() + 'px']
+            ]
+        }
+    ];   
 }

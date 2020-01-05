@@ -7,6 +7,7 @@ export function Location(entity: ILocation): ILocation  {
 
 export interface ILocation extends StoryScriptILocation {
     // Add game-specific location properties here
+    showOnMap?: boolean;
 }
 
 export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {

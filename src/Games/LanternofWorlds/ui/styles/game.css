@@ -39,3 +39,7 @@ encounter-modal {
     background-color: white;
     border-radius: 20px;
 }
+
+.modal-content-wrapper .box-container {
+    background-color: white;
+}
