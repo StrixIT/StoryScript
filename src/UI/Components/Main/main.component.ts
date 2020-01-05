@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, ElementRef } from '@angular/core';
@@ -63,8 +63,12 @@ export class MainComponent {
         }, 0, false);
     }
 
-    private stopAutoplay = () => {
-        var mediaElements = this.hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
-        mediaElements.forEach((m: HTMLAudioElement) => m.pause());
+    private stopAutoplay = (newPlayState: PlayState, oldPlayState: PlayState) => {
+        // When opening the modal, stop autoplaying elements. When the modal closes, the elements in it are removed
+        // and autoplay of the modal stops automatically.
+        if (newPlayState !== null) {
+            var mediaElements = this.hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
+            mediaElements.forEach((m: HTMLAudioElement) => m.pause());
+        }
     }
 }
