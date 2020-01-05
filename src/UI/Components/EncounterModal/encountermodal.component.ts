@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ElementRef } from '@angular/core';
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { IModalSettings } from '../modalSettings';
@@ -11,9 +11,10 @@ import { getTemplate } from '../../helpers';
 export class EncounterModalComponent {
     @Input() settings: IModalSettings;
 
-    constructor(objectFactory: ObjectFactory) {
+    constructor(private hostElement: ElementRef, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
+        this.element = hostElement;
 
         this.settings = {
             title: '',
@@ -22,6 +23,7 @@ export class EncounterModalComponent {
         }
     }
 
+    element: ElementRef<any>;
     game: IGame;
     texts: IInterfaceTexts;
 

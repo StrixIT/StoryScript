@@ -26,7 +26,7 @@ export class TextFeatures  implements OnDestroy {
         });
 
         // This watcher is needed to show hidden features when a game is loaded.
-        watchPlayState(this.game, (newPlayState: PlayState, oldplayState: PlayState) => {
+        watchPlayState(this.game, (game: IGame, newPlayState: PlayState, oldplayState: PlayState) => {
             if (oldplayState === PlayState.Menu && newPlayState === null) {
                 setTimeout(() => {
                     this.refreshFeatures(true);

@@ -2,7 +2,7 @@ import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyS
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, ElementRef } from '@angular/core';
-import { getTemplate, watchPlayState } from '../../helpers';
+import { getTemplate, watchPlayState, watchDynamicStyles, applyDynamicStyling } from '../../helpers';
 
 @Component({
     selector: 'main',
@@ -12,8 +12,8 @@ export class MainComponent {
     constructor(private hostElement: ElementRef, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
-        this.watchDynamicStyles();
-        this.applyDynamicStyling();
+        watchDynamicStyles(this.game, this.hostElement);
+        applyDynamicStyling(this.game, this.hostElement);
         watchPlayState(this.game, this.stopAutoplay);
     }
     
@@ -33,37 +33,7 @@ export class MainComponent {
         ];
     }
 
-    private watchDynamicStyles = () => {
-        var dynamicStyles = this.game.dynamicStyles || [];
-
-        Object.defineProperty(this.game, 'dynamicStyles', {
-            enumerable: true,
-            get: () => {
-                return dynamicStyles;
-            },
-            set: value => {
-                dynamicStyles = value;
-                this.applyDynamicStyling();
-            }
-        });
-    }
-
-    private applyDynamicStyling = (): void => {
-        setTimeout(() => {
-            this.game.dynamicStyles.forEach(s => {
-                var elements = this.hostElement.nativeElement.querySelectorAll(s.elementSelector);
-
-                elements.forEach((e: HTMLElement) => {
-                    var styleText = '';
-                    s.styles.forEach(e => styleText += e[0] + ': ' + e[1] + ';' );
-                    e.style.cssText = styleText;
-                });
-
-            });
-        }, 0, false);
-    }
-
-    private stopAutoplay = (newPlayState: PlayState, oldPlayState: PlayState) => {
+    private stopAutoplay = (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => {
         // When opening the modal, stop autoplaying elements. When the modal closes, the elements in it are removed
         // and autoplay of the modal stops automatically.
         if (newPlayState !== null) {

@@ -460,7 +460,11 @@ export class GameService implements IGameService {
             },
             set: (value: { title: string, type: string, item: IFeature }) => {
                 currentDescription = value;
-                currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+
+                if (currentDescription.item.description) {
+                    currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+                }
+
                 this._game.playState = PlayState.Description;
             }
         });

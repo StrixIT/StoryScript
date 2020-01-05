@@ -6,4 +6,5 @@ export interface IModalSettings {
     canClose?: boolean;
     closeAction?: (game: IGame) => void;
     description?: string;
+    descriptionType?: string;
 }
