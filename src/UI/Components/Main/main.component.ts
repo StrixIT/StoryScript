@@ -34,11 +34,7 @@ export class MainComponent {
     }
 
     private stopAutoplay = (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => {
-        // When opening the modal, stop autoplaying elements. When the modal closes, the elements in it are removed
-        // and autoplay of the modal stops automatically.
-        if (newPlayState !== null) {
-            var mediaElements = this.hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
-            mediaElements.forEach((m: HTMLAudioElement) => m.pause());
-        }
+        var mediaElements = this.hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
+        mediaElements.forEach((m: HTMLAudioElement) => m.pause());
     }
 }
