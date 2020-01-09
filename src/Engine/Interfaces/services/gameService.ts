@@ -4,6 +4,8 @@ import { IItem } from '../../Interfaces/item';
 import { IBarrier } from '../../Interfaces/barrier';
 import { IDestination } from '../../Interfaces/destination';
 import { IBarrierAction } from '../barrierAction';
+import { IGame } from '../game';
+import { PlayState } from '../enumerations/playState';
 
 export interface IGameService {
     init(): void;
@@ -20,4 +22,5 @@ export interface IGameService {
     useItem(item: IItem): void;
     executeBarrierAction(barrier: IBarrier, action: IBarrierAction, destination: IDestination): void;
     getCurrentMusic(): string;
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void);
 }

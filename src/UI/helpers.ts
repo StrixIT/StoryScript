@@ -23,28 +23,6 @@ export function getTemplate(componentName: string, defaultTemplate?: any): strin
     return _templates.get(componentName) || defaultTemplate?.default;
 }
 
-export function watchPlayState(game: IGame, callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void) {
-    if (_playStateWatchers.length === 0) {
-        var playState = game.playState;
-
-        Object.defineProperty(game, 'playState', {
-            enumerable: true,
-            get: () => {
-                return playState;
-            },
-            set: value => {
-                const oldState = playState;
-                playState = value;
-                _playStateWatchers.forEach(w => w(game, playState, oldState));
-            }
-        });
-    }
-
-    if (_playStateWatchers.indexOf(callBack) < 0) {
-        _playStateWatchers.push(callBack);
-    }
-}
-
 export function watchDynamicStyles(game: IGame,  hostElement: ElementRef<any>) {
     if (_dynamicStyleElements.length === 0) {
         var dynamicStyles = game.dynamicStyles || [];
@@ -73,10 +51,19 @@ export function applyDynamicStyling(game: IGame, hostElement: ElementRef<any>) {
         game.dynamicStyles.forEach(s => {
             var elements = hostElement.nativeElement.querySelectorAll(s.elementSelector);
 
-            elements.forEach((e: HTMLElement) => {
+            elements.forEach((el: HTMLElement) => {
                 var styleText = '';
-                s.styles.forEach(e => styleText += e[0] + ': ' + e[1] + ';' );
-                e.style.cssText = styleText;
+                s.styles.filter(e => !e[1]).forEach(e => styleText += (styleText ? ' ' + e[0] : e[0]));
+
+                if (styleText) {
+                    el.className = styleText;
+                }
+
+                s.styles.filter(e => e[1]).forEach(e => styleText += e[0] + ': ' + e[1] + ';' );
+
+                if (styleText) {
+                    el.style.cssText = styleText;
+                }
             });
         });
     }, 0, false);

@@ -27,8 +27,8 @@ import { IFeature } from '../Interfaces/feature';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
-    private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
     private _musicStopped: boolean = false;
+    private _playStateWatchers = [];
 
     constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
     }
@@ -310,6 +310,28 @@ export class GameService implements IGameService {
         this._game.sounds.soundQueue.push(fileName);
     }
 
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void) {
+        if (this._playStateWatchers.length === 0) {
+            var playState = this._game.playState;
+    
+            Object.defineProperty(this._game, 'playState', {
+                enumerable: true,
+                get: () => {
+                    return playState;
+                },
+                set: value => {
+                    const oldState = playState;
+                    playState = value;
+                    this._playStateWatchers.forEach(w => w(this._game, playState, oldState));
+                }
+            });
+        }
+    
+        if (this._playStateWatchers.indexOf(callBack) < 0) {
+            this._playStateWatchers.push(callBack);
+        }
+    }
+
     private initTexts = (): void => {
         var defaultTexts = new DefaultTexts();
 
@@ -389,6 +411,10 @@ export class GameService implements IGameService {
                 this.saveGame();
             }
         };
+
+        if (this._rules.general.playStateChange) {
+            this.watchPlayState(this._rules.general.playStateChange);
+        }
     }
 
     private initSetInterceptors = (): void => {

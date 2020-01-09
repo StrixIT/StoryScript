@@ -6,7 +6,7 @@ import { IInterfaceTexts, PlayState, IGame } from 'storyScript/Interfaces/storyS
 import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
 import { EncounterModalComponent } from '../Components/EncounterModal/encountermodal.component';
 import { IModalSettings } from '../Components/modalSettings';
-import { watchPlayState, watchDynamicStyles } from '../helpers';
+import { watchDynamicStyles } from '../helpers';
 
 @Injectable()
 export class ModalService {
@@ -17,19 +17,25 @@ export class ModalService {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
 
-        watchPlayState(this.game, this.openOrCloseModal);
+        _gameService.watchPlayState(this.openOrCloseModal);
     }
 
     private game: IGame;
     private texts: IInterfaceTexts;
 
     private openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {
-        const modalOptions = <NgbModalOptions>{ backdrop: 'static', keyboard: false };
+        if (this._previousModalState && newState === this._previousModalState) {
+            return;
+        }
+
+        const modalOptions = <NgbModalOptions>{ beforeDismiss: () => {
+            this.closeModal(false);
+        } };
 
         // 1. If there is already an active modal:
         if (this._activeModal) {
             // a. Restore the old modal state, if it has a value.
-            if (this._previousModalState && newState != this._previousModalState) {
+            if (this._previousModalState) {
                 game.playState = this._previousModalState;
                 this._previousModalState = null;
                 return;
@@ -37,17 +43,7 @@ export class ModalService {
 
             // b. If the new state is NULL, close the modal.
             if (newState === null) {
-                // The menu modal doesn't have settings and we don't need to save when closing the menu.
-                if (this._activeModal.componentInstance?.settings) {
-                    if (this._activeModal.componentInstance.settings.closeAction) {
-                        this._activeModal.componentInstance.closeAction(this.game);
-                    }
-
-                    this._gameService.saveGame();
-                }
-
-                this._modalService.dismissAll();
-                this._activeModal = null;
+                this.closeModal(true);
             }
             // c. If the new state is not NULL, don't open a new modal. Instead, just store the old state
             // so we can switch back to it later. If there
@@ -70,6 +66,24 @@ export class ModalService {
                 watchDynamicStyles(this.game, this._activeModal.componentInstance.element);
             }
         }
+    }
+
+    private closeModal = (dismiss: boolean) => {
+        // The menu modal doesn't have settings and we don't need to save when closing the menu.
+        if (this._activeModal.componentInstance?.settings) {
+            if (this._activeModal.componentInstance.settings.closeAction) {
+                this._activeModal.componentInstance.closeAction(this.game);
+            }
+
+            this._gameService.saveGame();
+        }
+
+        if (dismiss) {
+            this._modalService.dismissAll();
+        }
+
+        this._previousModalState = null;
+        this._activeModal = null;
     }
 
     private getStateSettings = (value: PlayState): IModalSettings => {

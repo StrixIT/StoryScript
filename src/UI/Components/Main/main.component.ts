@@ -1,20 +1,21 @@
 import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { GameService } from 'storyScript/Services/gameService';
 import { Component, ElementRef } from '@angular/core';
-import { getTemplate, watchPlayState, watchDynamicStyles, applyDynamicStyling } from '../../helpers';
+import { getTemplate, watchDynamicStyles, applyDynamicStyling } from '../../helpers';
 
 @Component({
     selector: 'main',
     template: getTemplate('main', require('./main.component.html'))
 })
 export class MainComponent {
-    constructor(private hostElement: ElementRef, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    constructor(private hostElement: ElementRef, private _sharedMethodService: SharedMethodService, private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         watchDynamicStyles(this.game, this.hostElement);
         applyDynamicStyling(this.game, this.hostElement);
-        watchPlayState(this.game, this.stopAutoplay);
+        this._gameService.watchPlayState(this.stopAutoplay);
     }
     
     game: IGame;
