@@ -13,8 +13,8 @@ export class MainComponent {
     constructor(private hostElement: ElementRef, private _sharedMethodService: SharedMethodService, private _gameService: GameService, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
-        watchDynamicStyles(this.game, this.hostElement.nativeElement);
-        applyDynamicStyling(this.game, this.hostElement.nativeElement);
+        watchDynamicStyles(this.game, this.hostElement);
+        applyDynamicStyling(this.game, this.hostElement);
         this._gameService.watchPlayState(this.stopAutoplay);
     }
     
