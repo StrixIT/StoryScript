@@ -4,6 +4,7 @@ import { ICombinable, IItem, PlayState } from 'storyScript/Interfaces/storyScrip
 import { Constants } from '../Constants';
 import { Druidstart } from './Introduction/Druidstart';
 import { setCoordinates, showElements } from '../rules';
+import { setLocationDescription } from '../helpers';
 
 export function Village() {
 	return Location({
@@ -45,6 +46,20 @@ export function Village() {
 				},
 			},
 			{
+				name: 'Fountain',
+				combinations: {
+					combine: [
+						{
+							combinationType: Constants.WALK,
+							match: (game: IGame, target: IFeature, tool: ICombinable): string => {
+								setLocationDescription(game);
+								return '';
+							},
+						}
+					],
+				},
+			},
+			{
 				name: 'Forest entrance',
 				combinations: {
 					combine: [
@@ -53,8 +68,6 @@ export function Village() {
 							match: (game: IGame, target: IFeature, tool: ICombinable): string => {
 								game.changeLocation(Druidstart);
 								setCoordinates(game, target);
-
-								// Hide the location overlay while the player is travelling.
 								showElements(game, true, target.linkToLocation);
 								return '';
 							},

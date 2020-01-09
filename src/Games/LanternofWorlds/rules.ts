@@ -3,6 +3,7 @@ import { IGame, IFeature, IEnemy, Character, IItem } from './types';
 import { Constants } from './Constants';
 import { Sword } from './items/sword';
 import { Potion } from './items/potion';
+import { setLocationDescription } from './helpers';
 
 export function Rules(): IRules {
     return {
@@ -60,6 +61,28 @@ export function Rules(): IRules {
             scoreChange: (game: IGame, change: number): boolean => {
                 // Implement logic to occur when the score changes. Return true when the character gains a level.
                 return false;
+            },
+            playStateChange: (game: IGame, newState: PlayState, oldState: PlayState) => {
+                var stateStyles = new Map<PlayState, string>();
+                stateStyles.set(PlayState.Combat, 'combat-modal');
+                stateStyles.set(PlayState.Description, 'description-modal');
+                stateStyles.set(PlayState.Trade, 'trade-modal');
+
+                var newClass = stateStyles.get(newState);
+
+                if (newClass) {
+                    setTimeout(() => {
+                        game.dynamicStyles = [
+                            {
+                                elementSelector: '.modal-content-wrapper',
+                                styles: [
+                                    ['modal-content-wrapper'],
+                                    [newClass]
+                                ]
+                            }
+                        ];
+                    }, 0);
+                }
             }
         },
         
@@ -272,26 +295,16 @@ export function showElements(game: IGame, timeout: boolean, location?: string) {
                 game.changeLocation(location);
             }
 
-            if (location && showOnMap) {
+            game.dynamicStyles = styles;
+
+            if (location) {
                 setLocationDescription(game);
             }
-            game.dynamicStyles = styles;
 
         }, 1000);
     } else {
         setLocationDescription(game);
         game.dynamicStyles = styles;
-    }
-}
-
-function setLocationDescription(game: IGame) {
-    game.currentDescription = {
-        title: game.currentLocation.name,
-        type: 'location',
-        item: {
-            name: '',
-            description: game.currentLocation.description
-        }
     }
 }
 

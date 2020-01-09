@@ -35,11 +35,33 @@ body {
     opacity: 0;
 }
 
-encounter-modal {
-    background-color: white;
-    border-radius: 20px;
+encounter-modal *:focus {
+    outline: none;
+}
+
+encounter-modal .modal-header, encounter-modal .modal-footer {
+    border: none;
 }
 
 .modal-content-wrapper .box-container {
+    border: none;
+}
+
+#location .box-title {
+    display: none;
+}
+
+.trade-modal {
+    border-radius: 20px;
     background-color: white;
+}
+
+.description-modal {
+    border-radius: 20px;
+    background-color:rgba(0, 0, 0, 0.6);
+    color: yellow;
+}
+
+.combat-modal {
+    background-image: url(resources/maps/CaveBackground.png);
 }
