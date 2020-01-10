@@ -23,7 +23,7 @@ export function getTemplate(componentName: string, defaultTemplate?: any): strin
     return _templates.get(componentName) || defaultTemplate?.default;
 }
 
-export function watchDynamicStyles(game: IGame,  hostElement: ElementRef<any>) {
+export function watchDynamicStyles(game: IGame,  element: HTMLElement) {
     if (_dynamicStyleElements.length === 0) {
         var dynamicStyles = game.dynamicStyles || [];
 
@@ -51,7 +51,7 @@ export function applyDynamicStyling(game: IGame, element: HTMLElement) {
         game.dynamicStyles.forEach(s => {
             var elements = element.querySelectorAll(s.elementSelector);
 
-            elements.forEach((el: HTMLElement) => {
+            elements.forEach((el: Element) => {
                 var styleText = '';
                 s.styles.filter(e => !e[1]).forEach(e => styleText += (styleText ? ' ' + e[0] : e[0]));
 
@@ -62,7 +62,7 @@ export function applyDynamicStyling(game: IGame, element: HTMLElement) {
                 s.styles.filter(e => e[1]).forEach(e => styleText += e[0] + ': ' + e[1] + ';' );
 
                 if (styleText) {
-                    el.style.cssText = styleText;
+                    (<HTMLElement>el).style.cssText = styleText;
                 }
             });
         });
