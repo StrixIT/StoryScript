@@ -14,7 +14,7 @@ export class EncounterModalComponent {
     constructor(private hostElement: ElementRef, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
-        this.element = hostElement;
+        this.element = hostElement.nativeElement;
 
         this.settings = {
             title: '',
@@ -23,7 +23,7 @@ export class EncounterModalComponent {
         }
     }
 
-    element: ElementRef<any>;
+    element: HTMLElement;
     game: IGame;
     texts: IInterfaceTexts;
 

@@ -58,10 +58,10 @@ export class ModalService {
         if (newState !== null) {
             if (newState === PlayState.Menu) {
                 this._activeModal = this._modalService.open(MenuModalComponent, modalOptions);
-                watchDynamicStyles(this.game, this._activeModal.componentInstance.element);
             }
             else {
                 this._activeModal = this._modalService.open(EncounterModalComponent, modalOptions);
+                this._activeModal.componentInstance.element.parentElement.classList.add('encounter-modal');
                 this._activeModal.componentInstance.settings = this.getStateSettings(newState);
                 watchDynamicStyles(this.game, this._activeModal.componentInstance.element);
             }
