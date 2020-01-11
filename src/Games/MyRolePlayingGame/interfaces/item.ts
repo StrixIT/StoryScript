@@ -6,6 +6,6 @@ export function Item(entity: IItem): IItem {
 }
 
 export interface IItem extends IFeature, StoryScriptIItem {
-    damage?: string;
+    damage?: number;
     defense?: number;
 }
