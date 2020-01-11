@@ -6,7 +6,6 @@ import { IInterfaceTexts, PlayState, IGame } from 'storyScript/Interfaces/storyS
 import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
 import { EncounterModalComponent } from '../Components/EncounterModal/encountermodal.component';
 import { IModalSettings } from '../Components/modalSettings';
-import { watchDynamicStyles } from '../helpers';
 
 @Injectable()
 export class ModalService {
@@ -63,7 +62,6 @@ export class ModalService {
                 this._activeModal = this._modalService.open(EncounterModalComponent, modalOptions);
                 this._activeModal.componentInstance.element.parentElement.classList.add('encounter-modal');
                 this._activeModal.componentInstance.settings = this.getStateSettings(newState);
-                watchDynamicStyles(this.game, this._activeModal.componentInstance.element);
             }
         }
     }
