@@ -3,7 +3,7 @@ import description from './Village.html';
 import { ICombinable, IItem, PlayState } from 'storyScript/Interfaces/storyScript';
 import { Constants } from '../Constants';
 import { Druidstart } from './Introduction/Druidstart';
-import { setCoordinates, showElements } from '../rules';
+import { showAvatar } from '../rules';
 import { setLocationDescription } from '../helpers';
 
 export function Village() {
@@ -67,8 +67,7 @@ export function Village() {
 							combinationType: Constants.WALK,
 							match: (game: IGame, target: IFeature, tool: ICombinable): string => {
 								game.changeLocation(Druidstart);
-								setCoordinates(game, target);
-								showElements(game, true, target.linkToLocation);
+								showAvatar(game, true);
 								return '';
 							},
 						}

@@ -3,6 +3,7 @@ import { IMapData, TileType, createFeatureMap } from '../maps';
 import { Warrior } from '../locations/Introduction/Warrior';
 import { Druidstart } from '../locations/Introduction/Druidstart';
 import { Village } from '../locations/Village';
+import { Cave } from '../locations/Introduction/Cave';
 
 var _forestMap: IFeatureCollection;
 
@@ -29,7 +30,8 @@ export function forestMap() {
         var tileAdditions = [
             ['1-3', Warrior],
             ['1-2', Village],
-            ['2-2', Druidstart]
+            ['2-2', Druidstart],
+            ['4-3', Cave]
         ];
 
         _forestMap = createFeatureMap(mapData, tileAdditions);

@@ -10,11 +10,6 @@ body {
     transition:all 1s ease 0s;top:0;left:0;
 }
 
-.overlay-title .close {
-    color: white;
-    line-height: 1.2;
-}
-
 #player-icon {
     position: absolute;
     top: 260px;
@@ -22,7 +17,7 @@ body {
     display: none;
 }
 
-.modal-content {
+.modal-content.encounter-modal {
     border-image-source: url('resources/ui/frame.png');
     border-image-slice: 30;
     border-image-width: 30;
@@ -63,5 +58,6 @@ encounter-modal .modal-header, encounter-modal .modal-footer {
 }
 
 .combat-modal {
-    background-image: url(resources/maps/CaveBackground.png);
+    background-image: url(resources/maps/CaveBackground.jpg);
+    color: yellow;
 }
