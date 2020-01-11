@@ -1,10 +1,16 @@
+import '../../../Games/MyRolePlayingGame/run';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { GetObjectFactory } from 'storyScript/run';
 import { ITrade, ICompiledLocation, IPerson, PlayState } from 'storyScript/Interfaces/storyScript';
-import '../../../Games/MyRolePlayingGame/run';
 import { IStock } from 'storyScript/Interfaces/stock';
 
 describe("TradeService", function() {
+
+    it("Object factory should return trade service", function() {
+        var factory = GetObjectFactory();
+        var service = factory.GetTradeService();
+        expect(service).not.toBeNull();
+    });
 
     it("should start trade with an entity that is not a person", function() {
         var game = GetObjectFactory().GetGame();

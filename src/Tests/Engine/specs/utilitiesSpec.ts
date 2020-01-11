@@ -1,4 +1,4 @@
-import { getPlural, getSingular, isEmpty } from 'storyScript/utilities';
+import { getPlural, getSingular, isEmpty, addHtmlSpaces, custom, equals } from 'storyScript/utilities';
 
 describe("Utilities", function() {
 
@@ -51,4 +51,42 @@ describe("Utilities", function() {
         var result = isEmpty({ test: null });
         expect(result).toEqual(false);
     });
+
+    it("should add spaces when needed", function() {
+        var result = addHtmlSpaces('test');
+        expect(result).toEqual('&nbsp;test&nbsp;');
+    });
+
+    it("equals should return true when id matches function name", function() {
+        const Test = () => {
+            return { 
+                id: ''
+            };
+        };
+        
+        const result = equals({ id: 'test' }, Test);
+
+        expect(result).toBeTruthy();
+    });
+
+    it("custom should override specified properties on base", function() {
+
+        var baseItem = () => {
+            return {
+                name: 'Test',
+                damage: 5,
+                speed: 3
+            }
+        };
+
+        var result = custom(baseItem, {
+            name: 'Override',
+            damage: 10
+        });
+
+        expect(result.name).toEqual('Override');
+        expect(result.damage).toEqual(10);
+        expect(result.speed).toEqual(3);
+    });
+
 });

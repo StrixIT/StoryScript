@@ -1,4 +1,5 @@
 ﻿import { IDefinitions } from './Interfaces/definitions';
+import { compareString } from './globals';
 
 export function getPlural(name: string): string {
     return name.endsWith('y') ? 
@@ -34,18 +35,6 @@ export function addHtmlSpaces(text: string): string {
 export function isEmpty(object: any, property?: string) {
     var objectToCheck = property ? object[property] : object;
     return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
-}
-
-export function getDefinitionKeys(definitions: IDefinitions) {
-    var definitionKeys: string[] = [];
-
-    for (var i in definitions) {
-        if (i !== 'actions') {
-            definitionKeys.push(i);
-        }
-    }
-
-    return definitionKeys;
 }
 
 export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
@@ -92,7 +81,7 @@ export function custom<T>(definition: () => T, customData: {}): T {
 }
 
 export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
-    return entity.id ? entity.id === (definition.name) : false;
+    return entity.id ? compareString(entity.id, definition.name) : false;
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {

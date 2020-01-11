@@ -1,4 +1,4 @@
-import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareString, parseFunction } from 'storyScript/globals';
+import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareString, parseFunction, createHash } from 'storyScript/globals';
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
@@ -35,6 +35,12 @@ describe("Utilities", function() {
         expect(MyFunction.proxy).toBeTruthy();
     });
 
+    it("Parsing null as a function should return null", function() {
+        addFunctionExtensions();
+        var myFunction = parseFunction(null);
+        expect(myFunction).toBeNull();
+    });
+
     it("Deserializing function should get working function", function() {
         addFunctionExtensions();
 
@@ -56,6 +62,11 @@ describe("Utilities", function() {
         var result = myFunction(2, 3);
         
         expect(result).toEqual(5);
+    });
+
+    it("Creating a hash for null should return 0", function() {
+        var result = createHash(null);
+        expect(result).toBe(0);
     });
 
     it("Creating a function hash should get a unique hash for each function", function() {
@@ -170,6 +181,14 @@ describe("Utilities", function() {
         expect(result.length).toBe(2);
         expect(compareId(result[0].id, Sword)).toBeTruthy();
         expect(compareId(result[1].id, Sword)).toBeTruthy();
+    });
+
+    it("should not change anything when removing a non-existing item", function() {
+        addArrayExtensions();
+        var testArray = getTestArray();
+        testArray.remove('');
+
+        expect(testArray.length).toBe(2);
     });
 
     it("should remove an entity using the function name", function() {

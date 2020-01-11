@@ -1,5 +1,5 @@
-import { GetDefinitions, GetFunctions, buildEntities } from 'storyScript/ObjectConstructors';
-import { Location, ILocation, IBarrier, IKey, IAction } from 'storyScript/Interfaces/storyScript';
+import { GetDefinitions, GetFunctions, buildEntities, DynamicEntity } from 'storyScript/ObjectConstructors';
+import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature } from 'storyScript/Interfaces/storyScript';
 import '../../../Games/MyRolePlayingGame/run';
 
 describe("ObjectFactory", function() {
@@ -124,6 +124,19 @@ describe("ObjectFactory", function() {
         var key = result.destinations[0].barrier.key;
         expect(typeof key).toBe('string');
         expect(key).toBe('Key');
+    });
+
+    it("should correctly create a feature", function() {
+        var testFeature = () => {
+            return <IFeature>{
+                name: 'Test feature'
+            }
+        }
+
+        var result = Feature(testFeature);
+        expect(result).not.toBeNull();
+        expect(result.id).toBe('testFeature');
+        expect((<any>result).type).toBe('feature');
     });
 
     function getLength(collection) {

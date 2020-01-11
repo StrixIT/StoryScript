@@ -1,6 +1,14 @@
+import '../../../Games/MyRolePlayingGame/run';
 import { DefaultTexts } from 'storyScript/defaultTexts';
+import { GetObjectFactory } from 'storyScript/run';
 
 describe("Default texts", function() {
+
+    it("Object factory should return texts", function() {
+        var factory = GetObjectFactory();
+        var texts = factory.GetTexts();
+        expect(texts).not.toBeNull();
+    });
 
     it("should replace the tokens in a template and remove duplicate spaces", function() {
         var texts = new DefaultTexts();

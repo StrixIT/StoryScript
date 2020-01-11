@@ -219,25 +219,25 @@ function Create(type: string, entity: any, id?: string) {
     switch (type) {
         case 'location': {
             return createLocation(entity);
-        } break;
+        };
         case 'enemy': {
             return EnemyBase(entity, 'enemy', id);
-        } break;
+        };
         case 'person': {
             return createPerson(entity, id);
-        } break;
+        };
         case 'item': {
             return createItem(entity, id);
-        } break;
+        };
         case 'feature': {
             return createFeature(entity, id);
-        } break;
+        };
         case 'quest': {
             return CreateObject(entity, 'quest', id);
-        } break;
+        };
         case 'action': {
             return CreateObject(entity, 'action', id);
-        }
+        };
         case 'trade': {
             return CreateObject(entity, 'trade', id);
         }
