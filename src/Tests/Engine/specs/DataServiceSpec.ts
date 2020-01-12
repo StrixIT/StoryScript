@@ -118,6 +118,8 @@ describe("DataService", function() {
         get: function(key) {
             return this.value ?? worldData;
         },
+        remove: function(key) {
+        },
         getKeys: function() {
             return saveKeys;
         }

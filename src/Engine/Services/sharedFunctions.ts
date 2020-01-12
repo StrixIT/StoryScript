@@ -4,12 +4,21 @@ import { IDataService } from '../Interfaces/services/dataService';
 import { ILocationService } from '../Interfaces/services/locationService';
 import { ICharacter } from '../Interfaces/character';
 import { IItem } from '../Interfaces/item';
+import { IRules } from '../Interfaces/rules/rules';
 
-export function SaveWorldState(dataService: IDataService, locationService: ILocationService, game: IGame) {
+export function SaveWorldState(dataService: IDataService, locationService: ILocationService, game: IGame, rules: IRules) {
+    if (rules.general.beforeSave) {
+        rules.general.beforeSave(game);
+    }
+
     dataService.save(DataKeys.CHARACTER, game.character);
     dataService.save(DataKeys.STATISTICS, game.statistics);
     dataService.save(DataKeys.WORLDPROPERTIES, game.worldProperties);
     locationService.saveWorld(game.locations);
+
+    if (rules.general.afterSave) {
+        rules.general.afterSave(game);
+    }
 }
 
 export function getParsedDocument(tag: string, value?: string, wrapIfNotFound?: boolean) {

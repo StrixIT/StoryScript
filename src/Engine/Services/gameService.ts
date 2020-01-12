@@ -54,6 +54,11 @@ export class GameService implements IGameService {
             this._game.statistics = this._dataService.load<IStatistics>(DataKeys.STATISTICS) || this._game.statistics || {};
             this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
         }
+
+        // Use the afterSave hook here combine the initialized world with other saved data.
+        if (this._rules.general?.afterSave) {
+            this._rules.general.afterSave(this._game);
+        }
         
         if (!this._game.character && this._rules.setup.intro && !skipIntro) {
             this._game.state = GameState.Intro;
@@ -89,9 +94,8 @@ export class GameService implements IGameService {
         this._locationService.init(this._game);
         this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES);
 
-        if (this._rules.general.afterLoad) {
-            this._rules.general.afterLoad(this._game);
-        }
+        // Save here to use the before and after save hooks after refreshing the world.
+        this.saveGame();
 
         var location = this._dataService.load<string>(DataKeys.LOCATION);
 
@@ -135,11 +139,11 @@ export class GameService implements IGameService {
     }
 
     saveGame = (name?: string): void => {
-        if (this._rules.general.beforeSave) {
-            this._rules.general.beforeSave(this._game);
-        }
-
         if (name) {
+            if (this._rules.general?.beforeSave) {
+                this._rules.general.beforeSave(this._game);
+            }
+
             var saveGame = <ISaveGame>{
                 name: name,
                 character: this._game.character,
@@ -156,9 +160,13 @@ export class GameService implements IGameService {
             if ( this._game.playState === PlayState.Menu) {
                 this._game.playState = null;
             }
+
+            if (this._rules.general?.afterSave) {
+                this._rules.general.afterSave(this._game);
+            }
         }
         else {
-            SaveWorldState(this._dataService, this._locationService, this._game);
+            SaveWorldState(this._dataService, this._locationService, this._game, this._rules);
         }
     }
 
@@ -170,19 +178,19 @@ export class GameService implements IGameService {
             this._game.character = saveGame.character;
             this._game.locations = saveGame.world;
             this._game.worldProperties = saveGame.worldProperties;
-
-            if (this._rules.general.afterLoad) {
-                this._rules.general.afterLoad(this._game);
-            }
         
             this._locationService.init(this._game, false);
             this._game.currentLocation = this._game.locations.get(saveGame.location);
+
+            // Use the afterSave hook here combine the loaded world with other saved data.
+            if (this._rules.general?.afterSave) {
+                this._rules.general.afterSave(this._game);
+            }
 
             if (saveGame.previousLocation) {
                 this._game.previousLocation = this._game.locations.get(saveGame.previousLocation);
             }
 
-            SaveWorldState(this._dataService, this._locationService, this._game);
             this._dataService.save(DataKeys.LOCATION, this._game.currentLocation.id);
             this._game.actionLog = [];
             this._game.state = saveGame.state;
@@ -426,7 +434,7 @@ export class GameService implements IGameService {
             }
         };
 
-        if (this._rules.general.playStateChange) {
+        if (this._rules.general?.playStateChange) {
             this.watchPlayState(this._rules.general.playStateChange);
         }
     }
@@ -461,7 +469,7 @@ export class GameService implements IGameService {
 
                 // Change when xp can be lost.
                 if (change > 0) {
-                    var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
+                    var levelUp = this._rules.general?.scoreChange && this._rules.general.scoreChange(this._game, change);
     
                     if (levelUp) {
                         this._game.playState = null;
@@ -481,7 +489,7 @@ export class GameService implements IGameService {
                 if (state === GameState.GameOver || state === GameState.Victory) {
                     this._game.playState = null;
 
-                    if (this._rules.general && this._rules.general.determineFinalScore) {
+                    if (this._rules.general?.determineFinalScore) {
                         this._rules.general.determineFinalScore(this._game);
                     }
                     

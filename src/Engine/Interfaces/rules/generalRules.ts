@@ -32,9 +32,9 @@ export interface IGeneralRules {
     beforeSave?(game: IGame): void;
 
     /**
-     * Use this function to run logic right after the game is loaded. you can use this in combination with the
-     * beforeSave hook to change what is saved and loaded as part of a game.
+     * Use this function to run logic after the game is saved. You can use this to revert changes you made in
+     * beforeSave.
      * @param game The game about to be saved.
      */
-    afterLoad?(game: IGame): void;
+    afterSave?(game: IGame): void;
 }
