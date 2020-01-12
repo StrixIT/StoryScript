@@ -361,8 +361,8 @@ export function Rules(): IRules {
 
     function attachMap(game: IGame): void {
         game.locations.filter(l => l.features?.collectionPicture).forEach(l => {
-            var features = game.worldProperties.maps.find(m => m.map.collectionPicture === l.features.collectionPicture).map;
-            features.forEach(f => l.features.push(f));
+            var features = game.worldProperties.maps?.find(m => m.map.collectionPicture === l.features.collectionPicture).map;
+            features?.forEach(f => l.features.push(f));
         });
     }
 }

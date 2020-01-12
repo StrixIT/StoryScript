@@ -67,6 +67,10 @@ encounter-modal .modal-header, encounter-modal .modal-footer {
     text-align: center;
 }
 
-#combat img {
+#combat .hero-combat img {
+    float: left;
+}
+
+#combat .enemies-combat img {
     float: right;
 }
