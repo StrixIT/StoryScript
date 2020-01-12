@@ -1,4 +1,4 @@
-﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers, ICollection } from 'storyScript/Interfaces/storyScript';
+﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers, ICollection, IFeatureCollection } from 'storyScript/Interfaces/storyScript';
 import { IPerson, IEnemy, IItem, ICompiledLocation, Character, ILocation } from '../types';
 
 export interface ILocationCollection extends ICollection<ICompiledLocation> {
@@ -17,7 +17,8 @@ export interface IGame extends StoryScriptIGame {
         startChoice: { name: string, tile: string },
         mapPosition: string,
         mapLocationY: number,
-        mapLocationX: number
+        mapLocationX: number,
+        maps: { name: string, map: IFeatureCollection }[]
     }
 }
 

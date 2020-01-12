@@ -1,4 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinable, ICombinationAction, GameState, PlayState } from 'storyScript/Interfaces/storyScript';
+import { clone } from 'storyScript/utilities';
 import { IGame, IFeature, IEnemy, Character, IItem } from './types';
 import { Constants } from './Constants';
 import { Sword } from './items/sword';
@@ -106,6 +107,16 @@ export function Rules(): IRules {
                         modalWrapper.className = `modal-content-wrapper ${newClass}`;
                     }, 0);
                 }
+            },
+            beforeSave: (game: IGame): void => {
+                var maps = groupBy(game.locations.filter(l => l.features?.collectionPicture).map(l => l.features? { name: l.features.collectionPicture, map: l.features } : null).filter(e => e !== null), e => e.name);
+                game.worldProperties.maps = clone(Array.from(maps.values()).map(a => { return { name: a[0].name, map: a[0].map }; }));
+                game.locations.filter(l => l.features?.collectionPicture).forEach(l => {
+                    l.features.length = 0;
+                })
+            },
+            afterSave: (game: IGame): void => {
+                attachMap(game);
             }
         },
         
@@ -332,6 +343,27 @@ export function Rules(): IRules {
                 setLocationDescription(game);
             }, 1000);
         }, 1000);
+    }
+
+    function groupBy(list, keyGetter) {
+        const map = new Map();
+        list.forEach((item) => {
+             const key = keyGetter(item);
+             const collection = map.get(key);
+             if (!collection) {
+                 map.set(key, [item]);
+             } else {
+                 collection.push(item);
+             }
+        });
+        return map;
+    }
+
+    function attachMap(game: IGame): void {
+        game.locations.filter(l => l.features?.collectionPicture).forEach(l => {
+            var features = game.worldProperties.maps.find(m => m.map.collectionPicture === l.features.collectionPicture).map;
+            features.forEach(f => l.features.push(f));
+        });
     }
 }
 
