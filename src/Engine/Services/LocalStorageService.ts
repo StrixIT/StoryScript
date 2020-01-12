@@ -7,6 +7,8 @@ export class LocalStorageService implements ILocalStorageService {
 
     set = (key: string, value: any): void => localStorage.setItem(STORYSCRIPTKEY + '_' + key, value);
 
+    remove = (key: string): void => localStorage.removeItem(STORYSCRIPTKEY + '_' + key);
+
     getKeys = (prefix: string): string[] => {
         var result = [];
         prefix = STORYSCRIPTKEY + '_' + prefix;

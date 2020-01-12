@@ -84,10 +84,15 @@ export class GameService implements IGameService {
     }
 
     reset = (): void => {
-        this._dataService.save(DataKeys.WORLD, {});
-        this._dataService.save(DataKeys.PLAYEDMEDIA, []);
+        this._dataService.remove(DataKeys.WORLD);
+        this._dataService.remove(DataKeys.PLAYEDMEDIA);
         this._locationService.init(this._game);
         this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES);
+
+        if (this._rules.general.afterLoad) {
+            this._rules.general.afterLoad(this._game);
+        }
+
         var location = this._dataService.load<string>(DataKeys.LOCATION);
 
         if (location) {
@@ -119,17 +124,21 @@ export class GameService implements IGameService {
     }
 
     restart = (skipIntro?: boolean): void => {
-        this._dataService.save(DataKeys.CHARACTER, {});
-        this._dataService.save(DataKeys.STATISTICS, {});
-        this._dataService.save(DataKeys.LOCATION, '');
-        this._dataService.save(DataKeys.PREVIOUSLOCATION, '');
-        this._dataService.save(DataKeys.WORLDPROPERTIES, {});
-        this._dataService.save(DataKeys.WORLD, {});
-        this._dataService.save(DataKeys.PLAYEDMEDIA, []);
+        this._dataService.remove(DataKeys.CHARACTER);
+        this._dataService.remove(DataKeys.STATISTICS);
+        this._dataService.remove(DataKeys.LOCATION);
+        this._dataService.remove(DataKeys.PREVIOUSLOCATION);
+        this._dataService.remove(DataKeys.WORLDPROPERTIES);
+        this._dataService.remove(DataKeys.WORLD);
+        this._dataService.remove(DataKeys.PLAYEDMEDIA);
         this.init(true, skipIntro);
     }
 
     saveGame = (name?: string): void => {
+        if (this._rules.general.beforeSave) {
+            this._rules.general.beforeSave(this._game);
+        }
+
         if (name) {
             var saveGame = <ISaveGame>{
                 name: name,
@@ -161,6 +170,10 @@ export class GameService implements IGameService {
             this._game.character = saveGame.character;
             this._game.locations = saveGame.world;
             this._game.worldProperties = saveGame.worldProperties;
+
+            if (this._rules.general.afterLoad) {
+                this._rules.general.afterLoad(this._game);
+            }
         
             this._locationService.init(this._game, false);
             this._game.currentLocation = this._game.locations.get(saveGame.location);
@@ -186,6 +199,7 @@ export class GameService implements IGameService {
                 this._rules.setup.continueGame(this._game);
             }
 
+            // Use a timeout here to allow the UI to respond to the loading flag set.
             setTimeout(() => {
                 this._game.loading = false;
             }, 0);
