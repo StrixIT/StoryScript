@@ -1,7 +1,7 @@
 ﻿import { Location } from '../../types';
 import description from './Cave.html';
 import { caveMap } from '../../maps/cave';
-import { Bat } from '../../enemies/bat';
+import { Cavebug } from '../../enemies/cavebug';
 
 export function Cave() {
     return Location({
@@ -9,7 +9,7 @@ export function Cave() {
         description: description,
         features: caveMap(),
         enemies: [
-            Bat()
+            Cavebug()
         ]
     });
 }

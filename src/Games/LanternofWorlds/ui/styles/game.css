@@ -38,6 +38,10 @@ encounter-modal .modal-header, encounter-modal .modal-footer {
     border: none;
 }
 
+.modal-content-wrapper {
+    border-radius: 20px;
+}
+
 .modal-content-wrapper .box-container {
     border: none;
 }
@@ -60,4 +64,9 @@ encounter-modal .modal-header, encounter-modal .modal-footer {
 .combat-modal {
     background-image: url(resources/maps/CaveBackground.jpg);
     color: yellow;
+    text-align: center;
+}
+
+#combat img {
+    float: right;
 }
