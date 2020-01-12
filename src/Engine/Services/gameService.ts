@@ -94,8 +94,11 @@ export class GameService implements IGameService {
         this._locationService.init(this._game);
         this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES);
 
-        // Save here to use the before and after save hooks after refreshing the world.
-        this.saveGame();
+        // Save here to use the before and after save hooks after refreshing the world,
+        // if there is a beforeSave hook defined.
+        if (this._rules.general?.beforeSave) {
+            this.saveGame();
+        }
 
         var location = this._dataService.load<string>(DataKeys.LOCATION);
 
