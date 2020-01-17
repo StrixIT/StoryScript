@@ -417,7 +417,9 @@ export function Rules(): IRules {
         combat: {
             fight: (game: IGame, enemy: IEnemy): void => {
                 game.combatLog = [];
-                var damage =game.helpers.rollDice('1d6') +game.character.strength +game.helpers.calculateBonus(game.character, 'damage');
+
+                // Todo: fix combat, now weapons have damage like 1d8 which doesn't work with calculating bonuses.
+                var damage =game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
                 var leftHandCombatText= game.character.equipment.leftHand ? game.character.equipment.leftHand.attackText : '';
                 var rightHandCombatText = game.character.equipment.rightHand ? game.character.equipment.rightHand.attackText : '';
                 var combatText = leftHandCombatText && rightHandCombatText && game.character.equipment.leftHand.id !== game.character.equipment.rightHand.id ? leftHandCombatText + '. ' + rightHandCombatText : leftHandCombatText || rightHandCombatText;
@@ -437,6 +439,7 @@ export function Rules(): IRules {
                         var selector = currentSelector ? currentSelector + 'after' : 'after';
                         selector = game.currentLocation.descriptions[selector] ? selector : 'after';
                         game.currentLocation.descriptionSelector = selector;
+                        game.playState = null;
                     }
                 }
 
@@ -478,12 +481,11 @@ export function Rules(): IRules {
                 }
 
                 if (game.worldProperties.isNight) {
-                    game.dynamicStyles = [            {
-                        elementSelector: 'img.map',
-                        styles: [
-                            ['filter', 'brightness(50%)']
-                        ]
-                    }];
+                    var element = <HTMLElement>game.UIRootElement.querySelector('img.map');
+
+                    if (element) {
+                        element.style.cssText = 'filter: brightness(50%);';
+                    }
                 }
 
                 changeDay(game);
