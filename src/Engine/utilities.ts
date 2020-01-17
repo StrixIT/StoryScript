@@ -1,4 +1,5 @@
 ﻿import { IDefinitions } from './Interfaces/definitions';
+import { compareString } from './globals';
 
 export function getPlural(name: string): string {
     return name.endsWith('y') ? 
@@ -34,18 +35,6 @@ export function addHtmlSpaces(text: string): string {
 export function isEmpty(object: any, property?: string) {
     var objectToCheck = property ? object[property] : object;
     return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
-}
-
-export function getDefinitionKeys(definitions: IDefinitions) {
-    var definitionKeys: string[] = [];
-
-    for (var i in definitions) {
-        if (i !== 'actions') {
-            definitionKeys.push(i);
-        }
-    }
-
-    return definitionKeys;
 }
 
 export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
@@ -92,7 +81,11 @@ export function custom<T>(definition: () => T, customData: {}): T {
 }
 
 export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
-    return entity.id ? entity.id === (definition.name) : false;
+    return entity.id ? compareString(entity.id, definition.name) : false;
+}
+
+export function clone<T>(entity: T): T {
+    return extend(Array.isArray(entity) ? Array(entity.length).fill({}) : {}, entity);
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
@@ -111,25 +104,18 @@ function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], typ
 }
 
 function extend(target, source) {
-    if (!source.length) {
-        source = [source];
-    }
+    const keys = Object.keys(source);
 
-    for (var i = 0, ii = source.length; i < ii; ++i) {
-        var obj = source[i];
-
-        if (!(obj !== null && typeof obj === 'object') && typeof obj !== 'function')
-        {
-            continue;
-        }
-
-        var keys = Object.keys(obj);
+    for (let i = 0, ii = keys.length; i < ii; ++i) {
+        const key = keys[i];
+        const obj = source[key];
+        const isArray = Array.isArray(obj);
         
-        for (var j = 0, jj = keys.length; j < jj; j++) {
-            var key = keys[j];
-            var src = obj[key];
-            target[key] = src;
+        if (target[key] === undefined) {
+            target[key] = isArray ? [] : null;
         }
+        
+        target[key] = Array.isArray(obj) ? extend(Array(obj.length).fill({}), obj) : typeof obj === 'object' ? extend({}, obj) : obj;
     }
 
     return target;

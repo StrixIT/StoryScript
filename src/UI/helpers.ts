@@ -1,8 +1,4 @@
-import { PlayState } from '../Engine/Interfaces/storyScript';
-import { IGame } from '../Engine/Interfaces/storyScript';
-
 const _templates = new Map<string, string>();
-const _playStateWatchers = [];
 
 export function getTemplate(componentName: string, defaultTemplate?: any): string {
     if (_templates.size === 0) {
@@ -19,26 +15,4 @@ export function getTemplate(componentName: string, defaultTemplate?: any): strin
     }
 
     return _templates.get(componentName) || defaultTemplate?.default;
-}
-
-export function watchPlayState(game: IGame, callBack: (newPlayState: PlayState, oldPlayState: PlayState) => void) {
-    if (_playStateWatchers.length === 0) {
-        var playState = game.playState;
-
-        Object.defineProperty(game, 'playState', {
-            enumerable: true,
-            get: () => {
-                return playState;
-            },
-            set: value => {
-                const oldState = playState;
-                playState = value;
-                _playStateWatchers.forEach(w => w(playState, oldState));
-            }
-        });
-    }
-
-    if (_playStateWatchers.indexOf(callBack) < 0) {
-        _playStateWatchers.push(callBack);
-    }
 }

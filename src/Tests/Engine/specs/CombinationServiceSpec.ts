@@ -1,3 +1,4 @@
+import '../../../Games/MyRolePlayingGame/run';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { ICombinable, IGame, ICombinationAction } from 'storyScript/Interfaces/storyScript';
 import { Rules } from '../../../Games/MyRolePlayingGame/types';
@@ -5,8 +6,15 @@ import { DefaultTexts } from 'storyScript/defaultTexts';
 import { ICombinations } from 'storyScript/Interfaces/combinations/combination';
 import { ICombine } from 'storyScript/Interfaces/combinations/combine';
 import { Constants } from '../../../Games/MyAdventureGame/constants';
+import { GetObjectFactory } from 'storyScript/run';
 
 describe("CombinationService", function() {
+
+    it("Object factory should return combination service", function() {
+        var factory = GetObjectFactory();
+        var service = factory.GetCombinationService();
+        expect(service).not.toBeNull();
+    });
 
     it("should return the combinations defined for the game", function() {
         var rules = {

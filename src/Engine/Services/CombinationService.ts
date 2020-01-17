@@ -101,7 +101,7 @@ export class CombinationService implements ICombinationService {
                 this.removeFeature(combo.selectedTool);
             }
 
-            SaveWorldState(this._dataService, this._locationService, this._game);
+            SaveWorldState(this._dataService, this._locationService, this._game, this._rules);
         }
 
         this._game.combinations.combinationResult.text = result.text;

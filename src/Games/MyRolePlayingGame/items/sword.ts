@@ -6,7 +6,7 @@ export function Sword() {
     return Item({
         name: 'Sword',
         description: description,
-        damage: '3',
+        damage: 3,
         equipmentType: EquipmentType.RightHand,
         value: 5
     });

@@ -17,12 +17,6 @@ export class DataService implements IDataService {
         this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
     }
 
-    copy = <T>(value: T, pristineValue: T): T => {
-        return this.buildClone(null, value, pristineValue);
-    }
-
-    getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');
-
     load = <T>(key: string): T => {
         try {
             var jsonData = this._localStorageService.get(this._gameNameSpace + '_' + key);
@@ -48,6 +42,16 @@ export class DataService implements IDataService {
 
         return null;
     }
+
+    remove = (key: string): void => {
+        this._localStorageService.remove(this._gameNameSpace + '_' + key);
+    }
+
+    copy = <T>(value: T, pristineValue: T): T => {
+        return this.buildClone(null, value, pristineValue);
+    }
+
+    getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');
 
     private buildClone = (parentKey: string, values, pristineValues, clone?): any => {
         if (!clone) {

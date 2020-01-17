@@ -164,9 +164,9 @@ export interface IGame {
     worldProperties: any;
 
     /**
-     * Add styles that should be applied to the interface dynamically here.
+     * The root UI element. You can use this to interact with the UI if you need to.
      */
-    dynamicStyles: IDynamicStyle[];
+    UIRootElement: HTMLElement;
 
     /**
      * The statistics for this game.

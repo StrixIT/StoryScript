@@ -27,8 +27,8 @@ import { IFeature } from '../Interfaces/feature';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
-    private mediaTags = ['autoplay="autoplay"', 'autoplay=""', 'autoplay'];
     private _musicStopped: boolean = false;
+    private _playStateWatchers = [];
 
     constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
     }
@@ -53,6 +53,11 @@ export class GameService implements IGameService {
         if (!restart) {
             this._game.statistics = this._dataService.load<IStatistics>(DataKeys.STATISTICS) || this._game.statistics || {};
             this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
+        }
+
+        // Use the afterSave hook here combine the initialized world with other saved data.
+        if (this._rules.general?.afterSave) {
+            this._rules.general.afterSave(this._game);
         }
         
         if (!this._game.character && this._rules.setup.intro && !skipIntro) {
@@ -84,10 +89,17 @@ export class GameService implements IGameService {
     }
 
     reset = (): void => {
-        this._dataService.save(DataKeys.WORLD, {});
-        this._dataService.save(DataKeys.PLAYEDMEDIA, []);
+        this._dataService.remove(DataKeys.WORLD);
+        this._dataService.remove(DataKeys.PLAYEDMEDIA);
         this._locationService.init(this._game);
         this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES);
+
+        // Save here to use the before and after save hooks after refreshing the world,
+        // if there is a beforeSave hook defined.
+        if (this._rules.general?.beforeSave) {
+            this.saveGame();
+        }
+
         var location = this._dataService.load<string>(DataKeys.LOCATION);
 
         if (location) {
@@ -119,18 +131,22 @@ export class GameService implements IGameService {
     }
 
     restart = (skipIntro?: boolean): void => {
-        this._dataService.save(DataKeys.CHARACTER, {});
-        this._dataService.save(DataKeys.STATISTICS, {});
-        this._dataService.save(DataKeys.LOCATION, '');
-        this._dataService.save(DataKeys.PREVIOUSLOCATION, '');
-        this._dataService.save(DataKeys.WORLDPROPERTIES, {});
-        this._dataService.save(DataKeys.WORLD, {});
-        this._dataService.save(DataKeys.PLAYEDMEDIA, []);
+        this._dataService.remove(DataKeys.CHARACTER);
+        this._dataService.remove(DataKeys.STATISTICS);
+        this._dataService.remove(DataKeys.LOCATION);
+        this._dataService.remove(DataKeys.PREVIOUSLOCATION);
+        this._dataService.remove(DataKeys.WORLDPROPERTIES);
+        this._dataService.remove(DataKeys.WORLD);
+        this._dataService.remove(DataKeys.PLAYEDMEDIA);
         this.init(true, skipIntro);
     }
 
     saveGame = (name?: string): void => {
         if (name) {
+            if (this._rules.general?.beforeSave) {
+                this._rules.general.beforeSave(this._game);
+            }
+
             var saveGame = <ISaveGame>{
                 name: name,
                 character: this._game.character,
@@ -147,9 +163,13 @@ export class GameService implements IGameService {
             if ( this._game.playState === PlayState.Menu) {
                 this._game.playState = null;
             }
+
+            if (this._rules.general?.afterSave) {
+                this._rules.general.afterSave(this._game);
+            }
         }
         else {
-            SaveWorldState(this._dataService, this._locationService, this._game);
+            SaveWorldState(this._dataService, this._locationService, this._game, this._rules);
         }
     }
 
@@ -165,11 +185,15 @@ export class GameService implements IGameService {
             this._locationService.init(this._game, false);
             this._game.currentLocation = this._game.locations.get(saveGame.location);
 
+            // Use the afterSave hook here combine the loaded world with other saved data.
+            if (this._rules.general?.afterSave) {
+                this._rules.general.afterSave(this._game);
+            }
+
             if (saveGame.previousLocation) {
                 this._game.previousLocation = this._game.locations.get(saveGame.previousLocation);
             }
 
-            SaveWorldState(this._dataService, this._locationService, this._game);
             this._dataService.save(DataKeys.LOCATION, this._game.currentLocation.id);
             this._game.actionLog = [];
             this._game.state = saveGame.state;
@@ -186,6 +210,7 @@ export class GameService implements IGameService {
                 this._rules.setup.continueGame(this._game);
             }
 
+            // Use a timeout here to allow the UI to respond to the loading flag set.
             setTimeout(() => {
                 this._game.loading = false;
             }, 0);
@@ -310,6 +335,28 @@ export class GameService implements IGameService {
         this._game.sounds.soundQueue.push(fileName);
     }
 
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void) {
+        if (this._playStateWatchers.length === 0) {
+            var playState = this._game.playState;
+    
+            Object.defineProperty(this._game, 'playState', {
+                enumerable: true,
+                get: () => {
+                    return playState;
+                },
+                set: value => {
+                    const oldState = playState;
+                    playState = value;
+                    this._playStateWatchers.forEach(w => w(this._game, playState, oldState));
+                }
+            });
+        }
+    
+        if (this._playStateWatchers.indexOf(callBack) < 0) {
+            this._playStateWatchers.push(callBack);
+        }
+    }
+
     private initTexts = (): void => {
         var defaultTexts = new DefaultTexts();
 
@@ -389,6 +436,10 @@ export class GameService implements IGameService {
                 this.saveGame();
             }
         };
+
+        if (this._rules.general?.playStateChange) {
+            this.watchPlayState(this._rules.general.playStateChange);
+        }
     }
 
     private initSetInterceptors = (): void => {
@@ -421,7 +472,7 @@ export class GameService implements IGameService {
 
                 // Change when xp can be lost.
                 if (change > 0) {
-                    var levelUp = this._rules.general && this._rules.general.scoreChange && this._rules.general.scoreChange(this._game, change);
+                    var levelUp = this._rules.general?.scoreChange && this._rules.general.scoreChange(this._game, change);
     
                     if (levelUp) {
                         this._game.playState = null;
@@ -441,7 +492,7 @@ export class GameService implements IGameService {
                 if (state === GameState.GameOver || state === GameState.Victory) {
                     this._game.playState = null;
 
-                    if (this._rules.general && this._rules.general.determineFinalScore) {
+                    if (this._rules.general?.determineFinalScore) {
                         this._rules.general.determineFinalScore(this._game);
                     }
                     
@@ -460,7 +511,11 @@ export class GameService implements IGameService {
             },
             set: (value: { title: string, type: string, item: IFeature }) => {
                 currentDescription = value;
-                currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+
+                if (currentDescription.item.description) {
+                    currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+                }
+
                 this._game.playState = PlayState.Description;
             }
         });

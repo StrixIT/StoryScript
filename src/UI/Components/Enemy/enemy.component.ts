@@ -25,7 +25,7 @@ export class EnemyComponent {
 
     hasDescription = (enemy: IEnemy): boolean => this._sharedMethodService.hasDescription(enemy);
 
-    showDescription = (enemy: IEnemy, title: string): void => this._sharedMethodService.showDescription(this.game, 'enemies', enemy, title);  
+    showDescription = (enemy: IEnemy, title: string): void => this._sharedMethodService.showDescription(this.game, 'enemy', enemy, title);  
 
     startCombat = (): void => this._sharedMethodService.startCombat(this.game);
 }

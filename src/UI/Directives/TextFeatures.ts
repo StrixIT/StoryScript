@@ -2,15 +2,15 @@ import { IGame, IFeature, PlayState } from 'storyScript/Interfaces/storyScript';
 import { compareString } from 'storyScript/globals';
 import { addHtmlSpaces } from 'storyScript/utilities';
 import { CombinationService } from 'storyScript/Services/CombinationService';
+import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Directive, ElementRef, Renderer2, HostListener, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedMethodService } from '../Services/SharedMethodService';
-import { watchPlayState } from '../helpers';
 
 @Directive({ selector: '[textFeatures]' })
 export class TextFeatures  implements OnDestroy {
-    constructor(private _sharedMethodService: SharedMethodService, private _combinationService: CombinationService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
+    constructor(private _sharedMethodService: SharedMethodService, private _combinationService: CombinationService, private _gameService: GameService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
         this.game = objectFactory.GetGame();
         this._combinationSubscription = this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
         this.refreshFeatures(true);
@@ -26,7 +26,7 @@ export class TextFeatures  implements OnDestroy {
         });
 
         // This watcher is needed to show hidden features when a game is loaded.
-        watchPlayState(this.game, (newPlayState: PlayState, oldplayState: PlayState) => {
+        this._gameService.watchPlayState((game: IGame, newPlayState: PlayState, oldplayState: PlayState) => {
             if (oldplayState === PlayState.Menu && newPlayState === null) {
                 setTimeout(() => {
                     this.refreshFeatures(true);
