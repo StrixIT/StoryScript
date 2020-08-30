@@ -68,17 +68,18 @@ export class GameService implements IGameService {
         var locationName = this._dataService.load<string>(DataKeys.LOCATION);
         var characterSheet = this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet();
         var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
+        let isNewGame = false;
 
         if (!hasCreateCharacterSteps && !this._game.character) {
-            this.createCharacter(<ICharacter>{});
+            isNewGame = true;
             locationName = 'Start';
+            this.startNewGame(<ICharacter>{});
         }
 
         if (this._game.character && locationName) {
-            this.initSetInterceptors();
             this.resume(locationName);
 
-            if (this._rules.setup.continueGame) {
+            if (!isNewGame && this._rules.setup.continueGame) {
                 this._rules.setup.continueGame(this._game);
             }
         }
