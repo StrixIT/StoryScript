@@ -3,6 +3,8 @@ const _templates = new Map<string, string>();
 export function getTemplate(componentName: string, defaultTemplate?: any): string {
     if (_templates.size === 0) {
         var componentRegex = /\/[a-z_A-Z]{2,}\.component\.html$/;
+
+        // Todo: when the components folder is missing, this fails!
         var r = require.context('game/ui/components', false, /.component.html$/);
 
         r.keys().map(i => {
