@@ -36,7 +36,7 @@ export class DataService implements IDataService {
 
             return null;
         }
-        catch (exception) {
+        catch (exception: any) {
             console.log('No data loaded for key ' + key + '. Error: ' + exception.message);
         }
 
