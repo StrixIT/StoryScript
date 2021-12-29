@@ -1,7 +1,9 @@
 const path = require('path');
+const os = require('os');
 
 module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gamePath, codePath) {
   webPackConfig.resolve.alias.game = path.resolve(__dirname, gamePath);
+  webPackConfig.output = { path: path.join(os.tmpdir(), '_karma_webpack_') + Math.floor(Math.random() * 1000000) };
 
   webPackConfig.module.rules.push({
     enforce: 'post',
@@ -21,7 +23,7 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
     // list of files / patterns to load in the browser
     files: [
       mainJSPath + 'test-main.js',
-      { pattern: 'specs/*Spec.ts', included: false }
+      { pattern: 'specs/*Spec.ts' }
     ],
 
     // list of files / patterns to exclude
