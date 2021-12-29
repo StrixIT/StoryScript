@@ -56,11 +56,20 @@ export interface ICharacterRules {
     beforeUnequip?(game: IGame, character: ICharacter, item: IItem): boolean;
 
     /**
+     * Specify this function if you want to apply custom rules before a player picks up an item. Return false if the player
+     * should not pick up the item.
+     * @param game The active game
+     * @param character The player character
+     * @param item The item about to be picked up
+     */
+     beforePickup?(game: IGame, character: ICharacter, item: IItem): boolean;
+
+    /**
      * Specify this function if you want to apply custom rules before a player drops an item. Return false if the player
      * should not drop the item.
      * @param game The active game
      * @param character The player character
-     * @param item The item about to be unequipped
+     * @param item The item about to be dropped
      */
     beforeDrop?(game: IGame, character: ICharacter, item: IItem): boolean;
 

@@ -118,6 +118,10 @@ export class CharacterService implements ICharacterService {
             return false;
         }
 
+        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, this._game.character, item)) {
+            return false;
+        }
+
         this._game.character.items.push(item);
         this._game.currentLocation.items.remove(item);
         return true;
