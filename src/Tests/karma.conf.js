@@ -26,23 +26,13 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
       { pattern: 'specs/*Spec.ts' }
     ],
 
-    // list of files / patterns to exclude
-    exclude: [
-    ],
-
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'specs/*.ts': ['webpack'],
     },
-    webpack: webPackConfig,
 
-    webpackMiddleware: {
-      //stats: 'errors-only'
-    },
-    webpackServer: {
-        noInfo: true
-    },
+    webpack: webPackConfig,
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -67,9 +57,6 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: karmaConfig.LOG_INFO,
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
