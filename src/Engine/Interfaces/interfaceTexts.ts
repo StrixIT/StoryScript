@@ -49,6 +49,7 @@ export interface IInterfaceTexts {
     currency?: string;
     trade?: string;
     talk?: string;
+    examine?: string;
     encounters?: string;
     closeModal?: string;
     combatTitle?: string;

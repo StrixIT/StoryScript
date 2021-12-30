@@ -246,3 +246,7 @@ feature {
 .modal-dialog {
     max-width: 50%;
 }
+
+.auto-back-button > .back-label {
+    display: none;
+}

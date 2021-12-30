@@ -21,6 +21,10 @@ export class EncounterComponent {
 
     personsPresent = (): boolean => this.game.currentLocation && this.game.currentLocation.activePersons && this.game.currentLocation.activePersons.length > 0;
 
+    hasDescription = (person: IPerson): boolean => this._sharedMethodService.hasDescription(person);
+
+    showDescription = (person: IPerson, title: string): void => this._sharedMethodService.showDescription(this.game, 'person', person, title);  
+
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
     tryCombine = (person: IPerson): boolean => this._sharedMethodService.tryCombine(this.game, person);
