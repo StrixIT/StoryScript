@@ -226,6 +226,10 @@ export class CharacterService implements ICharacterService {
                 return;
             }
 
+            if (this._rules.character.onNextCharacterCreationStep) {
+                this._rules.character.onNextCharacterCreationStep(data);
+            }
+
             var selector = data.steps[data.currentStep].nextStepSelector;
             var previousStep = data.currentStep;
 

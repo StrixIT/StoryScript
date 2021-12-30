@@ -16,6 +16,12 @@ export interface ICharacterRules {
     getCreateCharacterSheet?(): ICreateCharacter;
 
     /**
+     * This function is called when moving from one step in the character creation process to the next.
+     * @param characterData The character sheet filled in
+     */
+    onNextCharacterCreationStep?(characterData: ICreateCharacter): void;
+
+    /**
      * Use this function to specify the steps in your character level up process. Return the level-up sheet.
      */
     getLevelUpSheet?(): ICreateCharacter;
