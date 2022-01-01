@@ -342,6 +342,7 @@ export class GameService implements IGameService {
     
             Object.defineProperty(this._game, 'playState', {
                 enumerable: true,
+                configurable: true,
                 get: () => {
                     return playState;
                 },
@@ -450,6 +451,7 @@ export class GameService implements IGameService {
         let currentDescription = this._game.currentDescription;
 
         Object.defineProperty(this._game.character, 'currentHitpoints', {
+            configurable: true,
             get: () => {
                 return currentHitpoints;
             },
@@ -464,6 +466,7 @@ export class GameService implements IGameService {
         });
 
         Object.defineProperty(this._game.character, 'score', {
+            configurable: true,
             get: () => {
                 return score;
             },
@@ -485,6 +488,7 @@ export class GameService implements IGameService {
         });
     
         Object.defineProperty(this._game, 'state', {
+            configurable: true,
             get: () =>
             {
                 return gameState;
@@ -504,24 +508,23 @@ export class GameService implements IGameService {
                 gameState = state;
             }
         });
+  
+        Object.defineProperty(this._game, 'currentDescription', {
+            configurable: true,
+            get: () =>
+            {
+                return currentDescription;
+            },
+            set: (value: { title: string, type: string, item: IFeature }) => {
+                currentDescription = value;
 
-        if ('currentDescription' in this._game === false) {
-            Object.defineProperty(this._game, 'currentDescription', {
-                get: () =>
-                {
-                    return currentDescription;
-                },
-                set: (value: { title: string, type: string, item: IFeature }) => {
-                    currentDescription = value;
-
-                    if (currentDescription.item.description) {
-                        currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
-                    }
-
-                    this._game.playState = PlayState.Description;
+                if (currentDescription.item.description) {
+                    currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
                 }
-            });
-        }
+
+                this._game.playState = PlayState.Description;
+            }
+        });
     }
 
     private initLogs = (): void => {
