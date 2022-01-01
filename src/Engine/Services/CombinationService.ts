@@ -23,9 +23,10 @@ export class CombinationService implements ICombinationService {
 
     getCombineClass = (tool: ICombinable): string => {
         let className = '';
+        const defaultClassName = 'combine-selectable';
 
         if (tool) {
-            className = this._game.combinations.activeCombination ? this._game.combinations.activeCombination.selectedTool && this._game.combinations.activeCombination.selectedTool.id === tool.id ? 'combine-active-selected' : 'combine-selectable' : '';
+            className = this._game.combinations.activeCombination ? this._game.combinations.activeCombination.selectedTool && this._game.combinations.activeCombination.selectedTool.id === tool.id ? 'combine-active-selected' : defaultClassName : defaultClassName;
         }
         else {
             className = this._game.combinations.activeCombination  ? 'combine-active-hide' : '';

@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
     mode: 'development',
     output: {
-        filename: '[name].[hash].js',
+        filename: '[name].[fullhash].js',
         path: path.resolve(__dirname, '../dist')
     },
     module: {
@@ -27,6 +27,5 @@ module.exports = {
             storyScript: path.resolve(__dirname, '../src/Engine'),
             game: path.resolve(__dirname, `../src/Games/${gameName}/`)
         }
-    },
-    node: { fs: 'empty' }
+    }
 };

@@ -6,6 +6,7 @@
             <div class="inline" [ngClass]="getCombineClass()">
                 <button type="button" class="btn btn-info talk" *ngIf="person.conversation" (click)="talk(person)">{{ texts.format(texts.talk, [person.name]) }}</button>
                 <button type="button" class="btn btn-info trade" *ngIf="person.trade" (click)="trade(person)">{{ texts.format(texts.trade, [person.name]) }}</button>
+                <button type="button" class="btn btn-info examine" *ngIf="hasDescription(person)" (click)="showDescription(person, person.name)">{{ texts.format(texts.examine, [person.name]) }}</button>
                 <button type="button" class="btn btn-danger" *ngIf="person.canAttack === undefined || person.canAttack === true" (click)="startCombat(person)">{{ texts.format(texts.attack, [person.name]) }}</button>
             </div>
             <img src="{{ person.picture }}" *ngIf="person.picture" />

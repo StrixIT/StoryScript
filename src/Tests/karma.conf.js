@@ -1,7 +1,9 @@
 const path = require('path');
+const os = require('os');
 
 module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gamePath, codePath) {
   webPackConfig.resolve.alias.game = path.resolve(__dirname, gamePath);
+  webPackConfig.output = { path: path.join(os.tmpdir(), '_karma_webpack_') + Math.floor(Math.random() * 1000000) };
 
   webPackConfig.module.rules.push({
     enforce: 'post',
@@ -16,16 +18,12 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['webpack', 'jasmine', 'requirejs'],
 
     // list of files / patterns to load in the browser
     files: [
       mainJSPath + 'test-main.js',
-      { pattern: 'specs/*Spec.ts', included: false }
-    ],
-
-    // list of files / patterns to exclude
-    exclude: [
+      { pattern: 'specs/*Spec.ts' }
     ],
 
     // preprocess matching files before serving them to the browser
@@ -33,14 +31,8 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
     preprocessors: {
       'specs/*.ts': ['webpack'],
     },
-    webpack: webPackConfig,
 
-    webpackMiddleware: {
-      //stats: 'errors-only'
-    },
-    webpackServer: {
-        noInfo: true
-    },
+    webpack: webPackConfig,
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -65,9 +57,6 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: karmaConfig.LOG_INFO,
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
