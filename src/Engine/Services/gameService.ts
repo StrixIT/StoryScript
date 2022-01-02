@@ -371,6 +371,8 @@ export class GameService implements IGameService {
     }
 
     private resume = (locationName: string): void => {
+        this.initSetInterceptors();
+
         var lastLocation = this._game.locations.get(locationName) || this._game.locations.get('start');
         var previousLocationName = this._dataService.load<string>(DataKeys.PREVIOUSLOCATION);
 
