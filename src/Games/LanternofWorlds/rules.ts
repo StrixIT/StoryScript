@@ -151,7 +151,7 @@ export function Rules(): IRules {
                             nextStepSelector: (character, currentStep) => {
                                 switch (currentStep.questions[0].selectedEntry.value) {
                                     case '1': {
-                                        return 2;
+                                        return 1;
                                     };
                                     case '2': {
                                         return 1;                             
