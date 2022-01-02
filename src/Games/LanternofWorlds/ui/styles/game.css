@@ -6,6 +6,10 @@ body {
     background-color: gold;
 }
 
+#play-container {
+    position: relative;
+}
+
 #visual-features img {
     transition:all 1s ease 0s;top:0;left:0;
 }
