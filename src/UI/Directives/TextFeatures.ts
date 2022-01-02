@@ -77,6 +77,7 @@ export class TextFeatures  implements OnDestroy {
 
             featureArray.forEach((e) => {
                 this._renderer.removeClass(e, 'combine-active-selected');
+                this._renderer.addClass(e, 'combine-selectable');
             });
         }
     };

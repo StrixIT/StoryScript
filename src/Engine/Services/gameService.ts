@@ -68,17 +68,18 @@ export class GameService implements IGameService {
         var locationName = this._dataService.load<string>(DataKeys.LOCATION);
         var characterSheet = this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet();
         var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
+        let isNewGame = false;
 
         if (!hasCreateCharacterSteps && !this._game.character) {
-            this.createCharacter(<ICharacter>{});
+            isNewGame = true;
             locationName = 'Start';
+            this.startNewGame(<ICharacter>{});
         }
 
         if (this._game.character && locationName) {
-            this.initSetInterceptors();
             this.resume(locationName);
 
-            if (this._rules.setup.continueGame) {
+            if (!isNewGame && this._rules.setup.continueGame) {
                 this._rules.setup.continueGame(this._game);
             }
         }
@@ -341,6 +342,7 @@ export class GameService implements IGameService {
     
             Object.defineProperty(this._game, 'playState', {
                 enumerable: true,
+                configurable: true,
                 get: () => {
                     return playState;
                 },
@@ -369,6 +371,8 @@ export class GameService implements IGameService {
     }
 
     private resume = (locationName: string): void => {
+        this.initSetInterceptors();
+
         var lastLocation = this._game.locations.get(locationName) || this._game.locations.get('start');
         var previousLocationName = this._dataService.load<string>(DataKeys.PREVIOUSLOCATION);
 
@@ -449,6 +453,7 @@ export class GameService implements IGameService {
         let currentDescription = this._game.currentDescription;
 
         Object.defineProperty(this._game.character, 'currentHitpoints', {
+            configurable: true,
             get: () => {
                 return currentHitpoints;
             },
@@ -463,6 +468,7 @@ export class GameService implements IGameService {
         });
 
         Object.defineProperty(this._game.character, 'score', {
+            configurable: true,
             get: () => {
                 return score;
             },
@@ -484,6 +490,7 @@ export class GameService implements IGameService {
         });
     
         Object.defineProperty(this._game, 'state', {
+            configurable: true,
             get: () =>
             {
                 return gameState;
@@ -503,8 +510,9 @@ export class GameService implements IGameService {
                 gameState = state;
             }
         });
-
+  
         Object.defineProperty(this._game, 'currentDescription', {
+            configurable: true,
             get: () =>
             {
                 return currentDescription;

@@ -17,20 +17,23 @@ describe("Rules", function() {
                     return 6;
                 },
                 calculateBonus: (person, type) => {
-
+                    return 0;
                 }
             },
             logToCombatLog: (message: string) => {
 
             }
         };
-        var enemy = <IEnemy>{};
+        var enemy = <IEnemy>{
+            hitpoints: 10
+        };
 
         service.combat.fight(<IGame>game, enemy);
-        var expected = true;
-        var result = true;
 
-        expect(result).toEqual(expected);
+        // Character default strength 1 + 6.
+        var expected = 3;
+
+        expect(enemy.hitpoints).toEqual(expected);
     });
 
     it("should create a new character", function() {

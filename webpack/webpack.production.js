@@ -1,7 +1,7 @@
 const gameName = require('../gameName.js');
 const path = require('path');
 const jf = require('jsonfile');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const RemovePlugin = require('remove-files-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
@@ -20,8 +20,8 @@ const cleanConfig = {
 };
 
 const terser = new TerserPlugin({
+    parallel: true,
     terserOptions: {
-        parallel: true,
         keep_fnames: true,
         sourceMap: true
     }
@@ -57,10 +57,10 @@ if (gameInfo.sourcesIncluded) {
         include: ['dist/sources']
     };
 
-    plugins.push(new CopyWebpackPlugin([{ 
+    plugins.push(new CopyWebpackPlugin({ patterns: [{
         from: path.resolve(__dirname, `../src/Games/${gameName}`),
         to: 'sources'
-    }]));
+    }]}));
 
     plugins.push(new ZipPlugin({
         filename: 'sources.zip',
