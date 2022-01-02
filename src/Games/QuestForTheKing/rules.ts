@@ -418,18 +418,26 @@ export function Rules(): IRules {
             fight: (game: IGame, enemy: IEnemy): void => {
                 game.combatLog = [];
 
-                // Todo: fix combat, now weapons have damage like 1d8 which doesn't work with calculating bonuses.
-                var damage =game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
+                var leftHandWeapon = game.character.equipment.leftHand;
+                var rightHandWeapon = game.character.equipment.rightHand;
+
+                // For two-handed weapons, calculate only one damage.
+                if (leftHandWeapon === rightHandWeapon) {
+                    rightHandWeapon = null;
+                }
+
+                var weaponDamage = (leftHandWeapon ? game.helpers.rollDice(leftHandWeapon.damage) : 0) + (rightHandWeapon ? game.helpers.rollDice(rightHandWeapon.damage) : 0);
+                var totalDamage = weaponDamage + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
                 var leftHandCombatText= game.character.equipment.leftHand ? game.character.equipment.leftHand.attackText : '';
                 var rightHandCombatText = game.character.equipment.rightHand ? game.character.equipment.rightHand.attackText : '';
                 var combatText = leftHandCombatText && rightHandCombatText && game.character.equipment.leftHand.id !== game.character.equipment.rightHand.id ? leftHandCombatText + '. ' + rightHandCombatText : leftHandCombatText || rightHandCombatText;
-                enemy.hitpoints -= damage;
+                enemy.hitpoints -= totalDamage;
 
                 if (combatText) {
                 game.logToCombatLog(combatText + '.');
                 }
 
-                game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+                game.logToCombatLog('You do ' + totalDamage + ' damage to the ' + enemy.name + '!');
 
                 if (enemy.hitpoints <= 0) {
                 game.logToCombatLog('You defeat the ' + enemy.name + '!');
@@ -444,7 +452,7 @@ export function Rules(): IRules {
                 }
 
                 game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
-                    var enemyDamage =game.helpers.rollDice(enemy.attack) +game.helpers.calculateBonus(enemy, 'damage');
+                    var enemyDamage =game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
                     game.character.currentHitpoints -= enemyDamage;
                 });
@@ -481,7 +489,7 @@ export function Rules(): IRules {
                 }
 
                 if (game.worldProperties.isNight) {
-                    var element = <HTMLElement>game.UIRootElement.querySelector('img.map');
+                    var element = <HTMLElement>game.UIRootElement?.querySelector('img.map');
 
                     if (element) {
                         element.style.cssText = 'filter: brightness(50%);';
