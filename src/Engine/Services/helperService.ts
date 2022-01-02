@@ -23,15 +23,21 @@ export class HelperService implements IHelpers {
         var sides = <number>compositeOrSides;
 
         if (typeof compositeOrSides !== 'number') {
-            //'xdy+/-z'
-            var positiveModifier = compositeOrSides.indexOf('+') > -1;
-            var splitResult = compositeOrSides.split('d');
-            dieNumber = parseInt(splitResult[0]);
-            splitResult = (positiveModifier ? splitResult[1].split('+') : splitResult[1].split('-'));
-            splitResult.forEach(e => e.trim());
-            sides = parseInt(splitResult[0]);
-            bonus = parseInt(splitResult[1]);
-            bonus = isNaN(bonus) ? 0 : positiveModifier ? bonus : bonus * -1;
+            var splitResult = compositeOrSides.split(/d/i);
+
+            if (splitResult.length === 1) {
+                sides = parseInt(splitResult[0]);
+            }
+            else {
+                //'xdy+/-z'
+                var positiveModifier = compositeOrSides.indexOf('+') > -1;
+                dieNumber = parseInt(splitResult[0]);
+                splitResult = (positiveModifier ? splitResult[1].split('+') : splitResult[1].split('-'));
+                splitResult.forEach(e => e.trim());
+                sides = parseInt(splitResult[0]);
+                bonus = parseInt(splitResult[1]);
+                bonus = isNaN(bonus) ? 0 : positiveModifier ? bonus : bonus * -1;
+            }
         }
 
         var result = 0;
@@ -55,7 +61,7 @@ export class HelperService implements IHelpers {
             for (var n in person.equipment) {
                 var item = person.equipment[n];
                 if (item?.[type] && !isNaN(item[type])) {
-                    bonus += item[type];
+                    bonus += parseInt(item[type]);
                 }
             };
         }
@@ -63,7 +69,7 @@ export class HelperService implements IHelpers {
             if (person.items) {
                 person.items.forEach(item => {
                     if (item?.[type] && !isNaN(item[type])) {
-                        bonus += item[type];
+                        bonus += parseInt(item[type]);
                     }
                 });
             }
