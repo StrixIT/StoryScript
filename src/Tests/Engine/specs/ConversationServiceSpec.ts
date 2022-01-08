@@ -21,7 +21,8 @@ describe("ConversationService", function() {
         expect(result).toBe(node.lines);
     });
 
-    function getService(dataService?, game?: any) {
-        return new ConversationService(dataService || {}, game || {});
-    }
 });
+
+function getService(dataService?, game?: any) {
+    return new ConversationService(dataService || {}, game || {});
+}

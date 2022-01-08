@@ -178,16 +178,15 @@ describe("CombinationService", function() {
         });
     });
 
-
-    var combinationActionNames = [
-        'Walk',
-        'Use',
-        'Touch',
-        'Look'
-    ];
-
-    function getService(game?, rules?, texts?, dataService?, locationService?) {
-        return new CombinationService(dataService || {}, locationService || {}, game || {}, rules || Rules(), texts || {});
-    }
-
 });
+
+var combinationActionNames = [
+    'Walk',
+    'Use',
+    'Touch',
+    'Look'
+];
+
+function getService(game?, rules?, texts?, dataService?, locationService?) {
+    return new CombinationService(dataService || {}, locationService || {}, game || {}, rules || Rules(), texts || {});
+}

@@ -284,15 +284,16 @@ describe("Utilities", function() {
         expect(compareString('Test', 'TEST')).toBeTruthy();
     });
 
-    function getTestArray() {
-        return [
-            Sword(),
-            Journal()
-        ];
-    }
-
-    function compareId(id, func) {
-        var name = func.name || func;
-        return id.toLowerCase() === name.toLowerCase();
-    }
 });
+
+function getTestArray() {
+    return [
+        Sword(),
+        Journal()
+    ];
+}
+
+function compareId(id, func) {
+    var name = func.name || func;
+    return id.toLowerCase() === name.toLowerCase();
+}

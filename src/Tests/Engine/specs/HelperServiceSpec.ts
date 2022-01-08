@@ -71,7 +71,6 @@ describe("HelperService", function() {
         expect(result).toBeGreaterThanOrEqual(3);
         expect(result).toBeLessThanOrEqual(18);
     });
-
     
     it("should return a number between 8 and twenty-three using rollDice with a number of 6 sides, 3 dice and a bonus of 5", function() {
         var service = getService();
@@ -135,11 +134,12 @@ describe("HelperService", function() {
         expect(result).toBe(6);
     });
 
-    function getService(game?) {
-        return new HelperService(game || GetObjectFactory().GetGame());
-    }
-
-    function find(collection, name) {
-        return collection.find(l => l.name === name)();
-    }
 });
+
+function getService(game?) {
+    return new HelperService(game || GetObjectFactory().GetGame());
+}
+
+function find(collection, name) {
+    return collection.find(l => l.name === name)();
+}

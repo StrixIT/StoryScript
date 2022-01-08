@@ -79,12 +79,13 @@ describe("TradeService", function() {
         expect(game.playState).toBe(PlayState.Trade);
     });
 
-    function getService(game?, texts?) {
-        game = game || GetObjectFactory().GetGame();
-        game.character = game.character || {
-            items: []
-        };
-
-        return new TradeService(game, texts || {});
-    }
 });
+
+function getService(game?, texts?) {
+    game = game || GetObjectFactory().GetGame();
+    game.character = game.character || {
+        items: []
+    };
+
+    return new TradeService(game, texts || {});
+}

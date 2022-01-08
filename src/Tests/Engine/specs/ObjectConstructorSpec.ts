@@ -139,11 +139,12 @@ describe("ObjectFactory", function() {
         expect((<any>result).type).toBe('feature');
     });
 
-    function getLength(collection) {
-        return Object.keys(collection).length;
-    }
-
-    function find(collection, name) {
-        return collection.find(l => l.name === name);
-    }
 });
+
+function getLength(collection) {
+    return Object.keys(collection).length;
+}
+
+function find(collection, name) {
+    return collection.find(l => l.name === name);
+}
