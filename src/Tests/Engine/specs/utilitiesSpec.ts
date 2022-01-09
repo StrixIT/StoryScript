@@ -1,4 +1,5 @@
-import { getPlural, getSingular, isEmpty, addHtmlSpaces, custom, equals } from 'storyScript/utilities';
+import { IGame } from 'storyScript/Interfaces/storyScript';
+import { getPlural, getSingular, isEmpty, addHtmlSpaces, custom, equals, parseGameProperties } from 'storyScript/utilities';
 
 describe("Utilities", function() {
 
@@ -87,6 +88,38 @@ describe("Utilities", function() {
         expect(result.name).toEqual('Override');
         expect(result.damage).toEqual(10);
         expect(result.speed).toEqual(3);
+    });
+
+    it("game property should be parsed in string", function () {
+        const value = "Hi there, {game.character.name}!";
+        const expected = "Hi there, John!";
+        const actual = parseGameProperties(value, <IGame>{ character: { name: 'John'}});
+             
+        expect(expected).toEqual(actual);
+    });
+
+    it("game property should be parsed in string when game part is not included", function () {
+        const value = "Hi there, {character.name}!";
+        const expected = "Hi there, John!";
+        const actual = parseGameProperties(value, <IGame>{ character: { name: 'John'}});
+             
+        expect(expected).toEqual(actual);
+    });
+
+    it("game property with index should be parsed in string", function () {
+        const value = "Hi there. That's a nice {game.character.items[0].name}!";
+        const expected = "Hi there. That's a nice Sword!";
+        const actual = parseGameProperties(value, <IGame>{ character: { items: [ { name: 'Sword' }]}});
+             
+        expect(expected).toEqual(actual);
+    });
+
+    it("unknown property should not be parsed in string", function () {
+        const value = "Hi there {game.character.dummy}!";
+        const expected = value;
+        const actual = parseGameProperties(value, <IGame>{ character: { items: [ { name: 'Sword' }]}});
+             
+        expect(expected).toEqual(actual);
     });
 
 });

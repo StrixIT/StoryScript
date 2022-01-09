@@ -1,5 +1,6 @@
 ﻿import { IDefinitions } from './Interfaces/definitions';
 import { compareString } from './globals';
+import { IGame } from './Interfaces/storyScript';
 
 export function getPlural(name: string): string {
     return name.endsWith('y') ? 
@@ -86,6 +87,49 @@ export function equals<T extends { id?: string }>(entity: T, definition: () => T
 
 export function clone<T>(entity: T): T {
     return extend(Array.isArray(entity) ? Array(entity.length).fill({}) : {}, entity);
+}
+
+export function parseGameProperties(lines: string, game: IGame): string {
+    const propertyRegex = /{(?:[a-zA-Z\[\]0-9]{1,}[.]{0,1}){1,}}/g;
+    const indexRegex = /\[[0-9]{1,}\]/g;
+    let result = lines;
+    let parseMatch = null;
+
+    while ((parseMatch = propertyRegex.exec(lines)) !== null)
+    {
+        let property = <unknown>game;
+        let replacement = parseMatch[0];
+        let index = null;
+        let propertyFound = false;
+
+        parseMatch[0].replace(/{|}/g, '').split('.').forEach((e: string) => {
+            if (index = indexRegex.exec(e)) {
+                e = e.replace(index, '');
+                index = parseInt(index[0].replace(/\[|\]/g, ''));
+            }
+
+            if (property.hasOwnProperty(e)) {
+                property = property[e];
+                propertyFound = true;
+            }
+            else {
+                propertyFound = false;
+            }
+
+            if (!isNaN(index) && Array.isArray(property)) {
+                property = property[index];
+            }
+        }); 
+
+        if (propertyFound) {
+            replacement = property;
+        }
+
+        lines = lines.replace(`${parseMatch[0]}`, '');
+        result = result.replace(`${parseMatch[0]}`, replacement);
+    }
+
+    return result;
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
