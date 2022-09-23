@@ -3,7 +3,7 @@
 export function CustomTexts(): IInterfaceTexts {
         return {
         // Add your custom texts here.
-        youAreHere: 'Ships deck',
+        youAreHere: 'Ship\'s deck',
         gameName: 'Eastwind' 
 
     
