@@ -1,6 +1,7 @@
 body{ 
     background: rgb(245,255,0);
 background: linear-gradient(180deg, rgba(245,255,0,1) 0%, rgba(16,215,235,1) 50%, rgba(0,14,255,1) 100%);
+background-size: 100vw 100vh;
 }
 h1 {
     color: gold;
