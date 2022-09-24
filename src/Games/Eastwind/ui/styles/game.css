@@ -1,8 +1,11 @@
-body{
-    background-image:url('resources/forest.png');
-
+body{ 
 }
-
+h1 {
+    color: gold;
+}
+.box-container {
+color: darkgreen;
+}
 .back-label {
     display: none;
 }
