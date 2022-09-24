@@ -1,10 +1,12 @@
 body{ 
+    background: rgb(245,255,0);
+background: linear-gradient(180deg, rgba(245,255,0,1) 0%, rgba(16,215,235,1) 50%, rgba(0,14,255,1) 100%);
 }
 h1 {
     color: gold;
 }
 .box-container {
-color: darkgreen;
+color: black;
 }
 .back-label {
     display: none;

@@ -6,7 +6,14 @@ export function Start() {
         name: 'Start',
         description: description,
         destinations: [
-            
+      {
+        name: 'Go to the back of the ship',
+        target: null,
+      },
+      {
+        name: 'Go to the front of the ship',
+        target: null,
+      },
         ]
     });
 }
