@@ -12,3 +12,7 @@ color: black;
 .back-label {
     display: none;
 }
+#exploration-destinations {
+    border-top: none;
+    border-radius: 0;
+}

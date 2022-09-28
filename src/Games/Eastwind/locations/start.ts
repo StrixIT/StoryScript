@@ -1,4 +1,5 @@
-﻿import { Location } from '../types'
+﻿import { LocationService } from '../../../Engine/Services/LocationService';
+import { Location } from '../types'
 import description from './Start.html'
 
 export function Start() {
@@ -6,6 +7,10 @@ export function Start() {
         name: 'Start',
         description: description,
         destinations: [
+          {
+            name: 'Look around',
+            target: null,
+          },
       {
         name: 'Go to the back of the ship',
         target: null,
