@@ -9,7 +9,7 @@ import { IFeature } from '../Interfaces/feature';
 import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
 import { createFunctionHash, compareString } from '../globals';
-import { addHtmlSpaces, isEmpty } from '../utilities';
+import { addHtmlSpaces, isEmpty, parseGameProperties } from '../utilities';
 import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
 import { ActionType } from '../Interfaces/enumerations/actionType';
@@ -285,7 +285,7 @@ export class LocationService implements ILocationService {
                 throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');
             }
 
-            game.currentLocation.descriptions[name] = node.innerHTML;
+            game.currentLocation.descriptions[name] = parseGameProperties(node.innerHTML, this._game);
         }      
     }
 
