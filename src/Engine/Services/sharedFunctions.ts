@@ -65,7 +65,8 @@ export function removeItemFromItemsAndEquipment(character: ICharacter, item: IIt
 function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLElement>, playedAudio: string[]) {
     Array.from(elements).forEach(e => {
         var originalText = e.outerHTML;
-        var source = e.getElementsByTagName('source')?.[0].getAttribute('src')?.toLowerCase();
+        var source = e.getElementsByTagName('source')[0]?.getAttribute('src')?.toLowerCase() 
+                        ?? e.getAttribute('src')?.toLowerCase();
 
         if (originalText && source) {
             if (playedAudio.indexOf(source) < 0) {
