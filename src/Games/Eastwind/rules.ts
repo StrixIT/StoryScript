@@ -1,4 +1,4 @@
-﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction } from 'storyScript/Interfaces/storyScript';
+﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character } from './types';
 
 export function Rules(): IRules {
@@ -8,7 +8,9 @@ export function Rules(): IRules {
                 return [
                     // Add combination action names here if you want to use this feature.
                 ];
-            }
+            },playList:[
+                [GameState.Play,'underwater.mp3']
+            ]
         },
 
         general: {  
