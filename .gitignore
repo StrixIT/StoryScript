@@ -14,3 +14,4 @@
 /src/Games/QuestForTheKing/**/*.html
 
 debug.log
+package-lock.json
