@@ -1,5 +1,6 @@
 ﻿import { LocationService } from '../../../Engine/Services/LocationService';
 import { Location } from '../types'
+import { ShipBow } from './ShipBow';
 import { Shipsdeck } from './shipsdeck';
 import description from './Start.html'
 
@@ -19,7 +20,7 @@ export function Start() {
       },
       {
         name: 'Go to the front of the ship',
-        target: null,
+        target: ShipBow, 
       },
         ]
     });
