@@ -27,7 +27,6 @@ export function Shipsdeck() {
 		enemies: [
 		],
 		persons: [
-			Persons.Vigga()
 		],
 		trade: [
 		],
