@@ -1,4 +1,5 @@
 import { IGame, Location } from '../types';
+import { ShipBow } from './ShipBow';
 import description from './shipsdeck.html';
 export function Shipsdeck() {
 	return Location({
@@ -15,7 +16,7 @@ export function Shipsdeck() {
       },
       {
         name: 'Go to the front of the ship',
-        target: null,
+        target: ShipBow,
       },
 			
 		],
@@ -26,6 +27,7 @@ export function Shipsdeck() {
 		enemies: [
 		],
 		persons: [
+			Persons.Vigga()
 		],
 		trade: [
 		],
