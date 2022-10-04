@@ -1,3 +1,4 @@
+import { Vigga } from '../persons/Vigga';
 import { IGame, Location } from '../types';
 import { ShipBow } from './ShipBow';
 import description from './shipsdeck.html';
@@ -5,11 +6,7 @@ export function Shipsdeck() {
 	return Location({
 		name: 'Shipsdeck',
 		description: description,
-		destinations: [ {
-            name: 'Talk to Vigga',
-            target: Shipsdeck, 
-          },
-          
+		destinations: [  
       {
         name: 'Go to the back of the ship',
         target: null,
@@ -27,6 +24,7 @@ export function Shipsdeck() {
 		enemies: [
 		],
 		persons: [
+			Vigga()
 		],
 		trade: [
 		],

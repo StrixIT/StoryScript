@@ -10,6 +10,7 @@ export function Vigga() {
 		],
 		quests: [
 		],
+		canAttack: false,
 		conversation: {
 			actions: {
 			}
