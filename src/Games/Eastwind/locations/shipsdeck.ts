@@ -2,6 +2,7 @@ import { Vigga } from '../persons/Vigga';
 import { IGame, Location } from '../types';
 import { ShipBow } from './ShipBow';
 import description from './shipsdeck.html';
+import { ShipStern } from './shipStern';
 export function Shipsdeck() {
 	return Location({
 		name: 'Shipsdeck',
@@ -9,7 +10,7 @@ export function Shipsdeck() {
 		destinations: [  
       {
         name: 'Go to the back of the ship',
-        target: null,
+        target: ShipStern,
       },
       {
         name: 'Go to the front of the ship',

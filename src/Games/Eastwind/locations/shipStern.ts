@@ -1,4 +1,5 @@
 import { IGame, Location } from '../types';
+import { Shipsdeck } from './shipsdeck';
 import description from './shipStern.html';
 
 export function ShipStern() {
@@ -6,7 +7,10 @@ export function ShipStern() {
 		name: 'ShipStern',
 		description: description,
 		destinations: [
-			
+			{
+				name: 'Go to the center of the ship',
+				target: Shipsdeck,
+			  },
 		],
 		features: [
 		],
@@ -23,6 +27,12 @@ export function ShipStern() {
 		leaveEvents: [
 		],
 		actions: [
+			{
+				text: 'Open the hatch',
+				execute: (game: IGame) => {
+					
+				},
+			},
 		],
 		combatActions: [
 		],

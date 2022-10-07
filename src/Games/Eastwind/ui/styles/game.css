@@ -8,21 +8,11 @@ h1 {
     color: black;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-style: italic;
+  
 }
 .box-container {
 color: black;
 font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+font-size: 1.3em; /* 40px/16=2.5em */;
 }
-.back-label {
-    display: none;
-}
-#exploration-destinations > .box-title {
-    display: none;
-}
-#location {
-    margin-bottom: 0px;
-}
-#exploration-destinations {
-    border-top: none;
-    border-radius: 0;
-}
+

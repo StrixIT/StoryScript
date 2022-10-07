@@ -28,10 +28,10 @@
 			
 		</p>
 		<replies>
-			<reply node="Sure">
+			<reply node="Sure" set-start="return">
 		   Sure, I could use some advice.
 			</reply>
-			<reply node="No thanks">
+			<reply node="No thanks" set-start="return">
 				Thanks, but I think I can handle it.
 				</reply>
 		</replies>
@@ -51,7 +51,16 @@
 			
 		</replies>
 	</node>
-	
+	<node name="return">
+		<p>
+			Vigga turns towards you with a smile.
+			<p></p>
+            'Ah, you're back, how may I help you?'
+	        <p></p>
+		<replies default-reply="">
+			
+		</replies>
+	</node>
 	<default-reply>
 	</default-reply>
 	<node name="Sure"
