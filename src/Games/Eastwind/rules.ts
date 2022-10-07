@@ -10,7 +10,7 @@ export function Rules(): IRules {
                 ];
             },playList:[
                 [GameState.Play,'underwater.mp3']
-            ]
+            ],autoBackButton: false
         },
 
         general: {  
