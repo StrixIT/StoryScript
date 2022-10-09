@@ -1,0 +1,98 @@
+<img class="picture" src="resources/bandit.jpg" />
+<description>
+</description>
+<conversation>
+    <default-reply>
+        Never mind. See you later.
+    </default-reply>
+    <node name="hello">
+        <p>
+			The man turns towards you with a grin, showing several golden teeth.</p>
+<p>'Ahoy there matey, glad to see ye. It's been rather dull up here, with naught but the gulls and the whispers of the sea to keep me company. And little to do either, what with 
+	the wind doing her hair and washing her clothes apparently, and not showing up do to her wifely duty.'</p>
+<p>The man's grin widens.</p>
+<P>'I've got no fear of pirates, mind ye, not with a mighty warrior like ye around. But may I interest ye in some fine tobacco? I've wanted to give ye this, 
+	as a token to remember the 'Talisman' by, and her very fine crew.'</P>
+<p>The man chuckles.</p>
+<p>'Ye might win that little tourney, you see, and mayhaps feel inclined to do some sharing of the spoils.'</p>
+
+        <replies>
+            <reply node="accept" set-start="return">
+                Accept.
+            </reply>
+            <reply node="decline" set-start="return">
+                Decline
+            </reply>
+        </replies>
+    </node>
+    <node name="return">
+        <p>
+            Back so soon?
+        </p>
+        <replies>
+            <reply node="garden">
+                I just walked through the garden.
+            </reply>
+            <reply node="key">
+                I found a key.
+            </reply>
+            <reply node="lostjournal">
+                I noticed you seem a bit upset.
+            </reply>
+        </replies>
+    </node>
+    <node name="accept">
+        <p>
+			As you accept, the man nods happily.</p>
+			<p>'Here ye go, friend, one of my finest tobacco pouches, filled with tobacco so fragrant that it will make ye want to dance and sing!'</p>
+    </node>
+    <node name="decline">
+		<p>As you decline, the man nods.</p>
+		<p>'Aye, 'tis not for everybody, and it may be better that you don't.  This here fine tobacco, landlubbers don't have the stomach for it.'</p>
+		<p>The man grinds, and continues smoking his pipe.</p>
+		
+    </node>
+    <node name="garden">
+        <p>
+            Did you see the hedgehog?
+        </p>
+        <replies default-reply="false">
+            <reply trigger="addHedgehog">
+                No I didn't. I'll pay attention next time.
+            </reply>
+        </replies>
+    </node>
+    <node name="key">
+        <p>
+            Hm. I don't know what lock that's for.
+        </p>
+    </node>
+    <node name="lostjournal">
+        <p>
+            I guess I am. I can't seem to find my personal journal. It is very important to me. Can you help me find it?
+        </p>
+        <replies>
+            <reply node="pleasefindit" quest-start="Journal" set-start="foundjournal">
+                Of course. I'll return it as soon as I see it.
+            </reply>
+        </replies>
+    </node>
+    <node name="pleasefindit">
+        <p>
+            I hope you have better luck than I searching.
+        </p>
+    </node>
+    <node name="foundjournal">
+        <p>
+            Have you found my journal?
+        </p>
+        <replies>
+            <reply>
+                Not yet, sorry.
+            </reply>
+            <reply requires="quest-done=Journal" quest-complete="Journal" set-start="return">
+                Yes I have. Here it is!
+            </reply>
+        </replies>
+    </node>
+</conversation>

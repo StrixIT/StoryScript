@@ -1,3 +1,4 @@
+import { Dante } from '../persons/Dante';
 import { IGame, Location } from '../types';
 import { Shipsdeck } from './shipsdeck';
 import description from './shipStern.html';
@@ -19,6 +20,7 @@ export function ShipStern() {
 		enemies: [
 		],
 		persons: [
+			Dante()
 		],
 		trade: [
 		],
