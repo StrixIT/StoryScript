@@ -1,3 +1,4 @@
+import { LocationService } from '../../../Engine/Services/LocationService';
 import { Dante } from '../persons/Dante';
 import { IGame, Location } from '../types';
 import { Shipsdeck } from './shipsdeck';
@@ -29,12 +30,14 @@ export function ShipStern() {
 		leaveEvents: [
 		],
 		actions: [
+
 			{
 				text: 'Open the hatch',
 				execute: (game: IGame) => {
 					
-				},
+				
 			},
+			}
 		],
 		combatActions: [
 		],
