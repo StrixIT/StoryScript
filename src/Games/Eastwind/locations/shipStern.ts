@@ -2,6 +2,7 @@ import { LocationService } from '../../../Engine/Services/LocationService';
 import { Dante } from '../persons/Dante';
 import { IGame, Location } from '../types';
 import { Shipsdeck } from './shipsdeck';
+import { ShipsHold } from './ShipsHold';
 import description from './shipStern.html';
 
 export function ShipStern() {
@@ -12,6 +13,9 @@ export function ShipStern() {
 			{
 				name: 'Go to the center of the ship',
 				target: Shipsdeck,
+			  },{
+				name: 'Go to the hold',
+				target: ShipsHold,
 			  },
 		],
 		features: [
