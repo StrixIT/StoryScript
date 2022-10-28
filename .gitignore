@@ -11,6 +11,7 @@
 /src/Tests/**/coverage/*
 /src/types/*
 /src/Games/**/resources/*
+!/src/Games/Eastwind/resources/*
 /src/Games/QuestForTheKing/**/*.html
 
 debug.log
