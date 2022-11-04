@@ -1,3 +1,4 @@
+import { Rat } from '../enemies/Rat';
 import { IGame, Location } from '../types';
 import description from './ShipsHoldAft.html';
 
@@ -13,6 +14,7 @@ export function ShipsHoldAft() {
 		items: [
 		],
 		enemies: [
+			Rat()
 		],
 		persons: [
 		],

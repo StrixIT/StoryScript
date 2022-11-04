@@ -38,7 +38,7 @@ export function ShipStern() {
 			{
 				text: 'Open the hatch',
 				execute: (game: IGame) => {
-					
+					game.changeLocation(ShipsHold);
 				
 			},
 			}

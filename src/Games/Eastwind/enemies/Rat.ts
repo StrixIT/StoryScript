@@ -5,7 +5,8 @@ export function Rat() {
 	return Enemy({
 		name: 'Rat',
 		description: description,
-		hitpoints: 10,
+		hitpoints: 3,
+		attack:'1d2',
 		items: [
 		],
 	});
