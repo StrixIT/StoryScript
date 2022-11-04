@@ -46,16 +46,20 @@ export function Rules(): IRules {
         },
 
         combat: {     
-            fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
-                retaliate = retaliate == undefined ? true : retaliate;
+            fight: (game: IGame, enemy: IEnemy): void => {
+                var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
+                game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+                enemy.hitpoints -= damage;
 
-                // Implement character attack here.
-
-                if (retaliate) {
-                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
-                        // Implement monster attack here
-                    });
+                if (enemy.hitpoints <= 0) {
+                    game.logToCombatLog('You defeat the ' + enemy.name + '!');
                 }
+
+                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
+                    var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
+                    game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
+                    game.character.currentHitpoints -= damage;
+                });
             }
         }
     };

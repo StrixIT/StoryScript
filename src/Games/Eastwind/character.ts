@@ -10,7 +10,10 @@ export class Character implements ICharacter {
     currency: number = 0;
 
     // Add character properties here.
-
+    strength?: number = 1;
+    agility?: number = 1;
+    intelligence?: number = 1;
+    
     items: ICollection<IItem> = [];
 
     equipment: {
