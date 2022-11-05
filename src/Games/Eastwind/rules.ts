@@ -1,5 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character } from './types';
+import { IGame, IEnemy, Character, ILocation } from './types';
 
 export function Rules(): IRules {
     return {
@@ -42,7 +42,19 @@ export function Rules(): IRules {
         },
 
         exploration: {
-            
+            enterLocation: (game: IGame, location: ILocation, travel?: boolean) => {
+                if (location.background_class) {
+                    // When refreshing the page, the UIRootElement is not yet on the game so use a timeout.
+                    if (game.UIRootElement) {
+                        setGradient(game.UIRootElement, location.background_class);
+                    }
+                    else {
+                        setTimeout(() => {
+                            setGradient(game.UIRootElement, location.background_class);
+                        });
+                    }
+                }
+            }
         },
 
         combat: {     
@@ -63,4 +75,14 @@ export function Rules(): IRules {
             }
         }
     };
+}
+
+function setGradient(element: HTMLElement, className: string) {
+    element.classList.forEach(c => { 
+        if (c.startsWith('gradient')) {
+            element.classList.remove(c);
+        } 
+    });
+
+    element.classList.add(className);
 }
