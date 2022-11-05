@@ -1,18 +1,22 @@
-body{ 
-    background: rgb(245,255,0);
-background: linear-gradient(180deg, rgba(245,255,0,1) 0%, rgba(16,215,235,1) 50%, rgba(0,14,255,1) 100%);
-background-size: 100vw 100vh;
-
-}
 h1 {
     color: black;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-style: italic;
   
 }
+
 .box-container {
 color: black;
 font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 font-size: 1.3em; /* 40px/16=2.5em */;
 }
 
+.gradient-ship-outside {
+    background: linear-gradient(180deg, rgba(245,255,0,1) 0%, rgba(16,215,235,1) 50%, rgba(0,14,255,1) 100%);
+    background-size: 100vw 100vh;
+}
+
+.gradient-ship-inside {
+    background: linear-gradient(180deg, rgba(0,255,0,1) 0%, rgba(16,0,235,1) 50%, rgba(0,14,0,1) 100%);
+    background-size: 100vw 100vh;
+}
