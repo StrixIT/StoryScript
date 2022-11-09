@@ -9,20 +9,20 @@ export function Start() {
     return Location({
         name: 'Start',
         description: description,
+        background_class: 'gradient-ship-outside',
         destinations: [
           {
             name: 'Look around',
             target: Shipsdeck, 
+          },    
+          {
+            name: 'Go to the back of the ship',
+            target: ShipStern,
           },
-          
-      {
-        name: 'Go to the back of the ship',
-        target: ShipStern,
-      },
-      {
-        name: 'Go to the front of the ship',
-        target: ShipBow, 
-      },
+          {
+            name: 'Go to the front of the ship',
+            target: ShipBow, 
+          },
         ]
     });
 }
