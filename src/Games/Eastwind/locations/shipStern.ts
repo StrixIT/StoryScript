@@ -13,10 +13,7 @@ export function ShipStern() {
 			{
 				name: 'Go to the center of the ship',
 				target: Shipsdeck,
-			  },{
-				name: 'Go to the hold',
-				target: ShipsHold,
-			  },
+			},
 		],
 		features: [
 		],
