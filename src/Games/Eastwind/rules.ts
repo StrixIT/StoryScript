@@ -59,6 +59,22 @@ export function Rules(): IRules {
 
         combat: {     
             fight: (game: IGame, enemy: IEnemy): void => {
+                if (game.character.equipment.rightHand?.attackText) {
+                    game.logToCombatLog(game.character.equipment.leftHand?.attackText);
+                }
+
+                if (game.character.equipment.rightHand?.attackSound) {
+                    game.sounds.playSound(game.character.equipment.rightHand?.attackSound);
+                }
+
+                if (game.character.equipment.leftHand?.attackText) {
+                    game.logToCombatLog(game.character.equipment.leftHand?.attackText);
+                }
+
+                if (game.character.equipment.leftHand?.attackSound) {
+                    game.sounds.playSound(game.character.equipment.leftHand?.attackSound);
+                }
+
                 var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
                 game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
