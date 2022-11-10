@@ -17,6 +17,6 @@ font-size: 1.3em; /* 40px/16=2.5em */;
 }
 
 .gradient-ship-inside {
-    background: linear-gradient(180deg, rgba(0,255,0,1) 0%, rgba(16,0,235,1) 50%, rgba(0,14,0,1) 100%);
+    background: linear-gradient(180deg, rgba(223,175,12,1) 0%, rgba(170,122,13,1) 35%, rgba(30,25,8,1) 100%);
     background-size: 100vw 100vh;
 }
