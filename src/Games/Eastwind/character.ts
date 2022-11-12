@@ -1,5 +1,6 @@
 ﻿
 import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
+import { Sword } from './items/sword';
 import { IItem } from './types';
 
 export class Character implements ICharacter {
@@ -39,7 +40,7 @@ export class Character implements ICharacter {
             hands: null,
             leftHand: null,
             leftRing: null,
-            rightHand: null,
+            rightHand: Sword(),
             rightRing: null,
             legs: null,
             feet: null

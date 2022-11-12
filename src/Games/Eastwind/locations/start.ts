@@ -1,4 +1,6 @@
 ﻿import { LocationService } from '../../../Engine/Services/LocationService';
+import { Healingpotion } from '../items/healingPotion';
+import { Sword } from '../items/sword';
 import { Location } from '../types'
 import { ShipBow } from './ShipBow';
 import { Shipsdeck } from './shipsdeck';
