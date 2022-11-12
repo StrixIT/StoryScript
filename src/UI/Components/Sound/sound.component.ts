@@ -13,22 +13,21 @@ export class SoundComponent {
 
     constructor(private ngZone: NgZone, private _gameService: GameService, objectFactory: ObjectFactory) {
         this._game = objectFactory.GetGame();
-        this.soundQueue = this._game.sounds.soundQueue;
     }
-
-    soundQueue: Map<number, { value: string, playing: boolean, completeCallBack?: () => void}>;
 
     getCurrentMusic = (): string => this._gameService.getCurrentMusic();
 
     getSoundQueue = (): { key: number, value: string }[] => {      
-        var queue = Array.from(this.soundQueue.entries()).filter(v => !v[1].playing).map(e => 
+        const soundQueue = this._game.sounds.soundQueue;
+
+        const queue = Array.from(soundQueue.entries()).filter(v => !v[1].playing).map(e => 
         {
             // Use this code outside of the angular change detection to remove sounds that are playing from the list
             // without triggering the ExpressionChangedAfterItHasBeenCheckedError error. I got this solution reading
             // https://medium.com/angular-in-depth/boosting-performance-of-angular-applications-with-manual-change-detection-42cb396110fb.
             this.ngZone.runOutsideAngular(()=>{
                 setTimeout(() => {
-                    this.soundQueue.get(e[0]).playing = true;
+                    soundQueue.get(e[0]).playing = true;
                 }, 0);
             });
 
@@ -39,7 +38,8 @@ export class SoundComponent {
     }
 
     soundCompleted = (sound: { key: number, value: string }) => {
-        this.soundQueue.get(sound.key).completeCallBack?.();
-        this.soundQueue.delete(sound.key);
+        const soundQueue = this._game.sounds.soundQueue;
+        soundQueue.get(sound.key).completeCallBack?.();
+        soundQueue.delete(sound.key);
     }
 }
