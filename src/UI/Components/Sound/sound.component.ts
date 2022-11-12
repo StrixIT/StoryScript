@@ -2,7 +2,6 @@ import { GameService } from 'storyScript/Services/gameService';
 import { Component, NgZone } from '@angular/core';
 import { IGame } from 'storyScript/Interfaces/game';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { createHash } from 'storyScript/globals';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -14,10 +13,10 @@ export class SoundComponent {
 
     constructor(private ngZone: NgZone, private _gameService: GameService, objectFactory: ObjectFactory) {
         this._game = objectFactory.GetGame();
-        this.watchSounds();
+        this.soundQueue = this._game.sounds.soundQueue;
     }
 
-    soundQueue: Map<number, { value: string, playing: boolean}> = new Map<number, { value: string, playing: boolean}>();
+    soundQueue: Map<number, { value: string, playing: boolean, completeCallBack?: () => void}>;
 
     getCurrentMusic = (): string => this._gameService.getCurrentMusic();
 
@@ -39,14 +38,8 @@ export class SoundComponent {
         return queue;
     }
 
-    soundCompleted = (sound: { key: number, value: string }) => this.soundQueue.delete(sound.key);
-
-    watchSounds = () => {
-        this._game.sounds.soundQueue.push = this._game.sounds.soundQueue.push.proxy((originalScope: any, originalFunction: any, sound: string) => {
-            this.soundQueue.set(createHash(sound + Math.floor(Math.random() * 1000)), { value: sound, playing: false });
-
-            // I don't really need this. Clean it up.
-            originalFunction.call(originalScope, sound);
-        })
+    soundCompleted = (sound: { key: number, value: string }) => {
+        this.soundQueue.get(sound.key).completeCallBack?.();
+        this.soundQueue.delete(sound.key);
     }
 }
