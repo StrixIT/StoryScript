@@ -32,7 +32,7 @@ export interface ICharacterRules {
      * This function is called when the level-up sheet has been filled in and the game is about to continue.
      * You can add custom logic here to process the level-up sheet before the game continues. Return true if
      * you also want the default level-up sheet processing to run.
-     * @param game The game about to continue
+     * @param character The character
      * @param characterData The level-up sheet filled in
      */
     levelUp?(character: ICharacter, characterData: ICreateCharacter): boolean;
