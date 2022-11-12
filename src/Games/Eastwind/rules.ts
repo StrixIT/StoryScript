@@ -9,9 +9,11 @@ export function Rules(): IRules {
                 return [
                     // Add combination action names here if you want to use this feature.
                 ];
-            },playList:[
-                [GameState.Play,'underwater.mp3']
-            ],autoBackButton: false
+            },
+            playList:[
+                [GameState.Play, 'underwater.mp3']
+            ],
+            autoBackButton: false
         },
 
         general: {  
