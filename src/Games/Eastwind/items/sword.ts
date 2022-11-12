@@ -7,6 +7,7 @@ export function Sword() {
 		name: 'Sword',
 		description: description,
 		equipmentType: EquipmentType.Miscellaneous,
-		attackText: 'You swing your sword'
+		attackText: 'You swing your sword',
+		attackSound: 'swing3.wav'
 	});
 }
