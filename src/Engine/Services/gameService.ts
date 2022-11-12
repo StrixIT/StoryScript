@@ -22,7 +22,7 @@ import { IBarrierAction } from '../Interfaces/barrierAction';
 import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
-import { compareString } from '../globals';
+import { compareString, createHash } from '../globals';
 import { IFeature } from '../Interfaces/feature';
 
 export class GameService implements IGameService {
@@ -253,18 +253,20 @@ export class GameService implements IGameService {
             return;
         }
 
-        this._rules.combat.fight(this._game, enemy, retaliate);
+        var promise = this._rules.combat.fight(this._game, enemy, retaliate);
 
-        if (enemy.hitpoints <= 0) {
-            this.enemyDefeated(enemy);
-        }
+        Promise.resolve(promise).then(() => {
+            if (enemy.hitpoints <= 0) {
+                this.enemyDefeated(enemy);
+            }
 
-        if (this._game.character.currentHitpoints <= 0) {
-            this._game.playState = null;
-            this._game.state = GameState.GameOver;
-        }
+            if (this._game.character.currentHitpoints <= 0) {
+                this._game.playState = null;
+                this._game.state = GameState.GameOver;
+            }
 
-        this.saveGame();
+            this.saveGame();
+        });
     }
 
     useItem = (item: IItem): void => {
@@ -332,8 +334,8 @@ export class GameService implements IGameService {
 
     stopMusic = (): boolean => this._musicStopped = true;
 
-    playSound = (fileName: string): void => {
-        this._game.sounds.soundQueue.push(fileName);
+    playSound = (fileName: string, completeCallBack?: () => void): void => {
+        this._game.sounds.soundQueue.set(createHash(fileName + Math.floor(Math.random() * 1000)), { value: fileName, playing: false, completeCallBack: completeCallBack });
     }
 
     watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void) {
@@ -426,7 +428,7 @@ export class GameService implements IGameService {
             startMusic: this.startMusic,
             stopMusic: this.stopMusic,
             playSound: this.playSound,
-            soundQueue: []
+            soundQueue: new Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>
         };
 
         this.setupCombinations();

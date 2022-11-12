@@ -17,7 +17,8 @@ describe("GameService", function() {
         expect(used).toBeTruthy();
     });
 
-    function getService(dataService?, locationService?, characterService?, combinationService?, rules?, helperService?, game?, texts?) {
-        return new GameService(dataService || {}, locationService || {}, characterService || {}, combinationService || {}, rules || {}, helperService || {}, game || {}, texts || {});
-    }
 });
+
+function getService(dataService?, locationService?, characterService?, combinationService?, rules?, helperService?, game?, texts?) {
+    return new GameService(dataService || {}, locationService || {}, characterService || {}, combinationService || {}, rules || {}, helperService || {}, game || {}, texts || {});
+}

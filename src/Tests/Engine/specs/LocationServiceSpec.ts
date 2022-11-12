@@ -56,14 +56,15 @@ describe("LocationService", function() {
         expect(dataService.copy).toHaveBeenCalled();
     });
 
-    function getService(dataService?, rules?, game?, definitions?, ) {
-        var data = null;
-
-        var dataService = dataService || {
-            save: function(key, value) { data = value; },
-            load: function(key) { return data; }
-        }
-
-        return new LocationService(dataService, rules || {}, game || {}, definitions || {});
-    }
 });
+
+function getService(dataService?, rules?, game?, definitions?, ) {
+    var data = null;
+
+    var dataService = dataService || {
+        save: function(key, value) { data = value; },
+        load: function(key) { return data; }
+    }
+
+    return new LocationService(dataService, rules || {}, game || {}, definitions || {});
+}

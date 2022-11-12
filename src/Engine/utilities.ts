@@ -132,6 +132,23 @@ export function parseGameProperties(lines: string, game: IGame): string {
     return result;
 }
 
+export function createPromiseForCallback<T>(callBack: Function): { promise: Promise<T>, promiseCallback : () => void } {
+    let resolveFunc = null;
+
+    const promiseCallback = () => { 
+        callBack();
+        resolveFunc?.();
+     }
+
+    const promiseFunc = function(resolve, reject) {
+        resolveFunc = resolve;
+    }
+
+    const promise = new Promise<T>(promiseFunc);
+
+    return { promise, promiseCallback };              
+}
+
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
     var collectionToFilter = <T[]>[]
 
