@@ -1,11 +1,12 @@
 import { IGame, Item } from '../types';
 import { EquipmentType } from 'storyScript/Interfaces/storyScript';
-import description from './healingpotion.html';
+import description from './sword.html';
 
-export function Healingpotion() {
+export function Sword() {
 	return Item({
-		name: 'Healingpotion',
+		name: 'Sword',
 		description: description,
 		equipmentType: EquipmentType.Miscellaneous,
+		attackText: 'You swing your sword'
 	});
 }
