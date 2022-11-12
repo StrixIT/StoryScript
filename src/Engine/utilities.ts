@@ -149,6 +149,36 @@ export function createPromiseForCallback<T>(callBack: Function): { promise: Prom
     return { promise, promiseCallback };              
 }
 
+export function wait(timeInMs: number, callBack: Function): Promise<void> {
+    const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
+
+    setTimeout(() => {
+        promiseCallback();
+    }, timeInMs);
+
+    return promise;
+}
+
+export function interval(intervalTimeInMs: number, repeat: number, intervalCallback: Function, finalCallback: Function): Promise<void> {
+    const { promise, promiseCallback } = createPromiseForCallback<void>(finalCallback);
+
+    let count = 0;
+
+    const interval = setInterval(() => {
+        count++;
+        intervalCallback();
+
+        if (count >= repeat) {
+            clearInterval(interval);
+            setTimeout(() => {
+                promiseCallback();
+            }, intervalTimeInMs);
+        }
+    }, intervalTimeInMs);
+
+    return promise;
+}
+
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
     var collectionToFilter = <T[]>[]
 
