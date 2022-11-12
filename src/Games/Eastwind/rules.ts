@@ -1,4 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
+import { createPromiseForCallback } from 'storyScript/utilities';
 import { IGame, IEnemy, Character, ILocation } from './types';
 
 export function Rules(): IRules {
@@ -58,42 +59,51 @@ export function Rules(): IRules {
         },
 
         combat: {     
-            fight: (game: IGame, enemy: IEnemy): void => {
-                if (game.character.equipment.rightHand?.attackText) {
-                    game.logToCombatLog(game.character.equipment.leftHand?.attackText);
+            fight: (game: IGame, enemy: IEnemy): Promise<void> | void => {
+                var equipment = game.character.equipment;
+
+                if (equipment.rightHand?.attackText) {
+                    game.logToCombatLog(equipment.rightHand?.attackText);
                 }
 
-                if (game.character.equipment.rightHand?.attackSound) {
-                    game.sounds.playSound(game.character.equipment.rightHand?.attackSound);
-                }
-
-                if (game.character.equipment.leftHand?.attackText) {
-                    game.logToCombatLog(game.character.equipment.leftHand?.attackText);
-                }
-
-                if (game.character.equipment.leftHand?.attackSound) {
-                    game.sounds.playSound(game.character.equipment.leftHand?.attackSound);
+                if (equipment.leftHand?.attackText) {
+                    game.logToCombatLog(equipment.leftHand?.attackText);
                 }
 
                 var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
-                game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
-                enemy.hitpoints -= damage;
+                var callBack = () => continueFight(game, enemy, damage);
 
-                if (enemy.hitpoints <= 0) {
-                    game.logToCombatLog('You defeat the ' + enemy.name + '!');
+                var attackSound = equipment.rightHand?.attackSound ?? equipment.leftHand?.attackSound;
+
+                if (attackSound) {
+                    const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
+                    game.sounds.playSound(attackSound, promiseCallback);
+                    return promise;              
                 }
-
-                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
-                    var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
-                    game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
-                    game.character.currentHitpoints -= damage;
-                });
+                else {
+                    callBack();
+                }
             }
         }
     };
 }
 
-function setGradient(element: HTMLElement, className: string) {
+const continueFight = function(game: IGame, enemy: IEnemy, damage: number) {
+    game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
+    enemy.hitpoints -= damage;
+
+    if (enemy.hitpoints <= 0) {
+        game.logToCombatLog('You defeat the ' + enemy.name + '!');
+    }
+
+    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
+        var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
+        game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
+        game.character.currentHitpoints -= damage;
+    });
+}
+
+const setGradient = function(element: HTMLElement, className: string) {
     element.classList.forEach(c => { 
         if (c.startsWith('gradient')) {
             element.classList.remove(c);
