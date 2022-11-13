@@ -2,7 +2,6 @@ import { GameService } from 'storyScript/Services/gameService';
 import { Component, NgZone } from '@angular/core';
 import { IGame } from 'storyScript/Interfaces/game';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { createHash } from 'storyScript/globals';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -14,22 +13,21 @@ export class SoundComponent {
 
     constructor(private ngZone: NgZone, private _gameService: GameService, objectFactory: ObjectFactory) {
         this._game = objectFactory.GetGame();
-        this.watchSounds();
     }
-
-    soundQueue: Map<number, { value: string, playing: boolean}> = new Map<number, { value: string, playing: boolean}>();
 
     getCurrentMusic = (): string => this._gameService.getCurrentMusic();
 
     getSoundQueue = (): { key: number, value: string }[] => {      
-        var queue = Array.from(this.soundQueue.entries()).filter(v => !v[1].playing).map(e => 
+        const soundQueue = this._game.sounds.soundQueue;
+
+        const queue = Array.from(soundQueue.entries()).filter(v => !v[1].playing).map(e => 
         {
             // Use this code outside of the angular change detection to remove sounds that are playing from the list
             // without triggering the ExpressionChangedAfterItHasBeenCheckedError error. I got this solution reading
             // https://medium.com/angular-in-depth/boosting-performance-of-angular-applications-with-manual-change-detection-42cb396110fb.
             this.ngZone.runOutsideAngular(()=>{
                 setTimeout(() => {
-                    this.soundQueue.get(e[0]).playing = true;
+                    soundQueue.get(e[0]).playing = true;
                 }, 0);
             });
 
@@ -39,14 +37,9 @@ export class SoundComponent {
         return queue;
     }
 
-    soundCompleted = (sound: { key: number, value: string }) => this.soundQueue.delete(sound.key);
-
-    watchSounds = () => {
-        this._game.sounds.soundQueue.push = this._game.sounds.soundQueue.push.proxy((originalScope: any, originalFunction: any, sound: string) => {
-            this.soundQueue.set(createHash(sound + Math.floor(Math.random() * 1000)), { value: sound, playing: false });
-
-            // I don't really need this. Clean it up.
-            originalFunction.call(originalScope, sound);
-        })
+    soundCompleted = (sound: { key: number, value: string }) => {
+        const soundQueue = this._game.sounds.soundQueue;
+        soundQueue.get(sound.key).completeCallBack?.();
+        soundQueue.delete(sound.key);
     }
 }

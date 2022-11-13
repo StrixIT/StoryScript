@@ -181,8 +181,8 @@ export interface IGame {
     sounds: {
         startMusic(): void;
         stopMusic(): void;
-        playSound(fileName: string): void;
-        soundQueue: string[];
+        playSound(fileName: string, completeCallBack?: () => void): void;
+        soundQueue: Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>;
     }
 
     /**
