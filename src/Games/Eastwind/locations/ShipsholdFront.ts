@@ -23,6 +23,11 @@ export function ShipsholdFront() {
 		leaveEvents: [
 		],
 		actions: [
+			{
+				text: 'Investigate the shadow',
+				execute: (game: IGame) => {					
+			},
+			}
 		],
 		combatActions: [
 		],
