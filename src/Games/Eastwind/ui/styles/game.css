@@ -24,3 +24,11 @@ font-size: 1.3em; /* 40px/16=2.5em */;
 .combat-win {
    /* Add victory picture here */
 }
+
+.person-name {
+    display: none;
+}
+
+.enemy-picture {
+    height: 300px;;
+}
