@@ -7,6 +7,7 @@ export function Firebolt() {
 		name: 'Firebolt',
 		description: description,
 		equipmentType: EquipmentType.Miscellaneous,
+		useInCombat: true,
 		isSpell: true
 	});
 }

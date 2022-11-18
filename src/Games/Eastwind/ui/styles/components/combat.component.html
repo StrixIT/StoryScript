@@ -16,15 +16,15 @@
     </div>
     <div>
         <ul class="list-unstyled">
-            Spells
+            <span>Spells</span>
             <li *ngFor="let item of game.character.combatItems">
-                <button type="button" class="btn btn-info" (click)="useItem(item)">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
+                <button *ngIf="item.isSpell" type="button" class="btn btn-info" (click)="useItem(item)">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
             </li>
         </ul>
         <ul class="list-unstyled">
-            Items
+            <span>Items</span>
             <li *ngFor="let item of game.character.combatItems">
-                <button type="button" class="btn btn-info" (click)="useItem(item)">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
+                <button *ngIf="!item.isSpell"  type="button" class="btn btn-info" (click)="useItem(item)">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
             </li>
         </ul>
     </div>
