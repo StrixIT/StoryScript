@@ -20,3 +20,7 @@ font-size: 1.3em; /* 40px/16=2.5em */;
     background: linear-gradient(180deg, rgba(223,175,12,1) 0%, rgba(170,122,13,1) 35%, rgba(30,25,8,1) 100%);
     background-size: 100vw 100vh;
 }
+
+.combat-win {
+   /* Add victory picture here */
+}

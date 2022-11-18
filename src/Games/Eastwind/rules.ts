@@ -1,5 +1,9 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { createPromiseForCallback } from 'storyScript/utilities';
+import { Healingpotion } from './items/healingPotion';
+import { ShipsHold } from './locations/ShipsHold';
+import { ShipsHoldAft } from './locations/ShipsHoldAft';
+import { ShipsholdFront } from './locations/ShipsholdFront';
 import { IGame, IEnemy, Character, ILocation } from './types';
 
 export function Rules(): IRules {
@@ -11,7 +15,10 @@ export function Rules(): IRules {
                 ];
             },
             playList:[
-                [GameState.Play, 'underwater.mp3']
+                [GameState.Play, 'underwater.mp3'],
+                [ShipsHold, 'Shipshold.mp3'],
+                [ShipsHoldAft, 'Shipshold.mp3'],
+                [ShipsholdFront, 'Shipshold.mp3']
             ],
             autoBackButton: false
         },
@@ -62,6 +69,7 @@ export function Rules(): IRules {
 
         combat: {     
             fight: (game: IGame, enemy: IEnemy): Promise<void> | void => {
+                game.combatLog.length = 0;
                 var equipment = game.character.equipment;
 
                 if (equipment.rightHand?.attackText) {
@@ -99,10 +107,13 @@ const continueFight = function(game: IGame, enemy: IEnemy, damage: number) {
     }
 
     game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
+        game.logToCombatLog('The ' + enemy.name + ' attacks!');
         var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
         game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
         game.character.currentHitpoints -= damage;
     });
+
+    game.combatLog = game.combatLog.reverse();
 }
 
 const setGradient = function(element: HTMLElement, className: string) {
