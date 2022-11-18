@@ -136,8 +136,10 @@ export function createPromiseForCallback<T>(callBack: Function): { promise: Prom
     let resolveFunc = null;
 
     const promiseCallback = () => { 
-        callBack();
-        resolveFunc?.();
+        var callBackResult = callBack();
+        Promise.resolve(callBackResult).then(() => {
+            resolveFunc?.();
+        });
      }
 
     const promiseFunc = function(resolve, reject) {
@@ -159,8 +161,8 @@ export function wait(timeInMs: number, callBack: Function): Promise<void> {
     return promise;
 }
 
-export function interval(intervalTimeInMs: number, repeat: number, intervalCallback: Function, finalCallback: Function): Promise<void> {
-    const { promise, promiseCallback } = createPromiseForCallback<void>(finalCallback);
+export function interval(intervalTimeInMs: number, repeat: number, intervalCallback: Function, finalCallback?: Function): Promise<void> {
+    const { promise, promiseCallback } = createPromiseForCallback<void>(finalCallback ?? (() => {}));
 
     let count = 0;
 
@@ -170,9 +172,15 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
 
         if (count >= repeat) {
             clearInterval(interval);
-            setTimeout(() => {
+
+            if (finalCallback) {
+                setTimeout(() => {
+                    promiseCallback();
+                }, intervalTimeInMs);
+            }
+            else {
                 promiseCallback();
-            }, intervalTimeInMs);
+            }
         }
     }, intervalTimeInMs);
 
