@@ -1,12 +1,12 @@
 import { IGame, Item } from '../types';
 import { EquipmentType } from 'storyScript/Interfaces/storyScript';
-import description from './healingpotion.html';
+import description from './firebolt.html';
 
-export function Healingpotion() {
+export function Firebolt() {
 	return Item({
-		name: 'Healingpotion',
+		name: 'Firebolt',
 		description: description,
 		equipmentType: EquipmentType.Miscellaneous,
-		useInCombat: true
+		isSpell: true
 	});
 }
