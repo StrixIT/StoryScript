@@ -1,6 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { createPromiseForCallback } from 'storyScript/utilities';
-import { Healingpotion } from './items/healingPotion';
 import { ShipsHold } from './locations/ShipsHold';
 import { ShipsHoldAft } from './locations/ShipsHoldAft';
 import { ShipsholdFront } from './locations/ShipsholdFront';
@@ -98,22 +97,48 @@ export function Rules(): IRules {
     };
 }
 
-const continueFight = function(game: IGame, enemy: IEnemy, damage: number) {
-    game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
-    enemy.hitpoints -= damage;
+const continueFight = function(game: IGame, currentEnemy: IEnemy, damage: number): Promise<void> | void {
+    game.combatLog.push('You do ' + damage + ' damage to the ' + currentEnemy.name + '!');
+    currentEnemy.hitpoints -= damage;
 
-    if (enemy.hitpoints <= 0) {
-        game.logToCombatLog('You defeat the ' + enemy.name + '!');
+    if (currentEnemy.hitpoints <= 0) {
+        game.combatLog.push('You defeat the ' + currentEnemy.name + '!');
     }
 
-    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
-        game.logToCombatLog('The ' + enemy.name + ' attacks!');
-        var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
-        game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
-        game.character.currentHitpoints -= damage;
+    var promise: Promise<void> | void = null;
+
+    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(async enemy => {
+        if (!promise) {
+            promise = enemyAttack(game, enemy);
+        }
+        else {
+            promise = promise.then(() => enemyAttack(game, enemy));
+        }
     });
 
-    game.combatLog = game.combatLog.reverse();
+    return promise;
+}
+
+const enemyAttack = function (game: IGame, enemy: IEnemy): Promise<void> | void {
+    game.combatLog.push(enemy.attackText ?? 'The ' + enemy.name + ' attacks!');
+    
+    var attackSound = enemy.attackSound;
+    var callBack = () => enemyAttacks(game, enemy);
+
+    if (attackSound) {
+        const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
+        game.sounds.playSound(attackSound, promiseCallback);
+        return promise;              
+    }
+    else {
+        callBack();
+    }
+}
+
+const enemyAttacks = function (game: IGame, enemy: IEnemy): Promise<void> | void {
+    var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
+    game.combatLog.push('The ' + enemy.name + ' does ' + damage + ' damage!');
+    game.character.currentHitpoints -= damage;
 }
 
 const setGradient = function(element: HTMLElement, className: string) {
