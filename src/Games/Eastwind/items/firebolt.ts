@@ -1,13 +1,10 @@
-import { IGame, Item } from '../types';
 import { EquipmentType } from 'storyScript/Interfaces/storyScript';
 import description from './firebolt.html';
+import { Spell } from '../interfaces/spell';
 
 export function Firebolt() {
-	return Item({
+	return Spell({
 		name: 'Firebolt',
-		description: description,
-		equipmentType: EquipmentType.Miscellaneous,
-		useInCombat: true,
-		isSpell: true
+		description: description
 	});
 }
