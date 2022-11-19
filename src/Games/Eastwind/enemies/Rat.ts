@@ -5,8 +5,10 @@ export function Rat() {
 	return Enemy({
 		name: 'Rat',
 		description: description,
-		hitpoints: 3,
+		hitpoints: 300,
 		attack:'1d2',
+		attackSound: 'Rat.mp3',
+		attackText: 'The rat attacks!',
 		items: [
 		],
 	});

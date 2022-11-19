@@ -7,6 +7,7 @@
     </default-reply>
     <node name="hello">
         <p></p>
+        <br>
         <p>
 			Vigga turns towards you with a smile. 
 			</p>
@@ -16,7 +17,7 @@
 			</p>
 			<p>Vigga nods towards the adventurers at the bow of the ship.
 			</p>
-			<p>'Those greenhorns.'
+			<p>'Such greenhorns.'
 			Vigga shakes her heard.</p>
 			<p>'They seem to think the pirate attack was 
 			some mayor battle. Nothing but a little skirmish it was.
@@ -37,6 +38,9 @@
             </reply>
             <reply node="No thanks" set-start="return">
                 I think I'll manage.
+            </reply>
+            <reply node="About the ship" set-start="return">
+                Ask about the ship.
             </reply>
         </replies>
     </node>
@@ -89,6 +93,13 @@ Vigga smiles, and then turns back towards the sea.
 	</p> 
 	<p>Vigga turns her back to you, and resumes her looking out 
 	 across the sea.
+        </p>
+    </node>
+    <node name="About the ship">
+        <p>            
+<p>'The talisman?' She is getting to be a bit of an old lady, but she is still the fasted ship I've ever been on. 
+    And she is graceful in a storm, and thoughtful of her crew. Sometimes, you barely notice a strong gale or turbulent waters. 
+    And I've never seen so few accidents or injuries onboard. She is really something special.'
         </p>
     </node>
     <node name="garden">
