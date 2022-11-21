@@ -5,6 +5,8 @@ import { ShipsHoldAft } from './locations/ShipsHoldAft';
 import { ShipsholdFront } from './locations/ShipsholdFront';
 import { IGame, IEnemy, Character, ILocation } from './types';
 
+const combatTimeout: number = 1000;
+
 export function Rules(): IRules {
     return {
         setup: {
@@ -109,14 +111,25 @@ const continueFight = function(game: IGame, currentEnemy: IEnemy, damage: number
 
     game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(async enemy => {
         if (!promise) {
-            promise = enemyAttack(game, enemy);
+            promise = waitPromise();
         }
         else {
-            promise = promise.then(() => enemyAttack(game, enemy));
+            promise = promise.then(() => waitPromise());
         }
+
+        promise = promise.then(() => enemyAttack(game, enemy));
     });
 
     return promise;
+}
+
+const waitPromise = function(): Promise<void>
+{
+    return new Promise<void>(function(resolve) {
+        setTimeout(() => {
+            resolve();
+          }, combatTimeout);
+    });
 }
 
 const enemyAttack = function (game: IGame, enemy: IEnemy): Promise<void> | void {
