@@ -7,22 +7,24 @@
     </default-reply>
     <node name="hello">
         <p>
-			The man turns towards you with a grin, showing several golden teeth.</p>
-<p>'Ahoy there matey, glad to see ye. It's been rather dull up here, with naught but the gulls and the whispers of the sea to keep me company. And little to do either, what with 
+			The man turns towards you with a large grin.</p>
+<p>'Ahoy there matey, glad to see you. It's been rather dull up here, with naught but the gulls and the whispers of the sea to keep me company. And little to do either, what with 
 	the wind doing her hair and washing her clothes apparently, and not showing up do to her wifely duty.'</p>
 <p>The man's grin widens.</p>
-<P>'I've got no fear of pirates, mind ye, not with a mighty warrior like ye around. 
-    By the way, may I interest ye in some fine tobacco? I've wanted to give ye this, 
+<P>'I've got no fear of pirates, mind you, not with a mighty warrior like you around. 
+    By the way, may I interest you in some fine tobacco? I've wanted to give you this, 
 	as a token to remember the 'Talisman' by, and her very fine crew.'</P>
 <p>The man chuckles.</p>
-<p>'Ye might win that little tourney, you see, and mayhaps feel inclined to do some sharing of the spoils.'</p>
-
+<p>'You might win that little tourney, you see, and mayhaps feel inclined to do some sharing of the spoils.'</p>
         <replies>
             <reply node="accept" set-start="return" trigger="givePouch">
                 Accept.
             </reply>
             <reply node="decline" set-start="return">
                 Decline
+            </reply>
+            <reply node="About the ship" set-start="return">
+                Ask about the ship
             </reply>
         </replies>
     </node>
@@ -41,6 +43,15 @@
                 I noticed you seem a bit upset.
             </reply>
         </replies>
+    </node>
+    <node name="About the ship">
+        <p>            
+<p>'My ship? Oh, she's a beauty, isn't she? An older beauty, to be fair, but she has aged like the finest of wines. 
+    And she has seen much adventure, let me tell you, great battles, the most dangerous of storms, the deadliest of sea creatures, 
+    and she has survived it all, and has become the stronger for it, and the more alive, if I might say.'
+    </p>
+     <p>Don't you feel it? When you walk the planks or climb the rigging? Ah, her loving touch. She cares for us, you see, and keeps us safe. 
+        She is my one true love. And I won't ever abandon her, I will go down with her, into the crushing depths if need be.</p>
     </node>
     <node name="accept">
         <p>
