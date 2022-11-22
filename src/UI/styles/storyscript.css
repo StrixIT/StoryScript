@@ -74,7 +74,12 @@ button {
     display: inline-block;
 }
 
-#conversation-history {
+#conversation-history-title {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#conversation-history ul {
     max-height: 400px;
     overflow-y: scroll;
 }
