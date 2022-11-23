@@ -1,5 +1,10 @@
 html {
-    background-color: rgba(0,14,255,1);
+    min-height: 100%;
+}
+
+
+body {
+    min-height: 100%;
 }
 
 h1 {
@@ -10,9 +15,9 @@ h1 {
 }
 
 .box-container {
-color: black;
-font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-font-size: 1.3em; /* 40px/16=2.5em */;
+    color: black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 1.3em; /* 40px/16=2.5em */;
 }
 
 .modal-dialog {
