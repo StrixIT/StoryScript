@@ -34,7 +34,7 @@ export class BackpackComponent {
     
     equipItem = (item: IItem): boolean => this._characterService.equipItem(item);
 
-    useItem = (item: IItem): void => this._gameService.useItem(item);
+    useItem = (item: IItem): Promise<void> | void => this._gameService.useItem(item);
 
     canDropItems = (): boolean => this._sharedMethodService.useGround;
 
