@@ -17,6 +17,7 @@ export class CombatComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
+    actionsEnabled: boolean = true;
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
 
@@ -24,7 +25,13 @@ export class CombatComponent {
 
     executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this); 
 
-    fight = (enemy: IEnemy): void => this._sharedMethodService.fight(this.game, enemy);
+    fight = (enemy: IEnemy): void => { 
+        this.actionsEnabled = false;
+
+        Promise.resolve(this._sharedMethodService.fight(this.game, enemy)).then(() => {
+            this.actionsEnabled = true;
+        }); 
+    }
     
     useItem = (item: IItem): void => this._gameService.useItem(item);
 }

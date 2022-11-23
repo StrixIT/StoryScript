@@ -3,13 +3,13 @@
         <div>
             <ul class="list-unstyled" *ngIf="game.currentLocation.activeEnemies.length > 0">
                 <li *ngFor="let enemy of game.currentLocation.activeEnemies">
-                    <button type="button" class="btn btn-danger" (click)="fight(enemy)">{{ texts.format(texts.attack, [enemy.name]) }}</button>
+                    <button type="button" class="btn btn-danger" (click)="fight(enemy)" [disabled]="!actionsEnabled">{{ texts.format(texts.attack, [enemy.name]) }}</button>
                     <img src="{{ enemy.picture }}" *ngIf="enemy.picture" />
                 </li>
             </ul>
             <ul class="list-unstyled">
                 <li *ngFor="let action of game.currentLocation.combatActions">
-                    <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)">{{ action.text }}</button>
+                    <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="!actionsEnabled">{{ action.text }}</button>
                 </li>
             </ul>
         </div>
@@ -18,13 +18,13 @@
         <ul class="list-unstyled">
             <span>Spells</span>
             <li *ngFor="let item of game.character.combatItems">
-                <button *ngIf="item.isSpell" type="button" class="btn btn-info" (click)="useItem(item)">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
+                <button *ngIf="item.isSpell" type="button" class="btn btn-info" (click)="useItem(item)" [disabled]="!actionsEnabled">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
             </li>
         </ul>
         <ul class="list-unstyled">
             <span>Items</span>
             <li *ngFor="let item of game.character.combatItems">
-                <button *ngIf="!item.isSpell"  type="button" class="btn btn-info" (click)="useItem(item)">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
+                <button *ngIf="!item.isSpell"  type="button" class="btn btn-info" (click)="useItem(item)" [disabled]="!actionsEnabled">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
             </li>
         </ul>
     </div>

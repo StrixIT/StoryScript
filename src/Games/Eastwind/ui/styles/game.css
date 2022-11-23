@@ -32,3 +32,7 @@ font-size: 1.3em; /* 40px/16=2.5em */;
 .enemy-picture {
     height: 300px;;
 }
+
+#conversation-history {
+    display: none;
+}

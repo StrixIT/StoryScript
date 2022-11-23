@@ -11,12 +11,14 @@
     <div *ngIf="!game.person.conversation.activeNode">
         Your conversation has ended.
     </div>
-    <hr />
-    <strong>Conversation history</strong>
-    <ul class="list-unstyled" id="conversation-history">
-        <li *ngFor="let entry of game.person.conversation.conversationLog">
-            <div class="conversation-lines" [innerHTML]="entry.lines | safe: 'html'"></div>
-            <div class="conversation-option" [innerHTML]="entry.reply | safe: 'html'"></div>
-        </li>
-    </ul>
+    <div id="conversation-history">
+        <hr />
+        <p id="conversation-history-title">Conversation history</p>
+        <ul class="list-unstyled">
+            <li *ngFor="let entry of game.person.conversation.conversationLog">
+                <div class="conversation-lines" [innerHTML]="entry.lines | safe: 'html'"></div>
+                <div class="conversation-option" [innerHTML]="entry.reply | safe: 'html'"></div>
+            </li>
+        </ul>
+    </div>
 </div>

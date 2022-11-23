@@ -247,7 +247,7 @@ export class GameService implements IGameService {
         this._game.playState = PlayState.Combat;
     }
 
-    fight = (enemy: IEnemy, retaliate?: boolean) => {
+    fight = (enemy: IEnemy, retaliate?: boolean): Promise<void> | void => {
         if (!this._rules.combat || !this._rules.combat.fight)
         {
             return;
@@ -255,7 +255,7 @@ export class GameService implements IGameService {
 
         var promise = this._rules.combat.fight(this._game, enemy, retaliate);
 
-        Promise.resolve(promise).then(() => {
+        return Promise.resolve(promise).then(() => {
             if (enemy.hitpoints <= 0) {
                 this.enemyDefeated(enemy);
             }

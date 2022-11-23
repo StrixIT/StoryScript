@@ -67,8 +67,8 @@ export class SharedMethodService {
         this._gameService.initCombat();
     }
 
-    fight = (game: IGame, enemy: IEnemy): void => {
-        this._gameService.fight(enemy);
+    fight = (game: IGame, enemy: IEnemy): Promise<void> | void => {
+        return this._gameService.fight(enemy);
     }
 
     getButtonClass = (action: IAction): string => {
