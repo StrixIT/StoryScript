@@ -1,4 +1,5 @@
 ﻿import { IFeature } from './feature';
+import { IEnemy } from './enemy';
 import { IGame } from './game';
 import { EquipmentType } from './enumerations/equipmentType';
 
@@ -53,9 +54,10 @@ export interface IItem extends IFeature {
 
     /**
      * When specified, this item can be used and a use action becomes available on the item. The function will be executed when the player
-     * executes this action.
+     * executes this action. Return a promise if the result should be awaited.
      * @param game The game object
      * @param item The item to use
+     * @param target The target to use the item on, if any
      */
-    use?(game: IGame, item: IItem): void
+    use?(game: IGame, item: IItem, target?: IEnemy): Promise<void> | void;
 }

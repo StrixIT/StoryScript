@@ -33,5 +33,11 @@ export class CombatComponent {
         }); 
     }
     
-    useItem = (item: IItem): void => this._gameService.useItem(item);
+    useItem = (item: IItem, target?: IEnemy): void => {
+        this.actionsEnabled = false;
+
+        Promise.resolve(this._gameService.useItem(item, target)).then(() => {
+            this.actionsEnabled = true;
+        }); 
+    }
 }

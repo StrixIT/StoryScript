@@ -269,21 +269,23 @@ export class GameService implements IGameService {
         });
     }
 
-    useItem = (item: IItem): void => {
+    useItem = (item: IItem, target?: IEnemy): Promise<void> | void => {
         var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, item) && item.use) ?? item.use;
 
         if (useItem) {
-            item.use(this._game, item);
+            var promise = item.use(this._game, item, target);
 
-            if (item.charges !== undefined) {
-                if (!isNaN(item.charges)) {
-                    item.charges--;
+            return Promise.resolve(promise).then(() => {
+                if (item.charges !== undefined) {
+                    if (!isNaN(item.charges)) {
+                        item.charges--;
+                    }
+            
+                    if (item.charges <= 0) {
+                        removeItemFromItemsAndEquipment(this._game.character, item);
+                    }
                 }
-        
-                if (item.charges <= 0) {
-                    removeItemFromItemsAndEquipment(this._game.character, item);
-                }
-            }
+            });
         }
     }
 
