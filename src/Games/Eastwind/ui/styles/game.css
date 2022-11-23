@@ -11,6 +11,10 @@ font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 font-size: 1.3em; /* 40px/16=2.5em */;
 }
 
+.modal-dialog {
+    max-width: 70%;
+}
+
 .gradient-ship-outside {
     background: linear-gradient(180deg, rgba(245,255,0,1) 0%, rgba(16,215,235,1) 50%, rgba(0,14,255,1) 100%);
     background-size: 100vw 100vh;
@@ -30,7 +34,36 @@ font-size: 1.3em; /* 40px/16=2.5em */;
 }
 
 .enemy-picture {
-    height: 300px;;
+    height: 300px;
+}
+
+#combat .btn, .combat-actions ul, .combat-actions li, .combat-actions span, .combat-actions button {
+    float: left;
+}
+
+#combat .btn {
+    margin-right: 80px;
+}
+
+#combat .btn, .combat-actions li, .combat-actions button {
+    margin-left: 20px;
+}
+
+.combat-actions span {
+    display: inline-block;
+    line-height: 50px;
+}
+
+.combat-overview-enemies, .combatlog {
+    float: left;
+}
+
+.combatlog {
+    min-width: 300px;
+}
+
+.combat-overview-enemies {
+    margin-left: 50px;
 }
 
 #conversation-history {
