@@ -14,6 +14,7 @@ export function ShipsHoldAft() {
 		items: [
 		],
 		enemies: [
+			Rat(),
 			Rat()
 		],
 		persons: [
