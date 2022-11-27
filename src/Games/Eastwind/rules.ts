@@ -1,26 +1,42 @@
-﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
-import { createPromiseForCallback } from 'storyScript/utilities';
+﻿import { StateList } from 'storyScript/Interfaces/stateList';
+import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
+import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
+import { ShipBow } from './locations/ShipBow';
+import { Shipsdeck } from './locations/shipsdeck';
 import { ShipsHold } from './locations/ShipsHold';
 import { ShipsHoldAft } from './locations/ShipsHoldAft';
 import { ShipsholdFront } from './locations/ShipsholdFront';
+import { ShipStern } from './locations/shipStern';
+import { Start } from './locations/start';
 import { IGame, IEnemy, Character, ILocation } from './types';
 
 const combatTimeout: number = 1000;
 
+const locationGradients = <StateList>{
+    'gradient-ship-outside': [
+        Start, Shipsdeck, ShipStern, ShipBow
+    ],
+    'gradient-ship-inside': [
+        ShipsHold, ShipsholdFront, ShipsHoldAft
+    ]
+};
+
 export function Rules(): IRules {
     return {
         setup: {
+            intro: true,
             getCombinationActions: (): ICombinationAction[] => {
                 return [
                     // Add combination action names here if you want to use this feature.
                 ];
             },
-            playList:[
-                [GameState.Play, 'underwater.mp3'],
-                [ShipsHold, 'Shipshold.mp3'],
-                [ShipsHoldAft, 'Shipshold.mp3'],
-                [ShipsholdFront, 'Shipshold.mp3']
-            ],
+            playList: {
+                'underwater.mp3': [GameState.Play],
+                'Shipshold.mp3':
+                [
+                    ShipsHold, ShipsHoldAft,ShipsholdFront
+                ],
+            },
             autoBackButton: false
         },
 
@@ -54,14 +70,16 @@ export function Rules(): IRules {
 
         exploration: {
             enterLocation: (game: IGame, location: ILocation, travel?: boolean) => {
-                if (location.background_class) {
+                var gradientClass = selectStateListEntry(game, locationGradients);
+
+                if (gradientClass) {
                     // When refreshing the page, the UIRootElement is not yet on the game so use a timeout.
                     if (game.UIRootElement) {
-                        setGradient(game.UIRootElement, location.background_class);
+                        setGradient(game.UIRootElement, gradientClass);
                     }
                     else {
                         setTimeout(() => {
-                            setGradient(game.UIRootElement, location.background_class);
+                            setGradient(game.UIRootElement, gradientClass);
                         });
                     }
                 }

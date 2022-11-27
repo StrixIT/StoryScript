@@ -7,7 +7,6 @@ export function Location(entity: ILocation): ILocation  {
 
 export interface ILocation extends StoryScriptILocation {
     // Add game-specific location properties here
-    background_class?: string;
 }
 
 export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {
