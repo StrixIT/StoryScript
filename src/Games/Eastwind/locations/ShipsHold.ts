@@ -7,7 +7,6 @@ export function ShipsHold() {
 	return Location({
 		name: 'ShipsHold',
 		description: description,
-		background_class: 'gradient-ship-inside',
 		destinations: [
 			{
 				name: 'Go to the aft of the hold',

@@ -7,7 +7,6 @@ export function Shipsdeck() {
 	return Location({
 		name: 'Shipsdeck',
 		description: description,
-		background_class: 'gradient-ship-outside',
 		destinations: [  
       {
         name: 'Go to the back of the ship',

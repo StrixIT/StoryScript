@@ -11,7 +11,6 @@ export function Start() {
     return Location({
         name: 'Start',
         description: description,
-        background_class: 'gradient-ship-outside',
         destinations: [
           {
             name: 'Look around',
