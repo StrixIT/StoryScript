@@ -22,8 +22,9 @@ import { IBarrierAction } from '../Interfaces/barrierAction';
 import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
-import { compareString, createHash } from '../globals';
+import { createHash } from '../globals';
 import { IFeature } from '../Interfaces/feature';
+import { selectStateListEntry } from 'storyScript/utilities';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -297,39 +298,11 @@ export class GameService implements IGameService {
     }
 
     getCurrentMusic = (): string => {
-        if (this._musicStopped || this._rules.setup.playList?.length === undefined) {
+        if (this._musicStopped || Object.keys(this._rules.setup.playList)?.length === undefined) {
             return null;
         }
 
-        // Evaluate custom functions first.
-        var customFunctions = this._rules.setup.playList.filter(e => typeof e[0] === 'function' && (<string>e[1]).trim() === '').map(e => e[0]);
-        let result = null;
-
-        for (var n in customFunctions) {
-            result = (<((game: IGame) => string)><unknown>customFunctions[n])(this._game);
-
-            if (result) {
-                return result;
-            }
-        }
-
-        // Next, get the entries in this order: Location, PlayState, GameState.
-        var currentEntry = this._rules.setup.playList
-                            .map(e => {
-                                (<any>e).order = e[0] === this._game.state ? 3 
-                                                : e[0] === this._game.playState ? 2 
-                                                : compareString((<Function>e[0]).name, this._game.currentLocation?.id) ? 1 
-                                                : 0;
-                                return e;
-                            })
-                            .filter(e => (<any>e).order > 0)
-                            .sort((a, b) => (<any>a).order - (<any>b).order)[0];
-        
-        if (currentEntry) {
-            return <string>currentEntry[1];
-        }
-
-        return result;
+        return selectStateListEntry(this._game, this._rules.setup.playList);
     }
 
     startMusic = (): boolean => this._musicStopped = false;

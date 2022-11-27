@@ -4,10 +4,10 @@ import { IGame, IEnemy, Character } from './types';
 export function Rules(): IRules {
     return {
         setup: {
-            playList: [
-                // [GameState.CreateCharacter, 'createCharacter.mp3'],
-                // [GameState.Play, 'play.mp3']
-            ],
+            playList: {
+                // 'createCharacter.mp3': [GameState.CreateCharacter],
+                // 'play.mp3': [GameState.Play]
+            },
 
             intro: false,
         },
