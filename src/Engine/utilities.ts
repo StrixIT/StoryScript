@@ -1,6 +1,7 @@
 ﻿import { IDefinitions } from './Interfaces/definitions';
 import { compareString } from './globals';
-import { IGame } from './Interfaces/storyScript';
+import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
+import { StateList, StateListEntry } from './Interfaces/stateList';
 
 export function getPlural(name: string): string {
     return name.endsWith('y') ? 
@@ -45,7 +46,7 @@ export function random<T>(type: string, definitions: IDefinitions, selector?: (i
         return null;
     }
 
-    var selection = getFilteredInstantiatedCollection<T>(collection, type, definitions, selector);
+    var selection = getFilteredInstantiatedCollection<T>(collection, selector);
 
     if (selection.length == 0) {
         return null;
@@ -56,7 +57,7 @@ export function random<T>(type: string, definitions: IDefinitions, selector?: (i
 }
 
 export function randomList<T>(collection: T[] | ([() => T]), count: number, type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T[] {
-    var selection = getFilteredInstantiatedCollection<T>(collection, type, definitions, selector);
+    var selection = getFilteredInstantiatedCollection<T>(collection, selector);
     var results = <T[]>[];
 
     if (count === undefined) {
@@ -187,7 +188,47 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
     return promise;
 }
 
-function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], type: string, definitions: IDefinitions, selector?: (item: T) => boolean) {
+export function selectStateListEntry(game: IGame, stateList: StateList) {
+            // Evaluate custom functions first.
+            var customFunctions = stateList[''];
+            let result = null;
+    
+            for (var n in customFunctions) {
+                result = (<((game: IGame) => string)><unknown>customFunctions[n])(game);
+    
+                if (result) {
+                    return result;
+                }
+            }
+    
+            // Next, get the entries in this order: Location, PlayState, GameState.
+            var filteredEntries = Object.keys(stateList)
+                                    .map(e => mapPlaylistEntries(game, e, stateList[e]))
+                                    .filter(e => e);
+            
+            result = filteredEntries.map(e => selectCandidate(game, e.key, e.item))
+                .filter(i => i.order > 0)
+                .sort((a, b) => a.order - b.order)[0];
+    
+            return result?.key;
+}
+
+function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
+    return entry.map(i => selectCandidate(game, key, i))
+        .filter(i => i.order > 0)
+        .sort((a, b) => a.order - b.order)[0];
+}
+
+function selectCandidate(game: IGame, key: string, item: (GameState | PlayState | (() => ILocation) | ((game: IGame) => string) | string)) {
+    var order = item === game.state ? 3 
+    : item ===  game.playState ? 2 
+    : compareString((<Function>item)?.name, game.currentLocation?.id) ? 1 
+    : 0;
+
+    return { key, item, order };
+}
+
+function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], selector?: (item: T) => boolean) {
     var collectionToFilter = <T[]>[]
 
     if (typeof collection[0] === 'function') {
