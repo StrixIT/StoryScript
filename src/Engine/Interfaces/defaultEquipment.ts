@@ -1,6 +1,10 @@
 import { IEquipment } from './equipment';
 import { IItem } from './item';
 
+/**
+ * This class is for internal StoryScript use only, to determine which equipment slots belong
+ * to the default ones and which are custom for a game.
+ */
 export class DefaultEquipment implements IEquipment {
     constructor() {
         this.head = null;
@@ -15,7 +19,6 @@ export class DefaultEquipment implements IEquipment {
         this.feet = null;
     }
 
-    // Remove the slots you don't want to use
     head: IItem;
     amulet: IItem;
     body: IItem;
