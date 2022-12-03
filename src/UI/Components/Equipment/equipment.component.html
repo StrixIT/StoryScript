@@ -66,5 +66,15 @@
                 </div>
             </div>
         </div>
+        <div class="row" *ngFor="let slot of customSlots()">
+            <div class="col-12">
+                <div>
+                    {{ slot }}
+                </div>
+                <div class="item-box" (click)="unequipItem(game.character.equipment[slot])">
+                    {{ game.character.equipment[slot]?.name }}
+                </div>
+            </div>
+        </div>
     </div>
 </div>

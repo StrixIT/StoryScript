@@ -13,6 +13,7 @@ import { ICharacter } from './Interfaces/character';
 import { createFunctionHash } from './globals';
 import { ICombinable } from './Interfaces/combinations/combinable';
 import { ICombine } from './Interfaces/combinations/combine';
+import { IEquipment } from './Interfaces/equipment';
 
 // This flag indicates whether the registration phase is active.
 let _registration: boolean = true;
@@ -408,16 +409,12 @@ function setReadOnlyLocationProperties(location: ILocation) {
 function setReadOnlyCharacterProperties(character: ICharacter) {
     Object.defineProperty(character, 'combatItems', {
         get: function () {
-            var result = character.items.filter(e => { return e.useInCombat; });
+            var result = character.items.filter(i => { return canUseInCombat(i.useInCombat, i, character.equipment); });
 
             for (var n in character.equipment) {
                 var item = <IItem>character.equipment[n];
 
-                if (item?.useInCombat) {
-                    if (!item.use) {
-                        console.log(`Item ${item.name} declares it can be used in combat but has no use function.`)
-                    }
-
+                if (item && canUseInCombat(item.useInCombat, item, character.equipment)) {
                     result.push(item);
                 }
             }
@@ -425,6 +422,16 @@ function setReadOnlyCharacterProperties(character: ICharacter) {
             return result;
         }
     });
+}
+
+function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEquipment) => boolean), item, equipment) {
+    var canUse = (typeof flagOrFunction === "function") ? flagOrFunction(item, equipment) : flagOrFunction;
+
+    if (canUse && !item.use) {
+        console.log(`Item ${item.name} declares it can be used in combat but has no use function.`)
+    }
+
+    return canUse;
 }
 
 function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {

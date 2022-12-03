@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
+import { DefaultEquipment, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
@@ -25,5 +25,11 @@ export class EquipmentComponent {
 
     isSlotUsed = (slot: string): boolean => {
         return this._characterService.isSlotUsed(slot);
+    }
+
+    customSlots = () => {
+        var defaultSlots = Object.keys(new DefaultEquipment());
+        var customSlots = Object.keys(this.game.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
+        return customSlots;
     }
 }

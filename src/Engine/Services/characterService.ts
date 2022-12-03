@@ -353,7 +353,7 @@ export class CharacterService implements ICharacterService {
                 }
             }
 
-            if (equippedItem && !isNaN(equippedItem.equipmentType) && !this._game.character.items.get(equippedItem)) {
+            if (equippedItem && equippedItem.equipmentType && !this._game.character.items.get(equippedItem)) {
                 this._game.character.items.push(equippedItem);
             }
 
@@ -363,8 +363,8 @@ export class CharacterService implements ICharacterService {
         return true;
     }
 
-    private getEquipmentType = (slot: EquipmentType): string => {
-        var type = EquipmentType[slot];
+    private getEquipmentType = (slot: EquipmentType | string): string => {
+        var type = EquipmentType[slot] ?? slot;
         return type.substring(0, 1).toLowerCase() + type.substring(1);
     }
 
