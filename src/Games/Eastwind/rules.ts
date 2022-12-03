@@ -100,21 +100,24 @@ export function Rules(): IRules {
                 }
 
                 var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
-                var callBack = () => continueFight(game, enemy, damage);
-
                 var attackSound = equipment.rightHand?.attackSound ?? equipment.leftHand?.attackSound;
-
-                if (attackSound) {
-                    const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
-                    game.sounds.playSound(attackSound, promiseCallback);
-                    return promise;              
-                }
-                else {
-                    callBack();
-                }
+                return fight(game, enemy, attackSound, damage);
             }
         }
     };
+}
+
+export function fight(game: IGame, enemy: IEnemy, attackSound: string, damage: number): Promise<void> | void {
+    var callBack = () => continueFight(game, enemy, damage);
+
+    if (attackSound) {
+        const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
+        game.sounds.playSound(attackSound, promiseCallback);
+        return promise;              
+    }
+    else {
+        callBack();
+    }
 }
 
 const continueFight = function(game: IGame, currentEnemy: IEnemy, damage: number): Promise<void> | void {
