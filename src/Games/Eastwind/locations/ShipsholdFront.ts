@@ -25,7 +25,8 @@ export function ShipsholdFront() {
 		actions: [
 			{
 				text: 'Investigate the shadow',
-				execute: (game: IGame) => {					
+				execute: (game: IGame) => {	
+					game.currentLocation.description = game.currentLocation.descriptions['investigate-shadow'];
 			},
 			}
 		],
