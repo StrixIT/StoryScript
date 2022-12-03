@@ -3,6 +3,8 @@ import { IRules } from './rules/rules'
 import { IGame } from './game'
 import { ICollection } from './collection'
 import { ICharacter } from './character'
+import { IEquipment } from './equipment'
+import { DefaultEquipment } from './defaultEquipment'
 import { IAction } from './action'
 import { IFeature } from './feature'
 import { IFeatureCollection } from './featureCollection'
@@ -48,6 +50,8 @@ export {
     IRules, 
     IGame, 
     ICharacter,
+    IEquipment,
+    DefaultEquipment,
     IAction,
     Action, 
     IItem, 
