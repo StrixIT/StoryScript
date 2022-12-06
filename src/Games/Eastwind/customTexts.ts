@@ -5,7 +5,7 @@ export function CustomTexts(): IInterfaceTexts {
         // Add your custom texts here.
         youAreHere: 'Ship\'s deck',
         gameName: 'Eastwind', 
-    	combatWin: 'Gewonnen!'
-    
+    	combatWin: 'Gewonnen!',
+        skipIntro: 'Start the game'
     };
 }
