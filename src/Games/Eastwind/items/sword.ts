@@ -6,7 +6,7 @@ export function Sword() {
 	return Item({
 		name: 'Sword',
 		description: description,
-		equipmentType: EquipmentType.Miscellaneous,
+		equipmentType: EquipmentType.RightHand,
 		attackText: 'You swing your sword',
 		attackSound: 'swing3.wav'
 	});
