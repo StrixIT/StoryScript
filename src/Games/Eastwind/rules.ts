@@ -1,6 +1,7 @@
 ﻿import { StateList } from 'storyScript/Interfaces/stateList';
 import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
+//import { Class } from './interfaces/class';
 import { ShipBow } from './locations/ShipBow';
 import { Shipsdeck } from './locations/shipsdeck';
 import { ShipsHold } from './locations/ShipsHold';
@@ -18,6 +19,9 @@ const locationGradients = <StateList>{
     ],
     'gradient-ship-inside': [
         ShipsHold, ShipsholdFront, ShipsHoldAft
+    ],
+    'gradient-intro': [
+        GameState.Intro
     ]
 };
 
@@ -58,13 +62,256 @@ export function Rules(): IRules {
             getCreateCharacterSheet: (): ICreateCharacter => {
                 return {
                     steps: [
-                        // Add the character creation steps here, if you want to use character creation.
+                        {
+                            attributes: [
+                                {
+                                    question: 'What is your name?',
+                                    entries: [
+                                        {
+                                            attribute: 'name'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'Do you wish to choose your class manually, or answer questions to determine your path?',
+                                    entries: [
+                                        {
+                                            text: 'Choose my class',
+                                            value: '2'
+                                        },
+                                        {
+                                            text: 'Answer Questions',
+                                            value: '3'
+                                        }
+                                    ]
+                                }
+                            ],
+                            nextStepSelector: (character, currentStep) => {
+                                switch (currentStep.questions[0].selectedEntry.value) {
+                                    case '2': {
+                                        return 2;
+                                    };
+                                    case '3': {
+                                        return 3;
+                                    };
+                                    default: {
+                                        return 0;
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'Choose your class',
+                                    entries: [
+                                        {
+                                            text: 'Rogue',
+                                            value: 'rogue'
+                                        },
+                                        {
+                                            text: 'Warrior',
+                                            value: 'warrior'
+                                        },
+                                        {
+                                            text: 'Wizard',
+                                            value: 'wizard'
+                                        }
+                                    ]
+                                }
+                            ],
+                            nextStepSelector: 9
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'You witness the village bully pestering a little child. Do you:',
+                                    entries: [
+                                        {
+                                            text: 'Challenge him to try on someone his own size, namely you?',
+                                            value: 'warrior',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Try to sneak up on him and trip him, making him fall into a puddle of mud?',
+                                            value: 'rogue',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Try to talk to him and show him the error of his ways?',
+                                            value: 'wizard',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'Your grandfather has been telling you stories of the gods of the old homeland. Stories of the mighty Thor, the wise Odin and the clever Loki. He promises to teach you a prayer to one of the gods to invoke his blessing. Which god do you choose?',
+                                    entries: [
+                                        {
+                                            text: 'Thor, the god of storms and lightning, the destroyer of giants.',
+                                            value: 'warrior',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Loki, the god of trickery and deceit, the troublemaker.',
+                                            value: 'rogue',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Odin, the god of wisdom and insight, the Allfather.',
+                                            value: 'wizard',
+                                            bonus: 1
+                                        },
+
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'A wolf has been ravaging the flocks of sheep of your village. Do you:',
+                                    entries: [
+                                        {
+                                            text: 'Go out and hunt the beast?',
+                                            value: 'warrior',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Set a devious trap?',
+                                            value: 'rogue',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Design and build a new fence to keep the wolf and future predators out?',
+                                            value: 'wizard',
+                                            bonus: 1
+                                        },
+
+                                    ]
+                                }
+                            ]
+                        },
+
+                        {
+                            questions: [
+                                {
+                                    question: 'Your village holds the yearly Harvest festival, which has many games. Do you:',
+                                    entries: [
+                                        {
+                                            text: 'Participate in the Wrestling contest? ',
+                                            value: 'warrior',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Participate in the Archery contest?',
+                                            value: 'rogue',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Participate in the Puzzle contest?',
+                                            value: 'wizard',
+                                            bonus: 1
+                                        },
+
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'An item of great importance to your village has been stolen from the house of the mayor. The local magistrate has identified several suspects, but his questioning so far has led to no results. You think you could do better, and if it where up to you, would you:',
+                                    entries: [
+                                        {
+                                            text: 'Use strength and intimidation to get some answers.',
+                                            value: 'warrior',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Use stealth to follow the movements of the suspects, and agility to enter their houses undetected and search for clues.',
+                                            value: 'rogue',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Use deduction and reasoning to get to the truth.',
+                                            value: 'wizard',
+                                            bonus: 1
+                                        },
+
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            questions: [
+                                {
+                                    question: 'You are in love with the most beautiful girl in the village. But you are not the only one. One of your competitors has written a striking poem, and you know the girl loves poetry. Do you:',
+                                    entries: [
+                                        {
+                                            text: 'Ignore the poetry and try to impress the girl with a show of strength?',
+                                            value: 'warrior',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Try to steal his poem and pass it off as you own?',
+                                            value: 'rogue',
+                                            bonus: 1
+                                        },
+                                        {
+                                            text: 'Try to write an even better poem?',
+                                            value: 'wizard',
+                                            bonus: 1
+                                        }
+                                    ]
+                                }
+                            ],
+                            nextStepSelector: 9
+                        }
                     ]
                 };
             },
 
             createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
                 var character = new Character();
+
+                var characterClass = characterData.steps[2].questions[0].selectedEntry.value;
+
+                switch (characterClass) {
+                    case 'warrior': {
+                        character.strength = 3;
+                        character.agility = 1;
+                        character.intelligence = 1;
+                        //character.class = Class.Warrior;
+                    }; break;
+                    case 'rogue': {
+                        character.strength = 1;
+                        character.agility = 3;
+                        character.intelligence = 1;
+                        //character.class = Class.Rogue;
+                    }; break;
+                    case 'wizard': {
+                        character.strength = 1;
+                        character.agility = 1;
+                        character.intelligence = 3;
+                        //character.class = Class.Wizard;
+                    }; break;
+                }
+
+                var weaponStep = characterData.steps[characterData.steps.length - 2];
+                var chosenItem = weaponStep.questions[0].selectedEntry;
+                character.items.push(game.helpers.getItem(chosenItem.value));
+
+                game.worldProperties.startLocation = characterData.steps[characterData.steps.length - 1].questions[0].selectedEntry.value;
+
                 return character;
             }
         },
