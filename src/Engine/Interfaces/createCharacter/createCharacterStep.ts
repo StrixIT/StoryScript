@@ -7,12 +7,9 @@ import { ICreateCharacterAttribute } from './createCharacterAttribute';
  */
 export interface ICreateCharacterStep {
     /**
-     * A function that executes when the step is to be displayed to the player.
-     * @param character The character sheet filled in so far
-     * @param previousStep The step just completed by the player
-     * @param currentStep The step about to be shown to the player
+     * The text describing this step in the creation process to the player.
      */
-    initStep?(character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep): void;
+    description?: string;
 
     /**
      * The questions to show as part of this step.
@@ -40,4 +37,12 @@ export interface ICreateCharacterStep {
      * This allows building a branched character creation process.
      */
     finish?: boolean;
+
+        /**
+     * A function that executes when the step is to be displayed to the player.
+     * @param character The character sheet filled in so far
+     * @param previousStep The step just completed by the player
+     * @param currentStep The step about to be shown to the player
+     */
+    initStep?(character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep): void;
 }
