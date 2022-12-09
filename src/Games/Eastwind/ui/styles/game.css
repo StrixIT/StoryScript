@@ -25,7 +25,7 @@ h1 {
 }
 
 .gradient-ship-outside {
-    background: linear-gradient(180deg, rgba(245,255,0,1) 0%, rgba(16,215,235,1) 50%, rgba(0,14,255,1) 100%);
+    background: linear-gradient(180deg, rgba(255,235,0,1) 10%, rgba(0,130,205,1) 50%, rgba(200,150,5,1) 100%);
 }
 
 .gradient-ship-inside {
