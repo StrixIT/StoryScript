@@ -220,9 +220,12 @@ function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
 }
 
 function selectCandidate(game: IGame, key: string, item: (GameState | PlayState | (() => ILocation) | ((game: IGame) => string) | string)) {
+    const functionName = (<Function>item)?.name;
+    const currentLocationId = game.currentLocation?.id;
+
     var order = item === game.state ? 3 
     : item ===  game.playState ? 2 
-    : compareString((<Function>item)?.name, game.currentLocation?.id) ? 1 
+    : functionName && currentLocationId && compareString(functionName, currentLocationId) ? 1 
     : 0;
 
     return { key, item, order };
