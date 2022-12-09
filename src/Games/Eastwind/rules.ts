@@ -1,7 +1,7 @@
 ﻿import { StateList } from 'storyScript/Interfaces/stateList';
 import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
-//import { Class } from './interfaces/class';
+import { Class } from './interfaces/class';
 import { ShipBow } from './locations/ShipBow';
 import { Shipsdeck } from './locations/shipsdeck';
 import { ShipsHold } from './locations/ShipsHold';
@@ -26,6 +26,7 @@ const locationGradients = <StateList>{
 };
 
 export function Rules(): IRules {
+
     return {
         setup: {
             intro: true,
@@ -90,7 +91,7 @@ export function Rules(): IRules {
                                     ]
                                 }
                             ],
-                            nextStepSelector: (character, currentStep) => {
+                            nextStepSelector: (_, currentStep) => {
                                 switch (currentStep.questions[0].selectedEntry.value) {
                                     case '2': {
                                         return 2;
@@ -110,20 +111,20 @@ export function Rules(): IRules {
                                     question: 'Choose your class',
                                     entries: [
                                         {
-                                            text: 'Rogue',
-                                            value: 'rogue'
+                                            text: Class.Rogue,
+                                            value: Class.Rogue
                                         },
                                         {
-                                            text: 'Warrior',
-                                            value: 'warrior'
+                                            text: Class.Warrior,
+                                            value: Class.Warrior
                                         },
                                         {
-                                            text: 'Wizard',
-                                            value: 'wizard'
+                                            text: Class.Wizard,
+                                            value: Class.Wizard
                                         }
                                     ]
                                 }
-                            ],
+                            ],          
                             nextStepSelector: 9
                         },
                         {
@@ -133,17 +134,17 @@ export function Rules(): IRules {
                                     entries: [
                                         {
                                             text: 'Challenge him to try on someone his own size, namely you?',
-                                            value: 'warrior',
+                                            value: Class.Warrior,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Try to sneak up on him and trip him, making him fall into a puddle of mud?',
-                                            value: 'rogue',
+                                            value: Class.Rogue,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Try to talk to him and show him the error of his ways?',
-                                            value: 'wizard',
+                                            value: Class.Wizard,
                                             bonus: 1
                                         }
                                     ]
@@ -157,17 +158,17 @@ export function Rules(): IRules {
                                     entries: [
                                         {
                                             text: 'Thor, the god of storms and lightning, the destroyer of giants.',
-                                            value: 'warrior',
+                                            value: Class.Warrior,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Loki, the god of trickery and deceit, the troublemaker.',
-                                            value: 'rogue',
+                                            value: Class.Rogue,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Odin, the god of wisdom and insight, the Allfather.',
-                                            value: 'wizard',
+                                            value: Class.Wizard,
                                             bonus: 1
                                         },
 
@@ -182,17 +183,17 @@ export function Rules(): IRules {
                                     entries: [
                                         {
                                             text: 'Go out and hunt the beast?',
-                                            value: 'warrior',
+                                            value: Class.Warrior,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Set a devious trap?',
-                                            value: 'rogue',
+                                            value: Class.Rogue,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Design and build a new fence to keep the wolf and future predators out?',
-                                            value: 'wizard',
+                                            value: Class.Wizard,
                                             bonus: 1
                                         },
 
@@ -208,17 +209,17 @@ export function Rules(): IRules {
                                     entries: [
                                         {
                                             text: 'Participate in the Wrestling contest? ',
-                                            value: 'warrior',
+                                            value: Class.Warrior,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Participate in the Archery contest?',
-                                            value: 'rogue',
+                                            value: Class.Rogue,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Participate in the Puzzle contest?',
-                                            value: 'wizard',
+                                            value: Class.Wizard,
                                             bonus: 1
                                         },
 
@@ -233,17 +234,17 @@ export function Rules(): IRules {
                                     entries: [
                                         {
                                             text: 'Use strength and intimidation to get some answers.',
-                                            value: 'warrior',
+                                            value: Class.Warrior,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Use stealth to follow the movements of the suspects, and agility to enter their houses undetected and search for clues.',
-                                            value: 'rogue',
+                                            value: Class.Rogue,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Use deduction and reasoning to get to the truth.',
-                                            value: 'wizard',
+                                            value: Class.Wizard,
                                             bonus: 1
                                         },
 
@@ -258,23 +259,92 @@ export function Rules(): IRules {
                                     entries: [
                                         {
                                             text: 'Ignore the poetry and try to impress the girl with a show of strength?',
-                                            value: 'warrior',
+                                            value: Class.Warrior,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Try to steal his poem and pass it off as you own?',
-                                            value: 'rogue',
+                                            value: Class.Rogue,
                                             bonus: 1
                                         },
                                         {
                                             text: 'Try to write an even better poem?',
-                                            value: 'wizard',
+                                            value: Class.Wizard,
                                             bonus: 1
                                         }
                                     ]
                                 }
                             ],
                             nextStepSelector: 9
+                        },
+                        {
+                            initStep: (character, previousStep, currentStep) => {
+                                var classSelect = character.steps[2].questions[0];
+                                var selectedClass = classSelect.selectedEntry ? classSelect.selectedEntry.value : null;
+                                var points = {
+                                    Warrior: 0,
+                                    Rogue: 0,
+                                    Wizard: 0
+                                };
+
+                                // If questions were answered, calculate which class has the highest score.
+                                if (previousStep > 2) {
+                                    for (var i = 3; i <= previousStep; i++) {
+                                        var selectedEntry = character.steps[i].questions[0].selectedEntry;
+                                        points[selectedEntry.value] += selectedEntry.bonus;
+                                    }
+
+                                    // When the scores are equal, the first class in the list wins (first warrior, then rogue, then wizard).
+                                    var max = Math.max(points.Warrior, points.Rogue, points.Wizard);
+                                    selectedClass = max === points.Warrior ? Class.Warrior : max === points.Rogue ? Class.Rogue : Class.Wizard;
+                                }
+
+                                // Update the class selector step to use when processing the character sheet data.
+                                classSelect.selectedEntry = classSelect.entries.filter(entry => entry.value === selectedClass)[0];
+                                var nextQuestion = currentStep.questions[0]; 
+                                nextQuestion.question = `Your path seems to be that of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
+                                nextQuestion.entries[1].text = `Yes, proceed as a ${selectedClass}`
+                            },
+                            questions: [
+                                {
+                                    question: '',
+                                    entries: [
+                                        {
+                                            text: 'No, select another class',
+                                            value: "no",
+                                        },
+                                        {
+                                            text: '',
+                                            value: "yes"
+                                        }
+                                    ]
+                                }
+                            ],
+                            nextStepSelector(_, currentStep) {
+                                switch (currentStep.questions[0].selectedEntry.value) {
+                                    case 'no': {
+                                        return 2;
+                                    };
+                                    case 'yes': {
+                                        return 10;
+                                    };
+                                    default: {
+                                        return 0;
+                                    }
+                                }
+                            },
+                        },
+                        {
+                            attributes: [
+                                {
+                                    question: 'Start your adventure',
+                                    entries: [
+                                        {
+                                            attribute: 'name'
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 };
@@ -286,23 +356,23 @@ export function Rules(): IRules {
                 var characterClass = characterData.steps[2].questions[0].selectedEntry.value;
 
                 switch (characterClass) {
-                    case 'warrior': {
+                    case Class.Warrior: {
                         character.strength = 3;
                         character.agility = 1;
                         character.intelligence = 1;
-                        //character.class = Class.Warrior;
+                        character.class = Class.Warrior;
                     }; break;
-                    case 'rogue': {
+                    case Class.Rogue: {
                         character.strength = 1;
                         character.agility = 3;
                         character.intelligence = 1;
-                        //character.class = Class.Rogue;
+                        character.class = Class.Rogue;
                     }; break;
-                    case 'wizard': {
+                    case Class.Wizard: {
                         character.strength = 1;
                         character.agility = 1;
                         character.intelligence = 3;
-                        //character.class = Class.Wizard;
+                        character.class = Class.Wizard;
                     }; break;
                 }
 

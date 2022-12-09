@@ -1,12 +1,10 @@
-﻿
-import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
+﻿import { ICharacter, ICollection, IEquipment as StoryScriptEquipment } from 'storyScript/Interfaces/storyScript';
 import { custom } from 'storyScript/utilities';
 import { Class } from './interfaces/class';
-import { ISpell } from './interfaces/spell';
 import { Firebolt } from './items/firebolt';
 import { Healingpotion } from './items/healingPotion';
 import { Sword } from './items/sword';
-import { IItem } from './types';
+import { IEquipment, IItem } from './types';
 
 export class Character implements ICharacter {
     name: string = '';
@@ -19,27 +17,14 @@ export class Character implements ICharacter {
     strength?: number = 1;
     agility?: number = 1;
     intelligence?: number = 1;
-    //class: Class;
+    class?: Class;
     
     items: ICollection<IItem> = [
         Healingpotion(),
         Firebolt()
     ];
 
-    equipment: {
-        // Remove the slots you don't want to use
-        head?: IItem,
-        amulet?: IItem,
-        body?: IItem,
-        hands?: IItem,
-        leftHand?: IItem,
-        leftRing?: IItem,
-        rightHand?: IItem,
-        rightRing?: IItem,
-        legs?: IItem,
-        feet?: IItem,
-        spell?: ISpell
-    };
+    equipment: IEquipment;
 
     constructor() {
         this.equipment = {
