@@ -36,7 +36,7 @@ export function Rules(): IRules {
                 ];
             },
             playList: {
-                'Medieval.mp3': [GameState.CreateCharacter],
+                'Medieval.mp3': [GameState.CreateCharacter, GameState.Intro],
                 'underwater.mp3': [GameState.Play],
                 'Shipshold.mp3':
                 [
