@@ -50,7 +50,10 @@ export function Rules(): IRules {
             scoreChange: (game: IGame, change: number): boolean => {
                 // Implement logic to occur when the score changes. Return true when the character gains a level.
                 return false;
-            }
+            },
+            gameStateChange(game) {
+                setGradient(game);
+            },
         },
         
         character: {
@@ -383,20 +386,8 @@ export function Rules(): IRules {
         },
 
         exploration: {
-            enterLocation: (game: IGame, location: ILocation, travel?: boolean) => {
-                var gradientClass = selectStateListEntry(game, locationGradients);
-
-                if (gradientClass) {
-                    // When refreshing the page, the UIRootElement is not yet on the game so use a timeout.
-                    if (game.UIRootElement) {
-                        setGradient(game.UIRootElement, gradientClass);
-                    }
-                    else {
-                        setTimeout(() => {
-                            setGradient(game.UIRootElement, gradientClass);
-                        });
-                    }
-                }
+            enterLocation: (game: IGame) => {
+                setGradient(game);
             }
         },
 
@@ -489,7 +480,23 @@ const enemyAttacks = function (game: IGame, enemy: IEnemy): Promise<void> | void
     game.character.currentHitpoints -= damage;
 }
 
-const setGradient = function(element: HTMLElement, className: string) {
+const setGradient = function(game: IGame) {
+    var gradientClass = selectStateListEntry(game, locationGradients);
+
+    if (gradientClass) {
+        // When refreshing the page, the UIRootElement is not yet on the game so use a timeout.
+        if (game.UIRootElement) {
+            setGradientClass(game.UIRootElement, gradientClass);
+        }
+        else {
+            setTimeout(() => {
+                setGradientClass(game.UIRootElement, gradientClass);
+            });
+        }
+    }
+}
+
+const setGradientClass = function(element: HTMLElement, className: string) {
     element.classList.forEach(c => { 
         if (c.startsWith('gradient')) {
             element.classList.remove(c);
