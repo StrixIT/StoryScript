@@ -125,7 +125,12 @@ export function Rules(): IRules {
                                     ]
                                 }
                             ],          
-                            nextStepSelector: 9
+                            nextStepSelector(character, currentStep) {
+                                var selectedClass = currentStep.questions[0].selectedEntry.value;
+                                var confirmStep = character.steps[9];
+                                confirmStep.questions[0].question = `You have chosen the path of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
+                                return 9;
+                            },
                         },
                         {
                             questions: [
@@ -301,9 +306,15 @@ export function Rules(): IRules {
 
                                 // Update the class selector step to use when processing the character sheet data.
                                 classSelect.selectedEntry = classSelect.entries.filter(entry => entry.value === selectedClass)[0];
+                                
                                 var nextQuestion = currentStep.questions[0]; 
-                                nextQuestion.question = `Your path seems to be that of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
-                                nextQuestion.entries[1].text = `Yes, proceed as a ${selectedClass}`
+
+                                if (previousStep > 2)
+                                {
+                                    nextQuestion.question = `Your path seems to be that of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
+                                }
+
+                                nextQuestion.entries[1].text = `Yes, proceed as a ${selectedClass}`;
                             },
                             questions: [
                                 {
@@ -335,16 +346,7 @@ export function Rules(): IRules {
                             },
                         },
                         {
-                            attributes: [
-                                {
-                                    question: 'Start your adventure',
-                                    entries: [
-                                        {
-                                            attribute: 'name'
-                                        }
-                                    ]
-                                }
-                            ]
+                            description: 'You are ready to embark on your yourney.'
                         }
                     ]
                 };
@@ -375,12 +377,6 @@ export function Rules(): IRules {
                         character.class = Class.Wizard;
                     }; break;
                 }
-
-                var weaponStep = characterData.steps[characterData.steps.length - 2];
-                var chosenItem = weaponStep.questions[0].selectedEntry;
-                character.items.push(game.helpers.getItem(chosenItem.value));
-
-                game.worldProperties.startLocation = characterData.steps[characterData.steps.length - 1].questions[0].selectedEntry.value;
 
                 return character;
             }
