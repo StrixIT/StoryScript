@@ -1,5 +1,5 @@
 export enum Class {
-    Warrior,
-    Rogue,
-    Wizard
+    Warrior = "Warrior",
+    Rogue = "Rogue",
+    Wizard = "Wizard"
 }
