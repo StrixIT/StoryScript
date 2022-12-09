@@ -13,19 +13,7 @@ export class Character implements ICharacter {
 
     items: ICollection<IItem> = [];
 
-    equipment: {
-        // Remove the slots you don't want to use
-        head: IItem,
-        amulet: IItem,
-        body: IItem,
-        hands: IItem,
-        leftHand: IItem,
-        leftRing: IItem,
-        rightHand: IItem,
-        rightRing: IItem,
-        legs: IItem,
-        feet: IItem
-    };
+    equipment: {};
 
     constructor() {
         this.equipment = {

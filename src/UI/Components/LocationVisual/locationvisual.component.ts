@@ -18,7 +18,7 @@ export class LocationVisualComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(this.game, feature);
+    tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 
     getFeatureCoordinates = (feature: IFeature): { top: string, left: string} => {
         var coords = feature.coords.split(',');

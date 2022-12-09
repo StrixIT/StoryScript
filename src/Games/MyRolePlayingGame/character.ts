@@ -16,13 +16,7 @@ export class Character implements ICharacter {
 
     items: ICollection<IItem> = [];
 
-    equipment: {
-        head?: IItem,
-        body?: IItem,
-        leftHand?: IItem,
-        rightHand?: IItem,
-        feet?: IItem,
-    };
+    equipment: {};
 
     constructor() {
         this.equipment = {
