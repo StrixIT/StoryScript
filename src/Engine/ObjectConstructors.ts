@@ -103,14 +103,14 @@ export function Action(action: IAction): IAction {
 
 export function setReadOnlyProperties(key: string, data: any) {
     if (key.startsWith(DataKeys.GAME + '_')) {
-        data.world.forEach(location => {
+        data.world.forEach((location: ILocation) => {
             setReadOnlyLocationProperties(location);
         });     
         
         setReadOnlyCharacterProperties(data.character)
     }
     else if (key  === DataKeys.WORLD) {
-        data.forEach(location => {
+        data.forEach((location: ILocation) => {
             setReadOnlyLocationProperties(location);
         });     
     }
@@ -119,7 +119,7 @@ export function setReadOnlyProperties(key: string, data: any) {
     }
 }
 
-export function initCollection<T>(entity: any, property: string) {
+export function initCollection(entity: any, property: string) {
     const _entityCollections: string[] = [
         'features',
         'items',

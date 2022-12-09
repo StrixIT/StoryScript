@@ -29,7 +29,6 @@ import { selectStateListEntry } from 'storyScript/utilities';
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
     private _musicStopped: boolean = false;
-    private _playStateWatchers = [];
 
     constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
     }
@@ -56,7 +55,7 @@ export class GameService implements IGameService {
             this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
         }
 
-        // Use the afterSave hook here combine the initialized world with other saved data.
+        // Use the afterSave hook here to combine the initialized world with other saved data.
         if (this._rules.general?.afterSave) {
             this._rules.general.afterSave(this._game);
         }
@@ -313,26 +312,38 @@ export class GameService implements IGameService {
         this._game.sounds.soundQueue.set(createHash(fileName + Math.floor(Math.random() * 1000)), { value: fileName, playing: false, completeCallBack: completeCallBack });
     }
 
-    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void) {
-        if (this._playStateWatchers.length === 0) {
-            var playState = this._game.playState;
+    watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void {
+        this.watchState<GameState>('state', callBack);
+    }
+
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void {
+        this.watchState<PlayState>('playState', callBack);
+    }
+
+    watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
+        var watcherNames = `_${stateName}Watchers`;
+        var watchers = this[watcherNames] ?? [];
+        this[watcherNames] = watchers;
+
+        if (watchers.length === 0) {
+            var state = this._game[stateName];
     
-            Object.defineProperty(this._game, 'playState', {
+            Object.defineProperty(this._game, stateName, {
                 enumerable: true,
                 configurable: true,
                 get: () => {
-                    return playState;
+                    return state;
                 },
                 set: value => {
-                    const oldState = playState;
-                    playState = value;
-                    this._playStateWatchers.forEach(w => w(this._game, playState, oldState));
+                    const oldState = state;
+                    state = value;
+                    watchers.forEach(w => w(this._game, state, oldState));
                 }
             });
         }
     
-        if (this._playStateWatchers.indexOf(callBack) < 0) {
-            this._playStateWatchers.push(callBack);
+        if (watchers.indexOf(callBack) < 0) {
+            watchers.push(callBack);
         }
     }
 
@@ -418,8 +429,12 @@ export class GameService implements IGameService {
             }
         };
 
+        if (this._rules.general?.gameStateChange) {
+            this.watchState<GameState>('state', this._rules.general.gameStateChange);
+        }
+
         if (this._rules.general?.playStateChange) {
-            this.watchPlayState(this._rules.general.playStateChange);
+            this.watchState<PlayState>('playState', this._rules.general.playStateChange);
         }
     }
 
