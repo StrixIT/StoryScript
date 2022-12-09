@@ -1,5 +1,8 @@
-﻿import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
+﻿
+import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
 import { custom } from 'storyScript/utilities';
+import { Class } from './interfaces/class';
+import { ISpell } from './interfaces/spell';
 import { Firebolt } from './items/firebolt';
 import { Healingpotion } from './items/healingPotion';
 import { Sword } from './items/sword';
@@ -16,6 +19,7 @@ export class Character implements ICharacter {
     strength?: number = 1;
     agility?: number = 1;
     intelligence?: number = 1;
+    //class: Class;
     
     items: ICollection<IItem> = [
         Healingpotion(),
@@ -34,7 +38,7 @@ export class Character implements ICharacter {
         rightRing?: IItem,
         legs?: IItem,
         feet?: IItem,
-        spell?: IItem
+        spell?: ISpell
     };
 
     constructor() {
