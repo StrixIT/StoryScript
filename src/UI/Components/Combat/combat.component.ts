@@ -19,16 +19,16 @@ export class CombatComponent {
     texts: IInterfaceTexts;
     actionsEnabled: boolean = true;
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
     getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this); 
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this); 
 
     fight = (enemy: IEnemy): void => { 
         this.actionsEnabled = false;
 
-        Promise.resolve(this._sharedMethodService.fight(this.game, enemy)).then(() => {
+        Promise.resolve(this._sharedMethodService.fight(enemy)).then(() => {
             this.actionsEnabled = true;
         }); 
     }
@@ -40,4 +40,6 @@ export class CombatComponent {
             this.actionsEnabled = true;
         }); 
     }
+
+    canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(item);
 }

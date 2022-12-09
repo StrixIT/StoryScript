@@ -30,7 +30,7 @@ export interface IItem extends IFeature {
      * available during combat.
      */
     useInCombat?: boolean | ((item: IItem, equipment: IEquipment) => boolean);
-
+    
     /**
      * The value of the item in whatever credits are used in the game.
      */
@@ -63,4 +63,11 @@ export interface IItem extends IFeature {
      * @param target The target to use the item on, if any
      */
     use?(game: IGame, item: IItem, target?: IEnemy): Promise<void> | void;
+
+    /**
+     * When specified, this action determines whether the use action for an item will be shown.
+     * @param game The game object
+     * @param item The item to show the use action for
+     */
+    canUse?(game: IGame, item: IItem): boolean;
 }

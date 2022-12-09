@@ -19,7 +19,7 @@ export class EquipmentComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.game);
+    showEquipment = (): boolean => this._sharedMethodService.showEquipment();
 
     unequipItem = (item: IItem): boolean => this._characterService.unequipItem(item);
 

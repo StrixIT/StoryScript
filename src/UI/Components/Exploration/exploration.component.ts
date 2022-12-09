@@ -23,7 +23,7 @@ export class ExplorationComponent {
 
     actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
     getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
@@ -33,9 +33,10 @@ export class ExplorationComponent {
 
     hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this);
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
 
-    trade = (game: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this.game, trade);
+    // Do not remove this method from here, it is called dynamically from the executeAction method of the SharedMethodService!
+    trade = (trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         if (this.game.combinations.tryCombine(barrier))

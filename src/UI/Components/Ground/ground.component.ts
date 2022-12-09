@@ -19,7 +19,7 @@ export class GroundComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 

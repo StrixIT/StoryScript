@@ -21,7 +21,7 @@ export class LocationTextComponent {
     texts: IInterfaceTexts;
     worldProperties: { name: string, value: string }[];
 
-    tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(this.game, feature);
+    tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 
     private initWorldProperties = (): void => {
         for (var n in this.game.worldProperties) {

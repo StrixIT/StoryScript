@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
-import { ITrade, IAction, PlayState, ActionType, IPerson, IEnemy, ICombinable } from 'storyScript/Interfaces/storyScript';
+import { ITrade, IAction, ActionType, IPerson, IEnemy, ICombinable, IItem } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { IGame } from 'storyScript/Interfaces/game';
 import { ModalService } from './ModalService';
 import { Subject } from 'rxjs';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 
 @Injectable()
 export class SharedMethodService {
     private combinationSource = new Subject<boolean>();
 
     // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
-    constructor(_modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService) {
+    constructor(_modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService, objectFactory: ObjectFactory) {
+        this.game = objectFactory.GetGame();
     }
 
+    game: IGame;
     useCharacterSheet?: boolean;
     useEquipment?: boolean;
     useBackpack?: boolean;
@@ -25,23 +28,23 @@ export class SharedMethodService {
 
     setCombineState = (value: boolean): void => this.combinationSource.next(value);
 
-    enemiesPresent = (game: IGame): boolean => game.currentLocation?.activeEnemies?.length > 0;
+    enemiesPresent = (): boolean => this.game.currentLocation?.activeEnemies?.length > 0;
 
-    tryCombine = (game: IGame, combinable: ICombinable): boolean => {
-        var result = game.combinations.tryCombine(combinable);
+    tryCombine = (combinable: ICombinable): boolean => {
+        var result = this.game.combinations.tryCombine(combinable);
         this.combinationSource.next(result);
         return result;
     }
 
-    talk = (game: IGame, person: IPerson): void => {
+    talk = (person: IPerson): void => {
         this._conversationService.talk(person);
     }
 
-    trade = (game: IGame, trade: IPerson | ITrade): boolean => {
+    trade = (trade: IPerson | ITrade): boolean => {
         var locationTrade = <ITrade>trade;
 
         if (locationTrade && !(<any>locationTrade).type && locationTrade.id) {
-            trade = game.currentLocation.trade.find(t => t.id === locationTrade.id);
+            trade = this.game.currentLocation.trade.find(t => t.id === locationTrade.id);
         }
 
         this._tradeService.trade(trade);
@@ -52,22 +55,22 @@ export class SharedMethodService {
 
     hasDescription = (entity: { id?: string, description?: string }): boolean => this._gameService.hasDescription(entity);
 
-    showDescription = (game: IGame, type: string, item: any, title: string): void => {
-        game.currentDescription = { title: title, type: type, item: item };
+    showDescription = (type: string, item: any, title: string): void => {
+        this.game.currentDescription = { title: title, type: type, item: item };
     }
 
-    startCombat = (game: IGame, person?: IPerson): void => {
+    startCombat = (person?: IPerson): void => {
         if (person) {
             // The person becomes an enemy when attacked!
-            game.currentLocation.persons.remove(person);
-            game.currentLocation.enemies.push(person);
+            this.game.currentLocation.persons.remove(person);
+            this.game.currentLocation.enemies.push(person);
         }
 
-        game.combatLog = [];
+        this.game.combatLog = [];
         this._gameService.initCombat();
     }
 
-    fight = (game: IGame, enemy: IEnemy): Promise<void> | void => {
+    fight = (enemy: IEnemy): Promise<void> | void => {
         return this._gameService.fight(enemy);
     }
 
@@ -93,23 +96,23 @@ export class SharedMethodService {
         return buttonClass;
     }
 
-    executeAction = (game: IGame, action: IAction, component: any): void => {
+    executeAction = (action: IAction, component: any): void => {
         if (action && action.execute) {
             // Modify the arguments collection to add the game to the collection before calling the function specified.
-            var args = <any[]>[game, action];
+            var args = <any[]>[action];
 
             // Execute the action and when nothing or false is returned, remove it from the current location.
             var executeFunc = typeof action.execute !== 'function' ? component[action.execute] : action.execute;
             var result = executeFunc.apply(component, args);
 
-            var typeAndIndex = this.getActionIndex(game, action);
+            var typeAndIndex = this.getActionIndex(action);
 
             if (!result && typeAndIndex.index !== -1) {
 
-                if (typeAndIndex.type === ActionType.Regular && game.currentLocation.actions) {
-                    game.currentLocation.actions.splice(typeAndIndex.index, 1);
-                } else if (typeAndIndex.type === ActionType.Combat && game.currentLocation.combatActions) {
-                    game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
+                if (typeAndIndex.type === ActionType.Regular && this.game.currentLocation.actions) {
+                    this.game.currentLocation.actions.splice(typeAndIndex.index, 1);
+                } else if (typeAndIndex.type === ActionType.Combat && this.game.currentLocation.combatActions) {
+                    this.game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
                 }
             }
 
@@ -118,18 +121,20 @@ export class SharedMethodService {
         }
     }
 
-    showEquipment = (game: IGame): boolean => {
-        return this.useEquipment && game.character && Object.keys(game.character.equipment).some(k => (<any>game.character.equipment)[k] !== undefined);
+    showEquipment = (): boolean => {
+        return this.useEquipment && this.game.character && Object.keys(this.game.character.equipment).some(k => (<any>this.game.character.equipment)[k] !== undefined);
     }
+
+    canUseItem = (item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, item));
     
-    private getActionIndex = (game: IGame, action: IAction): { type: number, index: number} => {
+    private getActionIndex = (action: IAction): { type: number, index: number} => {
         var index = -1;
         var result = {
             index: index,
             type: 0
         };
 
-        game.currentLocation.actions.forEach((a, i) => {
+        this.game.currentLocation.actions.forEach((a, i) => {
             if (a === action) {
                 result = {
                     index: i,
@@ -139,7 +144,7 @@ export class SharedMethodService {
         });
 
         if (index == -1) {
-            game.currentLocation.combatActions.forEach((a, i) => {
+            this.game.currentLocation.combatActions.forEach((a, i) => {
                 if (a === action) {
                     result = {
                         index: i,
