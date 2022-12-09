@@ -5,6 +5,7 @@ import { IEnemy, Enemy } from './interfaces/enemy'
 import { IPerson, Person } from './interfaces/person'
 import { IQuest, Quest } from './interfaces/quest'
 import { ICompiledLocation, ILocation, Location } from './interfaces/location'
+import { IEquipment } from './interfaces/equipment'
 import { IGame } from './interfaces/game'
 import { CustomTexts } from './customTexts'
 import { Rules } from './rules'
@@ -26,6 +27,7 @@ export {
     ILocation,
     ICompiledLocation, 
     Location, 
+    IEquipment,
     IGame, 
     CustomTexts, 
     Rules, 
