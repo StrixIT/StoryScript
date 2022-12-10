@@ -27,9 +27,11 @@ export class ModalService {
             return;
         }
 
+        const settings = this.getStateSettings(newState);
+
         const modalOptions = <NgbModalOptions>{ beforeDismiss: () => {
             this.closeModal(false);
-        } };
+        }, backdrop: settings.canClose ? 'static' : null, keyboard: false  };
 
         // 1. If there is already an active modal:
         if (this._activeModal) {
@@ -61,7 +63,7 @@ export class ModalService {
             else {
                 this._activeModal = this._modalService.open(EncounterModalComponent, modalOptions);
                 this._activeModal.componentInstance.element.parentElement.classList.add('encounter-modal');
-                this._activeModal.componentInstance.settings = this.getStateSettings(newState);
+                this._activeModal.componentInstance.settings = settings;
             }
         }
     }
