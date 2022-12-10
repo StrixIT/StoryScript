@@ -1,11 +1,15 @@
 <div class="box-container" id="intro" *ngIf="game.state === 'Intro'">
-    <h2>Game introduction</h2>
-    <p>
-        'Welcome, friend. My name is Fasold the storyteller, and I thank you for taking the time to meet up with me in this tavern. 
-        I have observed your actions for some time, and I am convinced there is greatness within you, 
-        and with the adventure before you tomorrow, there shall be much to write down and chronicle for the ages. 
-        So please, take a seat and tell me all about you, for a good a historian and storyteller must know the subject of his 
-        writings.'
-    </p>
-    <button type="button" class="btn btn-primary" (click)="endIntro()">{{ texts.skipIntro }}</button>
+    <div class="intro-container">
+        <h2>Game introduction</h2>
+        <p>
+            'Welcome, friend. My name is Fasold the storyteller, and I thank you for taking the time to meet up with me in this tavern. 
+            I have observed your actions for some time, and I am convinced there is greatness within you, 
+            and with the adventure before you tomorrow, there shall be much to write down and chronicle for the ages. 
+            So please, take a seat and tell me all about you, for a good a historian and storyteller must know the subject of his 
+            writings.'
+        </p>
+        <button type="button" class="btn btn-primary" (click)="endIntro()">{{ texts.skipIntro }}</button>
+    </div>
+    <img class="float-right" src="resources/Fasold.png" />
+    <div class="clearfix"></div>
 </div>

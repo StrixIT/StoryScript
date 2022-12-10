@@ -81,7 +81,7 @@ h1 {
     display: none;
 }
 
-.build-character-container {
+.build-character-container, .intro-container {
     float: left;
     width: 70%;
 }

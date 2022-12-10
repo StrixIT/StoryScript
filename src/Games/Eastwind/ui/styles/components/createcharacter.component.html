@@ -4,6 +4,6 @@
         <build-character [sheet]="game.createCharacterSheet"></build-character>
         <button type="button" id="start-adventure" class="btn btn-primary" [disabled]="!distributionDone()" (click)="startNewGame()" *ngIf="game.createCharacterSheet.currentStep >= game.createCharacterSheet.steps.length - 1 || game.createCharacterSheet.steps[game.createCharacterSheet.currentStep].finish">{{ texts.startAdventure }}</button>
     </div>
-    <img class="float-right" src="resources/Vigga.png" />
+    <img class="float-right" src="resources/Fasold.png" />
     <div class="clearfix"></div>
 </div>
