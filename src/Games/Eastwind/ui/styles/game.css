@@ -80,3 +80,8 @@ h1 {
 #conversation-history {
     display: none;
 }
+
+.build-character-container {
+    float: left;
+    width: 70%;
+}
