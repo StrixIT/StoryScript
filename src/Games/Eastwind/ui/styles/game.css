@@ -99,6 +99,7 @@ h1 {
 }
 
 #conversation-options {
-    padding-left: 30px;
-    background-image: url(resources/Textback.png);
+    margin-top: 10px;
+    padding: 20px 30px 30px 30px;
+    background: radial-gradient(circle, rgba(221,181,50,1) 50%, rgba(185,145,0,1) 79%);
 }
