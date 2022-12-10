@@ -85,3 +85,20 @@ h1 {
     float: left;
     width: 70%;
 }
+
+.encounter-modal {
+    background-image: url(resources/Shipback.png);
+}
+
+.encounter-modal .modal-header {
+    border-bottom: none;
+}
+
+.encounter-modal .modal-footer {
+    border-top: none;
+}
+
+#conversation-options {
+    padding-left: 30px;
+    background-image: url(resources/Textback.png);
+}
