@@ -10,6 +10,7 @@ export function Elsa() {
 		],
 		quests: [
 		],
+		canAttack: false,
 		conversation: {
 			actions: {
 			}
