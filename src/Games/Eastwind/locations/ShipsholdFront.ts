@@ -1,3 +1,4 @@
+import { Elsa } from '../persons/Elsa';
 import { IGame, Location } from '../types';
 import description from './ShipsholdFront.html';
 
@@ -15,6 +16,7 @@ export function ShipsholdFront() {
 		enemies: [
 		],
 		persons: [
+				Elsa()
 		],
 		trade: [
 		],
