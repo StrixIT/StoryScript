@@ -16,7 +16,6 @@ export function ShipsholdFront() {
 		enemies: [
 		],
 		persons: [
-				Elsa()
 		],
 		trade: [
 		],
@@ -29,6 +28,7 @@ export function ShipsholdFront() {
 				text: 'Investigate the shadow',
 				execute: (game: IGame) => {	
 					game.currentLocation.description = game.currentLocation.descriptions['investigate-shadow'];
+					game.currentLocation.persons.push(Elsa);
 			},
 			}
 		],
