@@ -2,14 +2,97 @@
 <img class="picture" src="resources/Elsa.png" />
 </description>
 <conversation>
-	<default-reply>
-	</default-reply>
-	<node name="" trigger="">
-		<p>
-			
-		</p>
-		<replies default-reply="">
-			
-		</replies>
-	</node>
+<default-reply>
+	Never mind. See you later.
+</default-reply>
+<node name="hello">
+	<p>'You,' the young woman whispers.<br>
+        'I've seen you. I have watched you fight. You are not one of them.'<br>
+        The woman smiles faintly.<br>
+        'I am Elsa, and I believe can trust you. I can feel it. But please, you mustn't tell anyone I am here.
+        The time is not right</p>
+	<replies>
+		<reply node="What do you mean" set-start="return">
+			What do you mean?
+		</reply>
+		
+
+	</replies>
+</node>
+<node name="return">
+	<p>
+		Back so soon?
+	</p>
+	<replies>
+		<reply node="garden">
+			I just walked through the garden.
+		</reply>
+		<reply node="key">
+			I found a key.
+		</reply>
+		<reply node="lostjournal">
+			I noticed you seem a bit upset.
+		</reply>
+	</replies>
+</node>
+
+<node name="What do you mean">
+	<p>As you are about the ask Elsa what she means, a booming voice reaches you from the ship's deck.<br>
+       'Land ho, land ho!'<br>
+        Elsa looks startled, but then composes herself.
+        'We have reached Sharpsail island,' she speaks softly.<br> 
+        'The last island before Eastwind. I will get off here, there is something I must 
+        investigate before I continue to Eastwind. If you get off here too, even for a while, 
+        I caution you to be careful, Sharpsail is dangerous, and not as friendly it appears. 
+        And please, do not tell anyone about me. I must remain undetected, the enchanters of Eastwind 
+        are ever watchful, and I must not draw their gaze.'</p>
+        <p>Elsa gives you a friendly nod.<br>
+        'I wish you farewell and good luck on your quest. Perhaps we may meet again in the future.'<br>
+        Elsa turns around, and disappears into the shadows of the hold.</p>
+</node>
+</node>
+</node>
+<node name="garden">
+	<p>
+		Did you see the hedgehog?
+	</p>
+	<replies default-reply="false">
+		<reply trigger="addHedgehog">
+			No I didn't. I'll pay attention next time.
+		</reply>
+	</replies>
+</node>
+<node name="key">
+	<p>
+		Hm. I don't know what lock that's for.
+	</p>
+</node>
+<node name="lostjournal">
+	<p>
+		I guess I am. I can't seem to find my personal journal. It is very important to me. Can you help me find it?
+	</p>
+	<replies>
+		<reply node="pleasefindit" quest-start="Journal" set-start="foundjournal">
+			Of course. I'll return it as soon as I see it.
+		</reply>
+	</replies>
+</node>
+<node name="pleasefindit">
+	<p>
+		I hope you have better luck than I searching.
+	</p>
+</node>
+<node name="foundjournal">
+	<p>
+		Have you found my journal?
+	</p>
+	<replies>
+		<reply>
+			Not yet, sorry.
+		</reply>
+		<reply requires="quest-done=Journal" quest-complete="Journal" set-start="return">
+			Yes I have. Here it is!
+		</reply>
+	</replies>
+</node>
 </conversation>
