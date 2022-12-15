@@ -18,6 +18,7 @@ export class Character implements ICharacter {
     agility?: number = 1;
     intelligence?: number = 1;
     class?: Class;
+    level?: number = 1;
     
     items: ICollection<IItem> = [
         Healingpotion(),

@@ -59,7 +59,11 @@ export function Rules(): IRules {
         character: {
             getSheetAttributes: (): string[] => {
                 return [
-                    // Add the character attributes that you want to show on the character sheet here
+                    'class',
+                    'level',
+                    'strength',
+                    'agility',
+                    'intelligence'
                 ];
             },
 
@@ -349,7 +353,11 @@ export function Rules(): IRules {
                             },
                         },
                         {
-                            description: 'You are ready to embark on your yourney.'
+                            description: `'Thank you, friend, that is all I needed to know, for now.<br>But before we part, allow me to give you some advice. 
+                            I know something of Eastwind, and I have long suspected the royal guild of enchanters to have a hand in some of the darker events 
+                            that have plagued Eastwind recently. In participating in the tournament, with your talents, you will be sure to draw their attention.<br>
+                            But I have faith in your abilities, and I hope we may meet again, and you will tell me all about your adventures 
+                            and victories.'`
                         }
                     ]
                 };
