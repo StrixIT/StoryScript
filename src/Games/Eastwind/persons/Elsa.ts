@@ -1,3 +1,4 @@
+import { Shipbattle } from '../locations/shipbattle';
 import { IGame, IPerson, Person } from '../types';
 import description from './Elsa.html';
 
@@ -5,6 +6,7 @@ export function Elsa() {
 	return Person({
 		name: 'Elsa',
 		description: description,
+		picture: 'resources/Elsa.png',
 		hitpoints: 10,
 		items: [
 		],
@@ -13,6 +15,9 @@ export function Elsa() {
 		canAttack: false,
 		conversation: {
 			actions: {
+				'goToCombat': (game: IGame) => {
+					game.changeLocation(Shipbattle);
+				} 
 			}
 		},
 	});

@@ -1,4 +1,3 @@
-<img class="picture" src="resources/Elsa.png" />
 <description name="Elsa">
 </description>
 <conversation>
@@ -47,9 +46,11 @@
 	'Go' she speaks, 'Help them, we will meet again soon, I am sure of it.'<br>
 	Then, Elsa turns and disappears into the shadows.<br>
 	Quickly, you climb up the ladder to join the battle.</p>
-
-</node>
-</node>
+	<replies default-reply="false">
+		<reply trigger="goToCombat">
+			(Continue...)
+		</reply>
+	</replies>
 </node>
 <node name="garden">
 	<p>
