@@ -27,10 +27,10 @@ const locationGradients = <StateList>{
 };
 
 const encounterBackgrounds = <StateList>{
-    'Shipback': [
+    'Shipback.png': [
         Start, Shipsdeck, ShipStern, ShipBow, Shipbattle
     ],
-    'Shipshold': [
+    'ShipsHold.png': [
         ShipsHold, ShipsholdFront, ShipsHoldAft
     ]
 };
@@ -61,9 +61,12 @@ export function Rules(): IRules {
                 // Implement logic to occur when the score changes. Return true when the character gains a level.
                 return false;
             },
-            gameStateChange(game) {
+            gameStateChange: (game) => {
                 setGradient(game);
             },
+            playStateChange: (game) => {
+                setModalBackground(game);
+            }
         },
         
         character: {
@@ -522,4 +525,18 @@ const setGradientClass = function(element: HTMLElement, className: string) {
     });
 
     element.classList.add(className);
+}
+
+const setModalBackground = function(game: IGame) {
+    var background = selectStateListEntry(game, encounterBackgrounds);
+
+    if (background) {
+        setTimeout(() => {
+            var modalElement = game.UIRootElement?.getElementsByClassName('encounter-modal')[0] as HTMLElement;
+
+            if (modalElement) {
+                modalElement.style.backgroundImage = `url(resources/${background})`;
+            }
+        }, 0);
+    }
 }
