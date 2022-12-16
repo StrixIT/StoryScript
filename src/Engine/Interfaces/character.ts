@@ -36,7 +36,7 @@ export interface ICharacter {
     /**
      * The amount of credits the player has, in whatever form.
      */
-    currency: number;
+    currency?: number;
 
     /**
      * All items the player is carrying in his backpack. Note that equipped items are not in this list.

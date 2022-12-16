@@ -31,7 +31,7 @@ export class ModalService {
 
         const modalOptions = <NgbModalOptions>{ beforeDismiss: () => {
             this.closeModal(false);
-        }, backdrop: settings.canClose ? 'static' : null, keyboard: false  };
+        }, backdrop: settings.canClose !== undefined && !settings.canClose ? 'static' : null, keyboard: false  };
 
         // 1. If there is already an active modal:
         if (this._activeModal) {
