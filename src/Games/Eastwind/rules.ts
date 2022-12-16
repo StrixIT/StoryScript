@@ -2,6 +2,7 @@
 import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
 import { Class } from './interfaces/class';
+import { Shipbattle } from './locations/shipbattle';
 import { ShipBow } from './locations/ShipBow';
 import { Shipsdeck } from './locations/shipsdeck';
 import { ShipsHold } from './locations/ShipsHold';
@@ -15,13 +16,22 @@ const combatTimeout: number = 1000;
 
 const locationGradients = <StateList>{
     'gradient-ship-outside': [
-        Start, Shipsdeck, ShipStern, ShipBow
+        Start, Shipsdeck, ShipStern, ShipBow, Shipbattle
     ],
     'gradient-ship-inside': [
         ShipsHold, ShipsholdFront, ShipsHoldAft
     ],
     'gradient-intro': [
         GameState.Intro
+    ]
+};
+
+const encounterBackgrounds = <StateList>{
+    'Shipback': [
+        Start, Shipsdeck, ShipStern, ShipBow, Shipbattle
+    ],
+    'Shipshold': [
+        ShipsHold, ShipsholdFront, ShipsHoldAft
     ]
 };
 

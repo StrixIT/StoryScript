@@ -102,4 +102,6 @@ h1 {
     margin-top: 10px;
     padding: 20px 30px 30px 30px;
     background: radial-gradient(circle, rgba(221,181,50,1) 50%, rgba(185,145,0,1) 79%);
+    border: double 6px transparent;
+    border-radius: 20px;
 }
