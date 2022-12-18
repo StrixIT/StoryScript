@@ -28,6 +28,14 @@ h1 {
     background: linear-gradient(180deg, rgba(255,235,0,1) 10%, rgba(0,130,205,1) 50%, rgba(200,150,5,1) 100%);
 }
 
+.gradient-waterworld {
+    background:  linear-gradient(0deg, rgba(9,9,121,1) 35%, rgba(1,200,250,1) 96%, rgba(0,212,255,1) 100%);
+}
+
+.gradient-beach {
+    background:  linear-gradient(0deg, rgba(255,255,0,1) 20%, rgba(0,176,255,1) 50%, rgba(0,250,235,1) 80%);
+}
+
 .gradient-ship-inside {
     background: linear-gradient(180deg, rgba(223,175,12,1) 0%, rgba(170,122,13,1) 35%, rgba(30,25,8,1) 100%);
 }
