@@ -2,6 +2,7 @@
 import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
 import { Class } from './interfaces/class';
+import { Beach } from './locations/Beach';
 import { Shipbattle } from './locations/shipbattle';
 import { ShipBow } from './locations/ShipBow';
 import { Shipsdeck } from './locations/shipsdeck';
@@ -10,6 +11,7 @@ import { ShipsHoldAft } from './locations/ShipsHoldAft';
 import { ShipsholdFront } from './locations/ShipsholdFront';
 import { ShipStern } from './locations/shipStern';
 import { Start } from './locations/start';
+import { Waterworld } from './locations/Waterworld';
 import { IGame, IEnemy, Character, ILocation } from './types';
 
 const combatTimeout: number = 1000;
@@ -20,6 +22,12 @@ const locationGradients = <StateList>{
     ],
     'gradient-ship-inside': [
         ShipsHold, ShipsholdFront, ShipsHoldAft
+    ],
+    'gradient-beach': [
+        Beach
+    ],
+    'gradient-waterworld': [
+        Waterworld
     ],
     'gradient-intro': [
         GameState.Intro
@@ -52,6 +60,20 @@ export function Rules(): IRules {
                 [
                     ShipsHold, ShipsHoldAft,ShipsholdFront
                 ],
+                'Beach.mp3':
+                [
+                    Beach
+                ],
+                'Shipbattle.mp3':
+                [
+                    Shipbattle
+                ],
+                'Waterworld.mp3':
+                [
+                    Waterworld
+                ],
+               
+                
             },
             autoBackButton: false
         },
