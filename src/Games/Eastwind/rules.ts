@@ -3,6 +3,7 @@ import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } f
 import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
 import { Class } from './interfaces/class';
 import { Beach } from './locations/Beach';
+import { Junglestart } from './locations/junglestart';
 import { Shipbattle } from './locations/shipbattle';
 import { ShipBow } from './locations/ShipBow';
 import { Shipsdeck } from './locations/shipsdeck';
@@ -29,6 +30,9 @@ const locationGradients = <StateList>{
     'gradient-waterworld': [
         Waterworld
     ],
+    'gradient-jungle': [
+    Junglestart
+],
     'gradient-intro': [
         GameState.Intro
     ]

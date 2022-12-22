@@ -44,6 +44,11 @@ h1 {
     background: linear-gradient(180deg, rgba(255,235,0,1) 0%, rgba(205,160,0,1) 40%, rgba(60,60,35,1) 100%); 
 }
 
+.gradient-jungle {
+    background: linear-gradient(0deg, rgba(6,125,80,1) 0%, rgba(36,230,108,1) 50%, rgba(19,232,205,1) 100%);
+}
+
+
 .combat-win {
    /* Add victory picture here */
 }
