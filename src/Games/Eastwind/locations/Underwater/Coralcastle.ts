@@ -1,4 +1,4 @@
-import { IGame, Location } from '../types';
+import { IGame, Location } from '../../types';
 import description from './Coralcastle.html';
 
 export function Coralcastle() {
