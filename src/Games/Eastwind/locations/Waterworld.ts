@@ -1,6 +1,5 @@
 import { IGame, ILocation, Location } from '../types';
 import { Beach } from './Beach';
-import { Coralcastle } from './Coralcastle';
 import description from './Waterworld.html';
 
 export function Waterworld() {

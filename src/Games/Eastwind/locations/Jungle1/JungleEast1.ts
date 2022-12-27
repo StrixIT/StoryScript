@@ -1,4 +1,4 @@
-import { IGame, Location } from '../types';
+import { IGame, Location } from '../../types';
 import description from './JungleEast1.html';
 
 export function JungleEast1() {
