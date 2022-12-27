@@ -32,6 +32,13 @@ export function ShipsHold() {
 		leaveEvents: [
 		],
 		actions: [
+			{
+				text: 'Look around',
+				execute: (game: IGame) => {	
+					game.currentLocation.description = game.currentLocation.descriptions['Look around'];
+
+			},
+		}
 		],
 		combatActions: [
 		],
