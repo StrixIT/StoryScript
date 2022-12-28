@@ -1,3 +1,4 @@
+import { Constants } from '../constants';
 import { IGame, Location } from '../types';
 import description from './Beach.html';
 import { Junglestart } from './junglestart';
