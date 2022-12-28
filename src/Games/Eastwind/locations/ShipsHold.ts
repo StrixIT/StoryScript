@@ -18,6 +18,10 @@ export function ShipsHold() {
 			  },
 		],
 		features: [
+			{
+				name: 'banana'
+
+			}
 		],
 		items: [
 		],
