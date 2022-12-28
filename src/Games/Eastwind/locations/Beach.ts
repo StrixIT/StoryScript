@@ -15,6 +15,20 @@ export function Beach() {
 			
 		],
 		features: [
+			{
+				name: 'palm tree',
+				combinations: {
+					combine: [
+						{
+							combinationType: Constants.LOOKAT,
+							match: (game, target, tool): string => {
+								return 'You look at the palm tree';
+
+			                  }
+		                   },
+					]
+				}
+			}
 		],
 		items: [
 		],
