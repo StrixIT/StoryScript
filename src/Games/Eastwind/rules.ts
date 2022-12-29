@@ -56,8 +56,11 @@ export function Rules(): IRules {
             getCombinationActions: (): ICombinationAction[] => {
                 return [
                     {text: Constants.LOOKAT,
-                        preposition: 'at'
-                        
+                        preposition: 'at',
+                        requiresTool: false,
+                        failText: (game, target, tool): string => {
+                            return 'you look at the ' + target.name + '. There is nothing special about it.';
+                        }
                     },
     
                 ];
