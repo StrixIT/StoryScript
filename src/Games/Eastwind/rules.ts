@@ -1,6 +1,7 @@
 ﻿import { StateList } from 'storyScript/Interfaces/stateList';
 import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
 import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
+import { Constants } from './constants';
 import { Class } from './interfaces/class';
 import { Beach } from './locations/Beach';
 import { Junglestart } from './locations/junglestart';
@@ -54,7 +55,11 @@ export function Rules(): IRules {
             intro: true,
             getCombinationActions: (): ICombinationAction[] => {
                 return [
-                    // Add combination action names here if you want to use this feature.
+                    {text: Constants.LOOKAT,
+                        preposition: 'at'
+                        
+                    },
+    
                 ];
             },
             playList: {
