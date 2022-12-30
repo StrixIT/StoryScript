@@ -17,7 +17,7 @@ export function Beach() {
 		],
 		features: [
 			{
-				name: 'palm tree',
+				name: 'palmtree',
 				combinations: {
 					combine: [
 						{
