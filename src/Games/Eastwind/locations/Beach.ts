@@ -23,10 +23,17 @@ export function Beach() {
 						{
 							combinationType: Constants.LOOKAT,
 							match: (game, target, tool): string => {
-								return 'You look at the palm tree';
+								return 'A palmtree rises slightly crooked from the sand of the beach. Within its crown, you spot several coconuts.';
 
 			                  }
 		                   },
+						{
+							combinationType: Constants.USE,
+							match: (game, target, tool): string => {
+								return 'You might be able to climb the palmtree. Do you wish to try?';
+
+			                  }
+		                },
 					]
 				}
 			}

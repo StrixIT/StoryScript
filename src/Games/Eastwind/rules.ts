@@ -62,6 +62,17 @@ export function Rules(): IRules {
                             return 'you look at the ' + target.name + '. There is nothing special about it.';
                         }
                     },
+                    {
+                        text: Constants.USE,
+                        preposition: 'on',
+                    },
+                    {
+                        text: Constants.TAKE,
+                        requiresTool: false,
+                        failText: (game, target, tool): string => {
+                            return 'You cannot pick that up';
+                        }
+                    },
     
                 ];
             },
