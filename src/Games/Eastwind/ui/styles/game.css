@@ -118,3 +118,7 @@ h1 {
     border: double 6px transparent;
     border-radius: 20px;
 }
+
+feature {
+    color: green;
+}
