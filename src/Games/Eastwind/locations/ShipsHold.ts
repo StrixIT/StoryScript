@@ -1,3 +1,5 @@
+import { Constants } from '../constants';
+import { Flask } from '../items/flask';
 import { IGame, Location } from '../types';
 import description from './ShipsHold.html';
 import { ShipsHoldAft } from './ShipsHoldAft';
@@ -19,7 +21,43 @@ export function ShipsHold() {
 		],
 		features: [
 			{
-				name: 'banana'
+				name: 'banana',
+				combinations: {
+					combine: [
+						{
+							combinationType: Constants.LOOKAT,
+							match: (game, target, tool): string => {
+								return 'A fresh looking banana.';
+
+			                  }
+		                   },
+						{
+							combinationType: Constants.TAKE,
+							match: (game, target, tool): string => {
+								return 'You take the banana';
+
+			                  }
+		                },
+					]
+				}
+				
+
+			},
+			{
+				name: 'chest',
+				combinations: {
+					combine: [
+						{
+							combinationType: Constants.LOOKAT,
+							match: (game, target, tool): string => {
+								return 'A sturdy looking chest.';
+
+			                  }
+		                   },
+					
+					]
+				}
+				
 
 			}
 		],
