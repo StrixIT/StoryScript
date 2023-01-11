@@ -23,6 +23,13 @@ export function Junglepond() {
 		leaveEvents: [
 		],
 		actions: [
+			{
+				text: 'Approach the Pond',
+				execute: (game: IGame) => {	
+					game.currentLocation.description = game.currentLocation.descriptions['Approach the Pond'];
+				
+			},
+			}
 		],
 		combatActions: [
 		],

@@ -23,7 +23,7 @@ export function Beach() {
 						{
 							combinationType: Constants.LOOKAT,
 							match: (game, target, tool): string => {
-								return 'A palmtree rises slightly crooked from the sand of the beach. Within its crown, you spot several coconuts.';
+								return 'A palmtree rises from the sand of the beach. Within its crown, you spot several coconuts.';
 
 			                  }
 		                   },

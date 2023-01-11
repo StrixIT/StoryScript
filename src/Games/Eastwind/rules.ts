@@ -63,7 +63,13 @@ export function Rules(): IRules {
                     },
                     {
                         text: Constants.USE,
+                        requiresTool: false,
                         preposition: 'on',
+                    },
+                    {
+                        text: Constants.COMBINE,
+                        requiresTool: true,
+                        preposition: 'with',
                     },
                     {
                         text: Constants.TAKE,
