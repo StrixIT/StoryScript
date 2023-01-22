@@ -1,4 +1,5 @@
 import { IGame, Location } from '../types';
+import { Junglepond } from './Junglepond';
 import description from './junglestart.html';
 
 export function Junglestart() {
@@ -6,7 +7,9 @@ export function Junglestart() {
 		name: 'Junglestart',
 		description: description,
 		destinations: [
-			
+			{	name: 'Go East',
+				target: Junglepond,
+			  },
 		],
 		features: [
 		],
