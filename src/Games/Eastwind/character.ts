@@ -4,6 +4,7 @@ import { Class } from './interfaces/class';
 import { Firebolt } from './items/firebolt';
 import { Healingpotion } from './items/healingPotion';
 import { Sword } from './items/sword';
+import { Map } from './items/map';
 import { IEquipment, IItem } from './types';
 
 export class Character implements ICharacter {
@@ -22,7 +23,8 @@ export class Character implements ICharacter {
     
     items: ICollection<IItem> = [
         Healingpotion(),
-        Firebolt()
+        Firebolt(),
+        Map()
     ];
 
     equipment: IEquipment;
