@@ -122,3 +122,12 @@ h1 {
 feature {
     color: green;
 }
+
+#game-map {
+    text-align: center;
+}
+
+#game-map img {
+    max-width: 70%;
+    border-radius: var(--bs-modal-inner-border-radius);
+}
