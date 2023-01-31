@@ -1,25 +1,24 @@
+import { Pirate } from '../enemies/Pirate';
 import { IGame, Location } from '../types';
-import description from './shipbattle.html';
-import { Shipbattle2 } from './shipbattle2';
-import { ShipStern } from './shipStern';
+import description from './shipbattle2.html';
 import { Waterworld } from './Waterworld';
 
-export function Shipbattle() {
+export function Shipbattle2() {
 	return Location({
-		name: 'Shipbattle',
+		name: 'Shipbattle2',
 		description: description,
 		destinations: [
 			{
 				name: 'Continue...',
-				target: Shipbattle2,
+				target: Waterworld,
 			  },
-			
 		],
 		features: [
 		],
 		items: [
 		],
 		enemies: [
+			Pirate()
 		],
 		persons: [
 		],
