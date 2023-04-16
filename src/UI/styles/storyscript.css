@@ -1,11 +1,19 @@
-﻿body {
+﻿:root {
+    --purple: rgb(72, 61, 139);
+    --black: #000;
+    --white: #fff;
+    --red: red;
+    --light-gray: lightgray;
+  }
+
+body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    color: #483D8B;
+    color: var(--purple);
 }
 
 h2 {
     font-family: 'Trebuchet MS';
-    color: #483D8B;
+    color: var(--purple);
 }
 
 button {
@@ -24,8 +32,8 @@ button {
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
+    color: var(--black);
+    text-shadow: 0 1px 0 var(--white);
     opacity: .5;
     border: none;
     background: none;
@@ -43,7 +51,7 @@ button {
 }
 
 .box-container {
-    border: solid 1px rgb(72, 61, 139);
+    border: solid 1px var(--purple);;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px 5px 0 0;
@@ -52,8 +60,8 @@ button {
 .box-title {
     font-size: 1.3rem;
     font-family: Andalus;
-    color: white;
-    background-color: rgb(72, 61, 139);
+    color: var(--white);;
+    background-color: var(--purple);;
     padding: 0px 10px;
     margin: -10px -10px 10px -10px;
 }
@@ -196,7 +204,7 @@ button {
 }
 
 #character-equipment .item-box {
-    border-top: 1px solid black;
+    border-top: 1px solid var(--black);;
     min-height: 25px;
     line-height: 25px;
 }
@@ -231,12 +239,12 @@ button.restart {
 
 .combine-selectable:hover {
     cursor: pointer;
-    background-color: lightgray;
+    background-color: var(--light-gray);;
     border-radius: 5px;
 }
 
 .combine-active-selected {
-    color: red;
+    color: var(--red);;
 }
 
 .combination-text, .combination-result-text {
