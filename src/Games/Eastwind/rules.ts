@@ -14,7 +14,7 @@ import { ShipsholdFront } from './locations/ShipsholdFront';
 import { ShipStern } from './locations/shipStern';
 import { Start } from './locations/start';
 import { Waterworld } from './locations/Waterworld';
-import { IGame, IEnemy, Character, ILocation } from './types';
+import { IGame, IEnemy, Character, ILocation, IEquipment } from './types';
 
 const combatTimeout: number = 1000;
 
@@ -475,6 +475,8 @@ export function Rules(): IRules {
                     game.logToCombatLog(equipment.leftHand?.attackText);
                 }
 
+                SetAttackImage(equipment, game);
+
                 var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
                 var attackSound = equipment.rightHand?.attackSound ?? equipment.leftHand?.attackSound;
                 return fight(game, enemy, attackSound, damage);
@@ -549,6 +551,28 @@ const enemyAttacks = function (game: IGame, enemy: IEnemy): Promise<void> | void
     var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
     game.combatLog.push('The ' + enemy.name + ' does ' + damage + ' damage!');
     game.character.currentHitpoints -= damage;
+}
+
+function SetAttackImage(equipment: IEquipment, game: IGame) {
+    var attackImage = equipment.rightHand.attackImage ?? equipment.leftHand.attackImage;
+
+    if (attackImage) {
+        const attackElementSelector = '.attack-symbol';
+        const enemyPortrait = game.UIRootElement.querySelector('.enemy-portrait');
+        const portraitContainer = enemyPortrait.parentElement;
+        let attackSymbol = portraitContainer.querySelector(attackElementSelector);
+
+        if (!attackSymbol) {
+            const width = enemyPortrait.clientWidth / 2;
+            const height = enemyPortrait.clientHeight / 2;
+            var attackSymbolString = `<img class="attack-symbol" style="position:absolute; top:${width}px; left:${height}px; z-index: 20" />`;
+            var attackSymbolElement = new DOMParser().parseFromString(attackSymbolString, "text/html");
+            portraitContainer.prepend(attackSymbolElement.body.firstElementChild);
+            attackSymbol = portraitContainer.querySelector(attackElementSelector);
+        }
+
+        (<HTMLImageElement>attackSymbol).src = `resources/${attackImage}`;
+    }
 }
 
 const setGradient = function(game: IGame) {
