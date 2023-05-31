@@ -9,6 +9,7 @@ export interface IItem extends IFeature, StoryScriptIItem {
     // Add game-specific item properties here
     attackText?: string;
     attackSound?: string;
+    attackImage?: string;
     isSpell?: boolean;
     combatOnly?: boolean;
     damage?: string;

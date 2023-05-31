@@ -8,6 +8,7 @@ export function Sword() {
 		description: description,
 		equipmentType: EquipmentType.RightHand,
 		attackText: 'You swing your sword',
-		attackSound: 'swing3.wav'
+		attackSound: 'swing3.wav',
+		attackImage: 'Slash.gif'
 	});
 }
