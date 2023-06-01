@@ -53,6 +53,7 @@ export function Rules(): IRules {
     return {
         setup: {
             intro: true,
+            fadeMusicInterval: 200,
             getCombinationActions: (): ICombinationAction[] => {
                 return [
                     {text: Constants.LOOKAT,
