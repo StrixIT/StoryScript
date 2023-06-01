@@ -53,4 +53,11 @@ export interface ISetupRules {
         }
      */
     playList?: StateList;
+
+    /**
+     * When you want to fade out music before starting a new piece, set this interval. The interval is in miliseconds, so specify
+     * a sufficiently large value (e.g. 250). The volume will be reduced by 10% each interval, and the new music starts when the
+     * volume of the current music reaches 0.
+     */
+    fadeMusicInterval?: number;
 }

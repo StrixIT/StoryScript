@@ -45,6 +45,8 @@ export class ObjectFactory {
 
     GetGame = (): IGame => this._game;
 
+    GetRules = (): IRules => this._rules;
+
     GetTexts = (): IInterfaceTexts => this._texts;
 
     GetGameService = (): IGameService => this._gameService;
