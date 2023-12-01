@@ -63,10 +63,6 @@ var objectFactory = GetObjectFactory();
     bootstrap: [
         MainComponent
     ],
-    entryComponents: [
-        MenuModalComponent,
-        EncounterModalComponent
-    ],
     declarations: [
         MainComponent,
         MenuModalComponent,

@@ -12,7 +12,8 @@ import { IRules } from 'storyScript/Interfaces/storyScript';
 export class SoundComponent {
     private _game: IGame;
     private _rules: IRules;
-    private _fadeInterval: NodeJS.Timer;
+    private _isPlaying: boolean = false;
+    private _fadeInterval: NodeJS.Timeout;
     private _fadingMusic: boolean = false;
     private _currentMusic: string;
     private _currentVolume: number = 1;
@@ -20,6 +21,7 @@ export class SoundComponent {
     constructor(private ngZone: NgZone, private _gameService: GameService, objectFactory: ObjectFactory) {
         this._game = objectFactory.GetGame();
         this._rules = objectFactory.GetRules();
+        setInterval(this.checkMusicPlaying, 500);
     }
 
     getCurrentMusic = (): string => {
@@ -70,6 +72,27 @@ export class SoundComponent {
         soundQueue.delete(sound.key);
     }
 
+    // This code is here to (re)start music playback as soon as the user interacts with the browser.
+    private checkMusicPlaying = () => {
+        if (this._isPlaying) {
+            return;
+        }
+
+        var backgroundMusicElement = this.getMusicPlayer(); 
+
+        if (backgroundMusicElement)
+        {
+            // This will trigger a warning when the user hasn't interacted with the web page yet. Currently (June 1st 2023),
+            // I haven't found a way to silence this warning.
+            var audioContext = new window.AudioContext();
+        
+            if (audioContext?.state !== 'suspended') {   
+                backgroundMusicElement.play();
+                this._isPlaying = true;
+            }
+        }
+    }
+
     private fade = (newMusic: string) => {
         var newVolume = this._currentVolume - 0.1;
 
@@ -83,7 +106,11 @@ export class SoundComponent {
             this._fadingMusic = false;
         }
 
-        var backgroundMusicElement = <HTMLAudioElement>this._game.UIRootElement.getElementsByClassName('backgroundmusic-player')[0];
+        var backgroundMusicElement = this.getMusicPlayer();
         backgroundMusicElement.volume = this._currentVolume;
+    }
+
+    private getMusicPlayer = () => {
+        return <HTMLAudioElement>this._game.UIRootElement.getElementsByClassName('backgroundmusic-player')[0];
     }
 }
