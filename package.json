@@ -5,11 +5,11 @@
     "author": "Rutger Schurgers",
     "private": true,
     "type": "module",
-    "main": "./src/UI/electron.js",
+    "main": "./src/UI/electron.cjs",
     "build": {
         "appId": "storyscript.id",
         "files": [
-            "./src/UI/electron.js",
+            "./src/UI/electron.cjs",
             "dist/**/*"
         ],
         "win": {

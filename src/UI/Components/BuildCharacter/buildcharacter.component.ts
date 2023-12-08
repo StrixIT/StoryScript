@@ -1,4 +1,5 @@
-import { IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
+import { IInterfaceTexts, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
+import type { ICreateCharacter } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, Input } from '@angular/core';

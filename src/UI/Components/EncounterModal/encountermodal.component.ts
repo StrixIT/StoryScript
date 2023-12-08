@@ -1,7 +1,7 @@
 import { Component, Input, ElementRef } from '@angular/core';
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { IModalSettings } from '../modalSettings';
+import type { IModalSettings } from '../modalSettings';
 import { getTemplate } from '../../helpers';
 
 @Component({
