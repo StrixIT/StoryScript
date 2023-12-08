@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "author": "Rutger Schurgers",
     "private": true,
+    "type": "module",
     "main": "./src/UI/electron.js",
     "build": {
         "appId": "storyscript.id",
@@ -27,7 +28,7 @@
         "create-quest": "node createAsset.js quest",
         "start": "webpack-dev-server --config webpack/webpack.development.js",
         "publish": "webpack --config webpack/webpack.production.js",
-        "engine-tests": "cd src/Tests/Engine && karma start",
+        "engine-tests": "cd src/Tests/Engine && karma start karma.conf.cjs",
         "myroleplayinggame-tests": "cd src/Tests/Games/MyRolePlayingGame && karma start",
         "electron-start": "webpack --config webpack/webpack.production.js && electron .",
         "electron-publish": "webpack --config webpack/webpack.production.js && electron-builder"

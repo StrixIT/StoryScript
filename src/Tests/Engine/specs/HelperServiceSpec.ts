@@ -1,9 +1,9 @@
-import { GetObjectFactory } from 'storyScript/run';
 import { HelperService } from 'storyScript/Services/helperService';
 import { GetDefinitions } from 'storyScript/ObjectConstructors';
 import { IKey, IEnemy, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { IItem } from '../../../Games/MyRolePlayingGame/types';
 import '../../../Games/MyRolePlayingGame/run';
+import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("HelperService", function() {
 
@@ -137,7 +137,7 @@ describe("HelperService", function() {
 });
 
 function getService(game?) {
-    return new HelperService(game || GetObjectFactory().GetGame());
+    return new HelperService(game || ObjectFactory.GetInstance().GetGame());
 }
 
 function find(collection, name) {

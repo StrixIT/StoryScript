@@ -1,12 +1,12 @@
 import '../../../Games/MyRolePlayingGame/run';
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { IDataService } from '../../../Engine/Interfaces/services/dataService';
-import { GetObjectFactory } from 'storyScript/run';
+import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("ConversationService", function() {
 
     it("Object factory should return conversation service", function() {
-        var factory = GetObjectFactory();
+        var factory = ObjectFactory.GetInstance();
         var service = factory.GetConversationService();
         expect(service).not.toBeNull();
     });

@@ -1,11 +1,11 @@
 import '../../../Games/MyRolePlayingGame/run';
 import { DefaultTexts } from 'storyScript/defaultTexts';
-import { GetObjectFactory } from 'storyScript/run';
+import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("Default texts", function() {
 
     it("Object factory should return texts", function() {
-        var factory = GetObjectFactory();
+        var factory = ObjectFactory.GetInstance();
         var texts = factory.GetTexts();
         expect(texts).not.toBeNull();
     });

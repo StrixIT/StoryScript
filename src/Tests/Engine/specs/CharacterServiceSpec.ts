@@ -7,7 +7,7 @@ import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
 import { addArrayExtensions } from 'storyScript/globals';
-import { GetObjectFactory } from 'storyScript/run';
+import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("CharacterService", function() {
 
@@ -18,7 +18,7 @@ describe("CharacterService", function() {
     describe("Character sheet", function() {
 
         it("Object factory should return character service", function() {
-            var factory = GetObjectFactory();
+            var factory = ObjectFactory.GetInstance();
             var service = factory.GetCharacterService();
             expect(service).not.toBeNull();
         });

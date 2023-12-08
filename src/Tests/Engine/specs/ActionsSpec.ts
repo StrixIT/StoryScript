@@ -1,9 +1,9 @@
-import { IGame } from '../../../Engine/Interfaces/game';
-import { IBarrier } from '../../../Engine/Interfaces/barrier';
-import { IDestination } from '../../../Engine/Interfaces/destination';
-import { Open } from '../../../Engine/Actions/open';
-import { OpenWithKey } from '../../../Engine/Actions/openWithKey';
-import { IKey } from '../../../Engine/Interfaces/key';
+import { IGame } from 'storyScript/Interfaces/game';
+import { IBarrier } from 'storyScript/Interfaces/barrier';
+import { IDestination } from 'storyScript/Interfaces/destination';
+import { Open } from 'storyScript/Actions/open';
+import { OpenWithKey } from 'storyScript/Actions/openWithKey';
+import { IKey } from 'storyScript/Interfaces/key';
 
 describe("StoryScript Actions", function() {
 

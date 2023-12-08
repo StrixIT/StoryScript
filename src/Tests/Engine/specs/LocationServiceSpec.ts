@@ -1,6 +1,5 @@
 import { GetDefinitions } from 'storyScript/ObjectConstructors';
 import { LocationService } from 'storyScript/Services/LocationService';
-import { GetObjectFactory } from 'storyScript/run';
 import { IGame, ICollection, ICompiledLocation } from 'storyScript/Interfaces/storyScript';
 import '../../../Games/MyRolePlayingGame/run';
 

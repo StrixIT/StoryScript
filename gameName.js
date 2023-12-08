@@ -1,3 +1,3 @@
 const gameName = 'MyRolePlayingGame';
 
-module.exports = gameName;
+export default gameName;

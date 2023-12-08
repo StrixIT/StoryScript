@@ -6,12 +6,12 @@ import { DefaultTexts } from 'storyScript/defaultTexts';
 import { ICombinations } from 'storyScript/Interfaces/combinations/combination';
 import { ICombine } from 'storyScript/Interfaces/combinations/combine';
 import { Constants } from '../../../Games/MyAdventureGame/constants';
-import { GetObjectFactory } from 'storyScript/run';
+import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("CombinationService", function() {
 
     it("Object factory should return combination service", function() {
-        var factory = GetObjectFactory();
+        var factory = ObjectFactory.GetInstance();
         var service = factory.GetCombinationService();
         expect(service).not.toBeNull();
     });

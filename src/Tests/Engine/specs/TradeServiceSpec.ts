@@ -1,19 +1,19 @@
 import '../../../Games/MyRolePlayingGame/run';
 import { TradeService } from 'storyScript/Services/TradeService';
-import { GetObjectFactory } from 'storyScript/run';
 import { ITrade, ICompiledLocation, IPerson, PlayState } from 'storyScript/Interfaces/storyScript';
 import { IStock } from 'storyScript/Interfaces/stock';
+import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("TradeService", function() {
 
     it("Object factory should return trade service", function() {
-        var factory = GetObjectFactory();
+        var factory = ObjectFactory.GetInstance();
         var service = factory.GetTradeService();
         expect(service).not.toBeNull();
     });
 
     it("should start trade with an entity that is not a person", function() {
-        var game = GetObjectFactory().GetGame();
+        var game = ObjectFactory.GetInstance().GetGame();
 
         var trade = [<ITrade>{
             buy: {
@@ -36,7 +36,7 @@ describe("TradeService", function() {
     });
     
     it("should start trade with a person", function() {
-        var game = GetObjectFactory().GetGame();
+        var game = ObjectFactory.GetInstance().GetGame();
 
         var texts = {
             format: function(format, tokens) { return tokens[0]; }
@@ -82,7 +82,7 @@ describe("TradeService", function() {
 });
 
 function getService(game?, texts?) {
-    game = game || GetObjectFactory().GetGame();
+    game = game || ObjectFactory.GetInstance().GetGame();
     game.character = game.character || {
         items: []
     };

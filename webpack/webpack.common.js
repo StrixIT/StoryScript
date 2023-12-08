@@ -1,12 +1,11 @@
+import gameName from '../gameName.js';
+import { resolve } from 'path';
+import { __dirname } from './webpack.base.js';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-const gameName = require('../gameName.js');
-const path = require('path');
-const { merge } = require('webpack-merge');
-const base = require('./webpack.base.js');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-
-module.exports = merge(base, {
+export default {
+    extends: resolve(__dirname, './webpack.base.js'),
     entry: {
         storyscript: './src/UI/main.ts'
     },
@@ -32,12 +31,12 @@ module.exports = merge(base, {
         }),
         new CopyWebpackPlugin({
             patterns: [{
-                from: path.resolve(__dirname, `../src/Games/${gameName}/resources`),
+                from: resolve(__dirname, `../src/Games/${gameName}/resources`),
                 to: 'resources',
                 noErrorOnMissing: true
             },
             { 
-                from: path.resolve(__dirname, `../src/Games/${gameName}/gameinfo.json`),
+                from: resolve(__dirname, `../src/Games/${gameName}/gameinfo.json`),
                 to: '[name].[ext]'
             }
         ]})
@@ -54,4 +53,4 @@ module.exports = merge(base, {
             }
         }
     }
-});
+}

@@ -12,7 +12,6 @@ import { CharacterService } from 'storyScript/Services/characterService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { GetObjectFactory } from 'storyScript/run';
 
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { NavigationComponent } from './Components/Navigation/navigation.component';
@@ -50,7 +49,7 @@ import './styles/storyscript.css';
 import 'game/ui/styles/game.css'
 import 'game/run';
 
-var objectFactory = GetObjectFactory();
+const objectFactory = ObjectFactory.GetInstance();
 
 @NgModule({
     imports: [

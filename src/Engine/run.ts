@@ -4,8 +4,6 @@ import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
 import { buildEntities, Register } from './ObjectConstructors';
 
-let _factory: ObjectFactory = null;
-
 /**
  * This function bootstraps and runs your game.
  * @param nameSpace Your game's namespace (e.g. '_GameTemplate')
@@ -15,14 +13,11 @@ let _factory: ObjectFactory = null;
 export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
     addFunctionExtensions();
     addArrayExtensions();
+    // Todo: this is webpack specific and should not be part of the engine. Inject it.
     importAssets(require.context('game', true, /[a-zA-Z0-9].ts$/));
     buildEntities();
 
-    _factory = new ObjectFactory(nameSpace, rules, texts);
-}
-
-export function GetObjectFactory() {
-    return _factory;
+    new ObjectFactory(nameSpace, rules, texts);
 }
 
 function importAssets(r) {

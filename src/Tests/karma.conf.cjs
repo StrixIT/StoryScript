@@ -2,10 +2,10 @@ const path = require('path');
 const os = require('os');
 
 module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gamePath, codePath) {
-  webPackConfig.resolve.alias.game = path.resolve(__dirname, gamePath);
-  webPackConfig.output = { path: path.join(os.tmpdir(), '_karma_webpack_') + Math.floor(Math.random() * 1000000) };
+  webPackConfig.default.resolve.alias.game = path.resolve(__dirname, gamePath);
+  webPackConfig.default.output = { path: path.join(os.tmpdir(), '_karma_webpack_') + Math.floor(Math.random() * 1000000) };
 
-  webPackConfig.module.rules.push({
+  webPackConfig.default.module.rules.push({
     enforce: 'post',
     test: /\.ts$/,
     loader: 'istanbul-instrumenter-loader',
@@ -32,7 +32,7 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
       'specs/*.ts': ['webpack'],
     },
 
-    webpack: webPackConfig,
+    webpack: webPackConfig.default,
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

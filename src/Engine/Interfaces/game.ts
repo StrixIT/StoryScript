@@ -6,7 +6,6 @@ import { ScoreEntry } from './scoreEntry';
 import { IPerson } from './person';
 import { ITrade } from './trade';
 import { IFeature } from './feature';
-import { IDynamicStyle } from './dynamicStyle';
 import { ILocation } from './location';
 import { IEnemy } from './enemy';
 import { IStatistics } from './statistics';

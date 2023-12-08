@@ -4,5 +4,5 @@
         "../../../Engine/typeExtensions.d.ts",
         "../../../Games/MyRolePlayingGame/**/*.ts",
         "./**/*.ts"
-    ]
+, "karma.conf.cjs"    ]
   }

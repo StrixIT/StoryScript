@@ -11,24 +11,27 @@ import { CustomTexts } from './customTexts'
 import { Rules } from './rules'
 import { Character } from './character'
 
-export { 
+export type {
     IFeature,
-    Feature,
     IItem,
-    Item,
     IKey,
-    Key,
     IEnemy,
-    Enemy,
     IPerson,
-    Person,
     IQuest,
-    Quest,
     ILocation,
     ICompiledLocation, 
-    Location, 
     IEquipment,
     IGame, 
+}
+
+export { 
+    Feature,
+    Item,
+    Key,
+    Enemy,
+    Person,
+    Quest,
+    Location, 
     CustomTexts, 
     Rules, 
     Character 

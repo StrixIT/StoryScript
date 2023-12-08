@@ -1,10 +1,10 @@
-import { GetObjectFactory } from 'storyScript/run';
 import { DataService } from 'storyScript/Services/DataService';
 import { IDataService } from 'storyScript/Interfaces/services/dataService';
 import { IGame } from 'storyScript/Interfaces/storyScript';
 import { ILocationCollection } from 'storyScript/Interfaces/locationCollection';
 import { GetFunctions } from 'storyScript/ObjectConstructors';
 import '../../../Games/MyRolePlayingGame/run';
+import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("DataService", function() {
     const originalWarn = console.warn
@@ -128,7 +128,7 @@ var storageService = {
 };
 
 function initWorld(): IGame {
-    var objectFactory = GetObjectFactory();
+    var objectFactory = ObjectFactory.GetInstance();
     var game = objectFactory.GetGame();
 
     // Initialize the world so it is available for saving.

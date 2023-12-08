@@ -1,21 +1,32 @@
-const gameName = require('../gameName.js');
-const path = require('path');
-const jf = require('jsonfile');
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
-const RemovePlugin = require('remove-files-webpack-plugin');
-const ZipPlugin = require('zip-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+import gameName from '../gameName.js';
+import { resolve } from 'path';
 
-const gameInfo = jf.readFileSync(path.resolve(__dirname, `../src/Games/${gameName}`, 'gameinfo.json'));
+import jsonfile from 'jsonfile';
+const { readFileSync } = jsonfile;
+
+import { __dirname } from './webpack.base.js';
+
+// Todo: enable this
+//import  * as _module from './webpack.common.js';
+import RemovePlugin from 'remove-files-webpack-plugin';
+import ZipPlugin from 'zip-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+
+// Todo: enable this
+//import { ImageminPlugin } from 'imagemin-webpack-plugin';
+import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
+
+import minicss from 'mini-css-extract-plugin';
+const { loader: _loader } = minicss;
+
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+
+const gameInfo = readFileSync(resolve(__dirname, `../src/Games/${gameName}`, 'gameinfo.json'));
 const cleanConfig = {
     before: {
-        include: [path.resolve(__dirname, '../dist')]
+        include: [resolve(__dirname, '../dist')]
     }
 };
 
@@ -33,9 +44,10 @@ var plugins = [
         chunkFilename: '[name].[contenthash].css',
     }),
     terser,
-    new ImageminPlugin({
-        test: /\.(jpe?g|png|gif|svg)$/i 
-    }),
+    // Todo: enable this
+    // new ImageminPlugin({
+    //     test: /\.(jpe?g|png|gif|svg)$/i 
+    // }),
     new ReplaceInFileWebpackPlugin([{
         dir: 'dist',
         test: [/\.js$/],
@@ -58,7 +70,7 @@ if (gameInfo.sourcesIncluded) {
     };
 
     plugins.push(new CopyWebpackPlugin({ patterns: [{
-        from: path.resolve(__dirname, `../src/Games/${gameName}`),
+        from: resolve(__dirname, `../src/Games/${gameName}`),
         to: 'sources'
     }]}));
 
@@ -70,11 +82,13 @@ if (gameInfo.sourcesIncluded) {
 
 plugins.push(new RemovePlugin(cleanConfig));
 
+// Todo: enable this
 // This assumes the first rule imported is the css rule. Enable the log statement to check.
-var cssRule = common.module.rules.pop();
+//var cssRule = _module.rules.pop();
 //console.log(cssRule);
 
-module.exports = merge(common, {
+export default {
+    extends: resolve(__dirname, './webpack.common.js'),
     output: {
         filename: '[name].[contenthash].js'
     },
@@ -88,7 +102,7 @@ module.exports = merge(common, {
         rules: [
           {
             test: /\.css$/,
-            use: [MiniCssExtractPlugin.loader,                     {  
+            use: [_loader, {  
                 loader: 'css-loader',
                 options: {
                     url: false
@@ -98,4 +112,4 @@ module.exports = merge(common, {
         ],
       },
     plugins: plugins
-});
+};

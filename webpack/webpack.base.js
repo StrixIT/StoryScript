@@ -1,31 +1,40 @@
+import path from 'path';
+import { resolve as _resolve } from 'path';
+import {fileURLToPath} from 'url';
+import gameName from '../gameName.js';
 
-const gameName = require('../gameName.js');
-const path = require('path');
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-module.exports = {
-    mode: 'development',
-    output: {
-        filename: '[name].[fullhash].js',
-        path: path.resolve(__dirname, '../dist')
-    },
-    module: {
-        rules: [
-            {
-                test: /\.ts?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.html$/,
-                use: 'raw-loader'
-            }
-        ]
-    },
-    resolve: {
-        extensions: [".ts", ".js", ".css"],
-        alias: {
-            storyScript: path.resolve(__dirname, '../src/Engine'),
-            game: path.resolve(__dirname, `../src/Games/${gameName}/`)
+export const mode = 'development';
+
+export const output = {
+    filename: '[name].[fullhash].js',
+    path: _resolve(__dirname, '../dist')
+};
+export const module = {
+    rules: [
+        {
+            test: /\.ts?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/
+        },
+        {
+            test: /\.html$/,
+            use: 'raw-loader'
         }
+    ]
+};
+export const resolve = {
+    extensions: [".ts", ".js", ".css"],
+    alias: {
+        storyScript: _resolve(__dirname, '../src/Engine'),
+        game: _resolve(__dirname, `../src/Games/${gameName}/`)
     }
 };
+
+export default {
+    mode: mode,
+    module: module,
+    output: output,
+    resolve: resolve
+}
