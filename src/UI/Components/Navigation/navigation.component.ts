@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'navigation',
-    template: getTemplate('navigation', require('./navigation.component.html'))
+    template: getTemplate('navigation', await import('./navigation.component.html'))
 })
 export class NavigationComponent {
     constructor(private _gameService: GameService, objectFactory: ObjectFactory) {

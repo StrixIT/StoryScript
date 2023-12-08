@@ -27,7 +27,7 @@ export default {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/UI/index.html'
+            template: 'index.html'
         }),
         new CopyWebpackPlugin({
             patterns: [{

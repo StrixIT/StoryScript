@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'victory',
-    template: getTemplate('victory', require('./victory.component.html'))
+    template: getTemplate('victory', await import('./victory.component.html'))
 })
 export class VictoryComponent {
     constructor(private _gameService: GameService, objectFactory: ObjectFactory) {

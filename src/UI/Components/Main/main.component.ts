@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'main',
-    template: getTemplate('main', require('./main.component.html'))
+    template: getTemplate('main', await import('./main.component.html'))
 })
 export class MainComponent {
     constructor(private hostElement: ElementRef, private _sharedMethodService: SharedMethodService, private _gameService: GameService, objectFactory: ObjectFactory) {

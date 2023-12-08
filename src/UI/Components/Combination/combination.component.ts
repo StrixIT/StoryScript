@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'combination',
-    template: getTemplate('combination', require('./combination.component.html'))
+    template: getTemplate('combination', await import('./combination.component.html'))
 })
 export class CombinationComponent {
     constructor(private _combinationService: CombinationService, objectFactory: ObjectFactory) {

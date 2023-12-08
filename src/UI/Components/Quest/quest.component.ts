@@ -8,7 +8,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'quests',
-    template: getTemplate('quest', require('./quest.component.html'))
+    template: getTemplate('quest', await import('./quest.component.html'))
 })
 export class QuestComponent {
     constructor(private _characterService: CharacterService, sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'equipment',
-    template: getTemplate('equipment', require('./equipment.component.html'))
+    template: getTemplate('equipment', await import('./equipment.component.html'))
 })
 export class EquipmentComponent {
     constructor(private _sharedMethodService: SharedMethodService, private _characterService: CharacterService, objectFactory: ObjectFactory) {

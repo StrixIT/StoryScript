@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'combat',
-    template: getTemplate('combat', require('./combat.component.html'))
+    template: getTemplate('combat', await import('./combat.component.html'))
 })
 export class CombatComponent {
     constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

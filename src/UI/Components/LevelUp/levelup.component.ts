@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'level-up',
-    template: getTemplate('levelup', require('./levelup.component.html'))
+    template: getTemplate('levelup', await import('./levelup.component.html'))
 })
 export class LevelUpComponent {
     constructor(private _gameService: GameService, private _characterService: CharacterService, objectFactory: ObjectFactory) {

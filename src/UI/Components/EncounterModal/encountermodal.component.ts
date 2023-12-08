@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'encounter-modal',
-    template: getTemplate('encountermodal', require('./encountermodal.component.html'))
+    template: getTemplate('encountermodal', await import('./encountermodal.component.html'))
 })
 export class EncounterModalComponent {
     @Input() settings: IModalSettings;

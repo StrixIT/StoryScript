@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'ground',
-    template: getTemplate('ground', require('./ground.component.html'))
+    template: getTemplate('ground', await import('./ground.component.html'))
 })
 export class GroundComponent {
     constructor(private _sharedMethodService: SharedMethodService, private _characterService: CharacterService, objectFactory: ObjectFactory) {

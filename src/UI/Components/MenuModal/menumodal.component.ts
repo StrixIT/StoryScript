@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'menu-modal',
-    template: getTemplate('menumodal', require('./menumodal.component.html'))
+    template: getTemplate('menumodal', await import('./menumodal.component.html'))
 })
 export class MenuModalComponent {
     constructor(private _activeModal: NgbActiveModal, private _gameService: GameService, objectFactory: ObjectFactory) {

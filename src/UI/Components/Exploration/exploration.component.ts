@@ -8,7 +8,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'exploration',
-    template: getTemplate('exploration', require('./exploration.component.html'))
+    template: getTemplate('exploration', await import('./exploration.component.html'))
 })
 export class ExplorationComponent {
     constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

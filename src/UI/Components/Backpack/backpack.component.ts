@@ -8,7 +8,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'backpack',
-    template: getTemplate('backpack', require('./backpack.component.html'))
+    template: getTemplate('backpack', await import('./backpack.component.html'))
 })
 export class BackpackComponent {
     constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, private _characterService: CharacterService, objectFactory: ObjectFactory) {

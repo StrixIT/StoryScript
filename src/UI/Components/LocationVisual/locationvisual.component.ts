@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'location-visual',
-    template: getTemplate('locationvisual', require('./locationvisual.component.html'))
+    template: getTemplate('locationvisual', await import('./locationvisual.component.html'))
 })
 export class LocationVisualComponent {
     constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {

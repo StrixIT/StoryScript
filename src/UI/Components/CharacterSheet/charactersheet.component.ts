@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'character-sheet',
-    template: getTemplate('charactersheet', require('./charactersheet.component.html'))
+    template: getTemplate('charactersheet', await import('./charactersheet.component.html'))
 })
 export class CharacterSheetComponent {
     constructor(sharedMethodService: SharedMethodService, characterService: CharacterService, objectFactory: ObjectFactory) {

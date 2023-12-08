@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'trade',
-    template: getTemplate('trade', require('./trade.component.html'))
+    template: getTemplate('trade', await import('./trade.component.html'))
 })
 export class TradeComponent {
     constructor(private _tradeService: TradeService, objectFactory: ObjectFactory) {

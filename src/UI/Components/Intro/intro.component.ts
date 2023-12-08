@@ -5,12 +5,9 @@ import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
-var template = require('./intro.component.html').default;
-var userTemplate = getTemplate('intro');
-
 @Component({
     selector: 'intro',
-    template: userTemplate || template
+    template: getTemplate('intro', await import('./intro.component.html'))
 })
 export class IntroComponent {
     constructor(private _gameService: GameService, objectFactory: ObjectFactory) {

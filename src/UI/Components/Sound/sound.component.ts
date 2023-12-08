@@ -7,7 +7,7 @@ import { IRules } from 'storyScript/Interfaces/storyScript';
 
 @Component({
     selector: 'sound',
-    template: getTemplate('sound', require('./sound.component.html'))
+    template: getTemplate('sound', await import('./sound.component.html'))
 })
 export class SoundComponent {
     private _game: IGame;

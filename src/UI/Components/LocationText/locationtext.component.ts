@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'location-text',
-    template: getTemplate('locationtext', require('./locationtext.component.html'))
+    template: getTemplate('locationtext', await import('./locationtext.component.html'))
 })
 export class LocationTextComponent {
     constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
