@@ -2,15 +2,19 @@ import { DefaultEquipment, IGame, IInterfaceTexts, IItem } from 'storyScript/Int
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'equipment',
-    template: getTemplate('equipment', require('./equipment.component.html'))
+    template: getTemplate('equipment', await import('./equipment.component.html'))
 })
 export class EquipmentComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _characterService: CharacterService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (SharedMethodService) private _sharedMethodService: SharedMethodService, 
+        @Inject (CharacterService) private _characterService: CharacterService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useEquipment = true;

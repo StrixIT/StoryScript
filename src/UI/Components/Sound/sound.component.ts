@@ -1,5 +1,5 @@
 import { GameService } from 'storyScript/Services/gameService';
-import { Component, NgZone } from '@angular/core';
+import { Component, Inject, NgZone } from '@angular/core';
 import { IGame } from 'storyScript/Interfaces/game';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { getTemplate } from '../../helpers';
@@ -7,7 +7,7 @@ import { IRules } from 'storyScript/Interfaces/storyScript';
 
 @Component({
     selector: 'sound',
-    template: getTemplate('sound', require('./sound.component.html'))
+    template: getTemplate('sound', await import('./sound.component.html'))
 })
 export class SoundComponent {
     private _game: IGame;
@@ -18,7 +18,11 @@ export class SoundComponent {
     private _currentMusic: string;
     private _currentVolume: number = 1;
 
-    constructor(private ngZone: NgZone, private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (NgZone) private ngZone: NgZone, 
+        @Inject (GameService) private _gameService: GameService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this._game = objectFactory.GetGame();
         this._rules = objectFactory.GetRules();
         setInterval(this.checkMusicPlaying, 500);

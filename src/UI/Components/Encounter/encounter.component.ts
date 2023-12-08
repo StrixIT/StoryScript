@@ -1,16 +1,18 @@
 import { IGame, IInterfaceTexts, IItem, ITrade, IPerson } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core'
+import { Component, Inject } from '@angular/core'
 import { getTemplate } from '../../helpers';
-import { TradeService } from 'storyScript/Services/TradeService';
 
 @Component({
     selector: 'encounter',
-    template: getTemplate('encounter', require('./encounter.component.html'))
+    template: getTemplate('encounter', await import('./encounter.component.html'))
 })
 export class EncounterComponent {
-    constructor(private _tradeService: TradeService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (SharedMethodService) private _sharedMethodService: SharedMethodService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

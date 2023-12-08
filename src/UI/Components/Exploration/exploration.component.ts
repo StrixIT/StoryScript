@@ -3,15 +3,19 @@ import { isEmpty } from 'storyScript/utilities';
 import { GameService } from 'storyScript/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'exploration',
-    template: getTemplate('exploration', require('./exploration.component.html'))
+    template: getTemplate('exploration', await import('./exploration.component.html'))
 })
 export class ExplorationComponent {
-    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (GameService) private _gameService: GameService, 
+        @Inject (SharedMethodService) private _sharedMethodService: SharedMethodService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

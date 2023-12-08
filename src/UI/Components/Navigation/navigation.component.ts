@@ -1,15 +1,18 @@
 import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'navigation',
-    template: getTemplate('navigation', require('./navigation.component.html'))
+    template: getTemplate('navigation', await import('./navigation.component.html'))
 })
 export class NavigationComponent {
-    constructor(private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (GameService) private _gameService: GameService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

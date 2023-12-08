@@ -1,17 +1,21 @@
-import { IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
+import { IInterfaceTexts, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
+import type { ICreateCharacter } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, Input } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'build-character',
-    template: getTemplate('buildcharacter', require('./buildcharacter.component.html'))
+    template: getTemplate('buildcharacter', await import('./buildcharacter.component.html'))
 })
 export class BuildCharacterComponent {
     @Input() sheet: ICreateCharacter;
     
-    constructor(private _characterService: CharacterService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (CharacterService) private _characterService: CharacterService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.texts = objectFactory.GetTexts();
     }
 

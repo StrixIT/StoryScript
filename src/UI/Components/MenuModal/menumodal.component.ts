@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
@@ -7,10 +7,14 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'menu-modal',
-    template: getTemplate('menumodal', require('./menumodal.component.html'))
+    template: getTemplate('menumodal', await import('./menumodal.component.html'))
 })
 export class MenuModalComponent {
-    constructor(private _activeModal: NgbActiveModal, private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (NgbActiveModal) private _activeModal: NgbActiveModal, 
+        @Inject (GameService) private _gameService: GameService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.state = PlayState.Menu;

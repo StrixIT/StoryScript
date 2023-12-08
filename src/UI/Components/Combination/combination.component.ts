@@ -1,15 +1,18 @@
 import { IInterfaceTexts, IGame, ICombinable, ICombinationAction, ICombineResult } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { CombinationService } from 'storyScript/Services/CombinationService';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'combination',
-    template: getTemplate('combination', require('./combination.component.html'))
+    template: getTemplate('combination', await import('./combination.component.html'))
 })
 export class CombinationComponent {
-    constructor(private _combinationService: CombinationService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (CombinationService) private _combinationService: CombinationService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.combineActions = this._combinationService.getCombinationActions();

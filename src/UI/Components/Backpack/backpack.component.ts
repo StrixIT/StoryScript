@@ -3,15 +3,20 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'backpack',
-    template: getTemplate('backpack', require('./backpack.component.html'))
+    template: getTemplate('backpack', await import('./backpack.component.html'))
 })
 export class BackpackComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, private _characterService: CharacterService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (SharedMethodService) private _sharedMethodService: SharedMethodService, 
+        @Inject (GameService) private _gameService: GameService, 
+        @Inject (CharacterService) private _characterService: CharacterService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useBackpack = true;

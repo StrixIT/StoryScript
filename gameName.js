@@ -1,3 +1,2 @@
-const gameName = 'MyRolePlayingGame';
-
-module.exports = gameName;
+const gameName = '_GameTemplate';
+export default gameName;

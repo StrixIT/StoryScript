@@ -3,15 +3,17 @@ const _templates = new Map<string, string>();
 export function getTemplate(componentName: string, defaultTemplate?: any): string {
     if (_templates.size === 0) {
         var componentRegex = /\/[a-z_A-Z]{2,}\.component\.html$/;
-        var r = require.context('game/ui', true, /.component.html$/);
+        const modules = import.meta.glob('game/ui/*.component.html', { eager: true })
 
-        r.keys().map(i => {
-            var match = componentRegex.exec(i);
+        for (const path in modules)
+        {
+            var match = componentRegex.exec(path);
 
             if (match) {
-                _templates.set(match[0].substring(1, match[0].indexOf('.')), r(i).default);
+                // Todo: make work with Vite
+                _templates.set(match[0].substring(1, match[0].indexOf('.')), (<any>modules[path]).default);
             }
-        });
+        }
     }
 
     return _templates.get(componentName) || defaultTemplate?.default;

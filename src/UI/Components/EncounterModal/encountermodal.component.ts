@@ -1,17 +1,20 @@
-import { Component, Input, ElementRef } from '@angular/core';
+import { Component, Input, ElementRef, Inject } from '@angular/core';
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { IModalSettings } from '../modalSettings';
+import type { IModalSettings } from '../modalSettings';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'encounter-modal',
-    template: getTemplate('encountermodal', require('./encountermodal.component.html'))
+    template: getTemplate('encountermodal', await import('./encountermodal.component.html'))
 })
 export class EncounterModalComponent {
     @Input() settings: IModalSettings;
 
-    constructor(private hostElement: ElementRef, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (ElementRef) hostElement: ElementRef, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.element = hostElement.nativeElement;

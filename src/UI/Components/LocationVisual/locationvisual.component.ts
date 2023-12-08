@@ -2,15 +2,18 @@ import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storySc
 import { compareString } from 'storyScript/globals';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'location-visual',
-    template: getTemplate('locationvisual', require('./locationvisual.component.html'))
+    template: getTemplate('locationvisual', await import('./locationvisual.component.html'))
 })
 export class LocationVisualComponent {
-    constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (SharedMethodService) private _sharedMethodService: SharedMethodService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

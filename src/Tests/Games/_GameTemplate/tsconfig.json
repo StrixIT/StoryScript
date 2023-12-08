@@ -1,8 +1,0 @@
-{
-    "extends": "../../../tsconfig.json",
-    "include": [
-        "../../../Engine/typeExtensions.d.ts",
-        "../../../Games/MyRolePlayingGame/**/*.ts",
-        "./**/*.ts"
-    ]
-  }

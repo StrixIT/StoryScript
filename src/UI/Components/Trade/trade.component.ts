@@ -1,15 +1,18 @@
 import { IGame, IInterfaceTexts, IItem, ITrade } from 'storyScript/Interfaces/storyScript';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'trade',
-    template: getTemplate('trade', require('./trade.component.html'))
+    template: getTemplate('trade', await import('./trade.component.html'))
 })
 export class TradeComponent {
-    constructor(private _tradeService: TradeService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (TradeService) private _tradeService: TradeService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ITrade, IAction, ActionType, IPerson, IEnemy, ICombinable, IItem } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
@@ -13,7 +13,13 @@ export class SharedMethodService {
     private combinationSource = new Subject<boolean>();
 
     // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
-    constructor(_modalService: ModalService, private _gameService: GameService, private _conversationService: ConversationService, private _tradeService: TradeService, objectFactory: ObjectFactory) {
+    constructor(
+        @Inject (ModalService) _modalService: ModalService, 
+        @Inject (GameService) private _gameService: GameService, 
+        @Inject (ConversationService) private _conversationService: ConversationService, 
+        @Inject (TradeService) private _tradeService: TradeService, 
+        @Inject (ObjectFactory) objectFactory: ObjectFactory
+    ) {
         this.game = objectFactory.GetGame();
     }
 
