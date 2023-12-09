@@ -3,7 +3,7 @@ import { isEmpty } from 'storyScript/utilities';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -11,7 +11,12 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('quest', await import('./quest.component.html'))
 })
 export class QuestComponent {
-    constructor(private _characterService: CharacterService, sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    private _characterService: CharacterService;
+
+    constructor() {
+        this._characterService = inject(CharacterService);
+        const sharedMethodService = inject(SharedMethodService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         sharedMethodService.useQuests = true;

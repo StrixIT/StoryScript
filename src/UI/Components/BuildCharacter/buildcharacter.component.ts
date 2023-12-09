@@ -2,7 +2,7 @@ import { IInterfaceTexts, ICreateCharacterStep, ICreateCharacterAttribute, ICrea
 import type { ICreateCharacter } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -12,7 +12,11 @@ import { getTemplate } from '../../helpers';
 export class BuildCharacterComponent {
     @Input() sheet: ICreateCharacter;
     
-    constructor(private _characterService: CharacterService, objectFactory: ObjectFactory) {
+    private _characterService: CharacterService;
+
+    constructor() {
+        this._characterService = inject(CharacterService);
+        const objectFactory = inject(ObjectFactory);
         this.texts = objectFactory.GetTexts();
     }
 

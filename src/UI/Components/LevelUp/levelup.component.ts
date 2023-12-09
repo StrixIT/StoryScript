@@ -2,7 +2,7 @@ import { IGame, IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICharac
 import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -10,7 +10,13 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('levelup', await import('./levelup.component.html'))
 })
 export class LevelUpComponent {
-    constructor(private _gameService: GameService, private _characterService: CharacterService, objectFactory: ObjectFactory) {
+    private _gameService: GameService;
+    private _characterService: CharacterService;
+
+    constructor() {
+        this._characterService = inject(CharacterService);
+        this._gameService = inject(GameService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

@@ -2,7 +2,7 @@ import { IGame, IInterfaceTexts, IItem, IBarrier } from 'storyScript/Interfaces/
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -10,7 +10,13 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('ground', await import('./ground.component.html'))
 })
 export class GroundComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _characterService: CharacterService, objectFactory: ObjectFactory) {
+    private _sharedMethodService: SharedMethodService;
+    private _characterService: CharacterService;
+
+    constructor() {
+        this._sharedMethodService = inject(SharedMethodService);
+        this._characterService = inject(CharacterService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useGround = true;

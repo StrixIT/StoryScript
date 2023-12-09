@@ -2,7 +2,7 @@ import { IInterfaceTexts, IGame, IAction, IEnemy, IItem } from 'storyScript/Inte
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -10,7 +10,13 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('combat', await import('./combat.component.html'))
 })
 export class CombatComponent {
-    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    private _gameService: GameService;
+    private _sharedMethodService: SharedMethodService;
+    
+    constructor() {
+        this._gameService = inject(GameService);
+        this._sharedMethodService = inject(SharedMethodService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

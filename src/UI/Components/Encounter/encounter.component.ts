@@ -1,7 +1,7 @@
 import { IGame, IInterfaceTexts, IItem, ITrade, IPerson } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { getTemplate } from '../../helpers';
 import { TradeService } from 'storyScript/Services/TradeService';
 
@@ -10,7 +10,11 @@ import { TradeService } from 'storyScript/Services/TradeService';
     template: getTemplate('encounter', await import('./encounter.component.html'))
 })
 export class EncounterComponent {
-    constructor(private _tradeService: TradeService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    private _sharedMethodService: SharedMethodService;
+  
+    constructor() {
+        this._sharedMethodService = inject(SharedMethodService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

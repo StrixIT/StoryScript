@@ -1,5 +1,5 @@
 import { GameService } from 'storyScript/Services/gameService';
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, inject } from '@angular/core';
 import { IGame } from 'storyScript/Interfaces/game';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { getTemplate } from '../../helpers';
@@ -10,6 +10,9 @@ import { IRules } from 'storyScript/Interfaces/storyScript';
     template: getTemplate('sound', await import('./sound.component.html'))
 })
 export class SoundComponent {
+    private _ngZone: NgZone;
+    private _gameService: GameService;
+
     private _game: IGame;
     private _rules: IRules;
     private _isPlaying: boolean = false;
@@ -18,7 +21,10 @@ export class SoundComponent {
     private _currentMusic: string;
     private _currentVolume: number = 1;
 
-    constructor(private ngZone: NgZone, private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor() {
+        this._ngZone = inject(NgZone);
+        this._gameService = inject(GameService);
+        const objectFactory = inject(ObjectFactory);
         this._game = objectFactory.GetGame();
         this._rules = objectFactory.GetRules();
         setInterval(this.checkMusicPlaying, 500);
@@ -54,7 +60,7 @@ export class SoundComponent {
             // Use this code outside of the angular change detection to remove sounds that are playing from the list
             // without triggering the ExpressionChangedAfterItHasBeenCheckedError error. I got this solution reading
             // https://medium.com/angular-in-depth/boosting-performance-of-angular-applications-with-manual-change-detection-42cb396110fb.
-            this.ngZone.runOutsideAngular(()=>{
+            this._ngZone.runOutsideAngular(()=>{
                 setTimeout(() => {
                     soundQueue.get(e[0]).playing = true;
                 }, 0);

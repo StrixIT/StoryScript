@@ -1,7 +1,7 @@
 import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -9,7 +9,11 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('locationtext', await import('./locationtext.component.html'))
 })
 export class LocationTextComponent {
-    constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    private _sharedMethodService: SharedMethodService;
+    
+    constructor() {
+        this._sharedMethodService = inject(SharedMethodService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.worldProperties = [];

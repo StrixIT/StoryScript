@@ -21,7 +21,6 @@ export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
 }
 
 function importAssets(r) {
-    let assets = {};
     let folders = [
         'actions',
         'features',
@@ -50,12 +49,7 @@ function importAssets(r) {
 
                 // Register the asset with the proper type.
                 Register(f, asset[property]);
-
-                // Return the assets registered.
-                assets[trimmed] = r(i);
             }
         });
     });
-
-    return assets;
 }

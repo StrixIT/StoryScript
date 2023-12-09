@@ -1,7 +1,7 @@
 
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -9,7 +9,8 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('highscores', await import('./highscores.component.html'))
 })
 export class HighScoresComponent {
-    constructor(objectFactory: ObjectFactory) {
+    constructor() {
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

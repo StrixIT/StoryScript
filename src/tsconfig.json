@@ -24,7 +24,7 @@
         "moduleResolution": "bundler",
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "emitDecoratorMetadata": true,
+        "emitDecoratorMetadata": false,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "preserveSymlinks": true,

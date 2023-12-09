@@ -14,8 +14,12 @@ export const output = {
 export const module = {
     rules: [
         {
-            test: /\.ts?$/,
-            use: 'ts-loader',
+            // Match `.js`, `.jsx`, `.ts` or `.tsx` files
+            test: /\.[jt]sx?$/,
+            loader: 'esbuild-loader',
+            options: {
+                target: 'esnext'
+            },
             exclude: /node_modules/
         },
         {

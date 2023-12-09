@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
 import { FormsModule } from '@angular/forms';
 import { NgbCollapseModule, NgbModalModule, NgbActiveModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
@@ -107,7 +107,10 @@ const objectFactory = ObjectFactory.GetInstance();
 })
 
 export class AppModule {
-    constructor(private _gameService: GameService) {
+    private _gameService: GameService;
+
+    constructor() {
+        this._gameService = inject(GameService);
         this._gameService.init();
     }
 }

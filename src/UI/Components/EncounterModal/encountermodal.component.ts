@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef } from '@angular/core';
+import { Component, Input, ElementRef, inject } from '@angular/core';
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import type { IModalSettings } from '../modalSettings';
@@ -11,7 +11,9 @@ import { getTemplate } from '../../helpers';
 export class EncounterModalComponent {
     @Input() settings: IModalSettings;
 
-    constructor(private hostElement: ElementRef, objectFactory: ObjectFactory) {
+    constructor() {
+        const hostElement = inject(ElementRef);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.element = hostElement.nativeElement;
