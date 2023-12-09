@@ -8,7 +8,7 @@ import { IFeature } from './Interfaces/feature';
 import { IQuest } from './Interfaces/quest';
 import { IAction } from './Interfaces/action';
 import { DataKeys } from './DataKeys';
-import { getSingular, getPlural } from './utilities';
+import { getSingular, getPlural, getId } from './utilities';
 import { ICharacter } from './Interfaces/character';
 import { createFunctionHash } from './globals';
 import { ICombinable } from './Interfaces/combinations/combinable';
@@ -43,7 +43,7 @@ export function buildEntities(): void {
     // Build all entities once to register them with their id.
     Object.getOwnPropertyNames(_definitions).forEach(p => {
         _definitions[p].forEach((f: Function) => {
-            buildEntity(f, f.name);
+            buildEntity(f, getId(f));
         });
     });
 
@@ -198,7 +198,7 @@ export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
     var registrationState = _registration;
     _registration = true;
 
-    buildEntity(entityFunction, getIdFromName({ id: '', name: name }));
+    buildEntity(entityFunction, getIdFromName({ id: '', name: name })?.toLowerCase());
 
     _registration = registrationState;
 
@@ -212,7 +212,7 @@ function buildEntity(entityFunction: Function, functionName: string) {
 
     if (_currentEntityKey) {
         // Add the key/id registration record.
-        _registeredIds.set(_currentEntityKey, functionName.toLowerCase());
+        _registeredIds.set(_currentEntityKey, functionName);
     }
 }
 
@@ -250,8 +250,8 @@ function createLocation(entity: ILocation) {
 
     if (location.destinations) {
         location.destinations.forEach(d => {
-            if (d.barrier && d.barrier.key && typeof(d.barrier.key) === 'function') {
-                d.barrier.key = d.barrier.key.name;
+            if (d.barrier && d.barrier.key) {
+                d.barrier.key = getId(d.barrier.key);
             }
         });
     }
@@ -304,7 +304,7 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     var compiledEntity: { id: string, name: string, type: string };
     
     if (typeof entity === 'function') {
-        id = entity.name;
+        id = getId(entity);
         compiledEntity = entity();
     } else {
         compiledEntity = <any>entity;
@@ -374,8 +374,8 @@ function CreateObject<T>(entity: T, type: string, id?: string)
 function getEntityKey(entity: object): string {
     return Object.getOwnPropertyNames(entity).sort().map(p => {
         const type = typeof entity[p];
-        return type === 'object' || type === 'function' ? 
-            p.toString() 
+        return type === 'object' ? p.toString() 
+            : type === 'function' ?  getId(entity[p]) 
             : type !== "undefined" ? p.toString() + '|' + entity[p].toString() : '';
     }).join('|');
 }

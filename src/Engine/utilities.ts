@@ -3,6 +3,27 @@ import { compareString } from './globals';
 import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
 import { StateList, StateListEntry } from './Interfaces/stateList';
 
+export function getId(id: Function | string) {
+    let actualId: string;
+
+    if (typeof id === 'function') {
+        actualId = id.name;
+
+        // This is a workaround with function names changing when building for production.
+        // E.g. Start becomes Start_Start.
+        let nameParts = actualId.split('_');
+    
+        if (nameParts.length > 1) {
+            actualId = nameParts[0];
+        }
+    } 
+    else {
+        actualId = id;
+    }
+
+    return actualId?.toLowerCase();
+}
+
 export function getPlural(name: string): string {
     return name.endsWith('y') ? 
             name.substring(0, name.length - 1) + 'ies' 
