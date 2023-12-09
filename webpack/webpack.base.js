@@ -18,7 +18,8 @@ export const module = {
             test: /\.[jt]sx?$/,
             loader: 'esbuild-loader',
             options: {
-                target: 'esnext'
+                target: 'ES2022',
+                tsconfig: './src/tsconfig.json'
             },
             exclude: /node_modules/
         },

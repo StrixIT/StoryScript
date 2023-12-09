@@ -15,7 +15,7 @@
         "removeComments": false,
         "sourceMap": true,
         "useDefineForClassFields": true,
-        "target": "ES2020",
+        "target": "ES2022",
         "module": "ESNext",
         "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "skipLibCheck": true,
