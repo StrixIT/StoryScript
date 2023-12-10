@@ -18,7 +18,7 @@ export const module = {
             loader: 'esbuild-loader',
             options: {
                 target: 'ES2022',
-                tsconfig: path.resolve(__dirname, '../src/tsconfig.json')
+                tsconfig: path.resolve(__dirname, '../tsconfig.json')
             },
             exclude: /node_modules/
         },

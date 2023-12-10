@@ -29,11 +29,8 @@ copySync(testRoot, testDestination);
 // Correct the karma configuration file.
 correctFile(`${testDestination}/karma.conf.cjs`, /\/Games\/_GameTemplate/g, '/Games/' + gameName);
 
-// Correct the typescript configuration file.
-correctFile(`${testDestination}/tsconfig.json`, '../../../Games/MyRolePlayingGame/**/*.ts', `../../../Games/${gameName}/**/*.ts`);
-
 function correctFile(fileName, toReplace, replacement) {
-let fileData = readFileSync(fileName, 'utf8');
-fileData = fileData.replace(toReplace, replacement);
-writeFileSync(fileName, fileData);
+    let fileData = readFileSync(fileName, 'utf8');
+    fileData = fileData.replace(toReplace, replacement);
+    writeFileSync(fileName, fileData);
 }
