@@ -1,18 +1,15 @@
 import gameName from '../gameName.js';
+import { __dirname } from './webpack.base.js';
 import { resolve } from 'path';
 
 import jsonfile from 'jsonfile';
 const { readFileSync } = jsonfile;
 
-import { __dirname } from './webpack.base.js';
-
 import { EsbuildPlugin } from 'esbuild-loader';
 import RemovePlugin from 'remove-files-webpack-plugin';
 import ZipPlugin from 'zip-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-
-// Todo: enable this
-//import { ImageminPlugin } from 'imagemin-webpack-plugin';
+import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin';
 import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
 
 const gameInfo = readFileSync(resolve(__dirname, `../src/Games/${gameName}`, 'gameinfo.json'));
@@ -24,10 +21,6 @@ const cleanConfig = {
 };
 
 var plugins = [
-    // Todo: enable this
-    // new ImageminPlugin({
-    //     test: /\.(jpe?g|png|gif|svg)$/i 
-    // }),
     new ReplaceInFileWebpackPlugin([{
         dir: 'dist',
         test: [/\.js$/],
@@ -70,7 +63,21 @@ export default {
     mode: 'production',
     //devtool: 'source-map',
     optimization: {
-        minimizer: [new EsbuildPlugin({ keepNames: true, css: true })],
+        minimizer: [
+            new EsbuildPlugin({ keepNames: true, css: true }),
+            new ImageMinimizerPlugin({
+                minimizer: {
+                implementation: ImageMinimizerPlugin.sharpMinify,
+                options: {
+                  encodeOptions: {
+                    jpeg: {
+                      quality: 100,
+                    }
+                  },
+                },
+              }
+            })
+        ],
         nodeEnv: 'production'
     },
     plugins: plugins
