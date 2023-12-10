@@ -33,14 +33,14 @@ describe("ObjectFactory", function() {
         var locationFunctions = Object.keys(result.locations).sort().map(k => `${k}:${result.locations[k].hash}`);
 
         expect(locationFunctions).toEqual([
-            "bedroom|trade|0|buy|itemSelector:-589556356",
-            "bedroom|trade|0|sell|itemSelector:-589556356",
-            "bedroom|trade|0|sell|priceModifier:700782575",
-            "dirtroad|combatActions|0|execute:1245674738",
-            "garden|actions|0|execute:-452619560",
-            "garden|actions|1|execute:131026483",
-            "garden|enterEvents|0:-1677062687",
-            "start|descriptionSelector:283150339"]);
+            "bedroom|trade|0|buy|itemSelector:-757288170",
+            "bedroom|trade|0|sell|itemSelector:-757288170",
+            "bedroom|trade|0|sell|priceModifier:-1683809711",
+            "dirtroad|combatActions|0|execute:-34161269",
+            "garden|actions|0|execute:1867314870",
+            "garden|actions|1|execute:492355190",
+            "garden|enterEvents|0:-521820139",
+            "start|descriptionSelector:1949117004"]);
     });
 
     it("should create the Start location", function() {
@@ -123,7 +123,7 @@ describe("ObjectFactory", function() {
         var result = locationWithBarrier();
         var key = result.destinations[0].barrier.key;
         expect(typeof key).toBe('string');
-        expect(key).toBe('Key');
+        expect(key).toBe('key');
     });
 
     it("should correctly create a feature", function() {
@@ -135,7 +135,7 @@ describe("ObjectFactory", function() {
 
         var result = Feature(testFeature);
         expect(result).not.toBeNull();
-        expect(result.id).toBe('testFeature');
+        expect(result.id).toBe('testfeature');
         expect((<any>result).type).toBe('feature');
     });
 

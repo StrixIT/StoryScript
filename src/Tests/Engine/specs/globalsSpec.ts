@@ -75,8 +75,8 @@ describe("Utilities", function() {
         var firstFunctionHash = createFunctionHash(FirstFunction);
         var secondFunctionHash = createFunctionHash(SecondFunction);
 
-        expect(firstFunctionHash).toEqual(-601740997);
-        expect(secondFunctionHash).toEqual(-1465843121);
+        expect(firstFunctionHash).toEqual(-582951769);
+        expect(secondFunctionHash).toEqual(389068928);
         expect(firstFunctionHash).not.toEqual(secondFunctionHash);
     });
 

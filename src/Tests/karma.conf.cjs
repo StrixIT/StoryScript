@@ -5,13 +5,6 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
   webPackConfig.default.resolve.alias.game = path.resolve(__dirname, gamePath);
   webPackConfig.default.output = { path: path.join(os.tmpdir(), '_karma_webpack_') + Math.floor(Math.random() * 1000000) };
 
-  webPackConfig.default.module.rules.push({
-    enforce: 'post',
-    test: /\.ts$/,
-    loader: 'istanbul-instrumenter-loader',
-    include: path.resolve(__dirname, codePath)
-  });
-
   return {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -37,16 +30,7 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage-istanbul'],
-
-    coverageIstanbulReporter: {
-      reports: [ 'html', 'text-summary', 'lcovonly' ],
-      dir: path.join(__dirname, testPath, 'coverage'),
-      fixWebpackSourcePaths: true,
-      'report-config': {
-        html: { outdir: 'html' }
-      }
-    },
+    reporters: ['progress'],
 
     // web server port
     port: 9876,

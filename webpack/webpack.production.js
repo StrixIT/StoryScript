@@ -6,6 +6,7 @@ const { readFileSync } = jsonfile;
 
 import { __dirname } from './webpack.base.js';
 
+import { EsbuildPlugin } from 'esbuild-loader';
 import RemovePlugin from 'remove-files-webpack-plugin';
 import ZipPlugin from 'zip-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
@@ -13,10 +14,6 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 // Todo: enable this
 //import { ImageminPlugin } from 'imagemin-webpack-plugin';
 import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
-
-import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-
-import { EsbuildPlugin } from 'esbuild-loader';
 
 const gameInfo = readFileSync(resolve(__dirname, `../src/Games/${gameName}`, 'gameinfo.json'));
 
@@ -73,7 +70,7 @@ export default {
     mode: 'production',
     //devtool: 'source-map',
     optimization: {
-        minimizer: [new EsbuildPlugin({ keepNames: true, css: true }), new OptimizeCSSAssetsPlugin({})],
+        minimizer: [new EsbuildPlugin({ keepNames: true, css: true })],
         nodeEnv: 'production'
     },
     plugins: plugins

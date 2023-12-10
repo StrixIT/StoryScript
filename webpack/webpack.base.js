@@ -1,5 +1,4 @@
 import path from 'path';
-import { resolve as _resolve } from 'path';
 import {fileURLToPath} from 'url';
 import gameName from '../gameName.js';
 
@@ -9,7 +8,7 @@ export const mode = 'development';
 
 export const output = {
     filename: '[name].[fullhash].js',
-    path: _resolve(__dirname, '../dist')
+    path: path.resolve(__dirname, '../dist')
 };
 export const module = {
     rules: [
@@ -19,7 +18,7 @@ export const module = {
             loader: 'esbuild-loader',
             options: {
                 target: 'ES2022',
-                tsconfig: './src/tsconfig.json'
+                tsconfig: path.resolve(__dirname, '../src/tsconfig.json')
             },
             exclude: /node_modules/
         },
@@ -32,8 +31,8 @@ export const module = {
 export const resolve = {
     extensions: [".ts", ".js", ".css"],
     alias: {
-        storyScript: _resolve(__dirname, '../src/Engine'),
-        game: _resolve(__dirname, `../src/Games/${gameName}/`)
+        storyScript: path.resolve(__dirname, '../src/Engine'),
+        game: path.resolve(__dirname, `../src/Games/${gameName}/`)
     }
 };
 
