@@ -1,4 +1,4 @@
-import '../../../Games/MyRolePlayingGame/run';
+await import('../../../Games/MyRolePlayingGame/run');
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { ICombinable, IGame, ICombinationAction } from 'storyScript/Interfaces/storyScript';
 import { Rules } from '../../../Games/MyRolePlayingGame/types';

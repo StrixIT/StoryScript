@@ -1,4 +1,4 @@
-import '../../../Games/MyRolePlayingGame/run';
+await import('../../../Games/MyRolePlayingGame/run');
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ITrade, ICompiledLocation, IPerson, PlayState } from 'storyScript/Interfaces/storyScript';
 import { IStock } from 'storyScript/Interfaces/stock';

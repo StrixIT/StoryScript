@@ -1,4 +1,4 @@
-import '../../../Games/MyRolePlayingGame/run';
+await import('../../../Games/MyRolePlayingGame/run');
 import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { Rules } from '../../../Games/MyRolePlayingGame/rules';
@@ -6,14 +6,9 @@ import { LeatherBoots } from '../../../Games/MyRolePlayingGame/items/leatherBoot
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
-import { addArrayExtensions } from 'storyScript/globals';
-import {ObjectFactory} from "storyScript/ObjectFactory";
+import { ObjectFactory } from "storyScript/ObjectFactory";
 
 describe("CharacterService", function() {
-
-    beforeEach(() => {
-        addArrayExtensions();
-    });
 
     describe("Character sheet", function() {
 

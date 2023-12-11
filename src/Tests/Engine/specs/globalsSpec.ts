@@ -2,7 +2,6 @@ import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareS
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
-import '../../../Games/MyRolePlayingGame/run';
 
 describe("Utilities", function() {
 

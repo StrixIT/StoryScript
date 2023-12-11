@@ -44,7 +44,9 @@ export class ObjectFactory {
         this._combinationService = new CombinationService(dataService, locationService, this._game, this._rules, this._texts);
         this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, helperService, this._game, this._texts);
 
-        ObjectFactory._instance = this;
+        if (!ObjectFactory._instance) { 
+            ObjectFactory._instance = this;
+        }
     }
 
     GetGame = (): IGame => this._game;

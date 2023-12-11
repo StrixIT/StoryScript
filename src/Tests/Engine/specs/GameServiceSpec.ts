@@ -1,3 +1,4 @@
+await import('../../../Games/MyRolePlayingGame/run');
 import { GameService } from 'storyScript/Services/gameService';
 import { IItem, IGame } from 'storyScript/Interfaces/storyScript';
 

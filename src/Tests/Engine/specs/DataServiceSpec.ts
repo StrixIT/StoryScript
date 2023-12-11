@@ -1,10 +1,10 @@
+await import('../../../Games/MyRolePlayingGame/run');
 import { DataService } from 'storyScript/Services/DataService';
 import { IDataService } from 'storyScript/Interfaces/services/dataService';
 import { IGame } from 'storyScript/Interfaces/storyScript';
 import { ILocationCollection } from 'storyScript/Interfaces/locationCollection';
 import { GetFunctions } from 'storyScript/ObjectConstructors';
-import '../../../Games/MyRolePlayingGame/run';
-import {ObjectFactory} from "storyScript/ObjectFactory";
+import { ObjectFactory } from "storyScript/ObjectFactory";
 
 describe("DataService", function() {
     const originalWarn = console.warn

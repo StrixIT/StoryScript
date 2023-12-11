@@ -1,6 +1,6 @@
+await import('../../../Games/MyRolePlayingGame/run');
 import { GetDefinitions, GetFunctions, buildEntities, DynamicEntity } from 'storyScript/ObjectConstructors';
 import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature } from 'storyScript/Interfaces/storyScript';
-import '../../../Games/MyRolePlayingGame/run';
 
 describe("ObjectFactory", function() {
 

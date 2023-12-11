@@ -30,11 +30,11 @@
         "allowImportingTsExtensions": true,
         "allowJs": true,
         "paths": {
-            "storyScript/*": ["./Engine/*"],
-            "@angular/*": ["../node_modules/@angular/*"]
+            "storyScript/*": ["./src/Engine/*"],
+            "@angular/*": ["./node_modules/@angular/*"]
         },
         "typeRoots": [
-            "../node_modules/@types"
+            "./node_modules/@types"
         ],
         "types": [
             "node",

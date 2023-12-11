@@ -1,8 +1,8 @@
+await import('../../../Games/MyRolePlayingGame/run');
 import { HelperService } from 'storyScript/Services/helperService';
 import { GetDefinitions } from 'storyScript/ObjectConstructors';
 import { IKey, IEnemy, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { IItem } from '../../../Games/MyRolePlayingGame/types';
-import '../../../Games/MyRolePlayingGame/run';
 import {ObjectFactory} from "storyScript/ObjectFactory";
 
 describe("HelperService", function() {

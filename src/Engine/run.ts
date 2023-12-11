@@ -11,13 +11,15 @@ import { buildEntities, Register } from './ObjectConstructors';
  * @param rules Your game rules
  */
 export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
-    addFunctionExtensions();
-    addArrayExtensions();
-    // Todo: this is webpack specific and should not be part of the engine. Inject it.
-    importAssets(require.context('game', true, /[a-zA-Z0-9].ts$/));
-    buildEntities();
+    if (!ObjectFactory.GetInstance()) {
+        addFunctionExtensions();
+        addArrayExtensions();
+        // Todo: this is webpack specific and should not be part of the engine. Inject it.
+        importAssets(require.context('game', true, /[a-zA-Z0-9].ts$/));
+        buildEntities();
 
-    new ObjectFactory(nameSpace, rules, texts);
+        new ObjectFactory(nameSpace, rules, texts);
+    }
 }
 
 function importAssets(r) {

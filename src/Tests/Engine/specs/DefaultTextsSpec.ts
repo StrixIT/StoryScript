@@ -1,4 +1,4 @@
-import '../../../Games/MyRolePlayingGame/run';
+await import('../../../Games/MyRolePlayingGame/run');
 import { DefaultTexts } from 'storyScript/defaultTexts';
 import {ObjectFactory} from "storyScript/ObjectFactory";
 

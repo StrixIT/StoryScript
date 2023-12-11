@@ -1,4 +1,4 @@
-import '../../../Games/MyRolePlayingGame/run';
+await import('../../../Games/MyRolePlayingGame/run');
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { IDataService } from '../../../Engine/Interfaces/services/dataService';
 import {ObjectFactory} from "storyScript/ObjectFactory";
