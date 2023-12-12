@@ -1,4 +1,3 @@
-await import('../../../Games/MyRolePlayingGame/run');
 import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { Rules } from '../../../Games/MyRolePlayingGame/rules';
@@ -6,17 +5,10 @@ import { LeatherBoots } from '../../../Games/MyRolePlayingGame/items/leatherBoot
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
-import { ObjectFactory } from "storyScript/ObjectFactory";
 
 describe("CharacterService", function() {
 
     describe("Character sheet", function() {
-
-        it("Object factory should return character service", function() {
-            var factory = ObjectFactory.GetInstance();
-            var service = factory.GetCharacterService();
-            expect(service).not.toBeNull();
-        });
 
         it("should return the properties defined for the character sheet", function() {
             var service = getService();

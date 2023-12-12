@@ -1,4 +1,3 @@
-await import('../../../Games/MyRolePlayingGame/run');
 import { GetDefinitions } from 'storyScript/ObjectConstructors';
 import { LocationService } from 'storyScript/Services/LocationService';
 import { IGame, ICollection, ICompiledLocation } from 'storyScript/Interfaces/storyScript';
