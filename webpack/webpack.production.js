@@ -61,7 +61,6 @@ export default {
         filename: '[name].[contenthash].js'
     },
     mode: 'production',
-    //devtool: 'source-map',
     optimization: {
         minimizer: [
             new EsbuildPlugin({ keepNames: true, css: true }),

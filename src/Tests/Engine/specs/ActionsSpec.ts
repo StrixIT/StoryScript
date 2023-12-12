@@ -4,8 +4,13 @@ import { IDestination } from 'storyScript/Interfaces/destination';
 import { Open } from 'storyScript/Actions/open';
 import { OpenWithKey } from 'storyScript/Actions/openWithKey';
 import { IKey } from 'storyScript/Interfaces/key';
+import { addArrayExtensions } from 'storyScript/globals';
 
 describe("StoryScript Actions", function() {
+
+    beforeAll(() => {
+        addArrayExtensions();
+    });
 
     it("open should remove a barrier", function() {
         let callBackCalled = false;

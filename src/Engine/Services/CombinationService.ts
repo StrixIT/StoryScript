@@ -168,8 +168,8 @@ export class CombinationService implements ICombinationService {
         return result;
     }
 
-    private isMatch = (combineTool: Function | string, tool: ICombinable): boolean => {
-        var combineId = getId(combineTool);
+    private isMatch = (combineTool: ICombinable, tool: ICombinable): boolean => {
+        var combineId = getId(combineTool.id);
         return compareString(tool.id, combineId);
     }
 

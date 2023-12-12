@@ -2,6 +2,7 @@ import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareS
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
+import { getId } from 'storyScript/utilities';
 
 describe("Utilities", function() {
 
@@ -170,9 +171,15 @@ describe("Utilities", function() {
 
     it("should get all entities in the array matching the id", function() {
         addArrayExtensions();
+
+        var itemOne = Sword();
+        itemOne.id = getId(Sword);
+        const itemTwo = Sword();
+        itemTwo.id = getId(Sword);
+
         var testArray = [
-            Sword(),
-            Sword()
+            itemOne,
+            itemTwo
         ];;
         var result = testArray.all(Sword);
 
@@ -219,11 +226,9 @@ describe("Utilities", function() {
 
     it("should remove an entity using its object reference", function() {
         addArrayExtensions();
-        var journal = Journal();
-        var testArray = [
-            Sword(),
-            journal
-        ];
+        var testArray = getTestArray();
+        var journal = testArray[1];
+        expect(journal.id).toBe(Journal.name.toLowerCase());
         testArray.remove(journal);
 
         expect(testArray.length).toBe(1);
@@ -286,9 +291,14 @@ describe("Utilities", function() {
 });
 
 function getTestArray() {
+    const sword = Sword();
+    const journal = Journal();
+    sword.id = getId(Sword);
+    journal.id = getId(Journal);
+
     return [
-        Sword(),
-        Journal()
+        sword,
+        journal
     ];
 }
 

@@ -1,10 +1,16 @@
-await import('../../../Games/MyRolePlayingGame/run');
 import { GetDefinitions, GetFunctions, buildEntities, DynamicEntity } from 'storyScript/ObjectConstructors';
 import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature } from 'storyScript/Interfaces/storyScript';
+import { importAssets } from 'storyScript/run';
 
 describe("ObjectFactory", function() {
 
+    beforeAll(() => {
+        importAssets();
+    });
+
     it("should get the game definitions", function() {
+        // First, build all entities once so the definitions are present.
+        buildEntities();
         var result = <any>GetDefinitions();
         expect(result).not.toEqual(null);
         expect(result.locations.length).toEqual(5);
@@ -37,8 +43,8 @@ describe("ObjectFactory", function() {
             "bedroom|trade|0|sell|itemSelector:-757288170",
             "bedroom|trade|0|sell|priceModifier:-1683809711",
             "dirtroad|combatActions|0|execute:-34161269",
-            "garden|actions|0|execute:1867314870",
-            "garden|actions|1|execute:492355190",
+            "garden|actions|0|execute:492355190",
+            "garden|actions|1|execute:1867314870",
             "garden|enterEvents|0:-521820139",
             "start|descriptionSelector:1949117004"]);
     });
