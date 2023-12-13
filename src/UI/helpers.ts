@@ -21,21 +21,21 @@ function importAssets() {
 function loadAssetsWithRequire() {
     const modules = require.context('game/ui', true, /.component.html$/);
 
-    modules.keys().map(i => {
-        var capture = i.match(/([a-z]{1,})\.component\.html$/)
-        AddTemplate(capture[1], modules(i).default);
+    modules.keys().map(path => {
+        AddTemplate(path, modules(path).default);
     });
 }
 
 function loadAssetsWithImport() {
-    const modules = import.meta.glob('game/ui/*.component.html', { eager: true });
+    const modules = import.meta.glob('game/ui/**/*.component.html', { eager: true });
 
     for (const path in modules)
     {
-        //AddTemplate(match[0].substring(1, match[0].indexOf('.')), (<any>modules[path]).default);
+        AddTemplate(path, (<{default}>modules[path]).default);
     }
 }
 
 function AddTemplate(templateName: string, template) {
-    _templates.set(templateName, template);
+    var capture = templateName.match(/([a-z]{1,})\.component\.html$/);
+    _templates.set(capture[1], template);
 }

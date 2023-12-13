@@ -31,7 +31,7 @@ export default defineConfig({
         game: path.resolve(__dirname, `./src/Games/${gameName}/`)
     }
   },
-  plugins: [tsconfigPaths()],
+  plugins: [tsconfigPaths(), htmlImport],
   server: {
     port: 3000,
     open: true
