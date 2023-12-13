@@ -253,7 +253,7 @@ function selectCandidate(game: IGame, key: string, item: (GameState | PlayState 
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], selector?: (item: T) => boolean) {
-    var collectionToFilter = <T[]>[]
+    var collectionToFilter = <T[]>[];
 
     if (typeof collection[0] === 'function') {
         (<[() => T]>collection).forEach((def: () => T) => {

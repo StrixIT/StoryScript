@@ -1,16 +1,11 @@
-import { GetDefinitions, GetFunctions, buildEntities, DynamicEntity } from 'storyScript/ObjectConstructors';
+await import('../../../Games/MyRolePlayingGame/run');
+import { GetDefinitions, GetFunctions, DynamicEntity } from 'storyScript/ObjectConstructors';
 import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature } from 'storyScript/Interfaces/storyScript';
-import { importAssets } from 'storyScript/run';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 
-describe("ObjectFactory", function() {
-
-    beforeAll(() => {
-        importAssets();
-    });
+describe("ObjectConstructors", function() {
 
     it("should get the game definitions", function() {
-        // First, build all entities once so the definitions are present.
-        buildEntities();
         var result = <any>GetDefinitions();
         expect(result).not.toEqual(null);
         expect(result.locations.length).toEqual(5);
@@ -22,10 +17,7 @@ describe("ObjectFactory", function() {
     });
 
     it("should get the game functions", function() {
-        // First, build all entities once so the functions are registered.
-        buildEntities();
         var result = <any>GetFunctions();
-
         expect(result).not.toEqual(null);
         expect(getLength(result.locations)).toEqual(8);
         expect(getLength(result.items)).toEqual(1);
@@ -146,6 +138,34 @@ describe("ObjectFactory", function() {
     });
 
 });
+
+describe('ObjectFactory', function () {
+    
+    it("should return all services", function() {
+        var factory = ObjectFactory.GetInstance();
+
+        let characterService = factory.GetCharacterService();
+        expect(characterService).not.toBeNull();
+
+        var combinationService = factory.GetCombinationService();
+        expect(combinationService).not.toBeNull();
+
+        var conversationService = factory.GetConversationService();
+        expect(conversationService).not.toBeNull();
+
+        var gameService = factory.GetGameService();
+        expect(gameService).not.toBeNull();
+
+        var tradeService = factory.GetTradeService();
+        expect(tradeService).not.toBeNull();
+
+        var texts = factory.GetTexts();
+        expect(texts).not.toBeNull();
+
+        var rules = factory.GetRules();
+        expect(rules).not.toBeNull();
+    });
+})
 
 function getLength(collection) {
     return Object.keys(collection).length;

@@ -1,4 +1,3 @@
-import { GetDefinitions } from 'storyScript/ObjectConstructors';
 import { LocationService } from 'storyScript/Services/LocationService';
 import { IGame, ICollection, ICompiledLocation } from 'storyScript/Interfaces/storyScript';
 
@@ -15,19 +14,17 @@ describe("LocationService", function() {
             }
         };
 
-        var definitions = GetDefinitions();
-
         var game = <IGame>{
             definitions: {}
         };
 
-        var service = getService(dataService, {}, game, definitions);
+        var service = getService(dataService, {}, game);
         service.init(game);
 
         expect(game.changeLocation).not.toBeNull();
         expect(game.currentLocation).toBeNull();
         expect(game.previousLocation).toBeNull();
-        expect(game.locations.length).toBe(5);
+        expect(game.locations.length).toBe(0);
     });
 
     it("save world should call dataservice save", function() {
@@ -56,7 +53,7 @@ describe("LocationService", function() {
 
 });
 
-function getService(dataService?, rules?, game?, definitions?, ) {
+function getService(dataService?, rules?, game?, definitions?) {
     var data = null;
 
     var dataService = dataService || {

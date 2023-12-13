@@ -20,6 +20,7 @@ export default {
                     'css-loader'
                 ]
             },
+            // This is used to remove the script tag used by Vite when working with Webpack.
             { 
                 test: /index.html$/,
                 loader: 'string-replace-loader',

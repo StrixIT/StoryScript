@@ -26,7 +26,7 @@ let _registeredIds: Map<string, string> = new Map<string, string>();
 let _registeredDescriptions: Map<string, string> = new Map<string, string>();
 
 // The object to hold all game entity definitions.
-const _definitions: IDefinitions = {
+let _definitions: IDefinitions = {
     actions: [],
     locations: [],
     features: [],
@@ -182,13 +182,17 @@ export function initCollection(entity: any, property: string) {
     });
 }
 
-export function Register(type: string, entityFunc: Function): void {
-    // Add the entity function to the definitions object for creating entities at run-time.
-    _definitions[type] = _definitions[type] || {};
+export function Register(type: string, entityFunc: Function, testDefinitions?: IDefinitions): IDefinitions {
+    const definitions = testDefinitions ?? _definitions;
 
-    if (_definitions[type].indexOf(entityFunc) === -1) {
-        _definitions[type].push(entityFunc);
+    // Add the entity function to the definitions object for creating entities at run-time.
+    definitions[type] = definitions[type] || {};
+
+    if (definitions[type].indexOf(entityFunc) === -1) {
+        definitions[type].push(entityFunc);
     }
+
+    return definitions;
 }
 
 export function DynamicEntity<T>(entityFunction: () => T, name: string): T {

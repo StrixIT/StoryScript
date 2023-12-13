@@ -5,8 +5,13 @@ import { LeatherBoots } from '../../../Games/MyRolePlayingGame/items/leatherBoot
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
+import { addArrayExtensions } from 'storyScript/globals';
 
 describe("CharacterService", function() {
+
+    beforeAll(() => {
+        addArrayExtensions();
+    });
 
     describe("Character sheet", function() {
 
