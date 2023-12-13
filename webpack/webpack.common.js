@@ -19,8 +19,16 @@ export default {
                     MiniCssExtractPlugin.loader,
                     'css-loader'
                 ]
+            },
+            { 
+                test: /index.html$/,
+                loader: 'string-replace-loader',
+                options: {
+                  search: '<script type="module" src="/src/ui/main.ts"></script>',
+                  replace: '',
+                }
             }
-        ]
+        ],
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin(),
