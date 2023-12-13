@@ -21,7 +21,7 @@ copySync(gameRoot, gameDestination);
 correctFile(`${gameDestination}/run.ts`, 'Run(\'GameTemplate\',', `Run(\'${gameName}\',`);
 
 const testRoot = './src/Tests/Games/_GameTemplate';
-var testDestination = './src/Tests/Games/' + gameName;
+const testDestination = './src/Tests/Games/' + gameName;
 
 // Copy the test template.
 copySync(testRoot, testDestination);
