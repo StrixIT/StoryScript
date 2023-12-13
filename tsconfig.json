@@ -39,6 +39,7 @@
         "types": [
             "node",
             "webpack-env",
+            "vite/client",
             "jasmine"
         ]
     }

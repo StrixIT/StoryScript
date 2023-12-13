@@ -22,7 +22,13 @@ export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
 }
 
 export function importAssets() {
-    loadAssetsWithRequire();
+    if (process.env.WEBPACK_BUILDER) {
+        loadAssetsWithRequire();
+    }
+    
+    if (import.meta.env?.VITE_BUILDER) {
+        loadAssetsWithImport();
+    }
 }
 
 function loadAssetsWithRequire() {
@@ -40,4 +46,27 @@ function loadAssetsWithRequire() {
         // Register the asset with the proper type.
         Register(type, asset[property]);
     });
+}
+
+function loadAssetsWithImport() {
+    const modules = import.meta.glob([
+        'game/actions/*.ts',
+        'game/features/*.ts',
+        'game/items/*.ts',
+        'game/enemies/*.ts',
+        'game/persons/*.ts',
+        'game/quests/*.ts',
+        'game/locations/*.ts'
+    ], { eager: true });
+
+    // Loop over all found files to register the assets with the proper type.
+    for (const path in modules)
+    {
+        let asset = modules[path];
+        let type = path.split('/').reverse()[1];
+        let property = Object.getOwnPropertyNames(asset)[0];
+
+        // Register the asset with the proper type.
+        Register(type, asset[property]);
+    }
 }

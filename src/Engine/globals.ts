@@ -29,7 +29,7 @@ if (Function.prototype.proxy === undefined) {
 
 export function addFunctionExtensions() {
     if (Function.prototype.name === undefined) {
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         Object.defineProperty(Function.prototype, 'name', {
             get: function () {
                 return /function ([^(]*)/.exec(this + '')[1];
