@@ -1,5 +1,6 @@
 # Visual Studio Settings
 /.vscode
+/.idea
 
 # dependencies
 /node_modules
@@ -13,3 +14,4 @@
 /src/Games/**/resources/*
 
 debug.log
+package-lock.json

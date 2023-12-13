@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
@@ -9,14 +9,18 @@ import { IModalSettings } from '../Components/modalSettings';
 
 @Injectable()
 export class ModalService {
+    private _modalService: NgbModal;
+    private _gameService: GameService;
     private _activeModal = <NgbModalRef>null;
     private _previousModalState = <PlayState>null;
 
-    constructor(private _modalService: NgbModal, private _gameService: GameService, objectFactory: ObjectFactory) {
+    constructor() {
+        this._modalService = inject(NgbModal);
+        this._gameService = inject(GameService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
-
-        _gameService.watchPlayState(this.openOrCloseModal);
+        this._gameService.watchPlayState(this.openOrCloseModal);
     }
 
     private game: IGame;
@@ -27,9 +31,11 @@ export class ModalService {
             return;
         }
 
+        const settings = this.getStateSettings(newState);
+
         const modalOptions = <NgbModalOptions>{ beforeDismiss: () => {
             this.closeModal(false);
-        } };
+        }, backdrop: settings.canClose !== undefined && !settings.canClose ? 'static' : null, keyboard: false  };
 
         // 1. If there is already an active modal:
         if (this._activeModal) {
@@ -61,7 +67,7 @@ export class ModalService {
             else {
                 this._activeModal = this._modalService.open(EncounterModalComponent, modalOptions);
                 this._activeModal.componentInstance.element.parentElement.classList.add('encounter-modal');
-                this._activeModal.componentInstance.settings = this.getStateSettings(newState);
+                this._activeModal.componentInstance.settings = settings;
             }
         }
     }

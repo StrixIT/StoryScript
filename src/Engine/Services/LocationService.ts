@@ -9,7 +9,7 @@ import { IFeature } from '../Interfaces/feature';
 import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
 import { createFunctionHash, compareString } from '../globals';
-import { addHtmlSpaces, isEmpty } from '../utilities';
+import { addHtmlSpaces, getId, isEmpty, parseGameProperties } from '../utilities';
 import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
 import { ActionType } from '../Interfaces/enumerations/actionType';
@@ -94,7 +94,7 @@ export class LocationService implements ILocationService {
             return false;
         }
 
-        var key = typeof location == 'function' ? location.name : location ? location : presentLocation.id;
+        var key = getId(location) ?? presentLocation.id;
         game.currentLocation = game.locations.get(key);
         return true;
     }
@@ -285,7 +285,7 @@ export class LocationService implements ILocationService {
                 throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');
             }
 
-            game.currentLocation.descriptions[name] = node.innerHTML;
+            game.currentLocation.descriptions[name] = parseGameProperties(node.innerHTML, this._game);
         }      
     }
 
@@ -415,20 +415,19 @@ function setDestination(destination: IDestination) {
     // Also set the barrier selected actions to the first one available for each barrier.
     // Further, replace combine functions with their target ids.
     var target = destination.target;
-    target = typeof target === 'function' ? target.name : target;
-    destination.target = target && target.toLowerCase();
+    target = getId(target);
+    destination.target = target;
 
     if (destination.barrier) {
         if (destination.barrier.key) {
             var key = destination.barrier.key;
-            destination.barrier.key = typeof key === 'function' ? key.name : key;
+            destination.barrier.key = getId(key);
         }
 
         if (destination.barrier.combinations && destination.barrier.combinations.combine) {
             for (var n in destination.barrier.combinations.combine) {
                 var combination = destination.barrier.combinations.combine[n];
-                var tool = <any>combination.tool;
-                combination.tool = tool && (tool.name).toLowerCase();
+                combination.tool = <any>getId(<any>combination.tool);
             }
         }
     }

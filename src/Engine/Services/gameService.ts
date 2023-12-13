@@ -22,13 +22,13 @@ import { IBarrierAction } from '../Interfaces/barrierAction';
 import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
-import { compareString } from '../globals';
+import { createHash } from '../globals';
 import { IFeature } from '../Interfaces/feature';
+import { selectStateListEntry } from 'storyScript/utilities';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
     private _musicStopped: boolean = false;
-    private _playStateWatchers = [];
 
     constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
     }
@@ -55,7 +55,7 @@ export class GameService implements IGameService {
             this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
         }
 
-        // Use the afterSave hook here combine the initialized world with other saved data.
+        // Use the afterSave hook here to combine the initialized world with other saved data.
         if (this._rules.general?.afterSave) {
             this._rules.general.afterSave(this._game);
         }
@@ -247,41 +247,45 @@ export class GameService implements IGameService {
         this._game.playState = PlayState.Combat;
     }
 
-    fight = (enemy: IEnemy, retaliate?: boolean) => {
+    fight = (enemy: IEnemy, retaliate?: boolean): Promise<void> | void => {
         if (!this._rules.combat || !this._rules.combat.fight)
         {
             return;
         }
 
-        this._rules.combat.fight(this._game, enemy, retaliate);
+        var promise = this._rules.combat.fight(this._game, enemy, retaliate);
 
-        if (enemy.hitpoints <= 0) {
-            this.enemyDefeated(enemy);
-        }
+        return Promise.resolve(promise).then(() => {
+            if (enemy.hitpoints <= 0) {
+                this.enemyDefeated(enemy);
+            }
 
-        if (this._game.character.currentHitpoints <= 0) {
-            this._game.playState = null;
-            this._game.state = GameState.GameOver;
-        }
+            if (this._game.character.currentHitpoints <= 0) {
+                this._game.playState = null;
+                this._game.state = GameState.GameOver;
+            }
 
-        this.saveGame();
+            this.saveGame();
+        });
     }
 
-    useItem = (item: IItem): void => {
+    useItem = (item: IItem, target?: IEnemy): Promise<void> | void => {
         var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, item) && item.use) ?? item.use;
 
         if (useItem) {
-            item.use(this._game, item);
+            var promise = item.use(this._game, item, target);
 
-            if (item.charges !== undefined) {
-                if (!isNaN(item.charges)) {
-                    item.charges--;
+            return Promise.resolve(promise).then(() => {
+                if (item.charges !== undefined) {
+                    if (!isNaN(item.charges)) {
+                        item.charges--;
+                    }
+            
+                    if (item.charges <= 0) {
+                        removeItemFromItemsAndEquipment(this._game.character, item);
+                    }
                 }
-        
-                if (item.charges <= 0) {
-                    removeItemFromItemsAndEquipment(this._game.character, item);
-                }
-            }
+            });
         }
     }
 
@@ -293,69 +297,53 @@ export class GameService implements IGameService {
     }
 
     getCurrentMusic = (): string => {
-        if (this._musicStopped || this._rules.setup.playList?.length === undefined) {
+        if (this._musicStopped || !this._rules.setup?.playList || Object.keys(this._rules.setup.playList).length === undefined) {
             return null;
         }
 
-        // Evaluate custom functions first.
-        var customFunctions = this._rules.setup.playList.filter(e => typeof e[0] === 'function' && (<string>e[1]).trim() === '').map(e => e[0]);
-        let result = null;
-
-        for (var n in customFunctions) {
-            result = (<((game: IGame) => string)><unknown>customFunctions[n])(this._game);
-
-            if (result) {
-                return result;
-            }
-        }
-
-        // Next, get the entries in this order: Location, PlayState, GameState.
-        var currentEntry = this._rules.setup.playList
-                            .map(e => {
-                                (<any>e).order = e[0] === this._game.state ? 3 
-                                                : e[0] === this._game.playState ? 2 
-                                                : compareString((<Function>e[0]).name, this._game.currentLocation?.id) ? 1 
-                                                : 0;
-                                return e;
-                            })
-                            .filter(e => (<any>e).order > 0)
-                            .sort((a, b) => (<any>a).order - (<any>b).order)[0];
-        
-        if (currentEntry) {
-            return <string>currentEntry[1];
-        }
-
-        return result;
+        return selectStateListEntry(this._game, this._rules.setup.playList);
     }
 
     startMusic = (): boolean => this._musicStopped = false;
 
     stopMusic = (): boolean => this._musicStopped = true;
 
-    playSound = (fileName: string): void => {
-        this._game.sounds.soundQueue.push(fileName);
+    playSound = (fileName: string, completeCallBack?: () => void): void => {
+        this._game.sounds.soundQueue.set(createHash(fileName + Math.floor(Math.random() * 1000)), { value: fileName, playing: false, completeCallBack: completeCallBack });
     }
 
-    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void) {
-        if (this._playStateWatchers.length === 0) {
-            var playState = this._game.playState;
+    watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void {
+        this.watchState<GameState>('state', callBack);
+    }
+
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void {
+        this.watchState<PlayState>('playState', callBack);
+    }
+
+    watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
+        var watcherNames = `_${stateName}Watchers`;
+        var watchers = this[watcherNames] ?? [];
+        this[watcherNames] = watchers;
+
+        if (watchers.length === 0) {
+            var state = this._game[stateName];
     
-            Object.defineProperty(this._game, 'playState', {
+            Object.defineProperty(this._game, stateName, {
                 enumerable: true,
                 configurable: true,
                 get: () => {
-                    return playState;
+                    return state;
                 },
                 set: value => {
-                    const oldState = playState;
-                    playState = value;
-                    this._playStateWatchers.forEach(w => w(this._game, playState, oldState));
+                    const oldState = state;
+                    state = value;
+                    watchers.forEach(w => w(this._game, state, oldState));
                 }
             });
         }
     
-        if (this._playStateWatchers.indexOf(callBack) < 0) {
-            this._playStateWatchers.push(callBack);
+        if (watchers.indexOf(callBack) < 0) {
+            watchers.push(callBack);
         }
     }
 
@@ -426,7 +414,7 @@ export class GameService implements IGameService {
             startMusic: this.startMusic,
             stopMusic: this.stopMusic,
             playSound: this.playSound,
-            soundQueue: []
+            soundQueue: new Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>
         };
 
         this.setupCombinations();
@@ -441,8 +429,12 @@ export class GameService implements IGameService {
             }
         };
 
+        if (this._rules.general?.gameStateChange) {
+            this.watchState<GameState>('state', this._rules.general.gameStateChange);
+        }
+
         if (this._rules.general?.playStateChange) {
-            this.watchPlayState(this._rules.general.playStateChange);
+            this.watchState<PlayState>('playState', this._rules.general.playStateChange);
         }
     }
 

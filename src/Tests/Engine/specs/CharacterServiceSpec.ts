@@ -1,4 +1,3 @@
-import '../../../Games/MyRolePlayingGame/run';
 import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { Rules } from '../../../Games/MyRolePlayingGame/rules';
@@ -7,21 +6,14 @@ import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
 import { addArrayExtensions } from 'storyScript/globals';
-import { GetObjectFactory } from 'storyScript/run';
 
 describe("CharacterService", function() {
 
-    beforeEach(() => {
+    beforeAll(() => {
         addArrayExtensions();
     });
 
     describe("Character sheet", function() {
-
-        it("Object factory should return character service", function() {
-            var factory = GetObjectFactory();
-            var service = factory.GetCharacterService();
-            expect(service).not.toBeNull();
-        });
 
         it("should return the properties defined for the character sheet", function() {
             var service = getService();
@@ -615,69 +607,69 @@ describe("CharacterService", function() {
 
     });
 
-    function getAttributes(): ICreateCharacterAttribute {
-        return  <ICreateCharacterAttribute>{
-            numberOfPointsToDistribute: 10,
-            entries: [
-                {
-                    attribute: 'Strength',
-                    value: 1,
-                    min: 1,
-                    max: 5
-                },
-                {
-                    attribute: 'Agility',
-                    value: 1,
-                    min: 1,
-                    max: 5
-                },
-                {
-                    attribute: 'Intelligence',
-                    value: 1,
-                    min: 1,
-                    max: 5
-                }
-            ]
-        };
-    }
+});
 
-    var sheetAttributes = [
-        'strength',
-        'agility',
-        'intelligence'
-    ];
-
-    var levelUpSheet = <ICreateCharacter>{
-        steps: [
+function getAttributes(): ICreateCharacterAttribute {
+    return  <ICreateCharacterAttribute>{
+        numberOfPointsToDistribute: 10,
+        entries: [
             {
-                questions: [
-                    {
-                        question: 'Gaining more experience, you become...',
-                        entries: [
-                            {
-                                text: 'Stronger',
-                                value: 'strength',
-                                bonus: 1
-                            },
-                            {
-                                text: 'Faster',
-                                value: 'agility',
-                                bonus: 1
-                            },
-                            {
-                                text: 'Smarter',
-                                value: 'intelligence',
-                                bonus: 1
-                            }
-                        ]
-                    }
-                ]
+                attribute: 'Strength',
+                value: 1,
+                min: 1,
+                max: 5
+            },
+            {
+                attribute: 'Agility',
+                value: 1,
+                min: 1,
+                max: 5
+            },
+            {
+                attribute: 'Intelligence',
+                value: 1,
+                min: 1,
+                max: 5
             }
         ]
     };
+}
 
-    function getService(game?: any, rules?: any) {
-        return new CharacterService(game || {}, rules || Rules());
-    }
+var sheetAttributes = [
+    'strength',
+    'agility',
+    'intelligence'
+];
 
-});
+var levelUpSheet = <ICreateCharacter>{
+    steps: [
+        {
+            questions: [
+                {
+                    question: 'Gaining more experience, you become...',
+                    entries: [
+                        {
+                            text: 'Stronger',
+                            value: 'strength',
+                            bonus: 1
+                        },
+                        {
+                            text: 'Faster',
+                            value: 'agility',
+                            bonus: 1
+                        },
+                        {
+                            text: 'Smarter',
+                            value: 'intelligence',
+                            bonus: 1
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+function getService(game?: any, rules?: any) {
+    return new CharacterService(game || {}, rules || Rules());
+}

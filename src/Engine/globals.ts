@@ -1,4 +1,6 @@
-﻿if (Function.prototype.proxy === undefined) {
+﻿import { getId } from "./utilities";
+
+if (Function.prototype.proxy === undefined) {
     // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
     Function.prototype.proxy = function (proxyFunction: Function, ...params) {
         var originalFunction = this;
@@ -27,6 +29,7 @@
 
 export function addFunctionExtensions() {
     if (Function.prototype.name === undefined) {
+        /* istanbul ignore next -- @preserve */
         Object.defineProperty(Function.prototype, 'name', {
             get: function () {
                 return /function ([^(]*)/.exec(this + '')[1];
@@ -134,10 +137,10 @@ function find(id: any, array: any[]): any[] {
         return Array.prototype.filter.call(array, (x: any) => x === id );
     }
 
-    id = typeof id === 'function' ? id.name : id;
+    id = getId(id);
 
-    return Array.prototype.filter.call(array, (x: any) => { 
-        var target = typeof x.target === 'function' ? x.target.name : x.target;
+    return Array.prototype.filter.call(array, (x: { id: string, target: Function | string }) => { 
+        var target = getId(x.target);
         return compareString(x.id, id)  || compareString(target, id);
     });
 }

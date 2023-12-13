@@ -1,8 +1,9 @@
-import { GetDefinitions, GetFunctions, buildEntities, DynamicEntity } from 'storyScript/ObjectConstructors';
+await import('../../../Games/MyRolePlayingGame/run');
+import { GetDefinitions, GetFunctions, DynamicEntity } from 'storyScript/ObjectConstructors';
 import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature } from 'storyScript/Interfaces/storyScript';
-import '../../../Games/MyRolePlayingGame/run';
+import { ObjectFactory } from 'storyScript/ObjectFactory';
 
-describe("ObjectFactory", function() {
+describe("ObjectConstructors", function() {
 
     it("should get the game definitions", function() {
         var result = <any>GetDefinitions();
@@ -16,10 +17,7 @@ describe("ObjectFactory", function() {
     });
 
     it("should get the game functions", function() {
-        // First, build all entities once so the functions are registered.
-        buildEntities();
         var result = <any>GetFunctions();
-
         expect(result).not.toEqual(null);
         expect(getLength(result.locations)).toEqual(8);
         expect(getLength(result.items)).toEqual(1);
@@ -33,14 +31,14 @@ describe("ObjectFactory", function() {
         var locationFunctions = Object.keys(result.locations).sort().map(k => `${k}:${result.locations[k].hash}`);
 
         expect(locationFunctions).toEqual([
-            "bedroom|trade|0|buy|itemSelector:-589556356",
-            "bedroom|trade|0|sell|itemSelector:-589556356",
-            "bedroom|trade|0|sell|priceModifier:700782575",
-            "dirtroad|combatActions|0|execute:1245674738",
-            "garden|actions|0|execute:-452619560",
-            "garden|actions|1|execute:131026483",
-            "garden|enterEvents|0:-1677062687",
-            "start|descriptionSelector:283150339"]);
+            "bedroom|trade|0|buy|itemSelector:-757288170",
+            "bedroom|trade|0|sell|itemSelector:-757288170",
+            "bedroom|trade|0|sell|priceModifier:-1683809711",
+            "dirtroad|combatActions|0|execute:-34161269",
+            "garden|actions|0|execute:492355190",
+            "garden|actions|1|execute:1867314870",
+            "garden|enterEvents|0:-521820139",
+            "start|descriptionSelector:1949117004"]);
     });
 
     it("should create the Start location", function() {
@@ -123,7 +121,7 @@ describe("ObjectFactory", function() {
         var result = locationWithBarrier();
         var key = result.destinations[0].barrier.key;
         expect(typeof key).toBe('string');
-        expect(key).toBe('Key');
+        expect(key).toBe('key');
     });
 
     it("should correctly create a feature", function() {
@@ -135,15 +133,44 @@ describe("ObjectFactory", function() {
 
         var result = Feature(testFeature);
         expect(result).not.toBeNull();
-        expect(result.id).toBe('testFeature');
+        expect(result.id).toBe('testfeature');
         expect((<any>result).type).toBe('feature');
     });
 
-    function getLength(collection) {
-        return Object.keys(collection).length;
-    }
-
-    function find(collection, name) {
-        return collection.find(l => l.name === name);
-    }
 });
+
+describe('ObjectFactory', function () {
+    
+    it("should return all services", function() {
+        var factory = ObjectFactory.GetInstance();
+
+        let characterService = factory.GetCharacterService();
+        expect(characterService).not.toBeNull();
+
+        var combinationService = factory.GetCombinationService();
+        expect(combinationService).not.toBeNull();
+
+        var conversationService = factory.GetConversationService();
+        expect(conversationService).not.toBeNull();
+
+        var gameService = factory.GetGameService();
+        expect(gameService).not.toBeNull();
+
+        var tradeService = factory.GetTradeService();
+        expect(tradeService).not.toBeNull();
+
+        var texts = factory.GetTexts();
+        expect(texts).not.toBeNull();
+
+        var rules = factory.GetRules();
+        expect(rules).not.toBeNull();
+    });
+})
+
+function getLength(collection) {
+    return Object.keys(collection).length;
+}
+
+function find(collection, name) {
+    return collection.find(l => l.name === name);
+}

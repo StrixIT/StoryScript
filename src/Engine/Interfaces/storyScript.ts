@@ -1,82 +1,75 @@
-import { IInterfaceTexts } from './interfaceTexts'
-import { IRules } from './rules/rules'
-import { IGame } from './game'
-import { ICollection } from './collection'
-import { ICharacter } from './character'
-import { IAction } from './action'
-import { IFeature } from './feature'
-import { IFeatureCollection } from './featureCollection'
-import { IItem } from './item'
-import { IEnemy } from './enemy'
-import { IPerson } from './person'
-import { ITrade } from './trade'
-import { IKey } from './key'
-import { IQuest } from './quest'
-import { ILocation } from './location'
-import { ICompiledLocation } from './compiledLocation'
-import { IDestination } from './destination'
-import { IBarrier } from './barrier'
-import { IBarrierAction } from './barrierAction'
-import { IHelpers } from './helpers'
+import type { IInterfaceTexts } from './interfaceTexts'
+import type { IRules } from './rules/rules'
+import type { IGame } from './game'
+import type { ICollection } from './collection'
+import type { ICharacter } from './character'
+import type { IEquipment } from './equipment'
+import { DefaultEquipment } from './defaultEquipment'
+import type { IAction } from './action'
+import type { IFeature } from './feature'
+import type { IFeatureCollection } from './featureCollection'
+import type { IItem } from './item'
+import type { IEnemy } from './enemy'
+import type { IPerson } from './person'
+import type { ITrade } from './trade'
+import type { IKey } from './key'
+import type { IQuest } from './quest'
+import type { ILocation } from './location'
+import type { ICompiledLocation } from './compiledLocation'
+import type { IDestination } from './destination'
+import type { IBarrier } from './barrier'
+import type { IBarrierAction } from './barrierAction'
+import type { IHelpers } from './helpers'
 import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../ObjectConstructors'
 import { Open } from '../Actions/open';
 import { OpenWithKey } from '../Actions/openWithKey';
-import { ICombinable } from './combinations/combinable';
-import { ICombinationAction } from './combinations/combinationAction';
-import { ICombineResult }  from './combinations/combineResult';
-import { ICombinationMatchResult }  from './combinations/combinationMatchResult';
-import { ICreateCharacter } from './createCharacter/createCharacter';
-import { ICreateCharacterStep } from './createCharacter/createCharacterStep';
-import { ICreateCharacterAttribute } from './createCharacter/createCharacterAttribute';
-import { ICreateCharacterAttributeEntry } from './createCharacter/createCharacterAttributeEntry';
-import { IConversation } from './conversations/conversation';
-import { IConversationNode } from './conversations/conversationNode';
-import { IConversationReply } from './conversations/conversationReply';
+import type { ICombinable } from './combinations/combinable';
+import type { ICombinationAction } from './combinations/combinationAction';
+import type { ICombineResult }  from './combinations/combineResult';
+import type { ICombinationMatchResult }  from './combinations/combinationMatchResult';
+import type { ICreateCharacter } from './createCharacter/createCharacter';
+import type { ICreateCharacterStep } from './createCharacter/createCharacterStep';
+import type { ICreateCharacterAttribute } from './createCharacter/createCharacterAttribute';
+import type { ICreateCharacterAttributeEntry } from './createCharacter/createCharacterAttributeEntry';
+import type { IConversation } from './conversations/conversation';
+import type { IConversationNode } from './conversations/conversationNode';
+import type { IConversationReply } from './conversations/conversationReply';
 import { EquipmentType } from './enumerations/equipmentType';
 import { PlayState } from './enumerations/playState';
 import { GameState } from './enumerations/gameState';
 import { ActionType } from './enumerations/actionType';
 import { ActionStatus } from './enumerations/actionStatus';
-import { IDefinitions } from './definitions'
+import type { IDefinitions } from './definitions'
 import { ScoreEntry } from './scoreEntry'
-import { IDynamicStyle } from './dynamicStyle'
-import { IStatistics } from './statistics'
+import type { IDynamicStyle } from './dynamicStyle'
+import type { IStatistics } from './statistics'
 
-export { 
+export type {
     ICollection, 
     IInterfaceTexts, 
     IRules, 
     IGame, 
     ICharacter,
+    IEquipment,
     IAction,
-    Action, 
     IItem, 
-    Item, 
     IFeature,
     IFeatureCollection, 
-    Feature, 
     IEnemy, 
-    Enemy, 
-    IKey, 
-    Key, 
+    IKey,
     ILocation, 
     ICompiledLocation,
     IDestination,
     IBarrier,
     IBarrierAction,
-    Location, 
     IPerson,
     ITrade, 
-    Person,
     IQuest,
-    Quest,
     IHelpers,
     ICreateCharacter,
     ICreateCharacterStep,
     ICreateCharacterAttribute,
     ICreateCharacterAttributeEntry,
-    Open,
-    OpenWithKey,
     ICombinable,
     ICombinationAction,
     ICombineResult,
@@ -84,13 +77,27 @@ export {
     IConversation,
     IConversationNode,
     IConversationReply,
+    IDefinitions,
+    IDynamicStyle,
+    IStatistics
+}
+
+export { 
+    DefaultEquipment,
+    Action, 
+    Item, 
+    Feature, 
+    Enemy,  
+    Key, 
+    Location, 
+    Person,
+    Quest,
+    Open,
+    OpenWithKey,
     EquipmentType,
     PlayState,
     GameState,
     ActionStatus,
     ActionType,
-    IDefinitions,
-    ScoreEntry,
-    IDynamicStyle,
-    IStatistics
+    ScoreEntry
 }

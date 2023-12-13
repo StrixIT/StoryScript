@@ -4,7 +4,7 @@ import { IItem } from './types';
 export class Character implements ICharacter {
     name: string = '';
     score: number = 0;
-    currency: number = 0;
+    currency?: number = 0;
     level?: number = 1;
     hitpoints: number = 10;
     currentHitpoints: number = 10;
@@ -16,13 +16,7 @@ export class Character implements ICharacter {
 
     items: ICollection<IItem> = [];
 
-    equipment: {
-        head?: IItem,
-        body?: IItem,
-        leftHand?: IItem,
-        rightHand?: IItem,
-        feet?: IItem,
-    };
+    equipment: {};
 
     constructor() {
         this.equipment = {

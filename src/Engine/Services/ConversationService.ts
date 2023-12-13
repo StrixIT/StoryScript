@@ -11,6 +11,7 @@ import { IConversationReplies } from '../Interfaces/conversations/conversationRe
 import { IConversation } from '../Interfaces/conversations/conversation';
 import { getParsedDocument, checkAutoplay } from './sharedFunctions';
 import { IDataService } from '../Interfaces/services/dataService';
+import { parseGameProperties } from 'storyScript/utilities';
 
 export class ConversationService implements IConversationService {
     constructor(private _dataService: IDataService, private _game: IGame) {
@@ -84,6 +85,8 @@ export class ConversationService implements IConversationService {
 
         this.initReplies(person);
         this.setReplyStatus(person.conversation, activeNode);
+
+        activeNode.trigger && person.conversation.actions[activeNode.trigger](this._game, person);
     }
 
     private getDefaultReply = (conversationElement: Element, person: IPerson): string => {
@@ -118,13 +121,13 @@ export class ConversationService implements IConversationService {
                 };
             }
 
-            newNode.lines = node.innerHTML.trim();
+            newNode.lines = parseGameProperties(node.innerHTML.trim(), this._game);;
             person.conversation.nodes.push(newNode);
         }
     }
 
     private getNewNode = (person: IPerson, node: Element): IConversationNode => {
-        var nameAttribute = node.attributes['name'] && <string>node.attributes['name'].nodeValue;
+        var nameAttribute = this.GetNodeValue(node, 'name');
 
         if (!nameAttribute && console) {
             console.log('Missing name attribute on node for conversation for person ' + person.id + '. Using \'default\' as default name');
@@ -137,6 +140,7 @@ export class ConversationService implements IConversationService {
 
         return <IConversationNode>{
             node: nameAttribute,
+            trigger: this.GetNodeValue(node, 'trigger'),
             lines: '',
             replies: null,
         };
@@ -160,7 +164,7 @@ export class ConversationService implements IConversationService {
 
                 if (defaultReply && newNode.replies.defaultReply) {
                     newNode.replies.options.push(<IConversationReply>{
-                        lines: defaultReply
+                        lines: parseGameProperties(defaultReply, this._game)
                     });
                 }
             }
@@ -190,7 +194,7 @@ export class ConversationService implements IConversationService {
                     questStart: questStart,
                     questComplete: questComplete,
                     setStart: setStart,
-                    lines: (<any>replyNode).innerHTML.trim(),
+                    lines: parseGameProperties((<any>replyNode).innerHTML.trim(), this._game)
                 };
 
                 newNode.replies.options.push(reply);
@@ -261,25 +265,27 @@ export class ConversationService implements IConversationService {
     }
 
     private processReply = (person: IPerson, reply: IConversationReply) => {
-        if (reply.trigger) {
-            person.conversation.actions[reply.trigger](this._game, person);
-        }
+        reply.trigger && person.conversation.actions[reply.trigger](this._game, person);
 
         if (reply.setStart) {
             var startNode = person.conversation.nodes.filter((node) => { return node.node == reply.setStart; })[0];
             person.conversation.startNode = startNode.node;
         }
 
+        let activeNode = null;
+
         if (reply.linkToNode) {
-            person.conversation.activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
-            this.setReplyStatus(person.conversation, person.conversation.activeNode);
+            activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
+            person.conversation.activeNode = activeNode;
+            activeNode.trigger && person.conversation.actions[activeNode.trigger](this._game, person);
+            this.setReplyStatus(person.conversation, activeNode);
         }
         else {
             person.conversation.activeNode = null;
         }
 
-        if (person.conversation.activeNode?.lines) {
-            person.conversation.activeNode.lines = checkAutoplay(this._dataService, person.conversation.activeNode.lines);
+        if (activeNode?.lines) {
+            activeNode.lines = checkAutoplay(this._dataService, activeNode.lines);
         }
     }
 

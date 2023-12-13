@@ -1,14 +1,19 @@
 const path = require('path');
 const os = require('os');
 
-module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gamePath, codePath) {
-  webPackConfig.resolve.alias.game = path.resolve(__dirname, gamePath);
-  webPackConfig.output = { path: path.join(os.tmpdir(), '_karma_webpack_') + Math.floor(Math.random() * 1000000) };
+module.exports = function (karmaConfig, webPackConfig, testPath, gamePath, codePath) {
+  const wpConfig = webPackConfig.default;
 
-  webPackConfig.module.rules.push({
+  wpConfig.resolve.alias.game = path.resolve(__dirname, gamePath);
+  wpConfig.output = { path: path.join(os.tmpdir(), '_karma_webpack_') + Math.floor(Math.random() * 1000000) };
+
+  wpConfig.devtool = 'inline-source-map';
+  wpConfig.module.rules.push({
     enforce: 'post',
     test: /\.ts$/,
-    loader: 'istanbul-instrumenter-loader',
+    use: {
+      loader: 'coverage-istanbul-loader'
+    },
     include: path.resolve(__dirname, codePath)
   });
 
@@ -18,12 +23,11 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['webpack', 'jasmine', 'requirejs'],
+    frameworks: ['jasmine', 'webpack'],
 
     // list of files / patterns to load in the browser
     files: [
-      mainJSPath + 'test-main.js',
-      { pattern: 'specs/*Spec.ts' }
+      'specs/*Spec.ts'
     ],
 
     // preprocess matching files before serving them to the browser
@@ -32,7 +36,7 @@ module.exports = function (karmaConfig, webPackConfig, mainJSPath, testPath, gam
       'specs/*.ts': ['webpack'],
     },
 
-    webpack: webPackConfig,
+    webpack: wpConfig,
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

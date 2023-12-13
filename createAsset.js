@@ -1,70 +1,72 @@
-const gameName = require('./gameName');
+import gameName from './gameName.js';
 const gameDir = `src\\Games\\${gameName}`;
 
-const fs = require('fs');
-const jf = require('jsonfile');
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
-var assetType = process.argv[2];
+import pkg from 'jsonfile';
+const { readFileSync } = pkg;
+
+const assetType = process.argv[2];
 
 if (!assetType) {
     console.log('You need to specify an asset type, e.g. location.');
-    return;
+    process.exit();
 }
 
-var assetName = process.argv[3];
+const assetName = process.argv[3];
 
 if (!assetName) {
     console.log('You need to specify an asset name, e.g. \'Cave\'.');
-    return;
+    process.exit();
 }
 
-var snippetKey =  assetType.substring(0, 1).toUpperCase() + assetType.substring(1) + 's';
+let snippetKey =  assetType.substring(0, 1).toUpperCase() + assetType.substring(1) + 's';
 snippetKey = snippetKey.endsWith('ys') ? snippetKey.substring(0, snippetKey.length - 2) + 'ies' : snippetKey; 
-var assetNameCapital = assetName.substring(0, 1).toUpperCase() + assetName.substring(1);
+const assetNameCapital = assetName.substring(0, 1).toUpperCase() + assetName.substring(1);
 
-var snippets = jf.readFileSync('CodeSnippets\\StoryScriptSnippets.code-snippets');
+const snippets = readFileSync('CodeSnippets\\StoryScriptSnippets.code-snippets');
 
 if (!snippets[snippetKey]) {
     console.log(`No asset type ${assetType} exists.`);
-    return;
+    process.exit();
 }
 
-var descriptionSnippet = snippets['Description'];
+const descriptionSnippet = snippets['Description'];
 
 if (!descriptionSnippet) {
     console.log('The description snippet doesn\'t exist.');
-    return;
+    process.exit();
 }
 
-var includeDescription = !process.argv[4] || process.argv[4].toLowerCase() !== 'p';
+let includeDescription = !process.argv[4] || process.argv[4].toLowerCase() !== 'p';
 includeDescription = (snippetKey === 'Locations' || snippetKey === 'Persons') || ((snippetKey === 'Items' || snippetKey === 'Enemies') && includeDescription);
 
-var conversationSnippet = null;
+let conversationSnippet = null;
 
 if (snippetKey === 'Persons') {
-    var conversationSnippet = snippets['Conversation'];
+    conversationSnippet = snippets['Conversation'];
 
     if (!conversationSnippet) {
         console.log('The conversation snippet doesn\'t exist.');
     }
 }
 
-var snippet = snippets[snippetKey];
+const snippet = snippets[snippetKey];
 
 // Keys go into the items folder.
-var dirName = snippetKey === 'Keys' ? 'Items' : snippetKey;
-var assetDir = `${gameDir}\\${dirName.toLowerCase()}`;
-var assetBaseFileName = `${assetDir}\\${assetName}`;
+const dirName = snippetKey === 'Keys' ? 'Items' : snippetKey;
+const assetDir = `${gameDir}\\${dirName.toLowerCase()}`;
+const assetBaseFileName = `${assetDir}\\${assetName}`;
 
-if (!fs.existsSync(assetDir)){
-    fs.mkdirSync(assetDir);
+if (!existsSync(assetDir)){
+    mkdirSync(assetDir);
 }
 
 if (!includeDescription) {
-    var cleaned = [];
+    const cleaned = [];
 
     snippet.body = Object.keys(snippet.body).forEach(k => { 
-        l = snippet.body[k]; 
+        const l = snippet.body[k]; 
         if (!l.match(/import description from \'\.\/\$\{TM_FILENAME_BASE\}\.html';/g) && !l.match(/[\\t]{0,}description:/g)) {
             cleaned.push(l);
         } 
@@ -73,27 +75,27 @@ if (!includeDescription) {
     snippet.body = cleaned;
 }
 
-var tsString = snippet.body
+const tsString = snippet.body
                 .join('\n')
                 .replace(/\${TM_FILENAME_BASE}/g, assetName)
                 .replace(/\${TM_FILENAME_BASE\/\(\.\*\)\/\${1:\/capitalize}\/}/g, assetNameCapital)
                 .replace(/\$[0-9]{1,}/g, '');
 
 // Write ts file
-fs.writeFileSync(assetBaseFileName + '.ts', tsString);
+writeFileSync(assetBaseFileName + '.ts', tsString);
 
 if (!includeDescription) {
-    return;
+    process.exit();
 }
 
-var htmlString = removePlaceholders(descriptionSnippet);
+let htmlString = removePlaceholders(descriptionSnippet);
 
 if (conversationSnippet) {
     htmlString = htmlString + '\n' + removePlaceholders(conversationSnippet);
 }
 
 // Write html file
-fs.writeFileSync(assetBaseFileName + '.html', htmlString);
+writeFileSync(assetBaseFileName + '.html', htmlString);
 
 function removePlaceholders(value) {
     return value.body

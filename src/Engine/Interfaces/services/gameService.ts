@@ -5,6 +5,7 @@ import { IBarrier } from '../../Interfaces/barrier';
 import { IDestination } from '../../Interfaces/destination';
 import { IBarrierAction } from '../barrierAction';
 import { IGame } from '../game';
+import { GameState } from '../enumerations/gameState';
 import { PlayState } from '../enumerations/playState';
 
 export interface IGameService {
@@ -18,9 +19,10 @@ export interface IGameService {
     loadGame(name: string): void;
     hasDescription(entity: { id?: string, description?: string }): boolean;
     initCombat(): void;
-    fight(enemy: IEnemy, retaliate?: boolean): void;
-    useItem(item: IItem): void;
+    fight(enemy: IEnemy, retaliate?: boolean): Promise<void> | void;
+    useItem(item: IItem, target?: IEnemy): Promise<void> | void;
     executeBarrierAction(barrier: IBarrier, action: IBarrierAction, destination: IDestination): void;
     getCurrentMusic(): string;
-    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void);
+    watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void;
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void;
 }

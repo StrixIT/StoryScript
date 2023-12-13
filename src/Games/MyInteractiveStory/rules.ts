@@ -6,9 +6,9 @@ export function Rules(): IRules {
     return {
         setup: {
             autoBackButton: true,
-            playList: [
-                [Start, 'Contemplate_the_stars.mp3']
-            ],
+            playList: {
+                'Contemplate_the_stars.mp3': [Start]
+            },
             getCombinationActions: (): ICombinationAction[] => {
                 return [
                     // Add combination action names here if you want to use this feature.

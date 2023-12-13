@@ -1,31 +1,49 @@
+import path from 'path';
+import {fileURLToPath} from 'url';
+import DotEnv from 'dotenv-webpack';
+import gameName from '../gameName.js';
 
-const gameName = require('../gameName.js');
-const path = require('path');
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-module.exports = {
-    mode: 'development',
-    output: {
-        filename: '[name].[fullhash].js',
-        path: path.resolve(__dirname, '../dist')
-    },
-    module: {
-        rules: [
-            {
-                test: /\.ts?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+export const mode = 'development';
+
+export const output = {
+    filename: '[name].[fullhash].js',
+    path: path.resolve(__dirname, '../dist')
+};
+export const module = {
+    rules: [
+        {
+            // Match `.js`, `.jsx`, `.ts` or `.tsx` files
+            test: /\.[jt]sx?$/,
+            loader: 'esbuild-loader',
+            options: {
+                target: 'ES2022',
+                tsconfig: path.resolve(__dirname, '../tsconfig.json')
             },
-            {
-                test: /\.html$/,
-                use: 'raw-loader'
-            }
-        ]
-    },
-    resolve: {
-        extensions: [".ts", ".js", ".css"],
-        alias: {
-            storyScript: path.resolve(__dirname, '../src/Engine'),
-            game: path.resolve(__dirname, `../src/Games/${gameName}/`)
+            exclude: /node_modules/
+        },
+        {
+            test: /\.html$/,
+            use: 'raw-loader'
         }
+    ]
+};
+export const resolve = {
+    extensions: [".ts", ".js", ".css"],
+    alias: {
+        storyScript: path.resolve(__dirname, '../src/Engine'),
+        game: path.resolve(__dirname, `../src/Games/${gameName}/`)
     }
 };
+
+export default {
+    mode: mode,
+    module: module,
+    output: output,
+    resolve: resolve,
+    plugins: [
+        new DotEnv({ path : path.resolve(__dirname, '../.env') })
+    ],
+    ignoreWarnings: [ /Accessing import.meta directly is unsupported/ ]
+}

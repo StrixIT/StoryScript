@@ -14,6 +14,7 @@ import { ICombinationAction } from '../Interfaces/combinations/combinationAction
 import { ICombinable } from '../Interfaces/combinations/combinable';
 import { ICombineResult } from '../Interfaces/combinations/combineResult';
 import { IActiveCombination } from '../Interfaces/combinations/activeCombination';
+import { getId } from 'storyScript/utilities';
 
 export class CombinationService implements ICombinationService {
     constructor(private _dataService: IDataService, private _locationService: ILocationService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
@@ -167,8 +168,8 @@ export class CombinationService implements ICombinationService {
         return result;
     }
 
-    private isMatch = (combineTool: any, tool: ICombinable): boolean => {
-        var combineId = typeof combineTool === 'function' ? combineTool.name : combineTool;
+    private isMatch = (combineTool: ICombinable, tool: ICombinable): boolean => {
+        var combineId = getId(combineTool.id);
         return compareString(tool.id, combineId);
     }
 

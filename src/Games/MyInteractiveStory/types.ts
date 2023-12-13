@@ -9,25 +9,30 @@ import { IGame } from './interfaces/game'
 import { CustomTexts } from './customTexts'
 import { Rules } from './rules'
 import { Character } from './character'
+import { IEquipment } from './interfaces/equipment'
 
-export { 
+export type {
     IFeature,
-    Feature,
     IItem,
-    Item,
     IKey,
-    Key,
     IEnemy,
-    Enemy,
     IPerson,
-    Person,
     IQuest,
-    Quest,
     ILocation,
-    ICompiledLocation, 
-    Location, 
-    IGame, 
-    CustomTexts, 
-    Rules, 
-    Character 
+    ICompiledLocation,
+    IEquipment,
+    IGame,
+}
+
+export {
+    Feature,
+    Item,
+    Key,
+    Enemy,
+    Person,
+    Quest,
+    Location,
+    CustomTexts,
+    Rules,
+    Character
 }

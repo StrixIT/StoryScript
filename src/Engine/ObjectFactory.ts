@@ -28,6 +28,8 @@ export class ObjectFactory {
     private _conversationService: IConversationService;
     private _combinationService: ICombinationService;
 
+    private static _instance: ObjectFactory;
+
     constructor(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
         this._texts = texts;
         this._rules = rules;
@@ -41,9 +43,12 @@ export class ObjectFactory {
         const locationService = new LocationService(dataService, this._rules, this._game, this._game.definitions);
         this._combinationService = new CombinationService(dataService, locationService, this._game, this._rules, this._texts);
         this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, helperService, this._game, this._texts);
+        ObjectFactory._instance = this;
     }
 
     GetGame = (): IGame => this._game;
+
+    GetRules = (): IRules => this._rules;
 
     GetTexts = (): IInterfaceTexts => this._texts;
 
@@ -56,4 +61,6 @@ export class ObjectFactory {
     GetCharacterService = (): ICharacterService => this._characterService;
 
     GetCombinationService = (): ICombinationService => this._combinationService;
+
+    static GetInstance = () => ObjectFactory._instance;
 }

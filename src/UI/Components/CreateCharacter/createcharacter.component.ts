@@ -2,15 +2,21 @@ import { IGame, IInterfaceTexts, ICreateCharacterStep } from 'storyScript/Interf
 import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'create-character',
-    template: getTemplate('createcharacter', require('./createcharacter.component.html'))
+    template: getTemplate('createcharacter', await import('./createcharacter.component.html'))
 })
 export class CreateCharacterComponent {
-    constructor(private _characterService: CharacterService, private _gameService: GameService, objectFactory: ObjectFactory) {
+    private _characterService: CharacterService;
+    private _gameService: GameService;
+
+    constructor() {
+        this._characterService = inject(CharacterService);
+        this._gameService = inject(GameService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

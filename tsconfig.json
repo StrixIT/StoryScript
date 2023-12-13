@@ -1,0 +1,46 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+
+        /* Linting */
+        "strict": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+
+        "noEmitOnError": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "useDefineForClassFields": true,
+        "target": "ES2022",
+        "module": "ES2022",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "skipLibCheck": true,
+
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "allowImportingTsExtensions": true,
+        "allowJs": true,
+        "paths": {
+            "storyScript/*": ["./src/Engine/*"],
+            "@angular/*": ["./node_modules/@angular/*"]
+        },
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "types": [
+            "node",
+            "webpack-env",
+            "vite/client",
+            "jasmine"
+        ]
+    }
+}

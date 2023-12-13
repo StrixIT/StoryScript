@@ -1,6 +1,7 @@
 ﻿import { IItem } from './item';
 import { ICollection } from './collection';
 import { IQuest } from './quest';
+import { IEquipment } from './equipment';
 
 /**
  * The player character in the StoryScript game.
@@ -35,7 +36,7 @@ export interface ICharacter {
     /**
      * The amount of credits the player has, in whatever form.
      */
-    currency: number;
+    currency?: number;
 
     /**
      * All items the player is carrying in his backpack. Note that equipped items are not in this list.
@@ -55,48 +56,7 @@ export interface ICharacter {
     /**
      * The items the character has equipped.
      */
-    equipment: {
-        /**
-         * Items worn on the head, ranging from diadem to helmets covering the entire head.
-         */
-        head?: IItem,
-        /**
-         * Items worn around the neck, like amulets.
-         */
-        amulet?: IItem,
-        /**
-         * Items worn on the torso and upper arms.
-         */
-        body?: IItem,
-        /**
-         * Items worn on the hands, like gloves.
-         */
-        hands?: IItem,
-        /**
-         * Items that can be used in the non-dominant hand.
-         */
-        leftHand?: IItem,
-        /**
-         * Small items worn around the finger on the non-dominant hand.
-         */
-        leftRing?: IItem,
-        /**
-         * Items that can be used in the dominant hand.
-         */
-        rightHand?: IItem,
-        /**
-         * Small items worn around the finger on the dominant hand.
-         */
-        rightRing?: IItem,
-        /**
-         * Items worn on the legs.
-         */
-        legs?: IItem,
-        /**
-         * Items like boots that are used for walking but may also offer additional protection.
-         */
-        feet?: IItem
-    }
+    equipment: IEquipment
 
     /**
      * The player character level. This is an optional element, you should track level and take care of level

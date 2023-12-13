@@ -12,12 +12,13 @@ export interface ICombatRules {
     initCombat?(game: IGame, location: ICompiledLocation): void;
 
     /**
-     * This function determines the combat rules for your game.
+     * This function determines the combat rules for your game. Return a promise
+     * when you want the engine to wait for your function to complete asynchronously.
      * @param game The active game
      * @param enemy The enemy being attacked
      * @param retaliate True if the enemies present can fight back, false or undefined otherwise
      */
-    fight?(game: IGame, enemy: IEnemy, retaliate?: boolean): void;
+    fight?(game: IGame, enemy: IEnemy, retaliate?: boolean): Promise<void>| void;
 
     /**
      * This function will be called when an enemy is defeated.
@@ -30,7 +31,6 @@ export interface ICombatRules {
      * Specify this function if you want to apply custom rules before an enemy drops an item when defeated.
      * Return false if the enemy should not drop the item.
      * @param game The active game
-     * @param character The player character
      * @param item The item about to be unequipped
      */
     beforeDrop?(game: IGame, enemy: IEnemy, item: IItem): boolean;

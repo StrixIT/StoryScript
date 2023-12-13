@@ -3,15 +3,23 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'backpack',
-    template: getTemplate('backpack', require('./backpack.component.html'))
+    template: getTemplate('backpack', await import('./backpack.component.html'))
 })
 export class BackpackComponent {
-    constructor(private _sharedMethodService: SharedMethodService, private _gameService: GameService, private _characterService: CharacterService, objectFactory: ObjectFactory) {
+    private _characterService: CharacterService;
+    private _sharedMethodService: SharedMethodService;
+    private _gameService: GameService;
+
+    constructor() {
+        this._characterService = inject(CharacterService);
+        this._sharedMethodService = inject(SharedMethodService);
+        this._gameService = inject(GameService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useBackpack = true;
@@ -22,19 +30,21 @@ export class BackpackComponent {
 
     hasDescription = (item: IItem): boolean => this._sharedMethodService.hasDescription(item);
 
-    showDescription = (item: IItem, title: string): void => this._sharedMethodService.showDescription(this.game, 'item', item, title);
+    showDescription = (item: IItem, title: string): void => this._sharedMethodService.showDescription('item', item, title);
 
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
-    tryCombine = (item: IItem): boolean => this._sharedMethodService.tryCombine(this.game, item);
+    tryCombine = (item: IItem): boolean => this._sharedMethodService.tryCombine(item);
 
-    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.game);
+    showEquipment = (): boolean => this._sharedMethodService.showEquipment();
 
     canEquip = (item: IItem): boolean => this._characterService.canEquip(item);
     
     equipItem = (item: IItem): boolean => this._characterService.equipItem(item);
 
-    useItem = (item: IItem): void => this._gameService.useItem(item);
+    canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(item);
+
+    useItem = (item: IItem): Promise<void> | void => this._gameService.useItem(item);
 
     canDropItems = (): boolean => this._sharedMethodService.useGround;
 

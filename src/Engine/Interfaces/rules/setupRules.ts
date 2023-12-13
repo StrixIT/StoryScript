@@ -1,8 +1,6 @@
 import { IGame } from '../game';
-import { GameState } from '../enumerations/gameState';
-import { PlayState } from '../enumerations/playState';
 import { ICombinationAction } from '../combinations/combinationAction';
-import { ILocation } from '../location';
+import { StateList } from '../stateList';
 
 export interface ISetupRules {
     /**
@@ -43,12 +41,20 @@ export interface ISetupRules {
 
     /**
      * When you want to play a music file when the game is in a certain state, use this list. Use it like this:
-        playList: [
-            Using GameState: [GameState.Play, 'play.mp4'].
-            Using PlayState: [PlayState.Combat, 'combat.mp4'].
-            Using Locations: [Start, 'start.mp4'].
-            Using a custom function: [() => string, ''] (the string value returned from the function should be the music file).
-        ]
+        playList: {
+            Using GameState: 'play.mp4': [GameState.Play].
+            For multiple play states: 'play.mp4': [GameState.Intro, GameState.Play].
+            Using PlayState: 'combat.mp4': [PlayState.Combat].
+            Using Locations: 'start.mp4': [Start].
+            Using a custom function: '': [() => string] (the string value returned from the function should be the music file).
+        }
      */
-    playList?: (GameState | PlayState | (() => ILocation) | ((game:IGame) => string) | string)[][];
+    playList?: StateList;
+
+    /**
+     * When you want to fade out music before starting a new piece, set this interval. The interval is in miliseconds, so specify
+     * a sufficiently large value (e.g. 250). The volume will be reduced by 10% each interval, and the new music starts when the
+     * volume of the current music reaches 0.
+     */
+    fadeMusicInterval?: number;
 }

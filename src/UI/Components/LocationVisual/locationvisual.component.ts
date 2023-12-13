@@ -2,15 +2,19 @@ import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storySc
 import { compareString } from 'storyScript/globals';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'location-visual',
-    template: getTemplate('locationvisual', require('./locationvisual.component.html'))
+    template: getTemplate('locationvisual', await import('./locationvisual.component.html'))
 })
 export class LocationVisualComponent {
-    constructor(private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    private _sharedMethodService: SharedMethodService;
+    
+    constructor() {
+        this._sharedMethodService = inject(SharedMethodService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }
@@ -18,7 +22,7 @@ export class LocationVisualComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(this.game, feature);
+    tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 
     getFeatureCoordinates = (feature: IFeature): { top: string, left: string} => {
         var coords = feature.coords.split(',');

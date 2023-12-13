@@ -1,4 +1,6 @@
 <div id="create-character" class="container-fluid" *ngFor="let step of sheet.steps; let i = index" [hidden]="sheet.currentStep !== i">
+    <div class="step-description" *ngIf="step.description" [innerHTML]="step.description | safe: 'html'">
+    </div>
     <div class="input-group mb-3" *ngFor="let question of step.questions">
         <div class="input-group-prepend">
             <label class="input-group-text">{{ question.question }}</label>

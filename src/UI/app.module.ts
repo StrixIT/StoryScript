@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
 import { FormsModule } from '@angular/forms';
 import { NgbCollapseModule, NgbModalModule, NgbActiveModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
@@ -12,7 +12,6 @@ import { CharacterService } from 'storyScript/Services/characterService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { GetObjectFactory } from 'storyScript/run';
 
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { NavigationComponent } from './Components/Navigation/navigation.component';
@@ -50,7 +49,7 @@ import './styles/storyscript.css';
 import 'game/ui/styles/game.css'
 import 'game/run';
 
-var objectFactory = GetObjectFactory();
+const objectFactory = ObjectFactory.GetInstance();
 
 @NgModule({
     imports: [
@@ -62,10 +61,6 @@ var objectFactory = GetObjectFactory();
     ],
     bootstrap: [
         MainComponent
-    ],
-    entryComponents: [
-        MenuModalComponent,
-        EncounterModalComponent
     ],
     declarations: [
         MainComponent,
@@ -112,7 +107,10 @@ var objectFactory = GetObjectFactory();
 })
 
 export class AppModule {
-    constructor(private _gameService: GameService) {
+    private _gameService: GameService;
+
+    constructor() {
+        this._gameService = inject(GameService);
         this._gameService.init();
     }
 }

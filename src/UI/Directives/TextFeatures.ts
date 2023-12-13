@@ -4,13 +4,25 @@ import { addHtmlSpaces } from 'storyScript/utilities';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Directive, ElementRef, Renderer2, HostListener, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, Renderer2, HostListener, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedMethodService } from '../Services/SharedMethodService';
 
 @Directive({ selector: '[textFeatures]' })
 export class TextFeatures  implements OnDestroy {
-    constructor(private _sharedMethodService: SharedMethodService, private _combinationService: CombinationService, private _gameService: GameService, private _elem: ElementRef, private _renderer: Renderer2, objectFactory: ObjectFactory) {
+    private _sharedMethodService: SharedMethodService;
+    private _combinationService: CombinationService;
+    private _gameService: GameService;
+    private _elem: ElementRef;
+    private _renderer: Renderer2;
+
+    constructor() {
+        this._sharedMethodService = inject(SharedMethodService);
+        this._combinationService = inject(CombinationService);
+        this._gameService = inject(GameService);
+        this._elem = inject(ElementRef);
+        this._renderer = inject(Renderer2);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this._combinationSubscription = this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
         this.refreshFeatures(true);
@@ -19,7 +31,7 @@ export class TextFeatures  implements OnDestroy {
             mutations.forEach((mutation: MutationRecord) => this.refreshFeatures(true));
         });
   
-        this.changes.observe(_elem.nativeElement, {
+        this.changes.observe(this._elem.nativeElement, {
             attributes: true,
             childList: true,
             characterData: true

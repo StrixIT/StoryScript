@@ -1,5 +1,6 @@
 import { IGame } from '../game';
 import { PlayState } from '../enumerations/playState';
+import { GameState } from '../storyScript';
 
 export interface IGeneralRules {
     /**
@@ -9,6 +10,14 @@ export interface IGeneralRules {
      * @param change The change in score.
      */
     scoreChange?(game: IGame, change: number): boolean;
+
+    /**
+     * This function is called when the game state changes.
+     * @param game The active game
+     * @param newGameState The new game state
+     * @param oldGameState The current game state
+     * */
+    gameStateChange?(game: IGame, newGameState: GameState, oldGameState: GameState): void;
 
     /**
      * This function is called when the play state changes.

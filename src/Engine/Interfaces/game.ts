@@ -6,7 +6,6 @@ import { ScoreEntry } from './scoreEntry';
 import { IPerson } from './person';
 import { ITrade } from './trade';
 import { IFeature } from './feature';
-import { IDynamicStyle } from './dynamicStyle';
 import { ILocation } from './location';
 import { IEnemy } from './enemy';
 import { IStatistics } from './statistics';
@@ -181,8 +180,8 @@ export interface IGame {
     sounds: {
         startMusic(): void;
         stopMusic(): void;
-        playSound(fileName: string): void;
-        soundQueue: string[];
+        playSound(fileName: string, completeCallBack?: () => void): void;
+        soundQueue: Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>;
     }
 
     /**

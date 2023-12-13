@@ -7,25 +7,13 @@ export class Character implements ICharacter {
     score: number = 0;
     hitpoints: number = 10;
     currentHitpoints: number = 10;
-    currency: number = 0;
+    currency?: number = 0;
 
     // Add character properties here.
 
     items: ICollection<IItem> = [];
 
-    equipment: {
-        // Remove the slots you don't want to use
-        head: IItem,
-        amulet: IItem,
-        body: IItem,
-        hands: IItem,
-        leftHand: IItem,
-        leftRing: IItem,
-        rightHand: IItem,
-        rightRing: IItem,
-        legs: IItem,
-        feet: IItem
-    };
+    equipment: {};
 
     constructor() {
         this.equipment = {

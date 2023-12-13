@@ -3,15 +3,21 @@ import { isEmpty } from 'storyScript/utilities';
 import { GameService } from 'storyScript/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'exploration',
-    template: getTemplate('exploration', require('./exploration.component.html'))
+    template: getTemplate('exploration', await import('./exploration.component.html'))
 })
 export class ExplorationComponent {
-    constructor(private _gameService: GameService, private _sharedMethodService: SharedMethodService, objectFactory: ObjectFactory) {
+    private _gameService: GameService; 
+    private _sharedMethodService: SharedMethodService;
+
+    constructor() {
+        this._gameService = inject(GameService);
+        this._sharedMethodService = inject(SharedMethodService);
+        const objectFactory = inject(ObjectFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }
@@ -23,7 +29,7 @@ export class ExplorationComponent {
 
     actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent(this.game);
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
     getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
 
@@ -33,9 +39,10 @@ export class ExplorationComponent {
 
     hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(this.game, action, this);
+    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
 
-    trade = (game: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(this.game, trade);
+    // Do not remove this method nor its arguments, it is called dynamically from the executeAction method of the SharedMethodService!
+    trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         if (this.game.combinations.tryCombine(barrier))
