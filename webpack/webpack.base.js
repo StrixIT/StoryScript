@@ -25,7 +25,7 @@ export const module = {
         },
         {
             test: /\.html$/,
-            use: 'raw-loader'
+            type: 'asset/source'
         }
     ]
 };

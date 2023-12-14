@@ -1,3 +1,4 @@
+import { IDestination } from './interfaces/destination';
 import { IFeature, Feature } from './interfaces/feature';
 import { IItem, Item } from './interfaces/item';
 import { IKey, Key } from './interfaces/key';
@@ -12,6 +13,7 @@ import { Rules } from './rules';
 import { Character } from './character';
 
 export type {
+    IDestination,
     IFeature,
     IItem,
     IKey,

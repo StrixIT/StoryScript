@@ -1,5 +1,5 @@
+import path from 'path';
 import gameName from '../gameName.js';
-import { resolve } from 'path';
 import { __dirname } from './webpack.base.js';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
@@ -7,7 +7,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
 export default {
-    extends: resolve(__dirname, './webpack.base.js'),
+    extends: path.resolve(__dirname, './webpack.base.js'),
     entry: {
         storyscript: './src/UI/main.ts'
     },
@@ -17,7 +17,10 @@ export default {
                 test: /\.css?$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    'css-loader'
+                    {
+                        loader: 'css-loader',
+                        options: { url: false }
+                    }
                 ]
             },
             // This is used to remove the script tag used by Vite when working with Webpack.
@@ -33,24 +36,25 @@ export default {
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [
+            {
+                from: path.resolve(__dirname, `../src/Games/${gameName}/resources`),
+                to: 'resources',
+                noErrorOnMissing: true
+            },
+            { 
+                from: path.resolve(__dirname, `../src/Games/${gameName}/gameinfo.json`),
+                to: '[name].[ext]'
+            }
+        ]}),
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash].css',
             chunkFilename: '[name].[contenthash].css',
         }),
         new HtmlWebpackPlugin({
             template: 'index.html'
-        }),
-        new CopyWebpackPlugin({
-            patterns: [{
-                from: resolve(__dirname, `../src/Games/${gameName}/resources`),
-                to: 'resources',
-                noErrorOnMissing: true
-            },
-            { 
-                from: resolve(__dirname, `../src/Games/${gameName}/gameinfo.json`),
-                to: '[name].[ext]'
-            }
-        ]})
+        })
     ],
     optimization: {
         splitChunks: {

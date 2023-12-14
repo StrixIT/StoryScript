@@ -32,7 +32,7 @@ export function importAssets() {
 }
 
 function loadAssetsWithRequire() {
-    var assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9]{1,}\.ts$/);
+    var assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/);
 
     assets.keys().forEach(k => {
         // Require the asset so it is loaded as a module.
@@ -50,13 +50,13 @@ function loadAssetsWithRequire() {
 
 function loadAssetsWithImport() {
     const modules = import.meta.glob([
-        'game/actions/*.ts',
-        'game/features/*.ts',
-        'game/items/*.ts',
-        'game/enemies/*.ts',
-        'game/persons/*.ts',
-        'game/quests/*.ts',
-        'game/locations/*.ts'
+        'game/actions/**/*.ts',
+        'game/features/**/*.ts',
+        'game/items/**/*.ts',
+        'game/enemies/**/*.ts',
+        'game/persons/**/*.ts',
+        'game/quests/**/*.ts',
+        'game/locations/**/*.ts'
     ], { eager: true });
 
     // Loop over all found files to register the assets with the proper type.
