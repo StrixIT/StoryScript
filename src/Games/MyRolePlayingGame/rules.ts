@@ -111,7 +111,7 @@ export function Rules(): IRules {
                     game.logToCombatLog('You defeat the ' + enemy.name + '!');
                 }
 
-                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
+                game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach((enemy: IEnemy) => {
                     var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                     game.character.currentHitpoints -= damage;

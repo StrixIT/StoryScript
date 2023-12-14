@@ -13,7 +13,7 @@ export enum ActionStatus {
      */
     Disabled,
 
-        /**
+    /**
      * The action is not shown to the player. Useful for actions that are only conditionally available.
      */
     Unavailable

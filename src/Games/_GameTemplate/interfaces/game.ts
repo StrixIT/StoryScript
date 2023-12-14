@@ -12,12 +12,4 @@ export interface IGame extends StoryScriptIGame {
     locations: ILocationCollection;
     currentLocation: ICompiledLocation;
     previousLocation: ICompiledLocation;
-    helpers: IHelpers;
-}
-
-export interface IHelpers extends StoryScriptIHelpers {
-    randomEnemy: (selector?: (enemy: IEnemy) => boolean) => IEnemy;
-    randomItem: (selector?: (enemy: IItem) => boolean) => IItem;
-    getEnemy: (selector: string) => IEnemy;
-    getItem: (selector: string) => IItem;
 }

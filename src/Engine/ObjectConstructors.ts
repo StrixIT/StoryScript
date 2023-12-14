@@ -14,6 +14,7 @@ import { createFunctionHash } from './globals';
 import { ICombinable } from './Interfaces/combinations/combinable';
 import { ICombine } from './Interfaces/combinations/combine';
 import { IEquipment } from './Interfaces/equipment';
+import { ActionStatus } from './Interfaces/storyScript';
 
 // This flag indicates whether the registration phase is active.
 let _registration: boolean = true;
@@ -405,7 +406,7 @@ function setReadOnlyLocationProperties(location: ILocation) {
 
     Object.defineProperty(location, 'activeActions', {
         get: function () {
-            return location.actions.filter(e => { return !e.inactive; });
+            return location.actions.filter(e => { return e.status !== ActionStatus.Unavailable; });
         }
     });
 }
