@@ -1,5 +1,5 @@
 ﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers, ICollection } from 'storyScript/Interfaces/storyScript';
-import { IPerson, IEnemy, IItem, ICompiledLocation, Character, ILocation } from '../types';
+import { ICompiledLocation, Character, ILocation } from '../types';
 import { IWorldProperties } from './worldProperties';
 
 export interface ILocationCollection extends ICollection<ICompiledLocation> {

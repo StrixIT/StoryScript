@@ -37,8 +37,12 @@ let _definitions: IDefinitions = {
     quests: []
 };
 
+export interface FunctionCollection {
+    [type: string]: { [id: string]: { function: Function, hash: number } }
+}
+
 // The object to hold all game entity functions.
-const _functions = {};
+const _functions: FunctionCollection = {};
 
 export function buildEntities(): void {
     // Build all entities once to register them with their id.
@@ -518,7 +522,7 @@ function getIdFromName<T extends { name: string, id? : string}>(entity: T): stri
     return id;
 }
 
-function getFunctions(type: string, functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, definitionKeys: string[], entity: any, parentId: any) {
+function getFunctions(type: string, functionList: FunctionCollection, definitionKeys: string[], entity: any, parentId: any) {
     parentId = parentId || entity.id;
 
     if (!parentId) {

@@ -1,4 +1,4 @@
-﻿import { IRules, ICharacter, ICreateCharacter } from 'storyScript/Interfaces/storyScript';
+﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction } from './types';
 import { Class } from './classes';
 import { changeDay } from './gameFunctions';
@@ -485,7 +485,7 @@ export function Rules(): IRules {
                 }
 
                 if (location.actions && location.actions.length > 0) {
-                    location.actions.forEach(action => action.inactive = !isEntityActive(game, action));
+                    location.actions.forEach(action => action.status = !isEntityActive(game, action) ? ActionStatus.Unavailable : action.status);
                 }
 
                 if (game.worldProperties.isNight) {
