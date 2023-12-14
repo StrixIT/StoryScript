@@ -451,7 +451,7 @@ export function Rules(): IRules {
                     }
                 }
 
-                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach(function (enemy: IEnemy) {
                     var enemyDamage =game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
                     game.character.currentHitpoints -= enemyDamage;

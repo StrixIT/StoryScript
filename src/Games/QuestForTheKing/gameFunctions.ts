@@ -1,4 +1,4 @@
-﻿import { IGame, ILocation, ICompiledLocation } from './types';
+﻿import { IGame, ICompiledLocation } from './types';
 import { NightInYourTent } from './locations/tournament/NightInYourTent';
 import { GetDefinitions } from '../../Engine/ObjectConstructors';
 import { WeaponSmith } from './locations/tournament/WeaponSmith';
@@ -11,22 +11,20 @@ export function changeDay(game: IGame) {
     updateDestination(game, game.locations.get(HealersTent), game.worldProperties.currentDay);
 }
 
-export function locationComplete(game: IGame, location: ILocation, completeDay: (() => boolean), completeNight: (() => boolean)) {
-    var theLocation = location as ICompiledLocation;
-
+export function locationComplete(game: IGame, location: ICompiledLocation, completeDay: (() => boolean), completeNight: (() => boolean)) {
     if (game.worldProperties.isDay) {
-        if (!theLocation.completedDay) {
-            theLocation.completedDay = completeDay();
+        if (!location.completedDay) {
+            location.completedDay = completeDay();
         }
 
-        return theLocation.completedDay;
+        return location.completedDay;
     }
     else {
-        if (!theLocation.completedNight) {
-            theLocation.completedNight = completeNight();
+        if (!location.completedNight) {
+            location.completedNight = completeNight();
         }
 
-        return theLocation.completedNight;
+        return location.completedNight;
     }
 }
 

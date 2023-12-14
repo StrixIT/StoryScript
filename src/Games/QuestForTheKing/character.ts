@@ -3,12 +3,12 @@ import { IItem } from './types';
 import { Class } from './classes';
 
 export class Character implements ICharacter {
-    name: string = "";
+    name: string = '';
     portraitFileName?: string = "resources/Hero1.png";
     hitpoints: number = 200;
     currentHitpoints: number = 200;
     score: number = 0;
-    currency: number = 3;
+    currency?: number = 3;
 
     strength?: number = 1;
     agility?: number = 1;
