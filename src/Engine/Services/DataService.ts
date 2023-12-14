@@ -216,7 +216,7 @@ export class DataService implements IDataService {
                 console.log('Function with key: ' + parts.functionId + ' could not be found!');
             }
             else if (typeList[parts.functionId].hash != parts.hash) {
-                console.warn(`Function with key: ${parts.functionId} was found but the hash does not match the stored hash! Did you change the order of actions in an array and/or change the function content? If you changed the order, you need to reset the game world. If you changed only the content, you can ignore this warning.`);
+                console.warn(`Function with key: ${parts.functionId} was found but the hash does not match the stored hash (old hash: ${parts.hash}, new hash: ${typeList[parts.functionId].hash})! Did you change the order of actions in an array and/or change the function content? If you changed the order, you need to reset the game world. If you changed only the content, you can ignore this warning.`);
             }
 
             loaded[key] = typeList[parts.functionId].function;

@@ -1,6 +1,6 @@
 await import('../../../Games/MyRolePlayingGame/run');
-import { GetDefinitions, GetFunctions, DynamicEntity } from 'storyScript/ObjectConstructors';
-import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature } from 'storyScript/Interfaces/storyScript';
+import { GetDefinitions, GetFunctions, DynamicEntity, FunctionCollection } from 'storyScript/ObjectConstructors';
+import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature, ICompiledLocation, IItem } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 
 describe("ObjectConstructors", function() {
@@ -17,7 +17,7 @@ describe("ObjectConstructors", function() {
     });
 
     it("should get the game functions", function() {
-        var result = <any>GetFunctions();
+        var result = <FunctionCollection>GetFunctions();
         expect(result).not.toEqual(null);
         expect(getLength(result.locations)).toEqual(8);
         expect(getLength(result.items)).toEqual(1);
@@ -44,13 +44,13 @@ describe("ObjectConstructors", function() {
     it("should create the Start location", function() {
         var definitions = GetDefinitions()
         var definition = find(definitions.locations, 'Start');
-        var result = definition();
+        var result = <ICompiledLocation>definition();
 
         expect(result).not.toEqual(null);
         expect(result.id).toEqual('start');
-        expect(result.type).toEqual('location');
+        expect((<any>result).type).toEqual('location');
 
-        var hashMatch = new RegExp(/function#location|start|descriptionSelector#[0-9]{9}/g).exec(result.descriptionSelector.functionId).length;
+        var hashMatch = new RegExp(/function#location|start|descriptionSelector#[0-9]{9}/g).exec((<any>result.descriptionSelector).functionId).length;
 
         expect(hashMatch).toEqual(1);
     });
@@ -58,12 +58,12 @@ describe("ObjectConstructors", function() {
     it("should create a location with read-only properties", function() {
         var definitions = GetDefinitions()
         var definition = find(definitions.locations, 'Start');
-        var result = definition();
+        var result = <ICompiledLocation>definition();
 
         expect(result.activeItems.length).toEqual(0);
 
         // Add an item to activeItems to see whether the array is read-only indeed.
-        result.items.push({});
+        result.items.push(<IItem>{});
         expect(result.activeItems.length).toEqual(1);
 
         expect(function() {
@@ -89,7 +89,6 @@ describe("ObjectConstructors", function() {
     });
 
     it("should set key id on destination barriers", function() {
-        var functions = <any>GetFunctions();
 
         function Key() {
             return <IKey>{
@@ -167,10 +166,10 @@ describe('ObjectFactory', function () {
     });
 })
 
-function getLength(collection) {
+function getLength(collection: {}) {
     return Object.keys(collection).length;
 }
 
-function find(collection, name) {
+function find<T>(collection: (() => T)[], name: string) {
     return collection.find(l => l.name === name);
 }
