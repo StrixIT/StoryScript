@@ -84,6 +84,7 @@
         "zone.js": "^0.14.2",
         "dotenv": "^16.3.1",
         "dotenv-webpack": "^8.0.1",
-        "string-replace-loader": "^3.1.0"
+        "string-replace-loader": "^3.1.0",
+        "vite-plugin-static-copy": "^1.0.0"
     }
 }

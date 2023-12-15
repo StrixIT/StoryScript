@@ -31,13 +31,15 @@ export function importAssets() {
     }
 }
 
+const assetRegex = /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/;
+
 function loadAssetsWithRequire() {
-    var assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/);
+    var assets = require.context('game', true, assetRegex);
 
     assets.keys().forEach(k => {
         // Require the asset so it is loaded as a module.
         var asset = assets(k);
-        var type = k.replace('./', '').split('/')[0];
+        var type = getAssetType(k);
         
         // Get the property of the asset that has the asset's entity function (the first is whether or not the asset is a esModule).
         var assetProperties = Object.getOwnPropertyNames(asset);
@@ -63,10 +65,14 @@ function loadAssetsWithImport() {
     for (const path in modules)
     {
         let asset = modules[path];
-        let type = path.split('/').reverse()[1];
+        let type = getAssetType(path.match(assetRegex)[1]);
         let property = Object.getOwnPropertyNames(asset)[0];
 
         // Register the asset with the proper type.
         Register(type, asset[property]);
     }
+}
+
+function getAssetType(path: string): string {
+    return path.replace('./', '').split('/')[0];
 }
