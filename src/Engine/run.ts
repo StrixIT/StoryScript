@@ -31,10 +31,9 @@ export function importAssets() {
     }
 }
 
-const assetRegex = /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/;
-
 function loadAssetsWithRequire() {
-    var assets = require.context('game', true, assetRegex);
+    // Note that this regex cannot be extracted from here as that will break the require usage.
+    var assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/);
 
     assets.keys().forEach(k => {
         // Require the asset so it is loaded as a module.
@@ -51,6 +50,7 @@ function loadAssetsWithRequire() {
 }
 
 function loadAssetsWithImport() {
+    const assetRegex = /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/;
     const modules = import.meta.glob([
         'game/actions/**/*.ts',
         'game/features/**/*.ts',

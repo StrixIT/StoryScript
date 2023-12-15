@@ -73,7 +73,7 @@
         "replace-in-file-webpack-plugin": "^1.0.6",
         "rxjs": "^7.8.1",
         "sharp": "^0.33.0",
-        "typescript": "^5.3.3",
+        "typescript": "^5.2.2",
         "vite": "^5.0.5",
         "vite-tsconfig-paths": "^4.2.1",
         "webpack": "^5.89.0",
