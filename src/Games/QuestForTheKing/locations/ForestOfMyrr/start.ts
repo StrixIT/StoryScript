@@ -1,14 +1,15 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Quest1map1.html';
-import { Brennus } from '../Brennus/Brennus';
+import description from './start.html';
+import { Brennus } from '../Brennus';
 import { Woodcutter } from '../Woodcutter';
-import { ForestLake } from '../Forestlake/ForestLake';
+import { ForestLake } from '../ForestLake';
 import { Stonemount } from '../Stonemount';
 import { Merchant } from '../Merchant';
 import { Quest1map2 } from './Quest1map2';
 import { Quest1map4 } from './Quest1map4';
+import { nightFall } from '../../gameFunctions';
 
-export function Quest1map1() {
+export function Start() {
     return Location({
         name: 'The Forest of Myrr',
         description: description,
@@ -43,7 +44,7 @@ export function Quest1map1() {
                 target: Quest1map4,
                 style: 'location-danger'
             }
-        
-        ]          
+        ],
+        enterEvents: [nightFall]
     });
 }

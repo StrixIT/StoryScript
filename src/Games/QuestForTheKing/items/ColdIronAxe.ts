@@ -17,7 +17,7 @@ export function ColdIronAxe() {
 
             return 0;
         },
-        equipmentType: EquipmentType.LeftHand,
+        equipmentType: [EquipmentType.RightHand, EquipmentType.LeftHand],
         value: 5,
         attackText: 'You swing your battle axe',
         itemClass: ClassType.Warrior

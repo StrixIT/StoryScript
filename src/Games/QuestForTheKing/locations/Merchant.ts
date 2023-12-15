@@ -1,6 +1,6 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Merchant.html';
-import { Quest1map1 } from './ForestOfMyrr/Quest1map1';
+import { Start } from './ForestOfMyrr/start';
 
 export function Merchant() {
     return Location({
@@ -9,7 +9,7 @@ export function Merchant() {
         destinations: [
             {
                 name: 'Back to the Map',
-                target: Quest1map1
+                target: Start
             },  
             
         ]                        

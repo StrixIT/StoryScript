@@ -1,5 +1,4 @@
 ﻿export interface IWorldProperties {
-    startLocation: string;
     currentDay: number;
     travelCounter?: number;
     isDay: boolean;

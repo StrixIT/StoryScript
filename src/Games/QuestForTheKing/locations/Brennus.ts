@@ -1,7 +1,7 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Brennus.html';
 import { Brennus as BrennusEnemy } from './../enemies/Brennus';
-import { Quest1map1 } from './ForestOfMyrr/Quest1map1';
+import { Start } from './ForestOfMyrr/start';
 import { BrennusApproach } from './BrennusApproach';
 
 export function Brennus() {
@@ -11,7 +11,7 @@ export function Brennus() {
         destinations: [
             {
                 name: 'Back to the Map',
-                target: Quest1map1,
+                target: Start,
                 activeDay: true
             },
             {
@@ -21,7 +21,7 @@ export function Brennus() {
             },
             {
                 name: 'Leave',
-                target: Quest1map1,
+                target: Start,
                 activeNight: true               
             },
         ],

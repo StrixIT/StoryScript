@@ -1,6 +1,6 @@
 ﻿import { Location, IGame } from '../types';
 import description from './ForestLake.html';
-import { Quest1map1 } from './ForestOfMyrr/Quest1map1';
+import { Start } from './ForestOfMyrr/start';
 import { Bandit } from '../enemies/Bandit';
 import { Ghost } from '../enemies/Ghost';
 import { Goldnecklace } from '../items/Goldnecklace';
@@ -13,7 +13,7 @@ export function ForestLake() {
         destinations: [
             {
                 name: 'Back to the Map',
-                target: Quest1map1
+                target: Start
             }
         ],
         enemies: [

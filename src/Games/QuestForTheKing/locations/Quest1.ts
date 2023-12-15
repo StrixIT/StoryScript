@@ -1,6 +1,6 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Quest1.html';
-import { Quest1map1 } from './ForestOfMyrr/Quest1map1';
+import { Start } from './ForestOfMyrr/start';
 
 export function Quest1() {
     return Location({
@@ -9,7 +9,7 @@ export function Quest1() {
         destinations: [
             {
                 name: 'Begin your Quest',
-                target: Quest1map1
+                target: Start
             }
         ],
         enterEvents: [

@@ -3,7 +3,7 @@ import description from './Quest1map3.html';
 import { Quest1map2 } from './Quest1map2';
 import { Quest1map4 } from './Quest1map4';
 import { Oceanshrine } from '../Oceanshrine';
-import { Dryad } from '../Dryad/Dryad';
+import { Dryad } from '../Dryad';
 import { Treestump } from '../Treestump';
 import { Troll } from '../Troll';
 

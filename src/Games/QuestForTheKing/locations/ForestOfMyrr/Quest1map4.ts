@@ -1,10 +1,10 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Quest1map4.html';
 import { Necromancer } from '../Necromancer';
-import { Darkmagic } from '../Darkmagic/Darkmagic';
+import { Darkmagic } from '../Darkmagic';
 import { Guardians } from '../Guardians';
 import { Quest1map3 } from './Quest1map3';
-import { Quest1map1 } from './Quest1map1';
+import { Start } from './start';
 
 export function Quest1map4() {
     return Location({
@@ -31,7 +31,7 @@ export function Quest1map4() {
                 },     
                 {                          
                     name: 'Go to the Western Forest',
-                    target: Quest1map1,
+                    target: Start,
                     style: 'location-danger'
                 }    
         ]
