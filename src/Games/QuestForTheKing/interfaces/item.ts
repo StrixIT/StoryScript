@@ -1,6 +1,7 @@
 ﻿import { IItem as StoryScriptIItem, Item as StoryScriptItem } from 'storyScript/Interfaces/storyScript';
 import { IFeature } from '../types';
 import { ClassType } from '../classType';
+import { IEnemy } from 'src/Games/MyAdventureGame/types';
 
 export function Item(entity: IItem): IItem {
     return StoryScriptItem(entity);
@@ -8,9 +9,9 @@ export function Item(entity: IItem): IItem {
 
 export interface IItem extends IFeature, StoryScriptIItem {
     damage?: string;
+    damageBonus?: (enemy: IEnemy) => number;
     defense?: number;
-    dayAvailable?: number;
-    arcane?: boolean;
+    speed?: number;
     itemClass?: ClassType | ClassType[];
     attackText?: string;
     activeNight?: boolean;

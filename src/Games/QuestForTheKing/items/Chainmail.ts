@@ -6,11 +6,9 @@ export function Chainmail() {
     return Item({
         name: 'Chain Mail',
         description: description,
-        damage: '2',
+        defence: 2,
         equipmentType: EquipmentType.Body,
-        dayAvailable: 2,
-        arcane: false,
         value: 20,
-        itemClass: ClassType.Warrior
+        itemClass: [ClassType.Warrior, ClassType.Rogue]
     });
 }

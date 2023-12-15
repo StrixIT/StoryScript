@@ -1,15 +1,13 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Wizardcloak.html';
+import description from './WizardCloak.html';
 
-export function Wizardcloak() {
+export function WizardCloak() {
     return Item({
         name: 'Wizard Cloak',
         description: description,
-        damage: '2',
+        defence: 1,
         equipmentType: EquipmentType.Body,
-        dayAvailable: 2,
-        arcane: true,
         value: 15,
         itemClass: ClassType.Wizard
     });

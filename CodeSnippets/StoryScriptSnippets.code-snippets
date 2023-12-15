@@ -190,6 +190,28 @@
 
 	"Actions": {
 		"scope": "javascript,typescript",
+		"body": [
+			"import { ActionStatus, ActionType } from 'storyScript/Interfaces/storyScript';",
+			"import { Action, IGame } from '../types';",
+			"",
+			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
+			"\treturn Action({",
+			"\t\ttext: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
+			"\t\tactionType: ActionType.Regular,",
+			"\t\texecute(game: IGame) {",
+			"\t\t",
+			"\t\t},",
+			"\t\tstatus(game: IGame) {",
+			"\t\treturn ActionStatus.Available;",
+			"\t\t},",
+			"\t});",
+			"}"
+		],
+		"description": "Add a new action"
+	},
+
+	"InlineActions": {
+		"scope": "javascript,typescript",
 		"prefix": "ssAction",
 		"body": [
 			"{",

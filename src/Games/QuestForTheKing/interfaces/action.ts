@@ -5,6 +5,7 @@ export function Action(action: IAction): IAction {
 }
 
 export interface IAction extends StoryScriptIAction {
+    level?: number;
     activeNight?: boolean;
     activeDay?: boolean;
 }

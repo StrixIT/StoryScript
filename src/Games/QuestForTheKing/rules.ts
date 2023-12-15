@@ -3,7 +3,7 @@ import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IActi
 import { ClassType } from './classType';
 import { changeDay } from './gameFunctions';
 import { LongSword } from './items/LongSword';
-import { Battleaxe } from './items/BattleAxe';
+import { ColdIronAxe } from './items/ColdIronAxe';
 import { Warhammer } from './items/Warhammer';
 import { Dagger } from './items/Dagger';
 import { Rapier } from './items/Rapier';
@@ -300,8 +300,8 @@ export function Rules(): IRules {
                                                 value: LongSword.name                                          
                                             },
                                             {
-                                                text: Battleaxe().name,
-                                                value: Battleaxe.name
+                                                text: ColdIronAxe().name,
+                                                value: ColdIronAxe.name
                                             },
                                             {
                                                 text: Warhammer().name,

@@ -6,8 +6,9 @@ export function LongSword() {
     return Item({
         name: 'Long Sword',
         description: description,
+        speed: 4,
         damage: '1D6',
-        equipmentType: EquipmentType.LeftHand,
+        equipmentType: EquipmentType.RightHand,
         value: 5,
         attackText: 'You swing your longsword',
         itemClass: ClassType.Warrior

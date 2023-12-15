@@ -1,4 +1,4 @@
-import { IAction } from './interfaces/action';
+import { Action, IAction } from './interfaces/action';
 import { IDestination } from './interfaces/destination';
 import { IFeature, Feature } from './interfaces/feature';
 import { IItem, Item } from './interfaces/item';
@@ -31,6 +31,7 @@ export type {
 }
 
 export { 
+    Action,
     Feature,
     Item,
     Key,

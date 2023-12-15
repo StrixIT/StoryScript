@@ -19,6 +19,10 @@ export class Character implements ICharacter {
 
     items: ICollection<IItem> = [];
 
+    frozen?: boolean;
+    frightened?: boolean;
+    confused?: boolean;
+
     equipment: {
         head?: IItem,
         body?: IItem,

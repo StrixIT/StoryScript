@@ -6,10 +6,8 @@ export function Roundshield() {
     return Item({
         name: 'Round Shield',
         description: description,
-        damage: '2',
+        defence: 1,
         equipmentType: EquipmentType.RightHand,
-        dayAvailable: 2,
-        arcane: false,
         value: 10,
         itemClass: ClassType.Warrior
     });
