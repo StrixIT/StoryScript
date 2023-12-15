@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Paralysis.html';
 
 export function Paralysis() {
@@ -12,6 +12,6 @@ export function Paralysis() {
         arcane: true,
         value: 30,
         attackText: 'You cast your Paralysis spell',
-        itemClass: Class.Wizard
+        itemClass: ClassType.Wizard
     });
 }

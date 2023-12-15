@@ -1,6 +1,6 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Honeycastle.html';
-import { Quest1map2 } from '../Maps/Quest1map2';
+import { Quest1map2 } from '../ForestOfMyrr/Quest1map2';
 import { Castleapproach } from './Castleapproach';
 
 export function Honeycastle() {

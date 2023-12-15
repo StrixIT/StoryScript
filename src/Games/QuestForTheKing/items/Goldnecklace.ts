@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Goldnecklace.html';
 
 export function Goldnecklace() {

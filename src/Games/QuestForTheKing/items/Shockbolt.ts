@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Shockbolt.html';
 
 export function Shockbolt() {
@@ -12,6 +12,6 @@ export function Shockbolt() {
         arcane: true,
         value: 15,
         attackText: 'You cast your shockbolt',
-        itemClass: Class.Wizard
+        itemClass: ClassType.Wizard
     });
 }

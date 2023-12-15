@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Chainmail.html';
 
 export function Chainmail() {
@@ -11,6 +11,6 @@ export function Chainmail() {
         dayAvailable: 2,
         arcane: false,
         value: 20,
-        itemClass: Class.Warrior
+        itemClass: ClassType.Warrior
     });
 }

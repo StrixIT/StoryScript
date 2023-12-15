@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Poisondagger.html';
 
 export function Poisondagger() {
@@ -10,6 +10,6 @@ export function Poisondagger() {
         equipmentType: EquipmentType.LeftHand,           
         value: 5,
         attackText: 'You thrust your dagger',
-        itemClass: Class.Rogue           
+        itemClass: ClassType.Rogue           
     });
 }

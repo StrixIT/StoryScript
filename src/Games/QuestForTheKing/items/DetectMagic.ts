@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './DetectMagic.html';
 
 export function DetectMagic() {
@@ -11,6 +11,6 @@ export function DetectMagic() {
         dayAvailable: 1,
         arcane: true,
         value: 7,
-        itemClass: Class.Wizard    
+        itemClass: ClassType.Wizard    
     });
 }

@@ -1,6 +1,6 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction } from './types';
-import { Class } from './classes';
+import { ClassType } from './classType';
 import { changeDay } from './gameFunctions';
 import { LongSword } from './items/LongSword';
 import { Battleaxe } from './items/BattleAxe';
@@ -386,21 +386,21 @@ export function Rules(): IRules {
                         character.agility = 1;
                         character.intelligence = 1;
                         character.charisma = 1;
-                        character.class = Class.Warrior;
+                        character.class = ClassType.Warrior;
                     }; break;
                     case 'rogue': {
                         character.strength = 1;
                         character.agility = 3;
                         character.intelligence = 1;
                         character.charisma = 1;
-                        character.class = Class.Rogue;
+                        character.class = ClassType.Rogue;
                     }; break;
                     case 'wizard': {
                         character.strength = 1;
                         character.agility = 1;
                         character.intelligence = 3;
                         character.charisma = 1;
-                        character.class = Class.Wizard;
+                        character.class = ClassType.Wizard;
                     }; break;
                 }
 

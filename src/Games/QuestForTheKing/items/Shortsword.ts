@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Shortsword.html';
 
 export function Shortsword() {
@@ -11,6 +11,6 @@ export function Shortsword() {
         arcane: false,
         value: 15,
         attackText: 'You swing your shortsword',
-        itemClass: [ Class.Rogue, Class.Warrior ]
+        itemClass: [ ClassType.Rogue, ClassType.Warrior ]
     });
 }

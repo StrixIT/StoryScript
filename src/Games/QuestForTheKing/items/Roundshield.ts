@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Roundshield.html';
 
 export function Roundshield() {
@@ -11,6 +11,6 @@ export function Roundshield() {
         dayAvailable: 2,
         arcane: false,
         value: 10,
-        itemClass: Class.Warrior
+        itemClass: ClassType.Warrior
     });
 }

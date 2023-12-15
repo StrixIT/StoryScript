@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Magicring.html';
 
 export function Magicring() {
@@ -9,6 +9,6 @@ export function Magicring() {
         damage: '0',
         equipmentType: EquipmentType.LeftRing,
         value: 5,            
-        itemClass: Class.Wizard
+        itemClass: ClassType.Wizard
     });
 }

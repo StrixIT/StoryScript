@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Frostbite.html';
 
 export function Frostbite() {
@@ -10,6 +10,6 @@ export function Frostbite() {
         equipmentType: EquipmentType.LeftHand,
         value: 5,
         attackText: 'You cast your frostbite',
-        itemClass: Class.Wizard 
+        itemClass: ClassType.Wizard 
     });
 }

@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Leatherboots.html';
 
 export function Leatherboots() {
@@ -11,6 +11,6 @@ export function Leatherboots() {
         dayAvailable: 1,
         arcane: false,
         value: 5,
-        itemClass: [Class.Rogue, Class.Warrior, Class.Wizard]
+        itemClass: [ClassType.Rogue, ClassType.Warrior, ClassType.Wizard]
     });
 }

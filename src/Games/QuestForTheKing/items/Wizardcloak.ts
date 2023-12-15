@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Wizardcloak.html';
 
 export function Wizardcloak() {
@@ -11,6 +11,6 @@ export function Wizardcloak() {
         dayAvailable: 2,
         arcane: true,
         value: 15,
-        itemClass: Class.Wizard
+        itemClass: ClassType.Wizard
     });
 }

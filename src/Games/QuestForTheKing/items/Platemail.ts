@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Platemail.html';
 
 export function Platemail() {
@@ -10,6 +10,6 @@ export function Platemail() {
         dayAvailable: 1,
         arcane: false,
         value: 45,
-        itemClass: [Class.Warrior]
+        itemClass: [ClassType.Warrior]
     });
 }

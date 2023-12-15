@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Bow.html';
 
 export function Bow() {
@@ -11,6 +11,6 @@ export function Bow() {
         arcane: false,
         value: 3,
         attackText: 'You fire your bow',
-        itemClass: [Class.Rogue, Class.Warrior]
+        itemClass: [ClassType.Rogue, ClassType.Warrior]
     });
 }

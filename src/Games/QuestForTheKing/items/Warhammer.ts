@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Warhammer.html';
 
 export function Warhammer() {
@@ -10,6 +10,6 @@ export function Warhammer() {
         equipmentType: EquipmentType.LeftHand,
         value: 5,
         attackText: 'You swing your warhammer',
-        itemClass: Class.Warrior
+        itemClass: ClassType.Warrior
     });
 }

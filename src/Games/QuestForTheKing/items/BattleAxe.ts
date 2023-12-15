@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './BattleAxe.html';
 
 export function Battleaxe() {
@@ -10,6 +10,6 @@ export function Battleaxe() {
         equipmentType: EquipmentType.LeftHand,
         value: 5,
         attackText: 'You swing your battle axe',
-        itemClass: Class.Warrior
+        itemClass: ClassType.Warrior
     });
 }

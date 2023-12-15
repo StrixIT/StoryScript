@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Lockpicks.html';
 
 export function Lockpicks() {
@@ -9,6 +9,6 @@ export function Lockpicks() {
         equipmentType: EquipmentType.LeftHand,
         value: 5,
         attackText: 'You use the lockpicks',
-        itemClass: Class.Rogue
+        itemClass: ClassType.Rogue
     });
 }

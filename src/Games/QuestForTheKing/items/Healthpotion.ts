@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Healthpotion.html';
 
 export function Healthpotion() {
@@ -12,7 +12,7 @@ export function Healthpotion() {
         arcane: true,
         value: 5,
         useInCombat: true,
-        itemClass: [Class.Rogue, Class.Warrior, Class.Wizard],
+        itemClass: [ClassType.Rogue, ClassType.Warrior, ClassType.Wizard],
         use: (game, item) => {
             game.character.currentHitpoints += 5;
             game.character.items.remove(item);

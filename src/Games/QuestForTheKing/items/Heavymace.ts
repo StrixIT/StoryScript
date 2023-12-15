@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Heavymace.html';
 
 export function Heavymace() {
@@ -12,6 +12,6 @@ export function Heavymace() {
         arcane: false,
         value: 25,
         attackText: 'You swing your heavy mace',
-        itemClass: Class.Warrior
+        itemClass: ClassType.Warrior
     });
 }

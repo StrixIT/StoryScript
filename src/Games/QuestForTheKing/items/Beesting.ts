@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Beesting.html';
 
 export function Beesting() {
@@ -9,6 +9,6 @@ export function Beesting() {
         damage: '1D10',
         equipmentType: EquipmentType.LeftHand,
         value: 20,       
-        itemClass: Class.Warrior     
+        itemClass: ClassType.Warrior     
     });
 }

@@ -1,6 +1,6 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Castleapproach.html';
-import { Quest1map2 } from '../Maps/Quest1map2';
+import { Quest1map2 } from '../ForestOfMyrr/Quest1map2';
 import { CastleInside } from './CastleInside';
 
 export function Castleapproach() {

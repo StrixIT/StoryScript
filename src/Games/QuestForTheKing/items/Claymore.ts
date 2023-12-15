@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Claymore.html';
 
 export function Claymore() {
@@ -12,6 +12,6 @@ export function Claymore() {
         arcane: false,
         value: 30,
         attackText: 'You swing your claymore',
-        itemClass: Class.Warrior
+        itemClass: ClassType.Warrior
     });
 }

@@ -1,5 +1,5 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Class } from '../classes';
+import { ClassType } from '../classType';
 import description from './Magicshield.html';
 
 export function Magicshield() {
@@ -11,6 +11,6 @@ export function Magicshield() {
         dayAvailable: 2,
         arcane: true,
         value: 15,
-        itemClass: Class.Wizard
+        itemClass: ClassType.Wizard
     });
 }
