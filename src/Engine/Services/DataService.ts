@@ -1,10 +1,11 @@
 ﻿import { IFunctionIdParts } from '../Interfaces/services/functionIdParts';
 import { DataKeys } from '../DataKeys';
-import { getPlural, isEmpty } from '../utilities';
-import { initCollection, setReadOnlyProperties, GetFunctions, GetDescriptions } from '../ObjectConstructors';
+import { getId, getPlural, isEmpty } from '../utilities';
+import { initCollection, setReadOnlyProperties, GetFunctions, GetDescriptions, GetRegisteredEntities } from '../ObjectConstructors';
 import { parseFunction } from '../globals';
 import { IDataService } from '../Interfaces/services/dataService';
 import { ILocalStorageService } from '../Interfaces/services/localStorageService';
+import { IUpdatable } from 'storyScript/updatable';
 
 export class DataService implements IDataService {
     private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
@@ -29,7 +30,24 @@ export class DataService implements IDataService {
                 }
 
                 var functionList = GetFunctions();
-                this.restoreObjects(functionList, null, data);
+                var pristineEntities = GetRegisteredEntities();
+
+                if (Array.isArray(data) && data[0]?.type && data[0]?.id) {
+                    this.restoreObjects(functionList, null, data);
+
+                    // Add pristine entities that aren't present on the current collection. These are added to the new definition
+                    // or were removed programmatically. Todo: can we use a deleted flag to improve this?
+                    const pristineCollection = pristineEntities[getPlural(data[0]?.type)];
+                    this.updateModifiedEntities(data, pristineEntities, Object.keys(pristineCollection).map(k => pristineCollection[k]));
+                }
+                else {
+                    const result = this.restoreObjects(functionList, null, data);
+
+                    // Todo: update e.g. game which is not an entity
+                    if (result.type && result.id) {
+                        this.updateModifiedEntity(result, pristineEntities[result.type][result.id], pristineEntities);
+                    }
+                }
                 setReadOnlyProperties(key, data);
                 return data;
             }
@@ -162,10 +180,14 @@ export class DataService implements IDataService {
         }
     }
 
-    private restoreObjects = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, descriptions: Map<string, string>, loaded): void => {
+    private restoreObjects = (
+            functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, 
+            descriptions: Map<string, string>,
+            loaded: any
+        ): any => {
         descriptions = descriptions || GetDescriptions();
-        
-        for (var key in loaded) {
+
+        for (const key in loaded) {
             if (!loaded.hasOwnProperty(key)) {
                 continue;
             }
@@ -184,16 +206,16 @@ export class DataService implements IDataService {
             }
             else if (Array.isArray(value)) {
                 initCollection(loaded, key);
-                this.restoreObjects(functionList, descriptions, value);
-
+                 this.restoreObjects(functionList, descriptions, value);
+        
                 var arrayPropertyKey = `${key}_arrProps`;
                 var additionalArrayProperties = loaded[arrayPropertyKey];
-
+        
                 if (additionalArrayProperties) {
                     Object.keys(additionalArrayProperties).forEach(k => {
-                        value[k] = additionalArrayProperties[k];
+                        loaded[k] = additionalArrayProperties[k];
                     });
-
+        
                     delete loaded[arrayPropertyKey];
                 }
             }
@@ -203,6 +225,100 @@ export class DataService implements IDataService {
             else if (typeof value === 'string') {
                 this.restoreFunction(functionList, loaded, value, key);
             }
+        }
+
+        return loaded;
+    }
+
+    private updateModifiedEntities = (
+        entities: IUpdatable[],
+        pristineEntities: Record<string, Record<string, any>>, 
+        pristineProperty: any,       
+        parentEntity?: IUpdatable,
+        pristineParentEntity?: IUpdatable
+    ): void => {
+        const removedEntities = [];
+
+        // Loop over the current entities to update the values on entities that changed.
+        entities.forEach(c => {
+            // Find the pristine entity to update from in case of a change.
+            const pristinceCollection = pristineEntities[getPlural(c.type)];
+            const p = pristinceCollection ? pristinceCollection[c.id] : pristineProperty.get(c.id);
+    
+            // If a pristine entity is not found, the current entity was never part of the previous definition
+            // (this happens when the entity function was renamed) or it was programatically removed. Delete it.
+            if (!p) {
+                removedEntities.push(c);
+            }
+
+            this.updateModifiedEntity(c, p, pristineEntities, parentEntity, pristineParentEntity);      
+        });
+    
+        removedEntities.forEach(e => {
+            entities.remove(e)
+        });
+
+        pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
+            entities.push(p);
+        });
+    }
+
+    private updateModifiedEntity = (
+        entity: IUpdatable, 
+        pristineEntity: IUpdatable, 
+        pristineEntities: Record<string, Record<string, any>>, 
+        parentEntity?: IUpdatable,
+        pristineParentEntity?: IUpdatable
+    ): void => {
+        var propertyNames = Object.keys(entity);
+    
+        propertyNames.forEach(p => {
+            if (p === 'buildTimeStamp') {
+                return;
+            }
+
+            var currentProperty = entity[p];
+            var pristineProperty = pristineEntity[p];
+
+            // Update the current property using the pristine property value. When dealing with an object, update
+            // its property values recursively. When dealing with a collection of entity objects, update these recursively.
+            if (currentProperty[0]?.id && currentProperty[0].type) {
+                this.updateModifiedEntities(currentProperty, pristineEntities, pristineProperty, parentEntity, pristineParentEntity);
+            }
+            else if (typeof currentProperty === 'object') {
+                if (entity.buildTimeStamp) {
+                    parentEntity = entity;
+                    pristineParentEntity = pristineEntity;
+                }
+
+                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity);
+            }
+            
+            if (!this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
+                return;
+            }
+
+            // If the properly currently exists on the entity but isn't part of the new definition, delete it now.
+            if (!pristineProperty) {
+                delete entity[p];
+            }
+            else {
+                if (Array.isArray(entity[p])) {
+                    entity[p].length = 0;
+                    pristineProperty.forEach(e => entity[p].push(e));
+                } else {
+                    entity[p] = pristineProperty;
+                }
+            }
+        });
+    
+        // add objects previously not on the entity to it.
+        const newPropertyNames = Object.keys(pristineEntity).filter(p => !propertyNames.find(e => e === p));
+    
+        if (this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
+            newPropertyNames.forEach(p => {
+                entity[p] = pristineEntity[p];
+            });
         }
     }
 
@@ -255,5 +371,9 @@ export class DataService implements IDataService {
         if (pictureSrc) {
             loaded.picture = pictureSrc;
         }
+    }
+
+    private isEntityUpdated = (entity: IUpdatable, pristineEntity: IUpdatable, parentEntity: IUpdatable, pristineParentEntity: IUpdatable): boolean => {
+        return (entity.buildTimeStamp < pristineEntity.buildTimeStamp) || (!entity.buildTimeStamp && parentEntity?.buildTimeStamp && parentEntity?.buildTimeStamp < pristineParentEntity?.buildTimeStamp);
     }
 }

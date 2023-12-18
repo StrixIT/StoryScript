@@ -41,6 +41,8 @@ export interface FunctionCollection {
     [type: string]: { [id: string]: { function: Function, hash: number } }
 }
 
+const _registeredEntities: Record<string, Record<string, any>> = {};
+
 // The object to hold all game entity functions.
 const _functions: FunctionCollection = {};
 
@@ -57,7 +59,10 @@ export function buildEntities(): void {
     // Build all entities again to register their functions.
     Object.getOwnPropertyNames(_definitions).forEach(p => {
         _definitions[p].forEach((f: Function) => {
-            f();
+            const entity = f();
+            _registeredEntities[p] ??= {};
+            _registeredEntities[p][entity.id] ??= {};
+            _registeredEntities[p][entity.id] = entity;
         });
     });
 }
@@ -70,8 +75,12 @@ export function GetDescriptions(): Map<string, string> {
     return _registeredDescriptions; 
 }
 
-export function GetFunctions(): {} { 
+export function GetFunctions() { 
     return _functions; 
+}
+
+export function GetRegisteredEntities() { 
+    return _registeredEntities; 
 }
 
 export function Location(entity: ILocation): ILocation {
@@ -108,6 +117,8 @@ export function Action(action: IAction): IAction {
 
 export function setReadOnlyProperties(key: string, data: any) {
     if (key.startsWith(DataKeys.GAME + '_')) {
+        // Todo: does this mean Locations is not a read-only collection?
+
         data.world.forEach((location: ILocation) => {
             setReadOnlyLocationProperties(location);
         });     
@@ -179,7 +190,7 @@ export function initCollection(entity: any, property: string) {
         return;
     }
 
-    var readOnlyCollection = entity[property];
+    const readOnlyCollection: [] = entity[property];
 
     Object.defineProperty(readOnlyCollection, 'push', {
         writable: true,
@@ -214,7 +225,7 @@ export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
     return entityFunction();
 }
 
-function buildEntity(entityFunction: Function, functionName: string) {
+function buildEntity(entityFunction: Function, functionName: string): any {
     _currentEntityKey = null;
 
     entityFunction();
@@ -508,7 +519,9 @@ function compileCombinations(entry: ICombinable) {
 }
 
 function pushEntity(originalScope, originalFunction, entity) {
+    // Todo: this fails when programmatically adding actions??
     entity = typeof entity === 'function' ? entity() : entity;
+    entity.added = true;
 
     if (!entity.id && entity.name) {
         entity.id = getIdFromName(entity);

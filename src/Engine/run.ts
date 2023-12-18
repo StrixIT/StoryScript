@@ -3,6 +3,7 @@ import { addFunctionExtensions, addArrayExtensions } from './globals';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
 import { buildEntities, Register } from './ObjectConstructors';
+import { assetRegex } from '../../constants';
 
 /**
  * This function bootstraps and runs your game.
@@ -50,7 +51,6 @@ function loadAssetsWithRequire() {
 }
 
 function loadAssetsWithImport() {
-    const assetRegex = /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/;
     const modules = import.meta.glob([
         'game/actions/**/*.ts',
         'game/features/**/*.ts',

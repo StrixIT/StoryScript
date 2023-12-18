@@ -1,0 +1,1 @@
+export const assetRegex = /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/;
