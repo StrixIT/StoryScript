@@ -118,8 +118,6 @@ export function Action(action: IAction): IAction {
 
 export function setReadOnlyProperties(key: string, data: any) {
     if (key.startsWith(DataKeys.GAME + '_')) {
-        // Todo: does this mean Locations is not a read-only collection?
-
         data.world.forEach((location: ILocation) => {
             setReadOnlyLocationProperties(location);
         });     
@@ -408,6 +406,11 @@ function getEntityKey(entity: object): string {
 }
 
 function setReadOnlyLocationProperties(location: ILocation) {
+    // If the location already has the active collections, we don't need to do anything else.
+    if ((<any>location).activePersons) {
+        return;
+    }
+
     Object.defineProperty(location, 'activePersons', {
         get: function () {
             return location.persons.filter(e => { return !e.inactive; });

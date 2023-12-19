@@ -1,6 +1,6 @@
 ﻿import { IFunctionIdParts } from '../Interfaces/services/functionIdParts';
 import { DataKeys } from '../DataKeys';
-import { getId, getPlural, isEmpty } from '../utilities';
+import { getId, getPlural, getSingular, isEmpty } from '../utilities';
 import { initCollection, setReadOnlyProperties, GetFunctions, GetDescriptions, GetRegisteredEntities } from '../ObjectConstructors';
 import { parseFunction } from '../globals';
 import { IDataService } from '../Interfaces/services/dataService';
@@ -267,28 +267,28 @@ export class DataService implements IDataService {
                 return;
             }
 
-            this.updateModifiedEntity(entity, p, pristineEntities, parentEntity, pristineParentEntity);      
+            this.updateModifiedEntity(entity, p, pristineEntities, parentEntity, pristineParentEntity, entity.type);      
         });
     
         removedEntities.forEach(e => {
-            console.log(`Removing ${e.type} ${e.id} from ${parentEntity.type} ${parentEntity.id}.`);
+            console.log(this.getUpdateLogMessage(e, parentEntity, 'Removing', 'from'));
             entities.remove(e)
         });
 
-        // Remove entities that are no longer on the pristine collection and were not added programmatically.
-        entities.filter(c => !pristineProperty.find(p => p.id === c.id)).map(p => {
-            if (p[RuntimeProperties.Added]) {
+        // Remove entities that are no longer on the pristine collection, but only when they were not added programmatically.
+        entities.filter(c => !pristineProperty.find(p => p.id === c.id)).map(e => {
+            if (e[RuntimeProperties.Added]) {
                 return;
             }
-            
-            console.log(`Removing ${p.type} ${p.id} from ${parentEntity?.type} ${parentEntity?.id}.`);
-            entities.remove(p);
+                    
+            console.log(this.getUpdateLogMessage(e, parentEntity, 'Removing', 'from'));
+            entities.remove(e);
         });
 
         // Add entities that are on the pristine entity but not on the current entity.
         // These have been added during editing.
         pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
-            console.log(`Adding ${p.type} ${p.id} to ${parentEntity?.type} ${parentEntity?.id}.`);
+            console.log(this.getUpdateLogMessage(p, parentEntity, 'Adding', 'to'));
             entities.push(p);
             // Remove the 'added' flag. The entity is added design time, not run time.
             if (p[RuntimeProperties.Added]) {
@@ -297,12 +297,18 @@ export class DataService implements IDataService {
         });
     }
 
+    private getUpdateLogMessage = (entity: IUpdatable, parent: IUpdatable, prefix: string, join: string): string => {
+        const baseMessage = `${prefix} ${entity.type} ${entity.id}`;
+        return parent ? `${baseMessage} ${join} ${parent.type} ${parent.id}.` : `${baseMessage}.`
+    }
+
     private updateModifiedEntity = (
         entity: IUpdatable, 
         pristineEntity: IUpdatable, 
         pristineEntities: Record<string, Record<string, any>>, 
         parentEntity?: IUpdatable,
-        pristineParentEntity?: IUpdatable
+        pristineParentEntity?: IUpdatable,
+        parentProperty?: string
     ): void => {
         var propertyNames = Object.keys(entity);
     
@@ -341,7 +347,7 @@ export class DataService implements IDataService {
                 return;
             }
             else if (this.isEntity(currentProperty)) {
-                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity);
+                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity, p);
                 return;
             }
             
@@ -357,7 +363,7 @@ export class DataService implements IDataService {
                     delete e[RuntimeProperties.Added];
                 });
             } else if (typeof currentProperty === 'object') {
-                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity);
+                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity, p.match(/^[0-9]$/) ? parentProperty : p);
             } 
             else {
                 if (this._runtimeProperties.indexOf(p) > -1) {
@@ -368,11 +374,18 @@ export class DataService implements IDataService {
                     return;
                 }
 
-                if (typeof entity[p] === 'function' && entity[p].toString() === pristineProperty.toString()) {
+                // Todo: think whether there is a case in which a function should be updated. Probably not, as all
+                // design-time functions are already attached when re-building the stored state.
+                if (typeof entity[p] === 'function') {
                     return;
                 }
 
-                console.log(`Updating ${p} (value ${pristineEntity[p]}) on ${entity.type} ${entity.id}.`);
+                const parentMessage = entity.type ? '' : `${parentProperty} `;
+                const messageValue = pristineProperty.name ?? pristineProperty; 
+                const baseMessage = `Updating ${parentMessage}${p} (value ${messageValue}) on `;
+                const messageExtension = entity.type ? `${entity.type} ${entity.id}` : `${parentEntity?.type} ${parentEntity?.id}`
+
+                console.log(baseMessage + messageExtension);
                 entity[p] = pristineProperty;
             }
         });
@@ -382,10 +395,17 @@ export class DataService implements IDataService {
     
         if (this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
             newPropertyNames.forEach(p => {
-                // This can be called for arrays! check for array and write proper message, also remove added
-                
-                console.log(`Adding ${p} (value ${pristineEntity[p]}) to ${entity.type} ${entity.id}.`);
-                entity[p] = pristineEntity[p];
+                if (Array.isArray(entity)) {
+                    const pristineValue = pristineEntity[p];
+                    const logValue = pristineValue.id ?? pristineValue.name ?? pristineValue; 
+                    console.log(`Adding ${getSingular(parentProperty)} (value ${logValue}) to ${parentEntity.type} ${parentEntity.id}.`);
+                    entity.push(pristineValue);
+                    delete entity[p][RuntimeProperties.Added];
+                }
+                else {
+                    console.log(`Adding ${p} (value ${pristineEntity[p]}) to ${entity.type} ${entity.id}.`);
+                    entity[p] = pristineEntity[p];
+                }
             });
         }
 
