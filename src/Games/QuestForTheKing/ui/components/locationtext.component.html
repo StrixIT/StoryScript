@@ -8,6 +8,6 @@
         <div [innerHTML]="game.currentLocation.description | safe: 'html'"></div>
     </div>
     <ul id="location-log" class="list-unstyled">
-        <li *ngFor="let message of game.currentLocation.log" [innerHTML]="message | safe: 'html'"></li>
+        <li *ngFor="let message of log" [innerHTML]="message | safe: 'html'"></li>
     </ul>
 </div>

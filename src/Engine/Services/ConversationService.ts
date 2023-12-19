@@ -12,6 +12,7 @@ import { IConversation } from '../Interfaces/conversations/conversation';
 import { getParsedDocument, checkAutoplay } from './sharedFunctions';
 import { IDataService } from '../Interfaces/services/dataService';
 import { parseGameProperties } from 'storyScript/utilities';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 export class ConversationService implements IConversationService {
     constructor(private _dataService: IDataService, private _game: IGame) {
@@ -26,9 +27,9 @@ export class ConversationService implements IConversationService {
     answer = (node: IConversationNode, reply: IConversationReply): void => {
         var person = this._game.person;
 
-        person.conversation.conversationLog = person.conversation.conversationLog || [];
+        person.conversation[RuntimeProperties.ConversationLog] = person.conversation[RuntimeProperties.ConversationLog] || [];
 
-        person.conversation.conversationLog.push({
+        person.conversation[RuntimeProperties.ConversationLog].push({
             lines: checkAutoplay(this._dataService, node.lines),
             reply: reply.lines
         });
@@ -58,17 +59,17 @@ export class ConversationService implements IConversationService {
             return;
         }
 
-        persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
-            var conversationElement = getParsedDocument('conversation', person.description)[0];
+        persons.filter(p => p.conversation && !p.conversation[RuntimeProperties.Nodes]).forEach((person) => {
+            var conversationElement = getParsedDocument('conversation', person[RuntimeProperties.Description])[0];
             var defaultReply = this.getDefaultReply(conversationElement, person);
             var conversationNodes = conversationElement.getElementsByTagName('node');
 
-            person.conversation.nodes = [];
+            person.conversation[RuntimeProperties.Nodes] = [];
             this.processConversationNodes(conversationNodes, person, defaultReply);
             this.checkNodes(person);
 
-            var nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
-            person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
+            var nodeToSelect = person.conversation[RuntimeProperties.Nodes].filter(n => person.conversation[RuntimeProperties.ActiveNode] && n.node === person.conversation[RuntimeProperties.ActiveNode].node);
+            person.conversation[RuntimeProperties.ActiveNode] = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
         });
     }
 
@@ -81,7 +82,7 @@ export class ConversationService implements IConversationService {
         }
 
         activeNode.lines = checkAutoplay(this._dataService, activeNode.lines);
-        person.conversation.activeNode = activeNode;
+        person.conversation[RuntimeProperties.ActiveNode] = activeNode;
 
         this.initReplies(person);
         this.setReplyStatus(person.conversation, activeNode);
@@ -122,7 +123,7 @@ export class ConversationService implements IConversationService {
             }
 
             newNode.lines = parseGameProperties(node.innerHTML.trim(), this._game);;
-            person.conversation.nodes.push(newNode);
+            person.conversation[RuntimeProperties.Nodes].push(newNode);
         }
     }
 
@@ -134,7 +135,7 @@ export class ConversationService implements IConversationService {
             nameAttribute = 'default';
         }
 
-        if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
+        if (person.conversation[RuntimeProperties.Nodes].some((node) => { return node.node == nameAttribute; })) {
             throw new Error('Duplicate nodes with name ' + name + ' for conversation for person ' + person.id + '.');
         }
 
@@ -203,15 +204,15 @@ export class ConversationService implements IConversationService {
     }
 
     private checkNodes = (person: IPerson): void => {
-        person.conversation.nodes.forEach(n => {
+        person.conversation[RuntimeProperties.Nodes].forEach(n => {
             if (n.replies && n.replies.options)
             {
                 n.replies.options.forEach(r => {
-                    if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
+                    if (r.linkToNode && !person.conversation[RuntimeProperties.Nodes].some(n => n.node === r.linkToNode)) {
                         console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
                     }
 
-                    if (r.setStart && !person.conversation.nodes.some(n => n.node === r.setStart)) {
+                    if (r.setStart && !person.conversation[RuntimeProperties.Nodes].some(n => n.node === r.setStart)) {
                         console.log('No new start node ' + r.setStart + ' found for node ' + n.node + '.');
                     }
                 });
@@ -227,32 +228,32 @@ export class ConversationService implements IConversationService {
         }
 
         var conversation = person.conversation;
-        var activeNode = conversation.activeNode;
+        var activeNode = conversation[RuntimeProperties.ActiveNode];
 
         if (!activeNode) {
             activeNode = conversation.selectActiveNode ? conversation.selectActiveNode(this._game, person) : null;
         }
 
         if (!activeNode) {
-            activeNode = conversation.nodes.filter((node) => { return compareString(node.node, person.conversation.startNode); })[0];
+            activeNode = conversation[RuntimeProperties.Nodes].filter((node) => { return compareString(node.node, person.conversation[RuntimeProperties.StartNode]); })[0];
         }
 
         if (!activeNode) {
-            activeNode = conversation.nodes[0];
+            activeNode = conversation[RuntimeProperties.Nodes][0];
         }
 
         return activeNode;
     }
 
     private initReplies = (person: IPerson): void => {
-        var activeNode = person.conversation.activeNode;
+        var activeNode = person.conversation[RuntimeProperties.ActiveNode];
 
         if (activeNode.replies) {
             for (var n in activeNode.replies.options) {
                 var reply = activeNode.replies.options[n];
 
                 if (reply.linkToNode) {
-                    if (!person.conversation.nodes.some((node) => { return node.node === reply.linkToNode; })) {
+                    if (!person.conversation[RuntimeProperties.Nodes].some((node) => { return node.node === reply.linkToNode; })) {
                         console.log('No node ' + reply.linkToNode + ' found to link to for reply ' + reply.lines + '!');
                     }
                 }
@@ -268,20 +269,20 @@ export class ConversationService implements IConversationService {
         reply.trigger && person.conversation.actions[reply.trigger](this._game, person);
 
         if (reply.setStart) {
-            var startNode = person.conversation.nodes.filter((node) => { return node.node == reply.setStart; })[0];
-            person.conversation.startNode = startNode.node;
+            var startNode = person.conversation[RuntimeProperties.Nodes].filter((node) => { return node.node == reply.setStart; })[0];
+            person.conversation[RuntimeProperties.StartNode] = startNode.node;
         }
 
         let activeNode = null;
 
         if (reply.linkToNode) {
-            activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
-            person.conversation.activeNode = activeNode;
+            activeNode = person.conversation[RuntimeProperties.Nodes].filter((node) => { return node.node == reply.linkToNode; })[0];
+            person.conversation[RuntimeProperties.ActiveNode] = activeNode;
             activeNode.trigger && person.conversation.actions[activeNode.trigger](this._game, person);
             this.setReplyStatus(person.conversation, activeNode);
         }
         else {
-            person.conversation.activeNode = null;
+            person.conversation[RuntimeProperties.ActiveNode] = null;
         }
 
         if (activeNode?.lines) {
@@ -338,7 +339,7 @@ export class ConversationService implements IConversationService {
                     console.log('Invalid location ' + value + ' for reply requirement for node ' + activeNode.node + '!');
                 }
 
-                isAvailable = location.hasVisited === true;
+                isAvailable = location[RuntimeProperties.HasVisited] === true;
             } break;
             case 'quest-start':
             case 'quest-done':

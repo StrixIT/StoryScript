@@ -5,6 +5,7 @@ import { IPerson } from './person';
 import { IItem } from './item';
 import { IDestination } from './destination';
 import { IAction } from './storyScript';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 /**
  * A location compiled for runtime.
@@ -43,20 +44,20 @@ export interface ICompiledLocation extends ILocation {
     /**
      * The current description shown to the player for this location.
      */
-    description: string;
+    [RuntimeProperties.Description]: string;
 
     /**
      * True if the player has visited this location, false otherwise.
      */
-    hasVisited?: boolean;
+    [RuntimeProperties.HasVisited]?: boolean;
 
     /**
      * All the descriptions available for this location, per description key.
      */
-    descriptions?: { [key: string] : string; };
+    [RuntimeProperties.Descriptions]?: { [key: string] : string; };
 
     /**
      * Messages logged to this location.
      */
-    log?: string[];
+    [RuntimeProperties.Log]?: string[];
 }

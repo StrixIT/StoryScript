@@ -7,6 +7,7 @@ import { IPerson } from './person';
 import { IItem } from './item';
 import { IDestination } from './destination';
 import { ITrade } from './trade';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 /**
  * The base properties for a part of the game world. A StoryScript game world is made up of a collection of locations.
@@ -20,7 +21,7 @@ export interface ILocation {
     /**
      * The location description html file.
      */
-    description: string;
+    [RuntimeProperties.Description]: string;
 
     /**
      * When specified, the functions in this array will be called when the player enters the location.

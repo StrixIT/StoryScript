@@ -3,6 +3,7 @@ import { ConversationService } from 'storyScript/Services/ConversationService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 @Component({
     selector: 'conversation',
@@ -22,4 +23,8 @@ export class ConversationComponent {
     answer = (node: IConversationNode, reply: IConversationReply): void => this._conversationService.answer(node, reply);
 
     getLines = (nodeOrReply: IConversationNode | IConversationReply): string => this._conversationService.getLines(nodeOrReply);
+
+    get activeNode() { return this.game.person.conversation[RuntimeProperties.ActiveNode] };
+
+    get conversationLog() { return this.game.person.conversation[RuntimeProperties.ConversationLog] };
 }

@@ -6,9 +6,22 @@ import { parseFunction } from '../globals';
 import { IDataService } from '../Interfaces/services/dataService';
 import { ILocalStorageService } from '../Interfaces/services/localStorageService';
 import { IUpdatable } from 'storyScript/updatable';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 export class DataService implements IDataService {
-    private functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
+    private _functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
+    private _runtimeProperties = [
+        <string>RuntimeProperties.ActiveNode,
+        <string>RuntimeProperties.Added,
+        <string>RuntimeProperties.ConversationLog,
+        <string>RuntimeProperties.Description,
+        <string>RuntimeProperties.Descriptions,
+        <string>RuntimeProperties.HasVisited,
+        <string>RuntimeProperties.Log,
+        <string>RuntimeProperties.Nodes,
+        <string>RuntimeProperties.Picture,
+        <string>RuntimeProperties.StartNode
+    ];
 
     constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
     }
@@ -96,13 +109,14 @@ export class DataService implements IDataService {
             else if (value.isProxy) {
                 continue;
             }
+            // Todo: why do I see these in the save data??
             // Exclude descriptions and conversation nodes from the save data so they
             // are refreshed on every browser refresh.
-            else if (values.id && (key === 'description' || key === 'descriptions')) {
+            else if (values.id && (key === RuntimeProperties.Description || key === RuntimeProperties.Descriptions)) {
                 clone[key] = null;
                 continue;
             }
-            else if (parentKey === 'conversation' && key === 'nodes') {
+            else if (parentKey === 'conversation' && key === RuntimeProperties.Nodes) {
                 clone[key] = null;
                 continue;
             }
@@ -170,7 +184,7 @@ export class DataService implements IDataService {
                     var arrowIndex = functionString.indexOf('=>');
 
                     // The arguments regex will fail when no arguments are used in production mode. Use empty brackets in that case.
-                    var args = functionString.match(this.functionArgumentRegex)?.[0] || '()';
+                    var args = functionString.match(this._functionArgumentRegex)?.[0] || '()';
 
                     functionString = 'function' + args + functionString.substring(arrowIndex + 2).trim();
                 }
@@ -192,7 +206,7 @@ export class DataService implements IDataService {
                 continue;
             }
 
-            if (key === 'description' && loaded.id) {
+            if (key === RuntimeProperties.Description && loaded.id) {
                 var descriptionKey = `${loaded.type}_${loaded.id}`;
                 loaded[key] = descriptions.get(descriptionKey);
                 this.loadPictureFromDescription(loaded, key);
@@ -249,17 +263,24 @@ export class DataService implements IDataService {
             // (this happens when the entity function was renamed) or it was programatically removed. Delete it.
             if (!p) {
                 removedEntities.push(c);
+                return;
             }
 
             this.updateModifiedEntity(c, p, pristineEntities, parentEntity, pristineParentEntity);      
         });
     
         removedEntities.forEach(e => {
+            console.log(`Removing ${e.type} ${e.id} from ${parentEntity.type} ${parentEntity.id}.`);
             entities.remove(e)
         });
 
+        // Add entities that are on the pristine entity but not on the current entity. These have been added
+        // either during editing or programatically.
         pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
+            console.log(`Adding ${p.type} ${p.id} to ${parentEntity.type} ${parentEntity.id}.`);
             entities.push(p);
+            // Remove the 'added' flag. The entity is added design time, not run time.
+            delete p[RuntimeProperties.Added];
         });
     }
 
@@ -280,10 +301,22 @@ export class DataService implements IDataService {
             var currentProperty = entity[p];
             var pristineProperty = pristineEntity[p];
 
+            // If the properly currently exists on the entity but isn't part of the new definition, delete it now.
+            if (typeof pristineProperty === 'undefined') {
+                if (this._runtimeProperties.indexOf(p) > -1) {
+                    return;
+                }
+
+                console.log(`Removing ${p} (value ${entity[p]}) from ${entity.type} ${entity.id}.`);
+                delete entity[p];
+                return;
+            }
+
             // Update the current property using the pristine property value. When dealing with an object, update
             // its property values recursively. When dealing with a collection of entity objects, update these recursively.
-            if (currentProperty[0]?.id && currentProperty[0].type) {
+            if (currentProperty[0]?.id && currentProperty[0]?.type) {
                 this.updateModifiedEntities(currentProperty, pristineEntities, pristineProperty, parentEntity, pristineParentEntity);
+                return;
             }
             else if (typeof currentProperty === 'object') {
                 if (entity.buildTimeStamp) {
@@ -292,33 +325,35 @@ export class DataService implements IDataService {
                 }
 
                 this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity);
+                return;
             }
             
             if (!this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
                 return;
             }
 
-            // If the properly currently exists on the entity but isn't part of the new definition, delete it now.
-            if (!pristineProperty) {
-                delete entity[p];
-            }
-            else {
-                if (Array.isArray(entity[p])) {
-                    entity[p].length = 0;
-                    pristineProperty.forEach(e => entity[p].push(e));
-                } else {
-                    entity[p] = pristineProperty;
-                }
+            if (Array.isArray(entity[p])) {
+                console.log(`Replacing collection ${p} on ${entity.type} ${entity.id}.`);
+                entity[p].length = 0;
+                pristineProperty.forEach(e => entity[p].push(e));
+            } else {
+                console.log(`Updating ${p} (value ${pristineEntity[p]}) on ${entity.type} ${entity.id}.`);
+                entity[p] = pristineProperty;
             }
         });
     
-        // add objects previously not on the entity to it.
+        // Add properties previously not on the entity to it.
         const newPropertyNames = Object.keys(pristineEntity).filter(p => !propertyNames.find(e => e === p));
     
         if (this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
             newPropertyNames.forEach(p => {
+                console.log(`Adding ${p} (value ${pristineEntity[p]}) to ${entity.type} ${entity.id}.`);
                 entity[p] = pristineEntity[p];
             });
+        }
+
+        if (entity.buildTimeStamp) {
+            entity.buildTimeStamp = pristineEntity.buildTimeStamp;
         }
     }
 
@@ -365,11 +400,11 @@ export class DataService implements IDataService {
 
         var parser = new DOMParser();
         var htmlDoc = parser.parseFromString(loaded[key], 'text/html');
-        var pictureElement = htmlDoc.getElementsByClassName('picture')[0];
+        var pictureElement = htmlDoc.getElementsByClassName(RuntimeProperties.Picture)[0];
         var pictureSrc = pictureElement && pictureElement.getAttribute('src');
 
         if (pictureSrc) {
-            loaded.picture = pictureSrc;
+            loaded[RuntimeProperties.Picture] = pictureSrc;
         }
     }
 

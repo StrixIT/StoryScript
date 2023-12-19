@@ -15,6 +15,7 @@ import { ICombinable } from './Interfaces/combinations/combinable';
 import { ICombine } from './Interfaces/combinations/combine';
 import { IEquipment } from './Interfaces/equipment';
 import { ActionStatus } from './Interfaces/storyScript';
+import { RuntimeProperties } from './runtimeProperties';
 
 // This flag indicates whether the registration phase is active.
 let _registration: boolean = true;
@@ -365,8 +366,8 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         compiledEntity.id = id || registeredId;
         var descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
 
-        if (compiledEntity['description'] && !_registeredDescriptions.get(descriptionKey)) {
-            _registeredDescriptions.set(descriptionKey, entity['description'])
+        if (compiledEntity[RuntimeProperties.Description] && !_registeredDescriptions.get(descriptionKey)) {
+            _registeredDescriptions.set(descriptionKey, entity[RuntimeProperties.Description])
         }     
     }
 
@@ -521,7 +522,7 @@ function compileCombinations(entry: ICombinable) {
 function pushEntity(originalScope, originalFunction, entity) {
     // Todo: this fails when programmatically adding actions??
     entity = typeof entity === 'function' ? entity() : entity;
-    entity.added = true;
+    entity[RuntimeProperties.Added] = true;
 
     if (!entity.id && entity.name) {
         entity.id = getIdFromName(entity);

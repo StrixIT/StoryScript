@@ -2,6 +2,7 @@
 import { IPerson } from '../person';
 import { IConversationNode } from './conversationNode';
 import { IConversationLogEntry } from './conversationLogEntry';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 /**
  * A conversation between the player and a person. The nodes are loaded at run-time from the HTML file of the person.
@@ -32,20 +33,20 @@ export interface IConversation {
     /**
      * The nodes that make up this conversation. Loaded from the person HTML at runtime.
      */
-    nodes?: IConversationNode[];
+    [RuntimeProperties.Nodes]?: IConversationNode[];
 
     /**
      * The name of the node to start the conversation with. Set at runtime.
      */
-    startNode?: string;
+    [RuntimeProperties.StartNode]?: string;
 
     /**
      * The node currently active in the conversation.
      */
-    activeNode?: IConversationNode;
+    [RuntimeProperties.ActiveNode]?: IConversationNode;
 
     /**
      * A log of the conversation so far.
      */
-    conversationLog?: IConversationLogEntry[];
+    [RuntimeProperties.ConversationLog]?: IConversationLogEntry[];
 }

@@ -3,6 +3,7 @@ import { IEnemy } from './enemy';
 import { IGame } from './game';
 import { EquipmentType } from './enumerations/equipmentType';
 import { IEquipment } from './equipment';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 /**
  * An item that can be found in the game and used by the character.
@@ -18,7 +19,7 @@ export interface IItem extends IFeature {
      * The details about this item as displayed to the player. If you use an HTML-page to describe the item, the contents of that HTM-page
      * will be used to set this property at run-time.
      */
-    description?: string;
+    [RuntimeProperties.Description]?: string;
 
     /**
      * The number of times the item can be used before disappearing. If not specified, the item can be used indefinitely.

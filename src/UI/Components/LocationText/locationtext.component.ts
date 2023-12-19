@@ -3,6 +3,7 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 @Component({
     selector: 'location-text',
@@ -26,6 +27,8 @@ export class LocationTextComponent {
     worldProperties: { name: string, value: string }[];
 
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
+
+    get log() { return this.game.currentLocation[RuntimeProperties.Log] };
 
     private initWorldProperties = (): void => {
         for (var n in this.game.worldProperties) {
