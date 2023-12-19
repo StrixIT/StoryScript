@@ -20,7 +20,8 @@ export class DataService implements IDataService {
         <string>RuntimeProperties.Log,
         <string>RuntimeProperties.Nodes,
         <string>RuntimeProperties.Picture,
-        <string>RuntimeProperties.StartNode
+        <string>RuntimeProperties.StartNode,
+        <string>RuntimeProperties.IsPreviousLocation
     ];
 
     constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
@@ -254,19 +255,19 @@ export class DataService implements IDataService {
         const removedEntities = [];
 
         // Loop over the current entities to update the values on entities that changed.
-        entities.forEach(c => {
+        entities.forEach(entity => {
             // Find the pristine entity to update from in case of a change.
-            const pristinceCollection = pristineEntities[getPlural(c.type)];
-            const p = pristinceCollection ? pristinceCollection[c.id] : pristineProperty.get(c.id);
+            const pristinceCollection = pristineEntities[getPlural(entity.type)];
+            const p = pristinceCollection ? pristinceCollection[entity.id] : pristineProperty.get(entity.id);
     
-            // If a pristine entity is not found, the current entity was never part of the previous definition
-            // (this happens when the entity function was renamed) or it was programatically removed. Delete it.
+            // If a pristine entity is not found, it is no longer part of the definitions. This happens when the 
+            // entity function was renamed or the function was deleted. Delete it.
             if (!p) {
-                removedEntities.push(c);
+                removedEntities.push(entity);
                 return;
             }
 
-            this.updateModifiedEntity(c, p, pristineEntities, parentEntity, pristineParentEntity);      
+            this.updateModifiedEntity(entity, p, pristineEntities, parentEntity, pristineParentEntity);      
         });
     
         removedEntities.forEach(e => {
@@ -274,13 +275,25 @@ export class DataService implements IDataService {
             entities.remove(e)
         });
 
-        // Add entities that are on the pristine entity but not on the current entity. These have been added
-        // either during editing or programatically.
+        // Remove entities that are no longer on the pristine collection and were not added programmatically.
+        entities.filter(c => !pristineProperty.find(p => p.id === c.id)).map(p => {
+            if (p[RuntimeProperties.Added]) {
+                return;
+            }
+            
+            console.log(`Removing ${p.type} ${p.id} from ${parentEntity?.type} ${parentEntity?.id}.`);
+            entities.remove(p);
+        });
+
+        // Add entities that are on the pristine entity but not on the current entity.
+        // These have been added during editing.
         pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
-            console.log(`Adding ${p.type} ${p.id} to ${parentEntity.type} ${parentEntity.id}.`);
+            console.log(`Adding ${p.type} ${p.id} to ${parentEntity?.type} ${parentEntity?.id}.`);
             entities.push(p);
             // Remove the 'added' flag. The entity is added design time, not run time.
-            delete p[RuntimeProperties.Added];
+            if (p[RuntimeProperties.Added]) {
+                delete p[RuntimeProperties.Added];
+            }
         });
     }
 
@@ -307,23 +320,27 @@ export class DataService implements IDataService {
                     return;
                 }
 
+                if (!this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
+                    return;
+                }
+
                 console.log(`Removing ${p} (value ${entity[p]}) from ${entity.type} ${entity.id}.`);
                 delete entity[p];
                 return;
             }
 
+            if (entity.buildTimeStamp) {
+                parentEntity = entity;
+                pristineParentEntity = pristineEntity;
+            }
+
             // Update the current property using the pristine property value. When dealing with an object, update
             // its property values recursively. When dealing with a collection of entity objects, update these recursively.
-            if (currentProperty[0]?.id && currentProperty[0]?.type) {
+            if (this.isEntityArray(currentProperty, pristineProperty)) {
                 this.updateModifiedEntities(currentProperty, pristineEntities, pristineProperty, parentEntity, pristineParentEntity);
                 return;
             }
-            else if (typeof currentProperty === 'object') {
-                if (entity.buildTimeStamp) {
-                    parentEntity = entity;
-                    pristineParentEntity = pristineEntity;
-                }
-
+            else if (this.isEntity(currentProperty)) {
                 this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity);
                 return;
             }
@@ -332,11 +349,29 @@ export class DataService implements IDataService {
                 return;
             }
 
-            if (Array.isArray(entity[p])) {
+            if (Array.isArray(entity[p] && entity[p].length > 0)) {
                 console.log(`Replacing collection ${p} on ${entity.type} ${entity.id}.`);
                 entity[p].length = 0;
-                pristineProperty.forEach(e => entity[p].push(e));
-            } else {
+                pristineProperty.forEach(e => {
+                    entity[p].push(e);
+                    delete e[RuntimeProperties.Added];
+                });
+            } else if (typeof currentProperty === 'object') {
+                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity);
+            } 
+            else {
+                if (this._runtimeProperties.indexOf(p) > -1) {
+                    return;
+                }
+
+                if (entity[p] === pristineProperty) {
+                    return;
+                }
+
+                if (typeof entity[p] === 'function' && entity[p].toString() === pristineProperty.toString()) {
+                    return;
+                }
+
                 console.log(`Updating ${p} (value ${pristineEntity[p]}) on ${entity.type} ${entity.id}.`);
                 entity[p] = pristineProperty;
             }
@@ -347,14 +382,25 @@ export class DataService implements IDataService {
     
         if (this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
             newPropertyNames.forEach(p => {
+                // This can be called for arrays! check for array and write proper message, also remove added
+                
                 console.log(`Adding ${p} (value ${pristineEntity[p]}) to ${entity.type} ${entity.id}.`);
                 entity[p] = pristineEntity[p];
             });
         }
 
+        // Update the entity build stamp now, to indicate the entity is back in sync with the most recent version.
         if (entity.buildTimeStamp) {
             entity.buildTimeStamp = pristineEntity.buildTimeStamp;
         }
+    }
+
+    private isEntityArray = (entities: IUpdatable[], pristineEntities: IUpdatable[]): boolean => {
+        return this.isEntity(entities[0]) || this.isEntity(pristineEntities[0]);
+    }
+
+    private isEntity = (entity: IUpdatable): boolean => {
+        return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
     }
 
     private restoreFunction = (functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, loaded: any, value: any, key: string): void => {
@@ -409,6 +455,13 @@ export class DataService implements IDataService {
     }
 
     private isEntityUpdated = (entity: IUpdatable, pristineEntity: IUpdatable, parentEntity: IUpdatable, pristineParentEntity: IUpdatable): boolean => {
-        return (entity.buildTimeStamp < pristineEntity.buildTimeStamp) || (!entity.buildTimeStamp && parentEntity?.buildTimeStamp && parentEntity?.buildTimeStamp < pristineParentEntity?.buildTimeStamp);
+        var entityHasBuildStamp = typeof entity.buildTimeStamp !== 'undefined' && typeof pristineEntity.buildTimeStamp !== 'undefined';
+
+        if (entityHasBuildStamp) {
+            return entity.buildTimeStamp < pristineEntity.buildTimeStamp;
+        }
+
+        var parentEntityHasBuildStamp = typeof parentEntity?.buildTimeStamp !== 'undefined' && typeof pristineParentEntity?.buildTimeStamp !== 'undefined';
+        return parentEntityHasBuildStamp && parentEntity.buildTimeStamp < pristineParentEntity.buildTimeStamp;
     }
 }

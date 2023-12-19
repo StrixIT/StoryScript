@@ -105,8 +105,8 @@ export class LocationService implements ILocationService {
 
             // remove the return message from the current location destinations.
             game.currentLocation.destinations.forEach(destination => {
-                if ((<any>destination).isPreviousLocation) {
-                    (<any>destination).isPreviousLocation = false;
+                if ((<any>destination)[RuntimeProperties.IsPreviousLocation]) {
+                    (<any>destination)[RuntimeProperties.IsPreviousLocation] = false;
                 }
             });
 
@@ -116,7 +116,7 @@ export class LocationService implements ILocationService {
             // if that is the case.
             game.currentLocation.destinations.forEach(destination => {
                 if (game.previousLocation && destination.target && (<any>destination.target) == game.previousLocation.id) {
-                    (<any>destination).isPreviousLocation = true;
+                    (<any>destination)[RuntimeProperties.IsPreviousLocation] = true;
                 }
 
                 addKeyAction(game, destination);

@@ -187,16 +187,22 @@ export function initCollection(entity: any, property: string) {
         }
     });
 
-    if (_entityCollections.indexOf(property) === -1) {
-        return;
-    }
-
+    // Set proxy functions so entities are correctly build when passed as functions and
+    // objects added are marked as added.
     const readOnlyCollection: [] = entity[property];
 
-    Object.defineProperty(readOnlyCollection, 'push', {
-        writable: true,
-        value: readOnlyCollection.push.proxy(pushEntity)
-    });
+    if (_entityCollections.indexOf(property) > -1) {
+        Object.defineProperty(readOnlyCollection, 'push', {
+            writable: true,
+            value: readOnlyCollection.push.proxy(pushEntity)
+        });
+    } 
+    else {
+        Object.defineProperty(readOnlyCollection, 'push', {
+            writable: true,
+            value: readOnlyCollection.push.proxy(pushNonEntity)
+        });
+    }
 }
 
 export function Register(type: string, entityFunc: Function, testDefinitions?: IDefinitions): IDefinitions {
@@ -519,8 +525,12 @@ function compileCombinations(entry: ICombinable) {
     }
 }
 
+function pushNonEntity(originalScope, originalFunction, entity) {
+    entity[RuntimeProperties.Added] = true;
+    originalFunction.apply(originalScope, [entity]);
+};
+
 function pushEntity(originalScope, originalFunction, entity) {
-    // Todo: this fails when programmatically adding actions??
     entity = typeof entity === 'function' ? entity() : entity;
     entity[RuntimeProperties.Added] = true;
 

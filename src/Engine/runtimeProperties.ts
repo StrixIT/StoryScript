@@ -2,11 +2,12 @@ export const enum RuntimeProperties {
     Added = 'ss_added',
     Description = 'description',
     Descriptions = 'descriptions',
-    HasVisited = 'hasvisited',
+    HasVisited = 'hasVisited',
     Picture = 'picture',
     Nodes = 'nodes',
     StartNode = 'startNode',
     ActiveNode = 'activeNode',
     ConversationLog = 'conversationLog',
-    Log = 'log'
+    Log = 'log',
+    IsPreviousLocation = 'ss_isPreviousLocation '
 }

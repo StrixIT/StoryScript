@@ -5,6 +5,7 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 @Component({
     selector: 'exploration',
@@ -55,4 +56,6 @@ export class ExplorationComponent {
 
         this._gameService.executeBarrierAction(barrier, action, destination);
     }
+
+    isPreviousLocation = (destination: IDestination): boolean => { return destination[RuntimeProperties.IsPreviousLocation] };
 }
