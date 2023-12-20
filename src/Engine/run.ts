@@ -28,6 +28,7 @@ export function importAssets() {
     }
     
     if (import.meta.env?.VITE_BUILDER) {
+        /* istanbul ignore next -- @preserve */
         loadAssetsWithImport();
     }
 }
@@ -50,6 +51,7 @@ function loadAssetsWithRequire() {
     });
 }
 
+/* istanbul ignore next -- @preserve */
 function loadAssetsWithImport() {
     const modules = import.meta.glob([
         'game/actions/**/*.ts',

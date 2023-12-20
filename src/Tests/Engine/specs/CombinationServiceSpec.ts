@@ -103,15 +103,12 @@ describe("CombinationService", function() {
     describe("Try combinations", function() {
 
         it("should fail a combination when there is no target or active combination", function() {
-            var game = <IGame><unknown>{
-                combinations: <ICombinations<ICombinable>>{
+            var game = <IGame>{
+                combinations: {
                     activeCombination: {
                     },
                     combinationResult: {
-                    },
-                    combine: [
-                        <ICombine<ICombinable>><unknown>{         
-                    }]
+                    }
                 }
             };
 

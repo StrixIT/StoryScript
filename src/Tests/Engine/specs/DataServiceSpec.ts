@@ -25,11 +25,6 @@ describe("DataService", function() {
         gameService.reset();
     
         locations = [...game.locations];
-
-        // Right now, the LocationService loadWorld method needs to be called to
-        // correctly initialize the destinations array adding the push proxy. Remove
-        // the proxy to be able to compare.
-        locations.forEach(l => delete l.destinations.push);
     });
 
     beforeEach(() => (console.warn = consoleMock));
