@@ -319,12 +319,14 @@ export class DataService implements IDataService {
 
                 if (pristineValue !== undefined) {
                     const { first, second } = getKeyProperties(currentValue, pristineValue);
+                    const firstPristineValue = getValue(pristineValue[first]);
+                    const secondPristineValue = getValue(pristineValue[second]);
 
-                    if (currentValue[first] !== pristineValue[first]) {
-                        console.log(`Updating ${first} (value ${pristineValue[first]}) on ${parentProperty}`);
+                    if (currentValue[first] !== firstPristineValue) {
+                        console.log(`Updating ${first} (value ${firstPristineValue}) on ${parentProperty}`);
                     }
-                    if (currentValue[second] !== pristineValue[second]) {
-                        console.log(`Updating ${second} (value ${pristineValue[second]}) on ${parentProperty}`);
+                    if (currentValue[second] !== secondPristineValue) {
+                        console.log(`Updating ${second} (value ${secondPristineValue}) on ${parentProperty}`);
                     }
 
                     this.updateModifiedEntity(i, pristineValue, pristineEntities, parentEntity, pristineParentEntity, parentProperty);
@@ -395,18 +397,20 @@ export class DataService implements IDataService {
                 this.updateModifiedEntities(currentProperty, pristineEntities, pristineProperty, parentEntity, pristineParentEntity);
                 return;
             }
+
             else if (this.isEntity(currentProperty)) {
-                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity, p);
-                return;
-            }
-            
-            if (!this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
+                this.updateModifiedEntity(currentProperty, pristineEntities[getPlural(currentProperty.type)][currentProperty.id], pristineEntities, parentEntity, pristineParentEntity, p);
                 return;
             }
 
             if (typeof currentProperty === 'object' && currentProperty) {
                 this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity, p.match(/^[0-9]$/) ? parentProperty : p);
+                return;
             } 
+
+            if (!this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
+                return;
+            }
             else {
                 if (this._runtimeProperties.indexOf(p) > -1) {
                     return;
@@ -439,11 +443,7 @@ export class DataService implements IDataService {
             newPropertyNames.forEach(p => {
                 // Todo: this should never be called. Remove it and throw an error when it is.
                 if (Array.isArray(entity)) {
-                    const pristineValue = pristineEntity[p];
-                    const logValue = pristineValue.id ?? pristineValue.name ?? pristineValue; 
-                    console.log(`Adding ${getSingular(parentProperty)} (value ${logValue}) to ${parentEntity.type} ${parentEntity.id}.`);
-                    entity.push(pristineValue);
-                    delete entity[p][RuntimeProperties.Added];
+                    throw new Error('This should never be called!');
                 }
                 else {
                     const pristineValue = pristineEntity[p];
@@ -453,8 +453,7 @@ export class DataService implements IDataService {
                     }
 
                     const logValue = pristineValue?.id ?? pristineValue?.name ?? pristineValue; 
-                    // Todo: write parent entity data when entity data is empty
-                    console.log(`Adding ${p} (value ${logValue}) to ${entity.type} ${entity.id}.`);
+                    console.log(`Adding ${p} (value ${logValue}) to ${entity.type ?? parentEntity?.type} ${entity.id ?? parentEntity?.id}.`);
                     entity[p] = pristineEntity[p];
                 }
             });
@@ -578,6 +577,6 @@ function propertyMatch(first: any, second: any): boolean {
     || (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
 }
 
-function getValue(value: string | Function): string {
-    return typeof value === 'function' ? value.name : value;
+function getValue(value: any): string {
+    return typeof value === 'function' ? value.name.toLowerCase() : value;
 }
