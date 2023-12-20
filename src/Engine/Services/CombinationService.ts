@@ -169,7 +169,7 @@ export class CombinationService implements ICombinationService {
     }
 
     private isMatch = (combineTool: ICombinable, tool: ICombinable): boolean => {
-        var combineId = getId(combineTool.id);
+        var combineId = getId(combineTool.id ?? <any>combineTool);
         return compareString(tool.id, combineId);
     }
 

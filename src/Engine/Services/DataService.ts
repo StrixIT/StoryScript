@@ -22,6 +22,7 @@ export class DataService implements IDataService {
         <string>RuntimeProperties.Picture,
         <string>RuntimeProperties.StartNode,
         <string>RuntimeProperties.IsPreviousLocation,
+        <string>RuntimeProperties.CollectionPicture,
         <string>RuntimeProperties.Coords,
         <string>RuntimeProperties.Shape,
     ];
@@ -55,7 +56,7 @@ export class DataService implements IDataService {
                 }
                 else {
                     const result = this.restoreObjects(functionList, null, data);
-                    this.updateModifiedEntity(result, <IUpdatable>{}, pristineEntities);
+                    this.updateModifiedEntity(result, result, pristineEntities);
                 }
                 setReadOnlyProperties(key, data);
                 return data;

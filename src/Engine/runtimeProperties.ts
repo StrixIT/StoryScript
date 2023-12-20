@@ -10,6 +10,7 @@ export const enum RuntimeProperties {
     ConversationLog = 'conversationLog',
     Log = 'log',
     IsPreviousLocation = 'ss_isPreviousLocation',
+    CollectionPicture = 'collectionPicture',
     Coords = 'coords',
     Shape = 'shape'
 }
