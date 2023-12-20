@@ -9,5 +9,7 @@ export const enum RuntimeProperties {
     ActiveNode = 'activeNode',
     ConversationLog = 'conversationLog',
     Log = 'log',
-    IsPreviousLocation = 'ss_isPreviousLocation '
+    IsPreviousLocation = 'ss_isPreviousLocation',
+    Coords = 'coords',
+    Shape = 'shape'
 }

@@ -21,7 +21,9 @@ export class DataService implements IDataService {
         <string>RuntimeProperties.Nodes,
         <string>RuntimeProperties.Picture,
         <string>RuntimeProperties.StartNode,
-        <string>RuntimeProperties.IsPreviousLocation
+        <string>RuntimeProperties.IsPreviousLocation,
+        <string>RuntimeProperties.Coords,
+        <string>RuntimeProperties.Shape,
     ];
 
     constructor(private _localStorageService: ILocalStorageService, private _gameNameSpace: string) {
@@ -311,8 +313,19 @@ export class DataService implements IDataService {
             addedItems = addedItems.filter(i => i[RuntimeProperties.Added]);
 
             matchedItems.concat(addedItems).forEach(i => {
+                const currentValue: any = getMatchingItems([i], entity)[0];
                 const pristineValue: any = getMatchingItems([i], pristineEntity)[0];
+
                 if (pristineValue !== undefined) {
+                    const { first, second } = getKeyProperties(currentValue, pristineValue);
+
+                    if (currentValue[first] !== pristineValue[first]) {
+                        console.log(`Updating ${first} (value ${pristineValue[first]}) on ${parentProperty}`);
+                    }
+                    if (currentValue[second] !== pristineValue[second]) {
+                        console.log(`Updating ${second} (value ${pristineValue[second]}) on ${parentProperty}`);
+                    }
+
                     this.updateModifiedEntity(i, pristineValue, pristineEntities, parentEntity, pristineParentEntity, parentProperty);
                 }
             }); 
@@ -353,6 +366,10 @@ export class DataService implements IDataService {
 
             // If the properly currently exists on the entity but isn't part of the new definition, delete it now.
             if (typeof pristineProperty === 'undefined') {
+                if (typeof currentProperty === 'undefined') {
+                    return;
+                }
+
                 if (this._runtimeProperties.indexOf(p) > -1) {
                     return;
                 }
@@ -429,7 +446,12 @@ export class DataService implements IDataService {
                 }
                 else {
                     const pristineValue = pristineEntity[p];
-                    const logValue = pristineValue.id ?? pristineValue.name ?? pristineValue; 
+
+                    if (typeof pristineValue === 'undefined') {
+                        return;
+                    }
+
+                    const logValue = pristineValue?.id ?? pristineValue?.name ?? pristineValue; 
                     // Todo: write parent entity data when entity data is empty
                     console.log(`Adding ${p} (value ${logValue}) to ${entity.type} ${entity.id}.`);
                     entity[p] = pristineEntity[p];
@@ -459,6 +481,7 @@ export class DataService implements IDataService {
 
             if (!typeList[parts.functionId]) {
                 console.log('Function with key: ' + parts.functionId + ' could not be found!');
+                return;
             }
             else if (typeList[parts.functionId].hash != parts.hash) {
                 console.warn(`Function with key: ${parts.functionId} was found but the hash does not match the stored hash (old hash: ${parts.hash}, new hash: ${typeList[parts.functionId].hash})! Did you change the order of actions in an array and/or change the function content? If you changed the order, you need to reset the game world. If you changed only the content, you can ignore this warning.`);
@@ -519,8 +542,7 @@ function getMatchingItems(current: any[], pristine: any[]): any[] {
         return [];
     }
 
-    const { first, second } = getKeyProperties(current);
-    return pristine.filter(e => current.find(p => propertyMatch(e, p, first, second)));
+    return pristine.filter(e => current.find(p => propertyMatch(e, p)));
 }
 
 function getMissingItems(current: any[], pristine: any[]): any[] {
@@ -528,23 +550,29 @@ function getMissingItems(current: any[], pristine: any[]): any[] {
         return pristine;
     }
 
-    const { first, second } = getKeyProperties(current);
-    return pristine.filter(e => !current.find(p => propertyMatch(e, p, first, second)));
+    return pristine.filter(e => !current.find(p => propertyMatch(e, p)));
 }
 
 function getItemName(item: any): string {
-    const { first, second } = getKeyProperties([item]);
-    return item[first];
+    const { first, second } = getPropertyNames(item);
+    return item[first] ?? item[second];
 }
 
-function getKeyProperties(item: any): { first: string, second: string } {
-    const firstItem = item[0];
-    const firstKeyProperty = firstItem.id !== undefined ? 'id' : firstItem.name !== undefined ? 'name' : firstItem.text !== undefined ? 'text' : null;
-    const secondKeyProperty = firstItem.target !== undefined ? 'target' : firstItem.text !== undefined ? 'text' : null;
+function getKeyProperties(current: any, pristine: any): { first: string, second: string } {
+    const { first: currentFirst, second: currentSecond } = getPropertyNames(current);
+    const { first: pristineFirst, second: pristineSecond } = getPropertyNames(pristine);
+    return { first: currentFirst ?? pristineFirst, second: currentSecond ?? pristineSecond };
+}
+
+function getPropertyNames(item: any) {
+    const firstKeyProperty = item.id !== undefined ? 'id' : item.name !== undefined ? 'name' : item.text !== undefined ? 'text' : item.tool !== undefined ? 'tool' : null;
+    const secondKeyProperty = item.target !== undefined ? 'target' : item.text !== undefined ? 'text' : item.combinationType !== undefined ? 'combinationType' : null;
     return { first: firstKeyProperty, second: secondKeyProperty };
 }
 
-function propertyMatch(first: any, second: any, firstProperty: string, secondProperty: string): boolean {
+function propertyMatch(first: any, second: any): boolean {
+    const { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
+
     return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) 
     || (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
 }

@@ -61,9 +61,7 @@ export function buildEntities(): void {
     Object.getOwnPropertyNames(_definitions).forEach(p => {
         _definitions[p].forEach((f: Function) => {
             const entity = f();
-            _registeredEntities[p] ??= {};
-            _registeredEntities[p][entity.id] ??= {};
-            _registeredEntities[p][entity.id] = entity;
+            registerEntity(entity);
         });
     });
 }
@@ -167,7 +165,13 @@ export function initCollection(entity: any, property: string) {
         var inlineCollection = (<[]>entity[property]).map((e: { type: string, name: string }) => e.type ? e : Create(getSingular(property), e, getIdFromName(e)));
         collection.length = 0;
 
-        inlineCollection.forEach(e => collection.push(e));
+        inlineCollection.forEach(e => {
+            collection.push(e);
+
+            if (e.id) {
+                registerEntity(e);
+            }
+        });
 
         _currentEntityKey = locationEntityKey;
     }
@@ -228,6 +232,15 @@ export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
     _registration = registrationState;
 
     return entityFunction();
+}
+
+function registerEntity(entity: any): void {
+    const type = getPlural(entity.type);
+    _registeredEntities[type] ??= {};
+
+    if (!_registeredEntities[type][entity.id]) {
+        _registeredEntities[type][entity.id] = entity;
+    } 
 }
 
 function buildEntity(entityFunction: Function, functionName: string): any {
@@ -545,8 +558,7 @@ function pushEntity(originalScope, originalFunction, entity) {
 };
 
 function getIdFromName<T extends { name: string, id? : string}>(entity: T): string {
-    var id = entity.name.toLowerCase().replace(/\s/g,'');
-    return id;
+    return entity.name.toLowerCase().replace(/\s/g,'');
 }
 
 function getFunctions(type: string, functionList: FunctionCollection, definitionKeys: string[], entity: any, parentId: any) {
