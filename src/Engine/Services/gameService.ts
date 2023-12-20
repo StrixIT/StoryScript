@@ -25,6 +25,7 @@ import { ICombinable } from '../Interfaces/combinations/combinable';
 import { createHash } from '../globals';
 import { IFeature } from '../Interfaces/feature';
 import { selectStateListEntry } from 'storyScript/utilities';
+import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -221,12 +222,12 @@ export class GameService implements IGameService {
     getSaveGames = (): string[] => this._dataService.getSaveKeys();
 
     hasDescription = (entity: { id?: string, description?: string }): boolean => {
-        if (!entity.description) {
+        if (!entity[RuntimeProperties.Description]) {
             return false;
         }
 
         if (!this._parsedDescriptions.get(entity.id)) {
-            var descriptionNode = getParsedDocument('description', entity.description)[0];
+            var descriptionNode = getParsedDocument(RuntimeProperties.Description, entity[RuntimeProperties.Description])[0];
             this._parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
         }
 
@@ -512,8 +513,8 @@ export class GameService implements IGameService {
             set: (value: { title: string, type: string, item: IFeature }) => {
                 currentDescription = value;
 
-                if (currentDescription.item.description) {
-                    currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+                if (currentDescription.item[RuntimeProperties.Description]) {
+                    currentDescription.item[RuntimeProperties.Description] = checkAutoplay(this._dataService, getParsedDocument(RuntimeProperties.Description, currentDescription.item[RuntimeProperties.Description], true)[0].innerHTML);
                 }
 
                 this._game.playState = PlayState.Description;
@@ -526,8 +527,8 @@ export class GameService implements IGameService {
         this._game.combatLog = [];
 
         this._game.logToLocationLog = (message: string) => {
-            this._game.currentLocation.log = this._game.currentLocation.log || [];
-            this._game.currentLocation.log.push(message);
+            this._game.currentLocation[RuntimeProperties.Log] = this._game.currentLocation[RuntimeProperties.Log] || [];
+            this._game.currentLocation[RuntimeProperties.Log].push(message);
         }
 
         this._game.logToActionLog = (message: string) => {

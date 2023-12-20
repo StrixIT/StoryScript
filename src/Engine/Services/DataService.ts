@@ -48,19 +48,12 @@ export class DataService implements IDataService {
 
                 if (Array.isArray(data) && data[0]?.type && data[0]?.id) {
                     this.restoreObjects(functionList, null, data);
-
-                    // Add pristine entities that aren't present on the current collection. These are added to the new definition
-                    // or were removed programmatically. Todo: can we use a deleted flag to improve this?
                     const pristineCollection = pristineEntities[getPlural(data[0]?.type)];
                     this.updateModifiedEntities(data, pristineEntities, Object.keys(pristineCollection).map(k => pristineCollection[k]));
                 }
                 else {
                     const result = this.restoreObjects(functionList, null, data);
-
-                    // Todo: update e.g. game which is not an entity
-                    if (result.type && result.id) {
-                        this.updateModifiedEntity(result, pristineEntities[result.type][result.id], pristineEntities);
-                    }
+                    this.updateModifiedEntity(result, <IUpdatable>{}, pristineEntities);
                 }
                 setReadOnlyProperties(key, data);
                 return data;
@@ -310,15 +303,53 @@ export class DataService implements IDataService {
         pristineParentEntity?: IUpdatable,
         parentProperty?: string
     ): void => {
-        var propertyNames = Object.keys(entity);
+        if (Array.isArray(entity) && Array.isArray(pristineEntity) &&(entity.length > 0 || pristineEntity.length > 0)) {
+            const matchedItems = getMatchingItems(entity, pristineEntity);
+            const newItems = getMissingItems(entity, pristineEntity).filter(e => !matchedItems.includes(e));
+            let addedItems = getMissingItems(pristineEntity, entity);
+            const itemsToDelete = addedItems.filter(i => !i[RuntimeProperties.Added]);
+            addedItems = addedItems.filter(i => i[RuntimeProperties.Added]);
+
+            matchedItems.concat(addedItems).forEach(i => {
+                const pristineValue: any = getMatchingItems([i], pristineEntity)[0];
+                if (pristineValue !== undefined) {
+                    this.updateModifiedEntity(i, pristineValue, pristineEntities, parentEntity, pristineParentEntity, parentProperty);
+                }
+            }); 
+
+            if (newItems.length === 0 && itemsToDelete.length === 0) {
+                return;
+            }
+
+            itemsToDelete.forEach(i => {
+                console.log(`removing ${getSingular(parentProperty)} ${getItemName(i)} from ${parentEntity?.type} ${parentEntity?.id}.`);
+            });
+
+            newItems.forEach(i => {
+                console.log(`adding ${getSingular(parentProperty)} ${getItemName(i)} to ${parentEntity?.type} ${parentEntity?.id}.`);
+            });
+
+            entity.length = 0;
+            matchedItems.concat(newItems).forEach(i => {
+                entity.push(i);
+                delete i[RuntimeProperties.Added];
+            });
+            addedItems.forEach(i => {
+                entity.push(i);
+            });
+
+            return;
+        }
+
+        const propertyNames = Object.keys(entity);
     
         propertyNames.forEach(p => {
             if (p === 'buildTimeStamp') {
                 return;
             }
 
-            var currentProperty = entity[p];
-            var pristineProperty = pristineEntity[p];
+            const currentProperty = entity[p];
+            const pristineProperty = pristineEntity[p];
 
             // If the properly currently exists on the entity but isn't part of the new definition, delete it now.
             if (typeof pristineProperty === 'undefined') {
@@ -355,14 +386,7 @@ export class DataService implements IDataService {
                 return;
             }
 
-            if (Array.isArray(entity[p] && entity[p].length > 0)) {
-                console.log(`Replacing collection ${p} on ${entity.type} ${entity.id}.`);
-                entity[p].length = 0;
-                pristineProperty.forEach(e => {
-                    entity[p].push(e);
-                    delete e[RuntimeProperties.Added];
-                });
-            } else if (typeof currentProperty === 'object') {
+            if (typeof currentProperty === 'object' && currentProperty) {
                 this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, parentEntity, pristineParentEntity, p.match(/^[0-9]$/) ? parentProperty : p);
             } 
             else {
@@ -370,7 +394,7 @@ export class DataService implements IDataService {
                     return;
                 }
 
-                if (entity[p] === pristineProperty) {
+                if (entity[p] === pristineProperty || entity[p] === pristineProperty.name?.toLowerCase()) {
                     return;
                 }
 
@@ -381,7 +405,7 @@ export class DataService implements IDataService {
                 }
 
                 const parentMessage = entity.type ? '' : `${parentProperty} `;
-                const messageValue = pristineProperty.name ?? pristineProperty; 
+                const messageValue = getValue(pristineProperty); 
                 const baseMessage = `Updating ${parentMessage}${p} (value ${messageValue}) on `;
                 const messageExtension = entity.type ? `${entity.type} ${entity.id}` : `${parentEntity?.type} ${parentEntity?.id}`
 
@@ -390,11 +414,12 @@ export class DataService implements IDataService {
             }
         });
     
-        // Add properties previously not on the entity to it.
-        const newPropertyNames = Object.keys(pristineEntity).filter(p => !propertyNames.find(e => e === p));
-    
         if (this.isEntityUpdated(entity, pristineEntity, parentEntity, pristineParentEntity)) {
+            // Add properties previously not on the entity to it.
+            const newPropertyNames = Object.keys(pristineEntity).filter(p => !propertyNames.find(e => e === p));
+    
             newPropertyNames.forEach(p => {
+                // Todo: this should never be called. Remove it and throw an error when it is.
                 if (Array.isArray(entity)) {
                     const pristineValue = pristineEntity[p];
                     const logValue = pristineValue.id ?? pristineValue.name ?? pristineValue; 
@@ -403,7 +428,10 @@ export class DataService implements IDataService {
                     delete entity[p][RuntimeProperties.Added];
                 }
                 else {
-                    console.log(`Adding ${p} (value ${pristineEntity[p]}) to ${entity.type} ${entity.id}.`);
+                    const pristineValue = pristineEntity[p];
+                    const logValue = pristineValue.id ?? pristineValue.name ?? pristineValue; 
+                    // Todo: write parent entity data when entity data is empty
+                    console.log(`Adding ${p} (value ${logValue}) to ${entity.type} ${entity.id}.`);
                     entity[p] = pristineEntity[p];
                 }
             });
@@ -416,7 +444,7 @@ export class DataService implements IDataService {
     }
 
     private isEntityArray = (entities: IUpdatable[], pristineEntities: IUpdatable[]): boolean => {
-        return this.isEntity(entities[0]) || this.isEntity(pristineEntities[0]);
+        return (Array.isArray(entities) && this.isEntity(entities[0])) || (Array.isArray(pristineEntities) && this.isEntity(pristineEntities[0]));
     }
 
     private isEntity = (entity: IUpdatable): boolean => {
@@ -484,4 +512,43 @@ export class DataService implements IDataService {
         var parentEntityHasBuildStamp = typeof parentEntity?.buildTimeStamp !== 'undefined' && typeof pristineParentEntity?.buildTimeStamp !== 'undefined';
         return parentEntityHasBuildStamp && parentEntity.buildTimeStamp < pristineParentEntity.buildTimeStamp;
     }
+}
+
+function getMatchingItems(current: any[], pristine: any[]): any[] {
+    if (current.length === 0) {
+        return [];
+    }
+
+    const { first, second } = getKeyProperties(current);
+    return pristine.filter(e => current.find(p => propertyMatch(e, p, first, second)));
+}
+
+function getMissingItems(current: any[], pristine: any[]): any[] {
+    if (current.length === 0) {
+        return pristine;
+    }
+
+    const { first, second } = getKeyProperties(current);
+    return pristine.filter(e => !current.find(p => propertyMatch(e, p, first, second)));
+}
+
+function getItemName(item: any): string {
+    const { first, second } = getKeyProperties([item]);
+    return item[first];
+}
+
+function getKeyProperties(item: any): { first: string, second: string } {
+    const firstItem = item[0];
+    const firstKeyProperty = firstItem.id !== undefined ? 'id' : firstItem.name !== undefined ? 'name' : firstItem.text !== undefined ? 'text' : null;
+    const secondKeyProperty = firstItem.target !== undefined ? 'target' : firstItem.text !== undefined ? 'text' : null;
+    return { first: firstKeyProperty, second: secondKeyProperty };
+}
+
+function propertyMatch(first: any, second: any, firstProperty: string, secondProperty: string): boolean {
+    return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) 
+    || (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
+}
+
+function getValue(value: string | Function): string {
+    return typeof value === 'function' ? value.name : value;
 }
