@@ -315,7 +315,7 @@ export class DataService implements IDataService {
 
             matchedItems.concat(addedItems).forEach(i => {
                 const currentValue: any = getMatchingItems([i], entity)[0];
-                const pristineValue: any = getMatchingItems([i], pristineEntity)[0];
+                const pristineValue: any = getMatchingItems(pristineEntity, [i])[0];
 
                 if (pristineValue !== undefined) {
                     const { first, second } = getKeyProperties(currentValue, pristineValue);
@@ -542,7 +542,8 @@ function getMatchingItems(current: any[], pristine: any[]): any[] {
         return [];
     }
 
-    return pristine.filter(e => current.find(p => propertyMatch(e, p)));
+    const matchedPristineItems = pristine.filter(e => current.find(p => propertyMatch(e, p)));
+    return  current.filter(c => matchedPristineItems.find(i => propertyMatch(c, i)));
 }
 
 function getMissingItems(current: any[], pristine: any[]): any[] {
