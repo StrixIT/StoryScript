@@ -19,9 +19,9 @@ export interface ITrade {
     name?: string;
 
     /**
-     * The description of the trade as shown to the player.
+     * The description text of the trade as shown to the player.
      */
-    description?: string;
+    text?: string;
 
     /**
      * The amount of credits the trader has in whatever credits are used in the game. When the trader is a person,

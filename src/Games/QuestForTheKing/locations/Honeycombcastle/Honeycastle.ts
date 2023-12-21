@@ -1,7 +1,8 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Honeycastle.html';
-import { Quest1map2 } from '../ForestOfMyrr/Quest1map2';
 import { Castleapproach } from './Castleapproach';
+import { Fisherman } from '../Fisherman';
+import { Octopus } from '../Octopus';
 
 export function Honeycastle() {
     return Location({
@@ -9,13 +10,20 @@ export function Honeycastle() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Quest1map2
-            },   
-            {
                 name: 'Approach the Castle',
                 target: Castleapproach
-            }            
+            },            
+            {
+                name: 'The Fisherman\'s cottage',
+                target: Fisherman,
+                style: 'location-water'
+            },
+            {                          
+                name: 'The Octopus',
+                target: Octopus,
+                style: 'location-water'
+            },
+                 
         ],             
     });
 }

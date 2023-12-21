@@ -1,13 +1,11 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './start.html';
 import { Brennus } from '../Brennus';
-import { Woodcutter } from '../Woodcutter';
 import { ForestLake } from '../ForestLake';
 import { Stonemount } from '../Stonemount';
-import { Merchant } from '../Merchant';
-import { Quest1map2 } from './Quest1map2';
-import { Quest1map4 } from './Quest1map4';
 import { nightFall } from '../../gameFunctions';
+import { NorthRoad } from './NorthRoad';
+import { SouthRoad } from './SouthRoad';
 
 export function Start() {
     return Location({
@@ -15,34 +13,27 @@ export function Start() {
         description: description,
         destinations: [
             {
-                name: 'Go to the Tent',
-                target: Brennus
+                name: 'The Tent',
+                target: Brennus,
+                style: 'location-danger'
             },
             {
-                name: 'Go to the Woodcutters Lodge',
-                target: Woodcutter
-            },
-            {
-                name: 'Go to the Forest Lake',
-                target: ForestLake
+                name: 'The Forest Lake',
+                target: ForestLake,
+                style: 'location-danger'
             },       
             {
-                name: 'Go to the Stone Mount',
-                target: Stonemount
-            },
-            {
-                name: 'Go to the Merchant',
-                target: Merchant
-            },
-            {
-                name: 'Go to the Northern Forest',
-                target: Quest1map2,
+                name: 'The Stone Mount',
+                target: Stonemount,
                 style: 'location-danger'
+            },
+            {
+                name: 'The Northern Road',
+                target: NorthRoad,            
             },               
             {
-                name: 'Go to the Southern Forest',
-                target: Quest1map4,
-                style: 'location-danger'
+                name: 'The Southern Road',
+                target: SouthRoad,
             }
         ],
         enterEvents: [nightFall]

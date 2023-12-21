@@ -14,9 +14,9 @@ export function Bedroom() {
         ],
         trade: [{
             name: 'Your personal closet',
-            description: 'Do you want to take something out of your closet or put it back in?',
+            text: 'Do you want to take something out of your closet or put it back in?',
             buy: {
-                description: 'Take out of closet',
+                text: 'Take out of closet',
                 emptyText: 'The closet is empty',
                 itemSelector: (game: IGame, item: IItem) => {
                     return item.value != undefined;
@@ -25,7 +25,7 @@ export function Bedroom() {
                 priceModifier: 0
             },
             sell: {
-                description: 'Put back in closet',
+                text: 'Put back in closet',
                 emptyText: 'You have nothing to put in the your closet',
                 itemSelector: (game: IGame, item: IItem) => {
                     return item.value != undefined;

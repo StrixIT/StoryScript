@@ -1,18 +1,23 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Oceanshrine.html';
-import { Quest1map3 } from './ForestOfMyrr/Quest1map3';
 import { ActionType } from 'storyScript/Interfaces/storyScript';
 import { Magicring } from '../items/Magicring';
+import { CentralForest } from './ForestOfMyrr/CentralForest';
+import { Octopus } from './Octopus';
 
 export function Oceanshrine() {
     return Location({
         name: 'The Ocean Shrine',
         description: description,
         destinations: [
-            {
-                name: 'Back to the Map',
-                target: Quest1map3
-            }        
+            {                          
+                name: 'The Octopus',
+                target: Octopus
+            },
+			{
+                name: 'The Eastern Road',
+                target: CentralForest,            
+            },       
         ],
         items: [
             // Todo: should this be inactive and only show for the wizard when touching the altar?

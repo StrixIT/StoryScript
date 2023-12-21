@@ -9,16 +9,16 @@ import { LongSword } from "./items/LongSword";
 import { Magicshield } from "./items/Magicshield";
 import { ShortBow } from "./items/ShortBow";
 import { Staff } from "./items/Staff";
-import { WizardCloak } from "./items/Wizardcloak";
+import { WizardCloak } from "./items/WizardCloak";
 import { IAction, IItem } from "./types";
 
 export class CharacterClass {
     /**
      *
      */
-    constructor(name: string, hitpoints: number, inventory: IItem[], combatSpecial?: IAction) {
+    constructor(name: string, hitpoints: number, inventory: (() => IItem)[], combatSpecial?: IAction) {
         this.name = name;
-        this.picture = `portraits/${name}-portrait.png`
+        this.picture = `resources/portraits/${name}-portrait.jpg`
         this.hitpoints = hitpoints;
         this.inventory = inventory;
         this.combatSpecial = combatSpecial;
@@ -31,13 +31,13 @@ export class CharacterClass {
 
     public hitpoints: number;
 
-    public inventory: IItem[];
+    public inventory: (() => IItem)[];
 
     public combatSpecial?: IAction;
 }
 
 export const CharacterClasses: Record<string, CharacterClass> = {
-    Warrior: new CharacterClass('Warrior', 14, [LongSword(), Dagger(), Chainmail()], PowerAttack()),
-    Rogue: new CharacterClass('Rogue', 10, [Dagger(), Dagger(), ShortBow(), LeatherArmor()], Dodge()),
-    Wizard: new CharacterClass('Wizard', 8, [Staff(), WizardCloak(), Fireball(), Frostbite(), Magicshield()])
+    Warrior: new CharacterClass('Warrior', 14, [LongSword, Dagger, Chainmail], PowerAttack()),
+    Rogue: new CharacterClass('Rogue', 10, [Dagger, Dagger, ShortBow, LeatherArmor], Dodge()),
+    Wizard: new CharacterClass('Wizard', 8, [Staff, WizardCloak, Fireball, Frostbite, Magicshield])
 }

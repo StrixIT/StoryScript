@@ -1,6 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Castleapproach.html';
-import { Quest1map2 } from '../ForestOfMyrr/Quest1map2';
 import { CastleInside } from './CastleInside';
 
 export function Castleapproach() {
@@ -10,7 +9,7 @@ export function Castleapproach() {
         destinations: [
             {
                 name: 'Back to the Map',
-                target: Quest1map2
+                target: null
             },     
             {
                 name: 'Enter the Castle',

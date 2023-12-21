@@ -1,13 +1,13 @@
 <div *ngIf="game.playState == 'Trade' && game.trade" id="trade">
-    <p class="trade-description">{{ game.trade.description }}</p>
-    <div *ngIf="game.trade.buy">{{ game.trade.buy.description }}</div>
+    <p class="trade-description">{{ game.trade.text }}</p>
+    <div *ngIf="game.trade.buy">{{ game.trade.buy.text }}</div>
     <p class="trade-empty" *ngIf="game.trade.buy.items?.length === 0">{{ game.trade.buy.emptyText }}</p>
     <ul class="list-unstyled" *ngIf="game.trade.buy.items?.length > 0">
         <li class="inline" *ngFor="let item of game.trade.buy.items">
             <button type="button" class="btn btn-success" (click)="buy(item, game.trade)" [disabled]="!canPay(game.character.currency, actualPrice(item, game.trade.buy.priceModifier))">{{ displayPrice(item, game.trade.buy.priceModifier) }}</button>
         </li>
     </ul>
-    <div *ngIf="game.trade.sell">{{ game.trade.sell.description }}</div>
+    <div *ngIf="game.trade.sell">{{ game.trade.sell.text }}</div>
     <p class="trade-empty" *ngIf="game.trade.sell.items?.length === 0">{{ game.trade.sell.emptyText }}</p>
     <ul class="list-unstyled" *ngIf="game.trade.sell.items?.length > 0">
         <li class="inline" *ngFor="let item of game.trade.sell.items">

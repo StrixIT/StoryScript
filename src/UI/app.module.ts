@@ -1,7 +1,7 @@
 import { NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'; 
 import { FormsModule } from '@angular/forms';
-import { NgbCollapseModule, NgbModalModule, NgbActiveModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbModalModule, NgbActiveModal, NgbDropdownModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SharedMethodService } from './Services/SharedMethodService';
 import { ModalService } from './Services/ModalService';
@@ -57,7 +57,8 @@ const objectFactory = ObjectFactory.GetInstance();
         FormsModule,
         NgbCollapseModule,
         NgbModalModule,
-        NgbDropdownModule
+        NgbDropdownModule,
+        NgbTypeaheadModule
     ],
     bootstrap: [
         MainComponent

@@ -49,6 +49,12 @@ blockquote {
     color: white;
 }
 
+.location-water, .location-water:hover {
+    background-color: blue;
+    border-color: blue;
+    color: white;
+}
+
 .destination-button {
     float: left;
     margin: 0 15px 10px 0;

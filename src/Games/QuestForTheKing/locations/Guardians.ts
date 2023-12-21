@@ -1,8 +1,8 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Guardians.html';
-import { Quest1map4 } from './ForestOfMyrr/Quest1map4';
 import { Cliffwall } from './Cliffwall';
 import { Parchment } from '../items/Parchment';
+import { SouthRoad } from './ForestOfMyrr/SouthRoad';
 
 export function Guardians() {
     return Location({
@@ -10,8 +10,8 @@ export function Guardians() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Quest1map4
+                name: 'The Southern Road',
+                target: SouthRoad
             },    
             {
                 name: 'To the Cliffwall',

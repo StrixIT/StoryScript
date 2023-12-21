@@ -1,6 +1,5 @@
 ﻿import { Location, IGame } from '../types';
 import description from './ForestPond.html';
-import { Quest1map2 } from './ForestOfMyrr/Quest1map2';
 import { DarkDryad } from '../enemies/DarkDryad';
 import { Magicshield } from '../items/Magicshield';
 import { Dryad } from './Dryad';
@@ -10,10 +9,10 @@ export function ForestPond() {
         name: 'The Forest Pond',
         description: description,
         destinations: [
-            {
-                name: 'Back to the Map',
-                target: Quest1map2
-            }              
+			{                          
+                name: 'The Dryad Tree',
+                target: Dryad
+            },             
         ],
         enemies: [
             DarkDryad()

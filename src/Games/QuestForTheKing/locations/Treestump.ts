@@ -1,6 +1,5 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Treestump.html';
-import { Quest1map3 } from './ForestOfMyrr/Quest1map3';
 import { Satyr } from '../enemies/Satyr';
 
 export function Treestump() {
@@ -10,7 +9,7 @@ export function Treestump() {
         destinations: [
             {
                 name: 'Back to the Map',
-                target: Quest1map3,
+                target: null,
                 inactive: true
             },                                        
         ],

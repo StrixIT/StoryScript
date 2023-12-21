@@ -1,18 +1,24 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Octopus.html';
-import { Quest1map2 } from './ForestOfMyrr/Quest1map2';
 import { Octopus as OctopusEnemy } from '../enemies/Octopus';
 import { ActionStatus, ActionType } from 'storyScript/Interfaces/storyScript';
+import { Oceanshrine } from './Oceanshrine';
+import { Honeycastle } from './Honeycombcastle/Honeycastle';
+import { Fisherman } from './Fisherman';
 
 export function Octopus() {
     return Location({
         name: 'The Giant Octopus',
         description: description,
         destinations: [
+            {                          
+                name: 'The Ocean Shrine',
+                target: Oceanshrine
+            },
             {
-                name: 'Back to the Map',
-                target: Quest1map2
-            }              
+                name: 'Honeycomb Castle',
+                target: Honeycastle
+            }
         ],
         enemies: [
             OctopusEnemy()                 

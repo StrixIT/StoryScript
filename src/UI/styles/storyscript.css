@@ -229,6 +229,10 @@ button {
     float: right;
 }
 
+#attributes-panel {
+    float: left;
+}
+
 button.restart {
     margin-top: 25px;
 }
@@ -304,4 +308,9 @@ feature {
     border-radius: 0.25rem;
     appearance: none;
     transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+#location-selector {
+    float: right;
+    max-width: 40%;
 }

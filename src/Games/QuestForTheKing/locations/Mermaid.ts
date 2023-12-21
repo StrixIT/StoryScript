@@ -2,7 +2,7 @@ import { IGame, Location } from '../types';
 import description from './mermaid.html';
 import { Pearl } from '../items/Pearl';
 import { Magicflower } from '../items/Magicflower';
-import { Quest1map2 } from './ForestOfMyrr/Quest1map2';
+import { Fisherman } from './Fisherman';
 
 export function Mermaid() {
     return Location({
@@ -10,8 +10,9 @@ export function Mermaid() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Quest1map2
+                name: 'The Fisherman\'s cottage',
+                target: Fisherman,
+                style: 'location-danger'
             },  
         ],
         actions: [

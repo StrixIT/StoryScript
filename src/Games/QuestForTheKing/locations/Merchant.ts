@@ -1,6 +1,6 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Merchant.html';
-import { Start } from './ForestOfMyrr/start';
+import { SouthRoad } from './ForestOfMyrr/SouthRoad';
 
 export function Merchant() {
     return Location({
@@ -8,8 +8,8 @@ export function Merchant() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Start
+                name: 'The South Road',
+                target: SouthRoad
             },  
             
         ]                        

@@ -1,6 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './CastleInside.html';
-import { Quest1map2 } from '../ForestOfMyrr/Quest1map2';
 import { QueenBee } from '../../persons/queenBee';
 
 export function CastleInside() {
@@ -10,7 +9,7 @@ export function CastleInside() {
         destinations: [
             {
                 name: 'Back to the Map',
-                target: Quest1map2
+                target: null
             }
         ],
         persons: [

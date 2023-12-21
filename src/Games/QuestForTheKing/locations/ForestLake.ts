@@ -12,7 +12,7 @@ export function ForestLake() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
+                name: 'The Forest Entry',
                 target: Start
             }
         ],

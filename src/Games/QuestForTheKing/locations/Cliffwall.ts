@@ -1,18 +1,18 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Cliffwall.html';
-import { Quest1map4 } from './ForestOfMyrr/Quest1map4';
 import { Darkcave } from './Darkcave';
 import { Twoheadedwolf } from '../enemies/Twoheadedwolf';
+import { Guardians } from './Guardians';
 
 export function Cliffwall() {
     return Location({
         name: 'The Cliffwall',
         description: description,
         destinations: [
-            {
-                name: 'Back to the Map',
-                target: Quest1map4
-            },    
+			{                          
+				name: 'The Strange Trees',
+				target: Guardians
+			}, 
             {
                 name: 'The Dark Cave',
                 target: Darkcave

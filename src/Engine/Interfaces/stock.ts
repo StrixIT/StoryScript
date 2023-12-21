@@ -9,7 +9,7 @@ export interface IStock {
     /**
      * The text for buying or selling the items as shown to the player.
      */
-    description?: string;
+    text?: string;
 
     /**
      * The text to show to the player when there are no items available for buying or selling.

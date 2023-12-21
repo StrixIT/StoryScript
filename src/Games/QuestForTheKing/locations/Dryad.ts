@@ -1,6 +1,7 @@
 ﻿import { Location, IGame } from '../types';
 import description from './Dryad.html';
-import { Quest1map3 } from './ForestOfMyrr/Quest1map3';
+import { CentralForest } from './ForestOfMyrr/CentralForest';
+import { ForestPond } from './ForestPond';
 
 export function Dryad() {
     return Location({
@@ -8,8 +9,13 @@ export function Dryad() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Quest1map3
+                name: 'The Forest Pond',
+                target: ForestPond,
+				style: 'location-danger'
+            },
+            {
+                name: 'The Central Forest',
+                target: CentralForest
             }           
         ],
         leaveEvents: [

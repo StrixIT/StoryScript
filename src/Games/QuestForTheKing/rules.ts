@@ -1,16 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction } from './types';
-import { ClassType } from './classType';
-import { LongSword } from './items/LongSword';
-import { ColdIronAxe } from './items/ColdIronAxe';
-import { Warhammer } from './items/Warhammer';
-import { Dagger } from './items/Dagger';
-import { Rapier } from './items/Rapier';
-import { Shortsword } from './items/Shortsword';
-import { Fireball } from './items/Fireball';
-import { Frostbite } from './items/Frostbite';
-import { Shockbolt } from './items/Shockbolt';
-import { Quest1 } from './locations/Quest1';
 import { CharacterClasses } from './characterClass';
 
 export function Rules(): IRules {
@@ -84,7 +73,7 @@ export function Rules(): IRules {
                 var selectedClass = characterData.steps[1].questions[0].selectedEntry.value;
                 var characterClass = CharacterClasses[selectedClass];
                 character.hitpoints = characterClass.hitpoints;
-                character.items = characterClass.inventory;
+                character.items = characterClass.inventory.map(i => i());
                 character.class = characterClass;
                 character.portraitFileName = characterClass.picture;
                 return character;
