@@ -1,6 +1,6 @@
 ﻿import { IFunctionIdParts } from '../Interfaces/services/functionIdParts';
 import { DataKeys } from '../DataKeys';
-import { getPlural, isEmpty } from '../utilities';
+import { getId, getPlural, isEmpty } from '../utilities';
 import { initCollection, setReadOnlyProperties, GetFunctions, GetDescriptions, GetRegisteredEntities } from '../ObjectConstructors';
 import { parseFunction } from '../globals';
 import { IDataService } from '../Interfaces/services/dataService';
@@ -159,6 +159,8 @@ export class DataService implements IDataService {
         if (!value.isProxy) {
             if (value.functionId) {
                 clone[key] = value.functionId;
+            } else if (key === 'target') {
+                clone[key] = getId(value);
             }
             else {
                 // Functions added during runtime must be serialized using the function() notation in order to be deserialized back

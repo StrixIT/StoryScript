@@ -13,8 +13,7 @@ export function Journal() {
             return quest.completed || game.character.items.get(Items.Journal) != null;
         },
         complete: (game: IGame, quest: IQuest, person: IPerson) => {
-            var journal = game.character.items.get(Items.Journal);
-            game.character.items.delete(journal);
+            game.character.items.delete(Items.Journal);
             game.character.currency += 5;
         }
     });

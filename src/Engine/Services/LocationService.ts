@@ -71,7 +71,7 @@ export class LocationService implements ILocationService {
                     style: 'auto-back-button'
                 };
 
-                game.currentLocation.destinations.push(backLocation);
+                game.currentLocation.destinations.add(backLocation);
             }
         }
     }

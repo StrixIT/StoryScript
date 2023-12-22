@@ -63,7 +63,6 @@ export function addArrayExtensions() {
 
                 if (id) {
                     result = find(id, this)[0];
-                    find(id, this)[0];
                 }
                 else {
                     result = this[0];
@@ -105,13 +104,24 @@ export function addArrayExtensions() {
                     return;
                 }
 
-                if (entity[RuntimeProperties.Deleted]) {
-                    delete entity[RuntimeProperties.Deleted];
+                const withDeleted = this.withDeleted();
+                let existing = null;
 
-                } else {
-                    entity[RuntimeProperties.Added] = true;
+                if (withDeleted.length > 0) {
+                    let existing = withDeleted.indexOf(entity) > -1 ? entity : null;
+
+                    // Todo: what happens with two entities of the same type?
+                    if (!existing) {
+                        existing = find(entity, withDeleted).sort((a, b) => a[RuntimeProperties.Deleted] ? a : b)[0];
+                    }
                 }
 
+                if (existing) {
+                    delete entity[RuntimeProperties.Deleted];
+                    return;
+                }
+
+                entity[RuntimeProperties.Added] = true;
                 this.push(entity);
             }
         });
@@ -123,7 +133,7 @@ export function addArrayExtensions() {
             writable: true,
             value: function (item: any) {
                 if (!item) {
-                    return;
+                    return false;
                 }
 
                 let entry = find(item, this)[0];
@@ -131,18 +141,35 @@ export function addArrayExtensions() {
 
                 if (typeof entry === 'undefined') {
                     index = this.indexOf(item);
+
+                    if (index === -1) {
+                        return false;
+                    }
+
                     entry = item;
                 }
                 
                 if (!entry) {
-                    return;
+                    return false;
                 }
 
                 index = this.indexOf(entry);
-                entry[RuntimeProperties.Deleted] = true;
-                this['_deleted'] = this['_deleted'] || [];
-                this['_deleted'].push(entry);
                 Array.prototype.splice.call(this, index, 1);
+                return true;
+            }
+        });
+    }
+
+    if ((<any>Array.prototype).delete === undefined) {
+        Object.defineProperty(Array.prototype, 'delete', {
+            enumerable: false,
+            writable: true,
+            value: function (item: any) {
+                if (this.remove(item)) {
+                    item[RuntimeProperties.Deleted] = true;
+                    this['_deleted'] = this['_deleted'] || [];
+                    this['_deleted'].push(item);
+                }
             }
         });
     }
@@ -154,7 +181,7 @@ export function addArrayExtensions() {
                 const collection = this;
 
                 collection.forEach(e => {
-                    this.remove(e);
+                    this.delete(e);
                 });
             }
         });

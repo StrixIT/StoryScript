@@ -39,7 +39,7 @@ export function updateModifiedEntities(
             throw new Error('Pristine collection should exist!');
         }
 
-        const pristine = pristinceCollection ? pristinceCollection[entity.id] : pristineProperty.get(entity.id);
+        const pristine = pristinceCollection && pristinceCollection[entity.id];
 
         // If a pristine entity is not found, it is no longer part of the definitions. This happens when the 
         // entity function was renamed or the function was deleted. Delete it.
@@ -72,6 +72,11 @@ export function updateModifiedEntities(
     pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
         console.log(getUpdateCollectionLogMessage(p, parentEntity, 'Adding', 'to'));
         entities.push(p);
+    });
+
+    // Move deleted entities to the deleted shadow array.
+    entities.filter(e => e[RuntimeProperties.Deleted]).forEach(e => {
+        entities.delete(e);
     });
 }
 

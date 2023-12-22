@@ -176,7 +176,7 @@ export class CombinationService implements ICombinationService {
     private removeFeature = (feature: IFeature): void => {
         // Remove the feature from all possible locations. As we use the object
         // reference, objects of the same type should be left alone.
-        this._game.currentLocation.features.remove(feature);
+        this._game.currentLocation.features.delete(feature);
         this._game.currentLocation.destinations.forEach(d => {
             if (d.barrier === feature) {
                 d.barrier = null;
@@ -184,8 +184,8 @@ export class CombinationService implements ICombinationService {
         });
 
         removeItemFromItemsAndEquipment(this._game.character, <IItem>feature);
-        this._game.currentLocation.items.remove(<IItem>feature);
-        this._game.currentLocation.enemies.remove(<IEnemy>feature);
-        this._game.currentLocation.persons.remove(<IPerson>feature);
+        this._game.currentLocation.items.delete(<IItem>feature);
+        this._game.currentLocation.enemies.delete(<IEnemy>feature);
+        this._game.currentLocation.persons.delete(<IPerson>feature);
     }
 }
