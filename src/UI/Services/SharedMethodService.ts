@@ -117,11 +117,12 @@ export class SharedMethodService {
             var typeAndIndex = this.getActionIndex(action);
 
             if (!result && typeAndIndex.index !== -1) {
-
                 if (typeAndIndex.type === ActionType.Regular && this.game.currentLocation.actions) {
-                    this.game.currentLocation.actions.splice(typeAndIndex.index, 1);
+                    const currentAction = this.game.currentLocation.actions[typeAndIndex.index];
+                    this.game.currentLocation.actions.delete(currentAction);
                 } else if (typeAndIndex.type === ActionType.Combat && this.game.currentLocation.combatActions) {
-                    this.game.currentLocation.combatActions.splice(typeAndIndex.index, 1);
+                    const currentCombatAction = this.game.currentLocation.combatActions[typeAndIndex.index];
+                    this.game.currentLocation.combatActions.delete(currentCombatAction);
                 }
             }
 

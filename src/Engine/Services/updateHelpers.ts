@@ -63,7 +63,7 @@ export function updateModifiedEntities(
 
     // Move deleted entities to the deleted shadow array.
     entities.filter(e => e[RuntimeProperties.Deleted]).forEach(e => {
-        const entityMatch = pristineEntities[e.type][e.id];
+        const entityMatch = pristineEntities[getPlural(e.type)][e.id];
         entities.delete(entityMatch);
     });
 
@@ -119,14 +119,6 @@ export function updateModifiedEntity (
 
         // If the property currently exists on the entity but isn't part of the new definition, delete it now.
         if (updateValues && typeof pristineProperty === 'undefined') {
-
-            // If the current property is an array of items that are all marked as deleted, remove the deleted
-            // items but keep the aray.
-            if (Array.isArray(currentProperty) && currentProperty.all(e => e[RuntimeProperties.Deleted])) {
-                currentProperty.clear();
-                return;
-            }
-
             deleteRemovedProperty(p, currentProperty, entity)
             return;
         }
@@ -248,6 +240,13 @@ function deleteRemovedProperty (propertyName: string, currentProperty: any, enti
         return;
     }
 
+    // If the current property is an array of items that are all marked as deleted, remove the deleted
+    // items but keep the aray.
+    if (Array.isArray(currentProperty) && currentProperty.all(e => e[RuntimeProperties.Deleted])) {
+        currentProperty.clear();
+        return;
+    }
+
     console.log(`Removing ${propertyName} (value: ${entity[propertyName]}) from ${entity.type} ${entity.id}.`);
     delete entity[propertyName];
 }
@@ -365,10 +364,20 @@ function propertyMatch(first: any, second: any): boolean {
     }
 
     // Todo: check this with record properties!
-    const { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
+    let { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
 
-    return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) 
-        || (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
+    let match = (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) ||
+                (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
+
+    if (match) {
+        return true;
+    }
+
+    firstProperty = Object.keys(first)[0];
+    secondProperty = Object.keys(second)[0];
+    const isRecord = first[firstProperty] === 'recordKey' || second[secondProperty] === 'recordKey'; 
+
+    return isRecord ? Object.keys(first)[0] === Object.keys(second)[0] : false;
 }
 
 function getValue(value: any): string {

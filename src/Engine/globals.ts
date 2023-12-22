@@ -170,9 +170,10 @@ export function addArrayExtensions() {
                 if (collection.remove(item)) {
                     const { first, second } = getKeyPropertyNames(item);
                     const keyProps = 
-                        first && second ? { first: item[first], second: item[second] } :
-                        first ? { first: item[first], second: null } :
-                        second ? { first: null, second: item[second] } :
+                        first && second ? { [first]: item[first], [second]: item[second] } :
+                        first ? { [first]: item[first] } :
+                        second ? { [second]: item[second] } : 
+                        { [Object.keys(item)[0]]: 'recordKey' }
 
                     collection['_deleted'] = collection['_deleted'] || [];
                     collection['_deleted'].push({ ...keyProps, [RuntimeProperties.Deleted]: true });
@@ -185,7 +186,7 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'clear', {
             enumerable: false,
             value: function () {
-                const collection = this;
+                const collection = [...this];
 
                 collection.forEach(e => {
                     this.delete(e);

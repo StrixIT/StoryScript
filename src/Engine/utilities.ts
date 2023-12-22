@@ -32,10 +32,6 @@ export function getKeyPropertyNames(item: any) {
     let firstKeyProperty = item.id !== undefined ? 'id' : item.name !== undefined ? 'name' : item.text !== undefined ? 'text' : item.tool !== undefined ? 'tool' : null;
     const secondKeyProperty =  item.type !== undefined ? 'type' : item.target !== undefined ? 'target' : item.text !== undefined ? 'text' : item.combinationType !== undefined ? 'combinationType' : null;
 
-    if (!firstKeyProperty && !secondKeyProperty) {
-        firstKeyProperty = Object.keys(item)[0];
-    }
-
     return { first: firstKeyProperty, second: secondKeyProperty };
 }
 
