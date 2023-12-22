@@ -238,23 +238,19 @@ export class LocationService implements ILocationService {
             return;
         }
 
-        var eventsToKeep = [];
-
         // Keep a reference to the location being processed. When the location is changed in the
-        // event, we want tostill update the events in the originating location.
-        var location = game.currentLocation;
+        // event, we want to still update the events in the originating location.
+        const location = game.currentLocation;
+        const events = location[eventProperty];
 
-        location[eventProperty].forEach((e: (game: IGame) => void | boolean) => {
-            var result = e(game);
+        events.forEach((e: Record<string, (game: IGame) => void | boolean>) => {
+            const key = Object.keys(e)[0];
+            const result = e[key](game);
 
-            if (result) {
-                eventsToKeep.push(e);
+            if (!result) {
+                location[eventProperty].remove(e);
             }
         });
-
-        location[eventProperty].length = 0;
-        
-        eventsToKeep.forEach(e => location[eventProperty].push(e));
     }
 
     private loadLocationDescriptions = (game: IGame): void => {

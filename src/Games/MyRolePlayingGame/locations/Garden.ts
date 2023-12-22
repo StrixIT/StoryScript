@@ -15,8 +15,11 @@ export function Garden() {
             }
         ],
         enterEvents: [
-            (game) => {
-                game.logToActionLog('You see a squirrel running off.');
+            {
+                'Squirrel':
+                (game) => {
+                    game.logToActionLog('You see a squirrel running off.');
+                }
             }
         ],
         actions: [

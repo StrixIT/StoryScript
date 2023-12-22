@@ -29,9 +29,12 @@ export function Brennus() {
             BrennusEnemy()  
         ],
         enterEvents: [
-            (game: IGame) => {
-                if (game.worldProperties.isNight) {
-                    game.currentLocation.enemies.map(e => e.inactive = true);
+            {
+                'Night':
+                (game: IGame) => {
+                    if (game.worldProperties.isNight) {
+                        game.currentLocation.enemies.map(e => e.inactive = true);
+                    }
                 }
             }
         ]

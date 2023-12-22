@@ -5,6 +5,7 @@ import { getPlural, getSingular } from "storyScript/utilities";
 const _runtimeProperties = [
     <string>RuntimeProperties.ActiveNode,
     <string>RuntimeProperties.Added,
+    <string>RuntimeProperties.Deleted,
     <string>RuntimeProperties.ConversationLog,
     <string>RuntimeProperties.Description,
     <string>RuntimeProperties.Descriptions,
@@ -70,7 +71,7 @@ export function updateModifiedEntities(
     // These have been added during editing.
     pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
         console.log(getUpdateCollectionLogMessage(p, parentEntity, 'Adding', 'to'));
-        addToArray(entities, p);
+        entities.push(p);
     });
 }
 
@@ -142,7 +143,7 @@ function addNewProperties(entity: IUpdatable, pristineEntity: IUpdatable, parent
         return;
     }
 
-    const newPropertyNames = Object.keys(pristineEntity).filter(p => !propertyNames.find(e => e === p));
+    const newPropertyNames = Object.keys(pristineEntity).filter(p => propertyNames.indexOf(p) === -1);
 
     newPropertyNames.forEach(p => {
         // Todo: this should never be called. Remove it and throw an error when it is.
@@ -160,14 +161,6 @@ function addNewProperties(entity: IUpdatable, pristineEntity: IUpdatable, parent
         console.log(getUpdateValueLogMessage(p, logValue, entity, 'Adding', 'to', parentEntity));
         entity[p] = pristineValue;
     });
-}
-
-function addToArray(collection: IUpdatable[], item: any) {
-    collection.push(item);
-    // Remove the 'added' flag. The entity is added design time, not run time.
-    if (item[RuntimeProperties.Added]) {
-        delete item[RuntimeProperties.Added];
-    }
 }
 
 function shouldUpdate(entity: IUpdatable, pristine: any) {
@@ -193,10 +186,14 @@ function updateArray (
         const currentValue: any = getMatchingItems([i], entity)[0];
         const pristineValue: any = getMatchingItems(pristineEntity, [i])[0];
 
+        if (i[RuntimeProperties.Deleted]) {
+            entity.remove(currentValue);
+        }
+
         if (pristineValue !== undefined) {
             // Todo: don't log when not updating!
             //logUpdateContent(currentValue, pristineValue, parentProperty, parentEntity);
-            updateModifiedEntity(i, pristineValue, pristineEntities, updateValues, parentEntity, pristineParentEntity, parentProperty);
+            updateModifiedEntity(currentValue, pristineValue, pristineEntities, updateValues, parentEntity, pristineParentEntity, parentProperty);
         }
     }); 
 
@@ -207,10 +204,7 @@ function updateArray (
     logUpdateCollection(itemsToDelete, parentProperty, parentEntity, newItems);
 
     entity.length = 0;
-    matchedItems.concat(newItems).forEach(i => {
-        addToArray(entity, i);
-    });
-    addedItems.forEach(i => {
+    matchedItems.concat(newItems).concat(addedItems).forEach(i => {
         entity.push(i);
     });
 }
@@ -290,7 +284,7 @@ function getUpdateValueLogMessage (name: string, value: any, target: IUpdatable 
 
 function getUpdateObjectLogMessage (name: string, value: any, target: IUpdatable | string, prefix: string, join: string, parent?: IUpdatable): string {
     const targetMessage = typeof target === 'string' ? target : target?.type ? `${target?.type} ${target?.id}` : `${parent?.type} ${parent?.id}`;
-    const parentMessage = (<IUpdatable>target).type && parent.type && target !== parent ? ` on ${parent.type} ${parent.id}` : '';
+    const parentMessage = (<IUpdatable>target).type && parent?.type && target !== parent ? ` on ${parent.type} ${parent.id}` : '';
     return `${prefix} ${name} ${value} ${join} ${targetMessage}${parentMessage}.`;
 }
 
@@ -336,12 +330,25 @@ function getKeyProperties(current: any, pristine: any): { first: string, second:
 }
 
 function getPropertyNames(item: any) {
-    const firstKeyProperty = item.id !== undefined ? 'id' : item.name !== undefined ? 'name' : item.text !== undefined ? 'text' : item.tool !== undefined ? 'tool' : null;
+    if (typeof item === 'undefined') {
+        return {};
+    }
+
+    let firstKeyProperty = item.id !== undefined ? 'id' : item.name !== undefined ? 'name' : item.text !== undefined ? 'text' : item.tool !== undefined ? 'tool' : null;
     const secondKeyProperty = item.target !== undefined ? 'target' : item.text !== undefined ? 'text' : item.combinationType !== undefined ? 'combinationType' : null;
+
+    if (!firstKeyProperty && !secondKeyProperty) {
+        firstKeyProperty = Object.keys(item)[0];
+    }
+
     return { first: firstKeyProperty, second: secondKeyProperty };
 }
 
 function propertyMatch(first: any, second: any): boolean {
+    if (typeof first === 'undefined' || typeof second === 'undefined') {
+        return false;
+    }
+
     const { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
 
     return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) 

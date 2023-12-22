@@ -80,6 +80,10 @@ export class DataService implements IDataService {
 
             var value = values[key];
 
+            if (Array.isArray(value)) {
+                value = (<any>values[key]).withDeleted();
+            }
+
             if (value === undefined) {
                 continue;
             }

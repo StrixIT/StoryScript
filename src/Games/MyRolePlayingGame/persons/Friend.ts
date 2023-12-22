@@ -39,9 +39,9 @@ export function Friend() {
                     var garden = game.locations.get(Garden);
                     garden.hasVisited = false;
 
-                    garden.enterEvents.push((game: IGame) => {
+                    garden.enterEvents.push({ 'Hedgehog': (game: IGame) => {
                         game.logToLocationLog('Ah! There is the hedgehog Joe was talking about.');
-                    });
+                    }});
                 }
             }
         },

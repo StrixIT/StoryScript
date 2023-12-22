@@ -194,17 +194,11 @@ export function initCollection(entity: any, property: string) {
     const readOnlyCollection: [] = entity[property];
 
     if (_entityCollections.indexOf(property) > -1) {
-        Object.defineProperty(readOnlyCollection, 'push', {
+        Object.defineProperty(readOnlyCollection, 'add', {
             writable: true,
-            value: readOnlyCollection.push.proxy(pushEntity)
+            value: readOnlyCollection.add.proxy(pushEntity)
         });
     } 
-    else {
-        Object.defineProperty(readOnlyCollection, 'push', {
-            writable: true,
-            value: readOnlyCollection.push.proxy(pushNonEntity)
-        });
-    }
 }
 
 export function Register(type: string, entityFunc: Function, testDefinitions?: IDefinitions): IDefinitions {
@@ -541,14 +535,8 @@ function compileCombinations(entry: ICombinable) {
     }
 }
 
-function pushNonEntity(originalScope, originalFunction, entity) {
-    entity[RuntimeProperties.Added] = true;
-    originalFunction.apply(originalScope, [entity]);
-};
-
 function pushEntity(originalScope, originalFunction, entity) {
     entity = typeof entity === 'function' ? entity() : entity;
-    entity[RuntimeProperties.Added] = true;
 
     if (!entity.id && entity.name) {
         entity.id = getIdFromName(entity);

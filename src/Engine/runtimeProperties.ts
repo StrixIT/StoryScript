@@ -1,5 +1,6 @@
 export const enum RuntimeProperties {
     Added = 'ss_added',
+    Deleted = 'ss_deleted',
     Description = 'description',
     Descriptions = 'descriptions',
     HasVisited = 'hasVisited',

@@ -18,7 +18,6 @@
         }
     },
     "scripts": {
-        "vite": "vite",
         "create-game": "node createGame.js",
         "sca": "node createAsset.js action",
         "scl": "node createAsset.js location",
@@ -28,7 +27,7 @@
         "sci": "node createAsset.js item",
         "sck": "node createAsset.js key",
         "scq": "node createAsset.js quest",
-        "start": "webpack-dev-server --config webpack/webpack.development.js",
+        "start": "vite",
         "publish": "webpack --config webpack/webpack.production.js",
         "engine-tests": "cd src/Tests/Engine && karma start karma.conf.cjs",
         "myroleplayinggame-tests": "cd src/Tests/Games/MyRolePlayingGame && karma start karma.conf.cjs",

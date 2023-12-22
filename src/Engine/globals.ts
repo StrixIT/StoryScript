@@ -1,4 +1,5 @@
-﻿import { getId } from "./utilities";
+﻿import { RuntimeProperties } from "./runtimeProperties";
+import { getId } from "./utilities";
 
 if (Function.prototype.proxy === undefined) {
     // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
@@ -58,12 +59,18 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'get', {
             enumerable: false,
             value: function (id: any) {
+                let result: any;
+
                 if (id) {
-                    return find(id, this)[0];
+                    result = find(id, this)[0];
+                    find(id, this)[0];
                 }
                 else {
-                    return this[0];
+                    result = this[0];
                 }
+
+                // Don't return deleted properties.
+                return result && result[RuntimeProperties.Deleted] ? undefined : result;
             }
         });
     }
@@ -72,7 +79,40 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'all', {
             enumerable: false,
             value: function (id: any) {
-                return find(id, this);
+                return find(id, this).filter(r => !r[RuntimeProperties.Deleted]);
+            }
+        });
+    }
+
+    if ((<any>Array.prototype).withDeleted === undefined) {
+        Object.defineProperty(Array.prototype, 'withDeleted', {
+            enumerable: false,
+            value: function (id: any) {
+                if (this['_deleted']) {
+                    return [...this, ...this['_deleted']];
+                }
+
+                return this;
+            }
+        });
+    }
+
+    if ((<any>Array.prototype).add === undefined) {
+        Object.defineProperty(Array.prototype, 'add', {
+            enumerable: false,
+            value: function (entity: any) {
+                if (typeof entity === 'undefined') {
+                    return;
+                }
+
+                if (entity[RuntimeProperties.Deleted]) {
+                    delete entity[RuntimeProperties.Deleted];
+
+                } else {
+                    entity[RuntimeProperties.Added] = true;
+                }
+
+                this.push(entity);
             }
         });
     }
@@ -86,17 +126,36 @@ export function addArrayExtensions() {
                     return;
                 }
 
-                var entry = find(item, this)[0];
+                let entry = find(item, this)[0];
+                let index = -1;
 
+                if (typeof entry === 'undefined') {
+                    index = this.indexOf(item);
+                    entry = item;
+                }
+                
                 if (!entry) {
                     return;
                 }
 
-                var index = Array.prototype.indexOf.call(this, entry);
+                index = this.indexOf(entry);
+                entry[RuntimeProperties.Deleted] = true;
+                this['_deleted'] = this['_deleted'] || [];
+                this['_deleted'].push(entry);
+                Array.prototype.splice.call(this, index, 1);
+            }
+        });
+    }
 
-                if (index != -1) {
-                    Array.prototype.splice.call(this, index, 1);
-                }
+    if ((<any>Array.prototype).clear === undefined) {
+        Object.defineProperty(Array.prototype, 'clear', {
+            enumerable: false,
+            value: function () {
+                const collection = this;
+
+                collection.forEach(e => {
+                    this.remove(e);
+                });
             }
         });
     }

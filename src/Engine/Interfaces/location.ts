@@ -28,14 +28,14 @@ export interface ILocation {
      * If nothing or false is returned, the function will be removed once it completed. Return true
      * to keep the function and call it every time the player enters the location.
      */
-    enterEvents?: ICollection<((game: IGame) => void | boolean)>;
+    enterEvents?: Record<string, (game: IGame) => void | boolean>[];
 
     /**
      * When specified, the functions in this array will be called when the player leaves the location.
      * If nothing or false is returned, the function will be removed once it completed. Return true
      * to keep the function and call it every time the player leaves the location.
      */
-    leaveEvents?: ICollection<((game: IGame) => void | boolean)>;
+    leaveEvents?: Record<string, (game: IGame) => void | boolean>[];
 
     /**
      * Actions that the player can perform at this location.
@@ -84,5 +84,5 @@ export interface ILocation {
      * Trade objects present at this location. If you don't want to use persons to trade with, you can use this array.
      * Useful for e.g. adding containers like chests to the game.
      */
-    trade?: ITrade[];
+    trade?: ICollection<ITrade>;
 }
