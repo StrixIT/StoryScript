@@ -1,5 +1,5 @@
 ﻿import { RuntimeProperties } from "./runtimeProperties";
-import { getId } from "./utilities";
+import { getId, getKeyPropertyNames } from "./utilities";
 
 if (Function.prototype.proxy === undefined) {
     // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
@@ -165,10 +165,17 @@ export function addArrayExtensions() {
             enumerable: false,
             writable: true,
             value: function (item: any) {
-                if (this.remove(item)) {
-                    item[RuntimeProperties.Deleted] = true;
-                    this['_deleted'] = this['_deleted'] || [];
-                    this['_deleted'].push(item);
+                const collection = this;
+
+                if (collection.remove(item)) {
+                    const { first, second } = getKeyPropertyNames(item);
+                    const keyProps = 
+                        first && second ? { first: item[first], second: item[second] } :
+                        first ? { first: item[first], second: null } :
+                        second ? { first: null, second: item[second] } :
+
+                    collection['_deleted'] = collection['_deleted'] || [];
+                    collection['_deleted'].push({ ...keyProps, [RuntimeProperties.Deleted]: true });
                 }
             }
         });

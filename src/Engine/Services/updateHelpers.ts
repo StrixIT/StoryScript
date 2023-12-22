@@ -1,6 +1,6 @@
 import { RuntimeProperties } from "storyScript/runtimeProperties";
 import { IUpdatable } from "storyScript/updatable";
-import { getPlural, getSingular } from "storyScript/utilities";
+import { getKeyPropertyNames, getPlural, getSingular } from "storyScript/utilities";
 
 const _runtimeProperties = [
     <string>RuntimeProperties.ActiveNode,
@@ -31,6 +31,10 @@ export function updateModifiedEntities(
 
     // Loop over the current entities to update the values on entities that changed.
     entities.forEach(entity => {
+        if (entity[RuntimeProperties.Deleted]) {
+            return;
+        }
+
         // Find the pristine entity to update from in case of a change.
         const pristinceCollection = pristineEntities[getPlural(entity.type)];
 
@@ -48,7 +52,7 @@ export function updateModifiedEntities(
             return;
         }
 
-        const update = shouldUpdate(entity, pristine);
+        const update = shouldUpdate(entity, pristine, parentEntity, pristineParentEntity);
         updateModifiedEntity(entity, pristine, pristineEntities, update, parentEntity, pristineParentEntity, entity.type);      
     });
 
@@ -56,6 +60,16 @@ export function updateModifiedEntities(
         console.log(getUpdateCollectionLogMessage(e, parentEntity, 'Removing', 'from'));
         entities.remove(e)
     });
+
+    // Move deleted entities to the deleted shadow array.
+    entities.filter(e => e[RuntimeProperties.Deleted]).forEach(e => {
+        const entityMatch = pristineEntities[e.type][e.id];
+        entities.delete(entityMatch);
+    });
+
+    if (!pristineProperty?.length) {
+        return;
+    }
 
     // Remove entities that are no longer on the pristine collection, but only when they were not added programmatically.
     entities.filter(c => !pristineProperty.find(p => p.id === c.id)).map(e => {
@@ -72,11 +86,6 @@ export function updateModifiedEntities(
     pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
         console.log(getUpdateCollectionLogMessage(p, parentEntity, 'Adding', 'to'));
         entities.push(p);
-    });
-
-    // Move deleted entities to the deleted shadow array.
-    entities.filter(e => e[RuntimeProperties.Deleted]).forEach(e => {
-        entities.delete(e);
     });
 }
 
@@ -110,6 +119,14 @@ export function updateModifiedEntity (
 
         // If the property currently exists on the entity but isn't part of the new definition, delete it now.
         if (updateValues && typeof pristineProperty === 'undefined') {
+
+            // If the current property is an array of items that are all marked as deleted, remove the deleted
+            // items but keep the aray.
+            if (Array.isArray(currentProperty) && currentProperty.all(e => e[RuntimeProperties.Deleted])) {
+                currentProperty.clear();
+                return;
+            }
+
             deleteRemovedProperty(p, currentProperty, entity)
             return;
         }
@@ -117,7 +134,7 @@ export function updateModifiedEntity (
         // Update the current property using the pristine property value. When dealing with an object, update
         // its property values recursively. When dealing with a collection of entity objects, update these recursively.
         if (isEntityArray(currentProperty, pristineProperty)) {
-            updateModifiedEntities(currentProperty, pristineEntities, pristineProperty, parentEntity, pristineParentEntity);
+            updateModifiedEntities(currentProperty, pristineEntities, pristineProperty, entity, pristineEntity);
             return;
         }
 
@@ -168,8 +185,14 @@ function addNewProperties(entity: IUpdatable, pristineEntity: IUpdatable, parent
     });
 }
 
-function shouldUpdate(entity: IUpdatable, pristine: any) {
-    return entity.buildTimeStamp < pristine.buildTimeStamp;
+function shouldUpdate(entity: IUpdatable, pristine: IUpdatable, parentEntity?: IUpdatable, pristineParent?: IUpdatable): boolean {
+    let update = entity.buildTimeStamp < pristine.buildTimeStamp;
+
+    if (!update && parentEntity) {
+        update = parentEntity.buildTimeStamp < pristineParent.buildTimeStamp;
+    }
+
+    return update;
 }
 
 function updateArray (
@@ -181,6 +204,7 @@ function updateArray (
         pristineParentEntity?: IUpdatable,
         parentProperty?: string
     ): void {
+
     const matchedItems = getMatchingItems(entity, pristineEntity);
     const newItems = getMissingItems(entity, pristineEntity).filter(e => !matchedItems.includes(e));
     let addedItems = getMissingItems(pristineEntity, entity);
@@ -193,6 +217,7 @@ function updateArray (
 
         if (i[RuntimeProperties.Deleted]) {
             entity.remove(currentValue);
+            return;
         }
 
         if (pristineValue !== undefined) {
@@ -280,7 +305,7 @@ function getUpdateValueLogMessage (name: string, value: any, target: IUpdatable 
     }
     
     if (typeof value === 'object' && value) {
-        const { first, second } = getPropertyNames(value);
+        const { first, second } = getKeyPropertyNames(value);
         value = first ?? second ?? Object.keys(value)[0];
     }
 
@@ -303,7 +328,7 @@ function isEntityArray(entities: IUpdatable[], pristineEntities: IUpdatable[]): 
 }
 
 function isEntity(entity: IUpdatable): boolean {
-    return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined' && entity.type !== 'trade';
+    return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
 }
 
 function getMatchingItems(current: any[], pristine: any[]): any[] {
@@ -324,29 +349,14 @@ function getMissingItems(current: any[], pristine: any[]): any[] {
 }
 
 function getItemName(item: any): string {
-    const { first, second } = getPropertyNames(item);
+    const { first, second } = getKeyPropertyNames(item);
     return item[first] ?? item[second] ?? Object.keys(item)[0] ?? 'unknown';
 }
 
 function getKeyProperties(current: any, pristine: any): { first: string, second: string } {
-    const { first: currentFirst, second: currentSecond } = getPropertyNames(current);
-    const { first: pristineFirst, second: pristineSecond } = getPropertyNames(pristine);
+    const { first: currentFirst, second: currentSecond } = getKeyPropertyNames(current);
+    const { first: pristineFirst, second: pristineSecond } = getKeyPropertyNames(pristine);
     return { first: currentFirst ?? pristineFirst, second: currentSecond ?? pristineSecond };
-}
-
-function getPropertyNames(item: any) {
-    if (typeof item === 'undefined') {
-        return {};
-    }
-
-    let firstKeyProperty = item.id !== undefined ? 'id' : item.name !== undefined ? 'name' : item.text !== undefined ? 'text' : item.tool !== undefined ? 'tool' : null;
-    const secondKeyProperty = item.target !== undefined ? 'target' : item.text !== undefined ? 'text' : item.combinationType !== undefined ? 'combinationType' : null;
-
-    if (!firstKeyProperty && !secondKeyProperty) {
-        firstKeyProperty = Object.keys(item)[0];
-    }
-
-    return { first: firstKeyProperty, second: secondKeyProperty };
 }
 
 function propertyMatch(first: any, second: any): boolean {
@@ -354,6 +364,7 @@ function propertyMatch(first: any, second: any): boolean {
         return false;
     }
 
+    // Todo: check this with record properties!
     const { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
 
     return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) 

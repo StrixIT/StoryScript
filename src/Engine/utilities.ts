@@ -24,6 +24,21 @@ export function getId(id: Function | string) {
     return actualId?.toLowerCase();
 }
 
+export function getKeyPropertyNames(item: any) {
+    if (typeof item === 'undefined') {
+        return {};
+    }
+
+    let firstKeyProperty = item.id !== undefined ? 'id' : item.name !== undefined ? 'name' : item.text !== undefined ? 'text' : item.tool !== undefined ? 'tool' : null;
+    const secondKeyProperty =  item.type !== undefined ? 'type' : item.target !== undefined ? 'target' : item.text !== undefined ? 'text' : item.combinationType !== undefined ? 'combinationType' : null;
+
+    if (!firstKeyProperty && !secondKeyProperty) {
+        firstKeyProperty = Object.keys(item)[0];
+    }
+
+    return { first: firstKeyProperty, second: secondKeyProperty };
+}
+
 export function getPlural(name: string): string {
     return name.endsWith('y') ? 
             name.substring(0, name.length - 1) + 'ies' 

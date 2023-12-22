@@ -192,7 +192,7 @@ export class LocationService implements ILocationService {
         if (game.currentLocation.trade?.length > 0) {
             game.currentLocation.trade.forEach(t => {
                 if (!game.currentLocation.actions.find(a => a.actionType === ActionType.Trade && a.id === t.id)) {
-                    game.currentLocation.actions.push({
+                    game.currentLocation.actions.add({
                         id: t.id,
                         text: t.name,
                         actionType: ActionType.Trade,

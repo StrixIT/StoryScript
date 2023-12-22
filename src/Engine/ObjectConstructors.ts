@@ -170,6 +170,8 @@ export function initCollection(entity: any, property: string) {
 
             if (e.id) {
                 registerEntity(e);
+                _registeredEntities[e.type] ??= {};
+                _registeredEntities[e.type][e.id] = e;
             }
         });
 
