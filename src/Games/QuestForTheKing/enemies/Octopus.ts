@@ -9,7 +9,7 @@ export function Octopus() {
         reward: 3,
         activeDay: true,
         onDefeat: (game: IGame) => {
-            game.currentLocation.actions.length = 0;
+            game.currentLocation.actions.clear();
         }
     });
 }

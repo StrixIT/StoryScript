@@ -122,8 +122,8 @@ export class CharacterService implements ICharacterService {
             return false;
         }
 
-        this._game.character.items.push(item);
-        this._game.currentLocation.items.remove(item);
+        this._game.character.items.add(item);
+        this._game.currentLocation.items.delete(item);
         return true;
     }
 
@@ -199,8 +199,8 @@ export class CharacterService implements ICharacterService {
 
         if (drop)
         {
-            this._game.character.items.remove(item);
-            this._game.currentLocation.items.push(item);
+            this._game.character.items.delete(item);
+            this._game.currentLocation.items.add(item);
         }
     }
 

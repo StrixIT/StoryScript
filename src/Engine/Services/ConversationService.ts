@@ -387,8 +387,8 @@ export class ConversationService implements IConversationService {
 
             if (!quest.started) {
                 quest.issuedBy = person.id;
-                this._game.character.quests.push(quest);
-                person.quests.remove(quest);
+                this._game.character.quests.add(quest);
+                person.quests.delete(quest);
                 quest.progress = quest.progress || {};
 
                 if (quest.start) {

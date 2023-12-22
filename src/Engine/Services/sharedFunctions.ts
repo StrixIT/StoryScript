@@ -51,7 +51,7 @@ export function checkAutoplay(dataService: IDataService, value: string) {
 }
 
 export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem) {
-    character.items.remove(item);
+    character.items.delete(item);
 
     if (character.equipment) {
         for (var n in character.equipment) {

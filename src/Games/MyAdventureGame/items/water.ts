@@ -15,9 +15,9 @@ export function Water() {
                     combinationType: Constants.USE,
                     tool: Herbs,
                     match: (game, target, tool): string => {
-                        game.character.items.remove(Water);
-                        game.character.items.remove(Herbs);
-                        game.character.items.push(HealingPotion);
+                        game.character.items.delete(Water);
+                        game.character.items.delete(Herbs);
+                        game.character.items.add(HealingPotion);
                         return `You cut the herbs into small pieces and add them to the water.
                                 This potion should help to heal wounds.`;
                     }

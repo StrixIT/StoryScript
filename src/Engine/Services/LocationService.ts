@@ -248,7 +248,7 @@ export class LocationService implements ILocationService {
             const result = e[key](game);
 
             if (!result) {
-                location[eventProperty].remove(e);
+                location[eventProperty].delete(e);
             }
         });
     }

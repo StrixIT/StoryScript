@@ -48,8 +48,8 @@ export class TradeService implements ITradeService {
             return false;
         }
 
-        this._game.character.items.push(item);
-        trade.buy.items.remove(item);
+        this._game.character.items.add(item);
+        trade.buy.items.delete(item);
 
         if (trade.onBuy) {
             trade.onBuy(this._game, item);
@@ -63,9 +63,9 @@ export class TradeService implements ITradeService {
             return false;
         };
 
-        this._game.character.items.remove(item);
-        trade.sell.items.remove(item);
-        trade.buy.items.push(item);
+        this._game.character.items.delete(item);
+        trade.sell.items.delete(item);
+        trade.buy.items.add(item);
 
         if (trade.onSell) {
             trade.onSell(this._game, item);

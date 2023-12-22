@@ -39,8 +39,8 @@ export function Octopus() {
                 actionType: ActionType.Check,
                 execute: (game: IGame) => {
                     // Remove the octopus and the attack action when chosing to sail past.
-                    game.currentLocation.enemies.length = 0;
-                    game.currentLocation.actions.length = 0;
+                    game.currentLocation.enemies.clear();
+                    game.currentLocation.actions.clear();
                     game.logToLocationLog(game.currentLocation.descriptions['floatby']);
                 }
             }

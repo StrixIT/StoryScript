@@ -23,13 +23,13 @@ export function Treestump() {
                     if (check) {
                         // If the player resists the music, allow him to catch the Satyr
                         game.logToLocationLog(game.currentLocation.descriptions['resistmusic']);
-                        game.currentLocation.actions.push({
+                        game.currentLocation.actions.add({
                             text: 'Intercept the strange man',
                             execute: (game: IGame) => {
                                 // Todo: what check to do?
                                 if (check) {
                                     game.logToLocationLog(game.currentLocation.descriptions['intercept']);
-                                    game.currentLocation.enemies.push(Satyr);
+                                    game.currentLocation.enemies.add(Satyr);
                                 }
                                 else {
                                     game.logToLocationLog(game.currentLocation.descriptions['failintercept']);

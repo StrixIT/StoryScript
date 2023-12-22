@@ -19,7 +19,7 @@ export function Mermaid() {
             {
                 text: 'Help the Mermaid',
                 execute: (game: IGame) => {
-                    game.character.items.push(Pearl());
+                    game.character.items.add(Pearl());
                     setCompleted(game, 'helpmermaid');
                 },
                 activeDay: true
@@ -27,8 +27,8 @@ export function Mermaid() {
             {
                 text: 'Give the Magic Flower to the Mermaid',
                 execute: (game: IGame) => {
-                    game.character.items.remove(Magicflower);
-                    game.character.items.push(Pearl());
+                    game.character.items.delete(Magicflower);
+                    game.character.items.add(Pearl());
                     setCompleted(game, 'giveflower');
                 },
                 activeNight: true
@@ -42,16 +42,17 @@ export function Mermaid() {
                 activeNight: true
             },
         ],
-        leaveEvents: [
+        leaveEvents: [{
+            'Leave':
             (game: IGame) => {
                 game.currentLocation.descriptionSelector = null;
-            }
+            }}
         ]
     });
 
     function setCompleted(game: IGame, descriptionSelector: string) {
         game.currentLocation.descriptionSelector = descriptionSelector;
-        game.currentLocation.actions.length = 0;
+        game.currentLocation.actions.clear();
         game.currentLocation.completedDay = true;
         game.currentLocation.completedNight = true;
     }

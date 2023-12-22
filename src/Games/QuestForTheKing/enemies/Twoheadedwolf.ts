@@ -10,7 +10,7 @@ export function Twoheadedwolf() {
         onAttack: (game: IGame) => {
             if (game.worldProperties.freedFaeries) {
                 game.logToLocationLog(game.currentLocation.descriptions['freedfaeries']);
-                game.currentLocation.enemies.length = 0;
+                game.currentLocation.enemies.clear();
             }
         }
     });

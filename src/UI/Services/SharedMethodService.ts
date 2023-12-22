@@ -71,8 +71,8 @@ export class SharedMethodService {
     startCombat = (person?: IPerson): void => {
         if (person) {
             // The person becomes an enemy when attacked!
-            this.game.currentLocation.persons.remove(person);
-            this.game.currentLocation.enemies.push(person);
+            this.game.currentLocation.persons.delete(person);
+            this.game.currentLocation.enemies.add(person);
         }
 
         this.game.combatLog = [];

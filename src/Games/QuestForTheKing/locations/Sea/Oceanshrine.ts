@@ -37,7 +37,7 @@ export function Oceanshrine() {
                     var isWizard = false; //game.character.class === Class.Wizard
 
                     if (isWizard) {
-                        game.currentLocation.actions.push({
+                        game.currentLocation.actions.add({
                             text: 'Search the altar',
                             actionType: ActionType.Check,
                             execute: (game: IGame) => {

@@ -12,7 +12,7 @@ export function Herbs() {
                 {
                     combinationType: Constants.TOUCH,
                     match: (game, target, tool): ICombinationMatchResult => {
-                        game.character.items.push(Herbs);
+                        game.character.items.add(Herbs);
                         return { 
                             text: 'You collect the herbs.', 
                             removeTarget: true 

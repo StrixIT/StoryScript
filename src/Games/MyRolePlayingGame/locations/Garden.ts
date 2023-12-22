@@ -27,7 +27,7 @@ export function Garden() {
                 text: 'Search the Shed',
                 execute: (game: IGame) => {
                     // Add a new destination.
-                    game.currentLocation.destinations.push({
+                    game.currentLocation.destinations.add({
                         name: 'Enter the basement',
                         target: Basement,
                         barrier: {

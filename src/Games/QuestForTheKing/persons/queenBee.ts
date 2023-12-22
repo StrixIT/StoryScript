@@ -25,8 +25,8 @@ export function QueenBee() {
             },
             actions: {
                 'giveflower': (game, person) => {
-                    game.character.items.push(Beesting);
-                    game.character.items.remove(Magicflower);
+                    game.character.items.add(Beesting);
+                    game.character.items.delete(Magicflower);
                 }
             }
         }
