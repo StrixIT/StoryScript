@@ -48,8 +48,8 @@ export class TradeService implements ITradeService {
             return false;
         }
 
-        this._game.character.items.add(item);
         trade.buy.items.delete(item);
+        this._game.character.items.add(item);
 
         if (trade.onBuy) {
             trade.onBuy(this._game, item);

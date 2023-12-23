@@ -128,21 +128,28 @@ export function addArrayExtensions() {
                 let existing = null;
 
                 if (withDeleted.length > 0) {
-                    let existing = withDeleted.indexOf(entity) > -1 ? entity : null;
+                    existing = withDeleted.indexOf(entity) > -1 ? entity : null;
 
-                    // Todo: what happens with two entities of the same type?
                     if (!existing) {
-                        existing = find(entity, withDeleted).sort((a, b) => a[RuntimeProperties.Deleted] ? a : b)[0];
+                        existing = find(entity, withDeleted).sort((a, b) => a[RuntimeProperties.Deleted] ? a : b);
+
+                        if (existing.length > 1) {
+                            // Todo: what happens with two entities of the same type?
+                            var test = 0;
+                        }
+
+                        existing = existing[0];
                     }
                 }
 
                 if (existing) {
-                    delete entity[RuntimeProperties.Deleted];
-                    return;
+                    const deletedItems = this[deletedCollection];
+                    deletedItems.splice(deletedItems.indexOf(existing), 1);
+                } else {
+                    entity[RuntimeProperties.Added] = true;
                 }
 
-                entity[RuntimeProperties.Added] = true;
-                this.push(entity);
+                Array.prototype.push.call(this, entity);
             }
         });
     }
@@ -159,6 +166,7 @@ export function addArrayExtensions() {
                 let entry = find(item, this)[0];
                 let index = -1;
 
+                // Todo: is this ever the case with the current implementation of find?
                 if (typeof entry === 'undefined') {
                     index = this.indexOf(item);
 

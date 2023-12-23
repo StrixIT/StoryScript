@@ -122,8 +122,9 @@ export class CharacterService implements ICharacterService {
             return false;
         }
 
-        this._game.character.items.add(item);
         this._game.currentLocation.items.delete(item);
+        this._game.character.items.add(item);
+
         return true;
     }
 

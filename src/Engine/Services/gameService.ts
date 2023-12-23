@@ -387,8 +387,8 @@ export class GameService implements IGameService {
 
             items.forEach((item: IItem) => {
                 if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, enemy, item)) {
-                    this._game.currentLocation.items.add(item);
                     items.delete(item);
+                    this._game.currentLocation.items.add(item);
                 }
             });
         }
