@@ -1,6 +1,8 @@
 ﻿import { RuntimeProperties } from "./runtimeProperties";
 import { getId, getKeyPropertyNames } from "./utilities";
 
+const deletedCollection: string = '_deleted';
+
 if (Function.prototype.proxy === undefined) {
     // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
     Function.prototype.proxy = function (proxyFunction: Function, ...params) {
@@ -86,9 +88,27 @@ export function addArrayExtensions() {
     if ((<any>Array.prototype).withDeleted === undefined) {
         Object.defineProperty(Array.prototype, 'withDeleted', {
             enumerable: false,
-            value: function (id: any) {
-                if (this['_deleted']) {
-                    return [...this, ...this['_deleted']];
+            value: function () {
+                if (this[deletedCollection]) {
+                    return [...this, ...this[deletedCollection]];
+                }
+
+                return this;
+            }
+        });
+    }
+
+    if ((<any>Array.prototype).removeDeleted === undefined) {
+        Object.defineProperty(Array.prototype, 'removeDeleted', {
+            enumerable: false,
+            value: function () {
+                const deleted = this.filter(e => e[RuntimeProperties.Deleted]);
+
+                if (deleted.length > 0) {
+                    deleted.forEach(d =>{
+                        const index = this.indexOf(d);
+                        Array.prototype.splice.call(this, index, 1);
+                    });
                 }
 
                 return this;
@@ -175,8 +195,8 @@ export function addArrayExtensions() {
                         second ? { [second]: item[second] } : 
                         { [Object.keys(item)[0]]: 'recordKey' }
 
-                    collection['_deleted'] = collection['_deleted'] || [];
-                    collection['_deleted'].push({ ...keyProps, [RuntimeProperties.Deleted]: true });
+                    collection[deletedCollection] = collection[deletedCollection] || [];
+                    collection[deletedCollection].push({ ...keyProps, [RuntimeProperties.Deleted]: true });
                 }
             }
         });

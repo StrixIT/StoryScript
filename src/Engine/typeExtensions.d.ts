@@ -4,7 +4,7 @@ interface Function {
     isProxy: boolean;
 }
 
-// These are needed to create collection mocks in testing.
+// These are needed to let TypeScript recognize the new methods defined.
 interface Array<T> {
     get?(id?: string | ((...params: any) => T) | T): T;
     add?(id?: string | ((...params: any) => T) | T): T;
@@ -12,6 +12,8 @@ interface Array<T> {
     delete?(id: string | ((...params: any) => T) | T): void;
     all(id: Function): T[];
     clear(): void;
+    withDeleted(): T[];
+    removeDeleted(): void;
 }
 
 // This is needed to be able to import .html files. Do not remove this.

@@ -192,7 +192,7 @@ export class LocationService implements ILocationService {
         if (game.currentLocation.trade?.length > 0) {
             game.currentLocation.trade.forEach(t => {
                 if (!game.currentLocation.actions.find(a => a.actionType === ActionType.Trade && a.id === t.id)) {
-                    game.currentLocation.actions.add({
+                    game.currentLocation.actions.push({
                         id: t.id,
                         text: t.name,
                         actionType: ActionType.Trade,
@@ -241,7 +241,7 @@ export class LocationService implements ILocationService {
         // Keep a reference to the location being processed. When the location is changed in the
         // event, we want to still update the events in the originating location.
         const location = game.currentLocation;
-        const events = location[eventProperty];
+        const events = [...location[eventProperty]];
 
         events.forEach((e: Record<string, (game: IGame) => void | boolean>) => {
             const key = Object.keys(e)[0];

@@ -160,11 +160,6 @@ function addNewProperties(entity: IUpdatable, pristineEntity: IUpdatable, parent
     const newPropertyNames = Object.keys(pristineEntity).filter(p => propertyNames.indexOf(p) === -1);
 
     newPropertyNames.forEach(p => {
-        // Todo: this should never be called. Remove it and throw an error when it is.
-        if (Array.isArray(entity)) {
-            throw new Error('This should never be called!');
-        }
-        
         const pristineValue = pristineEntity[p];
 
         if (typeof pristineValue === 'undefined') {
@@ -208,14 +203,14 @@ function updateArray (
         const pristineValue: any = getMatchingItems(pristineEntity, [i])[0];
 
         if (i[RuntimeProperties.Deleted]) {
-            entity.remove(currentValue);
+            entity.delete(currentValue);
             return;
         }
 
         if (pristineValue !== undefined) {
-            // Todo: don't log when not updating!
-            //logUpdateContent(currentValue, pristineValue, parentProperty, parentEntity);
             updateModifiedEntity(currentValue, pristineValue, pristineEntities, updateValues, parentEntity, pristineParentEntity, parentProperty);
+        } else {
+            removeDeletedEntries(currentValue);
         }
     }); 
 
@@ -283,21 +278,6 @@ function logUpdateCollection(itemsToDelete: any[], parentProperty: string, paren
     });
 }
 
-function logUpdateContent(currentValue: any, pristineValue: any, parentProperty: string, parentEntity: IUpdatable) {
-    const { first, second } = getKeyProperties(currentValue, pristineValue);
-    const firstCurrentValue = getValue(currentValue[first]);
-    const secondCurrentValue = getValue(currentValue[second]);
-    const firstPristineValue = getValue(pristineValue[first]);
-    const secondPristineValue = getValue(pristineValue[second]);
-
-    if (firstCurrentValue !== firstPristineValue) {
-        console.log(getUpdateValueLogMessage(first, firstPristineValue, parentProperty, 'Updating', 'on', parentEntity));
-    }
-    if (secondCurrentValue !== secondPristineValue) {
-        console.log(getUpdateValueLogMessage(second, secondPristineValue, parentProperty, 'Updating', 'on', parentEntity));
-    }
-}
-
 function getUpdateValueLogMessage (name: string, value: any, target: IUpdatable | string, prefix: string, join: string, parent?: IUpdatable) {
     if (Array.isArray(value)) {
         value = `array of ${name}`;
@@ -363,7 +343,6 @@ function propertyMatch(first: any, second: any): boolean {
         return false;
     }
 
-    // Todo: check this with record properties!
     let { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
 
     let match = (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) ||
@@ -373,6 +352,7 @@ function propertyMatch(first: any, second: any): boolean {
         return true;
     }
 
+    // This is to match deleted record entries.
     firstProperty = Object.keys(first)[0];
     secondProperty = Object.keys(second)[0];
     const isRecord = first[firstProperty] === 'recordKey' || second[secondProperty] === 'recordKey'; 
@@ -382,4 +362,26 @@ function propertyMatch(first: any, second: any): boolean {
 
 function getValue(value: any): string {
     return typeof value === 'function' ? value.name.toLowerCase() : value;
+}
+
+function removeDeletedEntries(item: any) {
+    if (typeof item === undefined) {
+        return;
+    }
+
+    const properties = Object.keys(item);
+
+    properties.forEach(p => {
+        const value = item[p];
+
+        if (Array.isArray(value)) {
+            value.removeDeleted();
+
+            value.forEach(e => {
+                removeDeletedEntries(e);
+            })
+        } else if (typeof value === 'object') {
+            removeDeletedEntries(value);
+        }
+    });
 }

@@ -292,8 +292,7 @@ export class GameService implements IGameService {
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         action.execute(this._game, barrier, destination);
-        var actionIndex = barrier.actions.indexOf(action);
-        barrier.actions.splice(actionIndex, 1);
+        barrier.actions.delete(action);
         this.saveGame();
     }
 
@@ -384,7 +383,7 @@ export class GameService implements IGameService {
 
     private enemyDefeated = (enemy: IEnemy): void => {
         if (enemy.items) {
-            const items = enemy.items;
+            const items = [...enemy.items];
 
             items.forEach((item: IItem) => {
                 if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, enemy, item)) {
