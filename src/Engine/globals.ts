@@ -1,5 +1,5 @@
 ﻿import { RuntimeProperties } from "./runtimeProperties";
-import { getId, getKeyPropertyNames } from "./utilities";
+import { getId, getKeyPropertyNames, propertyMatch } from "./utilities";
 
 const deletedCollection: string = '_deleted';
 
@@ -249,7 +249,13 @@ export function compareString(left: string, right: string): boolean {
 
 function find(id: any, array: any[]): any[] {
     if (typeof id === 'object') {
-        return Array.prototype.filter.call(array, (x: any) => x === id );
+        let result = Array.prototype.filter.call(array, (x: any) => x === id );
+
+        if (result.length === 0) {
+            result = Array.prototype.filter.call(array, p => propertyMatch(id, p));
+        }
+
+        return result;
     }
 
     id = getId(id);

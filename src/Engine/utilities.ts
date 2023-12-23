@@ -35,6 +35,41 @@ export function getKeyPropertyNames(item: any) {
     return { first: firstKeyProperty, second: secondKeyProperty };
 }
 
+export function propertyMatch(first: any, second: any): boolean {
+    if (typeof first === 'undefined' || typeof second === 'undefined') {
+        return false;
+    }
+
+    let { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
+
+    if (firstProperty && secondProperty) {
+        return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty]))
+        && (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
+    }
+
+    if (firstProperty && secondProperty) {
+        return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) ||
+        (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
+    }
+
+    // This is to match deleted record entries.
+    firstProperty = Object.keys(first)[0];
+    secondProperty = Object.keys(second)[0];
+    const isRecord = first[firstProperty] === 'recordKey' || second[secondProperty] === 'recordKey'; 
+
+    return isRecord ? Object.keys(first)[0] === Object.keys(second)[0] : false;
+}
+
+function getKeyProperties(current: any, pristine: any): { first: string, second: string } {
+    const { first: currentFirst, second: currentSecond } = getKeyPropertyNames(current);
+    const { first: pristineFirst, second: pristineSecond } = getKeyPropertyNames(pristine);
+    return { first: currentFirst ?? pristineFirst, second: currentSecond ?? pristineSecond };
+}
+
+export function getValue(value: any): string {
+    return typeof value === 'function' ? value.name.toLowerCase() : value;
+}
+
 export function getPlural(name: string): string {
     return name.endsWith('y') ? 
             name.substring(0, name.length - 1) + 'ies' 

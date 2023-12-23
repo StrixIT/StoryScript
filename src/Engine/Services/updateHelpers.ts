@@ -1,6 +1,6 @@
 import { RuntimeProperties } from "storyScript/runtimeProperties";
 import { IUpdatable } from "storyScript/updatable";
-import { getKeyPropertyNames, getPlural, getSingular } from "storyScript/utilities";
+import { getKeyPropertyNames, getPlural, getSingular, getValue, propertyMatch } from "storyScript/utilities";
 
 const _runtimeProperties = [
     <string>RuntimeProperties.ActiveNode,
@@ -119,7 +119,7 @@ export function updateModifiedEntity (
 
         // If the property currently exists on the entity but isn't part of the new definition, delete it now.
         if (updateValues && typeof pristineProperty === 'undefined') {
-            deleteRemovedProperty(p, currentProperty, entity)
+            deleteRemovedProperty(p, currentProperty, entity, parentEntity, parentProperty)
             return;
         }
 
@@ -226,7 +226,7 @@ function updateArray (
     });
 }
 
-function deleteRemovedProperty (propertyName: string, currentProperty: any, entity: any) {
+function deleteRemovedProperty (propertyName: string, currentProperty: any, entity: any, parentEntity: any, parentProperty: string) {
     if (typeof currentProperty === 'undefined') {
         return;
     }
@@ -242,7 +242,7 @@ function deleteRemovedProperty (propertyName: string, currentProperty: any, enti
         return;
     }
 
-    console.log(`Removing ${propertyName} (value: ${entity[propertyName]}) from ${entity.type} ${entity.id}.`);
+    logPropertyChange(entity, parentProperty, undefined, propertyName, parentEntity, 'Removing', 'from');
     delete entity[propertyName];
 }
 
@@ -257,13 +257,25 @@ function updatePropertyValue(propertyName: string, entity: any, pristineProperty
         return;
     }
 
+    logPropertyChange(entity, parentProperty, pristineValue, propertyName, parentEntity, 'Updating', 'on');
+    entity[propertyName] = pristineValue;
+}
+
+function logPropertyChange(
+    entity: any, 
+    parentProperty: any, 
+    pristineValue: string, 
+    propertyName: string, 
+    parentEntity: { type: string; id: string; },
+    prefix: string,
+    join: string
+) {
     const parentMessage = entity.type ? '' : `${parentProperty} `;
-    const messageValue = pristineValue; 
-    const baseMessage = `Updating ${parentMessage}${propertyName} (value: ${messageValue}) on `;
-    const messageExtension = entity.type ? `${entity.type} ${entity.id}` : `${parentEntity?.type} ${parentEntity?.id}`
+    const messageValue = pristineValue;
+    const baseMessage = `${prefix} ${parentMessage}${propertyName} (value: ${messageValue}) ${join} `;
+    const messageExtension = entity.type ? `${entity.type} ${entity.id}` : `${parentEntity?.type} ${parentEntity?.id}`;
 
     console.log(baseMessage + messageExtension);
-    entity[propertyName] = pristineValue;
 }
 
 function logUpdateCollection(itemsToDelete: any[], parentProperty: string, parentEntity: IUpdatable, newItems: any[]) {
@@ -330,38 +342,6 @@ function getMissingItems(current: any[], pristine: any[]): any[] {
 function getItemName(item: any): string {
     const { first, second } = getKeyPropertyNames(item);
     return item[first] ?? item[second] ?? Object.keys(item)[0] ?? 'unknown';
-}
-
-function getKeyProperties(current: any, pristine: any): { first: string, second: string } {
-    const { first: currentFirst, second: currentSecond } = getKeyPropertyNames(current);
-    const { first: pristineFirst, second: pristineSecond } = getKeyPropertyNames(pristine);
-    return { first: currentFirst ?? pristineFirst, second: currentSecond ?? pristineSecond };
-}
-
-function propertyMatch(first: any, second: any): boolean {
-    if (typeof first === 'undefined' || typeof second === 'undefined') {
-        return false;
-    }
-
-    let { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
-
-    let match = (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) ||
-                (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
-
-    if (match) {
-        return true;
-    }
-
-    // This is to match deleted record entries.
-    firstProperty = Object.keys(first)[0];
-    secondProperty = Object.keys(second)[0];
-    const isRecord = first[firstProperty] === 'recordKey' || second[secondProperty] === 'recordKey'; 
-
-    return isRecord ? Object.keys(first)[0] === Object.keys(second)[0] : false;
-}
-
-function getValue(value: any): string {
-    return typeof value === 'function' ? value.name.toLowerCase() : value;
 }
 
 function removeDeletedEntries(item: any) {
