@@ -235,10 +235,9 @@ function deleteRemovedProperty (propertyName: string, currentProperty: any, enti
         return;
     }
 
-    // If the current property is an array of items that are all marked as deleted, remove the deleted
-    // items but keep the aray.
-    if (Array.isArray(currentProperty) && currentProperty.all(e => e[RuntimeProperties.Deleted])) {
-        currentProperty.clear();
+    // If the current property is an array of items, only remove the deleted items.
+    if (Array.isArray(currentProperty)) {
+        currentProperty.removeDeleted();
         return;
     }
 

@@ -142,9 +142,13 @@ export function addArrayExtensions() {
                     }
                 }
 
+                // If an existing delete record is found, the item was originally removed from this array.
+                // Remove the deleted record and the added flag so the original situation is restored.
+                // Otherwise, add the added flag.
                 if (existing) {
                     const deletedItems = this[deletedCollection];
                     deletedItems.splice(deletedItems.indexOf(existing), 1);
+                    delete entity[RuntimeProperties.Added];
                 } else {
                     entity[RuntimeProperties.Added] = true;
                 }
@@ -195,7 +199,10 @@ export function addArrayExtensions() {
             value: function (item: any) {
                 const collection = this;
 
-                if (collection.remove(item)) {
+                // Only add a deletion record when the item is removed from the array and the
+                // item does not have the 'added' flag. This means the item is originally from
+                // this array.
+                if (collection.remove(item) && !item[RuntimeProperties.Added]) {
                     const { first, second } = getKeyPropertyNames(item);
                     const keyProps = 
                         first && second ? { [first]: item[first], [second]: item[second] } :

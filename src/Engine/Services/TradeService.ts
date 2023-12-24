@@ -102,8 +102,9 @@ export class TradeService implements ITradeService {
             trader.buy.items = [];
         }
 
+        // Use add so the items added for the playet to buy are tracked on edit updates.
         trader.buy.items.length = 0;
-        itemsForSale.forEach(i => trader.buy.items.push(i));
+        itemsForSale.forEach(i => trader.buy.items.add(i));
 
         if (!trader.sell.items) {
             trader.sell.items = [];
