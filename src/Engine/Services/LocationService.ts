@@ -180,6 +180,7 @@ export class LocationService implements ILocationService {
         var selector = location.descriptionSelector;
 
         Object.defineProperty(location, 'descriptionSelector', {
+            enumerable: true,
             get: () => selector,
             set: (value) => {
                 selector = value;
@@ -245,10 +246,13 @@ export class LocationService implements ILocationService {
 
         events.forEach((e: Record<string, (game: IGame) => void | boolean>) => {
             const key = Object.keys(e)[0];
-            const result = e[key](game);
 
-            if (!result) {
-                location[eventProperty].delete(e);
+            if (key) {
+                const result = e[key](game);
+
+                if (!result) {
+                    location[eventProperty].delete(e);
+                }
             }
         });
     }

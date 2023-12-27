@@ -20,23 +20,23 @@ export class HelperService implements IHelpers {
     getEnemy = (selector: string): IEnemy => this.find<IEnemy>(selector, 'enemies', this._game.definitions);
 
     rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {
-        var sides = <number>compositeOrSides;
+        let sides = 0;
 
         if (typeof compositeOrSides !== 'number') {
-            var splitResult = compositeOrSides.split(/d/i);
+            const dieResult = compositeOrSides.split(/d/i).map(e => e.trim());
+            const bonusResult = dieResult[1]?.split(/[+-]/i).map(e => e.trim());
 
-            if (splitResult.length === 1) {
-                sides = parseInt(splitResult[0]);
+            if (dieResult.length === 1) {
+                // Fixed damage, e.g. 6.
+                sides = parseInt(dieResult[0]);
             }
             else {
-                //'xdy+/-z'
-                var positiveModifier = compositeOrSides.indexOf('+') > -1;
-                dieNumber = parseInt(splitResult[0]);
-                splitResult = (positiveModifier ? splitResult[1].split('+') : splitResult[1].split('-'));
-                splitResult.forEach(e => e.trim());
-                sides = parseInt(splitResult[0]);
-                bonus = parseInt(splitResult[1]);
-                bonus = isNaN(bonus) ? 0 : positiveModifier ? bonus : bonus * -1;
+                // Random damage, 'XdY+/-Z'
+                dieNumber = parseInt(dieResult[0]);
+                sides = parseInt(bonusResult[0]);
+                bonus = typeof bonusResult[1] === undefined ? 0 : parseInt(bonusResult[1]);
+                const modifier = compositeOrSides.match(/[+-]/i);
+                bonus = bonus > 0 ? modifier && modifier[0] === '+' ? bonus : bonus * -1 : 0;
             }
         }
 

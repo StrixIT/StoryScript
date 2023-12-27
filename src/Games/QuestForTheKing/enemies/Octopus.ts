@@ -5,7 +5,7 @@ export function Octopus() {
     return Enemy({
         name: 'Giant Octopus',
         hitpoints: 20,
-        attack: '1d6',
+        damage: '1d6',
         reward: 3,
         activeDay: true,
         onDefeat: (game: IGame) => {

@@ -76,7 +76,7 @@ describe("HelperService", function() {
         expect(result).toBeLessThanOrEqual(35);
     });
 
-    it("should return a number between 7 and thirty-five using rollDice with a string of 4d12-2", function() {
+    it("should return a number between 7 and fourthy-six using rollDice with a string of 4d12-2", function() {
         const { service } = getService();
         var result = service.rollDice('4d12-2');
         expect(result).toBeGreaterThanOrEqual(2);

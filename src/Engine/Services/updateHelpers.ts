@@ -1,5 +1,5 @@
+import { IUpdatable } from "storyScript/Interfaces/updatable";
 import { RuntimeProperties } from "storyScript/runtimeProperties";
-import { IUpdatable } from "storyScript/updatable";
 import { getKeyPropertyNames, getPlural, getSingular, getValue, propertyMatch } from "storyScript/utilities";
 
 const _runtimeProperties = [
@@ -110,7 +110,7 @@ export function updateModifiedEntity (
     const propertyNames = Object.keys(entity);
 
     propertyNames.forEach(p => {
-        if (p === 'buildTimeStamp') {
+        if (p === RuntimeProperties.BuildTimeStamp) {
             return;
         }
 
@@ -147,8 +147,8 @@ export function updateModifiedEntity (
     addNewProperties(entity, pristineEntity, parentEntity, pristineParentEntity, propertyNames, updateValues);
 
     // Update the entity build stamp now, to indicate the entity is back in sync with the most recent version.
-    if (entity.buildTimeStamp) {
-        entity.buildTimeStamp = pristineEntity.buildTimeStamp;
+    if (entity[RuntimeProperties.BuildTimeStamp]) {
+        entity[RuntimeProperties.BuildTimeStamp] = pristineEntity[RuntimeProperties.BuildTimeStamp];
     }
 }
 
@@ -173,10 +173,10 @@ function addNewProperties(entity: IUpdatable, pristineEntity: IUpdatable, parent
 }
 
 function shouldUpdate(entity: IUpdatable, pristine: IUpdatable, parentEntity?: IUpdatable, pristineParent?: IUpdatable): boolean {
-    let update = entity.buildTimeStamp < pristine.buildTimeStamp;
+    let update = entity[RuntimeProperties.BuildTimeStamp] < pristine[RuntimeProperties.BuildTimeStamp];
 
     if (!update && parentEntity) {
-        update = parentEntity.buildTimeStamp < pristineParent.buildTimeStamp;
+        update = parentEntity[RuntimeProperties.BuildTimeStamp] < pristineParent[RuntimeProperties.BuildTimeStamp];
     }
 
     return update;

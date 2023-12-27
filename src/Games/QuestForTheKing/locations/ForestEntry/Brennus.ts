@@ -1,7 +1,6 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Brennus.html';
 import { Brennus as BrennusEnemy } from '../../enemies/Brennus';
-import { BrennusApproach } from './BrennusApproach';
 import { Start } from './start';
 
 export function Brennus() {
@@ -10,20 +9,9 @@ export function Brennus() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Start,
-                activeDay: true
-            },
-            {
-                name: 'Approach the Tent',
-                target: BrennusApproach,
-                activeNight: true
-            },
-            {
-                name: 'Leave',
-                target: Start,
-                activeNight: true               
-            },
+                name: 'To the Forest Entry',
+                target: Start
+            }
         ],
         enemies: [
             BrennusEnemy()  
@@ -37,6 +25,16 @@ export function Brennus() {
                     }
                 }
             }
+        ],
+        actions: [
+            {
+                text: 'Approach the Tent',
+                execute: (game: IGame) => {
+                    game.currentLocation.descriptionSelector = 'approach';
+                    game.currentLocation.enemies.map(e => e.inactive = false);
+                },
+                activeNight: true
+            },
         ]
     });
 }

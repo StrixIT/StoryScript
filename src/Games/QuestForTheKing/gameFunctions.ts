@@ -1,4 +1,4 @@
-﻿import { IGame, ICompiledLocation } from './types';
+﻿import { IGame, ICompiledLocation, Character } from './types';
 
 export function nightFall(game: IGame): boolean {
     // Todo: one text for night in all forest locations?
@@ -21,4 +21,8 @@ export function locationComplete(game: IGame, location: ICompiledLocation, compl
 
         return location.completedNight;
     }
+}
+
+export function heal(character: Character, amount: number) {
+    character.currentHitpoints = Math.min(character.hitpoints, character.currentHitpoints += amount);
 }

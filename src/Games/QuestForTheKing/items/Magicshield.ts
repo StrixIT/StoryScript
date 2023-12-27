@@ -1,16 +1,23 @@
-﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
+﻿import { EquipmentType, PlayState } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Magicshield.html';
+import { Item } from '../types';
 
 export function Magicshield() {
     return Item({
         name: 'Magic Shield Spell',
         description: description,
         damage: '2',
-        equipmentType: EquipmentType.LeftHand,
-        dayAvailable: 2,
-        arcane: true,
+        equipmentType: EquipmentType.Miscellaneous,
         value: 15,
-        itemClass: ClassType.Wizard
+        itemClass: ClassType.Wizard,
+        canDrop: false,
+        useInCombat: true,
+        canUse(game, item) {
+            return game.playState === PlayState.Combat;
+        },
+        use(game, item, target) {
+            game.character.spellDefence += 2;
+        },
     });
 }

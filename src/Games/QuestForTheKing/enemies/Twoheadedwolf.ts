@@ -5,7 +5,7 @@ export function Twoheadedwolf() {
     return Enemy({
         name: 'Two-Headed Wolf',
         hitpoints: 20,
-        attack: '1d8',
+        damage: '1d8',
         reward: 4,
         onAttack: (game: IGame) => {
             if (game.worldProperties.freedFaeries) {

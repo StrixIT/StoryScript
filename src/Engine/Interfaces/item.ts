@@ -43,6 +43,12 @@ export interface IItem extends IFeature {
     inactive?: boolean;
 
     /**
+     * When this is a flag set to true or has a function that returns true, the item cannot be dropped by the player. This is useful to
+     * have items that should not be dropped, such as an adventure map.
+     */
+    canDrop?: boolean | ((game: IGame, item: IItem) => boolean);
+
+    /**
      * When specified, this function will be executed when the item is equipped by the player.
      * @param item The item to be equipped
      * @param game The game object

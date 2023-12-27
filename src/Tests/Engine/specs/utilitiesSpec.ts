@@ -1,5 +1,5 @@
 import { IGame } from 'storyScript/Interfaces/storyScript';
-import { getPlural, getSingular, isEmpty, addHtmlSpaces, custom, equals, parseGameProperties } from 'storyScript/utilities';
+import { getPlural, getSingular, isEmpty, addHtmlSpaces, equals, parseGameProperties } from 'storyScript/utilities';
 
 describe("Utilities", function() {
 
@@ -68,26 +68,6 @@ describe("Utilities", function() {
         const result = equals({ id: 'test' }, Test);
 
         expect(result).toBeTruthy();
-    });
-
-    it("custom should override specified properties on base", function() {
-
-        var baseItem = () => {
-            return {
-                name: 'Test',
-                damage: 5,
-                speed: 3
-            }
-        };
-
-        var result = custom(baseItem, {
-            name: 'Override',
-            damage: 10
-        });
-
-        expect(result.name).toEqual('Override');
-        expect(result.damage).toEqual(10);
-        expect(result.speed).toEqual(3);
     });
 
     it("game property should be parsed in string", function () {

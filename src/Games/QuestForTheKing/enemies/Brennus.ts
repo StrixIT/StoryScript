@@ -1,10 +1,17 @@
 ﻿import { Enemy } from 'storyScript/Interfaces/storyScript';
+import { ClassType } from '../classType';
 
 export function Brennus() {
     return Enemy({
         name: 'Brennus',
-        hitpoints: 20,
-        attack: '1d8',
-        reward: 2
+        damage: '1d8',
+        defence: 3,
+        speed: 5,
+        hitpoints: 18,
+        reward: 5,
+        attackPriority: [
+            { [ClassType.Warrior]: [1,2,3,4] },
+            { [ClassType.Wizard]: [5,6] }
+        ]
     });
 }

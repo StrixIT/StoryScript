@@ -1,5 +1,5 @@
 ﻿import { IDefinitions } from './Interfaces/definitions';
-import { compareString } from './globals';
+import { compareString, recordKeyPropertyName } from './globals';
 import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
 import { StateList, StateListEntry } from './Interfaces/stateList';
 
@@ -55,7 +55,7 @@ export function propertyMatch(first: any, second: any): boolean {
     // This is to match deleted record entries.
     firstProperty = Object.keys(first)[0];
     secondProperty = Object.keys(second)[0];
-    const isRecord = first[firstProperty] === 'recordKey' || second[secondProperty] === 'recordKey'; 
+    const isRecord = first[firstProperty] === recordKeyPropertyName || second[secondProperty] === recordKeyPropertyName; 
 
     return isRecord ? Object.keys(first)[0] === Object.keys(second)[0] : false;
 }
@@ -142,11 +142,6 @@ export function randomList<T>(collection: T[] | ([() => T]), count: number, type
     }
 
     return results;
-}
-
-export function custom<T>(definition: () => T, customData: {}): T {
-    var instance = definition();
-    return extend(instance, customData);
 }
 
 export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {

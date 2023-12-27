@@ -130,6 +130,10 @@ export class CharacterService implements ICharacterService {
 
     canEquip = (item: IItem): boolean => item.equipmentType != EquipmentType.Miscellaneous;
 
+    canDrop = (item: IItem): boolean => typeof item.canDrop === 'function' ? 
+                                            item.canDrop(this._game, item) : typeof item.canDrop === 'undefined' ? 
+                                            true : item.canDrop;
+
     equipItem = (item: IItem): boolean => {
         var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
@@ -326,7 +330,7 @@ export class CharacterService implements ICharacterService {
     }
 
     private unequip = (type: string, currentItem?: IItem): boolean => {
-        var equippedItem = this._game.character.equipment[type];
+        var equippedItem = <IItem>this._game.character.equipment[type];
 
         if (equippedItem) {
             if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
@@ -354,7 +358,7 @@ export class CharacterService implements ICharacterService {
                 }
             }
 
-            if (equippedItem && equippedItem.equipmentType && !this._game.character.items.get(equippedItem)) {
+            if (equippedItem && equippedItem.equipmentType && this._game.character.items.indexOf(equippedItem) < 0) {
                 this._game.character.items.push(equippedItem);
             }
 

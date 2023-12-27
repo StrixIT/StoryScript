@@ -8,7 +8,7 @@ export function QueenBee() {
         name: 'Queen Bee',
         description: description,
         hitpoints: 10,
-        attack: '1d6',
+        damage: '1d6',
         reward: 5,
         items: [
             Beesting()

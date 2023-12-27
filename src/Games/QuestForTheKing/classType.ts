@@ -1,5 +1,5 @@
-﻿export enum ClassType {
-    Warrior,
-    Rogue,
-    Wizard
+﻿export const enum ClassType {
+    Warrior = 'Warrior',
+    Rogue = 'Rogue',
+    Wizard = 'Wizard'
 }

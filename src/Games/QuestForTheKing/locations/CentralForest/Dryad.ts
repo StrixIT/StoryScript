@@ -19,15 +19,18 @@ export function Dryad() {
             }           
         ],
         leaveEvents: [
-            (game: IGame) => {
-                if (game.currentLocation.descriptionSelector === 'return') {
-                    game.currentLocation.descriptionSelector = null;
-                    game.currentLocation.completedDay = true;
-                    game.currentLocation.completedNight = true;
-                    return false;
-                }
+            {
+                'LeaveDryad':
+                (game: IGame) => {
+                    if (game.currentLocation.descriptionSelector === 'return') {
+                        game.currentLocation.descriptionSelector = null;
+                        game.currentLocation.completedDay = true;
+                        game.currentLocation.completedNight = true;
+                        return false;
+                    }
 
-                return true;
+                    return true;
+                }
             }
         ]
     });

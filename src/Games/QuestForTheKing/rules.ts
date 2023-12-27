@@ -1,6 +1,7 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus } from 'storyScript/Interfaces/storyScript';
 import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction } from './types';
 import { CharacterClasses } from './characterClass';
+import { ClassType } from './classType';
 
 export function Rules(): IRules {
     return {
@@ -50,15 +51,15 @@ export function Rules(): IRules {
                                     entries: [
                                         {
                                             text: 'Rogue',
-                                            value: 'Rogue'
+                                            value: ClassType.Rogue
                                         },
                                         {
                                             text: 'Warrior',
-                                            value: 'Warrior'
+                                            value: ClassType.Warrior
                                         },
                                         {
                                             text: 'Wizard',
-                                            value: 'Wizard'
+                                            value: ClassType.Wizard
                                         }
                                     ]
                                 }
@@ -93,7 +94,7 @@ export function Rules(): IRules {
                 }
 
                 var weaponDamage = (leftHandWeapon ? game.helpers.rollDice(leftHandWeapon.damage) : 0) + (rightHandWeapon ? game.helpers.rollDice(rightHandWeapon.damage) : 0);
-                var totalDamage = weaponDamage + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
+                var totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(game.character, 'damageBonus') - (enemy.defence ?? 0));
                 var leftHandCombatText= game.character.equipment.leftHand ? game.character.equipment.leftHand.attackText : '';
                 var rightHandCombatText = game.character.equipment.rightHand ? game.character.equipment.rightHand.attackText : '';
                 var combatText = leftHandCombatText && rightHandCombatText && game.character.equipment.leftHand.id !== game.character.equipment.rightHand.id ? leftHandCombatText + '. ' + rightHandCombatText : leftHandCombatText || rightHandCombatText;
@@ -118,7 +119,7 @@ export function Rules(): IRules {
                 }
 
                 game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach(function (enemy: IEnemy) {
-                    var enemyDamage =game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
+                    var enemyDamage =game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
                     game.character.currentHitpoints -= enemyDamage;
                 });

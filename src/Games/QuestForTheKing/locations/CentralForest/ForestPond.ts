@@ -21,11 +21,14 @@ export function ForestPond() {
             Magicshield(),
         ],
         leaveEvents: [
-            (game: IGame) => {
-                var dryadLocation = game.locations.get(Dryad);
-                dryadLocation.descriptionSelector = 'return';
-                game.currentLocation.completedDay = true;
-                game.currentLocation.completedNight = true;
+            {
+                'LeavePond':
+                (game: IGame) => {
+                    var dryadLocation = game.locations.get(Dryad);
+                    dryadLocation.descriptionSelector = 'return';
+                    game.currentLocation.completedDay = true;
+                    game.currentLocation.completedNight = true;
+                }
             }
         ]
     });

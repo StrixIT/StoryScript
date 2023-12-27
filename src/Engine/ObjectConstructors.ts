@@ -25,6 +25,7 @@ let _currentEntityKey: string = null;
 
 // The dictionary containing all registered entity keys and their corresponding ids.
 let _registeredIds: Map<string, string> = new Map<string, string>();
+
 let _registeredDescriptions: Map<string, string> = new Map<string, string>();
 
 // The object to hold all game entity definitions.
@@ -170,8 +171,6 @@ export function initCollection(entity: any, property: string) {
 
             if (e.id) {
                 registerEntity(e);
-                _registeredEntities[e.type] ??= {};
-                _registeredEntities[e.type][e.id] = e;
             }
         });
 

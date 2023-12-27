@@ -39,6 +39,8 @@ export class BackpackComponent {
     showEquipment = (): boolean => this._sharedMethodService.showEquipment();
 
     canEquip = (item: IItem): boolean => this._characterService.canEquip(item);
+
+    canDrop = (item: IItem): boolean => this._characterService.canDrop(item);
     
     equipItem = (item: IItem): boolean => this._characterService.equipItem(item);
 

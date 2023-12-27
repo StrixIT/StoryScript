@@ -40,7 +40,8 @@ const addBuildDate = {
       var match = code.match(assetConstructorRegex);
 
       if (match) {
-        code = code.replace(match[0], `${match}\r\n\tbuildTimeStamp: ${Date.now()},`);
+        console.log(id);
+        code = code.replace(match[0], `${match}\r\n\tss_buildTimeStamp: ${Date.now()},`);
       }
 
     }

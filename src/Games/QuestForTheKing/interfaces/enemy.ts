@@ -7,8 +7,11 @@ export function Enemy(entity: IEnemy): IEnemy {
 
 export interface IEnemy extends IFeature, StoryScriptIEnemy {
     items?: ICollection<IItem>;
-    attack?: string;
+    damage?: string;
+    defence?: number;
+    speed?: number;
     reward?: number;
+    attackPriority?: Record<string, number[]>[];
     activeNight?: boolean;
     activeDay?: boolean;
 }

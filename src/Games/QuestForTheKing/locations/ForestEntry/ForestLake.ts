@@ -3,7 +3,7 @@ import description from './ForestLake.html';
 import { Bandit } from '../../enemies/Bandit';
 import { Ghost } from '../../enemies/Ghost';
 import { Goldnecklace } from '../../items/Goldnecklace';
-import { locationComplete } from '../../gameFunctions';
+import { heal, locationComplete } from '../../gameFunctions';
 import { Start } from './start';
 
 export function ForestLake() {
@@ -18,16 +18,26 @@ export function ForestLake() {
         ],
         enemies: [
             Bandit(),
-            Bandit(),
-            Ghost()
+            Bandit()
         ],
         items: [
             Goldnecklace()
         ],
+        enterEvents: [
+            {
+                'HealingWater':
+                (game: IGame) => {
+                    heal(game.character, 3);
+                }
+            }
+        ],
         leaveEvents: [
-            (game: IGame) => {
-                locationComplete(game, game.currentLocation, () => game.currentLocation.activeEnemies.length == 0, () => game.currentLocation.items.length == 0);
-                return true;
+            {
+                'Leave':
+                (game: IGame) => {
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.activeEnemies.length == 0, () => game.currentLocation.items.length == 0);
+                    return true;
+                }
             }
         ]
     });
