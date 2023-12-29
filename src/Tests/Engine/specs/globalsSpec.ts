@@ -12,7 +12,7 @@ describe("Utilities", function() {
         function MyFunction() {
         };
 
-        var result = MyFunction.name;
+        const result = MyFunction.name;
         expect(result).toEqual('MyFunction');
     });
 
@@ -24,12 +24,12 @@ describe("Utilities", function() {
         };
 
         function AddOn(myScope, myFunction, x, y, z) {
-            var myFunctionResult = myFunction(x, y);
+            const myFunctionResult = myFunction(x, y);
             return myFunctionResult * z;
         }
 
         MyFunction = MyFunction.proxy(AddOn, 5);
-        var result = MyFunction(2, 6);
+        const result = MyFunction(2, 6);
 
         expect(result).toEqual(40);
         expect(MyFunction.proxy).toBeTruthy();
@@ -37,16 +37,16 @@ describe("Utilities", function() {
 
     it("Parsing null as a function should return null", function() {
         addFunctionExtensions();
-        var myFunction = parseFunction(null);
+        const myFunction = parseFunction(null);
         expect(myFunction).toBeNull();
     });
 
     it("Deserializing function should get working function", function() {
         addFunctionExtensions();
 
-        var functionString = 'function MyFunction(x, y) { return x + y; }';
-        var myFunction = parseFunction(functionString);
-        var result = myFunction(2, 3);
+        const functionString = 'function MyFunction(x, y) { return x + y; }';
+        const myFunction = parseFunction(functionString);
+        const result = myFunction(2, 3);
         
         expect(result).toEqual(5);
     });
@@ -54,26 +54,26 @@ describe("Utilities", function() {
     it("Deserializing a multiline function should get a working function", function() {
         addFunctionExtensions();
 
-        var functionString = `function MyFunction(x, y) { 
+        const functionString = `function MyFunction(x, y) { 
                                 return x + y; 
                             }`;
                             
-        var myFunction = parseFunction(functionString);
-        var result = myFunction(2, 3);
+        const myFunction = parseFunction(functionString);
+        const result = myFunction(2, 3);
         
         expect(result).toEqual(5);
     });
 
     it("Creating a hash for null should return 0", function() {
-        var result = createHash(null);
+        const result = createHash(null);
         expect(result).toBe(0);
     });
 
     it("Creating a function hash should get a unique hash for each function", function() {
         function FirstFunction(x, y) { return x + y; };
         function SecondFunction(x, y) { if (x === null && y === null) { return null; } else { return x > y; } };
-        var firstFunctionHash = createFunctionHash(FirstFunction);
-        var secondFunctionHash = createFunctionHash(SecondFunction);
+        const firstFunctionHash = createFunctionHash(FirstFunction);
+        const secondFunctionHash = createFunctionHash(SecondFunction);
 
         expect(firstFunctionHash).toEqual(-582951769);
         expect(secondFunctionHash).toEqual(389068928);
@@ -82,8 +82,8 @@ describe("Utilities", function() {
 
     it("should get an entity using the function name", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
-        var result = testArray.get(Journal);
+        const testArray = getTestArray();
+        const result = testArray.get(Journal);
 
         expect(result).not.toBeNull();
         expect(compareId(result.id, Journal)).toBeTruthy();
@@ -91,25 +91,24 @@ describe("Utilities", function() {
 
     it("should get an entity using an id string", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
-        var result = testArray.get(Journal.name);
+        const testArray = getTestArray();
+        const result = testArray.get(Journal.name);
 
         expect(result).not.toBeNull();
         expect(compareId(result.id, Journal)).toBeTruthy();
     });
 
-    it("should not get an entity when passing in a new object", function() {
+    it("should get an entity by type and id when passing in a new object", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
-        var result = testArray.get(Journal());
-
-        expect(result).toBeUndefined();
+        const testArray = getTestArray();
+        const result = testArray.get(Journal());
+        expect(compareId(result.id, Journal)).toBeTruthy();
     });
 
     it("should get the first entity in the array when no parameter is passed", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
-        var result = testArray.get();
+        const testArray = getTestArray();
+        const result = testArray.get();
 
         expect(result).not.toBeUndefined();
         expect(compareId(result.id, Sword)).toBeTruthy();
@@ -117,13 +116,13 @@ describe("Utilities", function() {
 
     it("should get an entity using its object reference", function() {
         addArrayExtensions();
-        var journal = Journal();
+        const journal = Journal();
 
-        var testArray = [
+        const testArray = [
             Sword(),
             journal
         ];
-        var result = testArray.get(journal);
+        const result = testArray.get(journal);
 
         expect(result).not.toBeUndefined();
         expect(result).toBe(journal);
@@ -131,19 +130,19 @@ describe("Utilities", function() {
 
     it("should get a destination matching a string id to the destination target", function() {
         addArrayExtensions();
-        var gardenDestination = {
+        const gardenDestination = {
             name: 'To the garden',
             target: 'Garden'
         };
 
-        var testArray = [
+        const testArray = [
             {
                 name: 'To the bedroom',
                 target: 'Bedroom'
             },
             gardenDestination
         ];
-        var result = testArray.get(gardenDestination.target);
+        const result = testArray.get(gardenDestination.target);
 
         expect(result).not.toBeUndefined();
         expect(result).toBe(gardenDestination);
@@ -153,7 +152,7 @@ describe("Utilities", function() {
         addArrayExtensions();
         const Garden = () => <ILocation>{};           
 
-        var testArray = [
+        const testArray = [
             {
                 name: 'To the bedroom',
                 target: 'Bedroom'
@@ -163,7 +162,7 @@ describe("Utilities", function() {
                 target: 'Garden'
             }
         ];
-        var result = testArray.get(<any>Garden);
+        const result = testArray.get(<any>Garden);
 
         expect(result).not.toBeUndefined();
         expect(compareId(result.target, Garden.name)).toBeTruthy();
@@ -172,16 +171,16 @@ describe("Utilities", function() {
     it("should get all entities in the array matching the id", function() {
         addArrayExtensions();
 
-        var itemOne = Sword();
+        const itemOne = Sword();
         itemOne.id = getId(Sword);
         const itemTwo = Sword();
         itemTwo.id = getId(Sword);
 
-        var testArray = [
+        const testArray = [
             itemOne,
             itemTwo
         ];;
-        var result = testArray.all(Sword);
+        const result = testArray.all(Sword);
 
         expect(result).not.toBeUndefined();
         expect(result.length).toBe(2);
@@ -191,7 +190,7 @@ describe("Utilities", function() {
 
     it("should not change anything when removing a non-existing item", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
+        const testArray = getTestArray();
         testArray.remove('');
 
         expect(testArray.length).toBe(2);
@@ -199,7 +198,7 @@ describe("Utilities", function() {
 
     it("should remove an entity using the function name", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
+        const testArray = getTestArray();
         testArray.remove(Journal);
 
         expect(testArray.length).toBe(1);
@@ -208,26 +207,26 @@ describe("Utilities", function() {
 
     it("should remove an entity using an id string", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
+        const testArray = getTestArray();
         testArray.remove(Journal.name);
 
         expect(testArray.length).toBe(1);
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
-    it("should not remove an entity when passing in a new object", function() {
+    it("should remove an entity when passing it in as a new object", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
+        const testArray = getTestArray();
         testArray.remove(Journal());
 
-        expect(testArray.length).toBe(2);
-        expect(compareId(testArray[1].id, Journal)).toBeTruthy();
+        expect(testArray.length).toBe(1);
+        expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
     it("should remove an entity using its object reference", function() {
         addArrayExtensions();
-        var testArray = getTestArray();
-        var journal = testArray[1];
+        const testArray = getTestArray();
+        const journal = testArray[1];
         expect(journal.id).toBe(Journal.name.toLowerCase());
         testArray.remove(journal);
 
@@ -237,12 +236,12 @@ describe("Utilities", function() {
 
     it("should remove a destination using the string id of the destination", function() {
         addArrayExtensions();
-        var gardenDestination = {
+        const gardenDestination = {
             name: 'To the garden',
             target: 'Garden'
         };
 
-        var testArray = [
+        const testArray = [
             {
                 name: 'To the bedroom',
                 target: 'Bedroom'
@@ -259,7 +258,7 @@ describe("Utilities", function() {
         addArrayExtensions();
         const Garden = () => <ILocation>{};  
 
-        var testArray = <ICollection<IDestination>>[
+        const testArray = <ICollection<IDestination>>[
             {
                 name: 'To the bedroom',
                 target: 'Bedroom'
@@ -303,6 +302,6 @@ function getTestArray() {
 }
 
 function compareId(id, func) {
-    var name = func.name || func;
+    const name = func.name || func;
     return id.toLowerCase() === name.toLowerCase();
 }

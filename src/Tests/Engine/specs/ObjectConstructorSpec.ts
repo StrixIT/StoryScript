@@ -1,12 +1,16 @@
-await import('../../../Games/MyRolePlayingGame/run');
 import { GetDefinitions, GetFunctions, DynamicEntity, FunctionCollection } from 'storyScript/ObjectConstructors';
 import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature, ICompiledLocation, IItem } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { RunGame } from '../../../Games/MyRolePlayingGame/run';
 
 describe("ObjectConstructors", function() {
 
+    beforeAll(() => {
+        RunGame();
+    });
+
     it("should get the game definitions", function() {
-        var result = <any>GetDefinitions();
+        const result = <any>GetDefinitions();
         expect(result).not.toEqual(null);
         expect(result.locations.length).toEqual(5);
         expect(result.items.length).toEqual(4);
@@ -17,7 +21,7 @@ describe("ObjectConstructors", function() {
     });
 
     it("should get the game functions", function() {
-        var result = <FunctionCollection>GetFunctions();
+        const result = <FunctionCollection>GetFunctions();
         expect(result).not.toEqual(null);
         expect(getLength(result.locations)).toEqual(8);
         expect(getLength(result.items)).toEqual(1);
@@ -28,37 +32,37 @@ describe("ObjectConstructors", function() {
         expect(result.enemies).toBeUndefined();
         expect(result.actions).toBeUndefined();
 
-        var locationFunctions = Object.keys(result.locations).sort().map(k => `${k}:${result.locations[k].hash}`);
+        const locationFunctions = Object.keys(result.locations).sort().map(k => `${k}:${result.locations[k].hash}`);
 
         expect(locationFunctions).toEqual([
             "bedroom|trade|0|buy|itemSelector:-757288170",
             "bedroom|trade|0|sell|itemSelector:-757288170",
             "bedroom|trade|0|sell|priceModifier:-1683809711",
             "dirtroad|combatActions|0|execute:-34161269",
-            "garden|actions|0|execute:492355190",
+            "garden|actions|0|execute:416420323",
             "garden|actions|1|execute:1867314870",
-            "garden|enterEvents|0:-521820139",
+            "garden|enterEvents|0|Squirrel:-1552061099",
             "start|descriptionSelector:1949117004"]);
     });
 
     it("should create the Start location", function() {
-        var definitions = GetDefinitions()
-        var definition = find(definitions.locations, 'Start');
-        var result = <ICompiledLocation>definition();
+        const definitions = GetDefinitions()
+        const definition = find(definitions.locations, 'Start');
+        const result = <ICompiledLocation>definition();
 
         expect(result).not.toEqual(null);
         expect(result.id).toEqual('start');
         expect((<any>result).type).toEqual('location');
 
-        var hashMatch = new RegExp(/function#location|start|descriptionSelector#[0-9]{9}/g).exec((<any>result.descriptionSelector).functionId).length;
+        const hashMatch = new RegExp(/function#location|start|descriptionSelector#[0-9]{9}/g).exec((<any>result.descriptionSelector).functionId).length;
 
         expect(hashMatch).toEqual(1);
     });
 
     it("should create a location with read-only properties", function() {
-        var definitions = GetDefinitions()
-        var definition = find(definitions.locations, 'Start');
-        var result = <ICompiledLocation>definition();
+        const definitions = GetDefinitions()
+        const definition = find(definitions.locations, 'Start');
+        const result = <ICompiledLocation>definition();
 
         expect(result.activeItems.length).toEqual(0);
 
@@ -71,10 +75,10 @@ describe("ObjectConstructors", function() {
         }).toThrow();
     });
 
-    it("should create a location with arrays that cannot be replaced and execute functions on push", function() {
-        var definitions = GetDefinitions()
-        var definition = find(definitions.locations, 'Start');
-        var result = definition();
+    it("should create a location with arrays that cannot be replaced and execute functions on add", function() {
+        const definitions = GetDefinitions()
+        const definition = find(definitions.locations, 'Start');
+        const result = definition();
 
         // Check that the items array cannot be replaced.
         expect(function() {
@@ -82,10 +86,10 @@ describe("ObjectConstructors", function() {
         }).toThrow();
 
         // Add an item definition to the items array, and check that the function was executed.
-        var swordDef = find(definitions.items, 'Sword');
-        result.items.push(swordDef);
-        var pushedItem = result.items[0];
-        expect(typeof pushedItem).toBe('object');
+        const swordDef = find(definitions.items, 'Sword');
+        result.items.add(swordDef);
+        const addedItem = result.items[0];
+        expect(typeof addedItem).toBe('object');
     });
 
     it("should set key id on destination barriers", function() {
@@ -117,20 +121,20 @@ describe("ObjectConstructors", function() {
             });
         };
         
-        var result = locationWithBarrier();
-        var key = result.destinations[0].barrier.key;
+        const result = locationWithBarrier();
+        const key = result.destinations[0].barrier.key;
         expect(typeof key).toBe('string');
         expect(key).toBe('key');
     });
 
     it("should correctly create a feature", function() {
-        var testFeature = () => {
+        const testFeature = () => {
             return <IFeature>{
                 name: 'Test feature'
             }
         }
 
-        var result = Feature(testFeature);
+        const result = Feature(testFeature);
         expect(result).not.toBeNull();
         expect(result.id).toBe('testfeature');
         expect((<any>result).type).toBe('feature');
@@ -141,27 +145,27 @@ describe("ObjectConstructors", function() {
 describe('ObjectFactory', function () {
     
     it("should return all services", function() {
-        var factory = ObjectFactory.GetInstance();
+        const factory = ObjectFactory.GetInstance();
 
         let characterService = factory.GetCharacterService();
         expect(characterService).not.toBeNull();
 
-        var combinationService = factory.GetCombinationService();
+        const combinationService = factory.GetCombinationService();
         expect(combinationService).not.toBeNull();
 
-        var conversationService = factory.GetConversationService();
+        const conversationService = factory.GetConversationService();
         expect(conversationService).not.toBeNull();
 
-        var gameService = factory.GetGameService();
+        const gameService = factory.GetGameService();
         expect(gameService).not.toBeNull();
 
-        var tradeService = factory.GetTradeService();
+        const tradeService = factory.GetTradeService();
         expect(tradeService).not.toBeNull();
 
-        var texts = factory.GetTexts();
+        const texts = factory.GetTexts();
         expect(texts).not.toBeNull();
 
-        var rules = factory.GetRules();
+        const rules = factory.GetRules();
         expect(rules).not.toBeNull();
     });
 })
