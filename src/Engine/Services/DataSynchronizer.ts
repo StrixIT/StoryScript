@@ -164,11 +164,6 @@ export class DataSynchronizer implements IDataSynchronizer {
     
         newPropertyNames.forEach(p => {
             const pristineValue = pristineEntity[p];
-    
-            if (typeof pristineValue === 'undefined') {
-                return;
-            }
-    
             const logValue = pristineValue?.id ?? pristineValue?.name ?? pristineValue;
             console.log(this.getUpdateValueLogMessage(p, logValue, entity, 'Adding', 'to', parentEntity));
             entity[p] = pristineValue;
@@ -244,7 +239,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             return;
         }
     
-        this.logPropertyChange(entity, parentProperty, undefined, propertyName, parentEntity, 'Removing', 'from');
+        this.logPropertyChange(entity, parentProperty, currentProperty, propertyName, parentEntity, 'Removing', 'from');
         delete entity[propertyName];
     }
     
@@ -273,14 +268,14 @@ export class DataSynchronizer implements IDataSynchronizer {
     private logPropertyChange = (
         entity: any, 
         parentProperty: any, 
-        pristineValue: string, 
+        logValue: string, 
         propertyName: string, 
         parentEntity: { type: string; id: string; },
         prefix: string,
         join: string
     ) => {
         const parentMessage = entity.type ? '' : `${parentProperty} `;
-        const messageValue = pristineValue;
+        const messageValue = logValue;
         const baseMessage = `${prefix} ${parentMessage}${propertyName} (value: ${messageValue}) ${join} `;
         const messageExtension = entity.type ? `${entity.type} ${entity.id}` : `${parentEntity?.type} ${parentEntity?.id}`;
     

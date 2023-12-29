@@ -16,6 +16,8 @@ import { IGameService } from './Interfaces/services//gameService';
 import { ITradeService } from './Interfaces/services/tradeService';
 import { IConversationService } from './Interfaces/services/conversationService';
 import { ICombinationService } from './Interfaces/services/combinationService';
+import { DataSerializer } from './Services/DataSerializer';
+import { DataSynchronizer } from './Services/DataSynchronizer';
 
 export class ObjectFactory {
     private _game: IGame = <IGame>{};
@@ -30,13 +32,17 @@ export class ObjectFactory {
 
     private static _instance: ObjectFactory;
 
-    constructor(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
+    constructor (
+        nameSpace: string, 
+        rules: IRules, 
+        texts: IInterfaceTexts
+    ) {
         this._texts = texts;
         this._rules = rules;
         this._game.definitions = GetDefinitions();
         const localStorageService = new LocalStorageService();
         const helperService = new HelperService(this._game);
-        const dataService = new DataService(localStorageService, nameSpace);
+        const dataService = new DataService(localStorageService, new DataSerializer(), new DataSynchronizer(), nameSpace);
         this._tradeService = new TradeService(this._game, this._texts);
         this._conversationService = new ConversationService(dataService, this._game);
         this._characterService = new CharacterService(this._game, this._rules);

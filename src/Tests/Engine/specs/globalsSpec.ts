@@ -3,6 +3,7 @@ import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
 import { getId } from 'storyScript/utilities';
+import { compareId } from '../helpers';
 
 describe("Utilities", function() {
 
@@ -299,9 +300,4 @@ function getTestArray() {
         sword,
         journal
     ];
-}
-
-function compareId(id, func) {
-    const name = func.name || func;
-    return id.toLowerCase() === name.toLowerCase();
 }

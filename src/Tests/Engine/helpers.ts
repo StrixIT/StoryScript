@@ -18,3 +18,8 @@ export function getStorageServiceMock() {
         }
     };
 }
+
+export function compareId(id, func) {
+    const name = func.name || func;
+    return id.toLowerCase() === name.toLowerCase();
+}

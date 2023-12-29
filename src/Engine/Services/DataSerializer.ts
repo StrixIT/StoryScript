@@ -67,13 +67,6 @@ export class DataSerializer implements IDataSerializer {
                 continue;
             }
     
-            if (key === RuntimeProperties.Description && loaded.id) {
-                var descriptionKey = `${loaded.type}_${loaded.id}`;
-                loaded[key] = descriptions.get(descriptionKey);
-                this.loadPictureFromDescription(loaded, key);
-                continue;
-            }
-    
             var value = loaded[key];
     
             if (value === undefined) {
@@ -216,18 +209,4 @@ export class DataSerializer implements IDataSerializer {
         }
     }
     
-    private loadPictureFromDescription = (loaded: any, key: string): void => {
-        if (!loaded[key]) {
-            return;
-        }
-    
-        var parser = new DOMParser();
-        var htmlDoc = parser.parseFromString(loaded[key], 'text/html');
-        var pictureElement = htmlDoc.getElementsByClassName(RuntimeProperties.Picture)[0];
-        var pictureSrc = pictureElement && pictureElement.getAttribute('src');
-    
-        if (pictureSrc) {
-            loaded[RuntimeProperties.Picture] = pictureSrc;
-        }
-    }
 }

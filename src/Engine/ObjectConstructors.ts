@@ -16,6 +16,7 @@ import { ICombine } from './Interfaces/combinations/combine';
 import { IEquipment } from './Interfaces/equipment';
 import { ActionStatus } from './Interfaces/storyScript';
 import { RuntimeProperties } from './runtimeProperties';
+import { IEntity } from './Interfaces/entity';
 
 // This flag indicates whether the registration phase is active.
 let _registration: boolean = true;
@@ -376,7 +377,7 @@ function CreateObject<T>(entity: T, type: string, id?: string)
 
     if (id || registeredId) {
         compiledEntity.id = id || registeredId;
-        var descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
+        const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
 
         if (compiledEntity[RuntimeProperties.Description] && !_registeredDescriptions.get(descriptionKey)) {
             _registeredDescriptions.set(descriptionKey, entity[RuntimeProperties.Description])
@@ -401,7 +402,25 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         getFunctions(plural, _functions, definitionKeys, compiledEntity, null);
     }
 
+    const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
+    const description = _registeredDescriptions.get(descriptionKey);
+
+    if (description) {
+        loadPictureFromDescription(compiledEntity, description);
+    }
+
     return <T><unknown>compiledEntity;
+}
+
+function loadPictureFromDescription (entity: IEntity, description: string): void {
+    var parser = new DOMParser();
+    var htmlDoc = parser.parseFromString(description, 'text/html');
+    var pictureElement = htmlDoc.getElementsByClassName(RuntimeProperties.Picture)[0];
+    var pictureSrc = pictureElement && pictureElement.getAttribute('src');
+
+    if (pictureSrc) {
+        entity[RuntimeProperties.Picture] = pictureSrc;
+    }
 }
 
 function getEntityKey(entity: object): string {
