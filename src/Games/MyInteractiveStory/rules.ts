@@ -7,7 +7,7 @@ export function Rules(): IRules {
         setup: {
             autoBackButton: true,
             playList: {
-                'Contemplate_the_stars.mp3': [Start]
+                'Contemplate_the_stars.mp3': [GameState.Play]
             },
             getCombinationActions: (): ICombinationAction[] => {
                 return [

@@ -1,5 +1,5 @@
 import { IRules, ICombinationAction, ICreateCharacter, ICharacter } from 'storyScript/Interfaces/storyScript';
-import { Constants } from './constants';
+import { Combinations } from './combinations';
 import { IGame, Character, IEnemy } from './types';
 
 export function Rules(): IRules {
@@ -8,20 +8,20 @@ export function Rules(): IRules {
             getCombinationActions: (): ICombinationAction[] => {
                 return [
                     {
-                        text: Constants.WALK,
+                        text: Combinations.WALK,
                         preposition: 'to',
                         requiresTool: false
                     },
                     {
-                        text: Constants.USE,
+                        text: Combinations.USE,
                         preposition: 'on'
                     },
                     {
-                        text: Constants.TOUCH,
+                        text: Combinations.TOUCH,
                         requiresTool: false
                     },
                     {
-                        text: Constants.LOOKAT,
+                        text: Combinations.LOOKAT,
                         preposition: 'at',
                         requiresTool: false,
                         failText: (game, target, tool): string => { 

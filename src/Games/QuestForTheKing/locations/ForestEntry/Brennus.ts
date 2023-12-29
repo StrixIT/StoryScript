@@ -2,6 +2,7 @@
 import description from './Brennus.html';
 import { Brennus as BrennusEnemy } from '../../enemies/Brennus';
 import { Start } from './start';
+import { locationComplete } from '../../gameFunctions';
 
 export function Brennus() {
     return Location({
@@ -26,6 +27,15 @@ export function Brennus() {
                 }
             }
         ],
+        leaveEvents: [
+            {
+                'Leave':
+                (game: IGame) => {
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length == 0, () => game.currentLocation.enemies.length == 0);
+                    return true;
+                }
+            }
+        ],
         actions: [
             {
                 text: 'Approach the Tent',
@@ -34,7 +44,7 @@ export function Brennus() {
                     game.currentLocation.enemies.map(e => e.inactive = false);
                 },
                 activeNight: true
-            },
+            }
         ]
     });
 }

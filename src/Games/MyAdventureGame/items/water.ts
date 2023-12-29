@@ -1,6 +1,6 @@
 import { Item } from '../types';
 import { EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { Constants } from '../constants';
+import { Combinations } from '../combinations';
 import { Herbs } from './herbs';
 import { HealingPotion } from './healingPotion';
 
@@ -12,7 +12,7 @@ export function Water() {
             failText: 'You can\'t use the water like that',
             combine: [
                 {
-                    combinationType: Constants.USE,
+                    combinationType: Combinations.USE,
                     tool: Herbs,
                     match: (game, target, tool): string => {
                         game.character.items.delete(Water);

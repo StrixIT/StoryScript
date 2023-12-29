@@ -1,5 +1,5 @@
 import { Feature } from '../types';
-import { Constants } from '../constants';
+import { Combinations } from '../combinations';
 import { Flask } from '../items/flask';
 import { Water } from '../items/water';
 import { Corridor } from './corridor';
@@ -10,13 +10,13 @@ export function Fountain() {
         combinations: {
             combine: [
                 {
-                    combinationType: Constants.LOOKAT,
+                    combinationType: Combinations.LOOKAT,
                     match: (game, target, tool): string => {
                         return 'You look at the fountain water. It is very clear and reflects the forest.';
                     }
                 },
                 {
-                    combinationType: Constants.TOUCH,
+                    combinationType: Combinations.TOUCH,
                     match: (game, target, tool): string => {
                         if (!game.currentLocation.features.get(Corridor)) {
                             game.currentLocation.features.add(Corridor);
@@ -30,7 +30,7 @@ export function Fountain() {
                     }
                 },
                 {
-                    combinationType: Constants.USE,
+                    combinationType: Combinations.USE,
                     tool: Flask,
                     match: (game, target, tool): string => {
                         var flask = game.character.items.get(Flask);

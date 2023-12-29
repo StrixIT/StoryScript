@@ -4,7 +4,7 @@ import { Rules } from '../../../Games/MyRolePlayingGame/types';
 import { DefaultTexts } from 'storyScript/defaultTexts';
 import { ICombinations } from 'storyScript/Interfaces/combinations/combination';
 import { ICombine } from 'storyScript/Interfaces/combinations/combine';
-import { Constants } from '../../../Games/MyAdventureGame/constants';
+import { Combinations } from '../../../Games/MyAdventureGame/combinations';
 
 describe("CombinationService", function() {
 
@@ -14,20 +14,20 @@ describe("CombinationService", function() {
                 getCombinationActions: (): ICombinationAction[] => {
                     return [
                         {
-                            text: Constants.WALK,
+                            text: Combinations.WALK,
                             preposition: 'to',
                             requiresTool: false
                         },
                         {
-                            text: Constants.USE,
+                            text: Combinations.USE,
                             preposition: 'on'
                         },
                         {
-                            text: Constants.TOUCH,
+                            text: Combinations.TOUCH,
                             requiresTool: false
                         },
                         {
-                            text: Constants.LOOKAT,
+                            text: Combinations.LOOKAT,
                             preposition: 'at',
                             requiresTool: false,
                             failText: (game, target, tool): string => { 

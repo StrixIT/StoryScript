@@ -129,14 +129,21 @@ export function Rules(): IRules {
         exploration: {
             enterLocation: (game: IGame, location: ICompiledLocation, travel: boolean): void => {
                 if (travel) {
-                    if (game.worldProperties.travelCounter !== undefined) {
-                    game.worldProperties.travelCounter++;
-
-                        var isDay = Math.floor(game.worldProperties.travelCounter / 3 + 1) % 2 !== 0;
-                    game.worldProperties.isDay = isDay;
-                    game.worldProperties.isNight = !isDay;
-                    game.worldProperties.timeOfDay = isDay ? 'day' : 'night';
+                    if (typeof game.worldProperties.isDay === 'undefined') {
+                        game.worldProperties.isDay = true;
+                        game.worldProperties.isNight = false;
                     }
+
+                    game.worldProperties.travelCounter ??= 0;
+                    game.worldProperties.travelCounter++;
+                    const duskDawn = game.worldProperties.travelCounter % 4 === 0;
+
+                    if (duskDawn) {
+                        game.worldProperties.isDay = !game.worldProperties.isDay;
+                        game.worldProperties.isNight = !game.worldProperties.isNight;
+                    }
+
+                    game.worldProperties.timeOfDay = game.worldProperties.isDay ? 'day' : 'night';
                 }
 
                 if (location.enemies?.length > 0) {
@@ -147,16 +154,16 @@ export function Rules(): IRules {
                     location.items.forEach(item => item.inactive = !isEntityActive(game, item));
                 }
 
-                if (location.destinations && location.destinations.length > 0) {
+                if (location.destinations?.length > 0) {
                     location.destinations.forEach(destination => destination.inactive = !isEntityActive(game, destination));
                 }
 
-                if (location.actions && location.actions.length > 0) {
+                if (location.actions?.length > 0) {
                     location.actions.forEach(action => action.status = !isEntityActive(game, action) ? ActionStatus.Unavailable : action.status);
                 }
 
                 if (game.worldProperties.isNight) {
-                    var element = <HTMLElement>game.UIRootElement?.querySelector('img.map');
+                    var element = <HTMLElement>game.UIRootElement?.querySelector('location-container');
 
                     if (element) {
                         element.style.cssText = 'filter: brightness(50%);';

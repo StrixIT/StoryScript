@@ -1,5 +1,5 @@
 import { Feature } from '../types';
-import { Constants } from '../constants';
+import { Combinations } from '../combinations';
 import { Flask } from '../items/flask';
 
 export function WoundedWarrior() {
@@ -9,7 +9,7 @@ export function WoundedWarrior() {
             failText: 'That won\'t help him.',
             combine: [
                 {
-                    combinationType: Constants.LOOKAT,
+                    combinationType: Combinations.LOOKAT,
                     match: (game, target, tool): string => {
                         if (!game.worldProperties.takenFlask) {
                             game.worldProperties.takenFlask = true;

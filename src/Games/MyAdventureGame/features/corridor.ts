@@ -1,6 +1,6 @@
 import { IGame, Feature } from '../types';
 import { Passage } from '../locations/passage';
-import { Constants } from '../constants';
+import { Combinations } from '../combinations';
 
 export function Corridor() {
 	return Feature({
@@ -11,7 +11,7 @@ export function Corridor() {
         combinations: {
             combine: [
                 {
-                    combinationType: Constants.WALK,
+                    combinationType: Combinations.WALK,
                     match: (game, target, tool): string => {
                         game.changeLocation(Passage);
                         return 'You crawl through the passage.';

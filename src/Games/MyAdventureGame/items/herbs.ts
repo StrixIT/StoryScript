@@ -1,6 +1,6 @@
 import { EquipmentType, ICombinationMatchResult } from 'storyScript/Interfaces/storyScript';
 import { Item } from '../types';
-import { Constants } from '../constants';
+import { Combinations } from '../combinations';
 
 export function Herbs() {
     return Item({
@@ -10,7 +10,7 @@ export function Herbs() {
         combinations: {
             combine: [
                 {
-                    combinationType: Constants.TOUCH,
+                    combinationType: Combinations.TOUCH,
                     match: (game, target, tool): ICombinationMatchResult => {
                         game.character.items.add(Herbs);
                         return { 
