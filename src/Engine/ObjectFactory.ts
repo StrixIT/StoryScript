@@ -10,7 +10,7 @@ import { LocationService } from './Services/LocationService';
 import { CombinationService } from './Services/CombinationService';
 import { CharacterService } from './Services/characterService';
 import { GameService } from './Services/gameService';
-import { GetDefinitions } from './ObjectConstructors';
+import { GetDefinitions, GetDescriptions } from './ObjectConstructors';
 import { ICharacterService } from './Interfaces/services/characterService';
 import { IGameService } from './Interfaces/services//gameService';
 import { ITradeService } from './Interfaces/services/tradeService';
@@ -46,7 +46,7 @@ export class ObjectFactory {
         this._tradeService = new TradeService(this._game, this._texts);
         this._conversationService = new ConversationService(dataService, this._game);
         this._characterService = new CharacterService(this._game, this._rules);
-        const locationService = new LocationService(dataService, this._rules, this._game, this._game.definitions);
+        const locationService = new LocationService(dataService, this._rules, this._game, this._game.definitions, GetDescriptions());
         this._combinationService = new CombinationService(dataService, locationService, this._game, this._rules, this._texts);
         this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, helperService, this._game, this._texts);
         ObjectFactory._instance = this;

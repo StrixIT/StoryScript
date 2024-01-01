@@ -19,8 +19,13 @@ import { RuntimeProperties } from 'storyScript/runtimeProperties';
 export class LocationService implements ILocationService {
     private pristineLocations: ICollection<ICompiledLocation>;
 
-    constructor(private _dataService: IDataService, private _rules: IRules, private _game: IGame, private _definitions: IDefinitions) {
-    }
+    constructor(
+        private _dataService: IDataService, 
+        private _rules: IRules, 
+        private _game: IGame, 
+        private _definitions: IDefinitions, 
+        private _descriptions: Map<string, string>
+    ) {}
 
     init = (game: IGame, buildWorld?: boolean): void => {
         game.currentLocation = null;
@@ -259,6 +264,9 @@ export class LocationService implements ILocationService {
 
     private loadLocationDescriptions = (game: IGame): void => {
         if (!game.currentLocation[RuntimeProperties.Descriptions]) {
+            const descriptionKey = `location_${game.currentLocation.id}`;
+            game.currentLocation[RuntimeProperties.Description] ??= this._descriptions.get(descriptionKey);
+
             if (game.currentLocation[RuntimeProperties.Description]) {
                 this.processVisualFeatures(getParsedDocument('visual-features', game.currentLocation[RuntimeProperties.Description])[0], game);
                 this.processDescriptions(getParsedDocument(RuntimeProperties.Description, game.currentLocation[RuntimeProperties.Description]), game);

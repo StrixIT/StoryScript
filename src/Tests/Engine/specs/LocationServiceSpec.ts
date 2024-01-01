@@ -1,10 +1,11 @@
 import { LocationService } from 'storyScript/Services/LocationService';
-import { IGame, ICollection, ICompiledLocation } from 'storyScript/Interfaces/storyScript';
+import { IGame, ICollection, ICompiledLocation, IRules } from 'storyScript/Interfaces/storyScript';
+import { getId } from '../../../Engine/utilities';
 
 describe("LocationService", function() {
 
     it("init should build the world and add the change location function to the game", function() {
-        var dataService = {
+        const dataService = {
             value: null,
             load: function() {
                 return this.value;
@@ -14,11 +15,11 @@ describe("LocationService", function() {
             }
         };
 
-        var game = <IGame>{
+        const game = <IGame>{
             definitions: {}
         };
 
-        var service = getService(dataService, {}, game);
+        const service = getService(dataService, {}, game);
         service.init(game);
 
         expect(game.changeLocation).not.toBeNull();
@@ -28,38 +29,63 @@ describe("LocationService", function() {
     });
 
     it("save world should call dataservice save", function() {
-        var dataService = {
+        const dataService = {
             save: function() {}
         };
 
         spyOn(dataService, 'save');
 
-        var service = getService(dataService);
+        const service = getService(dataService);
         service.saveWorld(<ICollection<ICompiledLocation>>{});
         expect(dataService.save).toHaveBeenCalled();
     });
     
     it("copy world should call dataservice copy", function() {
-        var dataService = {
+        const dataService = {
             copy: function() {}
         };
 
         spyOn(dataService, 'copy');
 
-        var service = getService(dataService);
+        const service = getService(dataService);
         service.copyWorld();
         expect(dataService.copy).toHaveBeenCalled();
     });
 
+    it("should set the location description", function() {
+        const game = <IGame>{
+            statistics: {},
+            locations: [
+                <ICompiledLocation>{
+                    id: 'start',
+                    type: 'location',
+                    description: undefined,
+                    name: 'Start'
+                }
+            ]
+        };
+        const rules = <IRules>{
+            setup: {}
+        }
+
+        const descriptionText = 'Start description loaded';
+        const startDescription = `<description>${descriptionText}</description>`;
+        const descriptions = new Map<string, string>();
+        descriptions.set('location_start', startDescription);
+        const service = getService(null, rules, game, null, descriptions);
+        service.changeLocation('Start', true, game);
+        expect(game.currentLocation.description).toBe(descriptionText);
+    });
+
 });
 
-function getService(dataService?, rules?, game?, definitions?) {
-    var data = null;
+function getService(dataService?, rules?, game?, definitions?, descriptions?) {
+    let data = null;
 
-    var dataService = dataService || {
+    dataService = dataService || {
         save: function(key, value) { data = value; },
         load: function(key) { return data; }
     }
 
-    return new LocationService(dataService, rules || {}, game || {}, definitions || {});
+    return new LocationService(dataService, rules || {}, game || {}, definitions || {}, descriptions || {});
 }

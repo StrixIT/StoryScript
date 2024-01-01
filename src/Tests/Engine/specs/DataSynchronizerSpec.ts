@@ -28,9 +28,10 @@ describe("DataSynchronizer", () => {
 
         expect(bandit.name).toBe(newName);
         expect(bandit.hitpoints).toBe(newHitpoints);
+        expect(bandit.attack).toBeUndefined();
     });
 
-    it("should update, add entities to and remove them from a collection", function() {
+    it("should add entities to and remove them from a collection", function() {
         const synchronizer = new DataSynchronizer();
 
         const bandit = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
@@ -51,5 +52,29 @@ describe("DataSynchronizer", () => {
         expect(compareId(bandit.items[0].id, Sword)).toBeTrue();
         expect(compareId(bandit.items[1].id, LeatherBoots)).toBeTrue();
         expect(bandit.items[1][RuntimeProperties.Added]).toBeTrue();
+    });
+
+    it("should update properties on nested entities", function() {
+        const synchronizer = new DataSynchronizer();
+
+        const bandit = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
+        const updated = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
+        
+        bandit.items.forEach(i => i[RuntimeProperties.BuildTimeStamp] = 1);
+
+        const pristineEntities = { enemies: { bandit: updated }, items: {} };
+        const items = pristineEntities.items;
+
+        [Sword(), BasementKey()].forEach(i => {
+            items[i.id] = i;
+            i[RuntimeProperties.BuildTimeStamp] = 2;
+        });
+
+        const newItemName = 'Long Sword';
+        items['sword'].name = newItemName;
+
+        synchronizer.updateModifiedEntity(bandit, updated, pristineEntities);
+
+        expect(bandit.items[0].name).toBe(newItemName);
     });
 });
