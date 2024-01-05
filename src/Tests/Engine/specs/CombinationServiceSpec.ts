@@ -164,6 +164,16 @@ describe("CombinationService", function() {
             var service = getService(game, rules);
             
             var result = service.tryCombination(target);
+
+            // Todo: assert something!
+        });
+
+        it("should throw an error when there are two combinations of the same type without a tool or with the same tool", function() {
+            // Todo: create test!
+        });
+
+        it("should work with two combinations of the same type but with different tools", function() {
+            // Todo: create test!
         });
     });
 
