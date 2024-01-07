@@ -1,6 +1,6 @@
 ﻿import { IGame, Location } from '../types';
 import { Garden } from './Garden';
-import { Bedroom } from './bedroom';
+import { Library } from './Library';
 import { DirtRoad } from './DirtRoad';
 import { Friend } from '../persons/Friend';
 import description from './Start.html';
@@ -21,8 +21,8 @@ export function Start() {
         },
         destinations: [
             {
-                name: 'To the bedroom',
-                target: Bedroom
+                name: 'To the library',
+                target: Library
             },
             {
                 name: 'To the garden',

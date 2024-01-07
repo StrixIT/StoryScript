@@ -1,4 +1,4 @@
-﻿import { IGame, IItem, Person } from '../types';
+﻿import { IGame, IItem, IPerson, Person } from '../types';
 import { Sword } from '../items/sword';
 import { Garden } from '../locations/Garden';
 import { Journal } from '../quests/journal';
@@ -35,7 +35,7 @@ export function Friend() {
         },
         conversation: {
             actions: {
-                'addHedgehog': (game, person) => {
+                'addHedgehog': (game: IGame, person: IPerson) => {
                     var garden = game.locations.get(Garden);
                     garden.hasVisited = false;
 

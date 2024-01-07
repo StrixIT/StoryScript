@@ -271,7 +271,7 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssConversationAction",
 		"body": [
-			"$1Action: (game: IGame, person: IPerson) => {",
+			"'$1': (game: IGame, person: IPerson) => {",
 			"\t$2",
 			"},"
 		],
