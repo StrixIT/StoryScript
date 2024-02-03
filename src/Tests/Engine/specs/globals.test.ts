@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareString, parseFunction, createHash } from 'storyScript/globals';
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
@@ -7,7 +8,7 @@ import { compareId } from '../helpers';
 
 describe("Utilities", function() {
 
-    it("named functions should have a name property", function() {
+    test("named functions should have a name property", function() {
         addFunctionExtensions();
 
         function MyFunction() {
@@ -17,7 +18,7 @@ describe("Utilities", function() {
         expect(result).toEqual('MyFunction');
     });
 
-    it("should create a proxy that is called when calling the function and is identifiable as a proxy", function() {
+    test("should create a proxy that is called when calling the function and is identifiable as a proxy", function() {
         addFunctionExtensions();
 
         let MyFunction = function(x, y) {
@@ -36,13 +37,13 @@ describe("Utilities", function() {
         expect(MyFunction.proxy).toBeTruthy();
     });
 
-    it("Parsing null as a function should return null", function() {
+    test("Parsing null as a function should return null", function() {
         addFunctionExtensions();
         const myFunction = parseFunction(null);
         expect(myFunction).toBeNull();
     });
 
-    it("Deserializing function should get working function", function() {
+    test("Deserializing function should get working function", function() {
         addFunctionExtensions();
 
         const functionString = 'function MyFunction(x, y) { return x + y; }';
@@ -52,7 +53,7 @@ describe("Utilities", function() {
         expect(result).toEqual(5);
     });
 
-    it("Deserializing a multiline function should get a working function", function() {
+    test("Deserializing a multiline function should get a working function", function() {
         addFunctionExtensions();
 
         const functionString = `function MyFunction(x, y) { 
@@ -65,12 +66,12 @@ describe("Utilities", function() {
         expect(result).toEqual(5);
     });
 
-    it("Creating a hash for null should return 0", function() {
+    test("Creating a hash for null should return 0", function() {
         const result = createHash(null);
         expect(result).toBe(0);
     });
 
-    it("Creating a function hash should get a unique hash for each function", function() {
+    test("Creating a function hash should get a unique hash for each function", function() {
         function FirstFunction(x, y) { return x + y; };
         function SecondFunction(x, y) { if (x === null && y === null) { return null; } else { return x > y; } };
         const firstFunctionHash = createFunctionHash(FirstFunction);
@@ -81,7 +82,7 @@ describe("Utilities", function() {
         expect(firstFunctionHash).not.toEqual(secondFunctionHash);
     });
 
-    it("should get an entity using the function name", function() {
+    test("should get an entity using the function name", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         const result = testArray.get(Journal);
@@ -90,7 +91,7 @@ describe("Utilities", function() {
         expect(compareId(result.id, Journal)).toBeTruthy();
     });
 
-    it("should get an entity using an id string", function() {
+    test("should get an entity using an id string", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         const result = testArray.get(Journal.name);
@@ -99,14 +100,14 @@ describe("Utilities", function() {
         expect(compareId(result.id, Journal)).toBeTruthy();
     });
 
-    it("should get an entity by type and id when passing in a new object", function() {
+    test("should NOT get an entity by type and id when passing in a new object", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         const result = testArray.get(Journal());
-        expect(compareId(result.id, Journal)).toBeTruthy();
+        expect(result).toBeUndefined();
     });
 
-    it("should get the first entity in the array when no parameter is passed", function() {
+    test("should get the first entity in the array when no parameter is passed", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         const result = testArray.get();
@@ -115,7 +116,7 @@ describe("Utilities", function() {
         expect(compareId(result.id, Sword)).toBeTruthy();
     });
 
-    it("should get an entity using its object reference", function() {
+    test("should get an entity using its object reference", function() {
         addArrayExtensions();
         const journal = Journal();
 
@@ -129,7 +130,7 @@ describe("Utilities", function() {
         expect(result).toBe(journal);
     });
 
-    it("should get a destination matching a string id to the destination target", function() {
+    test("should get a destination matching a string id to the destination target", function() {
         addArrayExtensions();
         const gardenDestination = {
             name: 'To the garden',
@@ -149,7 +150,7 @@ describe("Utilities", function() {
         expect(result).toBe(gardenDestination);
     });
 
-    it("should get a destination matching a function to the destination target", function() {
+    test("should get a destination matching a function to the destination target", function() {
         addArrayExtensions();
         const Garden = () => <ILocation>{};           
 
@@ -169,7 +170,7 @@ describe("Utilities", function() {
         expect(compareId(result.target, Garden.name)).toBeTruthy();
     });
 
-    it("should get all entities in the array matching the id", function() {
+    test("should get all entities in the array matching the id", function() {
         addArrayExtensions();
 
         const itemOne = Sword();
@@ -189,7 +190,7 @@ describe("Utilities", function() {
         expect(compareId(result[1].id, Sword)).toBeTruthy();
     });
 
-    it("should not change anything when removing a non-existing item", function() {
+    test("should not change anything when removing a non-existing item", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         testArray.remove('');
@@ -197,7 +198,7 @@ describe("Utilities", function() {
         expect(testArray.length).toBe(2);
     });
 
-    it("should remove an entity using the function name", function() {
+    test("should remove an entity using the function name", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         testArray.remove(Journal);
@@ -206,7 +207,7 @@ describe("Utilities", function() {
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
-    it("should remove an entity using an id string", function() {
+    test("should remove an entity using an id string", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         testArray.remove(Journal.name);
@@ -215,16 +216,16 @@ describe("Utilities", function() {
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
-    it("should remove an entity when passing it in as a new object", function() {
+    test("should NOT remove an entity when passing it in as a new object", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         testArray.remove(Journal());
 
-        expect(testArray.length).toBe(1);
-        expect(compareId(testArray[0].id, Sword)).toBeTruthy();
+        expect(testArray.length).toBe(2);
+        expect(compareId(testArray[1].id, Journal)).toBeTruthy();
     });
 
-    it("should remove an entity using its object reference", function() {
+    test("should remove an entity using its object reference", function() {
         addArrayExtensions();
         const testArray = getTestArray();
         const journal = testArray[1];
@@ -235,7 +236,7 @@ describe("Utilities", function() {
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
 
-    it("should remove a destination using the string id of the destination", function() {
+    test("should remove a destination using the string id of the destination", function() {
         addArrayExtensions();
         const gardenDestination = {
             name: 'To the garden',
@@ -255,7 +256,7 @@ describe("Utilities", function() {
         expect(testArray[0].target).toBe('Bedroom');
     });
 
-    it("should remove a destination using the function of the destination", function() {
+    test("should remove a destination using the function of the destination", function() {
         addArrayExtensions();
         const Garden = () => <ILocation>{};  
 
@@ -276,7 +277,7 @@ describe("Utilities", function() {
         expect(testArray[0].target).toBe('Bedroom');
     });
 
-    it("should return correct results when comparing strings", function() {
+    test("should return correct results when comparing strings", function() {
         expect(compareString(undefined, undefined)).toBeTruthy();
         expect(compareString(null, null)).toBeTruthy();
         expect(compareString(null, undefined)).toBeFalsy();

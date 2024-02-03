@@ -1,3 +1,4 @@
+import { describe, beforeAll, test, expect } from 'vitest';
 import { DataSynchronizer } from "../../../Engine/Services/DataSynchronizer";
 import { RuntimeProperties } from "../../../Engine/runtimeProperties";
 import { Bandit } from "../../../Games/MyRolePlayingGame/enemies/bandit";
@@ -9,7 +10,7 @@ import { compareId } from "../helpers";
 
 describe("DataSynchronizer", () => {
 
-    it("should update, add and remove plain properties on entity", function() {
+    test("should update, add and remove plain properties on entity", function() {
         const synchronizer = new DataSynchronizer();
         
         const newName = 'Fierce Bandit';
@@ -31,7 +32,7 @@ describe("DataSynchronizer", () => {
         expect(bandit.attack).toBeUndefined();
     });
 
-    it("should add entities to and remove them from a collection", function() {
+    test("should add entities to and remove them from a collection", function() {
         const synchronizer = new DataSynchronizer();
 
         const bandit = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
@@ -49,12 +50,12 @@ describe("DataSynchronizer", () => {
         synchronizer.updateModifiedEntity(bandit, updated, pristineEntities);
 
         expect(bandit.items.length).toBe(2);
-        expect(compareId(bandit.items[0].id, Sword)).toBeTrue();
-        expect(compareId(bandit.items[1].id, LeatherBoots)).toBeTrue();
-        expect(bandit.items[1][RuntimeProperties.Added]).toBeTrue();
+        expect(compareId(bandit.items[0].id, Sword)).toBeTruthy();
+        expect(compareId(bandit.items[1].id, LeatherBoots)).toBeTruthy();
+        expect(bandit.items[1][RuntimeProperties.Added]).toBeTruthy();
     });
 
-    it("should update properties on nested entities", function() {
+    test("should update properties on nested entities", function() {
         const synchronizer = new DataSynchronizer();
 
         const bandit = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };

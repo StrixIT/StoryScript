@@ -1,9 +1,10 @@
+import { describe, test, expect } from 'vitest';
 import { GameService } from 'storyScript/Services/gameService';
 import { IItem, IGame } from 'storyScript/Interfaces/storyScript';
 
 describe("GameService", function() {
 
-    it("should call the use function on an item", function() {
+    test("should call the use function on an item", function() {
         var used = false;
         
         var item = <IItem>{

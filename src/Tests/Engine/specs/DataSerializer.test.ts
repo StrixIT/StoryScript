@@ -1,3 +1,4 @@
+import { describe, beforeAll, beforeEach, afterEach, test, expect } from 'vitest';
 import { ICollection, ICompiledLocation } from "../../../Engine/Interfaces/storyScript";
 import { GetFunctions } from "../../../Engine/ObjectConstructors";
 import { ObjectFactory } from "../../../Engine/ObjectFactory";
@@ -29,7 +30,7 @@ describe("DataSerializer", () => {
     beforeEach(() => (console.warn = consoleMock));
     afterEach(() => (console.warn = originalWarn));
 
-    it("should recreate locations from a JSON clone of the world and warn when the order of functions in an array changed", function() {
+    test("should recreate locations from a JSON clone of the world and warn when the order of functions in an array changed", function() {
         const serializer = new DataSerializer();
         const result = serializer.restoreObjects(GetFunctions(), null, JSON.parse(worldData).data);
         const resultText = JSON.stringify({ data: serializer.buildClone(null, result, null) });
@@ -62,7 +63,7 @@ describe("DataSerializer", () => {
         expect(worldWithoutHashes).toBe(saveResultWithoutHashes);
     });
 
-    it("should create and save a JSON clone of the world", function() {
+    test("should create and save a JSON clone of the world", function() {
         const serializer = new DataSerializer();
         const result = serializer.buildClone(null, locations, null);
         const resultText = JSON.stringify({ data: result });
@@ -73,7 +74,7 @@ describe("DataSerializer", () => {
         expect(resultWithoutHashes).toBe(worldWithoutHashes);
     });
 
-    it("should create a copy of a complex object", function() {
+    test("should create a copy of a complex object", function() {
         const serializer = new DataSerializer();
         const result = serializer.buildClone(null, locations, locations);
         const resultText = JSON.stringify({ data: result });
@@ -84,7 +85,7 @@ describe("DataSerializer", () => {
         expect(resultWithoutHashes).toBe(worldWithoutHashes);
     });
 
-    it("should create a clone with additional array properties when present", function() {
+    test("should create a clone with additional array properties when present", function() {
         const serializer = new DataSerializer();
 
         const objectToCopy = {

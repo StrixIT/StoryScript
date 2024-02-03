@@ -1,3 +1,4 @@
+import { describe, beforeAll, test, expect } from 'vitest';
 import { IGame } from 'storyScript/Interfaces/game';
 import { IBarrier } from 'storyScript/Interfaces/barrier';
 import { IDestination } from 'storyScript/Interfaces/destination';
@@ -12,7 +13,7 @@ describe("StoryScript Actions", function() {
         addArrayExtensions();
     });
 
-    it("open should remove a barrier", function() {
+    test("open should remove a barrier", function() {
         let callBackCalled = false;
 
         const game = <IGame>{};
@@ -33,7 +34,7 @@ describe("StoryScript Actions", function() {
         expect(callBackCalled).toBeTruthy();
     });
 
-    it("open with key should remove a barrier when the character has the key needed", function() {
+    test("open with key should remove a barrier when the character has the key needed", function() {
         let callBackCalled = false;
 
         const key = () => {

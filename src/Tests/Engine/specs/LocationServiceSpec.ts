@@ -1,10 +1,10 @@
+import { describe, test, expect } from 'vitest';
 import { LocationService } from 'storyScript/Services/LocationService';
 import { IGame, ICollection, ICompiledLocation, IRules } from 'storyScript/Interfaces/storyScript';
-import { getId } from '../../../Engine/utilities';
 
 describe("LocationService", function() {
 
-    it("init should build the world and add the change location function to the game", function() {
+    test("init should build the world and add the change location function to the game", function() {
         const dataService = {
             value: null,
             load: function() {
@@ -28,7 +28,7 @@ describe("LocationService", function() {
         expect(game.locations.length).toBe(0);
     });
 
-    it("save world should call dataservice save", function() {
+    test("save world should call dataservice save", function() {
         const dataService = {
             save: function() {}
         };
@@ -40,7 +40,7 @@ describe("LocationService", function() {
         expect(dataService.save).toHaveBeenCalled();
     });
     
-    it("copy world should call dataservice copy", function() {
+    test("copy world should call dataservice copy", function() {
         const dataService = {
             copy: function() {}
         };
@@ -52,7 +52,7 @@ describe("LocationService", function() {
         expect(dataService.copy).toHaveBeenCalled();
     });
 
-    it("should set the location description", function() {
+    test("should set the location description", function() {
         const game = <IGame>{
             statistics: {},
             locations: [

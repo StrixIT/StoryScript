@@ -1,3 +1,4 @@
+import { describe, beforeAll, test, expect } from 'vitest';
 import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { Rules } from '../../../Games/MyRolePlayingGame/rules';
@@ -15,14 +16,14 @@ describe("CharacterService", function() {
 
     describe("Character sheet", function() {
 
-        it("should return the properties defined for the character sheet", function() {
+        test("should return the properties defined for the character sheet", function() {
             var service = getService();
             var result = service.getSheetAttributes().sort();
             var expected = sheetAttributes.sort();
             expect(result).toEqual(expected);
         });
 
-        it("should set the first step of the character sheet as the selected step when starting character creation", function() {    
+        test("should set the first step of the character sheet as the selected step when starting character creation", function() {    
             var game = <IGame>{};
 
             var service = getService(game);
@@ -44,7 +45,7 @@ describe("CharacterService", function() {
             expect(result.steps[1].questions[0].selectedEntry).toEqual(createSheet.steps[1].questions[0].entries[0]);
         });
 
-        it("should set the first step of the level up sheet as the selected step preparing level up", function() {
+        test("should set the first step of the level up sheet as the selected step preparing level up", function() {
             var rules = {
                 character: {
                     getLevelUpSheet: function() {
@@ -64,7 +65,7 @@ describe("CharacterService", function() {
             expect(result.steps[0].questions[0].selectedEntry).toBe(levelUpSheet.steps[0].questions[0].entries[0]);
         });
 
-        it("should use a value of 1 when a non-number value was specified", function() {
+        test("should use a value of 1 when a non-number value was specified", function() {
             var service = new CharacterService(null, null);
             var value = 'test';
             var attribute = getAttributes();
@@ -73,7 +74,7 @@ describe("CharacterService", function() {
             expect(entry.value).toBe(1);
         });
 
-        it("should not allow an attribute to go above the maximum", function() {
+        test("should not allow an attribute to go above the maximum", function() {
             var service = new CharacterService(null, null);
             var value = 5;
             var attribute = getAttributes();
@@ -82,7 +83,7 @@ describe("CharacterService", function() {
             expect(entry.value).toBe(5);
         });
 
-        it("should not allow an attribute to go below the maximum", function() {
+        test("should not allow an attribute to go below the maximum", function() {
             var service = new CharacterService(null, null);
             var value = -5;
             var attribute = getAttributes();
@@ -91,7 +92,7 @@ describe("CharacterService", function() {
             expect(entry.value).toBe(1);
         });
 
-        it("should not allow the total to go above the amount of points to distribute", function() {
+        test("should not allow the total to go above the amount of points to distribute", function() {
             var service = new CharacterService(null, null);
             var value = 5;
             var attribute = getAttributes();
@@ -108,7 +109,7 @@ describe("CharacterService", function() {
             expect(entries[2].value).toBe(1);
         });
 
-        it("should return true when distribution is done", function() {
+        test("should return true when distribution is done", function() {
             var service = new CharacterService(null, null);
             var options = {
                 steps: [
@@ -140,7 +141,7 @@ describe("CharacterService", function() {
             expect(result).toBeTruthy();
         });
 
-        it("should return true when text questions have been answered", function() {
+        test("should return true when text questions have been answered", function() {
             var service = new CharacterService(null, null);
             var options = {
                 steps: [
@@ -182,7 +183,7 @@ describe("CharacterService", function() {
 
     describe("Create character", function() {
 
-        it("Should return a created character with attribute and text values filled", function() {
+        test("Should return a created character with attribute and text values filled", function() {
             var rules = <IRules>{
                 character: <ICharacterRules>{
                     createCharacter: () => {
@@ -232,7 +233,7 @@ describe("CharacterService", function() {
             expect(result.agility).toBe(3);
         });
 
-        it("Should return an empty character when no create character rule is available", function() {
+        test("Should return an empty character when no create character rule is available", function() {
             var game = <IGame>{};
             var service = new CharacterService(game, <IRules>{ character: {} });
             var result = service.createCharacter(game, <ICreateCharacter>{});
@@ -245,14 +246,14 @@ describe("CharacterService", function() {
 
     describe("Equip", function() {
 
-        it("should allow equipping a non-miscellaneous item", function() {
+        test("should allow equipping a non-miscellaneous item", function() {
             var boots = LeatherBoots();
             var service = getService();
             var result = service.canEquip(boots);
             expect(result).toBeTruthy();
         });
 
-        it("should disallow equipping a miscellaneous item", function() {
+        test("should disallow equipping a miscellaneous item", function() {
             var journal = Journal();
             var service = getService();
             var result = service.canEquip(journal);
@@ -260,7 +261,7 @@ describe("CharacterService", function() {
             expect(result).toBeFalsy();
         });
 
-        it("should equip an item to the right slot and remove the item from the inventory", function() {
+        test("should equip an item to the right slot and remove the item from the inventory", function() {
             var game = {
                 character: {
                     equipment: <any>{},
@@ -278,7 +279,7 @@ describe("CharacterService", function() {
             expect(game.character.items.length).toBe(0);
         });
 
-        it("should equip a two-handed weapon to both hand slots", function() {
+        test("should equip a two-handed weapon to both hand slots", function() {
             var game = {
                 character: {
                     equipment: <any>{},
@@ -299,7 +300,7 @@ describe("CharacterService", function() {
             expect(game.character.equipment.leftHand).not.toBeUndefined();
         });
 
-        it("should block equipping a new item when an existing item cannot be unequipped", function() {
+        test("should block equipping a new item when an existing item cannot be unequipped", function() {
             var game = {
                 character: {
                     equipment: {
@@ -325,7 +326,7 @@ describe("CharacterService", function() {
             expect(game.character.equipment.rightHand).toBe(sword);
         });
 
-        it("should block equipping a new two-handed item when an existing item cannot be unequipped", function() {
+        test("should block equipping a new two-handed item when an existing item cannot be unequipped", function() {
             var game = {
                 character: {
                     equipment: <any>{
@@ -357,7 +358,7 @@ describe("CharacterService", function() {
             expect(game.character.equipment.leftHand).toBeUndefined();
         });
 
-        it("should block equipping a new item when an existing two-handed item cannot be unequipped", function() {
+        test("should block equipping a new item when an existing two-handed item cannot be unequipped", function() {
             var game = {
                 character: {
                     equipment: <any>{
@@ -391,7 +392,7 @@ describe("CharacterService", function() {
             expect(game.character.equipment.leftHand).toBe(twoHandedSword);
         });
 
-        it("should block equipping an item which disallows equipping", function() {
+        test("should block equipping an item which disallows equipping", function() {
             var game = {
                 character: {
                     equipment: <any>{}
@@ -411,7 +412,7 @@ describe("CharacterService", function() {
             expect(game.character.equipment.rightHand).toBeUndefined();
         });
 
-        it("should move an equipped item back to the backpack when equipping an item of the same type", function() {
+        test("should move an equipped item back to the backpack when equipping an item of the same type", function() {
             var game = {
                 character: {
                     equipment: <any>{},
@@ -432,7 +433,7 @@ describe("CharacterService", function() {
             expect(game.character.items[0]).toBe(equippedBoots); 
         });
 
-        it("should block equipping an item when game rules disallow it", function() {
+        test("should block equipping an item when game rules disallow it", function() {
             var game = {
                 character: {
                     equipment: <any>{},
@@ -457,7 +458,7 @@ describe("CharacterService", function() {
             expect(game.character.equipment.rightHand).toBeUndefined();
         });
 
-        it("should block unequipping an item when game rules disallow it", function() {
+        test("should block unequipping an item when game rules disallow it", function() {
             var game = {
                 character: {
                     equipment: <any>{},
@@ -483,7 +484,7 @@ describe("CharacterService", function() {
             expect(game.character.equipment.rightHand).toBe(sword);
         });
 
-        it("should return false when an equipment slot is not used", function() {
+        test("should return false when an equipment slot is not used", function() {
             var game = {
                 character: {
                     equipment: {
@@ -499,7 +500,7 @@ describe("CharacterService", function() {
             expect(result).toBeFalsy();
         });
 
-        it("should return true when an equipment slot is used", function() {
+        test("should return true when an equipment slot is used", function() {
             var sword = Sword();
 
             var game = {
@@ -517,7 +518,7 @@ describe("CharacterService", function() {
             expect(result).toBeTruthy();
         });
 
-        it("should drop an item the character has in his backpack", function() {
+        test("should drop an item the character has in his backpack", function() {
             var sword = Sword();
 
             var game = {
@@ -539,7 +540,7 @@ describe("CharacterService", function() {
             expect(game.currentLocation.items[0]).toBe(sword);
         });
 
-        it("should return the status of a quest when it is a string", function() {
+        test("should return the status of a quest when it is a string", function() {
             var quest = <IQuest>{
                 status: 'Started'
             }
@@ -550,7 +551,7 @@ describe("CharacterService", function() {
             expect(result).toBe(<string>quest.status);
         });
 
-        it("should return the status of a quest when it is returned by a function", function() {
+        test("should return the status of a quest when it is returned by a function", function() {
             var quest = <any>{
                 status: function() { return 'Started' },
                 checkDone: function() { return true }
@@ -565,7 +566,7 @@ describe("CharacterService", function() {
 
     describe("Level up", function() {
 
-        it("Should call level up and if true is returned process the default settings", function() {
+        test("Should call level up and if true is returned process the default settings", function() {
             var valueToReturn = true;
             
             var game = <IGame>{

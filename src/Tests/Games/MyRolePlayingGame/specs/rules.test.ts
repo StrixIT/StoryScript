@@ -1,9 +1,10 @@
+import { describe, test, expect } from 'vitest';
 import { Character, IGame, Rules } from '../../../../Games/MyRolePlayingGame/types';
 import { ICharacter, IEnemy, ICompiledLocation, IHelpers, ICreateCharacter } from 'storyScript/Interfaces/storyScript';
 
 describe("Rules", function() {
 
-    it("should conduct combat", function() {
+    test("should conduct combat", function() {
         var service = Rules();
         var character = new Character();
 
@@ -36,7 +37,7 @@ describe("Rules", function() {
         expect(enemy.hitpoints).toEqual(expected);
     });
 
-    it("should create a new character", function() {
+    test("should create a new character", function() {
         var service = Rules();
         var character = service.character.createCharacter(<IGame>{}, <ICreateCharacter>{});
         expect(character).not.toBeNull();

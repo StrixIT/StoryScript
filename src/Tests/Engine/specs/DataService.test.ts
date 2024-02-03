@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { DataService } from 'storyScript/Services/DataService';
 import { IDataService } from 'storyScript/Interfaces/services/dataService';
 import { ILocalStorageService } from 'storyScript/Interfaces/services/localStorageService';
@@ -9,7 +10,7 @@ const TESTGAMEPREFIX = '_TestGame';
 
 describe("DataService", function() {
 
-    it("should return the storage keys", function() {
+    test("should return the storage keys", function() {
         var { dataService } = getService();
         var expected = saveKeys.sort();
         var result = dataService.getSaveKeys().sort();

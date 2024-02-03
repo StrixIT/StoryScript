@@ -1,3 +1,4 @@
+import { describe, beforeAll, test, expect } from 'vitest';
 import { GetDefinitions, GetFunctions, DynamicEntity, FunctionCollection } from 'storyScript/ObjectConstructors';
 import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature, ICompiledLocation, IItem } from 'storyScript/Interfaces/storyScript';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
@@ -9,7 +10,7 @@ describe("ObjectConstructors", function() {
         RunGame();
     });
 
-    it("should get the game definitions", function() {
+    test("should get the game definitions", function() {
         const result = <any>GetDefinitions();
         expect(result).not.toEqual(null);
         expect(result.locations.length).toEqual(5);
@@ -20,7 +21,7 @@ describe("ObjectConstructors", function() {
         expect(result.actions.length).toEqual(0);
     });
 
-    it("should get the game functions", function() {
+    test("should get the game functions", function() {
         const result = <FunctionCollection>GetFunctions();
         expect(result).not.toEqual(null);
         expect(getLength(result.locations)).toEqual(8);
@@ -45,7 +46,7 @@ describe("ObjectConstructors", function() {
             "start|descriptionSelector:1949117004"]);
     });
 
-    it("should create the Start location", function() {
+    test("should create the Start location", function() {
         const definitions = GetDefinitions()
         const definition = find(definitions.locations, 'Start');
         const result = <ICompiledLocation>definition();
@@ -59,7 +60,7 @@ describe("ObjectConstructors", function() {
         expect(hashMatch).toEqual(1);
     });
 
-    it("should create a location with read-only properties", function() {
+    test("should create a location with read-only properties", function() {
         const definitions = GetDefinitions()
         const definition = find(definitions.locations, 'Start');
         const result = <ICompiledLocation>definition();
@@ -75,7 +76,7 @@ describe("ObjectConstructors", function() {
         }).toThrow();
     });
 
-    it("should create a location with arrays that cannot be replaced and execute functions on add", function() {
+    test("should create a location with arrays that cannot be replaced and execute functions on add", function() {
         const definitions = GetDefinitions()
         const definition = find(definitions.locations, 'Start');
         const result = definition();
@@ -92,7 +93,7 @@ describe("ObjectConstructors", function() {
         expect(typeof addedItem).toBe('object');
     });
 
-    it("should set key id on destination barriers", function() {
+    test("should set key id on destination barriers", function() {
 
         function Key() {
             return <IKey>{
@@ -127,7 +128,7 @@ describe("ObjectConstructors", function() {
         expect(key).toBe('key');
     });
 
-    it("should correctly create a feature", function() {
+    test("should correctly create a feature", function() {
         const testFeature = () => {
             return <IFeature>{
                 name: 'Test feature'
@@ -144,7 +145,7 @@ describe("ObjectConstructors", function() {
 
 describe('ObjectFactory', function () {
     
-    it("should return all services", function() {
+    test("should return all services", function() {
         const factory = ObjectFactory.GetInstance();
 
         let characterService = factory.GetCharacterService();

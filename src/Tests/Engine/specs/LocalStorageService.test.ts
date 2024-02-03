@@ -1,9 +1,10 @@
+import { describe, test, expect } from 'vitest';
 import { LocalStorageService } from 'storyScript/Services/LocalStorageService';
 import { DataKeys } from 'storyScript/DataKeys';
 
 describe("LocalStorage", function() {
 
-    it("should store a value and retrieve it", function() {
+    test("should store a value and retrieve it", function() {
         var service = new LocalStorageService();
 
         var key = 'storage';
@@ -25,7 +26,7 @@ describe("LocalStorage", function() {
         localStorage.removeItem('StoryScript_' + key);
     });
 
-    it("should get all the keys of saved values for the game", function() {
+    test("should get all the keys of saved values for the game", function() {
         var service = new LocalStorageService();
         var gameKey = 'MyRolePlayingGame' + '_' + DataKeys.GAME + '_';
 
