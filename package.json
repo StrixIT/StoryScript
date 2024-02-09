@@ -57,6 +57,7 @@
         "esbuild-loader": "^4.0.2",
         "fork-ts-checker-webpack-plugin": "^9.0.2",
         "fs-extra": "^11.2.0",
+        "jsdom": "^24.0.0",
         "html-webpack-plugin": "^5.5.4",
         "image-minimizer-webpack-plugin": "^3.8.3",
         "jsonfile": "^6.1.0",

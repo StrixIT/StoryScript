@@ -36,13 +36,13 @@ describe("ObjectConstructors", function() {
         const locationFunctions = Object.keys(result.locations).sort().map(k => `${k}:${result.locations[k].hash}`);
 
         expect(locationFunctions).toEqual([
-            "bedroom|trade|0|buy|itemSelector:-757288170",
-            "bedroom|trade|0|sell|itemSelector:-757288170",
-            "bedroom|trade|0|sell|priceModifier:-1683809711",
             "dirtroad|combatActions|0|execute:-34161269",
-            "garden|actions|0|execute:416420323",
+            "garden|actions|0|execute:630024115",
             "garden|actions|1|execute:1867314870",
             "garden|enterEvents|0|Squirrel:-1552061099",
+            "library|trade|0|buy|itemSelector:-757288170",
+            "library|trade|0|sell|itemSelector:-757288170",
+            "library|trade|0|sell|priceModifier:-1683809711",
             "start|descriptionSelector:1949117004"]);
     });
 

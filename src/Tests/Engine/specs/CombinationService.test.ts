@@ -1,12 +1,15 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, beforeAll } from 'vitest';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { ICombinable, IGame, ICombinationAction, ICombinationMatchResult, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { Rules } from '../../../Games/MyRolePlayingGame/types';
 import { DefaultTexts } from 'storyScript/defaultTexts';
 import { IActiveCombination } from '../../../Engine/Interfaces/combinations/activeCombination';
 import { Combinations } from '../../../Games/MyAdventureGame/combinations';
+import { addArrayExtensions } from '../../../Engine/globals';
 
 describe("CombinationService", function() {
+
+    beforeAll(() => addArrayExtensions());
 
     test("should return the combinations defined for the game", function() {
         var rules = {
@@ -165,14 +168,10 @@ describe("CombinationService", function() {
                     combinationResult: {}
                 },
                 currentLocation: {
+                    items: [
+                        target
+                    ]
                 },
-                locations: [
-                    {
-                        items: [
-                            target
-                        ]
-                    }
-                ],
                 character: {
                     items: [
                         ofSameType
@@ -191,9 +190,8 @@ describe("CombinationService", function() {
             var result = service.tryCombination(target);
             expect(result.success).toBeTruthy();
             expect(result.removeTarget).toBeTruthy();
-            expect(game.locations[0].items.length).toBe(0);
+            expect(game.currentLocation.items.length).toBe(0);
             expect(game.character.items.length).toBe(1);
-            // Todo: assert something!
         });
 
         test("should throw an error when there are two combinations of the same type without a tool or with the same tool", function() {

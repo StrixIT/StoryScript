@@ -4,6 +4,11 @@ import gameName from './gameName.js';
 
 export default mergeConfig(viteConfig, defineConfig({
   test: {
+    environmentMatchGlobs: [
+      ['**/Data*.test.ts', 'jsdom'],
+      ['**/ObjectConstructor.test.ts', 'jsdom'],
+      ['**/LocalStorageService.test.ts', 'jsdom'],
+    ],
     coverage: {
         enabled: true,
         provider: 'v8',
@@ -13,6 +18,11 @@ export default mergeConfig(viteConfig, defineConfig({
         include: [
           'src/Engine/**',
           `src/Games/${gameName}/**`
+        ],
+        exclude: [
+          '**/typeExtensions.d.ts',
+          '**/defaultTexts.ts',
+          '**/[iI]nterfaces/**',
         ]
     }
   }

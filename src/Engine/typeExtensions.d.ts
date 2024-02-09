@@ -1,4 +1,3 @@
-
 interface Function {
     proxy: Function;
     isProxy: boolean;

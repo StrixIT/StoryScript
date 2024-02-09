@@ -23,16 +23,17 @@ export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
 }
 
 export function importAssets() {
+    /* v8 ignore next 3 */
     if (process.env.WEBPACK_BUILDER) {
         loadAssetsWithRequire();
     }
     
     if (import.meta.env?.VITE_BUILDER) {
-        /* istanbul ignore next -- @preserve */
         loadAssetsWithImport();
     }
 }
 
+/* v8 ignore start */
 function loadAssetsWithRequire() {
     // Note that this regex cannot be extracted from here as that will break the require usage.
     var assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/);
@@ -50,8 +51,8 @@ function loadAssetsWithRequire() {
         Register(type, asset[property]);
     });
 }
+/* v8 ignore stop */
 
-/* istanbul ignore next -- @preserve */
 function loadAssetsWithImport() {
     const modules = import.meta.glob([
         'game/actions/**/*.ts',

@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { LocationService } from 'storyScript/Services/LocationService';
 import { IGame, ICollection, ICompiledLocation, IRules } from 'storyScript/Interfaces/storyScript';
 
@@ -33,7 +33,7 @@ describe("LocationService", function() {
             save: function() {}
         };
 
-        spyOn(dataService, 'save');
+        vi.spyOn(dataService, 'save');
 
         const service = getService(dataService);
         service.saveWorld(<ICollection<ICompiledLocation>>{});
@@ -45,7 +45,7 @@ describe("LocationService", function() {
             copy: function() {}
         };
 
-        spyOn(dataService, 'copy');
+        vi.spyOn(dataService, 'copy');
 
         const service = getService(dataService);
         service.copyWorld();

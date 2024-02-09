@@ -1,4 +1,4 @@
-import { describe, beforeAll, test, expect } from 'vitest';
+import { describe, test, expect, beforeAll } from 'vitest';
 import { DataSynchronizer } from "../../../Engine/Services/DataSynchronizer";
 import { RuntimeProperties } from "../../../Engine/runtimeProperties";
 import { Bandit } from "../../../Games/MyRolePlayingGame/enemies/bandit";
@@ -7,8 +7,13 @@ import { Journal } from "../../../Games/MyRolePlayingGame/items/journal";
 import { LeatherBoots } from "../../../Games/MyRolePlayingGame/items/leatherBoots";
 import { Sword } from "../../../Games/MyRolePlayingGame/items/sword";
 import { compareId } from "../helpers";
+import { RunGame } from '../../../Games/MyRolePlayingGame/run';
 
 describe("DataSynchronizer", () => {
+
+    beforeAll(() => {
+        RunGame();
+    });
 
     test("should update, add and remove plain properties on entity", function() {
         const synchronizer = new DataSynchronizer();

@@ -6,7 +6,6 @@ import { IItem } from './item';
  * to the default ones and which are custom for a game.
  */
 export class DefaultEquipment implements IEquipment {
-    /* istanbul ignore next -- @preserve */
     constructor() {
         this.head = null;
         this.amulet = null;

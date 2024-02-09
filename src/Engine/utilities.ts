@@ -10,9 +10,9 @@ export function getId(id: Function | string) {
         actualId = id.name;
         let nameParts = actualId.split('_');
     
-        /* istanbul ignore if -- @preserve */
         // This is a workaround with function names changing when building for production.
         // E.g. Start becomes Start_Start.
+        /* v8 ignore next 3 */
         if (nameParts.length > 1) {
             actualId = nameParts[0];
         }
