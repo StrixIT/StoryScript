@@ -81,6 +81,22 @@ export class LocationService implements ILocationService {
         }
     }
 
+    loadLocationDescriptions = (game: IGame): void => {
+        if (!game.currentLocation[RuntimeProperties.Descriptions]) {
+            const descriptionKey = `location_${game.currentLocation.id}`;
+            game.currentLocation[RuntimeProperties.Description] ??= this._descriptions.get(descriptionKey);
+
+            if (game.currentLocation[RuntimeProperties.Description]) {
+                this.processVisualFeatures(getParsedDocument('visual-features', game.currentLocation[RuntimeProperties.Description])[0], game);
+                this.processDescriptions(getParsedDocument(RuntimeProperties.Description, game.currentLocation[RuntimeProperties.Description]), game);
+            }
+        }
+
+        if (this.selectLocationDescription(game)) {
+            this.processTextFeatures(game);
+        }
+    }
+
     private switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
         var presentLocation: ICompiledLocation;
 
@@ -262,22 +278,6 @@ export class LocationService implements ILocationService {
         });
     }
 
-    private loadLocationDescriptions = (game: IGame): void => {
-        if (!game.currentLocation[RuntimeProperties.Descriptions]) {
-            const descriptionKey = `location_${game.currentLocation.id}`;
-            game.currentLocation[RuntimeProperties.Description] ??= this._descriptions.get(descriptionKey);
-
-            if (game.currentLocation[RuntimeProperties.Description]) {
-                this.processVisualFeatures(getParsedDocument('visual-features', game.currentLocation[RuntimeProperties.Description])[0], game);
-                this.processDescriptions(getParsedDocument(RuntimeProperties.Description, game.currentLocation[RuntimeProperties.Description]), game);
-            }
-        }
-
-        if (this.selectLocationDescription(game)) {
-            this.processTextFeatures(game);
-        }
-    }
-
     private processDescriptions = (descriptionNodes: HTMLCollectionOf<Element>, game: IGame): void => {
         if (!descriptionNodes || !descriptionNodes.length) {
             return;
@@ -356,7 +356,21 @@ export class LocationService implements ILocationService {
             throw new Error('There is no name attribute for a feature node for location ' + game.currentLocation.id + '.');
         }
 
-        return game.currentLocation.features.filter(f => compareString(f.id, nameAttribute))[0];
+        const feature = game.currentLocation.features.get(nameAttribute);
+
+        // This is a workaround to restore the description for features that originally have only a placeholder in the 
+        // location description and are added later to the location's feature collection. As descriptions are not saved,
+        // the description is lost when the browser refreshes.
+        if (feature && !feature[RuntimeProperties.Description]) {
+            const pristineFeature = game.definitions.features.get(feature.id)?.();
+
+            if (pristineFeature[RuntimeProperties.Description]) {
+                feature[RuntimeProperties.Description] = pristineFeature[RuntimeProperties.Description];
+
+            }
+        }
+
+        return feature;
     }
 
     private selectLocationDescription = (game: IGame): boolean => {

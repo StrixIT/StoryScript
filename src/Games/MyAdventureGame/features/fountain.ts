@@ -3,6 +3,7 @@ import { Combinations } from '../combinations';
 import { Flask } from '../items/flask';
 import { Water } from '../items/water';
 import { Corridor } from './corridor';
+import { Herbs } from '../items/herbs';
 
 export function Fountain() {
     return Feature({
@@ -43,6 +44,13 @@ export function Fountain() {
                         else {
                             return 'The fountain water is pleasant to the touch.';
                         }
+                    }
+                },
+                {
+                    combinationType: Combinations.USE,
+                    tool: Herbs,
+                    match: (game, target, tool): string => {
+                        return `You throw some leaves into the fountain. They disappear with a strange light.`;
                     }
                 }
             ]

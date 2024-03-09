@@ -33,8 +33,10 @@ if (Function.prototype.proxy === undefined) {
 }
 
 export function addFunctionExtensions() {
+    console.log(Function.prototype.name);
+    
+    /* v8 ignore start  */
     if (Function.prototype.name === undefined) {
-        /* istanbul ignore next -- @preserve */
         // This is only used by legacy browsers
         Object.defineProperty(Function.prototype, 'name', {
             get: function () {
@@ -42,6 +44,7 @@ export function addFunctionExtensions() {
             }
         });
     }
+    /* v8 ignore stop  */
 }
 
 // This allows deserializing functions added at runtime without using eval.
@@ -66,7 +69,7 @@ export function addArrayExtensions() {
                 let result: any;
 
                 if (id) {
-                    result = find(id, this)[0];
+                    result = find(id, this, false)[0];
                 }
                 else {
                     result = this[0];
@@ -82,7 +85,7 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'all', {
             enumerable: false,
             value: function (id: any) {
-                return find(id, this).filter(r => !r[RuntimeProperties.Deleted]);
+                return find(id, this, false).filter(r => !r[RuntimeProperties.Deleted]);
             }
         });
     }
@@ -133,7 +136,7 @@ export function addArrayExtensions() {
                     existing = withDeleted.indexOf(entity) > -1 ? entity : null;
 
                     if (!existing) {
-                        existing = find(entity, withDeleted).sort((a, b) => a[RuntimeProperties.Deleted] ? a : b);
+                        existing = find(entity, withDeleted, true).sort((a, b) => a[RuntimeProperties.Deleted] ? a : b);
 
                         if (existing.length > 1) {
                             // Todo: what happens with two entities of the same type?
@@ -164,12 +167,12 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'remove', {
             enumerable: false,
             writable: true,
-            value: function (item: any) {
+            value: function (item: any, usePropertyMatch: boolean) {
                 if (!item) {
-                    return false;
+                    return null;
                 }
 
-                let entry = find(item, this)[0];
+                let entry = find(item, this, usePropertyMatch)[0];
                 let index = -1;
 
                 // Todo: is this ever the case with the current implementation of find?
@@ -177,19 +180,19 @@ export function addArrayExtensions() {
                     index = this.indexOf(item);
 
                     if (index === -1) {
-                        return false;
+                        return null;
                     }
 
                     entry = item;
                 }
                 
                 if (!entry) {
-                    return false;
+                    return null;
                 }
 
                 index = this.indexOf(entry);
                 Array.prototype.splice.call(this, index, 1);
-                return true;
+                return entry;
             }
         });
     }
@@ -204,13 +207,15 @@ export function addArrayExtensions() {
                 // Only add a deletion record when the item is removed from the array and the
                 // item does not have the 'added' flag. This means the item is originally from
                 // this array.
-                if (collection.remove(item) && !item[RuntimeProperties.Added]) {
-                    const { first, second } = getKeyPropertyNames(item);
+                let entry = collection.remove(item, false);
+
+                if (entry && !entry[RuntimeProperties.Added]) {
+                    const { first, second } = getKeyPropertyNames(entry);
                     const keyProps = 
-                        first && second ? { [first]: item[first], [second]: item[second] } :
-                        first ? { [first]: item[first] } :
-                        second ? { [second]: item[second] } : 
-                        { [Object.keys(item)[0]]: recordKeyPropertyName }
+                        first && second ? { [first]: entry[first], [second]: entry[second] } :
+                        first ? { [first]: entry[first] } :
+                        second ? { [second]: entry[second] } : 
+                        { [Object.keys(entry)[0]]: recordKeyPropertyName }
 
                     collection[deletedCollection] = collection[deletedCollection] || [];
                     collection[deletedCollection].push({ ...keyProps, [RuntimeProperties.Deleted]: true });
@@ -264,11 +269,11 @@ export function compareString(left: string, right: string): boolean {
     return left.toLowerCase() === right.toLowerCase();
 }
 
-function find(id: any, array: any[]): any[] {
+function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
     if (typeof id === 'object') {
         let result = Array.prototype.filter.call(array, (x: any) => x === id );
 
-        if (result.length === 0) {
+        if (result.length === 0 && usePropertyMatch) {
             result = Array.prototype.filter.call(array, p => propertyMatch(id, p));
         }
 
@@ -277,8 +282,8 @@ function find(id: any, array: any[]): any[] {
 
     id = getId(id);
 
-    return Array.prototype.filter.call(array, (x: { id: string, target: Function | string }) => { 
-        var target = getId(x.target);
-        return compareString(x.id, id)  || compareString(target, id);
+    return Array.prototype.filter.call(array, (x: { id: string, target: Function | string } | Function) => { 
+        var currentId = typeof x === 'function' ? x : x.target ?? x.id;
+        return compareString(getId(currentId), id);
     });
 }
