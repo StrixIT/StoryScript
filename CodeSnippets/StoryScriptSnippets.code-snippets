@@ -259,7 +259,7 @@
 		"body": [
 			"{",
 			"\tcombinationType: '$1',",
-			"\tmatch: (game: IGame, target: ICombinable, tool: ICombinable): string => {",
+			"\tmatch: (game: IGame, target: ICombinable, tool: ICombinable): string | { text: string, removeTarget: boolean } => {",
 			"\t\treturn '$2';",
 			"\t},",
 			"},"
