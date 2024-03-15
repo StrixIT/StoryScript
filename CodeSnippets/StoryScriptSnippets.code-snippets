@@ -311,8 +311,8 @@
 			"\t'$1':",
 			"\t(game: IGame) => {",
 			"\t\t$2",
-			"\t},"
-			"}",
+			"\t}",
+			"}"
 		],
 		"description": "Add a new StoryScript function"
 	},

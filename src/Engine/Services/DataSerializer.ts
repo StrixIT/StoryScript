@@ -73,7 +73,7 @@ export class DataSerializer implements IDataSerializer {
                 continue;
             }
             else if (Array.isArray(value)) {
-                initCollection(loaded, key);
+                initCollection(loaded, key, true);
                 this.restoreObjects(functionList, descriptions, value);
     
                 var arrayPropertyKey = `${key}_arrProps`;

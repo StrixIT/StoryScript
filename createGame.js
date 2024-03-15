@@ -9,7 +9,7 @@ if (!gameName) {
 }
 
 // Set the game name to the new game.
-correctFile('gameName.js', /gameName\s{0,}=\s{0,}[\w\']{0,};/g, `gameName = \'${gameName}\';`);
+correctFile('gameName.js', /gameName\s{0,}=\s{0,}[\w\'-]{0,};/g, `gameName = \'${gameName}\';`);
 
 const gameRoot = './src/Games/_GameTemplate/';
 const gameDestination = './src/Games/' + gameName;
@@ -25,9 +25,6 @@ const testDestination = './src/Tests/Games/' + gameName;
 
 // Copy the test template.
 copySync(testRoot, testDestination);
-
-// Correct the karma configuration file.
-correctFile(`${testDestination}/karma.conf.cjs`, /\/Games\/_GameTemplate/g, '/Games/' + gameName);
 
 function correctFile(fileName, toReplace, replacement) {
     let fileData = readFileSync(fileName, 'utf8');

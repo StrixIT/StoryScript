@@ -134,7 +134,8 @@ export function setReadOnlyProperties(key: string, data: any) {
     }
 }
 
-export function initCollection(entity: any, property: string) {
+
+export function initCollection(entity: any, property: string, skipRegistration?: boolean) {
     const _entityCollections: string[] = [
         'features',
         'items',
@@ -160,17 +161,34 @@ export function initCollection(entity: any, property: string) {
     var collection = entity[property] || [];
 
     if ((property === 'features' || property === 'trade') && entity[property]) {
-        // Initialize features that have been declared inline. Check for the existence of a type property to determine whether the object is already initialized.
-        // Store the current entity key, as it will be overridden when inline features are build.
+        // Initialize features that have been declared inline. Check for the existence of a type property to determine
+        // whether the object is already initialized. Store the current entity key, as it will be overridden when inline 
+        // features are build.
         const locationEntityKey = _currentEntityKey;
 
-        var inlineCollection = (<[]>entity[property]).map((e: { type: string, name: string }) => e.type ? e : Create(getSingular(property), e, getIdFromName(e)));
+        var inlineCollection = (<[]>entity[property]).map((e: { type: string, name: string }) => {
+            if (e.type) {
+                return e;
+            }
+
+            const typeName = getSingular(property);
+            const feature = Create(typeName, e, getIdFromName(e));
+
+            // As function ids are usually added building an entity twice, they need to be added here manually to set
+            // them on the entities part of this collection. As the location is build twice, the registered features will
+            // have the function ids set, but they will not be on the features that are part of the registered locations!
+            addFunctionIds(feature, typeName, getDefinitionKeys());
+            return feature;
+        });
+
         collection.length = 0;
 
         inlineCollection.forEach(e => {
             collection.push(e);
 
-            if (e.id) {
+            // Do not register entities when rebuilding clones from stored data. They will then appear to be part of the
+            // pristine data used for comparison in the data synchronizer, and removed entities aren't properly detected.
+            if (e.id && !skipRegistration) {
                 registerEntity(e);
             }
         });
@@ -392,7 +410,7 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         return <T><unknown>compiledEntity;
     }
 
-    const definitionKeys = Object.getOwnPropertyNames(_definitions).filter(d => d !== 'actions');
+    const definitionKeys = getDefinitionKeys();
 
     addFunctionIds(compiledEntity, type, definitionKeys);
     var plural = getPlural(type);
@@ -410,6 +428,10 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     }
 
     return <T><unknown>compiledEntity;
+}
+
+function getDefinitionKeys() {
+    return Object.getOwnPropertyNames(_definitions).filter(d => d !== 'actions');
 }
 
 function loadPictureFromDescription (entity: IEntity, description: string): void {
