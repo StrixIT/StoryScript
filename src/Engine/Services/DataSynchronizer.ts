@@ -63,11 +63,11 @@ export class DataSynchronizer implements IDataSynchronizer {
             const entityMatch = pristineEntities[getPlural(e.type)][e.id];
             entities.delete(entityMatch);
         });
-    
-        if (!pristineProperty?.length) {
+
+        if (!pristineProperty) {
             return;
         }
-    
+
         // Remove entities that are no longer on the pristine collection, but only when they were not added programmatically.
         entities.filter(c => !pristineProperty.find(p => p.id === c.id)).map(e => {
             if (e[RuntimeProperties.Added]) {
@@ -77,7 +77,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             console.log(this.getUpdateCollectionLogMessage(e, parentEntity, 'Removing', 'from'));
             entities.remove(e);
         });
-    
+
         // Add entities that are on the pristine entity but not on the current entity.
         // These have been added during editing.
         pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
@@ -164,9 +164,12 @@ export class DataSynchronizer implements IDataSynchronizer {
     
         newPropertyNames.forEach(p => {
             const pristineValue = pristineEntity[p];
-            const logValue = pristineValue?.id ?? pristineValue?.name ?? pristineValue;
-            console.log(this.getUpdateValueLogMessage(p, logValue, entity, 'Adding', 'to', parentEntity));
-            entity[p] = pristineValue;
+
+            if (pristineValue !== undefined) {
+                const logValue = pristineValue?.id ?? pristineValue?.name ?? pristineValue;
+                console.log(this.getUpdateValueLogMessage(p, logValue, entity, 'Adding', 'to', parentEntity));
+                entity[p] = pristineValue;
+            }
         });
     }
     
@@ -275,8 +278,8 @@ export class DataSynchronizer implements IDataSynchronizer {
         join: string
     ) => {
         const parentMessage = entity.type ? '' : `${parentProperty} `;
-        const messageValue = logValue;
-        const baseMessage = `${prefix} ${parentMessage}${propertyName} (value: ${messageValue}) ${join} `;
+        const valueMessage = typeof logValue === 'object' ? '' :  `(value: ${logValue})`;
+        const baseMessage = `${prefix} ${parentMessage}${propertyName}${valueMessage} ${join} `;
         const messageExtension = entity.type ? `${entity.type} ${entity.id}` : `${parentEntity?.type} ${parentEntity?.id}`;
     
         console.log(baseMessage + messageExtension);

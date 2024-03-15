@@ -47,7 +47,7 @@ export function propertyMatch(first: any, second: any): boolean {
         && (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
     }
 
-    if (firstProperty && secondProperty) {
+    if (firstProperty || secondProperty) {
         return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) ||
         (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
     }

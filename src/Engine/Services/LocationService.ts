@@ -364,7 +364,7 @@ export class LocationService implements ILocationService {
         if (feature && !feature[RuntimeProperties.Description]) {
             const pristineFeature = game.definitions.features.get(feature.id)?.();
 
-            if (pristineFeature[RuntimeProperties.Description]) {
+            if (pristineFeature && pristineFeature[RuntimeProperties.Description]) {
                 feature[RuntimeProperties.Description] = pristineFeature[RuntimeProperties.Description];
 
             }
