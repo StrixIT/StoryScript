@@ -61,7 +61,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         // Move deleted entities to the deleted shadow array.
         entities.filter(e => e[RuntimeProperties.Deleted]).forEach(e => {
             const entityMatch = pristineEntities[getPlural(e.type)][e.id];
-            entities.delete(entityMatch);
+            entities.delete(entityMatch, true);
         });
 
         if (!pristineProperty) {
@@ -80,7 +80,8 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         // Add entities that are on the pristine entity but not on the current entity.
         // These have been added during editing.
-        pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
+        // TODO: this will ignore all entities of a certain type if only one original was deleted.
+        pristineProperty.filter(p => !entities.withDeleted().find(c => c.id === p.id)).map(p => {
             console.log(this.getUpdateCollectionLogMessage(p, parentEntity, 'Adding', 'to'));
             entities.push(p);
         });

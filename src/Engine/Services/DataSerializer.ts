@@ -1,13 +1,11 @@
 import { IDataSerializer } from "storyScript/Interfaces/services/dataSerializer";
 import { IFunctionIdParts } from "storyScript/Interfaces/services/functionIdParts";
 import { GetDescriptions, initCollection } from "storyScript/ObjectConstructors";
-import { parseFunction } from "storyScript/globals";
+import { parseFunction, serializeFunction } from "storyScript/globals";
 import { RuntimeProperties } from "storyScript/runtimeProperties";
 import { getId, getPlural } from "storyScript/utilities";
 
 export class DataSerializer implements IDataSerializer {
-
-    private _functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
 
     buildClone = (parentKey: string, values, pristineValues, clone?): any => {
         if (!clone) {
@@ -149,20 +147,7 @@ export class DataSerializer implements IDataSerializer {
                 clone[key] = getId(value);
             }
             else {
-                // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
-                // to a function. Convert values that have an arrow notation.
-                let functionString = value.toString();
-    
-                if (functionString.indexOf('function') == -1) {
-                    var arrowIndex = functionString.indexOf('=>');
-    
-                    // The arguments regex will fail when no arguments are used in production mode. Use empty brackets in that case.
-                    var args = functionString.match(this._functionArgumentRegex)?.[0] || '()';
-    
-                    functionString = 'function' + args + functionString.substring(arrowIndex + 2).trim();
-                }
-    
-                clone[key] = functionString;
+                clone[key] = serializeFunction(value);
             }
         }
     }

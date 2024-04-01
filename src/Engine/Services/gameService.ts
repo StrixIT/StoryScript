@@ -388,7 +388,7 @@ export class GameService implements IGameService {
 
             items.forEach((item: IItem) => {
                 if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, enemy, item)) {
-                    items.delete(item);
+                    enemy.items.delete(item);
                     this._game.currentLocation.items.add(item);
                 }
             });
@@ -398,7 +398,7 @@ export class GameService implements IGameService {
         this._game.character.currency += enemy.currency || 0;
         this._game.statistics.enemiesDefeated = this._game.statistics.enemiesDefeated || 0;
         this._game.statistics.enemiesDefeated += 1;
-        this._game.currentLocation.enemies.remove(enemy);
+        this._game.currentLocation.enemies.delete(enemy);
 
         if (this._rules.combat && this._rules.combat.enemyDefeated) {
             this._rules.combat.enemyDefeated(this._game, enemy);

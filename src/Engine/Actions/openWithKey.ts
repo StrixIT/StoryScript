@@ -2,6 +2,7 @@
 import { IBarrier } from '../Interfaces/barrier';
 import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
+import { makeSerializeSafe } from '../globals';
 
 /**
  * A basic function to remove a barrier using a key and then execute a callback function. When it is not specified that the player
@@ -9,7 +10,7 @@ import { IKey } from '../Interfaces/key';
  * @param callBack 
  */
 export function OpenWithKey(callback?: (game: IGame, barrier: IBarrier, destination: IDestination) => void) {
-    return (game: IGame, barrier: IBarrier, destination: IDestination) => {
+    return makeSerializeSafe((game: IGame, barrier: IBarrier, destination: IDestination) => {
         var key = typeof barrier.key === 'function' ? barrier.key() : <IKey>game.helpers.getItem(barrier.key);
 
         if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {
@@ -22,5 +23,5 @@ export function OpenWithKey(callback?: (game: IGame, barrier: IBarrier, destinat
         if (typeof callback !== 'undefined' && callback) {
             callback(game, barrier, destination);
         }
-    }
+    }, { 'callback': callback });
 }
