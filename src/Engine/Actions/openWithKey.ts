@@ -8,7 +8,7 @@ import { IKey } from '../Interfaces/key';
  * should keep the key after using it, it is removed from his item list.
  * @param callBack 
  */
-export function OpenWithKey(callBack?: (game: IGame, barrier: IBarrier, destination: IDestination) => void) {
+export function OpenWithKey(callback?: (game: IGame, barrier: IBarrier, destination: IDestination) => void) {
     return (game: IGame, barrier: IBarrier, destination: IDestination) => {
         var key = typeof barrier.key === 'function' ? barrier.key() : <IKey>game.helpers.getItem(barrier.key);
 
@@ -19,8 +19,8 @@ export function OpenWithKey(callBack?: (game: IGame, barrier: IBarrier, destinat
 
         delete destination.barrier;
 
-        if (callBack) {
-            callBack(game, barrier, destination);
+        if (typeof callback !== 'undefined' && callback) {
+            callback(game, barrier, destination);
         }
     }
 }

@@ -154,8 +154,9 @@
 			"\t\tequipmentType: $2EquipmentType.Miscellaneous,",
 			"\t\topen: {",
 			"\t\t\ttext: '$3',",
-			"\t\t\texecute: $4,",
-			"\t\t},",
+			"\t\t\texecute: (game: IGame) => {",
+			"\t\t\t}",
+			"\t\t}",
 			"\t});",
 			"}"
 		],

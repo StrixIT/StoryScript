@@ -45,7 +45,7 @@ export class NavigationComponent {
 
 	search: OperatorFunction<string, readonly { id: string, name: string }[]> = (text$: Observable<string>) => {
 		const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-		const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+		const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance?.isPopupOpen()));
 		const inputFocus$ = this.focus$;
 
 		return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(

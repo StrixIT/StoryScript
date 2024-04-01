@@ -10,7 +10,7 @@ export function Open(callback?: (game: IGame, barrier: IBarrier, destination: ID
     return (game: IGame, barrier: IBarrier, destination: IDestination): void => {
         delete destination.barrier;
 
-        if (callback) {
+        if (typeof callback !== 'undefined' && callback) {
             callback(game, barrier, destination);
         }
     }

@@ -20,15 +20,18 @@ if (!assetName) {
     process.exit();
 }
 
-let snippetKey =  assetType.substring(0, 1).toUpperCase() + assetType.substring(1) + 's';
-snippetKey = snippetKey.endsWith('ys') ? snippetKey.substring(0, snippetKey.length - 2) + 'ies' : snippetKey; 
+let baseSnippetKey =  assetType.substring(0, 1).toUpperCase() + assetType.substring(1) + 's';
+let snippetKey = baseSnippetKey.endsWith('ys') ? baseSnippetKey.substring(0, baseSnippetKey.length - 2) + 'ies' : baseSnippetKey; 
 const assetNameCapital = assetName.substring(0, 1).toUpperCase() + assetName.substring(1);
 
 const snippets = readFileSync('CodeSnippets\\StoryScriptSnippets.code-snippets');
 
 if (!snippets[snippetKey]) {
-    console.log(`No asset type ${assetType} exists.`);
-    process.exit();
+    if (!snippets[baseSnippetKey]) {
+        console.log(`No asset type ${assetType} exists.`);
+        process.exit();
+    }
+    snippetKey = baseSnippetKey;
 }
 
 const descriptionSnippet = snippets['Description'];
@@ -39,7 +42,7 @@ if (!descriptionSnippet) {
 }
 
 let includeDescription = !process.argv[4] || process.argv[4].toLowerCase() !== 'p';
-includeDescription = (snippetKey === 'Locations' || snippetKey === 'Persons') || ((snippetKey === 'Items' || snippetKey === 'Enemies') && includeDescription);
+includeDescription = (snippetKey === 'Locations' || snippetKey === 'Persons') || ((snippetKey === 'Items' || snippetKey === 'Keys' || snippetKey === 'Enemies') && includeDescription);
 
 let conversationSnippet = null;
 
