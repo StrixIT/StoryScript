@@ -353,7 +353,7 @@ export class DataSynchronizer implements IDataSynchronizer {
     }
     
     private removeDeletedEntries = (item: any) => {
-        if (typeof item === undefined) {
+        if (item === undefined) {
             return;
         }
     

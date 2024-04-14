@@ -2,7 +2,7 @@
     <div id="conversation-options" *ngIf="activeNode">
         <div [innerHTML]="getLines(activeNode) | safe: 'html'"></div>
         <div *ngFor="let reply of activeNode.replies.options">
-            <div *ngIf="reply.available || reply.showWhenUnavailable">
+            <div *ngIf="reply.available || reply.showWhenUnavailable" [ngClass]="{ 'unavailable': !reply.available }">
                 <input type="radio" [disabled]="!reply.available" (click)="answer(activeNode, reply)" />
                 <span [innerHTML]="getLines(reply) | safe: 'html'"></span>
             </div>
