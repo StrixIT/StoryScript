@@ -49,17 +49,60 @@ export function addFunctionExtensions() {
 
 // This allows deserializing functions added at runtime without using eval.
 // Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
-export function parseFunction (text: string) {
-    var funcReg = /function[\s]*([a-zA-Z0-9]*)(\([\s\w\d,]*\))[\s]*({[\S\s]*})/gmi;
+export function parseFunction<T extends Function>(text: string) {
+    const funcReg = /function[\s]*([a-zA-Z0-9]*)(\([\s\w\d,]*\))[\s]*({[\S\s]*})/gmi;
     var match = funcReg.exec(text);
 
     if (match) {
         var args = match[2].substring(1, match[2].length - 1);
-        return new Function(args, match[3]);
+        return <T>(new Function(args, match[3]));
     }
 
     return null;
 };
+
+/**
+ * This function creates a new function with the callbacks embedded. This makes the new function safe for serialization.
+ * @param functionDefinition The main function to make safe for serialization.
+ * @param callbacks The callback functions to embed. Use the names the callbacks have in the main function body.
+ * @returns The main function with the callbacks embedded.
+ */
+export function makeSerializeSafe<T extends Function>(functionDefinition: T, callbacks: { [key: string]: Function }): T {
+    let serialized = serializeFunction(functionDefinition);
+
+    for (var key in callbacks) {
+        var callback = callbacks[key];
+
+        if (callback) {
+            if (serialized.indexOf(key) > -1) {
+                var startIndex = serialized.indexOf('{') + 1;
+                serialized = serialized.substring(0, startIndex) + `const ${key} = ${serializeFunction(callback)};` + serialized.substring(startIndex);
+            }
+        }
+    }
+
+    return parseFunction<T>(serialized);
+}
+
+export function serializeFunction(value: Function) {
+    const _functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
+
+    // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
+    // to a function. Convert values that have an arrow notation.
+    let functionString = value.toString();
+    const argumentString = functionString.substring(0, functionString.indexOf('{'));
+
+    if (argumentString.indexOf('function') == -1) {
+        var arrowIndex = argumentString.indexOf('=>');
+
+        // The arguments regex will fail when no arguments are used in production mode. Use empty brackets in that case.
+        var args = functionString.match(_functionArgumentRegex)?.[0] || '()';
+
+        functionString = 'function' + args + functionString.substring(arrowIndex + 2).trim();
+    }
+
+    return functionString;
+}
 
 export function addArrayExtensions() {
     if ((<any>Array.prototype).get === undefined) {
@@ -124,6 +167,7 @@ export function addArrayExtensions() {
     if ((<any>Array.prototype).add === undefined) {
         Object.defineProperty(Array.prototype, 'add', {
             enumerable: false,
+            writable: true,
             value: function (entity: any) {
                 if (typeof entity === 'undefined') {
                     return;
@@ -136,23 +180,20 @@ export function addArrayExtensions() {
                     existing = withDeleted.indexOf(entity) > -1 ? entity : null;
 
                     if (!existing) {
-                        existing = find(entity, withDeleted, true).sort((a, b) => a[RuntimeProperties.Deleted] ? a : b);
-
-                        if (existing.length > 1) {
-                            // Todo: what happens with two entities of the same type?
-                            var test = 0;
-                        }
-
-                        existing = existing[0];
+                        existing = find(entity, withDeleted, true).sort((a, b) => a[RuntimeProperties.Deleted] ? -1 : 1)[0];
                     }
                 }
 
                 // If an existing delete record is found, the item was originally removed from this array.
                 // Remove the deleted record and the added flag so the original situation is restored.
                 // Otherwise, add the added flag.
-                if (existing) {
+                if (existing && existing[RuntimeProperties.Deleted]) {
                     const deletedItems = this[deletedCollection];
-                    deletedItems.splice(deletedItems.indexOf(existing), 1);
+
+                    if (deletedItems && deletedItems.indexOf(existing) > -1) {
+                        deletedItems.splice(deletedItems.indexOf(existing), 1);
+                    }
+
                     delete entity[RuntimeProperties.Added];
                 } else {
                     entity[RuntimeProperties.Added] = true;
@@ -175,7 +216,6 @@ export function addArrayExtensions() {
                 let entry = find(item, this, usePropertyMatch)[0];
                 let index = -1;
 
-                // Todo: is this ever the case with the current implementation of find?
                 if (typeof entry === 'undefined') {
                     index = this.indexOf(item);
 
@@ -201,13 +241,14 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'delete', {
             enumerable: false,
             writable: true,
-            value: function (item: any) {
+            value: function (item: any, usePropertyMatch?: boolean) {
                 const collection = this;
+                usePropertyMatch = typeof usePropertyMatch === 'undefined' ? false : usePropertyMatch;
 
                 // Only add a deletion record when the item is removed from the array and the
                 // item does not have the 'added' flag. This means the item is originally from
                 // this array.
-                let entry = collection.remove(item, false);
+                let entry = collection.remove(item, usePropertyMatch);
 
                 if (entry && !entry[RuntimeProperties.Added]) {
                     const { first, second } = getKeyPropertyNames(entry);

@@ -37,14 +37,6 @@ export interface ITrade {
     ownItemsOnly?: boolean;
 
     /**
-     * This function determines whether the list of items available for buying and selling should be refreshed using the itemSelector of the buy property.
-     * Return true to refresh the lists, false to keep them as they were.
-     * @param game The game object
-     * @param trade The trader for which to refresh the item lists
-     */
-    initCollection?(game: IGame, trade: ITrade): boolean;
-
-    /**
      * This function is executed when the player has bought an item from the trader.
      * @param game The game object
      * @param item The item bought
@@ -66,5 +58,15 @@ export interface ITrade {
     /**
      * The collection of items the trader has to offer or that can be taken from the store.
      */
-    buy?: IStock;
+    buy?: IStock & {
+          
+        /**
+         * This function runs when ititiating trade and determines whether the list of items
+         * available for buying should be refreshed. Return true to refresh the lists, false 
+         * to keep them as they were.
+         * @param game The game object
+         * @param trade The trader for which to refresh the item lists
+         */
+        initCollection?(game: IGame, trade: ITrade): boolean;
+    };
 }

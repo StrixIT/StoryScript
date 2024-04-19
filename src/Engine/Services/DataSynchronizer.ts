@@ -2,6 +2,7 @@ import { IDataSynchronizer } from "storyScript/Interfaces/services/dataSynchroni
 import { IUpdatable } from "storyScript/Interfaces/updatable";
 import { RuntimeProperties } from "storyScript/runtimeProperties";
 import { getKeyPropertyNames, getPlural, getSingular, getValue, propertyMatch } from "storyScript/utilities";
+import { ActionType } from "../Interfaces/storyScript";
 
 export class DataSynchronizer implements IDataSynchronizer {
 
@@ -50,7 +51,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             }
     
             const update = this.shouldUpdate(entity, pristine, parentEntity, pristineParentEntity);
-            this.updateModifiedEntity(entity, pristine, pristineEntities, update, parentEntity, pristineParentEntity, entity.type);      
+            this.updateModifiedEntity(entity, pristine, pristineEntities, update, parentEntity, pristineParentEntity, null, null, entity.type);      
         });
     
         removedEntities.forEach(e => {
@@ -61,7 +62,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         // Move deleted entities to the deleted shadow array.
         entities.filter(e => e[RuntimeProperties.Deleted]).forEach(e => {
             const entityMatch = pristineEntities[getPlural(e.type)][e.id];
-            entities.delete(entityMatch);
+            entities.delete(entityMatch, true);
         });
 
         if (!pristineProperty) {
@@ -80,7 +81,8 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         // Add entities that are on the pristine entity but not on the current entity.
         // These have been added during editing.
-        pristineProperty.filter(p => !entities.find(c => c.id === p.id)).map(p => {
+        // TODO: this will ignore all entities of a certain type if only one original was deleted.
+        pristineProperty.filter(p => !entities.withDeleted().find(c => c.id === p.id)).map(p => {
             console.log(this.getUpdateCollectionLogMessage(p, parentEntity, 'Adding', 'to'));
             entities.push(p);
         });
@@ -93,6 +95,8 @@ export class DataSynchronizer implements IDataSynchronizer {
         updateValues?: boolean,
         parentEntity?: IUpdatable,
         pristineParentEntity?: IUpdatable,
+        grantParentEntity?: IUpdatable,
+        pristineGrantParentEntity?: IUpdatable,
         parentProperty?: string
     ): void => {
         if (Array.isArray(entity) && Array.isArray(pristineEntity)) {
@@ -116,7 +120,7 @@ export class DataSynchronizer implements IDataSynchronizer {
     
             // If the property currently exists on the entity but isn't part of the new definition, delete it now.
             if (updateValues && typeof pristineProperty === 'undefined') {
-                this.deleteRemovedProperty(p, currentProperty, entity, parentEntity, parentProperty)
+                this.deleteRemovedProperty(p, currentProperty, entity, parentEntity, grantParentEntity, parentProperty)
                 return;
             }
     
@@ -129,16 +133,16 @@ export class DataSynchronizer implements IDataSynchronizer {
     
             else if (this.isEntity(currentProperty)) {
                 const update = this.shouldUpdate(currentProperty, pristineProperty);
-                this.updateModifiedEntity(currentProperty, pristineEntities[getPlural(currentProperty.type)][currentProperty.id], pristineEntities, update, parentEntity, pristineParentEntity, p);
+                this.updateModifiedEntity(currentProperty, pristineEntities[getPlural(currentProperty.type)][currentProperty.id], pristineEntities, update, parentEntity, pristineParentEntity, grantParentEntity, pristineGrantParentEntity, p);
                 return;
             }
     
             if (typeof currentProperty === 'object' && currentProperty && pristineProperty) {
-                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, updateValues, parentEntity ?? entity, pristineParentEntity ?? pristineEntity, p);
+                this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, updateValues, entity, pristineEntity, parentEntity, pristineParentEntity, p);
                 return;
             } 
     
-            this.updatePropertyValue(p, entity, pristineProperty, parentEntity, parentProperty, updateValues);
+            this.updatePropertyValue(p, entity, parentEntity, grantParentEntity, pristineProperty, parentProperty, updateValues);
         });
     
         this.addNewProperties(entity, pristineEntity, parentEntity, propertyNames, updateValues);
@@ -209,7 +213,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             }
     
             if (pristineValue !== undefined) {
-                this.updateModifiedEntity(currentValue, pristineValue, pristineEntities, updateValues, parentEntity, pristineParentEntity, parentProperty);
+                this.updateModifiedEntity(currentValue, pristineValue, pristineEntities, updateValues, parentEntity, pristineParentEntity, null, null, parentProperty);
             } else {
                 this.removeDeletedEntries(currentValue);
             }
@@ -227,7 +231,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         });
     }
     
-    private deleteRemovedProperty = (propertyName: string, currentProperty: any, entity: any, parentEntity: any, parentProperty: string) => {
+    private deleteRemovedProperty = (propertyName: string, currentProperty: any, entity: any, parentEntity: any, grantParentEntity: any, parentProperty: string) => {
         if (typeof currentProperty === 'undefined') {
             return;
         }
@@ -242,15 +246,16 @@ export class DataSynchronizer implements IDataSynchronizer {
             return;
         }
     
-        this.logPropertyChange(entity, parentProperty, currentProperty, propertyName, parentEntity, 'Removing', 'from');
+        this.logPropertyChange(entity, parentProperty, currentProperty, propertyName, parentEntity, grantParentEntity, 'Removing', 'from');
         delete entity[propertyName];
     }
     
     private updatePropertyValue = (
         propertyName: string, 
         entity: any, 
+        parentEntity: IUpdatable,
+        grantParentEntity: IUpdatable,
         pristineProperty: any, 
-        parentEntity: IUpdatable, 
         parentProperty: any, 
         updateValues: boolean
     ) => {
@@ -264,7 +269,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             return;
         }
     
-        this.logPropertyChange(entity, parentProperty, pristineValue, propertyName, parentEntity, 'Updating', 'on');
+        this.logPropertyChange(entity, parentProperty, pristineValue, propertyName, parentEntity, grantParentEntity, 'Updating', 'on');
         entity[propertyName] = pristineValue;
     }
     
@@ -274,13 +279,30 @@ export class DataSynchronizer implements IDataSynchronizer {
         logValue: string, 
         propertyName: string, 
         parentEntity: { type: string; id: string; },
+        grantParentEntity: { type: string; id: string; },
         prefix: string,
         join: string
     ) => {
         const parentMessage = entity.type ? '' : `${parentProperty} `;
         const valueMessage = typeof logValue === 'object' ? '' :  `(value: ${logValue})`;
         const baseMessage = `${prefix} ${parentMessage}${propertyName}${valueMessage} ${join} `;
-        const messageExtension = entity.type ? `${entity.type} ${entity.id}` : `${parentEntity?.type} ${parentEntity?.id}`;
+        const messageExtension = entity.type ? `${entity.type} ${entity.id}` 
+            : parentEntity?.type ? `${parentEntity.type} ${parentEntity.id}` 
+                : `${grantParentEntity?.type} ${grantParentEntity?.id}` ;
+
+        // Ignore logging for known properties that are changed by the engine at runtime.
+        
+        // 1. The ownItemsOnly flag is set by the engine to false for non-person trades. We want this value to default to true
+        // when defining a new trade, so by default persons sell only their own stuff.
+        if (entity.type === 'trade' && propertyName == 'ownItemsOnly') {
+            return;
+        }
+
+        // 2. The currency and name of the trade are changed for trades on persons. This is done to have the currency in one
+        // place for all trades and use the trader's name in the trade action.
+        if (parentEntity.type === 'person' && (propertyName === 'currency' || propertyName === 'name')) {
+            return;
+        }
     
         console.log(baseMessage + messageExtension);
     }
@@ -289,6 +311,13 @@ export class DataSynchronizer implements IDataSynchronizer {
         parentProperty = getSingular(parentProperty);
     
         itemsToDelete.forEach(i => {
+            // Ignore logging for known types that are added by the engine at runtime.
+            
+            // 1. Trade actions are added to locations when entered, and are not on locations at design time.
+            if (i.actionType === ActionType.Trade && i.execute === 'trade') {
+                return;
+            }
+
             console.log(this.getUpdateObjectLogMessage(parentProperty, this.getItemName(i), parentEntity, 'Removing', 'from', parentEntity));
         });
     
@@ -352,7 +381,7 @@ export class DataSynchronizer implements IDataSynchronizer {
     }
     
     private removeDeletedEntries = (item: any) => {
-        if (typeof item === undefined) {
+        if (item === undefined) {
             return;
         }
     

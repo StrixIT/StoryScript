@@ -15,7 +15,7 @@ import { parseGameProperties } from 'storyScript/utilities';
 import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 export class ConversationService implements IConversationService {
-    constructor(private _dataService: IDataService, private _game: IGame) {
+    constructor(private _dataService: IDataService, private _game: IGame, private _descriptions: Map<string, string>) {
     }
 
     talk = (person: IPerson): void => {
@@ -60,7 +60,8 @@ export class ConversationService implements IConversationService {
         }
 
         persons.filter(p => p.conversation && !p.conversation[RuntimeProperties.Nodes]).forEach((person) => {
-            var conversationElement = getParsedDocument('conversation', person[RuntimeProperties.Description])[0];
+            const descriptionKey = `person_${person.id}`;
+            var conversationElement = getParsedDocument('conversation', person[RuntimeProperties.Description] ?? this._descriptions.get(descriptionKey))[0];
             var defaultReply = this.getDefaultReply(conversationElement, person);
             var conversationNodes = conversationElement.getElementsByTagName('node');
 

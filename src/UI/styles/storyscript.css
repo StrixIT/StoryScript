@@ -120,6 +120,10 @@ button {
     margin-left: 10px;
 }
 
+#conversation-options .unavailable {
+    color: rgba(0, 0, 0, 0.5);
+}
+
 .conversation-lines p {
     margin: 5px 0 0 0;
 }

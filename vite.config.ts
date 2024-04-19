@@ -72,10 +72,6 @@ var plugins = [
   htmlImport
 ];
 
-// Todo: add build date only in development
-// if (process.env === 'development') {
-
-// }
 
 // https://vitejs.dev/config/
 export default defineConfig({

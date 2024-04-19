@@ -190,7 +190,7 @@ export class LocationService implements ILocationService {
     private initDestinations = (location: ICompiledLocation): void => {
         // Add a proxy to the destination collection push function, to replace the target function pointer
         // with the target id when adding destinations and enemies at runtime.
-        location.destinations.push = location.destinations.push.proxy(this.addDestination, this._game);
+        location.destinations.add = location.destinations.add.proxy(this.addDestination, this._game);
 
         Object.defineProperty(location, 'activeDestinations', {
             get: function () {
@@ -403,7 +403,7 @@ export class LocationService implements ILocationService {
 
 function addKeyAction(game: IGame, destination: IDestination) {
     if (destination.barrier && destination.barrier.key) {
-        var key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem( destination.barrier.key);
+        var key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
         var existingAction = null;
         var keyActionHash = createFunctionHash(key.open.execute);
 

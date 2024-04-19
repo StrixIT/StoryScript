@@ -16,6 +16,8 @@ export interface IDataSynchronizer {
         updateValues?: boolean,
         parentEntity?: IUpdatable,
         pristineParentEntity?: IUpdatable,
+        grantParentEntity?: IUpdatable,
+        pristineGrantParentEntity?: IUpdatable,
         parentProperty?: string
     ): void;
 }
