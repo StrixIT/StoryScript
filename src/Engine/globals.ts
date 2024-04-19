@@ -180,23 +180,20 @@ export function addArrayExtensions() {
                     existing = withDeleted.indexOf(entity) > -1 ? entity : null;
 
                     if (!existing) {
-                        existing = find(entity, withDeleted, true).sort((a, b) => a[RuntimeProperties.Deleted] ? a : b);
-
-                        if (existing.length > 1) {
-                            // Todo: what happens with two entities of the same type?
-                            var test = 0;
-                        }
-
-                        existing = existing[0];
+                        existing = find(entity, withDeleted, true).sort((a, b) => a[RuntimeProperties.Deleted] ? -1 : 1)[0];
                     }
                 }
 
                 // If an existing delete record is found, the item was originally removed from this array.
                 // Remove the deleted record and the added flag so the original situation is restored.
                 // Otherwise, add the added flag.
-                if (existing) {
+                if (existing && existing[RuntimeProperties.Deleted]) {
                     const deletedItems = this[deletedCollection];
-                    deletedItems.splice(deletedItems.indexOf(existing), 1);
+
+                    if (deletedItems && deletedItems.indexOf(existing) > -1) {
+                        deletedItems.splice(deletedItems.indexOf(existing), 1);
+                    }
+
                     delete entity[RuntimeProperties.Added];
                 } else {
                     entity[RuntimeProperties.Added] = true;
@@ -219,7 +216,6 @@ export function addArrayExtensions() {
                 let entry = find(item, this, usePropertyMatch)[0];
                 let index = -1;
 
-                // Todo: is this ever the case with the current implementation of find?
                 if (typeof entry === 'undefined') {
                     index = this.indexOf(item);
 
