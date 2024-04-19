@@ -6,7 +6,7 @@ import path from 'path';
 import { normalizePath } from 'vite';
 import { assetRegex } from './constants';
 
-const gamePath = path.resolve(__dirname, `./src/Games/${gameName}/`);
+const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
 
 const htmlImport = {
   name: "htmlImport",
@@ -49,7 +49,7 @@ const addBuildDate = {
   }
 }
 
-const resourceRegex = /\/resources\/(.{1,}\.)/;
+const resourceRegex = /\\resources\\(.{1,}\.)/;
 
 var plugins = [
   addBuildDate,
