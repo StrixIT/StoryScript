@@ -9,12 +9,12 @@ export interface IStock {
     /**
      * The text for buying or selling the items as shown to the player.
      */
-    text?: string;
+    text: string;
 
     /**
      * The text to show to the player when there are no items available for buying or selling.
      */
-    emptyText?: string;
+    emptyText: string;
 
     /**
      * A number or a function to generate a number dynamically that is used to modify the price of items to buy or sell.

@@ -87,7 +87,7 @@ export class TradeService implements ITradeService {
             return trader.buy.itemSelector(this._game, item);
         };
 
-        if ((trader.initCollection && trader.initCollection(this._game, trader) || !itemsForSale)) {
+        if ((trader.buy.initCollection && trader.buy.initCollection(this._game, trader) || !itemsForSale)) {
             var collection = <any>(trader.ownItemsOnly ? this._game.person.items : this._game.definitions.items);
             itemsForSale = randomList<IItem>(collection, trader.buy.maxItems, 'items', this._game.definitions, buySelector);
         }
@@ -102,9 +102,11 @@ export class TradeService implements ITradeService {
             trader.buy.items = [];
         }
 
-        // Use add so the items added for the playet to buy are tracked on edit updates.
+        // Use add instead of push here so the items added for the player to buy are tracked on edit updates.
+        // Also do filter existing items using the buy selector, so items that were added before but should not
+        // be available from the trader anymore are removed. Also do apply the maxItems property again.
         trader.buy.items.length = 0;
-        itemsForSale.forEach(i => trader.buy.items.add(i));
+        itemsForSale.filter(buySelector).slice(0, trader.buy.maxItems).forEach(i => trader.buy.items.add(i));
 
         if (!trader.sell.items) {
             trader.sell.items = [];
