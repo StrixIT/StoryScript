@@ -40,7 +40,6 @@ const addBuildDate = {
       var match = code.match(assetConstructorRegex);
 
       if (match) {
-        console.log(id);
         code = code.replace(match[0], `${match}\r\n\tss_buildTimeStamp: ${Date.now()},`);
       }
 
@@ -49,7 +48,7 @@ const addBuildDate = {
   }
 }
 
-const resourceRegex = /\/resources\/(.{1,}\.)/;
+const resourceRegex = /\\resources\\(.{1,}\.)/;
 
 var plugins = [
   addBuildDate,
