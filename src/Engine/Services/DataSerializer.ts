@@ -107,7 +107,9 @@ export class DataSerializer implements IDataSerializer {
                 var isAdditionalProperty = isNaN(parseInt(v));
     
                 if (isAdditionalProperty) {
-                    if (v === 'push' || (value[v].name === 'push') && value[v].isProxy) {
+                    // add and delete proxies are used for location destinations, these are added in the LocationService.
+                    // Ignore these proxies.
+                    if (v === 'add' || v === 'delete') {
                         isAdditionalProperty = false;
                     }
                 }

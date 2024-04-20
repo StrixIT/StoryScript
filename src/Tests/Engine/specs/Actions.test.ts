@@ -14,29 +14,28 @@ describe("StoryScript Actions", function() {
     });
 
     test("open should remove a barrier", function() {
-        let callBackCalled = false;
-
         const game = <IGame>{};
-
         const barrier = <IBarrier>{};
 
-        const destination = <IDestination>{
+        // Use a test property on destination to verify the callback function
+        // is called. The callback is made safe for serialization, so the callback
+        // does not have access to the context of this test outside of the parameters
+        // passed in to the Open function.
+        const destination = <IDestination & { callBackCalled: boolean }>{
             barrier: barrier
         };
 
         const callBack = () => {
-            callBackCalled = true;
+            destination.callBackCalled = true;
         };
 
         Open(callBack)(game, barrier, destination);
 
         expect(destination.barrier).toBeUndefined();
-        expect(callBackCalled).toBeTruthy();
+        expect(destination.callBackCalled).toBeTruthy();
     });
 
     test("open with key should remove a barrier when the character has the key needed", function() {
-        let callBackCalled = false;
-
         const key = () => {
             return <IKey>{
                 id: 'testkey',
@@ -57,18 +56,18 @@ describe("StoryScript Actions", function() {
             key: key
         };
 
-        const destination = <IDestination>{
+        const destination = <IDestination & { callBackCalled: boolean }>{
             barrier: barrier
         };
 
         const callBack = () => {
-            callBackCalled = true;
+            destination.callBackCalled = true;
         };
 
         OpenWithKey(callBack)(game, barrier, destination);
 
         expect(destination.barrier).toBeUndefined();
-        expect(callBackCalled).toBeTruthy();
+        expect(destination.callBackCalled).toBeTruthy();
     });
 
 });

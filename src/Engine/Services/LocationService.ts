@@ -188,9 +188,10 @@ export class LocationService implements ILocationService {
     }
 
     private initDestinations = (location: ICompiledLocation): void => {
-        // Add a proxy to the destination collection push function, to replace the target function pointer
-        // with the target id when adding destinations and enemies at runtime.
+        // Add a proxy to the destination collection add and delete functions, to replace the target function pointers
+        // with the target id when adding or deleting destinations at runtime.
         location.destinations.add = location.destinations.add.proxy(this.addDestination, this._game);
+        location.destinations.delete = location.destinations.delete.proxy(this.addDestination, this._game);
 
         Object.defineProperty(location, 'activeDestinations', {
             get: function () {
