@@ -12,7 +12,7 @@ export default mergeConfig(viteConfig, defineConfig({
     coverage: {
         enabled: true,
         provider: 'v8',
-        reporter: ['html'],
+        reporter: ['json', 'html'],
         reportsDirectory: './src/tests/coverage',
         reportOnFailure: true,
         include: [

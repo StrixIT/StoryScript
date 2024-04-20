@@ -207,7 +207,6 @@ export function addArrayExtensions() {
     if ((<any>Array.prototype).remove === undefined) {
         Object.defineProperty(Array.prototype, 'remove', {
             enumerable: false,
-            writable: true,
             value: function (item: any, usePropertyMatch: boolean) {
                 if (!item) {
                     return null;

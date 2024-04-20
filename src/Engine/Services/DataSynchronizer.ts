@@ -300,7 +300,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         // 2. The currency and name of the trade are changed for trades on persons. This is done to have the currency in one
         // place for all trades and use the trader's name in the trade action.
-        if (parentEntity.type === 'person' && (propertyName === 'currency' || propertyName === 'name')) {
+        if (parentEntity?.type === 'person' && (propertyName === 'currency' || propertyName === 'name')) {
             return;
         }
     
