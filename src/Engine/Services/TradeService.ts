@@ -44,12 +44,12 @@ export class TradeService implements ITradeService {
     displayPrice = (item: IItem, actualPrice: number): string => actualPrice > 0 ? (item.name + ': ' + actualPrice + ' ' + this._texts.currency) : item.name;
 
     buy = (item: IItem, trade: ITrade): boolean => {
-        if (!this.pay(item, trade, trade.buy, this._game.character, false)) {
+        if (!this.pay(item, trade, trade.buy, this._game.activeCharacter, false)) {
             return false;
         }
 
         trade.buy.items.delete(item);
-        this._game.character.items.add(item);
+        this._game.activeCharacter.items.add(item);
 
         if (trade.onBuy) {
             trade.onBuy(this._game, item);
@@ -59,11 +59,11 @@ export class TradeService implements ITradeService {
     }
 
     sell = (item: IItem, trade: ITrade): boolean => {
-        if (!this.pay(item, trade, trade.sell, this._game.character, true)) {
+        if (!this.pay(item, trade, trade.sell, this._game.activeCharacter, true)) {
             return false;
         };
 
-        this._game.character.items.delete(item);
+        this._game.activeCharacter.items.delete(item);
         trade.sell.items.delete(item);
         trade.buy.items.add(item);
 
@@ -96,7 +96,7 @@ export class TradeService implements ITradeService {
             return trader.sell.itemSelector(this._game, item);
         };
 
-        var itemsToSell = randomList<IItem>(this._game.character.items, trader.sell.maxItems, 'items', this._game.definitions, sellSelector);
+        var itemsToSell = randomList<IItem>(this._game.activeCharacter.items, trader.sell.maxItems, 'items', this._game.definitions, sellSelector);
 
         if (!trader.buy.items) {
             trader.buy.items = [];

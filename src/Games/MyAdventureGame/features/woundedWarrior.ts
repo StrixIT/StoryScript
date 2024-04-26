@@ -13,7 +13,7 @@ export function WoundedWarrior() {
                     match: (game, target, tool): string => {
                         if (!game.worldProperties.takenFlask) {
                             game.worldProperties.takenFlask = true;
-                            game.character.items.add(Flask);
+                            game.activeCharacter.items.add(Flask);
                             return `Looking at the warrior, you see a flask on his belt.
                                     carefully, you remove it.`;
                         }

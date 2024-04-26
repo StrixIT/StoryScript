@@ -49,7 +49,11 @@ export class LocationService implements ILocationService {
         }
 
         this.processDestinations(game);
-        this.saveLocations(game);
+        this._game.party.currentLocationId = game.currentLocation.id;
+
+        if (game.previousLocation) {
+            this._game.party.previousLocationId = game.previousLocation.id;
+        }
 
         if (this._rules.exploration && this._rules.exploration.enterLocation) {
             this._rules.exploration.enterLocation(game, game.currentLocation, travel);
@@ -142,15 +146,6 @@ export class LocationService implements ILocationService {
 
                 addKeyAction(game, destination);
             });
-        }
-    }
-
-    private saveLocations = (game: IGame): void => {
-        // Save the previous and current location, then get the location text.
-        this._dataService.save(DataKeys.LOCATION, game.currentLocation.id);
-
-        if (game.previousLocation) {
-            this._dataService.save(DataKeys.PREVIOUSLOCATION, game.previousLocation.id);
         }
     }
 
@@ -404,9 +399,9 @@ export class LocationService implements ILocationService {
 
 function addKeyAction(game: IGame, destination: IDestination) {
     if (destination.barrier && destination.barrier.key) {
-        var key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
-        var existingAction = null;
-        var keyActionHash = createFunctionHash(key.open.execute);
+        const key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
+        let existingAction = null;
+        const keyActionHash = createFunctionHash(key.open.execute);
 
         if (destination.barrier.actions) {
             destination.barrier.actions.forEach(x => {
@@ -423,8 +418,14 @@ function addKeyAction(game: IGame, destination: IDestination) {
             destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
         }
 
-        var keyId = key.id;
-        var barrierKey = <IKey>(game.character.items.get(keyId) || game.currentLocation.items.get(keyId));
+        const keyId = key.id;
+        let partyKey = null;
+
+        game.party.characters.forEach(c => {
+            partyKey = partyKey ?? game.activeCharacter.items.get(keyId);
+        });
+
+        var barrierKey = <IKey>(partyKey || game.currentLocation.items.get(keyId));
 
         if (barrierKey) {
             destination.barrier.actions.push(barrierKey.open);

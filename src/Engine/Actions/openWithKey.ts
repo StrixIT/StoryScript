@@ -14,7 +14,10 @@ export function OpenWithKey(callback?: (game: IGame, barrier: IBarrier, destinat
         var key = typeof barrier.key === 'function' ? barrier.key() : <IKey>game.helpers.getItem(barrier.key);
 
         if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {
-            game.character.items.delete(barrier.key);
+            game.party.characters.forEach(c => {
+                c.items.delete(barrier.key);
+            });
+
             game.currentLocation.items.delete(barrier.key);
         }
 

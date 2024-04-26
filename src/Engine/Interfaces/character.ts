@@ -1,6 +1,5 @@
 ﻿import { IItem } from './item';
 import { ICollection } from './collection';
-import { IQuest } from './quest';
 import { IEquipment } from './equipment';
 
 /**
@@ -18,12 +17,6 @@ export interface ICharacter {
     portraitFileName?: string;
 
     /**
-     * The number of points scored by the player so far. This property should be managed in your game rules. The score will
-     * be used to determine the player's ranking in the high-score list on game end.
-     */
-    score: number;
-
-    /**
      * The total health of the player when in top condition.
      */
     hitpoints: number;
@@ -31,7 +24,7 @@ export interface ICharacter {
     /**
      * The current health of the player.
      */
-    currentHitpoints: number;
+        currentHitpoints: number;
 
     /**
      * The amount of credits the player has, in whatever form.
@@ -49,11 +42,6 @@ export interface ICharacter {
     combatItems?: ICollection<IItem>;
 
     /**
-     * All the quests the player has accepted, both active and complete.
-     */
-    quests?: ICollection<IQuest>;
-
-    /**
      * The items the character has equipped.
      */
     equipment: IEquipment
@@ -63,4 +51,9 @@ export interface ICharacter {
      * up in your game rules.
      */
     level?: number;
+
+    /**
+     * True when this is the active party character, false otherwise. This is a runtime property managed by StoryScript.
+     */
+    isActiveCharacter?: boolean;
 }

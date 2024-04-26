@@ -1,8 +1,8 @@
-import { DefaultEquipment, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
+import { DefaultEquipment, ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -10,6 +10,7 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('equipment', await import('./equipment.component.html'))
 })
 export class EquipmentComponent {
+    @Input() character!: ICharacter;
     private _characterService: CharacterService;
     private _sharedMethodService: SharedMethodService;
     
@@ -17,12 +18,10 @@ export class EquipmentComponent {
         this._characterService = inject(CharacterService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ObjectFactory);
-        this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useEquipment = true;
     }
 
-    game: IGame;
     texts: IInterfaceTexts;
 
     showEquipment = (): boolean => this._sharedMethodService.showEquipment();
@@ -35,7 +34,7 @@ export class EquipmentComponent {
 
     customSlots = () => {
         var defaultSlots = Object.keys(new DefaultEquipment());
-        var customSlots = Object.keys(this.game.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
+        var customSlots = Object.keys(this.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
         return customSlots;
     }
 }

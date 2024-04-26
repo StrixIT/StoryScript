@@ -1,8 +1,8 @@
-import { IInterfaceTexts, IGame } from 'storyScript/Interfaces/storyScript';
+import { IInterfaceTexts, IGame, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -10,17 +10,17 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('charactersheet', await import('./charactersheet.component.html'))
 })
 export class CharacterSheetComponent { 
+    @Input() character!: ICharacter;
+
     constructor() {
         const characterService = inject(CharacterService);
         const sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ObjectFactory);
-        this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.displayCharacterAttributes = characterService.getSheetAttributes();
         sharedMethodService.useCharacterSheet = true;
     }
 
-    game: IGame;
     texts: IInterfaceTexts;
     displayCharacterAttributes: string[];
 }

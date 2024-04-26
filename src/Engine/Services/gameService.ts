@@ -26,6 +26,7 @@ import { createHash } from '../globals';
 import { IFeature } from '../Interfaces/feature';
 import { selectStateListEntry } from 'storyScript/utilities';
 import { RuntimeProperties } from 'storyScript/runtimeProperties';
+import { IParty } from '../Interfaces/party';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -49,7 +50,7 @@ export class GameService implements IGameService {
         this.setupGame();
         this.initTexts();
         this._game.highScores = this._dataService.load<ScoreEntry[]>(DataKeys.HIGHSCORES);
-        this._game.character = this._dataService.load<ICharacter>(DataKeys.CHARACTER);
+        this._game.party = this._dataService.load<IParty>(DataKeys.PARTY);
 
         if (!restart) {
             this._game.statistics = this._dataService.load<IStatistics>(DataKeys.STATISTICS) || this._game.statistics || {};
@@ -61,23 +62,23 @@ export class GameService implements IGameService {
             this._rules.general.afterSave(this._game);
         }
         
-        if (!this._game.character && this._rules.setup.intro && !skipIntro) {
+        if (!this._game.party && this._rules.setup.intro && !skipIntro) {
             this._game.state = GameState.Intro;
             return;
         }
         
-        var locationName = this._dataService.load<string>(DataKeys.LOCATION);
+        let locationName = this._game.party?.currentLocationId;
         var characterSheet = this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet();
         var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
         let isNewGame = false;
 
-        if (!hasCreateCharacterSteps && !this._game.character) {
+        if (!hasCreateCharacterSteps && !this._game.party) {
             isNewGame = true;
             locationName = 'Start';
-            this.startNewGame(<ICharacter>{});
+            this.startNewGame(<ICharacter[]>[{}]);
         }
 
-        if (this._game.character && locationName) {
+        if (this._game.party && locationName) {
             this.resume(locationName);
 
             if (!isNewGame && this._rules.setup.continueGame) {
@@ -85,6 +86,7 @@ export class GameService implements IGameService {
             }
         }
         else {
+            // Todo: support creating multiple characters!
             this._characterService.setupCharacter();
             this._game.state = GameState.CreateCharacter;
         }
@@ -102,15 +104,13 @@ export class GameService implements IGameService {
             this.saveGame();
         }
 
-        var location = this._dataService.load<string>(DataKeys.LOCATION);
-
-        if (location) {
-            this._locationService.changeLocation(location, false, this._game);
+        if (this._game.party.currentLocationId) {
+            this._locationService.changeLocation(this._game.party.currentLocationId, false, this._game);
         }
     }
 
-    startNewGame = (characterData: any): void => {
-        this.createCharacter(characterData);
+    startNewGame = (characterData: ICharacter[]): void => {
+        this.createParty(characterData);
 
         if (this._rules.setup.gameStart) {
             this._rules.setup.gameStart(this._game);
@@ -133,10 +133,8 @@ export class GameService implements IGameService {
     }
 
     restart = (skipIntro?: boolean): void => {
-        this._dataService.remove(DataKeys.CHARACTER);
+        this._dataService.remove(DataKeys.PARTY);
         this._dataService.remove(DataKeys.STATISTICS);
-        this._dataService.remove(DataKeys.LOCATION);
-        this._dataService.remove(DataKeys.PREVIOUSLOCATION);
         this._dataService.remove(DataKeys.WORLDPROPERTIES);
         this._dataService.remove(DataKeys.WORLD);
         this._dataService.remove(DataKeys.PLAYEDMEDIA);
@@ -151,12 +149,10 @@ export class GameService implements IGameService {
 
             var saveGame = <ISaveGame>{
                 name: name,
-                character: this._game.character,
+                party: this._game.party,
                 world: this._locationService.copyWorld(),
                 worldProperties: this._game.worldProperties,
                 statistics: this._game.statistics,
-                location: this._game.currentLocation && this._game.currentLocation.id,
-                previousLocation: this._game.previousLocation ? this._game.previousLocation.id : null,
                 state: this._game.state
             };
 
@@ -180,23 +176,22 @@ export class GameService implements IGameService {
 
         if (saveGame) {
             this._game.loading = true;
-            this._game.character = saveGame.character;
+            this._game.party = saveGame.party;
             this._game.locations = saveGame.world;
             this._game.worldProperties = saveGame.worldProperties;
         
             this._locationService.init(this._game, false);
-            this._game.currentLocation = this._game.locations.get(saveGame.location);
+            this._game.currentLocation = this._game.locations.get(saveGame.party.currentLocationId);
 
             // Use the afterSave hook here combine the loaded world with other saved data.
             if (this._rules.general?.afterSave) {
                 this._rules.general.afterSave(this._game);
             }
 
-            if (saveGame.previousLocation) {
-                this._game.previousLocation = this._game.locations.get(saveGame.previousLocation);
+            if (saveGame.party.previousLocationId) {
+                this._game.previousLocation = this._game.locations.get(saveGame.party.previousLocationId);
             }
 
-            this._dataService.save(DataKeys.LOCATION, this._game.currentLocation.id);
             this._game.actionLog = [];
             this._game.state = saveGame.state;
 
@@ -262,7 +257,7 @@ export class GameService implements IGameService {
                 this.enemyDefeated(enemy);
             }
 
-            if (this._game.character.currentHitpoints <= 0) {
+            if (this._game.party.characters.filter(c => c.currentHitpoints >= 0).length == 0) {
                 this._game.playState = null;
                 this._game.state = GameState.GameOver;
             }
@@ -284,7 +279,7 @@ export class GameService implements IGameService {
                     }
             
                     if (item.charges <= 0) {
-                        removeItemFromItemsAndEquipment(this._game.character, item);
+                        removeItemFromItemsAndEquipment(this._game.activeCharacter, item);
                     }
                 }
             });
@@ -363,7 +358,7 @@ export class GameService implements IGameService {
         this.initSetInterceptors();
 
         var lastLocation = this._game.locations.get(locationName) || this._game.locations.get('start');
-        var previousLocationName = this._dataService.load<string>(DataKeys.PREVIOUSLOCATION);
+        var previousLocationName = this._game.party.previousLocationId;
 
         if (previousLocationName) {
             this._game.previousLocation = this._game.locations.get(previousLocationName);
@@ -374,12 +369,21 @@ export class GameService implements IGameService {
         this._game.state = GameState.Play;
     }
 
-    private createCharacter = (characterData : ICharacter): void => {
-        var character = this._characterService.createCharacter(this._game, characterData);
-        character.items = character.items || [];
-        character.quests = character.quests || [];
-        this._dataService.save(DataKeys.CHARACTER, character);
-        this._game.character = this._dataService.load(DataKeys.CHARACTER);
+    private createParty = (characterData : ICharacter[]): void => {
+        const party = <IParty>{
+            characters: [],
+            quests: [],
+            score: 0
+        };
+
+        characterData.forEach(d => {
+            var character = this._characterService.createCharacter(this._game, characterData);
+            character.items = character.items || [];
+            party.characters.push(character);
+        });
+
+        this._dataService.save(DataKeys.PARTY, party);
+        this._game.party = this._dataService.load(DataKeys.PARTY);
     }
 
     private enemyDefeated = (enemy: IEnemy): void => {
@@ -394,8 +398,8 @@ export class GameService implements IGameService {
             });
         }
 
-        this._game.character.currency = this._game.character.currency || 0;
-        this._game.character.currency += enemy.currency || 0;
+        this._game.activeCharacter.currency = this._game.activeCharacter.currency || 0;
+        this._game.activeCharacter.currency += enemy.currency || 0;
         this._game.statistics.enemiesDefeated = this._game.statistics.enemiesDefeated || 0;
         this._game.statistics.enemiesDefeated += 1;
         this._game.currentLocation.enemies.delete(enemy);
@@ -411,6 +415,17 @@ export class GameService implements IGameService {
 
     private setupGame = (): void => {
         this.initLogs();
+
+        Object.defineProperty(this._game, 'activeCharacter', {
+            get: () => {
+                return this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0] ?? {};
+            },
+            set: value => {
+                this._game.party.characters.forEach(c => c.isActiveCharacter = false);
+                value.isActiveCharacter = true;
+            }
+        });
+
         this._game.fight = this.fight;
         this._game.sounds = { 
             startMusic: this.startMusic,
@@ -441,27 +456,31 @@ export class GameService implements IGameService {
     }
 
     private initSetInterceptors = (): void => {
-        let currentHitpoints = this._game.character.currentHitpoints || this._game.character.hitpoints;
-        let score = this._game.character.score || 0;
+        let score = this._game.party.score || 0;
         let gameState = this._game.state;
         let currentDescription = this._game.currentDescription;
+        let currentHitpoints: Map<string, number> = new Map<string, number>();
 
-        Object.defineProperty(this._game.character, 'currentHitpoints', {
-            configurable: true,
-            get: () => {
-                return currentHitpoints;
-            },
-            set: value => {
-                var change = value - currentHitpoints;
-                currentHitpoints = value;
+        this._game.party.characters.forEach(c => {
+            currentHitpoints[c.name] = c.currentHitpoints || c.hitpoints;
 
-                if (this._rules.character.hitpointsChange) {
-                    this._rules.character.hitpointsChange(this._game, change);
+            Object.defineProperty(c, 'currentHitpoints', {
+                configurable: true,
+                get: () => {
+                    return currentHitpoints[c.name];
+                },
+                set: value => {
+                    var change = value - currentHitpoints[c.name];
+                    currentHitpoints[c.name] = value;
+
+                    if (this._rules.character.hitpointsChange) {
+                        this._rules.character.hitpointsChange(this._game, change);
+                    }
                 }
-            }
+            });
         });
 
-        Object.defineProperty(this._game.character, 'score', {
+        Object.defineProperty(this._game.party, 'score', {
             configurable: true,
             get: () => {
                 return score;
@@ -585,7 +604,8 @@ export class GameService implements IGameService {
     }
 
     private updateHighScore = (): void => {
-        var scoreEntry = { name: this._game.character.name, score: this._game.character.score };
+        // Todo: use party name or combination of character names?
+        var scoreEntry = { name: this._game.activeCharacter.name, score: this._game.party.score };
 
         if (!this._game.highScores || !this._game.highScores.length) {
             this._game.highScores = [];
@@ -594,7 +614,7 @@ export class GameService implements IGameService {
         var scoreAdded = false;
 
         this._game.highScores.forEach((entry) => {
-            if (this._game.character.score > entry.score && !scoreAdded) {
+            if (this._game.party.score > entry.score && !scoreAdded) {
                 var index = this._game.highScores.indexOf(entry);
 
                 if (this._game.highScores.length >= 5) {

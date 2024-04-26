@@ -262,8 +262,8 @@ describe("CharacterService", function() {
         });
 
         test("should equip an item to the right slot and remove the item from the inventory", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{},
                     items: []
                 }
@@ -271,17 +271,17 @@ describe("CharacterService", function() {
 
             var service = getService(game);
             var boots = LeatherBoots();
-            game.character.items.push(boots);
+            game.activeCharacter.items.push(boots);
             service.equipItem(boots);
 
-            expect(game.character.equipment.feet).not.toBeUndefined();
-            expect(game.character.equipment.feet).toBe(boots);
-            expect(game.character.items.length).toBe(0);
+            expect(game.activeCharacter.equipment.feet).not.toBeUndefined();
+            expect(game.activeCharacter.equipment.feet).toBe(boots);
+            expect(game.activeCharacter.items.length).toBe(0);
         });
 
         test("should equip a two-handed weapon to both hand slots", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{},
                     items: []
                 }
@@ -296,13 +296,13 @@ describe("CharacterService", function() {
             };
             service.equipItem(twoHandedSword);
 
-            expect(game.character.equipment.rightHand).not.toBeUndefined();
-            expect(game.character.equipment.leftHand).not.toBeUndefined();
+            expect(game.activeCharacter.equipment.rightHand).not.toBeUndefined();
+            expect(game.activeCharacter.equipment.leftHand).not.toBeUndefined();
         });
 
         test("should block equipping a new item when an existing item cannot be unequipped", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: {
                         rightHand: null
                     },
@@ -317,18 +317,18 @@ describe("CharacterService", function() {
                 return false;
             }
 
-            game.character.equipment.rightHand = sword;
+            game.activeCharacter.equipment.rightHand = sword;
 
             var newSword = Sword();
             var result = service.equipItem(newSword);
 
             expect(result).toBeFalsy();
-            expect(game.character.equipment.rightHand).toBe(sword);
+            expect(game.activeCharacter.equipment.rightHand).toBe(sword);
         });
 
         test("should block equipping a new two-handed item when an existing item cannot be unequipped", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{
                         rightHand: null
                     },
@@ -343,7 +343,7 @@ describe("CharacterService", function() {
                 return false;
             }
 
-            game.character.equipment.rightHand = sword;
+            game.activeCharacter.equipment.rightHand = sword;
 
             var twoHandedSword = <IItem>{
                 equipmentType: [
@@ -354,13 +354,13 @@ describe("CharacterService", function() {
             var result = service.equipItem(twoHandedSword);
 
             expect(result).toBeFalsy();
-            expect(game.character.equipment.rightHand).toBe(sword);
-            expect(game.character.equipment.leftHand).toBeUndefined();
+            expect(game.activeCharacter.equipment.rightHand).toBe(sword);
+            expect(game.activeCharacter.equipment.leftHand).toBeUndefined();
         });
 
         test("should block equipping a new item when an existing two-handed item cannot be unequipped", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{
                         rightHand: null
                     },
@@ -370,7 +370,7 @@ describe("CharacterService", function() {
 
             var service = getService(game);
 
-            var twoHandedSword = {
+            var twoHandedSword = <IItem>{
                 equipmentType: [
                     EquipmentType.RightHand,
                     EquipmentType.LeftHand
@@ -382,19 +382,19 @@ describe("CharacterService", function() {
 
             var sword = Sword();
 
-            game.character.equipment.rightHand = twoHandedSword;
-            game.character.equipment.leftHand = twoHandedSword;
+            game.activeCharacter.equipment.rightHand = twoHandedSword;
+            game.activeCharacter.equipment.leftHand = twoHandedSword;
 
             var result = service.equipItem(sword);
 
             expect(result).toBeFalsy();
-            expect(game.character.equipment.rightHand).toBe(twoHandedSword);
-            expect(game.character.equipment.leftHand).toBe(twoHandedSword);
+            expect(game.activeCharacter.equipment.rightHand).toBe(twoHandedSword);
+            expect(game.activeCharacter.equipment.leftHand).toBe(twoHandedSword);
         });
 
         test("should block equipping an item which disallows equipping", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{}
                 }
             }
@@ -409,12 +409,12 @@ describe("CharacterService", function() {
             var result = service.equipItem(sword);
 
             expect(result).toBeFalsy();
-            expect(game.character.equipment.rightHand).toBeUndefined();
+            expect(game.activeCharacter.equipment.rightHand).toBeUndefined();
         });
 
         test("should move an equipped item back to the backpack when equipping an item of the same type", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{},
                     items: []
                 }
@@ -422,20 +422,20 @@ describe("CharacterService", function() {
             var service = getService(game);
             var equippedBoots = LeatherBoots();
             var backPackBoots = LeatherBoots();
-            game.character.equipment.feet = equippedBoots;
-            game.character.items.push(backPackBoots);
+            game.activeCharacter.equipment.feet = equippedBoots;
+            game.activeCharacter.items.push(backPackBoots);
             service.equipItem(backPackBoots);
 
-            expect(game.character.equipment.feet).not.toBeUndefined();
-            expect(game.character.equipment.feet).toBe(backPackBoots);
+            expect(game.activeCharacter.equipment.feet).not.toBeUndefined();
+            expect(game.activeCharacter.equipment.feet).toBe(backPackBoots);
 
-            expect(game.character.items.length).toBe(1);
-            expect(game.character.items[0]).toBe(equippedBoots); 
+            expect(game.activeCharacter.items.length).toBe(1);
+            expect(game.activeCharacter.items[0]).toBe(equippedBoots); 
         });
 
         test("should block equipping an item when game rules disallow it", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{},
                     items: []
                 }
@@ -455,12 +455,12 @@ describe("CharacterService", function() {
             var result = service.equipItem(sword);
 
             expect(result).toBeFalsy();
-            expect(game.character.equipment.rightHand).toBeUndefined();
+            expect(game.activeCharacter.equipment.rightHand).toBeUndefined();
         });
 
         test("should block unequipping an item when game rules disallow it", function() {
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: <any>{},
                     items: []
                 }
@@ -476,12 +476,12 @@ describe("CharacterService", function() {
 
             var service = getService(game, rules);
             var sword = Sword();
-            game.character.equipment.rightHand = sword;
+            game.activeCharacter.equipment.rightHand = sword;
 
             var result = service.unequipItem(sword);
 
             expect(result).toBeFalsy();
-            expect(game.character.equipment.rightHand).toBe(sword);
+            expect(game.activeCharacter.equipment.rightHand).toBe(sword);
         });
 
         test("should return false when an equipment slot is not used", function() {
@@ -503,8 +503,8 @@ describe("CharacterService", function() {
         test("should return true when an equipment slot is used", function() {
             var sword = Sword();
 
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     equipment: {
                         rightHand: sword
                     },
@@ -521,8 +521,8 @@ describe("CharacterService", function() {
         test("should drop an item the character has in his backpack", function() {
             var sword = Sword();
 
-            var game = {
-                character: {
+            var game = <IGame>{
+                activeCharacter: {
                     items: [
                         sword
                     ]
@@ -535,7 +535,7 @@ describe("CharacterService", function() {
             var service = getService(game);
             service.dropItem(sword);
 
-            expect(game.character.items.length).toBe(0);
+            expect(game.activeCharacter.items.length).toBe(0);
             expect(game.currentLocation.items.length).toBe(1);
             expect(game.currentLocation.items[0]).toBe(sword);
         });
@@ -570,7 +570,7 @@ describe("CharacterService", function() {
             var valueToReturn = true;
             
             var game = <IGame>{
-                character: <any>{
+                activeCharacter: <any>{
                     strength: 1
                 }
             };
@@ -596,7 +596,7 @@ describe("CharacterService", function() {
 
             valueToReturn = false;
 
-            game.character = <any>{ strength: 1 };
+            game.activeCharacter = <any>{ strength: 1 };
             result = service.levelUp();
 
             expect(result).not.toBeNull();

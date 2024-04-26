@@ -132,7 +132,7 @@ export class SharedMethodService {
     }
 
     showEquipment = (): boolean => {
-        return this.useEquipment && this.game.character && Object.keys(this.game.character.equipment).some(k => (<any>this.game.character.equipment)[k] !== undefined);
+        return this.useEquipment && this.game.activeCharacter && Object.keys(this.game.activeCharacter.equipment).some(k => (<any>this.game.activeCharacter.equipment)[k] !== undefined);
     }
 
     canUseItem = (item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, item));

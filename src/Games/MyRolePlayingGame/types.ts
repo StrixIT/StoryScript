@@ -1,3 +1,4 @@
+import { IParty } from './interfaces/party';
 import { IDestination } from './interfaces/destination';
 import { IFeature, Feature } from './interfaces/feature';
 import { IItem, Item } from './interfaces/item';
@@ -13,6 +14,7 @@ import { Rules } from './rules';
 import { Character } from './character';
 
 export type {
+    IParty,
     IDestination,
     IFeature,
     IItem,

@@ -183,7 +183,7 @@ export class CombinationService implements ICombinationService {
             }
         });
 
-        removeItemFromItemsAndEquipment(this._game.character, <IItem>feature);
+        removeItemFromItemsAndEquipment(this._game.activeCharacter, <IItem>feature);
         this._game.currentLocation.items?.delete(<IItem>feature);
         this._game.currentLocation.enemies?.delete(<IEnemy>feature);
         this._game.currentLocation.persons?.delete(<IPerson>feature);
