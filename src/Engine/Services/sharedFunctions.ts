@@ -11,7 +11,7 @@ export function SaveWorldState(dataService: IDataService, locationService: ILoca
         rules.general.beforeSave(game);
     }
 
-    dataService.save(DataKeys.CHARACTER, game.character);
+    dataService.save(DataKeys.PARTY, game.party);
     dataService.save(DataKeys.STATISTICS, game.statistics);
     dataService.save(DataKeys.WORLDPROPERTIES, game.worldProperties);
     locationService.saveWorld(game.locations);

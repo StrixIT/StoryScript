@@ -34,11 +34,11 @@ export function Fountain() {
                     combinationType: Combinations.USE,
                     tool: Flask,
                     match: (game, target, tool): string => {
-                        var flask = game.character.items.get(Flask);
+                        var flask = game.activeCharacter.items.get(Flask);
 
                         if (flask) {
-                            game.character.items.delete(flask);
-                            game.character.items.add(Water);
+                            game.activeCharacter.items.delete(flask);
+                            game.activeCharacter.items.add(Water);
                             return `You fill the flask with the clear fountain water.`;
                         }
                         else {

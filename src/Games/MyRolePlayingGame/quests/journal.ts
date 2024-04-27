@@ -10,11 +10,11 @@ export function Journal() {
         start: (game: IGame, quest: IQuest, person: IPerson) => {
         },
         checkDone: (game: IGame, quest: IQuest) => {
-            return quest.completed || game.character.items.get(Items.Journal) != null;
+            return quest.completed || game.activeCharacter.items.get(Items.Journal) != null;
         },
         complete: (game: IGame, quest: IQuest, person: IPerson) => {
-            game.character.items.delete(Items.Journal);
-            game.character.currency += 5;
+            game.activeCharacter.items.delete(Items.Journal);
+            game.activeCharacter.currency += 5;
         }
     });
 }

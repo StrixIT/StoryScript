@@ -3,6 +3,7 @@ import { ICompiledLocation } from './compiledLocation';
 import { ICharacter } from './character';
 import { IStatistics } from './statistics';
 import { GameState } from './enumerations/gameState';
+import { IParty } from './party';
 
 /**
  * An object to save the game state.
@@ -14,24 +15,14 @@ export interface ISaveGame {
     name?: string;
 
     /**
-     * The character to save
+     * The party to save
      */
-    character: ICharacter;
+    party: IParty;
 
     /**
      * The statistics to save.
      */
     statistics: IStatistics;
-
-    /**
-     * The id of the location the player is currently at.
-     */
-    location: string;
-
-    /**
-     * The id of the location the player visited previous to the current one.
-     */
-    previousLocation: string;
 
     /**
      * The properties of the world to save.

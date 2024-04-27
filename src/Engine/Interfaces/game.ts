@@ -15,6 +15,7 @@ import { GameState } from './enumerations/gameState';
 import { PlayState } from './enumerations/playState';
 import { IActiveCombination } from './combinations/activeCombination';
 import { ICombinable } from './combinations/combinable';
+import { IParty } from './party';
 
 /**
  * The StoryScript main game object.
@@ -31,9 +32,14 @@ export interface IGame {
     createCharacterSheet?: ICreateCharacter;
 
     /**
-     * The player character.
+     * The player's adventuring party.
      */
-    character: ICharacter;
+    party: IParty;
+
+    /**
+     * The active party character.
+     */
+    activeCharacter: ICharacter;
 
     /**
      * All the locations in the game world.

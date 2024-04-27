@@ -16,7 +16,7 @@
     </div>
     <div>
         <ul class="list-unstyled">
-            <li *ngFor="let item of game.character.combatItems">
+            <li *ngFor="let item of game.activeCharacter.combatItems">
                 <button type="button" class="btn btn-info" *ngIf="canUseItem(item)" (click)="useItem(item)" [disabled]="!actionsEnabled">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
             </li>
         </ul>

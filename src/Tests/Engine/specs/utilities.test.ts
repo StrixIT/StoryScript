@@ -72,33 +72,33 @@ describe("Utilities", function() {
     });
 
     test("game property should be parsed in string", function () {
-        const value = "Hi there, {game.character.name}!";
+        const value = "Hi there, {game.activeCharacter.name}!";
         const expected = "Hi there, John!";
-        const actual = parseGameProperties(value, <IGame>{ character: { name: 'John'}});
+        const actual = parseGameProperties(value, <IGame>{ activeCharacter: { name: 'John'}});
              
         expect(expected).toEqual(actual);
     });
 
     test("game property should be parsed in string when game part is not included", function () {
-        const value = "Hi there, {character.name}!";
+        const value = "Hi there, {activeCharacter.name}!";
         const expected = "Hi there, John!";
-        const actual = parseGameProperties(value, <IGame>{ character: { name: 'John'}});
+        const actual = parseGameProperties(value, <IGame>{ activeCharacter: { name: 'John'}});
              
         expect(expected).toEqual(actual);
     });
 
     test("game property with index should be parsed in string", function () {
-        const value = "Hi there. That's a nice {game.character.items[0].name}!";
+        const value = "Hi there. That's a nice {game.activeCharacter.items[0].name}!";
         const expected = "Hi there. That's a nice Sword!";
-        const actual = parseGameProperties(value, <IGame>{ character: { items: [ { name: 'Sword' }]}});
+        const actual = parseGameProperties(value, <IGame>{ activeCharacter: { items: [ { name: 'Sword' }]}});
              
         expect(expected).toEqual(actual);
     });
 
     test("unknown property should not be parsed in string", function () {
-        const value = "Hi there {game.character.dummy}!";
+        const value = "Hi there {game.activeCharacter.dummy}!";
         const expected = value;
-        const actual = parseGameProperties(value, <IGame>{ character: { items: [ { name: 'Sword' }]}});
+        const actual = parseGameProperties(value, <IGame>{ activeCharacter: { items: [ { name: 'Sword' }]}});
              
         expect(expected).toEqual(actual);
     });

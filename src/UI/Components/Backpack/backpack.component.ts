@@ -1,9 +1,9 @@
-import { IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
+import { ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -11,6 +11,7 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('backpack', await import('./backpack.component.html'))
 })
 export class BackpackComponent {
+    @Input() character!: ICharacter;
     private _characterService: CharacterService;
     private _sharedMethodService: SharedMethodService;
     private _gameService: GameService;

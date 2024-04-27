@@ -321,11 +321,11 @@ export class ConversationService implements IConversationService {
         switch (type) {
             case 'item': {
                 // Check item available. Item list first, equipment second.
-                var hasItem = this._game.character.items.get(value) != undefined;
+                var hasItem = this._game.activeCharacter.items.get(value) != undefined;
 
                 if (!hasItem) {
-                    for (var i in this._game.character.equipment) {
-                        var slotItem = <IItem>this._game.character.equipment[i];
+                    for (var i in this._game.activeCharacter.equipment) {
+                        var slotItem = <IItem>this._game.activeCharacter.equipment[i];
                         hasItem = slotItem != undefined && slotItem != null && compareString(slotItem.id, value);
                     }
                 }
@@ -346,20 +346,20 @@ export class ConversationService implements IConversationService {
             case 'quest-done':
             case 'quest-complete': {
                 // Check quest start, quest done or quest complete.
-                var quest = this._game.character.quests.get(value);
+                var quest = this._game.party.quests.get(value);
                 isAvailable = quest != undefined &&
                     (type === 'quest-start' ? true : type === 'quest-done' ?
                         quest.checkDone(this._game, quest) : quest.completed);
             } break;
             default: {
                 // Check attributes
-                var attribute = this._game.character[type];
+                var attribute = this._game.activeCharacter[type];
 
                 if (!attribute) {
                     console.log('Invalid attribute ' + type + ' for reply requirement for node ' + activeNode.node + '!');
                 }
 
-                isAvailable = isNaN(this._game.character[type]) ? this._game.character[type] === value : parseInt(this._game.character[type]) >= parseInt(value);
+                isAvailable = isNaN(this._game.activeCharacter[type]) ? this._game.activeCharacter[type] === value : parseInt(this._game.activeCharacter[type]) >= parseInt(value);
             } break;
         }
 
@@ -389,7 +389,7 @@ export class ConversationService implements IConversationService {
             if (!quest.started) {
                 quest.issuedBy = person.id;
                 person.quests.delete(quest);
-                this._game.character.quests.add(quest);
+                this._game.party.quests.add(quest);
                 quest.progress = quest.progress || {};
 
                 if (quest.start) {
@@ -401,7 +401,7 @@ export class ConversationService implements IConversationService {
             }
         }
         else {
-            quest = this._game.character.quests.get(reply[type]);
+            quest = this._game.party.quests.get(reply[type]);
 
             if (!quest.completed) {
                 if (quest.complete) {

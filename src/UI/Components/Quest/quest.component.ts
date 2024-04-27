@@ -25,15 +25,15 @@ export class QuestComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    showQuests = (): boolean => this.game.character && !isEmpty(this.game.character.quests);
+    showQuests = (): boolean => this.game.activeCharacter && !isEmpty(this.game.party.quests);
 
-    showActiveQuests = (): boolean => this.game.character.quests.filter(q => !q.completed).length > 0;
+    showActiveQuests = (): boolean => this.game.party.quests.filter(q => !q.completed).length > 0;
 
-    showCompletedQuests = (): boolean => this.game.character.quests.filter(q => q.completed).length > 0;
+    showCompletedQuests = (): boolean => this.game.party.quests.filter(q => q.completed).length > 0;
 
-    currentQuests = (): ICollection<IQuest> => this.game.character.quests.filter(q => q.completed === false);
+    currentQuests = (): ICollection<IQuest> => this.game.party.quests.filter(q => q.completed === false);
 
-    completedQuests = (): ICollection<IQuest> => this.game.character.quests.filter(q => q.completed === true);
+    completedQuests = (): ICollection<IQuest> => this.game.party.quests.filter(q => q.completed === true);
 
     questStatus = (quest: IQuest): string => this._characterService.questStatus(quest);
 }

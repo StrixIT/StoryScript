@@ -9,14 +9,14 @@ import { IQuest } from './Interfaces/quest';
 import { IAction } from './Interfaces/action';
 import { DataKeys } from './DataKeys';
 import { getSingular, getPlural, getId } from './utilities';
-import { ICharacter } from './Interfaces/character';
 import { createFunctionHash } from './globals';
 import { ICombinable } from './Interfaces/combinations/combinable';
 import { ICombine } from './Interfaces/combinations/combine';
 import { IEquipment } from './Interfaces/equipment';
-import { ActionStatus } from './Interfaces/storyScript';
+import { ActionStatus, IParty } from './Interfaces/storyScript';
 import { RuntimeProperties } from './runtimeProperties';
 import { IEntity } from './Interfaces/entity';
+import { ISaveGame } from './Interfaces/saveGame';
 
 // This flag indicates whether the registration phase is active.
 let _registration: boolean = true;
@@ -122,15 +122,15 @@ export function setReadOnlyProperties(key: string, data: any) {
             setReadOnlyLocationProperties(location);
         });     
         
-        setReadOnlyCharacterProperties(data.character)
+        setReadOnlyCharacterProperties((<ISaveGame>data).party)
     }
     else if (key  === DataKeys.WORLD) {
         data.forEach((location: ILocation) => {
             setReadOnlyLocationProperties(location);
         });     
     }
-    else if (key === DataKeys.CHARACTER) {
-        setReadOnlyCharacterProperties(data);
+    else if (key === DataKeys.PARTY) {
+        setReadOnlyCharacterProperties(<IParty>data);
     }
 }
 
@@ -485,21 +485,23 @@ function setReadOnlyLocationProperties(location: ILocation) {
     });
 }
 
-function setReadOnlyCharacterProperties(character: ICharacter) {
-    Object.defineProperty(character, 'combatItems', {
-        get: function () {
-            var result = character.items.filter(i => { return canUseInCombat(i.useInCombat, i, character.equipment); });
+function setReadOnlyCharacterProperties(party: IParty) {
+    party.characters.forEach(c => {
+        Object.defineProperty(c, 'combatItems', {
+            get: function () {
+                var result = c.items.filter(i => { return canUseInCombat(i.useInCombat, i, c.equipment); });
 
-            for (var n in character.equipment) {
-                var item = <IItem>character.equipment[n];
+                for (var n in c.equipment) {
+                    var item = <IItem>c.equipment[n];
 
-                if (item && canUseInCombat(item.useInCombat, item, character.equipment)) {
-                    result.push(item);
+                    if (item && canUseInCombat(item.useInCombat, item, c.equipment)) {
+                        result.push(item);
+                    }
                 }
-            }
 
-            return result;
-        }
+                return result;
+            }
+        });
     });
 }
 

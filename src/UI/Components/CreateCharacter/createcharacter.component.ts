@@ -24,7 +24,7 @@ export class CreateCharacterComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    startNewGame = () => this._gameService.startNewGame(this.game.createCharacterSheet);
+    startNewGame = () => this._gameService.startNewGame([this.game.createCharacterSheet]);
 
     distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.game.createCharacterSheet, step);
 }

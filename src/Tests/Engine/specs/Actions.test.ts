@@ -6,6 +6,7 @@ import { Open } from 'storyScript/Actions/open';
 import { OpenWithKey } from 'storyScript/Actions/openWithKey';
 import { IKey } from 'storyScript/Interfaces/key';
 import { addArrayExtensions } from 'storyScript/globals';
+import { IParty } from '../../../Games/MyAdventureGame/types';
 
 describe("StoryScript Actions", function() {
 
@@ -44,8 +45,12 @@ describe("StoryScript Actions", function() {
         };
 
         const game = <IGame>{
-            character: {
-                items: []
+            party: {
+                characters: [
+                    {
+                        items: []
+                    }
+                ]
             },
             currentLocation: {
                 items: []

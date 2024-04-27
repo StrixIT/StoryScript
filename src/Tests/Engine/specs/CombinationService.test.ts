@@ -157,7 +157,7 @@ describe("CombinationService", function() {
 
             const ofSameType = JSON.parse(JSON.stringify(target));
             
-            const game = {
+            const game = <IGame>{
                 combinations: {
                     activeCombination: <IActiveCombination>{
                         selectedCombinationAction: {
@@ -167,12 +167,12 @@ describe("CombinationService", function() {
                     },
                     combinationResult: {}
                 },
-                currentLocation: {
+                currentLocation: <any>{
                     items: [
                         target
                     ]
                 },
-                character: {
+                activeCharacter: {
                     items: [
                         ofSameType
                     ]
@@ -191,7 +191,7 @@ describe("CombinationService", function() {
             expect(result.success).toBeTruthy();
             expect(result.removeTarget).toBeTruthy();
             expect(game.currentLocation.items.length).toBe(0);
-            expect(game.character.items.length).toBe(1);
+            expect(game.activeCharacter.items.length).toBe(1);
         });
 
         test("should throw an error when there are two combinations of the same type without a tool or with the same tool", function() {

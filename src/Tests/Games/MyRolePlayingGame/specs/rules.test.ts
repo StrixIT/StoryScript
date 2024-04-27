@@ -8,8 +8,8 @@ describe("Rules", function() {
         var service = Rules();
         var character = new Character();
 
-        var game = {
-            character: <ICharacter>character,
+        var game = <IGame>{
+            activeCharacter: <ICharacter>character,
             currentLocation: <ICompiledLocation>{
                 activeEnemies: []
             },

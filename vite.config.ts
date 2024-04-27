@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import checker from 'vite-plugin-checker';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import gameName from './gameName.js';
 import path from 'path';
@@ -52,7 +53,10 @@ const resourceRegex = /\\resources\\(.{1,}\.)/;
 
 var plugins = [
   addBuildDate,
-  tsconfigPaths(),     
+  tsconfigPaths(),
+  checker({
+    typescript: true,
+  }),     
   viteStaticCopy({
     watch: {
       reloadPageOnChange: true

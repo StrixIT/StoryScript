@@ -3,9 +3,8 @@ import { IItem, IEquipment } from './types';
 
 export class Character implements ICharacter {
     name: string = '';
-    score: number = 0;
     hitpoints: number = 10;
-    currentHitpoints: number = 10;
+    currentHitpoints: number;
     currency?: number = 0;
 
     // Add character properties here.

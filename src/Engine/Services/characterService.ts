@@ -75,6 +75,7 @@ export class CharacterService implements ICharacterService {
         if (this._rules.character.createCharacter) {
 
             character = this._rules.character.createCharacter(game, characterData);
+            character.currentHitpoints = character.hitpoints;
             this.processDefaultSettings(character, characterData);
         }
         else {
@@ -99,7 +100,7 @@ export class CharacterService implements ICharacterService {
     }
 
     levelUp = (): ICharacter => {
-        var character = this._game.character;
+        var character = this._game.activeCharacter;
         var sheet = this._game.createCharacterSheet;
 
         if (this._rules.character.levelUp && this._rules.character.levelUp(character, sheet)) {
@@ -118,12 +119,12 @@ export class CharacterService implements ICharacterService {
             return false;
         }
 
-        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, this._game.character, item)) {
+        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, this._game.activeCharacter, item)) {
             return false;
         }
 
         this._game.currentLocation.items.delete(item);
-        this._game.character.items.add(item);
+        this._game.activeCharacter.items.add(item);
 
         return true;
     }
@@ -147,7 +148,7 @@ export class CharacterService implements ICharacterService {
         }
 
         if (this._rules.character.beforeEquip) {
-            if (!this._rules.character.beforeEquip(this._game, this._game.character, item)) {
+            if (!this._rules.character.beforeEquip(this._game, this._game.activeCharacter, item)) {
                 return false;
             }
         }
@@ -160,10 +161,10 @@ export class CharacterService implements ICharacterService {
 
         for (var n in equipmentTypes) {
             var type = this.getEquipmentType(equipmentTypes[n]);
-            this._game.character.equipment[type] = item;
+            this._game.activeCharacter.equipment[type] = item;
         }
 
-        this._game.character.items.remove(item);
+        this._game.activeCharacter.items.remove(item);
         return true;
     }
 
@@ -183,8 +184,8 @@ export class CharacterService implements ICharacterService {
     }
 
     isSlotUsed = (slot: string): boolean => {
-        if (this._game.character && this._game.character.equipment) {
-            return this._game.character.equipment[slot] !== undefined;
+        if (this._game.activeCharacter && this._game.activeCharacter.equipment) {
+            return this._game.activeCharacter.equipment[slot] !== undefined;
         }
 
         return false;
@@ -199,12 +200,12 @@ export class CharacterService implements ICharacterService {
 
         if (this._rules.character.beforeDrop)
         {
-            drop = this._rules.character.beforeDrop(this._game, this._game.character, item);
+            drop = this._rules.character.beforeDrop(this._game, this._game.activeCharacter, item);
         }
 
         if (drop)
         {
-            this._game.character.items.delete(item);
+            this._game.activeCharacter.items.delete(item);
             this._game.currentLocation.items.add(item);
         }
     }
@@ -330,7 +331,7 @@ export class CharacterService implements ICharacterService {
     }
 
     private unequip = (type: string, currentItem?: IItem): boolean => {
-        var equippedItem = <IItem>this._game.character.equipment[type];
+        var equippedItem = <IItem>this._game.activeCharacter.equipment[type];
 
         if (equippedItem) {
             if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
@@ -347,7 +348,7 @@ export class CharacterService implements ICharacterService {
             }
 
             if (this._rules.character.beforeUnequip) {
-                if (!this._rules.character.beforeUnequip(this._game, this._game.character, equippedItem)) {
+                if (!this._rules.character.beforeUnequip(this._game, this._game.activeCharacter, equippedItem)) {
                     return false;
                 }
             }
@@ -358,11 +359,11 @@ export class CharacterService implements ICharacterService {
                 }
             }
 
-            if (equippedItem && equippedItem.equipmentType && this._game.character.items.indexOf(equippedItem) < 0) {
-                this._game.character.items.push(equippedItem);
+            if (equippedItem && equippedItem.equipmentType && this._game.activeCharacter.items.indexOf(equippedItem) < 0) {
+                this._game.activeCharacter.items.push(equippedItem);
             }
 
-            this._game.character.equipment[type] = null;
+            this._game.activeCharacter.equipment[type] = null;
         }
 
         return true;
