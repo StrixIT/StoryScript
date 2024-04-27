@@ -17,5 +17,5 @@ describe("ConversationService", function() {
 });
 
 function getService(dataService?, game?: any) {
-    return new ConversationService(dataService || {}, game || {});
+    return new ConversationService(dataService || {}, game || {}, new Map<string, string>());
 }

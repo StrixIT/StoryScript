@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { TradeService } from 'storyScript/Services/TradeService';
-import { ITrade, ICompiledLocation, IPerson, PlayState, IGame } from 'storyScript/Interfaces/storyScript';
+import { ITrade, ICompiledLocation, IPerson, PlayState, IGame, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { IStock } from 'storyScript/Interfaces/stock';
 
 describe("TradeService", function() {
@@ -89,8 +89,8 @@ describe("TradeService", function() {
 
 });
 
-function getService(game, texts?) {
-    game.character = game.character || {
+function getService(game: IGame, texts?) {
+    game.activeCharacter = game.activeCharacter || <ICharacter>{
         items: []
     };
 

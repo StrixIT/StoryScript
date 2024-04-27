@@ -27,6 +27,7 @@ import { IFeature } from '../Interfaces/feature';
 import { selectStateListEntry } from 'storyScript/utilities';
 import { RuntimeProperties } from 'storyScript/runtimeProperties';
 import { IParty } from '../Interfaces/party';
+import { ICreateCharacter } from '../Interfaces/storyScript';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -75,7 +76,7 @@ export class GameService implements IGameService {
         if (!hasCreateCharacterSteps && !this._game.party) {
             isNewGame = true;
             locationName = 'Start';
-            this.startNewGame(<ICharacter[]>[{}]);
+            this.startNewGame(<ICreateCharacter[]>[{}]);
         }
 
         if (this._game.party && locationName) {
@@ -104,12 +105,12 @@ export class GameService implements IGameService {
             this.saveGame();
         }
 
-        if (this._game.party.currentLocationId) {
+        if (this._game.party?.currentLocationId) {
             this._locationService.changeLocation(this._game.party.currentLocationId, false, this._game);
         }
     }
 
-    startNewGame = (characterData: ICharacter[]): void => {
+    startNewGame = (characterData: ICreateCharacter[]): void => {
         this.createParty(characterData);
 
         if (this._rules.setup.gameStart) {
@@ -369,7 +370,7 @@ export class GameService implements IGameService {
         this._game.state = GameState.Play;
     }
 
-    private createParty = (characterData : ICharacter[]): void => {
+    private createParty = (characterData : ICreateCharacter[]): void => {
         const party = <IParty>{
             characters: [],
             quests: [],
@@ -417,6 +418,7 @@ export class GameService implements IGameService {
         this.initLogs();
 
         Object.defineProperty(this._game, 'activeCharacter', {
+            configurable: true,
             get: () => {
                 return this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0] ?? {};
             },

@@ -3,7 +3,6 @@ import { IItem } from './types';
 
 export class Character implements ICharacter {
     name: string = '';
-    score: number = 0;
     currency?: number = 0;
     level?: number = 1;
     hitpoints: number = 10;
