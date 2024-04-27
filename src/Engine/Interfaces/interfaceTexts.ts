@@ -20,6 +20,11 @@ export interface IInterfaceTexts {
     enemies?: string;
     attack?: string;
     newGame?: string;
+    firstCharacter?: string,
+    secondCharacter?: string,
+    thirdCharacter?: string,
+    nthCharacter?: string,
+    nextCharacter?: string,
     yourName?: string;
     startAdventure?: string;
     nextQuestion?: string;

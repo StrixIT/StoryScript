@@ -65,24 +65,6 @@ export class LocationService implements ILocationService {
         this.playEvents(game, 'enterEvents');
 
         this.markCurrentLocationAsVisited(game);
-
-        // Add the 'back' button for testing
-        if (this._rules.setup.autoBackButton && game.previousLocation && game.currentLocation.id != 'start') {
-            var backTestDestinationName = 'testbackdestination';
-            var backDestination = game.currentLocation.destinations.get(game.previousLocation.id) 
-                                    || game.currentLocation.destinations.get(backTestDestinationName);
-
-            if (!backDestination) {         
-                var backLocation = {
-                    id: backTestDestinationName,
-                    target: game.previousLocation.id,
-                    name: `Back to ${game.previousLocation.name}`,
-                    style: 'auto-back-button'
-                };
-
-                game.currentLocation.destinations.add(backLocation);
-            }
-        }
     }
 
     loadLocationDescriptions = (game: IGame): void => {

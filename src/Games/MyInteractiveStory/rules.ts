@@ -5,7 +5,6 @@ import { Start } from './locations/Start';
 export function Rules(): IRules {
     return {
         setup: {
-            autoBackButton: true,
             playList: {
                 'Contemplate_the_stars.mp3': [GameState.Play]
             },
