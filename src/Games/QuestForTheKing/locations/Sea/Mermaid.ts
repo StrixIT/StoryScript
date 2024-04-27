@@ -19,7 +19,7 @@ export function Mermaid() {
             {
                 text: 'Help the Mermaid',
                 execute: (game: IGame) => {
-                    game.character.items.add(Pearl());
+                    game.activeCharacter.items.add(Pearl());
                     setCompleted(game, 'helpmermaid');
                 },
                 activeDay: true
@@ -27,8 +27,8 @@ export function Mermaid() {
             {
                 text: 'Give the Magic Flower to the Mermaid',
                 execute: (game: IGame) => {
-                    game.character.items.delete(Magicflower);
-                    game.character.items.add(Pearl());
+                    game.activeCharacter.items.delete(Magicflower);
+                    game.activeCharacter.items.add(Pearl());
                     setCompleted(game, 'giveflower');
                 },
                 activeNight: true

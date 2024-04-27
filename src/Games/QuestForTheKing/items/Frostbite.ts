@@ -1,7 +1,7 @@
 ﻿import { EquipmentType, PlayState } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Frostbite.html';
-import { Item } from '../types';
+import { IEnemy, Item } from '../types';
 
 export function Frostbite() {
     return Item({
@@ -17,7 +17,7 @@ export function Frostbite() {
         canUse(game, item) {
             return game.playState === PlayState.Combat;
         },
-        use(game, item, target) {
+        use(game, item, target: IEnemy) {
             target.hitpoints -= game.helpers.rollDice('1d4');
             target.frozen = true;
         },

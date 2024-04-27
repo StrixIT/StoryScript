@@ -27,7 +27,7 @@ export function ForestLake() {
             {
                 'HealingWater':
                 (game: IGame) => {
-                    heal(game.character, 3);
+                    heal(game.activeCharacter, 3);
                 }
             }
         ],

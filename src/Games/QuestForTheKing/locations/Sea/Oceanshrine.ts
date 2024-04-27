@@ -31,10 +31,10 @@ export function Oceanshrine() {
                     game.logToLocationLog(game.currentLocation.descriptions[key]);
 
                     // Fully heal the character.
-                    game.character.currentHitpoints = game.character.hitpoints;
+                    game.activeCharacter.currentHitpoints = game.activeCharacter.hitpoints;
 
                     // Todo: should only the wizard be able to search the altar?
-                    var isWizard = false; //game.character.class === Class.Wizard
+                    var isWizard = false; //game.activeCharacter.class === Class.Wizard
 
                     if (isWizard) {
                         game.currentLocation.actions.add({

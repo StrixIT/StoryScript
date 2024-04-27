@@ -42,7 +42,7 @@ export function Treestump() {
                     else {
                         // If the player fails to resist the music, the Satyr takes half of his gold. Enable the exit.
                         game.logToLocationLog(game.currentLocation.descriptions['failresistmusic']);
-                        game.character.currency = Math.floor(game.character.currency / 2);
+                        game.activeCharacter.currency = Math.floor(game.activeCharacter.currency / 2);
                         game.currentLocation.destinations.map(d => d.inactive = false);
                     }
                 }

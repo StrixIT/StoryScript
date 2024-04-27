@@ -1,4 +1,5 @@
 import { Action, IAction } from './interfaces/action';
+import { IParty } from './interfaces/party';
 import { IDestination } from './interfaces/destination';
 import { IFeature, Feature } from './interfaces/feature';
 import { IItem, Item } from './interfaces/item';
@@ -6,7 +7,6 @@ import { IKey, Key } from './interfaces/key';
 import { IEnemy, Enemy } from './interfaces/enemy';
 import { IPerson, Person } from './interfaces/person';
 import { IQuest, Quest } from './interfaces/quest';
-import { ITrade } from './interfaces/trade';
 import { ICompiledLocation, ILocation, Location } from './interfaces/location';
 import { IEquipment } from './interfaces/equipment';
 import { IGame } from './interfaces/game';
@@ -16,6 +16,7 @@ import { Character } from './character';
 
 export type {
     IAction,
+    IParty,
     IDestination,
     IFeature,
     IItem,
@@ -27,7 +28,6 @@ export type {
     ICompiledLocation, 
     IEquipment,
     IGame, 
-    ITrade
 }
 
 export { 

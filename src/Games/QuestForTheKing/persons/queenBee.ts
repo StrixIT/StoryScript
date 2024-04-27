@@ -17,7 +17,7 @@ export function QueenBee() {
         conversation: {
             showUnavailableReplies: false,
             selectActiveNode: (game, person) => {
-                if (game.character.items.get(Magicflower)) {
+                if (game.activeCharacter.items.get(Magicflower)) {
                     return person.conversation.nodes.filter(n => { return n.node == 'alreadyhaveflower' })[0];
                 }
 
@@ -25,8 +25,8 @@ export function QueenBee() {
             },
             actions: {
                 'giveflower': (game, person) => {
-                    game.character.items.add(Beesting);
-                    game.character.items.delete(Magicflower);
+                    game.activeCharacter.items.add(Beesting);
+                    game.activeCharacter.items.delete(Magicflower);
                 }
             }
         }

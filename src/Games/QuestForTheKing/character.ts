@@ -8,8 +8,8 @@ export class Character implements ICharacter {
     portraitFileName?: string = '';
     hitpoints: number = 0;
     currentHitpoints: number = 0;
-    score: number = 0;
     currency?: number = 3;
+    spellDefence?: number;
 
     class?: CharacterClass;
 

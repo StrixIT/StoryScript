@@ -1,7 +1,7 @@
 ﻿import { EquipmentType, PlayState } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Magicshield.html';
-import { Item } from '../types';
+import { IGame, Item } from '../types';
 
 export function Magicshield() {
     return Item({
@@ -16,8 +16,8 @@ export function Magicshield() {
         canUse(game, item) {
             return game.playState === PlayState.Combat;
         },
-        use(game, item, target) {
-            game.character.spellDefence += 2;
+        use(game: IGame, item, target) {
+            game.activeCharacter.spellDefence += 2;
         },
     });
 }

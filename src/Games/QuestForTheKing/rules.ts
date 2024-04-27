@@ -85,8 +85,8 @@ export function Rules(): IRules {
             fight: (game: IGame, enemy: IEnemy): void => {
                 game.combatLog = [];
 
-                var leftHandWeapon = game.character.equipment.leftHand;
-                var rightHandWeapon = game.character.equipment.rightHand;
+                var leftHandWeapon = game.activeCharacter.equipment.leftHand;
+                var rightHandWeapon = game.activeCharacter.equipment.rightHand;
 
                 // For two-handed weapons, calculate only one damage.
                 if (leftHandWeapon === rightHandWeapon) {
@@ -94,10 +94,10 @@ export function Rules(): IRules {
                 }
 
                 var weaponDamage = (leftHandWeapon ? game.helpers.rollDice(leftHandWeapon.damage) : 0) + (rightHandWeapon ? game.helpers.rollDice(rightHandWeapon.damage) : 0);
-                var totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(game.character, 'damageBonus') - (enemy.defence ?? 0));
-                var leftHandCombatText= game.character.equipment.leftHand ? game.character.equipment.leftHand.attackText : '';
-                var rightHandCombatText = game.character.equipment.rightHand ? game.character.equipment.rightHand.attackText : '';
-                var combatText = leftHandCombatText && rightHandCombatText && game.character.equipment.leftHand.id !== game.character.equipment.rightHand.id ? leftHandCombatText + '. ' + rightHandCombatText : leftHandCombatText || rightHandCombatText;
+                var totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(game.activeCharacter, 'damageBonus') - (enemy.defence ?? 0));
+                var leftHandCombatText= game.activeCharacter.equipment.leftHand ? game.activeCharacter.equipment.leftHand.attackText : '';
+                var rightHandCombatText = game.activeCharacter.equipment.rightHand ? game.activeCharacter.equipment.rightHand.attackText : '';
+                var combatText = leftHandCombatText && rightHandCombatText && game.activeCharacter.equipment.leftHand.id !== game.activeCharacter.equipment.rightHand.id ? leftHandCombatText + '. ' + rightHandCombatText : leftHandCombatText || rightHandCombatText;
                 enemy.hitpoints -= totalDamage;
 
                 if (combatText) {
@@ -121,7 +121,7 @@ export function Rules(): IRules {
                 game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach(function (enemy: IEnemy) {
                     var enemyDamage =game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
-                    game.character.currentHitpoints -= enemyDamage;
+                    game.activeCharacter.currentHitpoints -= enemyDamage;
                 });
             }
         },

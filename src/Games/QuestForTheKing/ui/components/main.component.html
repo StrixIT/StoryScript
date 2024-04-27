@@ -4,9 +4,11 @@
         <sound></sound>
         <div class="row">
             <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
-                <character-sheet></character-sheet>
-                <equipment></equipment>
-                <backpack></backpack>
+                <div *ngFor="let character of game.party.characters">
+                    <character-sheet></character-sheet>
+                    <equipment></equipment>
+                    <backpack></backpack>
+                </div>
                 <quests></quests>
             </div>
             <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">

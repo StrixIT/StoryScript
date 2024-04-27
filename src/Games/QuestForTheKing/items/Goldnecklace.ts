@@ -14,7 +14,7 @@ export function Goldnecklace() {
         activeNight: true,
         useInCombat: true,
         use(game, item, target) {
-            heal(game.character, 3);
+            heal(game.activeCharacter, 3);
         },   
     });
 }

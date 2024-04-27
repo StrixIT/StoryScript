@@ -24,7 +24,7 @@ export function Stonemount() {
             {
                 text: 'Search the stone mount',
                 execute: (game: IGame) => {
-                    game.character.currency += 35;
+                    game.activeCharacter.currency += 35;
                     game.logToLocationLog(game.currentLocation.descriptions['search']);
                 },
                 activeNight: true

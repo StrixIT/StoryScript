@@ -14,4 +14,7 @@ export interface IEnemy extends IFeature, StoryScriptIEnemy {
     attackPriority?: Record<string, number[]>[];
     activeNight?: boolean;
     activeDay?: boolean;
+    frozen?: boolean;
+    frightened?: boolean;
+    confused?: boolean;
 }
