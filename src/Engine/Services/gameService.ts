@@ -76,7 +76,7 @@ export class GameService implements IGameService {
         if (!hasCreateCharacterSteps && !this._game.party) {
             isNewGame = true;
             locationName = 'Start';
-            this.startNewGame(<ICreateCharacter[]>[{}]);
+            this.startNewGame(<ICreateCharacter>{});
         }
 
         if (this._game.party && locationName) {
@@ -110,8 +110,16 @@ export class GameService implements IGameService {
         }
     }
 
-    startNewGame = (characterData: ICreateCharacter[]): void => {
-        this.createParty(characterData);
+    startNewGame = (characterData: ICreateCharacter): void => {
+        this.createCharacter(characterData);
+
+        if (this._rules.setup.numberOfCharacters > 1 && this._rules.setup.numberOfCharacters > this._game.party.characters.length) {
+            this._characterService.setupCharacter();
+            return;
+        }
+
+        this._dataService.save(DataKeys.PARTY, this._game.party);
+        this._game.party = this._dataService.load(DataKeys.PARTY);
 
         if (this._rules.setup.gameStart) {
             this._rules.setup.gameStart(this._game);
@@ -370,21 +378,16 @@ export class GameService implements IGameService {
         this._game.state = GameState.Play;
     }
 
-    private createParty = (characterData : ICreateCharacter[]): void => {
-        const party = <IParty>{
+    private createCharacter = (characterData : ICreateCharacter): void => {
+        this._game.party = this._game.party ?? <IParty>{
             characters: [],
             quests: [],
             score: 0
         };
 
-        characterData.forEach(d => {
-            var character = this._characterService.createCharacter(this._game, characterData);
-            character.items = character.items || [];
-            party.characters.push(character);
-        });
-
-        this._dataService.save(DataKeys.PARTY, party);
-        this._game.party = this._dataService.load(DataKeys.PARTY);
+        var character = this._characterService.createCharacter(this._game, characterData);
+        character.items = character.items || [];
+        this._game.party.characters.push(character);
     }
 
     private enemyDefeated = (enemy: IEnemy): void => {
