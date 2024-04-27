@@ -236,7 +236,7 @@ export class CharacterService implements ICharacterService {
             var previousStep = data.currentStep;
 
             if (selector) {
-                var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
+                var nextStep = typeof selector === 'function' ? (<any>selector)(this._game.party, data, data.steps[data.currentStep]) : selector;
                 data.currentStep = nextStep;
             }
             else {
@@ -246,7 +246,7 @@ export class CharacterService implements ICharacterService {
             var currentStep = data.steps[data.currentStep];
 
             if (currentStep.initStep) {
-                currentStep.initStep(data, previousStep, currentStep);
+                currentStep.initStep(this._game.party, data, previousStep, currentStep);
             }
 
             if (currentStep.attributes) {
