@@ -318,3 +318,7 @@ feature {
     float: right;
     max-width: 40%;
 }
+
+.is-active {
+    border: solid 5px;
+}

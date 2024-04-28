@@ -4,7 +4,7 @@ import { GameState } from '../storyScript';
 
 export interface IGeneralRules {
     /**
-     * This function is called when the player's score changes. Return true if you want to toggle the level-up
+     * This function is called when the party's score changes. Return true if you want to toggle the level-up
      * status afterwards.
      * @param game The active game
      * @param change The change in score.

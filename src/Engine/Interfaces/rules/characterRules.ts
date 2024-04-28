@@ -74,9 +74,10 @@ export interface ICharacterRules {
     beforeDrop?(game: IGame, character: ICharacter, item: IItem): boolean;
 
     /**
-     * Specify this function if you want to do something special when the player's health changes.
+     * Specify this function if you want to do something special when a character's health changes.
      * @param game The active game
+     * @param character The character for whom the health changes
      * @param change The change in health points. If the player is wounded, the number will be negative.
      */
-    hitpointsChange?(game: IGame, change: number): void;
+    hitpointsChange?(game: IGame, character: ICharacter, change: number): void;
 }

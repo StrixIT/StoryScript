@@ -217,8 +217,9 @@ export interface IGame {
 
     /**
      * The function executed when the player attacks an enemy.
+     * @param character The character attacking
      * @param enemy The enemy to attack
      * @param boolean True if the enemy can retaliate (default), false otherwise
      */
-    fight(enemy: IEnemy, retaliate?: boolean): void;
+    fight(character: ICharacter, enemy: IEnemy, retaliate?: boolean): void;
 }

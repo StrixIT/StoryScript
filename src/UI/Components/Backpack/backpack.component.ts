@@ -43,13 +43,13 @@ export class BackpackComponent {
 
     canDrop = (item: IItem): boolean => this._characterService.canDrop(item);
     
-    equipItem = (item: IItem): boolean => this._characterService.equipItem(item);
+    equipItem = (item: IItem): boolean => this._characterService.equipItem(this.character, item);
 
-    canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(item);
+    canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(this.character, item);
 
-    useItem = (item: IItem): Promise<void> | void => this._gameService.useItem(item);
+    useItem = (item: IItem): Promise<void> | void => this._gameService.useItem(this.character, item);
 
     canDropItems = (): boolean => this._sharedMethodService.useGround;
 
-    dropItem = (item: IItem): void => this._characterService.dropItem(item);
+    dropItem = (item: IItem): void => this._characterService.dropItem(this.character, item);
 }

@@ -29,7 +29,7 @@ describe("Rules", function() {
             hitpoints: 10
         };
 
-        service.combat.fight(<IGame>game, enemy);
+        service.combat.fight(<IGame>game, <ICharacter>{}, enemy);
 
         // Character default strength 1 + 6.
         var expected = 3;

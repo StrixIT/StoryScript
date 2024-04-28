@@ -61,7 +61,7 @@ export function Rules(): IRules {
         },
 
         combat: {
-            fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
+            fight: (game: IGame, character: ICharacter, enemy: IEnemy, retaliate?: boolean) => {
                 retaliate = retaliate == undefined ? true : retaliate;
 
                 // Implement character attack here.

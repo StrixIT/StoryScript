@@ -26,7 +26,7 @@ export class EquipmentComponent {
 
     showEquipment = (): boolean => this._sharedMethodService.showEquipment();
 
-    unequipItem = (item: IItem): boolean => this._characterService.unequipItem(item);
+    unequipItem = (item: IItem): boolean => this._characterService.unequipItem(this.character, item);
 
     isSlotUsed = (slot: string): boolean => {
         return this._characterService.isSlotUsed(slot);

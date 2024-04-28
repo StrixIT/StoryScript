@@ -4,6 +4,7 @@ import { IGame } from './game';
 import { EquipmentType } from './enumerations/equipmentType';
 import { IEquipment } from './equipment';
 import { RuntimeProperties } from 'storyScript/runtimeProperties';
+import { ICharacter } from './character';
 
 /**
  * An item that can be found in the game and used by the character.
@@ -50,31 +51,35 @@ export interface IItem extends IFeature {
 
     /**
      * When specified, this function will be executed when the item is equipped by the player.
-     * @param item The item to be equipped
+    * @param character The character equipping the item 
+    * @param item The item to be equipped
      * @param game The game object
      */
-    equip?(item: IItem, game: IGame): boolean;
+    equip?(character: ICharacter, item: IItem, game: IGame): boolean;
 
         /**
      * When specified, this function will be executed when the item is unequipped by the player.
+     * @param character The character unequipping the item 
      * @param item The item to be unequipped
      * @param game The game object
      */
-    unequip?(item: IItem, game: IGame): boolean;
+    unequip?(character: ICharacter, item: IItem, game: IGame): boolean;
 
     /**
      * When specified, this item can be used and a use action becomes available on the item. The function will be executed when the player
      * executes this action. Return a promise if the result should be awaited.
      * @param game The game object
+     * @param character The character that uses the item
      * @param item The item to use
      * @param target The target to use the item on, if any
      */
-    use?(game: IGame, item: IItem, target?: IEnemy): Promise<void> | void;
+    use?(game: IGame, character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void;
 
     /**
      * When specified, this action determines whether the use action for an item will be shown.
      * @param game The game object
+     * @param character The character that wants to use the item
      * @param item The item to show the use action for
      */
-    canUse?(game: IGame, item: IItem): boolean;
+    canUse?(game: IGame, character: ICharacter, item: IItem): boolean;
 }
