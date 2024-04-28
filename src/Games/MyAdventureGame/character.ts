@@ -5,7 +5,6 @@ export class Character implements ICharacter {
     name: string = '';
     hitpoints: number = 10;
     currentHitpoints: number;
-    currency?: number = 0;
 
     // Add character properties here.
 

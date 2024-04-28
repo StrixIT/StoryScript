@@ -10,6 +10,7 @@ export function Friend() {
         name: 'Joe',
         hitpoints: 10,
         attack: '1d6',
+        canAttack: false,
         items: [
             Sword()
         ],

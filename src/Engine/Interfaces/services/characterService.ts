@@ -12,14 +12,14 @@ export interface ICharacterService {
     setupCharacter(): ICreateCharacter;
     setupLevelUp(): ICreateCharacter;
     createCharacter(game: IGame, characterData: any): ICharacter;
-    levelUp(): ICharacter;
+    levelUp(character: ICharacter): ICharacter;
     limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
     distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
     pickupItem(character: ICharacter, item: IItem): boolean;
-    canEquip(item: IItem): boolean;
+    isEquippable(item: IItem): boolean;
     equipItem(character: ICharacter, item: IItem): boolean;
     unequipItem(character: ICharacter, item: IItem): boolean;
-    isSlotUsed(slot: string): boolean;
+    isSlotUsed(character: ICharacter, slot: string): boolean;
     dropItem(character: ICharacter, item: IItem): void;
     questStatus(quest: IQuest): string;
 }

@@ -5,7 +5,7 @@ import { IPerson } from '../Interfaces/person';
 import { IGame } from '../Interfaces/game';
 import { IRules } from '../Interfaces/rules/rules';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
-import { SaveWorldState, removeItemFromItemsAndEquipment } from './sharedFunctions';
+import { SaveWorldState, removeItemFromParty } from './sharedFunctions';
 import { compareString } from '../globals';
 import { ICombinationService } from '../Interfaces/services/combinationService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -183,7 +183,7 @@ export class CombinationService implements ICombinationService {
             }
         });
 
-        removeItemFromItemsAndEquipment(this._game.activeCharacter, <IItem>feature);
+        removeItemFromParty(this._game.party, <IItem>feature);
         this._game.currentLocation.items?.delete(<IItem>feature);
         this._game.currentLocation.enemies?.delete(<IEnemy>feature);
         this._game.currentLocation.persons?.delete(<IPerson>feature);

@@ -37,9 +37,9 @@ export class BackpackComponent {
 
     tryCombine = (item: IItem): boolean => this._sharedMethodService.tryCombine(item);
 
-    showEquipment = (): boolean => this._sharedMethodService.showEquipment();
+    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
-    canEquip = (item: IItem): boolean => this._characterService.canEquip(item);
+    canEquip = (item: IItem): boolean => this._characterService.isEquippable(item);
 
     canDrop = (item: IItem): boolean => this._characterService.canDrop(item);
     

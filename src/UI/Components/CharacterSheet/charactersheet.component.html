@@ -9,7 +9,7 @@
                 {{ texts.titleCase(texts.format(attribute)) }} {{ character[attribute] }}
             </li>
             <li>{{ texts.hitpoints }} {{ character.currentHitpoints }} / {{ character.hitpoints }}</li>
-            <li *ngIf="character.currency !== undefined">{{ texts.currency }} {{ character.currency }}</li>
+            <li *ngIf="party.characters.length === 1 && party.currency !== undefined">{{ texts.currency }} {{ party.currency }}</li>
         </ul>
         <div class="clearfix"></div>
     </div>

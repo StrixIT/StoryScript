@@ -4,6 +4,7 @@ import { CharacterService } from 'storyScript/Services/characterService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import { IParty } from '../../../Games/MyAdventureGame/types';
 
 @Component({
     selector: 'character-sheet',
@@ -16,11 +17,13 @@ export class CharacterSheetComponent {
         const characterService = inject(CharacterService);
         const sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ObjectFactory);
+        this.party = objectFactory.GetGame().party;
         this.texts = objectFactory.GetTexts();
         this.displayCharacterAttributes = characterService.getSheetAttributes();
         sharedMethodService.useCharacterSheet = true;
     }
 
+    party: IParty;
     texts: IInterfaceTexts;
     displayCharacterAttributes: string[];
 }

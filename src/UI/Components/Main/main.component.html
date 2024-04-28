@@ -26,7 +26,10 @@
                 </div>
                 <intro></intro>
                 <create-character></create-character>
-                <level-up></level-up>
+                <!-- TODO: how to make this work? -->
+                <div *ngFor="let character of game.party?.characters">
+                    <level-up [character]="character"></level-up>
+                </div>
                 <game-over></game-over>
                 <victory></victory>
             </div>

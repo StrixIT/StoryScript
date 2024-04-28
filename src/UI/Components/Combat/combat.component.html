@@ -1,9 +1,9 @@
 <div id="combat" *ngIf="game.playState == 'Combat'">
     <div *ngIf="enemiesPresent()">
-        <div>
+        <div *ngIf="game.party.characters.length === 1">
             <ul class="list-unstyled" *ngIf="game.currentLocation.activeEnemies.length > 0">
                 <li *ngFor="let enemy of game.currentLocation.activeEnemies">
-                    <button type="button" class="btn btn-danger" (click)="fight(enemy)" [disabled]="!actionsEnabled">{{ texts.format(texts.attack, [enemy.name]) }}</button>
+                    <button type="button" class="btn btn-danger" (click)="fight(game.activeCharacter, enemy)" [disabled]="!actionsEnabled">{{ texts.format(texts.attack, [enemy.name]) }}</button>
                     <img src="{{ enemy.picture }}" *ngIf="enemy.picture" />
                 </li>
             </ul>
