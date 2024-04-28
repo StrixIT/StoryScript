@@ -253,17 +253,17 @@ export class GameService implements IGameService {
         this._game.playState = PlayState.Combat;
     }
 
-    fight = (enemy: IEnemy, retaliate?: boolean): Promise<void> | void => {
+    fight = (character: ICharacter, enemy: IEnemy, retaliate?: boolean): Promise<void> | void => {
         if (!this._rules.combat || !this._rules.combat.fight)
         {
             return;
         }
 
-        var promise = this._rules.combat.fight(this._game, enemy, retaliate);
+        var promise = this._rules.combat.fight(this._game, character, enemy, retaliate);
 
         return Promise.resolve(promise).then(() => {
             if (enemy.hitpoints <= 0) {
-                this.enemyDefeated(enemy);
+                this.enemyDefeated(character, enemy);
             }
 
             if (this._game.party.characters.filter(c => c.currentHitpoints >= 0).length == 0) {
@@ -275,11 +275,11 @@ export class GameService implements IGameService {
         });
     }
 
-    useItem = (item: IItem, target?: IEnemy): Promise<void> | void => {
-        var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, item) && item.use) ?? item.use;
+    useItem = (character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void => {
+        var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, character, item) && item.use) ?? item.use;
 
         if (useItem) {
-            var promise = item.use(this._game, item, target);
+            var promise = item.use(this._game, character, item, target);
 
             return Promise.resolve(promise).then(() => {
                 if (item.charges !== undefined) {
@@ -288,7 +288,7 @@ export class GameService implements IGameService {
                     }
             
                     if (item.charges <= 0) {
-                        removeItemFromItemsAndEquipment(this._game.activeCharacter, item);
+                        removeItemFromItemsAndEquipment(character, item);
                     }
                 }
             });
@@ -390,26 +390,26 @@ export class GameService implements IGameService {
         this._game.party.characters.push(character);
     }
 
-    private enemyDefeated = (enemy: IEnemy): void => {
+    private enemyDefeated = (character: ICharacter, enemy: IEnemy): void => {
         if (enemy.items) {
             const items = [...enemy.items];
 
             items.forEach((item: IItem) => {
-                if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, enemy, item)) {
+                if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, character, enemy, item)) {
                     enemy.items.delete(item);
                     this._game.currentLocation.items.add(item);
                 }
             });
         }
 
-        this._game.activeCharacter.currency = this._game.activeCharacter.currency || 0;
-        this._game.activeCharacter.currency += enemy.currency || 0;
+        character.currency = character.currency || 0;
+        character.currency += enemy.currency || 0;
         this._game.statistics.enemiesDefeated = this._game.statistics.enemiesDefeated || 0;
         this._game.statistics.enemiesDefeated += 1;
         this._game.currentLocation.enemies.delete(enemy);
 
         if (this._rules.combat && this._rules.combat.enemyDefeated) {
-            this._rules.combat.enemyDefeated(this._game, enemy);
+            this._rules.combat.enemyDefeated(this._game, character, enemy);
         }
 
         if (enemy.onDefeat) {
@@ -423,7 +423,14 @@ export class GameService implements IGameService {
         Object.defineProperty(this._game, 'activeCharacter', {
             configurable: true,
             get: () => {
-                return this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0] ?? {};
+                var result = this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0];
+
+                if (!result.isActiveCharacter) {
+                    result.isActiveCharacter = true;
+                }
+
+                return result;
+
             },
             set: value => {
                 this._game.party.characters.forEach(c => c.isActiveCharacter = false);
@@ -479,7 +486,7 @@ export class GameService implements IGameService {
                     currentHitpoints[c.name] = value;
 
                     if (this._rules.character.hitpointsChange) {
-                        this._rules.character.hitpointsChange(this._game, change);
+                        this._rules.character.hitpointsChange(this._game, c, change);
                     }
                 }
             });

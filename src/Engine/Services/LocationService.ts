@@ -404,7 +404,7 @@ function addKeyAction(game: IGame, destination: IDestination) {
         let partyKey = null;
 
         game.party.characters.forEach(c => {
-            partyKey = partyKey ?? game.activeCharacter.items.get(keyId);
+            partyKey = partyKey ?? c.items.get(keyId);
         });
 
         var barrierKey = <IKey>(partyKey || game.currentLocation.items.get(keyId));

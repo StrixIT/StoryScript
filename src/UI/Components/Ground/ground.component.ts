@@ -29,5 +29,5 @@ export class GroundComponent {
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    pickupItem = (item: IItem): boolean => this._characterService.pickupItem(item);
+    pickupItem = (item: IItem): boolean => this._characterService.pickupItem(this.game.activeCharacter, item);
 }

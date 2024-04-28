@@ -111,7 +111,7 @@ export class CharacterService implements ICharacterService {
         return character;
     }
 
-    pickupItem = (item: IItem): boolean => {
+    pickupItem = (character: ICharacter, item: IItem): boolean => {
         var isCombining = this._game.combinations && this._game.combinations.activeCombination;
 
         if (isCombining) {
@@ -119,12 +119,12 @@ export class CharacterService implements ICharacterService {
             return false;
         }
 
-        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, this._game.activeCharacter, item)) {
+        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, character, item)) {
             return false;
         }
 
         this._game.currentLocation.items.delete(item);
-        this._game.activeCharacter.items.add(item);
+        character.items.add(item);
 
         return true;
     }
@@ -135,12 +135,12 @@ export class CharacterService implements ICharacterService {
                                             item.canDrop(this._game, item) : typeof item.canDrop === 'undefined' ? 
                                             true : item.canDrop;
 
-    equipItem = (item: IItem): boolean => {
+    equipItem = (character: ICharacter, item: IItem): boolean => {
         var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
         for (var n in equipmentTypes) {
             var type = this.getEquipmentType(equipmentTypes[n]);
-            var unequipped = this.unequip(type);
+            var unequipped = this.unequip(character, type);
 
             if (!unequipped) {
                 return false;
@@ -148,32 +148,32 @@ export class CharacterService implements ICharacterService {
         }
 
         if (this._rules.character.beforeEquip) {
-            if (!this._rules.character.beforeEquip(this._game, this._game.activeCharacter, item)) {
+            if (!this._rules.character.beforeEquip(this._game, character, item)) {
                 return false;
             }
         }
 
         if (item.equip) {
-            if (!item.equip(item, this._game)) {
+            if (!item.equip(character, item, this._game)) {
                 return false;
             }
         }
 
         for (var n in equipmentTypes) {
             var type = this.getEquipmentType(equipmentTypes[n]);
-            this._game.activeCharacter.equipment[type] = item;
+            character.equipment[type] = item;
         }
 
-        this._game.activeCharacter.items.remove(item);
+        character.items.remove(item);
         return true;
     }
 
-    unequipItem = (item: IItem): boolean => {
+    unequipItem = (character: ICharacter, item: IItem): boolean => {
         var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
         for (var n in equipmentTypes) {
             var type = this.getEquipmentType(equipmentTypes[n]);
-            var unequipped = this.unequip(type);
+            var unequipped = this.unequip(character, type);
 
             if (!unequipped) {
                 return false;
@@ -191,7 +191,7 @@ export class CharacterService implements ICharacterService {
         return false;
     }
 
-    dropItem = (item: IItem): void => {
+    dropItem = (character: ICharacter, item: IItem): void => {
         if (!item) {
             return;
         }
@@ -200,12 +200,12 @@ export class CharacterService implements ICharacterService {
 
         if (this._rules.character.beforeDrop)
         {
-            drop = this._rules.character.beforeDrop(this._game, this._game.activeCharacter, item);
+            drop = this._rules.character.beforeDrop(this._game, character, item);
         }
 
         if (drop)
         {
-            this._game.activeCharacter.items.delete(item);
+            character.items.delete(item);
             this._game.currentLocation.items.add(item);
         }
     }
@@ -330,14 +330,14 @@ export class CharacterService implements ICharacterService {
         }); 
     }
 
-    private unequip = (type: string, currentItem?: IItem): boolean => {
-        var equippedItem = <IItem>this._game.activeCharacter.equipment[type];
+    private unequip = (character: ICharacter, type: string, currentItem?: IItem): boolean => {
+        var equippedItem = <IItem>character.equipment[type];
 
         if (equippedItem) {
             if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
                 for (var n in equippedItem.equipmentType) {
                     var type = this.getEquipmentType(equippedItem.equipmentType[n]);
-                    var unEquipped = this.unequip(type, equippedItem);
+                    var unEquipped = this.unequip(character, type, equippedItem);
 
                     if (!unEquipped) {
                         return false;
@@ -348,22 +348,22 @@ export class CharacterService implements ICharacterService {
             }
 
             if (this._rules.character.beforeUnequip) {
-                if (!this._rules.character.beforeUnequip(this._game, this._game.activeCharacter, equippedItem)) {
+                if (!this._rules.character.beforeUnequip(this._game, character, equippedItem)) {
                     return false;
                 }
             }
 
             if (equippedItem.unequip) {
-                if (!equippedItem.unequip(equippedItem, this._game)) {
+                if (!equippedItem.unequip(character, equippedItem, this._game)) {
                     return false;
                 }
             }
 
-            if (equippedItem && equippedItem.equipmentType && this._game.activeCharacter.items.indexOf(equippedItem) < 0) {
-                this._game.activeCharacter.items.push(equippedItem);
+            if (equippedItem && equippedItem.equipmentType && character.items.indexOf(equippedItem) < 0) {
+                character.items.push(equippedItem);
             }
 
-            this._game.activeCharacter.equipment[type] = null;
+            character.equipment[type] = null;
         }
 
         return true;

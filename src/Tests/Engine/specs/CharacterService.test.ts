@@ -1,5 +1,5 @@
 import { describe, beforeAll, test, expect } from 'vitest';
-import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState } from 'storyScript/Interfaces/storyScript';
+import { IGame, IRules, ICreateCharacterAttribute, ICreateCharacter, EquipmentType, IItem, IQuest, GameState, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { Rules } from '../../../Games/MyRolePlayingGame/rules';
 import { LeatherBoots } from '../../../Games/MyRolePlayingGame/items/leatherBoots';
@@ -272,7 +272,7 @@ describe("CharacterService", function() {
             var service = getService(game);
             var boots = LeatherBoots();
             game.activeCharacter.items.push(boots);
-            service.equipItem(boots);
+            service.equipItem(<ICharacter>{}, boots);
 
             expect(game.activeCharacter.equipment.feet).not.toBeUndefined();
             expect(game.activeCharacter.equipment.feet).toBe(boots);
@@ -294,7 +294,7 @@ describe("CharacterService", function() {
                     EquipmentType.LeftHand
                 ]
             };
-            service.equipItem(twoHandedSword);
+            service.equipItem(<ICharacter>{}, twoHandedSword);
 
             expect(game.activeCharacter.equipment.rightHand).not.toBeUndefined();
             expect(game.activeCharacter.equipment.leftHand).not.toBeUndefined();
@@ -320,7 +320,7 @@ describe("CharacterService", function() {
             game.activeCharacter.equipment.rightHand = sword;
 
             var newSword = Sword();
-            var result = service.equipItem(newSword);
+            var result = service.equipItem(<ICharacter>{}, newSword);
 
             expect(result).toBeFalsy();
             expect(game.activeCharacter.equipment.rightHand).toBe(sword);
@@ -351,7 +351,7 @@ describe("CharacterService", function() {
                     EquipmentType.LeftHand
                 ]
             };
-            var result = service.equipItem(twoHandedSword);
+            var result = service.equipItem(<ICharacter>{}, twoHandedSword);
 
             expect(result).toBeFalsy();
             expect(game.activeCharacter.equipment.rightHand).toBe(sword);
@@ -375,7 +375,7 @@ describe("CharacterService", function() {
                     EquipmentType.RightHand,
                     EquipmentType.LeftHand
                 ],
-                unequip: function(item, game) {
+                unequip: function(character, item, game) {
                     return false;
                 }
             };
@@ -385,7 +385,7 @@ describe("CharacterService", function() {
             game.activeCharacter.equipment.rightHand = twoHandedSword;
             game.activeCharacter.equipment.leftHand = twoHandedSword;
 
-            var result = service.equipItem(sword);
+            var result = service.equipItem(<ICharacter>{}, sword);
 
             expect(result).toBeFalsy();
             expect(game.activeCharacter.equipment.rightHand).toBe(twoHandedSword);
@@ -406,7 +406,7 @@ describe("CharacterService", function() {
                 return false;
             }
 
-            var result = service.equipItem(sword);
+            var result = service.equipItem(<ICharacter>{}, sword);
 
             expect(result).toBeFalsy();
             expect(game.activeCharacter.equipment.rightHand).toBeUndefined();
@@ -424,7 +424,7 @@ describe("CharacterService", function() {
             var backPackBoots = LeatherBoots();
             game.activeCharacter.equipment.feet = equippedBoots;
             game.activeCharacter.items.push(backPackBoots);
-            service.equipItem(backPackBoots);
+            service.equipItem(<ICharacter>{}, backPackBoots);
 
             expect(game.activeCharacter.equipment.feet).not.toBeUndefined();
             expect(game.activeCharacter.equipment.feet).toBe(backPackBoots);
@@ -452,7 +452,7 @@ describe("CharacterService", function() {
             var service = getService(game, rules);
             var sword = Sword();
 
-            var result = service.equipItem(sword);
+            var result = service.equipItem(<ICharacter>{}, sword);
 
             expect(result).toBeFalsy();
             expect(game.activeCharacter.equipment.rightHand).toBeUndefined();
@@ -478,7 +478,7 @@ describe("CharacterService", function() {
             var sword = Sword();
             game.activeCharacter.equipment.rightHand = sword;
 
-            var result = service.unequipItem(sword);
+            var result = service.unequipItem(<ICharacter>{}, sword);
 
             expect(result).toBeFalsy();
             expect(game.activeCharacter.equipment.rightHand).toBe(sword);
@@ -533,7 +533,7 @@ describe("CharacterService", function() {
             }
 
             var service = getService(game);
-            service.dropItem(sword);
+            service.dropItem(<ICharacter>{}, sword);
 
             expect(game.activeCharacter.items.length).toBe(0);
             expect(game.currentLocation.items.length).toBe(1);

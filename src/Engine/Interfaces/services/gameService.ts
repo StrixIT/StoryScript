@@ -19,8 +19,8 @@ export interface IGameService {
     loadGame(name: string): void;
     hasDescription(entity: { id?: string, description?: string }): boolean;
     initCombat(): void;
-    fight(enemy: IEnemy, retaliate?: boolean): Promise<void> | void;
-    useItem(item: IItem, target?: IEnemy): Promise<void> | void;
+    fight(character: ICharacter, enemy: IEnemy, retaliate?: boolean): Promise<void> | void;
+    useItem(character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void;
     executeBarrierAction(barrier: IBarrier, action: IBarrierAction, destination: IDestination): void;
     getCurrentMusic(): string;
     watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void;

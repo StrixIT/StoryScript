@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ITrade, IAction, ActionType, IPerson, IEnemy, ICombinable, IItem } from 'storyScript/Interfaces/storyScript';
+import { ITrade, IAction, ActionType, IPerson, IEnemy, ICombinable, IItem, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
@@ -79,8 +79,8 @@ export class SharedMethodService {
         this._gameService.initCombat();
     }
 
-    fight = (enemy: IEnemy): Promise<void> | void => {
-        return this._gameService.fight(enemy);
+    fight = (character: ICharacter, enemy: IEnemy): Promise<void> | void => {
+        return this._gameService.fight(character, enemy);
     }
 
     getButtonClass = (action: IAction): string => {
@@ -135,7 +135,7 @@ export class SharedMethodService {
         return this.useEquipment && this.game.activeCharacter && Object.keys(this.game.activeCharacter.equipment).some(k => (<any>this.game.activeCharacter.equipment)[k] !== undefined);
     }
 
-    canUseItem = (item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, item));
+    canUseItem = (character: ICharacter, item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, character, item));
     
     private getActionIndex = (action: IAction): { type: number, index: number} => {
         var index = -1;

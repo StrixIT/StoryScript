@@ -1,4 +1,4 @@
-import { IInterfaceTexts, IGame, IAction, IEnemy, IItem } from 'storyScript/Interfaces/storyScript';
+import { IInterfaceTexts, IGame, IAction, IEnemy, IItem, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
@@ -31,21 +31,21 @@ export class CombatComponent {
 
     executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this); 
 
-    fight = (enemy: IEnemy): void => { 
+    fight = (character: ICharacter, enemy: IEnemy): void => { 
         this.actionsEnabled = false;
 
-        Promise.resolve(this._sharedMethodService.fight(enemy)).then(() => {
+        Promise.resolve(this._sharedMethodService.fight(character, enemy)).then(() => {
             this.actionsEnabled = true;
         }); 
     }
     
-    useItem = (item: IItem, target?: IEnemy): void => {
+    useItem = (character: ICharacter, item: IItem, target?: IEnemy): void => {
         this.actionsEnabled = false;
 
-        Promise.resolve(this._gameService.useItem(item, target)).then(() => {
+        Promise.resolve(this._gameService.useItem(character, item, target)).then(() => {
             this.actionsEnabled = true;
         }); 
     }
 
-    canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(item);
+    canUseItem = (character: ICharacter, item: IItem): boolean => this._sharedMethodService.canUseItem(character, item);
 }
