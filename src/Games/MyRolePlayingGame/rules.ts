@@ -10,6 +10,9 @@ export function Rules(): IRules {
             },
 
             intro: false,
+            gameStart(game) {
+                game.party.currency ??= 0;
+            },
         },
 
         general: {
@@ -102,7 +105,7 @@ export function Rules(): IRules {
         },
 
         combat: {
-            fight: (game: IGame, enemy: IEnemy): void => {
+            fight: (game: IGame, character: ICharacter, enemy: IEnemy): void => {
                 var damage = game.helpers.rollDice('1d6') + game.activeCharacter.strength + game.helpers.calculateBonus(game.activeCharacter, 'damage');
                 game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;

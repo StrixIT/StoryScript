@@ -4,10 +4,10 @@ import { IPerson } from '../Interfaces/person';
 import { ITrade } from '../Interfaces/trade';
 import { IItem } from '../Interfaces/item';
 import { IStock } from '../Interfaces/stock';
-import { ICharacter } from '../Interfaces/character';
 import { randomList } from '../utilities';
 import { ITradeService } from '../Interfaces/services/tradeService';
 import { PlayState } from '../Interfaces/enumerations/playState';
+import { IParty } from '../Interfaces/party';
 
 export class TradeService implements ITradeService {
     constructor(private _game: IGame, private _texts: IInterfaceTexts) {
@@ -44,7 +44,7 @@ export class TradeService implements ITradeService {
     displayPrice = (item: IItem, actualPrice: number): string => actualPrice > 0 ? (item.name + ': ' + actualPrice + ' ' + this._texts.currency) : item.name;
 
     buy = (item: IItem, trade: ITrade): boolean => {
-        if (!this.pay(item, trade, trade.buy, this._game.activeCharacter, false)) {
+        if (!this.pay(item, trade, trade.buy, this._game.party, false)) {
             return false;
         }
 
@@ -59,7 +59,7 @@ export class TradeService implements ITradeService {
     }
 
     sell = (item: IItem, trade: ITrade): boolean => {
-        if (!this.pay(item, trade, trade.sell, this._game.activeCharacter, true)) {
+        if (!this.pay(item, trade, trade.sell, this._game.party, true)) {
             return false;
         };
 
@@ -118,7 +118,7 @@ export class TradeService implements ITradeService {
         return trader;
     }
 
-    private pay = (item: IItem, trader: ITrade, stock: IStock, character: ICharacter, characterSells: boolean): boolean => {
+    private pay = (item: IItem, trader: ITrade, stock: IStock, party: IParty, characterSells: boolean): boolean => {
         var price = item.value;
 
         if (stock.priceModifier != undefined) {
@@ -126,13 +126,13 @@ export class TradeService implements ITradeService {
             price = Math.round(item.value * modifier);
         }
 
-        character.currency = character.currency || 0;
+        party.currency = party.currency || 0;
         trader.currency = trader.currency || 0;
 
-        var canAffort = characterSells ? trader.currency - price >= 0 : character.currency - price >= 0;
+        var canAffort = characterSells ? trader.currency - price >= 0 : party.currency - price >= 0;
 
         if (canAffort) {
-            character.currency = characterSells ? character.currency + price : character.currency - price;
+            party.currency = characterSells ? party.currency + price : party.currency - price;
 
             if (trader.currency != undefined) {
                 trader.currency = characterSells ? trader.currency - price : trader.currency + price;

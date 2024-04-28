@@ -321,14 +321,22 @@ export class ConversationService implements IConversationService {
         switch (type) {
             case 'item': {
                 // Check item available. Item list first, equipment second.
-                var hasItem = this._game.activeCharacter.items.get(value) != undefined;
+                let hasItem = false;
 
-                if (!hasItem) {
-                    for (var i in this._game.activeCharacter.equipment) {
-                        var slotItem = <IItem>this._game.activeCharacter.equipment[i];
-                        hasItem = slotItem != undefined && slotItem != null && compareString(slotItem.id, value);
+                this._game.party.characters.forEach(c => {
+                    if (hasItem) {
+                        return;
                     }
-                }
+
+                    hasItem = c.items.get(value) != undefined;
+
+                    if (!hasItem) {
+                        for (var i in c.equipment) {
+                            var slotItem = <IItem>c.equipment[i];
+                            hasItem = slotItem != undefined && slotItem != null && compareString(slotItem.id, value);
+                        }
+                    }
+                });
 
                 isAvailable = hasItem;
             } break;
@@ -359,7 +367,7 @@ export class ConversationService implements IConversationService {
                     console.log('Invalid attribute ' + type + ' for reply requirement for node ' + activeNode.node + '!');
                 }
 
-                isAvailable = isNaN(this._game.activeCharacter[type]) ? this._game.activeCharacter[type] === value : parseInt(this._game.activeCharacter[type]) >= parseInt(value);
+                isAvailable = isNaN(attribute) ? attribute === value : parseInt(attribute) >= parseInt(value);
             } break;
         }
 

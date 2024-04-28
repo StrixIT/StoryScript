@@ -11,7 +11,7 @@ import { PlayState } from '../enumerations/playState';
 export interface IGameService {
     init(): void;
     startNewGame(characterData: any): void;
-    levelUp(): ICharacter;
+    levelUp(character: ICharacter): ICharacter;
     reset(): void;
     restart(skipIntro?: boolean): void;
     saveGame(name?: string): void;

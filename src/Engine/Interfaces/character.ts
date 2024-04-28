@@ -24,12 +24,7 @@ export interface ICharacter {
     /**
      * The current health of the player.
      */
-        currentHitpoints: number;
-
-    /**
-     * The amount of credits the player has, in whatever form.
-     */
-    currency?: number;
+    currentHitpoints: number;
 
     /**
      * All items the player is carrying in his backpack. Note that equipped items are not in this list.
@@ -45,6 +40,11 @@ export interface ICharacter {
      * The items the character has equipped.
      */
     equipment: IEquipment
+
+    /**
+     * The player's experience. This is an optional element, you should track experience in your game rules.
+     */
+    experience?: number;
 
     /**
      * The player character level. This is an optional element, you should track level and take care of level

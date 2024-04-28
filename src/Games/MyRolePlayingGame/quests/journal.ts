@@ -14,7 +14,7 @@ export function Journal() {
         },
         complete: (game: IGame, quest: IQuest, person: IPerson) => {
             game.activeCharacter.items.delete(Items.Journal);
-            game.activeCharacter.currency += 5;
+            game.party.currency += 5;
         }
     });
 }

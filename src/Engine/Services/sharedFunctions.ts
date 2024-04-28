@@ -5,6 +5,7 @@ import { ILocationService } from '../Interfaces/services/locationService';
 import { ICharacter } from '../Interfaces/character';
 import { IItem } from '../Interfaces/item';
 import { IRules } from '../Interfaces/rules/rules';
+import { IParty } from '../Interfaces/party';
 
 export function SaveWorldState(dataService: IDataService, locationService: ILocationService, game: IGame, rules: IRules) {
     if (rules.general.beforeSave) {
@@ -50,16 +51,40 @@ export function checkAutoplay(dataService: IDataService, value: string) {
     return value;
 }
 
-export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem) {
-    character.items.delete(item);
+export function removeItemFromParty(party: IParty, item: IItem) {
+    let deleted = false;
+
+    party.characters.forEach(c => {
+        if (deleted) {
+            return;
+        }
+        
+        deleted = removeItemFromItemsAndEquipment(c, item);
+    });
+}
+
+export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem): boolean {
+    let deleted = false;
+    
+    if (character.items.get(item)) {
+        character.items.delete(item);
+        deleted = true;
+    }
 
     if (character.equipment) {
         for (var n in character.equipment) {
             if (item === character.equipment[n]) {
                 character.equipment[n] = null;
+                deleted = true;
+            }
+
+            if (deleted) {
+                break;
             }
         };
     }
+
+    return deleted;
 }
 
 function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLElement>, playedAudio: string[]) {

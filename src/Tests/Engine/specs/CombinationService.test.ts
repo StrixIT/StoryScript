@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeAll } from 'vitest';
 import { CombinationService } from 'storyScript/Services/CombinationService';
-import { ICombinable, IGame, ICombinationAction, ICombinationMatchResult, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
+import { ICombinable, IGame, ICombinationAction, ICombinationMatchResult, IInterfaceTexts, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { Rules } from '../../../Games/MyRolePlayingGame/types';
 import { DefaultTexts } from 'storyScript/defaultTexts';
 import { IActiveCombination } from '../../../Engine/Interfaces/combinations/activeCombination';
@@ -156,6 +156,12 @@ describe("CombinationService", function() {
             } };
 
             const ofSameType = JSON.parse(JSON.stringify(target));
+
+            const character = <ICharacter>{
+                items: [
+                    ofSameType
+                ]
+            };
             
             const game = <IGame>{
                 combinations: {
@@ -172,11 +178,12 @@ describe("CombinationService", function() {
                         target
                     ]
                 },
-                activeCharacter: {
-                    items: [
-                        ofSameType
+                party: {
+                    characters: [
+                        character
                     ]
-                }
+                },
+                activeCharacter: character
             };
 
             var rules = {

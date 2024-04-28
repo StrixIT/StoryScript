@@ -87,7 +87,6 @@ export class GameService implements IGameService {
             }
         }
         else {
-            // Todo: support creating multiple characters!
             this._characterService.setupCharacter();
             this._game.state = GameState.CreateCharacter;
         }
@@ -135,8 +134,8 @@ export class GameService implements IGameService {
         this.saveGame();
     }
 
-    levelUp = (): ICharacter => {
-        var levelUpResult = this._characterService.levelUp();
+    levelUp = (character: ICharacter): ICharacter => {
+        var levelUpResult = this._characterService.levelUp(character);
         this.saveGame();
         return levelUpResult;
     }
@@ -395,15 +394,19 @@ export class GameService implements IGameService {
             const items = [...enemy.items];
 
             items.forEach((item: IItem) => {
-                if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, character, enemy, item)) {
+                if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, enemy, item)) {
                     enemy.items.delete(item);
                     this._game.currentLocation.items.add(item);
                 }
             });
         }
 
-        character.currency = character.currency || 0;
-        character.currency += enemy.currency || 0;
+        if (enemy.currency) {
+            var party = this._game.party;
+            party.currency = party.currency || 0;
+            party.currency += enemy.currency || 0;
+        }
+
         this._game.statistics.enemiesDefeated = this._game.statistics.enemiesDefeated || 0;
         this._game.statistics.enemiesDefeated += 1;
         this._game.currentLocation.enemies.delete(enemy);
@@ -468,10 +471,33 @@ export class GameService implements IGameService {
     }
 
     private initSetInterceptors = (): void => {
+        const defaultPartyName = this._game.party.name;
         let score = this._game.party.score || 0;
         let gameState = this._game.state;
         let currentDescription = this._game.currentDescription;
         let currentHitpoints: Map<string, number> = new Map<string, number>();
+
+        Object.defineProperty(this._game.party, 'name', {
+            configurable: true,
+            get: () => {
+                let partyName = defaultPartyName;
+
+                if (!partyName) {
+                    this._game.party.characters.forEach((c, i) =>{
+                        const separator = i == this._game.party.characters.length - 1 ? ' & ' : ', ';
+
+                        if (partyName) {
+                            partyName += separator;
+                        }
+        
+                        partyName += c.name;
+                    });
+                }
+
+                return partyName;
+
+            }
+        });
 
         this._game.party.characters.forEach(c => {
             currentHitpoints[c.name] = c.currentHitpoints || c.hitpoints;
@@ -501,6 +527,7 @@ export class GameService implements IGameService {
                 var change = value - score;
                 score = value;
 
+                // Todo: separate score and xp(?)
                 // Change when xp can be lost.
                 if (change > 0) {
                     var levelUp = this._rules.general?.scoreChange && this._rules.general.scoreChange(this._game, change);
@@ -616,8 +643,7 @@ export class GameService implements IGameService {
     }
 
     private updateHighScore = (): void => {
-        // Todo: use party name or combination of character names?
-        var scoreEntry = { name: this._game.activeCharacter.name, score: this._game.party.score };
+        var scoreEntry = { name: this._game.party.name, score: this._game.party.score };
 
         if (!this._game.highScores || !this._game.highScores.length) {
             this._game.highScores = [];

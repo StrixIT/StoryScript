@@ -4,9 +4,19 @@ import { IQuest } from "./quest";
 
 export interface IParty {
     /**
+     * The name of the party.
+     */
+    name?: string;
+
+    /**
      * The members of the party.
      */
     characters: ICharacter[];
+
+    /**
+     * The amount of credits the party has, in whatever form.
+     */
+    currency?: number;
 
     /**
      * All the quests the party has accepted, both active and complete.

@@ -99,8 +99,7 @@ export class CharacterService implements ICharacterService {
         return sheet;
     }
 
-    levelUp = (): ICharacter => {
-        var character = this._game.activeCharacter;
+    levelUp = (character: ICharacter): ICharacter => {
         var sheet = this._game.createCharacterSheet;
 
         if (this._rules.character.levelUp && this._rules.character.levelUp(character, sheet)) {
@@ -129,7 +128,7 @@ export class CharacterService implements ICharacterService {
         return true;
     }
 
-    canEquip = (item: IItem): boolean => item.equipmentType != EquipmentType.Miscellaneous;
+    isEquippable = (item: IItem): boolean => item.equipmentType != EquipmentType.Miscellaneous;
 
     canDrop = (item: IItem): boolean => typeof item.canDrop === 'function' ? 
                                             item.canDrop(this._game, item) : typeof item.canDrop === 'undefined' ? 
@@ -183,9 +182,9 @@ export class CharacterService implements ICharacterService {
         return true;
     }
 
-    isSlotUsed = (slot: string): boolean => {
-        if (this._game.activeCharacter && this._game.activeCharacter.equipment) {
-            return this._game.activeCharacter.equipment[slot] !== undefined;
+    isSlotUsed = (character: ICharacter, slot: string): boolean => {
+        if (character && character.equipment) {
+            return character.equipment[slot] !== undefined;
         }
 
         return false;

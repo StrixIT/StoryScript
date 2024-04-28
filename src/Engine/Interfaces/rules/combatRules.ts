@@ -34,8 +34,7 @@ export interface ICombatRules {
      * Specify this function if you want to apply custom rules before an enemy drops an item when defeated.
      * Return false if the enemy should not drop the item.
      * @param game The active game
-     * @param character The character defeating the enemy
      * @param item The item about to be unequipped
      */
-    beforeDrop?(game: IGame, character: ICharacter, enemy: IEnemy, item: IItem): boolean;
+    beforeDrop?(game: IGame, enemy: IEnemy, item: IItem): boolean;
 }

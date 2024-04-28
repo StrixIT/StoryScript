@@ -24,12 +24,12 @@ export class EquipmentComponent {
 
     texts: IInterfaceTexts;
 
-    showEquipment = (): boolean => this._sharedMethodService.showEquipment();
+    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
     unequipItem = (item: IItem): boolean => this._characterService.unequipItem(this.character, item);
 
     isSlotUsed = (slot: string): boolean => {
-        return this._characterService.isSlotUsed(slot);
+        return this._characterService.isSlotUsed(this.character, slot);
     }
 
     customSlots = () => {

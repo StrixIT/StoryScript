@@ -25,7 +25,7 @@ export class QuestComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    showQuests = (): boolean => this.game.activeCharacter && !isEmpty(this.game.party.quests);
+    showQuests = (): boolean => this.game.party && !isEmpty(this.game.party.quests);
 
     showActiveQuests = (): boolean => this.game.party.quests.filter(q => !q.completed).length > 0;
 
