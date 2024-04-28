@@ -18,7 +18,7 @@ export function Fireball() {
         canUse(game, item) {
             return game.playState === PlayState.Combat;
         },
-        use(game, item, target) {
+        use(game, character, item, target) {
             target.hitpoints -= game.helpers.rollDice('1d6');
         },
     });

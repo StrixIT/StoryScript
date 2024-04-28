@@ -27,7 +27,9 @@ export function ForestLake() {
             {
                 'HealingWater':
                 (game: IGame) => {
-                    heal(game.activeCharacter, 3);
+                    game.party.characters.forEach(c => {
+                        heal(c, 3);
+                    });
                 }
             }
         ],

@@ -27,6 +27,7 @@ export function Mermaid() {
             {
                 text: 'Give the Magic Flower to the Mermaid',
                 execute: (game: IGame) => {
+                    // Todo: should remove item from party.
                     game.activeCharacter.items.delete(Magicflower);
                     game.activeCharacter.items.add(Pearl());
                     setCompleted(game, 'giveflower');

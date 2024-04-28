@@ -17,7 +17,11 @@ export function QueenBee() {
         conversation: {
             showUnavailableReplies: false,
             selectActiveNode: (game, person) => {
-                if (game.activeCharacter.items.get(Magicflower)) {
+                let hasFlower = false;
+
+                game.party.characters.forEach(c => hasFlower ?? c.items.get(Magicflower));
+
+                if (hasFlower) {
                     return person.conversation.nodes.filter(n => { return n.node == 'alreadyhaveflower' })[0];
                 }
 
@@ -26,6 +30,8 @@ export function QueenBee() {
             actions: {
                 'giveflower': (game, person) => {
                     game.activeCharacter.items.add(Beesting);
+
+                    // Todo: should delete item from party.
                     game.activeCharacter.items.delete(Magicflower);
                 }
             }

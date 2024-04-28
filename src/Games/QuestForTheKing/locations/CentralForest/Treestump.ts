@@ -40,6 +40,7 @@ export function Treestump() {
                         });
                     }
                     else {
+                        // TODO: support multiple characters or use party gold.
                         // If the player fails to resist the music, the Satyr takes half of his gold. Enable the exit.
                         game.logToLocationLog(game.currentLocation.descriptions['failresistmusic']);
                         game.activeCharacter.currency = Math.floor(game.activeCharacter.currency / 2);

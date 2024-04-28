@@ -30,8 +30,10 @@ export function Oceanshrine() {
                     var key = game.worldProperties.isDay ? 'touchday' : 'touchnight';
                     game.logToLocationLog(game.currentLocation.descriptions[key]);
 
-                    // Fully heal the character.
-                    game.activeCharacter.currentHitpoints = game.activeCharacter.hitpoints;
+                    // Fully heal the party.
+                    game.party.characters.forEach(c => {
+                        c.currentHitpoints = c.hitpoints;
+                    });
 
                     // Todo: should only the wizard be able to search the altar?
                     var isWizard = false; //game.activeCharacter.class === Class.Wizard

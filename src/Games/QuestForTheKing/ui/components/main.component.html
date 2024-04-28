@@ -4,10 +4,10 @@
         <sound></sound>
         <div class="row">
             <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
-                <div *ngFor="let character of game.party.characters">
-                    <character-sheet></character-sheet>
-                    <equipment></equipment>
-                    <backpack></backpack>
+                <div *ngFor="let character of game.party.characters" (click)="setActive(character)" [ngClass]="{ 'is-active': character.isActiveCharacter }">
+                    <character-sheet [character]="character"></character-sheet>
+                    <equipment [character]="character"></equipment>
+                    <backpack [character]="character"></backpack>
                 </div>
                 <quests></quests>
             </div>

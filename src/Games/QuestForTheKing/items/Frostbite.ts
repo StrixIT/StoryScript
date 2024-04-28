@@ -17,7 +17,7 @@ export function Frostbite() {
         canUse(game, item) {
             return game.playState === PlayState.Combat;
         },
-        use(game, item, target: IEnemy) {
+        use(game, character, item, target: IEnemy) {
             target.hitpoints -= game.helpers.rollDice('1d4');
             target.frozen = true;
         },

@@ -13,9 +13,9 @@ export function Healthpotion() {
         value: 5,
         useInCombat: true,
         itemClass: [ClassType.Rogue, ClassType.Warrior, ClassType.Wizard],
-        use: (game, item) => {
-            game.activeCharacter.currentHitpoints += 5;
-            game.activeCharacter.items.remove(item);
+        use: (game, character, item) => {
+            character.currentHitpoints += 5;
+            character.items.remove(item);
         }
     });
 }

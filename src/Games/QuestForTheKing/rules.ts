@@ -1,11 +1,12 @@
-﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction } from './types';
+﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus, ICreateCharacterStep } from 'storyScript/Interfaces/storyScript';
+import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction, IParty } from './types';
 import { CharacterClasses } from './characterClass';
 import { ClassType } from './classType';
 
 export function Rules(): IRules {
     return {
         setup: {
+            numberOfCharacters: 3,
             setupGame: (game: IGame): void => {
                 game.worldProperties = {
                     currentDay: 0,
@@ -63,7 +64,12 @@ export function Rules(): IRules {
                                         }
                                     ]
                                 }
-                            ]
+                            ],
+                            initStep: (party: IParty, character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep) => {
+                                if (party?.characters) {
+                                    currentStep.questions[0].entries = currentStep.questions[0].entries.filter(e => !party.characters.find(c => c.class.name === e.value));
+                                }
+                            }
                         },
                     ]
                 };
