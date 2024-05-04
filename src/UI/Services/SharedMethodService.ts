@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ITrade, IAction, ActionType, IPerson, IEnemy, ICombinable, IItem, ICharacter } from 'storyScript/Interfaces/storyScript';
+import { ITrade, IAction, ActionType, IPerson, ICombinable, IItem, ICharacter } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
@@ -77,10 +77,6 @@ export class SharedMethodService {
 
         this.game.combatLog = [];
         this._gameService.initCombat();
-    }
-
-    fight = (character: ICharacter, enemy: IEnemy): Promise<void> | void => {
-        return this._gameService.fight(character, enemy);
     }
 
     getButtonClass = (action: IAction): string => {

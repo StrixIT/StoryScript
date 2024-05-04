@@ -3,15 +3,10 @@
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
-                <div *ngFor="let character of game.party.characters" (click)="setActive(character)" [ngClass]="{ 'is-active': character.isActive }">
-                    <character-sheet [character]="character"></character-sheet>
-                    <equipment [character]="character"></equipment>
-                    <backpack [character]="character"></backpack>
-                </div>
-                <quests></quests>
+            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
+                <party [party]="game.party"></party>
             </div>
-            <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">
+            <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
                 <div *ngIf="!game.state">
                     {{ texts.loading }}
                 </div>

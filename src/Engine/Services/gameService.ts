@@ -27,7 +27,9 @@ import { IFeature } from '../Interfaces/feature';
 import { selectStateListEntry } from 'storyScript/utilities';
 import { RuntimeProperties } from 'storyScript/runtimeProperties';
 import { IParty } from '../Interfaces/party';
-import { ICreateCharacter } from '../Interfaces/storyScript';
+import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
+import { ICombatRound } from '../Interfaces/combatRound';
+import { ICombatSetup } from '../Interfaces/combatSetup';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -243,6 +245,18 @@ export class GameService implements IGameService {
             this._rules.combat.initCombat(this._game, this._game.currentLocation);
         }
 
+        var firstEnemy = this._game.currentLocation.activeEnemies[0];
+        this._game.combat = <ICombatRound<ICombatSetup>>[];
+
+        if (firstEnemy) {
+            this._game.party.characters.forEach((c, i) => { 
+                this._game.combat[i] = <ICombatSetup>{
+                    characterName: c.name,
+                    target: firstEnemy
+                };
+            });
+        }
+
         this._game.currentLocation.activeEnemies.forEach(enemy => {
             if (enemy.onAttack) {
                 enemy.onAttack(this._game);
@@ -252,18 +266,20 @@ export class GameService implements IGameService {
         this._game.playState = PlayState.Combat;
     }
 
-    fight = (character: ICharacter, enemy: IEnemy, retaliate?: boolean): Promise<void> | void => {
+    fight = (combatRound: ICombatRound<ICombatSetup>, retaliate?: boolean): Promise<void> | void => {
         if (!this._rules.combat || !this._rules.combat.fight)
         {
             return;
         }
 
-        var promise = this._rules.combat.fight(this._game, character, enemy, retaliate);
+        var promise = this._rules.combat.fight(this._game, combatRound, retaliate);
 
         return Promise.resolve(promise).then(() => {
-            if (enemy.hitpoints <= 0) {
-                this.enemyDefeated(character, enemy);
-            }
+            combatRound.forEach((s, i) => {
+                if (s.target.hitpoints <= 0) {
+                    this.enemyDefeated(this._game.party.characters[i], s.target);
+                }
+            });
 
             if (this._game.party.characters.filter(c => c.currentHitpoints >= 0).length == 0) {
                 this._game.playState = null;
@@ -471,7 +487,7 @@ export class GameService implements IGameService {
     }
 
     private initSetInterceptors = (): void => {
-        const defaultPartyName = this._game.party.name;
+        const defaultPartyName = this._game.party.name ?? '';
         let score = this._game.party.score || 0;
         let gameState = this._game.state;
         let currentDescription = this._game.currentDescription;

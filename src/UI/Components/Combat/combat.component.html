@@ -1,25 +1,39 @@
 <div id="combat" *ngIf="game.playState == 'Combat'">
     <div *ngIf="enemiesPresent()">
-        <div *ngIf="game.party.characters.length === 1">
-            <ul class="list-unstyled" *ngIf="game.currentLocation.activeEnemies.length > 0">
-                <li *ngFor="let enemy of game.currentLocation.activeEnemies">
-                    <button type="button" class="btn btn-danger" (click)="fight(game.activeCharacter, enemy)" [disabled]="!actionsEnabled">{{ texts.format(texts.attack, [enemy.name]) }}</button>
+        <ul class="list-unstyled">
+            <li *ngFor="let enemy of enemies()">
+                <div>
+                    <h3>{{enemy.name}}</h3>
                     <img src="{{ enemy.picture }}" *ngIf="enemy.picture" />
-                </li>
-            </ul>
+                </div>
+            </li>
+        </ul>
+        <div *ngFor="let character of game.party.characters; index as i">
+            <h2>{{character.name}}</h2>
+            <div>
+            <span>Attack </span>
+                <select *ngIf="multiCharacter && enemies().length > 1" class="custom-select" [(ngModel)]="game.combat[i].target">
+                    <option *ngFor="let enemy of enemies()" [ngValue]="enemy" >{{ enemy.name }}</option>
+                </select>
+                <input *ngIf="enemies().length === 1" type="text" disabled="disabled" [(ngModel)]="enemies()[0].name" />
+            </div>
+            <div>
+                <span>With </span>
+                <select *ngIf="getCombatItems(character).length > 1" class="custom-select" [(ngModel)]="game.combat[i].item">
+                    <option *ngFor="let item of getCombatItems(character)" [ngValue]="item" >{{ item.name }}</option>
+                </select>
+                <input *ngIf="getCombatItems(character).length === 1" type="text" disabled="disabled" [(ngModel)]="getCombatItems(character)[0].name" />
+                <input *ngIf="!getCombatItems(character).length" type="text" disabled="disabled" [(ngModel)]="texts.noWeapon" />
+            </div>
+        </div>
+        <button type="button" class="btn btn-danger" (click)="fight()" [disabled]="!actionsEnabled">{{ texts.fight }}</button>
+        <div>
             <ul class="list-unstyled">
                 <li *ngFor="let action of game.currentLocation.combatActions">
                     <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="!actionsEnabled">{{ action.text }}</button>
                 </li>
             </ul>
         </div>
-    </div>
-    <div>
-        <ul class="list-unstyled">
-            <li *ngFor="let item of game.activeCharacter.combatItems">
-                <button type="button" class="btn btn-info" *ngIf="canUseItem(item)" (click)="useItem(item)" [disabled]="!actionsEnabled">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
-            </li>
-        </ul>
     </div>
     <div *ngIf="!enemiesPresent()" class="combat-win">
         {{ texts.combatWin }}

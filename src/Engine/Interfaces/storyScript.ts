@@ -4,6 +4,8 @@ import type { IGame } from './game'
 import type { ICollection } from './collection'
 import type { IParty } from './party'
 import type { ICharacter } from './character'
+import type { ICombatSetup } from './combatSetup'
+import type { ICombatRound } from './combatRound'
 import type { IEquipment } from './equipment'
 import { DefaultEquipment } from './defaultEquipment'
 import type { IAction } from './action'
@@ -44,6 +46,7 @@ import type { IDefinitions } from './definitions'
 import { ScoreEntry } from './scoreEntry'
 import type { IDynamicStyle } from './dynamicStyle'
 import type { IStatistics } from './statistics'
+import { format } from '../defaultTexts'
 
 export type {
     ICollection, 
@@ -52,6 +55,8 @@ export type {
     IGame,
     IParty,
     ICharacter,
+    ICombatRound,
+    ICombatSetup,
     IEquipment,
     IAction,
     IItem, 
@@ -101,5 +106,6 @@ export {
     GameState,
     ActionStatus,
     ActionType,
-    ScoreEntry
+    ScoreEntry,
+    format
 }

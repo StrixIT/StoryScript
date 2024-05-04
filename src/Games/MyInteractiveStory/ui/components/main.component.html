@@ -3,7 +3,7 @@
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
+            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
             </div>
             <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">
                 <div *ngIf="!game.state">

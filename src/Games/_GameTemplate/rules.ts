@@ -1,5 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character } from './types';
+import { IGame, IEnemy, Character, ICombatRound } from './types';
 
 export function Rules(): IRules {
     return {
@@ -44,7 +44,7 @@ export function Rules(): IRules {
         },
 
         combat: {     
-            fight: (game: IGame, character: ICharacter, enemy: IEnemy, retaliate?: boolean) => {
+            fight: (game: IGame, combatRound: ICombatRound, retaliate?: boolean) => {
                 retaliate = retaliate == undefined ? true : retaliate;
 
                 // Implement character attack here.

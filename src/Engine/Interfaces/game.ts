@@ -7,7 +7,6 @@ import { IPerson } from './person';
 import { ITrade } from './trade';
 import { IFeature } from './feature';
 import { ILocation } from './location';
-import { IEnemy } from './enemy';
 import { IStatistics } from './statistics';
 import { IHelpers } from './helpers';
 import { ICreateCharacter } from './createCharacter/createCharacter';
@@ -16,6 +15,9 @@ import { PlayState } from './enumerations/playState';
 import { IActiveCombination } from './combinations/activeCombination';
 import { ICombinable } from './combinations/combinable';
 import { IParty } from './party';
+import { ICombatRound } from './combatRound';
+import { ICombatSetup } from './combatSetup';
+import { IInterfaceTexts } from './interfaceTexts';
 
 /**
  * The StoryScript main game object.
@@ -217,9 +219,14 @@ export interface IGame {
 
     /**
      * The function executed when the player attacks an enemy.
-     * @param character The character attacking
-     * @param enemy The enemy to attack
+     * @param combatRound The setup for this combat round
      * @param boolean True if the enemy can retaliate (default), false otherwise
      */
-    fight(character: ICharacter, enemy: IEnemy, retaliate?: boolean): void;
+    fight(combatRound: ICombatRound<ICombatSetup>, retaliate?: boolean): void;
+
+    /**
+     * The setup for the next combat round. This object is used to track
+     * which character attacks which enemy using what item or weapon.
+     */
+    combat: ICombatRound<ICombatSetup>;
 }

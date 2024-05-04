@@ -1,5 +1,5 @@
 ﻿import { IRules, ICreateCharacter, ICharacter, GameState } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character } from './types';
+import { IGame, Character, ICombatRound, IEnemy } from './types';
 
 export function Rules(): IRules {
     return {
@@ -105,8 +105,10 @@ export function Rules(): IRules {
         },
 
         combat: {
-            fight: (game: IGame, character: ICharacter, enemy: IEnemy): void => {
-                var damage = game.helpers.rollDice('1d6') + game.activeCharacter.strength + game.helpers.calculateBonus(game.activeCharacter, 'damage');
+            fight: (game: IGame, combatRound: ICombatRound): void => {
+                var character = game.activeCharacter;
+                var enemy = combatRound[0].target;
+                var damage = game.helpers.rollDice('1d6') + character.strength + game.helpers.calculateBonus(character, 'damage');
                 game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.hitpoints -= damage;
 
@@ -117,7 +119,7 @@ export function Rules(): IRules {
                 game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach((enemy: IEnemy) => {
                     var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
-                    game.activeCharacter.currentHitpoints -= damage;
+                    character.currentHitpoints -= damage;
                 });
             }
         }

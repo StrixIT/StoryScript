@@ -37,6 +37,7 @@ import { GameOverComponent } from './Components/GameOver/gameover.component';
 import { IntroComponent } from './Components/Intro/intro.component';
 import { LevelUpComponent } from './Components/LevelUp/levelup.component';
 import { MainComponent } from './Components/Main/main.component';
+import { PartyComponent } from './Components/Party/party.component';
 import { QuestComponent } from './Components/Quest/quest.component';
 import { SoundComponent } from './Components/Sound/sound.component';
 import { MenuModalComponent } from './Components/MenuModal/menumodal.component';
@@ -65,6 +66,7 @@ const objectFactory = ObjectFactory.GetInstance();
     ],
     declarations: [
         MainComponent,
+        PartyComponent,
         MenuModalComponent,
         NavigationComponent,
         EncounterComponent,

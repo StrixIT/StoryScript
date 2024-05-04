@@ -12,6 +12,7 @@ import { IGame } from './interfaces/game';
 import { CustomTexts } from './customTexts';
 import { Rules } from './rules';
 import { Character } from './character';
+import { ICombatRound } from './interfaces/combatRound';
 
 export type {
     IParty,
@@ -26,6 +27,7 @@ export type {
     ICompiledLocation, 
     IEquipment,
     IGame, 
+    ICombatRound
 }
 
 export { 

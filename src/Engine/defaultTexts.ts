@@ -15,7 +15,8 @@ export class DefaultTexts {
         use: 'Use',
         drop: 'Drop',
         enemies: 'Enemies',
-        attack: 'Attack {0}!',
+        fight: 'Fight!',
+        noWeapon: 'No weapon!',
         newGame: 'New game',
         firstCharacter: 'Create your first character',
         secondCharacter: 'Create your second character',
@@ -89,27 +90,29 @@ export class DefaultTexts {
         cancel: 'Cancel'
     }
 
-    format = (template: string, tokens: string[]): string => {
-        if (template && tokens) {
-            for (var i = 0; i < tokens.length; i++) {
-                var pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
-                var match = new RegExp(pattern).exec(template);
+    format = format;
 
-                if (match) {
-                    var matchReplacement = match[0].replace('{' + i + '}', '');
+    titleCase = (text: string): string => text.substring(0, 1).toUpperCase() + text.substring(1);
+}
 
-                    if (tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
-                        template = template.replace(match[0], ' ');
-                    }
-                    else {
-                        template = template.replace('{' + i + '}', tokens[i]);
-                    }
+export function format (template: string, tokens: string[]): string {
+    if (template && tokens) {
+        for (var i = 0; i < tokens.length; i++) {
+            var pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
+            var match = new RegExp(pattern).exec(template);
+
+            if (match) {
+                var matchReplacement = match[0].replace('{' + i + '}', '');
+
+                if (tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
+                    template = template.replace(match[0], ' ');
+                }
+                else {
+                    template = template.replace('{' + i + '}', tokens[i]);
                 }
             }
         }
-
-        return template;
     }
 
-    titleCase = (text: string): string => text.substring(0, 1).toUpperCase() + text.substring(1);
+    return template;
 }

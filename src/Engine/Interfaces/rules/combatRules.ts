@@ -1,4 +1,6 @@
 import { ICharacter } from '../character';
+import { ICombatRound } from '../combatRound';
+import { ICombatSetup } from '../combatSetup';
 import { ICompiledLocation } from '../compiledLocation';
 import { IEnemy } from '../enemy';
 import { IGame } from '../game';
@@ -16,11 +18,10 @@ export interface ICombatRules {
      * This function determines the combat rules for your game. Return a promise
      * when you want the engine to wait for your function to complete asynchronously.
      * @param game The active game
-     * @param character The character fighting
-     * @param enemy The enemy being attacked
+     * @param combatRound The setup for this combat round
      * @param retaliate True if the enemies present can fight back, false or undefined otherwise
      */
-    fight?(game: IGame, character: ICharacter, enemy: IEnemy, retaliate?: boolean): Promise<void>| void;
+    fight?(game: IGame, combatRound: ICombatRound<ICombatSetup>, retaliate?: boolean): Promise<void>| void;
 
     /**
      * This function will be called when an enemy is defeated.
