@@ -8,9 +8,10 @@ export function LongSword() {
         description: description,
         speed: 4,
         damage: '1D6',
+        isWeapon: true,
         equipmentType: EquipmentType.RightHand,
         value: 5,
-        attackText: 'You swing your longsword',
+        attackText: '{0} swings the longsword',
         itemClass: ClassType.Warrior
     });
 }

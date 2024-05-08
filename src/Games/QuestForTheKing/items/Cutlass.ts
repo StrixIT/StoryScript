@@ -10,7 +10,7 @@ export function Claymore() {
         speed: 5,
         equipmentType: EquipmentType.RightHand,
         value: 30,
-        attackText: 'You swing your cutlass',
+        attackText: '{0} swings the cutlass',
         itemClass: [ClassType.Warrior, ClassType.Rogue]
     });
 }

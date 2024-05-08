@@ -20,17 +20,20 @@ export class Character implements ICharacter {
     confused?: boolean;
 
     equipment: {
+        primaryWeapon?: IItem,
+        secondaryWeapon?: IItem,
+        bow?: IItem,
         body?: IItem,
-        leftHand?: IItem,
-        rightHand?: IItem,
         amulet?: IItem,
         rightRing?: IItem
     };
 
     constructor() {
         this.equipment = {
+            primaryWeapon: null,
+            secondaryWeapon: null,
+            bow: null,
             body: null,
-            leftHand: null,
             amulet: null,
             rightRing: null
         }

@@ -1,7 +1,11 @@
-﻿import { IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
+﻿import { IInterfaceTexts } from "./types";
 
 export function CustomTexts(): IInterfaceTexts {
-return {
+    return {
         gameName: 'Quests for the King',
+        bow: 'Bow',
+        rightRing: 'Ring',
+        primaryWeapon: 'Primary weapon',
+        secondaryWeapon: 'Secondary weapon'
     };
 }

@@ -10,7 +10,7 @@ export function Bow() {
         equipmentType: EquipmentType.LeftHand,
         arcane: false,
         value: 3,
-        attackText: 'You fire your bow',
+        attackText: '{0}} shoots the bow',
         itemClass: [ClassType.Rogue, ClassType.Warrior]
     });
 }

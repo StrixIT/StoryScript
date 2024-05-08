@@ -8,9 +8,10 @@ export function Dagger() {
         description: description,
         damage: '1d4',
         speed: 3,
-        equipmentType: [EquipmentType.RightHand],
+        equipmentType: ['primaryWeapon', 'secondaryWeapon'],
+        isWeapon: true,
         value: 5,
-        attackText: 'You thrust your dagger',
+        attackText: '{0} thrust the dagger',
         itemClass: [ClassType.Rogue, ClassType.Warrior]       
     });
 }

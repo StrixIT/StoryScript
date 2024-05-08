@@ -13,6 +13,8 @@ import { IGame } from './interfaces/game';
 import { CustomTexts } from './customTexts';
 import { Rules } from './rules';
 import { Character } from './character';
+import { ICombatSetup } from './interfaces/combatRound';
+import { IInterfaceTexts } from './interfaces/interfaceTexts';
 
 export type {
     IAction,
@@ -28,6 +30,8 @@ export type {
     ICompiledLocation, 
     IEquipment,
     IGame, 
+    ICombatSetup,
+    IInterfaceTexts
 }
 
 export { 

@@ -1,5 +1,5 @@
-﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus, ICreateCharacterStep } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction, IParty } from './types';
+﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus, ICreateCharacterStep, format} from 'storyScript/Interfaces/storyScript';
+import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction, IParty, ICombatSetup  } from './types';
 import { CharacterClasses } from './characterClass';
 import { ClassType } from './classType';
 
@@ -17,8 +17,9 @@ export function Rules(): IRules {
                     travelCounter: 0
                 };
             },
-            gameStart: (game: IGame): void => {
-            }
+            gameStart(game: IGame) {
+                game.party.currency ??= 0;
+            },
         },
 
         general: {
@@ -88,44 +89,48 @@ export function Rules(): IRules {
         },
 
         combat: {
-            fight: (game: IGame, enemy: IEnemy): void => {
+            fight: (game: IGame, combatSetup: ICombatSetup): void => {
                 game.combatLog = [];
 
-                var leftHandWeapon = game.activeCharacter.equipment.leftHand;
-                var rightHandWeapon = game.activeCharacter.equipment.rightHand;
+                combatSetup.forEach((s, i) => {
+                    const character = game.party.characters[i];
+                    const enemy = s.target;
+                    // var leftHandWeapon = character.equipment.leftHand;
+                    // var rightHandWeapon = character.equipment.rightHand;
 
-                // For two-handed weapons, calculate only one damage.
-                if (leftHandWeapon === rightHandWeapon) {
-                    rightHandWeapon = null;
-                }
+                    // // For two-handed weapons, calculate only one damage.
+                    // if (leftHandWeapon === rightHandWeapon) {
+                    //     rightHandWeapon = null;
+                    // }
 
-                var weaponDamage = (leftHandWeapon ? game.helpers.rollDice(leftHandWeapon.damage) : 0) + (rightHandWeapon ? game.helpers.rollDice(rightHandWeapon.damage) : 0);
-                var totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(game.activeCharacter, 'damageBonus') - (enemy.defence ?? 0));
-                var leftHandCombatText= game.activeCharacter.equipment.leftHand ? game.activeCharacter.equipment.leftHand.attackText : '';
-                var rightHandCombatText = game.activeCharacter.equipment.rightHand ? game.activeCharacter.equipment.rightHand.attackText : '';
-                var combatText = leftHandCombatText && rightHandCombatText && game.activeCharacter.equipment.leftHand.id !== game.activeCharacter.equipment.rightHand.id ? leftHandCombatText + '. ' + rightHandCombatText : leftHandCombatText || rightHandCombatText;
-                enemy.hitpoints -= totalDamage;
-
-                if (combatText) {
-                game.logToCombatLog(combatText + '.');
-                }
-
-                game.logToCombatLog('You do ' + totalDamage + ' damage to the ' + enemy.name + '!');
-
-                if (enemy.hitpoints <= 0) {
-                game.logToCombatLog('You defeat the ' + enemy.name + '!');
-
-                    if (!game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
-                        var currentSelector = descriptionSelector(game);
-                        var selector = currentSelector ? currentSelector + 'after' : 'after';
-                        selector = game.currentLocation.descriptions[selector] ? selector : 'after';
-                        game.currentLocation.descriptionSelector = selector;
-                        game.playState = null;
+                    if (s.item.isWeapon) {
+                        var weaponDamage = game.helpers.rollDice(s.item.damage);
+                        var totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (enemy.defence ?? 0));
+                        var combatText = format(s.item.attackText, [character.name]);
+                        enemy.hitpoints -= totalDamage;
                     }
-                }
+
+                    if (combatText) {
+                        game.logToCombatLog(combatText + '.');
+                    }
+
+                    game.logToCombatLog(`${character.name} does ${totalDamage} damage to the ${enemy.name}!`);
+
+                    if (enemy.hitpoints <= 0) {
+                        game.logToCombatLog(`${character.name} defeats the ${enemy.name}!`);
+
+                        if (!game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
+                            var currentSelector = descriptionSelector(game);
+                            var selector = currentSelector ? currentSelector + 'after' : 'after';
+                            selector = game.currentLocation.descriptions[selector] ? selector : 'after';
+                            game.currentLocation.descriptionSelector = selector;
+                            game.playState = null;
+                        }
+                    }
+                });
 
                 game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach(function (enemy: IEnemy) {
-                    var enemyDamage =game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
+                    var enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
                     game.activeCharacter.currentHitpoints -= enemyDamage;
                 });

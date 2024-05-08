@@ -11,7 +11,7 @@ export function ShortBow() {
 		equipmentType: EquipmentType.RightHand,
 		arcane: false,
 		value: 15,
-        attackText: 'You swing your shortsword',
+        attackText: '{0}} shoots the short bow',
         itemClass: [ ClassType.Rogue, ClassType.Warrior ]
 	});
 }

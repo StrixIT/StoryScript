@@ -10,7 +10,7 @@ export function Shortsword() {
         equipmentType: EquipmentType.LeftHand,
         arcane: false,
         value: 15,
-        attackText: 'You swing your shortsword',
+        attackText: '{0}} swings the shortsword',
         itemClass: [ ClassType.Rogue, ClassType.Warrior ]
     });
 }

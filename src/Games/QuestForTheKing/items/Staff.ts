@@ -10,8 +10,9 @@ export function Staff() {
 		description: description,
 		equipmentType: EquipmentType.RightHand,
 		arcane: false,
+		isWeapon: true,
 		value: 15,
-        attackText: 'You swing your staff',
+        attackText: '{0}} swings the staff',
         itemClass: [ ClassType.Wizard ]
 	});
 }
