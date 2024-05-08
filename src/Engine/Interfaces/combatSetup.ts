@@ -1,12 +1,5 @@
-import { IEnemy } from './enemy';
-import { IItem } from './item';
+import { ICombatTurn } from "./combatTurn";
 
-export interface ICombatSetup {
-    characterName: string;
-
-    target: IEnemy;
-
-    weapon?: IItem;
-
-    item?: IItem;
+export interface ICombatSetup<T extends ICombatTurn> extends Array<T> {
+    round: number;
 }

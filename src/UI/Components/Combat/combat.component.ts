@@ -4,7 +4,7 @@ import { GameService } from 'storyScript/Services/gameService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
-import { ICombatSetup } from '../../../Engine/Interfaces/combatSetup';
+import { ICombatTurn } from '../../../Engine/Interfaces/combatTurn';
 
 @Component({
     selector: 'combat',
@@ -21,29 +21,14 @@ export class CombatComponent {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.multiCharacter = this.game.party.characters.length > 1;
+        this.enemies = this.game.currentLocation.activeEnemies;
     }
 
     game: IGame;
     texts: IInterfaceTexts;
     actionsEnabled: boolean = true;
     multiCharacter: boolean;
-
-    enemies = (): ICollection<IEnemy> => this.game.currentLocation.activeEnemies;
-
-    getCombatItems = (character: ICharacter): IItem[] => {
-        const index = this.game.party.characters.indexOf(character);
-        const items = [...character.combatItems];
-
-        if (character.equipment.leftHand) {
-            items.splice(0, 0, character.equipment.leftHand);
-        }
-        if (character.equipment.rightHand) {
-            items.splice(0, 0, character.equipment.rightHand);
-        }
-
-        this.game.combat[index].item = items[0];
-        return items;
-    }
+    enemies: ICollection<IEnemy>;
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 

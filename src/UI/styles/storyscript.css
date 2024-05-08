@@ -322,3 +322,7 @@ feature {
 .is-active {
     border: solid 5px;
 }
+
+.not-appliccable {
+    opacity: 0.5;
+}

@@ -4,8 +4,8 @@ import type { IGame } from './game'
 import type { ICollection } from './collection'
 import type { IParty } from './party'
 import type { ICharacter } from './character'
+import type { ICombatTurn } from './combatTurn'
 import type { ICombatSetup } from './combatSetup'
-import type { ICombatRound } from './combatRound'
 import type { IEquipment } from './equipment'
 import { DefaultEquipment } from './defaultEquipment'
 import type { IAction } from './action'
@@ -55,7 +55,7 @@ export type {
     IGame,
     IParty,
     ICharacter,
-    ICombatRound,
+    ICombatTurn,
     ICombatSetup,
     IEquipment,
     IAction,

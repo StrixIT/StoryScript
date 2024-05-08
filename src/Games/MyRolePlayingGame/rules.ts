@@ -1,5 +1,5 @@
 ﻿import { IRules, ICreateCharacter, ICharacter, GameState } from 'storyScript/Interfaces/storyScript';
-import { IGame, Character, ICombatRound, IEnemy } from './types';
+import { IGame, Character, ICombatSetup, IEnemy } from './types';
 
 export function Rules(): IRules {
     return {
@@ -105,8 +105,8 @@ export function Rules(): IRules {
         },
 
         combat: {
-            fight: (game: IGame, combatRound: ICombatRound): void => {
-                var character = game.activeCharacter;
+            fight: (game: IGame, combatRound: ICombatSetup): void => {
+                var character = combatRound[0].character;
                 var enemy = combatRound[0].target;
                 var damage = game.helpers.rollDice('1d6') + character.strength + game.helpers.calculateBonus(character, 'damage');
                 game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');

@@ -28,8 +28,8 @@ import { selectStateListEntry } from 'storyScript/utilities';
 import { RuntimeProperties } from 'storyScript/runtimeProperties';
 import { IParty } from '../Interfaces/party';
 import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
-import { ICombatRound } from '../Interfaces/combatRound';
 import { ICombatSetup } from '../Interfaces/combatSetup';
+import { ICombatTurn } from '../Interfaces/combatTurn';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -245,17 +245,33 @@ export class GameService implements IGameService {
             this._rules.combat.initCombat(this._game, this._game.currentLocation);
         }
 
-        var firstEnemy = this._game.currentLocation.activeEnemies[0];
-        this._game.combat = <ICombatRound<ICombatSetup>>[];
+        var enemies = this._game.currentLocation.activeEnemies;
+        this._game.combat = <ICombatSetup<ICombatTurn>>[];
+        this._game.combat.round = 1;
 
-        if (firstEnemy) {
-            this._game.party.characters.forEach((c, i) => { 
-                this._game.combat[i] = <ICombatSetup>{
-                    characterName: c.name,
-                    target: firstEnemy
-                };
+        this._game.party.characters.forEach((c, i) => { 
+            const items = c.combatItems ?? [];
+
+            Object.keys(c.equipment).forEach(k => {
+                const item = <IItem>c.equipment[k];
+
+                if (item?.useInCombat || item?.isWeapon) {
+                    items.push(item)
+                }
             });
-        }
+
+            this._game.combat[i] = <ICombatTurn>{
+                character: c,
+                targetsAvailable: enemies,
+                target: enemies[0],
+                // weaponsAvailable: weapons,
+                // weapon: weapons[0],
+                // Todo: also sort on name
+                itemsAvailable: items.sort((a: IItem, b: IItem) => a.isWeapon ? -1 : 1),
+                item: items[0],
+                //useWeapon: weapons[0] !== undefined
+            };
+        });
 
         this._game.currentLocation.activeEnemies.forEach(enemy => {
             if (enemy.onAttack) {
@@ -266,7 +282,7 @@ export class GameService implements IGameService {
         this._game.playState = PlayState.Combat;
     }
 
-    fight = (combatRound: ICombatRound<ICombatSetup>, retaliate?: boolean): Promise<void> | void => {
+    fight = (combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
         if (!this._rules.combat || !this._rules.combat.fight)
         {
             return;

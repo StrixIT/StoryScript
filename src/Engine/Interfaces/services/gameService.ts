@@ -7,8 +7,8 @@ import { IBarrierAction } from '../barrierAction';
 import { IGame } from '../game';
 import { GameState } from '../enumerations/gameState';
 import { PlayState } from '../enumerations/playState';
-import { ICombatRound } from '../combatRound';
 import { ICombatSetup } from '../combatSetup';
+import { ICombatTurn } from '../combatTurn';
 
 export interface IGameService {
     init(): void;
@@ -21,7 +21,7 @@ export interface IGameService {
     loadGame(name: string): void;
     hasDescription(entity: { id?: string, description?: string }): boolean;
     initCombat(): void;
-    fight(combatRound: ICombatRound<ICombatSetup>, retaliate?: boolean): Promise<void> | void;
+    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
     useItem(character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void;
     executeBarrierAction(barrier: IBarrier, action: IBarrierAction, destination: IDestination): void;
     getCurrentMusic(): string;

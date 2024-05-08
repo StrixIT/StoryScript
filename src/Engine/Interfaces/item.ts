@@ -14,7 +14,7 @@ export interface IItem extends IFeature {
      * One or more parts of the character body this item is for (or no part, in case of a miscellaneous item).
      * Use string values only for custom equipment types.
      */
-    equipmentType: EquipmentType | EquipmentType[] | string;
+    equipmentType: EquipmentType | EquipmentType[] | string | string[];
 
     /**
      * The details about this item as displayed to the player. If you use an HTML-page to describe the item, the contents of that HTM-page
@@ -82,4 +82,9 @@ export interface IItem extends IFeature {
      * @param item The item to show the use action for
      */
     canUse?(game: IGame, character: ICharacter, item: IItem): boolean;
+
+    /**
+     * Set this flag to true if the item is to be available as a weapon during combat.
+     */
+    isWeapon?: boolean;
 }

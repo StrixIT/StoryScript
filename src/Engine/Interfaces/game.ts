@@ -15,9 +15,8 @@ import { PlayState } from './enumerations/playState';
 import { IActiveCombination } from './combinations/activeCombination';
 import { ICombinable } from './combinations/combinable';
 import { IParty } from './party';
-import { ICombatRound } from './combatRound';
 import { ICombatSetup } from './combatSetup';
-import { IInterfaceTexts } from './interfaceTexts';
+import { ICombatTurn } from './combatTurn';
 
 /**
  * The StoryScript main game object.
@@ -222,11 +221,11 @@ export interface IGame {
      * @param combatRound The setup for this combat round
      * @param boolean True if the enemy can retaliate (default), false otherwise
      */
-    fight(combatRound: ICombatRound<ICombatSetup>, retaliate?: boolean): void;
+    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): void;
 
     /**
      * The setup for the next combat round. This object is used to track
      * which character attacks which enemy using what item or weapon.
      */
-    combat: ICombatRound<ICombatSetup>;
+    combat: ICombatSetup<ICombatTurn>;
 }

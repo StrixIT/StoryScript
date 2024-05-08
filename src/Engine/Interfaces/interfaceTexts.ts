@@ -19,7 +19,10 @@ export interface IInterfaceTexts {
     drop?: string;
     enemies?: string;
     fight?: string;
+    attack?: string;
+    attackWith?: string;
     noWeapon?: string,
+    useCombatItem?: string,
     newGame?: string;
     firstCharacter?: string,
     secondCharacter?: string,
