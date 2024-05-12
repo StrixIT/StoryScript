@@ -110,13 +110,13 @@ export function Rules(): IRules {
                 var enemy = combatRound[0].target;
                 var damage = game.helpers.rollDice('1d6') + character.strength + game.helpers.calculateBonus(character, 'damage');
                 game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
-                enemy.hitpoints -= damage;
+                enemy.currentHitpoints -= damage;
 
-                if (enemy.hitpoints <= 0) {
+                if (enemy.currentHitpoints <= 0) {
                     game.logToCombatLog('You defeat the ' + enemy.name + '!');
                 }
 
-                game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach((enemy: IEnemy) => {
+                game.currentLocation.activeEnemies.filter(enemy => { return enemy.currentHitpoints > 0; }).forEach((enemy: IEnemy) => {
                     var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                     character.currentHitpoints -= damage;

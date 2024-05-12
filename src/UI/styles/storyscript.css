@@ -324,5 +324,15 @@ feature {
 }
 
 .not-appliccable {
-    opacity: 0.5;
+    line-height: normal;
+    visibility: hidden;
+}
+
+.enemy-row, .character-row, .fight-row {
+    margin-top: 25px;
+}
+
+.fight-row {
+    display: flex;
+    justify-content: center;
 }

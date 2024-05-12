@@ -15,6 +15,13 @@ export interface ICombatRules {
     initCombat?(game: IGame, location: ICompiledLocation): void;
 
     /**
+     * This function is called before each combat round starts, and allows you to override round settings.
+     * @param game The active game
+     * @param combat The setup for the next combat round
+     */
+    initCombatRound?(game: IGame, combat: ICombatSetup<ICombatTurn>): void;
+
+    /**
      * This function determines the combat rules for your game. Return a promise
      * when you want the engine to wait for your function to complete asynchronously.
      * @param game The active game

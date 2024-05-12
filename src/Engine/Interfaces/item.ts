@@ -5,6 +5,7 @@ import { EquipmentType } from './enumerations/equipmentType';
 import { IEquipment } from './equipment';
 import { RuntimeProperties } from 'storyScript/runtimeProperties';
 import { ICharacter } from './character';
+import { TargetType } from './enumerations/targetType';
 
 /**
  * An item that can be found in the game and used by the character.
@@ -15,6 +16,13 @@ export interface IItem extends IFeature {
      * Use string values only for custom equipment types.
      */
     equipmentType: EquipmentType | EquipmentType[] | string | string[];
+
+    /**
+     * Set the target type for the item if the item needs to be used on a target. For example, a weapon targets
+     * an enemy, while a healing spell will target an ally. If the target type is not specified, the item cannot
+     * be used on enemies or allies.
+     */
+    targetType?: TargetType;
 
     /**
      * The details about this item as displayed to the player. If you use an HTML-page to describe the item, the contents of that HTM-page
@@ -82,9 +90,4 @@ export interface IItem extends IFeature {
      * @param item The item to show the use action for
      */
     canUse?(game: IGame, character: ICharacter, item: IItem): boolean;
-
-    /**
-     * Set this flag to true if the item is to be available as a weapon during combat.
-     */
-    isWeapon?: boolean;
 }

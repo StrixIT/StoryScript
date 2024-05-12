@@ -15,10 +15,15 @@ export class DefaultTexts {
         use: 'Use',
         drop: 'Drop',
         enemies: 'Enemies',
+        enemyHitpoints: 'Health: {0} / {1}',
+        enemyCombatName: "{0} {1}",
+        characterHitpoints: 'Health: {0} / {1}',
         fight: 'Fight!',
         noWeapon: 'No weapon!',
         attack: 'Attack ',
         attackWith: 'with ',
+        aid: 'Aid',
+        aidWith: 'with ',
         useCombatItem: 'Use item',
         newGame: 'New game',
         firstCharacter: 'Create your first character',
@@ -58,6 +63,7 @@ export class DefaultTexts {
         encounters: 'Encounters',
         closeModal: 'Close',
         combatTitle: 'Combat',
+        combatRound: 'Combat round {0}',
         value: 'value',
         traderCurrency: 'Trader money: {0} {1}',
         startCombat: 'Start combat',
@@ -98,8 +104,18 @@ export class DefaultTexts {
     titleCase = (text: string): string => text.substring(0, 1).toUpperCase() + text.substring(1);
 }
 
-export function format (template: string, tokens: string[]): string {
+export function format (template: string, tokens: string | string[]): string {
     if (template && tokens) {
+        if (!Array.isArray(tokens)) {
+            tokens = [tokens];
+        }
+
+        tokens.forEach((t, i) => {
+            if (t === undefined) {
+                (<string[]>tokens)[i] = "{undefined}";
+            }
+        })
+
         for (var i = 0; i < tokens.length; i++) {
             var pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
             var match = new RegExp(pattern).exec(template);

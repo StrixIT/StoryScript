@@ -3,6 +3,12 @@ import { compareString, recordKeyPropertyName } from './globals';
 import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
 import { StateList, StateListEntry } from './Interfaces/stateList';
 
+export function compare(a: any, b: any) {
+    if (a > b) return +1;
+    if (a < b) return -1;
+    return 0;
+}
+
 export function getId(id: Function | string) {
     let actualId: string;
 

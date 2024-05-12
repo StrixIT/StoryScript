@@ -222,6 +222,10 @@ export class CharacterService implements ICharacterService {
             sheet.steps[0].questions[0].selectedEntry = sheet.steps[0].questions[0].entries[0];
         }
 
+        if (sheet.steps[0].initStep) {
+            sheet.steps[0].initStep(this._game.party, sheet, sheet.steps[0], undefined);
+        }
+
         this.setFinish(sheet);
 
         sheet.nextStep = (data: ICreateCharacter, next: Boolean) => {
@@ -245,7 +249,7 @@ export class CharacterService implements ICharacterService {
             var currentStep = data.steps[data.currentStep];
 
             if (currentStep.initStep) {
-                currentStep.initStep(this._game.party, data, previousStep, currentStep);
+                currentStep.initStep(this._game.party, data, currentStep, previousStep);
             }
 
             if (currentStep.attributes) {

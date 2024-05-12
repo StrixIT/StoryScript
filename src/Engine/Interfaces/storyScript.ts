@@ -42,6 +42,7 @@ import { PlayState } from './enumerations/playState';
 import { GameState } from './enumerations/gameState';
 import { ActionType } from './enumerations/actionType';
 import { ActionStatus } from './enumerations/actionStatus';
+import { TargetType } from './enumerations/targetType';
 import type { IDefinitions } from './definitions'
 import { ScoreEntry } from './scoreEntry'
 import type { IDynamicStyle } from './dynamicStyle'
@@ -106,6 +107,7 @@ export {
     GameState,
     ActionStatus,
     ActionType,
+    TargetType,
     ScoreEntry,
     format
 }

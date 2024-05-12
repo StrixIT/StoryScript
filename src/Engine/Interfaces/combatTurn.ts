@@ -9,14 +9,14 @@ export interface ICombatTurn {
     character: ICharacter;
 
     /**
-     * The targets available to the character this turn.
+     * The enemies and allies available for targetting to the character this turn.
      */
-    targetsAvailable?: IEnemy[];
+    targetsAvailable?: (IEnemy | ICharacter)[];
 
     /**
      * The target selected by the character this turn.
      */
-    target: IEnemy;
+    target: IEnemy | ICharacter;
 
     /**
      * The items available to the character this turn.

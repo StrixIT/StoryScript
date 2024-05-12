@@ -26,7 +26,8 @@ describe("Rules", function() {
             }
         };
         var enemy = <IEnemy>{
-            hitpoints: 10
+            hitpoints: 10,
+            currentHitpoints: 10
         };
 
         const setup = <ICombatSetup<ICombatTurn>>[{ character: character, target: enemy }];
@@ -36,7 +37,7 @@ describe("Rules", function() {
         // Character default strength 1 + 6.
         var expected = 3;
 
-        expect(enemy.hitpoints).toEqual(expected);
+        expect(enemy.currentHitpoints).toEqual(expected);
     });
 
     test("should create a new character", function() {

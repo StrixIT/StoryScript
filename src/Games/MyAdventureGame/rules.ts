@@ -67,7 +67,7 @@ export function Rules(): IRules {
                 // Implement character attack here.
 
                 if (retaliate) {
-                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.currentHitpoints > 0; }).forEach(function (enemy) {
                         // Implement monster attack here
                     });
                 }

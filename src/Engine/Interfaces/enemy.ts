@@ -19,6 +19,11 @@ export interface IEnemy extends IFeature {
     hitpoints: number;
 
     /**
+     * The current health of the enemy, tracked by StoryScript at runtime.
+     */
+    currentHitpoints?: number;
+
+    /**
      * The amount of credits the enemy has, in whatever form.
      */
     currency?: number;
