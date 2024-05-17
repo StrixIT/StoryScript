@@ -39,7 +39,8 @@ export class CombatComponent {
 
     getTargetName = (target: IEnemy | ICharacter): string => {
         var type = (<any>target).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
-        return type === TargetType.Enemy ? this.texts.format(this.texts.enemyCombatName, [target.name, (this.game.currentLocation.activeEnemies.filter(e => e.name === target.name).indexOf(target) + 1).toString()]) : target.name;
+        const ofSameType = this.game.currentLocation.activeEnemies.filter(e => e.name === target.name);
+        return type === TargetType.Enemy && ofSameType.length > 1 ? this.texts.format(this.texts.enemyCombatName, [target.name, (ofSameType.indexOf(target) + 1).toString()]) : target.name;
     }
 
     itemChange = (item: IItem, turn: ICombatTurn) => {
