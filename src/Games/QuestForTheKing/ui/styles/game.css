@@ -86,4 +86,24 @@ blockquote {
 
 .portraitFrame {
     color:#0000FF;
+    float: none;
+    margin-bottom: 10px;
+}
+
+.character-equipment .box-title, #character-backpack .box-title {
+    display: none;
+}
+
+.character-equipment .item-box {
+    margin-top: 10px;
+}
+
+#character-attributes {
+    vertical-align: top;
+}
+
+#character-backpack {
+    border: none;
+    padding: 0;
+    margin: 0;
 }

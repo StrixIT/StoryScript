@@ -2,6 +2,7 @@
 import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction, IParty, ICombatSetup  } from './types';
 import { CharacterClasses } from './characterClass';
 import { ClassType } from './classType';
+import { TargetType } from '../../Engine/Interfaces/enumerations/targetType';
 
 export function Rules(): IRules {
     return {
@@ -66,9 +67,10 @@ export function Rules(): IRules {
                                     ]
                                 }
                             ],
-                            initStep: (party: IParty, character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep) => {
+                            initStep: (party: IParty, character: ICreateCharacter, currentStep: ICreateCharacterStep, previousStep: number) => {
                                 if (party?.characters) {
                                     currentStep.questions[0].entries = currentStep.questions[0].entries.filter(e => !party.characters.find(c => c.class.name === e.value));
+                                    currentStep.questions[0].selectedEntry = currentStep.questions[0].entries[0];
                                 }
                             }
                         },
@@ -89,12 +91,25 @@ export function Rules(): IRules {
         },
 
         combat: {
+            initCombatRound: (game: IGame, combat: ICombatSetup): void => {
+                if (useBows(combat)) {
+                    filterBows(combat, i => i.ranged)
+                    
+                } else {
+                    filterBows(combat, i => !i.ranged)
+                }
+            },
+
             fight: (game: IGame, combatSetup: ICombatSetup): void => {
                 game.combatLog = [];
 
                 combatSetup.forEach((s, i) => {
                     const character = game.party.characters[i];
                     const enemy = s.target;
+
+                    if (!s.item) {
+                        return;
+                    }
                     // var leftHandWeapon = character.equipment.leftHand;
                     // var rightHandWeapon = character.equipment.rightHand;
 
@@ -103,11 +118,11 @@ export function Rules(): IRules {
                     //     rightHandWeapon = null;
                     // }
 
-                    if (s.item.isWeapon) {
+                    if (s.item.targetType === TargetType.Enemy) {
                         var weaponDamage = game.helpers.rollDice(s.item.damage);
                         var totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (enemy.defence ?? 0));
                         var combatText = format(s.item.attackText, [character.name]);
-                        enemy.hitpoints -= totalDamage;
+                        enemy.currentHitpoints -= totalDamage;
                     }
 
                     if (combatText) {
@@ -116,10 +131,10 @@ export function Rules(): IRules {
 
                     game.logToCombatLog(`${character.name} does ${totalDamage} damage to the ${enemy.name}!`);
 
-                    if (enemy.hitpoints <= 0) {
+                    if (enemy.currentHitpoints <= 0) {
                         game.logToCombatLog(`${character.name} defeats the ${enemy.name}!`);
 
-                        if (!game.currentLocation.activeEnemies.some(enemy => enemy.hitpoints > 0)) {
+                        if (!game.currentLocation.activeEnemies.some(enemy => enemy.currentHitpoints > 0)) {
                             var currentSelector = descriptionSelector(game);
                             var selector = currentSelector ? currentSelector + 'after' : 'after';
                             selector = game.currentLocation.descriptions[selector] ? selector : 'after';
@@ -129,11 +144,13 @@ export function Rules(): IRules {
                     }
                 });
 
-                game.currentLocation.activeEnemies.filter(enemy => { return enemy.hitpoints > 0; }).forEach(function (enemy: IEnemy) {
-                    var enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
-                    game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
-                    game.activeCharacter.currentHitpoints -= enemyDamage;
-                });
+                if (!useBows(combatSetup)) {
+                    game.currentLocation.activeEnemies.filter(enemy => { return enemy.currentHitpoints > 0; }).forEach(function (enemy: IEnemy) {
+                        var enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
+                        game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
+                        game.activeCharacter.currentHitpoints -= enemyDamage;
+                    });
+                }
             }
         },
 
@@ -199,4 +216,31 @@ export function Rules(): IRules {
     function isEntityActive (game: IGame, entity: IItem | IEnemy | IDestination | IAction): boolean {
         return (!entity.activeNight && !entity.activeDay) || (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay)
     }
+}
+
+function useBows(combat: ICombatSetup): boolean {
+    let useBows = false;
+    
+    if (combat.round === 1) {
+        for (const turn of combat) {
+            if (turn.itemsAvailable.filter(i => i.ranged).length > 0) {
+                useBows = true;
+                break;
+            }
+        }
+    }
+
+    return useBows;
+}
+
+function filterBows(combat: ICombatSetup, filter: any): void {
+    combat.forEach(c => {
+        c.itemsAvailable = c.itemsAvailable.filter(filter);
+        c.item = c.itemsAvailable[0];
+
+        if (!c.item) {
+            c.targetsAvailable = null;
+            c.target = null;
+        }
+    });
 }

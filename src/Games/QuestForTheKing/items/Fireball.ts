@@ -1,4 +1,4 @@
-﻿import { EquipmentType, GameState, PlayState } from 'storyScript/Interfaces/storyScript';
+﻿import { EquipmentType, GameState, PlayState, TargetType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Fireball.html';
 import { Item } from '../types';
@@ -11,7 +11,7 @@ export function Fireball() {
         speed: 7,
         recharge: 2,
         value: 5,
-        isWeapon: true,
+        targetType: TargetType.Enemy,
         attackText: '{0}} casts fireball',
         itemClass: ClassType.Wizard,
         canDrop: false,
@@ -20,7 +20,7 @@ export function Fireball() {
             return game.playState === PlayState.Combat;
         },
         use(game, character, item, target) {
-            target.hitpoints -= game.helpers.rollDice('1d6');
+            target.currentHitpoints -= game.helpers.rollDice('1d6');
         },
     });
 }

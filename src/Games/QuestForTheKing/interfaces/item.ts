@@ -13,6 +13,7 @@ export interface IItem extends IFeature, StoryScriptIItem {
     defense?: number;
     speed?: number;
     arcane?: boolean;
+    ranged?: boolean;
     recharge?: number;
     itemClass?: ClassType | ClassType[];
     attackText?: string;

@@ -1,6 +1,7 @@
-﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
+﻿import { Item, EquipmentType, TargetType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './LongSword.html';
+import { Constants } from '../constants';
 
 export function LongSword() {
     return Item({
@@ -8,9 +9,9 @@ export function LongSword() {
         description: description,
         speed: 4,
         damage: '1D6',
-        isWeapon: true,
-        equipmentType: EquipmentType.RightHand,
+        equipmentType: Constants.PrimaryWeapon,
         value: 5,
+        targetType: TargetType.Enemy,
         attackText: '{0} swings the longsword',
         itemClass: ClassType.Warrior
     });

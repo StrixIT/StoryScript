@@ -4,6 +4,7 @@ import description from './ColdIronAxe.html';
 import { IEnemy, IGame } from '../types';
 import { equals } from 'storyScript/utilities';
 import { ShadowDog } from '../enemies/ShadowDog';
+import { Constants } from '../constants';
 
 export function ColdIronAxe() {
     return Item({
@@ -17,7 +18,7 @@ export function ColdIronAxe() {
 
             return 0;
         },
-        equipmentType: [EquipmentType.RightHand, EquipmentType.LeftHand],
+        equipmentType: Constants.PrimaryWeapon,
         value: 5,
         attackText: '{0}} swings the battle axe',
         itemClass: ClassType.Warrior

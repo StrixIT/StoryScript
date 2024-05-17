@@ -1,6 +1,7 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Cutlass.html';
+import { Constants } from '../constants';
 
 export function Claymore() {
     return Item({
@@ -8,7 +9,7 @@ export function Claymore() {
         description: description,
         damage: '1d6',
         speed: 5,
-        equipmentType: EquipmentType.RightHand,
+        equipmentType: Constants.PrimaryWeapon,
         value: 30,
         attackText: '{0} swings the cutlass',
         itemClass: [ClassType.Warrior, ClassType.Rogue]

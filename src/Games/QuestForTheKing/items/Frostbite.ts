@@ -1,4 +1,4 @@
-﻿import { EquipmentType, PlayState } from 'storyScript/Interfaces/storyScript';
+﻿import { EquipmentType, PlayState, TargetType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Frostbite.html';
 import { IEnemy, Item } from '../types';
@@ -10,7 +10,7 @@ export function Frostbite() {
         damage: '2',
         equipmentType: EquipmentType.Miscellaneous,
         value: 5,
-        isWeapon: true,
+        targetType: TargetType.Enemy,
         attackText: '{0} casts frostbite',
         itemClass: ClassType.Wizard,
         canDrop: false,
@@ -19,7 +19,7 @@ export function Frostbite() {
             return game.playState === PlayState.Combat;
         },
         use(game, character, item, target: IEnemy) {
-            target.hitpoints -= game.helpers.rollDice('1d4');
+            target.currentHitpoints -= game.helpers.rollDice('1d4');
             target.frozen = true;
         },
     });
