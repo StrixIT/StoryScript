@@ -122,6 +122,7 @@ export class GameService implements IGameService {
 
         this._dataService.save(DataKeys.PARTY, this._game.party);
         this._game.party = this._dataService.load(DataKeys.PARTY);
+        this._game.party.characters[0].isActiveCharacter = true;
 
         if (this._rules.setup.gameStart) {
             this._rules.setup.gameStart(this._game);
