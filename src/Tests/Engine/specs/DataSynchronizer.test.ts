@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeAll } from 'vitest';
-import { DataSynchronizer } from "../../../Engine/Services/DataSynchronizer";
-import { RuntimeProperties } from "../../../Engine/runtimeProperties";
+import { DataSynchronizer } from "storyScript/Services/DataSynchronizer.ts";
+import { RuntimeProperties } from "storyScript/runtimeProperties.ts";
 import { Bandit } from "../../../Games/MyRolePlayingGame/enemies/bandit";
 import { BasementKey } from "../../../Games/MyRolePlayingGame/items/basementKey";
 import { Journal } from "../../../Games/MyRolePlayingGame/items/journal";
@@ -20,8 +20,8 @@ describe("DataSynchronizer", () => {
         
         const newName = 'Fierce Bandit';
         const newHitpoints = 20;
-        const bandit = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
-        const updated = <any>{ ...Bandit(), name: newName, hitpoints: newHitpoints, [RuntimeProperties.BuildTimeStamp]: 2, speed: 5 };
+        const bandit = <any>{ ...Bandit() };
+        const updated = <any>{ ...Bandit(), name: newName, hitpoints: newHitpoints, speed: 5 };
         delete updated.attack;
         const pristineEntities = { enemies: { bandit: updated } };
         const items = pristineEntities['items'] = {};
@@ -30,7 +30,7 @@ describe("DataSynchronizer", () => {
             items[i.id] = i;
         });
         
-        synchronizer.updateModifiedEntity(bandit, updated, pristineEntities, true);
+        synchronizer.updateModifiedEntity(bandit, updated, pristineEntities);
 
         expect(bandit.name).toBe(newName);
         expect(bandit.hitpoints).toBe(newHitpoints);
@@ -40,8 +40,8 @@ describe("DataSynchronizer", () => {
     test("should add entities to and remove them from a collection", function() {
         const synchronizer = new DataSynchronizer();
 
-        const bandit = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
-        const updated = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 2 };
+        const bandit = <any>{ ...Bandit() };
+        const updated = <any>{ ...Bandit() };
         updated.items.delete(BasementKey);
         updated.items.add(LeatherBoots);
 
@@ -63,17 +63,14 @@ describe("DataSynchronizer", () => {
     test("should update properties on nested entities", function() {
         const synchronizer = new DataSynchronizer();
 
-        const bandit = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
-        const updated = <any>{ ...Bandit(), [RuntimeProperties.BuildTimeStamp]: 1 };
-        
-        bandit.items.forEach(i => i[RuntimeProperties.BuildTimeStamp] = 1);
+        const bandit = <any>{ ...Bandit() };
+        const updated = <any>{ ...Bandit() };
 
         const pristineEntities = { enemies: { bandit: updated }, items: {} };
         const items = pristineEntities.items;
 
         [Sword(), BasementKey()].forEach(i => {
             items[i.id] = i;
-            i[RuntimeProperties.BuildTimeStamp] = 2;
         });
 
         const newItemName = 'Long Sword';

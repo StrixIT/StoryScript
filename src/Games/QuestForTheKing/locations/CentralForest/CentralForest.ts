@@ -33,24 +33,6 @@ export function CentralForest() {
                 name: 'The Southern Road',
                 target: SouthRoad,            
             },
-		],
-		features: [
-		],
-		items: [
-		],
-		enemies: [
-		],
-		persons: [
-		],
-		trade: [
-		],
-		enterEvents: [
-		],
-		leaveEvents: [
-		],
-		actions: [
-		],
-		combatActions: [
-		],
+		]
 	});
 }

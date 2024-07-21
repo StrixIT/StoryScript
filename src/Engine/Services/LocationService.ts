@@ -8,7 +8,7 @@ import { DataKeys } from '../DataKeys';
 import { IFeature } from '../Interfaces/feature';
 import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
-import { createFunctionHash, compareString } from '../globals';
+import { createFunctionHash } from '../globals';
 import { addHtmlSpaces, getId, isEmpty, parseGameProperties } from '../utilities';
 import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -55,7 +55,7 @@ export class LocationService implements ILocationService {
             this._game.party.previousLocationId = game.previousLocation.id;
         }
 
-        if (this._rules.exploration && this._rules.exploration.enterLocation) {
+        if (this._rules.exploration?.enterLocation) {
             this._rules.exploration.enterLocation(game, game.currentLocation, travel);
         }
 
@@ -146,7 +146,7 @@ export class LocationService implements ILocationService {
     }
 
     private getLocations = (buildWorld: boolean): ICollection<ICompiledLocation> => {
-        var locations = <ICollection<ICompiledLocation>>null;
+        let locations;
 
         if (buildWorld) {
             this.pristineLocations = this.buildWorld();
@@ -191,13 +191,12 @@ export class LocationService implements ILocationService {
     private initTrade = (game: IGame): void => {
         if (game.currentLocation.trade?.length > 0) {
             game.currentLocation.trade.forEach(t => {
-                if (!game.currentLocation.actions.find(a => a.actionType === ActionType.Trade && a.id === t.id)) {
-                    game.currentLocation.actions.push({
-                        id: t.id,
+                if (!game.currentLocation.actions.find(([k, v]) => v.actionType === ActionType.Trade && k === t.id)) {
+                    game.currentLocation.actions.add([t.id, {
                         text: t.name,
                         actionType: ActionType.Trade,
                         execute: 'trade'
-                    });
+                    }]);
                 }
             });
         }
@@ -243,21 +242,17 @@ export class LocationService implements ILocationService {
         const location = game.currentLocation;
         const events = [...location[eventProperty]];
 
-        events.forEach((e: Record<string, (game: IGame) => void | boolean>) => {
-            const key = Object.keys(e)[0];
+        events.forEach(e => {
+            const result = e[1]?.(game);
 
-            if (key) {
-                const result = e[key](game);
-
-                if (!result) {
-                    location[eventProperty].delete(e);
-                }
+            if (!result) {
+                location[eventProperty].delete(e);
             }
         });
     }
 
     private processDescriptions = (descriptionNodes: HTMLCollectionOf<Element>, game: IGame): void => {
-        if (!descriptionNodes || !descriptionNodes.length) {
+        if (!descriptionNodes?.length) {
             return;
         }
 
@@ -265,7 +260,7 @@ export class LocationService implements ILocationService {
 
         for (var i = 0; i < descriptionNodes.length; i++) {
             var node = descriptionNodes[i];
-            var nameAttribute = node.attributes['name'] && node.attributes['name'].nodeValue;
+            var nameAttribute = node.attributes['name']?.nodeValue;
             var name = nameAttribute ? nameAttribute : 'default';
 
             if (game.currentLocation[RuntimeProperties.Descriptions][name]) {
@@ -380,16 +375,16 @@ export class LocationService implements ILocationService {
 }
 
 function addKeyAction(game: IGame, destination: IDestination) {
-    if (destination.barrier && destination.barrier.key) {
+    if (destination.barrier?.key) {
         const key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
         let existingAction = null;
         const keyActionHash = createFunctionHash(key.open.execute);
 
         if (destination.barrier.actions) {
-            destination.barrier.actions.forEach(x => {
-                if (createFunctionHash(x.execute) === keyActionHash) {
-                    existingAction = x;
-                };
+            destination.barrier.actions.forEach(([k, v]) => {
+                if (createFunctionHash(v.execute) === keyActionHash) {
+                    existingAction = v;
+                }
             });
         }
         else {
@@ -407,33 +402,26 @@ function addKeyAction(game: IGame, destination: IDestination) {
             partyKey = partyKey ?? c.items.get(keyId);
         });
 
-        var barrierKey = <IKey>(partyKey || game.currentLocation.items.get(keyId));
+        const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(keyId));
 
         if (barrierKey) {
-            destination.barrier.actions.push(barrierKey.open);
+            destination.barrier.actions.push([barrierKey.id, barrierKey.open]);
         }
     }
 }
 
 function setDestination(destination: IDestination) {
-    // Replace the function pointers for the destination targets with the function keys.
-    // That's all that is needed to navigate, and makes it easy to save these targets.
-    // Note that dynamically added destinations already have a string as target so use that one.
-    // Also set the barrier selected actions to the first one available for each barrier.
+    // Set the barrier selected actions to the first one available for each barrier.
     // Further, replace combine functions with their target ids.
-    var target = destination.target;
-    target = getId(target);
-    destination.target = target;
-
     if (destination.barrier) {
         if (destination.barrier.key) {
-            var key = destination.barrier.key;
+            const key = destination.barrier.key;
             destination.barrier.key = getId(key);
         }
 
-        if (destination.barrier.combinations && destination.barrier.combinations.combine) {
-            for (var n in destination.barrier.combinations.combine) {
-                var combination = destination.barrier.combinations.combine[n];
+        if (destination.barrier.combinations?.combine) {
+            for (const n in destination.barrier.combinations.combine) {
+                const combination = destination.barrier.combinations.combine[n];
                 combination.tool = <any>getId(<any>combination.tool);
             }
         }

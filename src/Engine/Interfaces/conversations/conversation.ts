@@ -29,7 +29,7 @@ export interface IConversation {
      * The actions that can be triggered from the conversation.
      */
 
-    actions?: Record<string, (game: IGame, person: IPerson) => void>;
+    actions?: [string, (game: IGame, person: IPerson) => void][];
 
     /**
      * The nodes that make up this conversation. Loaded from the person HTML at runtime.

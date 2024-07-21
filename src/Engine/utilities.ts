@@ -2,6 +2,7 @@
 import { compareString, recordKeyPropertyName } from './globals';
 import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
 import { StateList, StateListEntry } from './Interfaces/stateList';
+import {FunctionType, ObjectType, StringType} from "../../constants.ts";
 
 export function compare(a: any, b: any) {
     if (a > b) return +1;
@@ -30,15 +31,33 @@ export function getId(id: Function | string) {
     return actualId?.toLowerCase();
 }
 
-export function getKeyPropertyNames(item: any) {
+export function isDataRecord(item: any[]): boolean{
+    // Check for either object or function values, as tuples are used to store actions as objects and functions now.
+    return item.length === 2 && typeof(item[0]) === StringType && (typeof(item[1]) === ObjectType || typeof(item[1]) === FunctionType);
+}
+
+export function getKeyPropertyNames(item: any): { first: string, second: string } {
     if (typeof item === 'undefined') {
-        return {};
+        return { first: null, second: null };
+    }
+    
+    if (isDataRecord(item)) {
+        return { first: '0', second: null };
     }
 
-    let firstKeyProperty = item.id !== undefined ? 'id' : item.name !== undefined ? 'name' : item.text !== undefined ? 'text' : item.tool !== undefined ? 'tool' : null;
-    const secondKeyProperty =  item.type !== undefined ? 'type' : item.target !== undefined ? 'target' : item.text !== undefined ? 'text' : item.combinationType !== undefined ? 'combinationType' : null;
+    let firstKeyProperty = item.id !== undefined ? 'id' : null;
+    firstKeyProperty ??= item.target !== undefined ? 'target' : null;
+    firstKeyProperty ??= item.tool !== undefined ? 'tool' : null;
+    let secondKeyProperty =  item.type !== undefined ? 'type' : null;
+    secondKeyProperty ??= item.combinationType !== undefined ? 'combinationType' : null;
 
     return { first: firstKeyProperty, second: secondKeyProperty };
+}
+
+export function isKeyProperty(item: any, propertyName: string): boolean
+{
+    const keyProperties = getKeyPropertyNames(item); 
+    return keyProperties.first === propertyName || keyProperties.second === propertyName;
 }
 
 export function propertyMatch(first: any, second: any): boolean {
@@ -66,10 +85,10 @@ export function propertyMatch(first: any, second: any): boolean {
     return isRecord ? Object.keys(first)[0] === Object.keys(second)[0] : false;
 }
 
-function getKeyProperties(current: any, pristine: any): { first: string, second: string } {
-    const { first: currentFirst, second: currentSecond } = getKeyPropertyNames(current);
+function getKeyProperties(pristine: any, current: any): { first: string, second: string } {
     const { first: pristineFirst, second: pristineSecond } = getKeyPropertyNames(pristine);
-    return { first: currentFirst ?? pristineFirst, second: currentSecond ?? pristineSecond };
+    const { first: currentFirst, second: currentSecond } = getKeyPropertyNames(current);
+    return { first: pristineFirst && currentFirst ? pristineFirst : null, second: pristineSecond && currentSecond ? pristineSecond : null };
 }
 
 export function getValue(value: any): string {

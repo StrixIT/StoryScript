@@ -270,41 +270,27 @@ function buildEntity(entityFunction: Function, functionName: string): any {
 
 function Create(type: string, entity: any, id?: string) {
     switch (type) {
-        case 'location': {
-            return createLocation(entity);
-        };
-        case 'enemy': {
-            return EnemyBase(entity, 'enemy', id);
-        };
-        case 'person': {
-            return createPerson(entity, id);
-        };
-        case 'item': {
-            return createItem(entity, id);
-        };
-        case 'feature': {
-            return createFeature(entity, id);
-        };
-        case 'quest': {
-            return CreateObject(entity, 'quest', id);
-        };
-        case 'action': {
-            return CreateObject(entity, 'action', id);
-        };
-        case 'trade': {
-            return CreateObject(entity, 'trade', id);
-        }
+        case 'location': return createLocation(entity);
+        case 'enemy': return EnemyBase(entity, 'enemy', id);
+        case 'person': return createPerson(entity, id);
+        case 'item': return createItem(entity, id);
+        case 'feature': return createFeature(entity, id);
+        case 'quest': return CreateObject(entity, 'quest', id);
+        case 'action': return CreateObject(entity, 'action', id);
+        case 'trade': return CreateObject(entity, 'trade', id);
     }
 }
 
 function createLocation(entity: ILocation) {
-    var location = CreateObject(entity, 'location');
+    const location = CreateObject(entity, 'location');
 
     if (location.destinations) {
         location.destinations.forEach(d => {
-            if (d.barrier && d.barrier.key) {
+            if (d.barrier?.key) {
                 d.barrier.key = getId(d.barrier.key);
             }
+            
+            d.target = getId(d.target);
         });
     }
 
@@ -480,7 +466,7 @@ function setReadOnlyLocationProperties(location: ILocation) {
 
     Object.defineProperty(location, 'activeActions', {
         get: function () {
-            return location.actions.filter(e => { return e.status !== ActionStatus.Unavailable; });
+            return location.actions.filter(([k, v]) => { return v.status !== ActionStatus.Unavailable; }).map(([_, v]) => v);
         }
     });
 }

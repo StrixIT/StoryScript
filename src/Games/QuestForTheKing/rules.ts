@@ -187,7 +187,7 @@ export function Rules(): IRules {
                 }
 
                 if (location.actions?.length > 0) {
-                    location.actions.forEach(action => action.status = !isEntityActive(game, action) ? ActionStatus.Unavailable : action.status);
+                    location.actions.forEach(([k, v]) =>  v.status = !isEntityActive(game, v) ? ActionStatus.Unavailable : v.status);
                 }
 
                 if (game.worldProperties.isNight) {

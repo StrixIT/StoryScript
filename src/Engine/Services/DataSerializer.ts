@@ -3,51 +3,63 @@ import { IFunctionIdParts } from "storyScript/Interfaces/services/functionIdPart
 import { GetDescriptions, initCollection } from "storyScript/ObjectConstructors";
 import { parseFunction, serializeFunction } from "storyScript/globals";
 import { RuntimeProperties } from "storyScript/runtimeProperties";
-import { getId, getPlural } from "storyScript/utilities";
+import {getPlural, isDataRecord, isKeyProperty} from "storyScript/utilities";
+import {
+    FunctionType,
+    ObjectType,
+    StringType,
+    IdProperty,
+    StartNodeProperty
+} from "../../../constants.ts";
 
 export class DataSerializer implements IDataSerializer {
 
-    buildClone = (parentKey: string, values, pristineValues, clone?): any => {
+    buildClone = (values, pristineValues, clone?): any => {
         if (!clone) {
-            clone = Array.isArray(values) ? [] : typeof values === 'object' ? {} : values;
+            if (Array.isArray(values))
+            {
+                clone = [];
+            }
+            else
+            {
+                clone = typeof values === ObjectType ? {} : values;
+            }
+            
             if (clone == values) {
                 return clone;
             }
         }
     
-        for (var key in values) {
+        for (const key in values) {
             if (!values.hasOwnProperty(key)) {
                 continue;
             }
     
-            var value = values[key];
-    
+            let value = values[key];
+
+            // Do add NULL values to the clone, as these can be used as placeholders. This is used by the engine to determine
+            // which equipment slots are available.
+            if (value === null) {
+                clone[key] = null;
+                continue;
+            }
+            
+            if (
+                value === undefined
+                || value.isProxy
+                // Exclude descriptions and conversation nodes from the save data, these are not present on the pristine data.
+                // Use an additional property to identify them, as their names are quite generic.
+                || (values[IdProperty] && (key === RuntimeProperties.Description || key === RuntimeProperties.Descriptions))
+                || values[StartNodeProperty] && key === RuntimeProperties.Nodes
+            ) {
+                continue;
+            }
+
             if (Array.isArray(value)) {
-                value = (<any>values[key]).withDeleted();
+                value = values[key].withDeleted();
             }
-    
-            if (value === undefined) {
-                continue;
-            }
-            else if (value === null) {
-                clone[key] = null;
-                continue;
-            }
-            else if (value.isProxy) {
-                continue;
-            }
-            // Exclude descriptions and conversation nodes from the save data so they
-            // are refreshed on every browser refresh.
-            else if (values.id && (key === RuntimeProperties.Description || key === RuntimeProperties.Descriptions)) {
-                clone[key] = null;
-                continue;
-            }
-            else if (parentKey === 'conversation' && key === RuntimeProperties.Nodes) {
-                clone[key] = null;
-                continue;
-            }
-    
-            this.getClonedValue(clone, value, key, pristineValues);
+            
+            this.getClonedValue(clone, value, key, values, pristineValues);
         }
     
         return clone;
@@ -65,17 +77,14 @@ export class DataSerializer implements IDataSerializer {
                 continue;
             }
     
-            var value = loaded[key];
+            const value = loaded[key];
     
-            if (value === undefined) {
-                continue;
-            }
-            else if (Array.isArray(value)) {
+            if (Array.isArray(value)) {
                 initCollection(loaded, key, true);
                 this.restoreObjects(functionList, descriptions, value);
     
-                var arrayPropertyKey = `${key}_arrProps`;
-                var additionalArrayProperties = loaded[arrayPropertyKey];
+                const arrayPropertyKey = `${key}_arrProps`;
+                const additionalArrayProperties = loaded[arrayPropertyKey];
     
                 if (additionalArrayProperties) {
                     Object.keys(additionalArrayProperties).forEach(k => {
@@ -85,10 +94,10 @@ export class DataSerializer implements IDataSerializer {
                     delete loaded[arrayPropertyKey];
                 }
             }
-            else if (typeof value === 'object') {
+            else if (typeof value === ObjectType) {
                 this.restoreObjects(functionList, descriptions, value);
             }
-            else if (typeof value === 'string') {
+            else if (typeof value === StringType) {
                 this.restoreFunction(functionList, loaded, value, key);
             }
         }
@@ -96,15 +105,24 @@ export class DataSerializer implements IDataSerializer {
         return loaded;
     }
 
-    private getClonedValue = (clone: any, value: any, key: string, pristineValues: any): void => {
-        var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
+    private getClonedValue = (clone: any, value: any, key: string, values: any, pristineValues: any): void => {
+        if (isDataRecord(value))
+        {
+            clone[key] = [];
+            const match = pristineValues.find(p => p[key] === value[key]);
+            clone[key][0] = value[0];
+            this.getClonedValue(clone[key], value[1], '1', value, match);
+            return;
+        }
+        
+        const pristineValue = pristineValues?.hasOwnProperty(key) ? pristineValues[key] : undefined;
     
         if (Array.isArray(value)) {
             clone[key] = [];
-            this.buildClone(key, value, pristineValue, clone[key]);
+            this.buildClone(value, pristineValue, clone[key]);
     
-            var additionalArrayProperties = Object.keys(value).filter(v => {
-                var isAdditionalProperty = isNaN(parseInt(v));
+            const additionalArrayProperties = Object.keys(value).filter(v => {
+                let isAdditionalProperty = isNaN(parseInt(v));
     
                 if (isAdditionalProperty) {
                     // add and delete proxies are used for location destinations, these are added in the LocationService.
@@ -118,12 +136,12 @@ export class DataSerializer implements IDataSerializer {
             });
     
             additionalArrayProperties.forEach(p => {
-                var arrayPropertyKey = `${key}_arrProps`;
+                const arrayPropertyKey = `${key}_arrProps`;
                 clone[arrayPropertyKey] = clone[arrayPropertyKey] || {};
-                this.getClonedValue(clone[arrayPropertyKey], value[p], p, pristineValue);
+                this.getClonedValue(clone[arrayPropertyKey], value[p], p, pristineValue, false);
             });
         }
-        else if (typeof value === 'object') {
+        else if (typeof value === ObjectType) {
             if (Array.isArray(clone)) {
                 clone.push({});
             }
@@ -131,22 +149,24 @@ export class DataSerializer implements IDataSerializer {
                 clone[key] = {};
             }
     
-            this.buildClone(key, value, pristineValue, clone[key]);
+            this.buildClone(value, pristineValue, clone[key]);
         }
-        else if (typeof value === 'function') {
-            this.getClonedFunction(clone, value, key);
+        else if (typeof value === FunctionType) {
+            this.getClonedFunction(clone, value, pristineValue, key);
         }
-        else {
+        // Store only values that are different from the pristine value, values that are needed to create a
+        // traversable world structure, and the key values of deleted array records.
+        else if (value != pristineValue || isKeyProperty(pristineValues, key) || values[RuntimeProperties.Deleted] === true) {
             clone[key] = value;
         }
     }
     
-    private getClonedFunction = (clone: any, value: any, key: string): void => {
+    private getClonedFunction = (clone: any, value: any, pristineValue: any, key: string): void => {
         if (!value.isProxy) {
             if (value.functionId) {
-                clone[key] = value.functionId;
-            } else if (key === 'target') {
-                clone[key] = getId(value);
+                if (value.functionId !== pristineValue.functionId) {
+                    clone[key] = value.functionId;
+                }
             }
             else {
                 clone[key] = serializeFunction(value);
@@ -161,9 +181,9 @@ export class DataSerializer implements IDataSerializer {
         key: string
     ): void => {
         if (value.indexOf('function#') > -1) {
-            var parts = this.GetFunctionIdParts(value);
-            var type = getPlural(parts.type);
-            var typeList = functionList[type];
+            const parts = this.GetFunctionIdParts(value);
+            const type = getPlural(parts.type);
+            const typeList = functionList[type];
     
             if (!typeList[parts.functionId]) {
                 console.log('Function with key: ' + parts.functionId + ' could not be found!');
@@ -175,19 +195,19 @@ export class DataSerializer implements IDataSerializer {
     
             loaded[key] = typeList[parts.functionId].function;
         }
-        else if (typeof value === 'string' && value.indexOf('function') > -1) {
+        else if (typeof value === StringType && value.indexOf('function') > -1) {
             loaded[key] = parseFunction(value);
         }
     }
     
     private GetFunctionIdParts = (value: string): IFunctionIdParts => {
-        var parts = value.split('#');
-        var functionPart = parts[1];
-        var functionParts = functionPart.split('|');
-        var type = functionParts[0];
+        const parts = value.split('#');
+        const functionPart = parts[1];
+        const functionParts = functionPart.split('|');
+        const type = functionParts[0];
         functionParts.splice(0, 1);
-        var functionId = functionParts.join('|');
-        var hash = parseInt(parts[2]);
+        const functionId = functionParts.join('|');
+        const hash = parseInt(parts[2]);
     
         return {
             type: type,

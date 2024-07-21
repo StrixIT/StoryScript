@@ -110,12 +110,14 @@ describe("ObjectConstructors", function() {
                         barrier: <IBarrier>{
                             name: 'Door',
                             key: Key,
-                            actions: [
-                                <IAction>{
+                            actions: [[
+                                'Inspect',
+                                    <IAction> {
                                     name: 'Inspect',
-                                    execute: () => {}
-                                },
-                            ]
+                                    execute: () => {
+                                    }
+                                }
+                            ]]
                         }
                     }
                 ]

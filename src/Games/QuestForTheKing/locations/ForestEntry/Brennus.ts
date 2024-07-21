@@ -17,34 +17,34 @@ export function Brennus() {
         enemies: [
             BrennusEnemy()  
         ],
-        enterEvents: [
-            {
-                'Night':
+        enterEvents:
+            [[
+                'Night',
                 (game: IGame) => {
                     if (game.worldProperties.isNight) {
                         game.currentLocation.enemies.map(e => e.inactive = true);
                     }
                 }
-            }
-        ],
-        leaveEvents: [
-            {
-                'Leave':
+            ]],
+        leaveEvents:
+            [[
+                'Leave',
                 (game: IGame) => {
                     locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length == 0, () => game.currentLocation.enemies.length == 0);
                     return true;
                 }
-            }
-        ],
-        actions: [
-            {
-                text: 'Approach the Tent',
-                execute: (game: IGame) => {
-                    game.currentLocation.descriptionSelector = 'approach';
-                    game.currentLocation.enemies.map(e => e.inactive = false);
-                },
-                activeNight: true
-            }
-        ]
+            ]],
+        actions:
+            [[
+                'Approach',
+                    {
+                        text: 'Approach the Tent',
+                        execute: (game: IGame) => {
+                            game.currentLocation.descriptionSelector = 'approach';
+                            game.currentLocation.enemies.map(e => e.inactive = false);
+                        },
+                        activeNight: true
+                    }
+            ]]
     });
 }

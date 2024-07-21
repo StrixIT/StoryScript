@@ -87,8 +87,7 @@ export class ConversationService implements IConversationService {
 
         this.initReplies(person);
         this.setReplyStatus(person.conversation, activeNode);
-
-        activeNode.trigger && person.conversation.actions[activeNode.trigger](this._game, person);
+        this.executeAction(activeNode.trigger, person);
     }
 
     private getDefaultReply = (conversationElement: Element, person: IPerson): string => {
@@ -185,7 +184,7 @@ export class ConversationService implements IConversationService {
                 var questComplete = this.GetNodeValue(replyNode, 'quest-complete');
                 var setStart = this.GetNodeValue(replyNode, 'set-start');
 
-                if (trigger && !person.conversation.actions[trigger]) {
+                if (trigger && !person.conversation.actions.some(([k, v]) => k === trigger)) {
                     console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
                 }
 
@@ -267,10 +266,10 @@ export class ConversationService implements IConversationService {
     }
 
     private processReply = (person: IPerson, reply: IConversationReply) => {
-        reply.trigger && person.conversation.actions[reply.trigger](this._game, person);
-
+        this.executeAction(reply.trigger, person);
+        
         if (reply.setStart) {
-            var startNode = person.conversation[RuntimeProperties.Nodes].filter((node) => { return node.node == reply.setStart; })[0];
+            const startNode = person.conversation[RuntimeProperties.Nodes].filter((node) => { return node.node == reply.setStart; })[0];
             person.conversation[RuntimeProperties.StartNode] = startNode.node;
         }
 
@@ -279,7 +278,7 @@ export class ConversationService implements IConversationService {
         if (reply.linkToNode) {
             activeNode = person.conversation[RuntimeProperties.Nodes].filter((node) => { return node.node == reply.linkToNode; })[0];
             person.conversation[RuntimeProperties.ActiveNode] = activeNode;
-            activeNode.trigger && person.conversation.actions[activeNode.trigger](this._game, person);
+            this.executeAction(activeNode.trigger, person);
             this.setReplyStatus(person.conversation, activeNode);
         }
         else {
@@ -289,6 +288,11 @@ export class ConversationService implements IConversationService {
         if (activeNode?.lines) {
             activeNode.lines = checkAutoplay(this._dataService, activeNode.lines);
         }
+    }
+    
+    private executeAction = (key, person) => {
+        const action = key ? person.conversation.actions.find(([k, v]) => k === key)?.[1] : null;
+        action?.(this._game, person);
     }
 
     private checkReplyAvailability = (activeNode: IConversationNode, reply: IConversationReply) : boolean => {

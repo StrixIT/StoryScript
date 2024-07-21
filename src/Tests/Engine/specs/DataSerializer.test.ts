@@ -1,11 +1,11 @@
 import { describe, beforeAll, beforeEach, afterEach, test, expect } from 'vitest';
 import { ICollection, ICompiledLocation } from "../../../Engine/Interfaces/storyScript";
-import { GetFunctions } from "../../../Engine/ObjectConstructors";
-import { ObjectFactory } from "../../../Engine/ObjectFactory";
-import { DataSerializer } from "../../../Engine/Services/DataSerializer";
+import { GetFunctions } from "storyScript/ObjectConstructors.ts";
+import { ObjectFactory } from "storyScript/ObjectFactory.ts";
+import { DataSerializer } from "storyScript/Services/DataSerializer.ts";
 import { RunGame } from "../../../Games/MyRolePlayingGame/run";
 
-const worldData = JSON.stringify({"data":[{"name":"Basement","description":null,"destinations":[{"name":"To the garden","target":"garden"}],"items":[{"name":"Joe's journal","equipmentType":10,"type":"item","id":"journal"}],"type":"location","id":"basement","actions":[],"combatActions":[],"features":[],"trade":[],"enemies":[],"persons":[]},{"name":"Dirt road","description":null,"destinations":[{"name":"Enter your home","target":"start"}],"enemies":[{"name":"Bandit","description":null,"hitpoints":10,"attack":"1d6","items":[{"name":"Sword","description":null,"damage":3,"equipmentType":6,"value":5,"type":"item","id":"sword"},{"name":"Basement key","keepAfterUse":false,"open":{"text":"Open","execute":"function#item|basementkey|open|execute#1481145921"},"equipmentType":10,"type":"item","id":"basementkey"}],"type":"enemy","id":"bandit","picture":"resources/bandit.jpg"}],"combatActions":[{"text":"Run back inside","execute":"function#location|dirtroad|combatActions|0|execute#-34161269"}],"type":"location","id":"dirtroad","actions":[],"features":[],"trade":[],"items":[],"persons":[]},{"name":"Garden","description":null,"destinations":[{"name":"Enter your home","target":"start"}],"enterEvents":[{"Squirrel":"function#location|garden|enterEvents|0|Squirrel#-1552061099"}],"actions":[{"text":"Search the Shed","execute":"function#location|garden|actions|0|execute#630024115"},{"text":"Look in the pond","execute":"function#location|garden|actions|1|execute#1867314870"}],"type":"location","id":"garden","combatActions":[],"features":[],"trade":[],"items":[],"enemies":[],"persons":[]},{"name":"Library","description":null,"destinations":[{"name":"Back to the living room","target":"start"}],"trade":[{"name":"Your personal closet","text":"Do you want to take something out of your closet or put it back in?","buy":{"text":"Take out of closet","emptyText":"The closet is empty","itemSelector":"function#trade|yourpersonalcloset|buy|itemSelector#-757288170","maxItems":5,"priceModifier":0},"sell":{"text":"Put back in closet","emptyText":"You have nothing to put in the your closet","itemSelector":"function#trade|yourpersonalcloset|sell|itemSelector#-757288170","maxItems":5,"priceModifier":"function#trade|yourpersonalcloset|sell|priceModifier#-1683809711"},"type":"trade","id":"yourpersonalcloset"}],"type":"location","id":"library","actions":[],"combatActions":[],"features":[],"items":[],"enemies":[],"persons":[]},{"name":"Home","description":null,"descriptionSelector":"function#location|start|descriptionSelector#1949117004","destinations":[{"name":"To the library","target":"library"},{"name":"To the garden","target":"garden"},{"name":"Out the front door","target":"dirtroad"}],"persons":[{"description":null,"name":"Joe","hitpoints":10,"attack":"1d6","canAttack":false,"items":[{"name":"Sword","description":null,"damage":3,"equipmentType":6,"value":5,"type":"item","id":"sword"}],"currency":10,"trade":{"ownItemsOnly":true,"buy":{"text":"I'm willing to part with these items...","emptyText":"I have nothing left to sell to you...","itemSelector":"function#person|friend|trade|buy|itemSelector#-757288170","maxItems":5},"sell":{"text":"These items look good, I'd like to buy them from you","emptyText":"You have nothing left that I'm interested in","itemSelector":"function#person|friend|trade|sell|itemSelector#-757288170","maxItems":5}},"conversation":{"actions":{"addHedgehog":"function#person|friend|conversation|actions|addHedgehog#-1850455813"}},"quests":[{"name":"Find Joe's journal","status":"function#quest|journal|status#-2037195664","start":"function#quest|journal|start#-1813683549","checkDone":"function#quest|journal|checkDone#-1599822227","complete":"function#quest|journal|complete#540523018","type":"quest","id":"journal"}],"type":"person","id":"friend","picture":"resources/bandit.jpg"}],"type":"location","id":"start","actions":[],"combatActions":[],"features":[],"trade":[],"items":[],"enemies":[]}]});
+const worldData = JSON.stringify({"data":[{"destinations":[{}],"items":[{"type":"item","id":"journal"}],"type":"location","id":"basement","actions":[],"combatActions":[],"features":[],"trade":[],"enemies":[],"persons":[]},{"destinations":[{}],"enemies":[{"items":[{"type":"item","id":"sword"},{"open":{},"type":"item","id":"basementkey"}],"type":"enemy","id":"bandit"}],"combatActions":[{}],"type":"location","id":"dirtroad","actions":[],"features":[],"trade":[],"items":[],"persons":[]},{"destinations":[{}],"enterEvents":[{}],"actions":[{},{}],"type":"location","id":"garden","combatActions":[],"features":[],"trade":[],"items":[],"enemies":[],"persons":[]},{"destinations":[{}],"trade":[{"buy":{},"sell":{},"type":"trade","id":"yourpersonalcloset"}],"type":"location","id":"library","actions":[],"combatActions":[],"features":[],"items":[],"enemies":[],"persons":[]},{"destinations":[{},{},{}],"persons":[{"items":[{"type":"item","id":"sword"}],"trade":{"buy":{},"sell":{}},"conversation":{"actions":{}},"quests":[{"type":"quest","id":"journal"}],"type":"person","id":"friend"}],"type":"location","id":"start","actions":[],"combatActions":[],"features":[],"trade":[],"items":[],"enemies":[]}]});
 
 describe("DataSerializer", () => {
 
@@ -107,19 +107,12 @@ describe("DataSerializer", () => {
 });
 
 const hashRegex = /function#[[a-zA-Z0-9|]*#[-0-9]{6,11}/g;
-const timeStampRegex = /\"ss_buildTimeStamp\"\:[ 0-9]{2,}\,/g;
 
 function replaceHashes(text: string) {
     const hashMatches = text.match(hashRegex);
 
     hashMatches?.forEach(m => {
         text = text.replace(m, m.substring(0, m.lastIndexOf('#') + 1));
-    });
-
-    const timeStampMatches = text.match(timeStampRegex);
-
-    timeStampMatches?.forEach(m => {
-        text = text.replace(m, '');
     });
 
     return text;

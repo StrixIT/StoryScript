@@ -12,33 +12,33 @@ export class DataService implements IDataService {
     }
     
     save = <T>(key: string, value: T, pristineValues?: T): void => {
-        var clone = this.serializer.buildClone(null, value, pristineValues);
+        const clone = this.serializer.buildClone(value, pristineValues);
         this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
     }
 
     load = <T>(key: string): T => {
         try {
-            var jsonData = this._localStorageService.get(this._gameNameSpace + '_' + key);
+            const jsonData = this._localStorageService.get(this._gameNameSpace + '_' + key);
 
             if (jsonData) {
-                var data = JSON.parse(jsonData).data;
+                const data = JSON.parse(jsonData).data;
 
                 if (isEmpty(data)) {
                     return null;
                 }
 
-                var functionList = GetFunctions();
-                var pristineEntities = GetRegisteredEntities();
+                const functionList = GetFunctions();
+                const pristineEntities = GetRegisteredEntities();
 
                 if (Array.isArray(data) && data[0]?.type && data[0]?.id) {
                     this.serializer.restoreObjects(functionList, null, data);
-                    const pristineCollection = pristineEntities[getPlural(data[0]?.type)];
-                    this.synchronizer.updateModifiedEntities(data, pristineEntities, Object.keys(pristineCollection).map(k => pristineCollection[k]));
+                    this.synchronizer.updateModifiedEntities(data, pristineEntities);
                 }
                 else {
                     const result = this.serializer.restoreObjects(functionList, null, data);
                     this.synchronizer.updateModifiedEntity(result, result, pristineEntities);
                 }
+                
                 setReadOnlyProperties(key, data);
                 return data;
             }

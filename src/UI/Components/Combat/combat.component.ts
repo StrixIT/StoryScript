@@ -77,7 +77,11 @@ export class CombatComponent {
     canUseItem = (character: ICharacter, item: IItem): boolean => item.use ? this._sharedMethodService.canUseItem(character, item) : true;
 
     private split = (array, size) => {
-        let result = [];
+        const result = [];
+        
+        if (!array) {
+            return result;
+        }
 
         for (let i = 0; i < array.length; i += size) {
             let chunk = array.slice(i, i + size);

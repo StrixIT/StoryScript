@@ -247,7 +247,7 @@ export class GameService implements IGameService {
             this._rules.combat.initCombat(this._game, this._game.currentLocation);
         }
 
-        this.initCombatRound();
+        this.initCombatRound(true);
 
         this._game.currentLocation.activeEnemies.forEach(enemy => {
             if (enemy.onAttack) {
@@ -279,7 +279,7 @@ export class GameService implements IGameService {
             }
 
             this.saveGame();
-            this.initCombatRound();
+            this.initCombatRound(false);
         });
     }
 
@@ -305,7 +305,7 @@ export class GameService implements IGameService {
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
         action.execute(this._game, barrier, destination);
-        barrier.actions.delete(action);
+        barrier.actions.delete(barrier.actions.find(([k, v]) => v === action));
         this.saveGame();
     }
 
@@ -398,12 +398,15 @@ export class GameService implements IGameService {
         this._game.party.characters.push(character);
     }
 
-    private initCombatRound = () => {
+    private initCombatRound = (newFight: boolean) => {
         const enemies = this._game.currentLocation.activeEnemies;
-        enemies.forEach(e => e.currentHitpoints = e.hitpoints);
-
-        this._game.combat ??= <ICombatSetup<ICombatTurn>>[];
-        this._game.combat.round ??= 0;
+        
+        if (newFight) {
+            this._game.combat = <ICombatSetup<ICombatTurn>>[];
+            enemies.forEach(e => e.currentHitpoints = e.hitpoints);
+            this._game.combat.round = 0;
+        }
+        
         this._game.combat.round++;
 
         this._game.party.characters.forEach((c, i) => { 
@@ -420,7 +423,7 @@ export class GameService implements IGameService {
 
             items.sort((a: IItem, b: IItem) => compare(b.targetType, a.targetType) || compare(a.name, b.name))
 
-            const targetType = items[0]?.targetType;
+            const targetType = items[0]?.targetType ?? TargetType.Enemy;
 
             this._game.combat[i] = <ICombatTurn>{
                 character: c,
@@ -431,7 +434,7 @@ export class GameService implements IGameService {
             };
         });
 
-        this._rules.combat?.initCombatRound(this._game, this._game.combat);
+        this._rules.combat?.initCombatRound?.(this._game, this._game.combat);
     }
 
     private enemyDefeated = (character: ICharacter, enemy: IEnemy): void => {

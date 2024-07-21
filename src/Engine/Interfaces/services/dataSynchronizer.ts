@@ -3,8 +3,7 @@ import { IUpdatable } from "../updatable";
 export interface IDataSynchronizer {
     updateModifiedEntities(
         entities: IUpdatable[],
-        pristineEntities: Record<string, Record<string, any>>, 
-        pristineProperty: any,       
+        pristineEntities: Record<string, Record<string, any>>,
         parentEntity?: IUpdatable,
         pristineParentEntity?: IUpdatable
     ): void;
@@ -13,11 +12,8 @@ export interface IDataSynchronizer {
         entity: IUpdatable, 
         pristineEntity: IUpdatable, 
         pristineEntities: Record<string, Record<string, any>>,
-        updateValues?: boolean,
         parentEntity?: IUpdatable,
         pristineParentEntity?: IUpdatable,
-        grantParentEntity?: IUpdatable,
-        pristineGrantParentEntity?: IUpdatable,
         parentProperty?: string
     ): void;
 }

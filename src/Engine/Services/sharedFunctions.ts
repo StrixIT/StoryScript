@@ -43,8 +43,8 @@ export function getParsedDocument(tag: string, value?: string, wrapIfNotFound?: 
 
 export function checkAutoplay(dataService: IDataService, value: string) {
     // Check media with the autoplay property to play only once.
-    var descriptionDocument = new DOMParser().parseFromString(value, 'text/html');
-    var playedAudio = dataService.load<string[]>(DataKeys.PLAYEDMEDIA) || [];
+    const descriptionDocument = new DOMParser().parseFromString(value, 'text/html');
+    const playedAudio = dataService.load<string[]>(DataKeys.PLAYEDMEDIA) || [];
     value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('audio'), playedAudio);
     value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('video'), playedAudio);
     dataService.save(DataKeys.PLAYEDMEDIA, playedAudio);

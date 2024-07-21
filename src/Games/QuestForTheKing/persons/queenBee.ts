@@ -27,14 +27,14 @@ export function QueenBee() {
 
                 return person.conversation.nodes[0];
             },
-            actions: {
-                'giveflower': (game, person) => {
+            actions: [[
+                'GiveFlower', (game, person) => {
                     game.activeCharacter.items.add(Beesting);
 
                     // Todo: should delete item from party.
                     game.activeCharacter.items.delete(Magicflower);
                 }
-            }
+            ]]
         }
     });
 }

@@ -28,24 +28,24 @@ export interface ILocation {
      * If nothing or false is returned, the function will be removed once it completed. Return true
      * to keep the function and call it every time the player enters the location.
      */
-    enterEvents?: Record<string, (game: IGame) => void | boolean>[];
+    enterEvents?:[string, (game: IGame) => void | boolean][];
 
     /**
      * When specified, the functions in this array will be called when the player leaves the location.
      * If nothing or false is returned, the function will be removed once it completed. Return true
      * to keep the function and call it every time the player leaves the location.
      */
-    leaveEvents?: Record<string, (game: IGame) => void | boolean>[];
+    leaveEvents?: [string, (game: IGame) => void | boolean][];
 
     /**
      * Actions that the player can perform at this location.
      */
-    actions?: ICollection<IAction>;
+    actions?: [string, IAction][];
 
     /**
      * Actions that the player can perform at this location when in combat.
      */
-    combatActions?: ICollection<IAction>;
+    combatActions?: [string, IAction][];
 
     /**
      * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically

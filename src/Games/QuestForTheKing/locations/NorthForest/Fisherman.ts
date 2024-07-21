@@ -4,7 +4,6 @@ import description from './Fisherman.html';
 import { NorthRoad } from './NorthRoad';
 import { Honeycastle } from '../Sea/Honeycastle';
 import { Mermaid } from '../Sea/Mermaid';
-import { Octopus } from '../Sea/Octopus';
 
 export function Fisherman() {
     return Location({
@@ -26,14 +25,15 @@ export function Fisherman() {
                 style: 'location-water',
                 barrier: {
                     name: 'The blue sea',
-                    actions: [
-                        {
-                            text: 'Look at the castle',
-                            execute(game, barrier, destination) {
-                                game.logToLocationLog('In the distance across the waves, you can see a castle!')
-                            },
-                        }
-                    ],
+                    actions: [[
+                        'LookAtCastle',
+                            {
+                                text: 'Look at the castle',
+                                execute(game, barrier, destination) {
+                                    game.logToLocationLog('In the distance across the waves, you can see a castle!')
+                                },
+                            }
+                    ]],
                     key: SmallBoat
                 }
             }                                 
