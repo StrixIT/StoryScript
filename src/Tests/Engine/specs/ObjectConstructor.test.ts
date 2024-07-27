@@ -1,16 +1,26 @@
-import { describe, beforeAll, test, expect } from 'vitest';
-import { GetDefinitions, GetFunctions, DynamicEntity, FunctionCollection } from 'storyScript/ObjectConstructors';
-import { Location, ILocation, IBarrier, IKey, IAction, IFeature, Feature, ICompiledLocation, IItem } from 'storyScript/Interfaces/storyScript';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { RunGame } from '../../../Games/MyRolePlayingGame/run';
+import {describe, beforeAll, test, expect} from 'vitest';
+import {GetDefinitions} from 'storyScript/ObjectConstructors';
+import {
+    Location,
+    ILocation,
+    IBarrier,
+    IKey,
+    IAction,
+    IFeature,
+    Feature,
+    ICompiledLocation,
+    IItem
+} from 'storyScript/Interfaces/storyScript';
+import {ObjectFactory} from 'storyScript/ObjectFactory';
+import {RunGame} from '../../../Games/MyRolePlayingGame/run';
 
-describe("ObjectConstructors", function() {
+describe("ObjectConstructors", function () {
 
     beforeAll(() => {
         RunGame();
     });
 
-    test("should get the game definitions", function() {
+    test("should get the game definitions", function () {
         const result = <any>GetDefinitions();
         expect(result).not.toEqual(null);
         expect(result.locations.length).toEqual(5);
@@ -21,7 +31,7 @@ describe("ObjectConstructors", function() {
         expect(result.actions.length).toEqual(0);
     });
 
-    test("should create the Start location", function() {
+    test("should create the Start location", function () {
         const definitions = GetDefinitions()
         const definition = find(definitions.locations, 'Start');
         const result = <ICompiledLocation>definition();
@@ -31,7 +41,7 @@ describe("ObjectConstructors", function() {
         expect((<any>result).type).toEqual('location');
     });
 
-    test("should create a location with read-only properties", function() {
+    test("should create a location with read-only properties", function () {
         const definitions = GetDefinitions()
         const definition = find(definitions.locations, 'Start');
         const result = <ICompiledLocation>definition();
@@ -42,18 +52,18 @@ describe("ObjectConstructors", function() {
         result.items.push(<IItem>{});
         expect(result.activeItems.length).toEqual(1);
 
-        expect(function() {
+        expect(function () {
             result.activeItems = [];
         }).toThrow();
     });
 
-    test("should create a location with arrays that cannot be replaced and execute functions on add", function() {
+    test("should create a location with arrays that cannot be replaced and execute functions on add", function () {
         const definitions = GetDefinitions()
         const definition = find(definitions.locations, 'Start');
         const result = definition();
 
         // Check that the items array cannot be replaced.
-        expect(function() {
+        expect(function () {
             result.items = [];
         }).toThrow();
 
@@ -64,13 +74,13 @@ describe("ObjectConstructors", function() {
         expect(typeof addedItem).toBe('object');
     });
 
-    test("should set key id on destination barriers", function() {
+    test("should set key id on destination barriers", function () {
 
         function Key() {
             return <IKey>{
                 name: 'Test key'
             };
-        };
+        }
 
         function locationWithBarrier() {
             return Location(<ILocation>{
@@ -83,7 +93,7 @@ describe("ObjectConstructors", function() {
                             key: Key,
                             actions: [[
                                 'Inspect',
-                                    <IAction> {
+                                <IAction>{
                                     name: 'Inspect',
                                     execute: () => {
                                     }
@@ -93,15 +103,15 @@ describe("ObjectConstructors", function() {
                     }
                 ]
             });
-        };
-        
+        }
+
         const result = locationWithBarrier();
         const key = result.destinations[0].barrier.key;
         expect(typeof key).toBe('string');
         expect(key).toBe('key');
     });
 
-    test("should correctly create a feature", function() {
+    test("should correctly create a feature", function () {
         const testFeature = () => {
             return <IFeature>{
                 name: 'Test feature'
@@ -117,8 +127,8 @@ describe("ObjectConstructors", function() {
 });
 
 describe('ObjectFactory', function () {
-    
-    test("should return all services", function() {
+
+    test("should return all services", function () {
         const factory = ObjectFactory.GetInstance();
 
         let characterService = factory.GetCharacterService();
@@ -143,10 +153,6 @@ describe('ObjectFactory', function () {
         expect(rules).not.toBeNull();
     });
 })
-
-function getLength(collection: {}) {
-    return Object.keys(collection).length;
-}
 
 function find<T>(collection: (() => T)[], name: string) {
     return collection.find(l => l.name === name);

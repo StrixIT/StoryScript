@@ -86,12 +86,32 @@ export class DataSynchronizer implements IDataSynchronizer {
         const propertyNames= Object.keys(pristineEntity);
     
         propertyNames.forEach(p => {
-            const currentProperty = entity[p];
-            const pristineProperty = this.isEntity(currentProperty) ? pristineEntities[getPlural(currentProperty.type)][currentProperty.id] : pristineEntity[p];
-    
+            let currentProperty: any;
+            let pristineProperty = pristineEntity[p];
+            pristineProperty = this.isEntity(pristineEntity[p]) ? pristineEntities[getPlural(pristineProperty.type)][pristineProperty.id] : pristineProperty;
+            
+            if (typeof entity[p] === 'undefined') {
+                if (Array.isArray(pristineProperty)) {
+                    entity[p] = [];
+                    this.updateArray(entity[p], pristineEntity[p], pristineEntities, entity, pristineEntity, p);
+                    return;
+                }
+                else if (typeof pristineProperty === 'object') {
+                    entity[p] = {};
+                }
+                else {
+                    entity[p] = pristineProperty;
+                    return;
+                }
+            }
+
+            currentProperty =  entity[p];
+            
             // Update the current property using the pristine property value. When dealing with an object, update
             // its property values recursively. When dealing with a collection of entity objects, update these recursively.
             if (this.isEntityArray(currentProperty, pristineProperty)) {
+                const addedItems = pristineProperty.filter(e => !currentProperty.find(p => propertyMatch(e, p)))
+                addedItems.forEach(a => currentProperty.push(a));
                 this.updateModifiedEntities(currentProperty, pristineEntities, entity, pristineEntity);
                 return;
             }
@@ -118,10 +138,10 @@ export class DataSynchronizer implements IDataSynchronizer {
             pristineParentEntity?: IUpdatable,
             parentProperty?: string
         ): void {
-        
+
         const matchedItems = pristineEntity.filter(e => entity.find(p => propertyMatch(e, p)));
-        const itemsToAdd = entity.filter(e => !pristineEntity.find(p => propertyMatch(e, p)));
-    
+        const itemsToAdd = pristineEntity.filter(e => !entity.find(p => propertyMatch(e, p)));
+
         matchedItems.forEach(i => {
             const currentValue: any = entity.find(p => propertyMatch(i, p));
 

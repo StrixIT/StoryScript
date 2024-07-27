@@ -75,9 +75,6 @@ export function GetDescriptions(): Map<string, string> {
     return _registeredDescriptions; 
 }
 
-export function GetFunctions() { 
-    return _functions; 
-}
 
 export function GetRegisteredEntities() { 
     return _registeredEntities; 
@@ -399,9 +396,6 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     return <T><unknown>compiledEntity;
 }
 
-function getDefinitionKeys() {
-    return Object.getOwnPropertyNames(_definitions).filter(d => d !== 'actions');
-}
 
 function loadPictureFromDescription (entity: IEntity, description: string): void {
     var parser = new DOMParser();
@@ -484,23 +478,6 @@ function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEqu
     return canUse;
 }
 
-function getPath(value, key: string, path: string, definitionKeys: string[]): string {
-    if (definitionKeys.indexOf(key) != -1) {
-        path = key;
-    }
-    else if (definitionKeys.indexOf(path) != -1 && !isNaN(parseInt(key))) {
-
-    }
-    else {
-        path = path === undefined ? key : path + '|' + key;
-    }
-
-    if (value.id) {
-        path = path + '|' + value.id;
-    }
-
-    return path;
-}
 
 function compileCombinations(entry: ICombinable) {
     if (entry.combinations) {

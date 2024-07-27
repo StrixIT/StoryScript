@@ -5,6 +5,10 @@ import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {RunGame} from "../../../Games/MyRolePlayingGame/run";
 import {IEntity} from "storyScript/Interfaces/entity.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
+import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
+import {IGame} from "../../../Games/MyRolePlayingGame/interfaces/game.ts";
+import {HelperService} from "storyScript/Services/helperService.ts";
+import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 
 const worldData = JSON.stringify({
     "data": [{
@@ -77,10 +81,38 @@ const worldData = JSON.stringify({
     }]
 });
 
+const locationWithAddedDestination = {
+    "data": {
+        "destinations": [{"target": "start"}, {
+            "name": "Enter the basement",
+            "target": "basement",
+            "barrier": {
+                "key": "basementkey",
+                "name": "Wooden trap door",
+                "actions": [["Inspect", {
+                    "text": "Inspect",
+                    "execute": "function(game2){\n                      game2.logToLocationLog(\"The trap door looks old but still strong due to steel reinforcements. It is locked.\");\n                    }"
+                }]]
+            },
+            "ss_added": true
+        }],
+        "enterEvents": [["Squirrel"]],
+        "actions": [["SearchShed", {}], ["LookInPond", {}]],
+        "type": "location",
+        "id": "garden",
+        "combatActions": [],
+        "features": [],
+        "trade": [],
+        "items": [],
+        "enemies": [],
+        "persons": []
+    }
+};
+
 describe("DataSerializer", () => {
 
     let pristineEntities: Record<string, Record<string, IEntity>>;
-    let locations: ICompiledLocation[];
+    let game: IGame;
 
     beforeAll(() => {
         RunGame();
@@ -89,7 +121,7 @@ describe("DataSerializer", () => {
         // Initialize the world so it is available for saving.
         const gameService = objectFactory.GetGameService();
         gameService.reset();
-        locations = objectFactory.GetGame().locations;
+        game = objectFactory.GetGame();
         pristineEntities = GetRegisteredEntities();
     });
 
@@ -102,7 +134,7 @@ describe("DataSerializer", () => {
 
     test("should create and save a JSON clone of the world", function () {
         const serializer = new DataSerializer();
-        const result = serializer.createSerializableClone(locations, pristineEntities);
+        const result = serializer.createSerializableClone(game.locations, pristineEntities);
         const resultText = JSON.stringify({data: result});
         expect(result).not.toBe(null);
         expect(worldData).toBe(resultText);
@@ -125,6 +157,21 @@ describe("DataSerializer", () => {
         const resultText = JSON.stringify({data: result});
 
         expect(resultText).toContain('"testArray_arrProps":{"mapPath":"test"}');
+    });
+
+    test("should create and save a JSON clone with items added at runtime", function () {
+        const serializer = new DataSerializer();
+        const garden = game.locations.get(Garden);
+        const searchShedAction = garden.actions.find(a => a[0] === 'SearchShed')[1];
+        game.currentLocation = garden;
+        game.helpers = new HelperService(game);
+        game.party = <IParty>{};
+        game.party.characters = [];
+        (<(game: IGame) => boolean>searchShedAction.execute)(game);
+
+        const result = serializer.createSerializableClone(game.currentLocation, pristineEntities);
+        const resultText = JSON.stringify({data: result});
+        expect(resultText).toBe(JSON.stringify(locationWithAddedDestination));
     });
 
 });
