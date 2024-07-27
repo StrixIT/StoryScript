@@ -9,7 +9,6 @@ import { IQuest } from './Interfaces/quest';
 import { IAction } from './Interfaces/action';
 import { DataKeys } from './DataKeys';
 import { getSingular, getPlural, getId } from './utilities';
-import { createFunctionHash } from './globals';
 import { ICombinable } from './Interfaces/combinations/combinable';
 import { ICombine } from './Interfaces/combinations/combine';
 import { IEquipment } from './Interfaces/equipment';
@@ -158,7 +157,7 @@ export function initCollection(entity: any, property: string, skipRegistration?:
         return;
     }
     
-    var collection = entity[property] || [];
+    const collection = entity[property] || [];
 
     if ((property === 'features' || property === 'trade') && entity[property]) {
         // Initialize features that have been declared inline. Check for the existence of a type property to determine
@@ -166,19 +165,13 @@ export function initCollection(entity: any, property: string, skipRegistration?:
         // features are build.
         const locationEntityKey = _currentEntityKey;
 
-        var inlineCollection = (<[]>entity[property]).map((e: { type: string, name: string }) => {
+        const inlineCollection = (<[]>entity[property]).map((e: { type: string, name: string }) => {
             if (e.type) {
                 return e;
             }
 
             const typeName = getSingular(property);
-            const feature = Create(typeName, e, getIdFromName(e));
-
-            // As function ids are usually added building an entity twice, they need to be added here manually to set
-            // them on the entities part of this collection. As the location is build twice, the registered features will
-            // have the function ids set, but they will not be on the features that are part of the registered locations!
-            addFunctionIds(feature, typeName, getDefinitionKeys());
-            return feature;
+            return Create(typeName, e, getIdFromName(e));
         });
 
         collection.length = 0;
@@ -396,16 +389,6 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         return <T><unknown>compiledEntity;
     }
 
-    const definitionKeys = getDefinitionKeys();
-
-    addFunctionIds(compiledEntity, type, definitionKeys);
-    var plural = getPlural(type);
-
-    // If this is the first time an object of this definition is created, get the functions.
-    if (!_functions[plural] || !Object.getOwnPropertyNames(_functions[plural]).find(e => e.startsWith(compiledEntity.id + '|'))) {
-        getFunctions(plural, _functions, definitionKeys, compiledEntity, null);
-    }
-
     const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
     const description = _registeredDescriptions.get(descriptionKey);
 
@@ -501,35 +484,6 @@ function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEqu
     return canUse;
 }
 
-function addFunctionIds(entity: any, type: string, definitionKeys: string[], path?: string) {
-    if (!path) {
-        path = entity.id || entity.name;
-    }
-
-    for (var key in entity) {
-        if (!entity.hasOwnProperty(key)) {
-            continue;
-        }
-
-        if (definitionKeys.indexOf(key) != -1 || key === 'target') {
-            continue;
-        }
-
-        var value = entity[key];
-
-        if (value == undefined) {
-            return;
-        }
-        else if (typeof value === 'object') {
-            addFunctionIds(entity[key], type, definitionKeys, getPath(value, key, path, definitionKeys));
-        }
-        else if (typeof value === 'function' && !value.isProxy) {
-            var functionId = path ? path + '|' + key : key;
-            value.functionId = 'function#' + type + '|' + functionId + '#' + createFunctionHash(value);
-        }
-    }
-}
-
 function getPath(value, key: string, path: string, definitionKeys: string[]): string {
     if (definitionKeys.indexOf(key) != -1) {
         path = key;
@@ -577,47 +531,4 @@ function pushEntity(originalScope, originalFunction, entity) {
 
 function getIdFromName<T extends { name: string, id? : string}>(entity: T): string {
     return entity.name.toLowerCase().replace(/\s/g,'');
-}
-
-function getFunctions(type: string, functionList: FunctionCollection, definitionKeys: string[], entity: any, parentId: any) {
-    parentId = parentId || entity.id;
-
-    if (!parentId) {
-        return;
-    }
-
-    for (var key in entity) {
-        if (!entity.hasOwnProperty(key)) {
-            continue;
-        }
-
-        if (definitionKeys.indexOf(key) != -1 || key === 'target') {
-            continue;
-        }
-
-        var value = entity[key];
-
-        if (value == undefined) {
-            continue;
-        }
-        else if (typeof value === 'object') {
-            getFunctions(type, functionList, definitionKeys, entity[key], entity[key].id ? parentId + '|' + key + '|' + entity[key].id : parentId + '|' + key);
-        }
-        else if (typeof value == 'function' && !value.isProxy) {
-            var functionId = parentId + '|' + key;
-
-            if (!functionList[type]) {
-                functionList[type] = {};
-            }
-
-            if (functionList[type][functionId]) {
-                throw new Error('Trying to register a duplicate function key: ' + functionId);
-            }
-
-            functionList[type][functionId] = {
-                function: value,
-                hash: createFunctionHash(value)
-            }
-        }
-    }
 }

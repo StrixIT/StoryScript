@@ -20,15 +20,15 @@ import { DataSerializer } from './Services/DataSerializer';
 import { DataSynchronizer } from './Services/DataSynchronizer';
 
 export class ObjectFactory {
-    private _game: IGame = <IGame>{};
-    private _texts: IInterfaceTexts;
-    private _rules: IRules;
+    private readonly _game: IGame = <IGame>{};
+    private readonly _texts: IInterfaceTexts;
+    private readonly _rules: IRules;
 
-    private _characterService: ICharacterService;
-    private _gameService: IGameService;
-    private _tradeService: ITradeService;
-    private _conversationService: IConversationService;
-    private _combinationService: ICombinationService;
+    private readonly _characterService: ICharacterService;
+    private readonly _gameService: IGameService;
+    private readonly _tradeService: ITradeService;
+    private readonly _conversationService: IConversationService;
+    private readonly _combinationService: ICombinationService;
 
     private static _instance: ObjectFactory;
 
@@ -68,5 +68,5 @@ export class ObjectFactory {
 
     GetCombinationService = (): ICombinationService => this._combinationService;
 
-    static GetInstance = () => ObjectFactory._instance;
+    static readonly GetInstance = () => ObjectFactory._instance;
 }

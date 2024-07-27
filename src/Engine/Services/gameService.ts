@@ -159,10 +159,10 @@ export class GameService implements IGameService {
                 this._rules.general.beforeSave(this._game);
             }
 
-            var saveGame = <ISaveGame>{
+            const saveGame = <ISaveGame>{
                 name: name,
                 party: this._game.party,
-                world: this._locationService.copyWorld(),
+                world: this._game.locations,
                 worldProperties: this._game.worldProperties,
                 statistics: this._game.statistics,
                 state: this._game.state

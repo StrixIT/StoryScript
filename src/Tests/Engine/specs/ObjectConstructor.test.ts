@@ -21,31 +21,6 @@ describe("ObjectConstructors", function() {
         expect(result.actions.length).toEqual(0);
     });
 
-    test("should get the game functions", function() {
-        const result = <FunctionCollection>GetFunctions();
-        expect(result).not.toEqual(null);
-        expect(getLength(result.locations)).toEqual(8);
-        expect(getLength(result.items)).toEqual(1);
-        expect(getLength(result.quests)).toEqual(4);
-        expect(getLength(result.persons)).toEqual(3);
-
-        expect(result.features).toBeUndefined();
-        expect(result.enemies).toBeUndefined();
-        expect(result.actions).toBeUndefined();
-
-        const locationFunctions = Object.keys(result.locations).sort().map(k => `${k}:${result.locations[k].hash}`);
-
-        expect(locationFunctions).toEqual([
-            "dirtroad|combatActions|0|execute:-34161269",
-            "garden|actions|0|execute:630024115",
-            "garden|actions|1|execute:1867314870",
-            "garden|enterEvents|0|Squirrel:-1552061099",
-            "library|trade|0|buy|itemSelector:-757288170",
-            "library|trade|0|sell|itemSelector:-757288170",
-            "library|trade|0|sell|priceModifier:-1683809711",
-            "start|descriptionSelector:1949117004"]);
-    });
-
     test("should create the Start location", function() {
         const definitions = GetDefinitions()
         const definition = find(definitions.locations, 'Start');
@@ -54,10 +29,6 @@ describe("ObjectConstructors", function() {
         expect(result).not.toEqual(null);
         expect(result.id).toEqual('start');
         expect((<any>result).type).toEqual('location');
-
-        const hashMatch = new RegExp(/function#location|start|descriptionSelector#[0-9]{9}/g).exec((<any>result.descriptionSelector).functionId).length;
-
-        expect(hashMatch).toEqual(1);
     });
 
     test("should create a location with read-only properties", function() {

@@ -286,14 +286,14 @@ export function createFunctionHash(func: Function): number {
 }
 
 export function createHash(value: string): number {
-    var hash = 0;
+    let hash = 0;
 
     if (!value || value.length == 0) {
         return hash;
     }
 
-    for (var i = 0; i < value.length; i++) {
-        var char = value.charCodeAt(i);
+    for (let i = 0; i < value.length; i++) {
+        const char = value.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash = hash & hash; // Convert to 32bit integer
     }

@@ -1,6 +1,6 @@
 ﻿import { DataKeys } from '../DataKeys';
 import { isEmpty } from '../utilities';
-import { setReadOnlyProperties, GetFunctions, GetRegisteredEntities } from '../ObjectConstructors';
+import { setReadOnlyProperties, GetRegisteredEntities } from '../ObjectConstructors';
 import { IDataService } from '../Interfaces/services/dataService';
 import { ILocalStorageService } from '../Interfaces/services/localStorageService';
 import { IDataSerializer } from 'storyScript/Interfaces/services/dataSerializer';
@@ -12,7 +12,7 @@ export class DataService implements IDataService {
     }
     
     save = <T>(key: string, value: T): void => {
-        const clone = this.serializer.buildClone(value, GetRegisteredEntities());
+        const clone = this.serializer.createSerializableClone(value, GetRegisteredEntities());
         this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
     }
 
@@ -26,16 +26,15 @@ export class DataService implements IDataService {
                 if (isEmpty(data)) {
                     return null;
                 }
-
-                const functionList = GetFunctions();
+                
                 const pristineEntities = GetRegisteredEntities();
 
                 if (Array.isArray(data) && data[0]?.type && data[0]?.id) {
-                    this.serializer.restoreObjects(functionList, null, data);
+                    this.serializer.restoreObjects(data);
                     this.synchronizer.updateModifiedEntities(data, pristineEntities);
                 }
                 else {
-                    const result = this.serializer.restoreObjects(functionList, null, data);
+                    const result = this.serializer.restoreObjects(data);
                     this.synchronizer.updateModifiedEntity(result, result, pristineEntities);
                 }
                 
@@ -54,10 +53,6 @@ export class DataService implements IDataService {
 
     remove = (key: string): void => {
         this._localStorageService.remove(this._gameNameSpace + '_' + key);
-    }
-
-    copy = <T>(value: T): T => {
-        return this.serializer.buildClone(null,  GetRegisteredEntities(), value);
     }
 
     getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');

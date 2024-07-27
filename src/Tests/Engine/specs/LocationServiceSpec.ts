@@ -39,18 +39,6 @@ describe("LocationService", function() {
         service.saveWorld(<ICollection<ICompiledLocation>>{});
         expect(dataService.save).toHaveBeenCalled();
     });
-    
-    test("copy world should call dataservice copy", function() {
-        const dataService = {
-            copy: function() {}
-        };
-
-        vi.spyOn(dataService, 'copy');
-
-        const service = getService(dataService);
-        service.copyWorld();
-        expect(dataService.copy).toHaveBeenCalled();
-    });
 
     test("should set the location description", function() {
         const game = <IGame>{

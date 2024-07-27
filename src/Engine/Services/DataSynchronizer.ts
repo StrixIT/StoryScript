@@ -8,8 +8,8 @@ export class DataSynchronizer implements IDataSynchronizer {
     updateModifiedEntities = (
         entities: IUpdatable[],
         pristineEntities: Record<string, Record<string, any>>,
-        parentEntity?,
-        pristineParentEntity?
+        parentEntity?: any,
+        pristineParentEntity?: any
     ): void => {
         const removedEntities = [];
     
@@ -46,16 +46,16 @@ export class DataSynchronizer implements IDataSynchronizer {
     }
     
     updateModifiedEntity = (
-        entity, 
-        pristineEntity, 
+        entity: any, 
+        pristineEntity: any, 
         pristineEntities: Record<string, Record<string, any>>,
-        parentEntity?,
-        pristineParentEntity?,
+        parentEntity?: any,
+        pristineParentEntity?: any,
         parentProperty?: string
     ): void => {
         if (isDataRecord(pristineEntity?.[0] ?? [])) {
-            pristineEntity.forEach(p => {
-                const match = entity.find(e => e[0] === p[0]);
+            pristineEntity.forEach((p: any[]) => {
+                const match = entity.find((e: any[]) => e[0] === p[0]);
                 
                 if (!match) {
                     return;
@@ -160,6 +160,10 @@ export class DataSynchronizer implements IDataSynchronizer {
             entity[propertyName] = pristineProperty;
         }
         else if (currentValue !== pristineProperty) {
+            if (typeof currentValue === FunctionType && typeof pristineProperty === FunctionType && currentValue.toString() === pristineProperty.toString()) {
+                return;
+            }
+            
             console.log(`Property ${propertyName} on ${this.getItemName(entity) ?? this.getItemName(parentEntity)} was modified. It's value of '${currentValue}' is retained.`);
         }
     }
@@ -167,30 +171,6 @@ export class DataSynchronizer implements IDataSynchronizer {
     private getItemName = (item: any): string => {
         const { first, second } = getKeyPropertyNames(item);
         return item[first] ?? item[second] ?? Object.keys(item)[0] ?? 'unknown';
-    }
-    
-    private getUpdateValueLogMessage = (name: string, value: any, target: IUpdatable | string, prefix: string, join: string, parent?: IUpdatable) => {
-        if (Array.isArray(value)) {
-            value = `array of ${name}`;
-        }
-        
-        if (typeof value === 'object' && value) {
-            const { first, second } = getKeyPropertyNames(value);
-            value = first ?? second ?? Object.keys(value)[0];
-        }
-    
-        return this.getUpdateObjectLogMessage(name, `(value: ${value})`, target, prefix, join, parent);
-    }
-    
-    private getUpdateObjectLogMessage = (name: string, value: any, target: IUpdatable | string, prefix: string, join: string, parent?: IUpdatable): string => {
-        const targetMessage = typeof target === 'string' ? target : target?.type ? `${target?.type} ${target?.id}` : `${parent?.type} ${parent?.id}`;
-        const parentMessage = (<IUpdatable>target).type && parent?.type && target !== parent ? ` on ${parent.type} ${parent.id}` : '';
-        return `${prefix} ${name} ${value} ${join} ${targetMessage}${parentMessage}.`;
-    }
-    
-    private getUpdateCollectionLogMessage = (entity: IUpdatable, parent: IUpdatable, prefix: string, join: string): string => {
-        const baseMessage = `${prefix} ${entity.type} ${entity.id}`;
-        return parent ? `${baseMessage} ${join} ${parent.type} ${parent.id}.` : `${baseMessage}.`
     }
     
     private isEntityArray = (entities: IUpdatable[], pristineEntities: IUpdatable[]): boolean => {

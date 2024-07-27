@@ -35,8 +35,6 @@ export class LocationService implements ILocationService {
 
     saveWorld = (locations: ICollection<ICompiledLocation>): void => this._dataService.save(DataKeys.WORLD, locations);
 
-    copyWorld = (): ICollection<ICompiledLocation> => this._dataService.copy(this._game.locations, this.pristineLocations);
-
     changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
         // Clear the play state on travel.
         game.playState = null;
