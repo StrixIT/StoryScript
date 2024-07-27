@@ -36,16 +36,16 @@ export function importAssets() {
 /* v8 ignore start */
 function loadAssetsWithRequire() {
     // Note that this regex cannot be extracted from here as that will break the require usage.
-    var assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/);
+    const assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/);
 
     assets.keys().forEach(k => {
         // Require the asset so it is loaded as a module.
-        var asset = assets(k);
-        var type = getAssetType(k);
+        const asset = assets(k);
+        const type = getAssetType(k);
         
         // Get the property of the asset that has the asset's entity function (the first is whether or not the asset is a esModule).
-        var assetProperties = Object.getOwnPropertyNames(asset);
-        var property = assetProperties[1];
+        const assetProperties = Object.getOwnPropertyNames(asset);
+        const property = assetProperties[1];
 
         // Register the asset with the proper type.
         Register(type, asset[property]);

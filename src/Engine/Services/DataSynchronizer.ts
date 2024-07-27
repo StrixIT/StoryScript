@@ -1,12 +1,12 @@
 import { IDataSynchronizer } from "storyScript/Interfaces/services/dataSynchronizer";
-import { IUpdatable } from "storyScript/Interfaces/updatable";
 import { RuntimeProperties } from "storyScript/runtimeProperties";
 import {getKeyPropertyNames, getPlural, isDataRecord, propertyMatch} from "storyScript/utilities";
 import {FunctionType} from "../../../constants.ts";
+import {IEntity} from "storyScript/Interfaces/entity.ts";
 
 export class DataSynchronizer implements IDataSynchronizer {
     updateModifiedEntities = (
-        entities: IUpdatable[],
+        entities: IEntity[],
         pristineEntities: Record<string, Record<string, any>>,
         parentEntity?: any,
         pristineParentEntity?: any
@@ -39,10 +39,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         });
     
         // Move deleted entities to the deleted shadow array.
-        entities.filter(e => e[RuntimeProperties.Deleted]).forEach(e => {
-            const entityMatch = pristineEntities[getPlural(e.type)][e.id];
-            entities.delete(entityMatch, true);
-        });
+        this.markEntriesAsDeleted(entities);
     }
     
     updateModifiedEntity = (
@@ -53,33 +50,11 @@ export class DataSynchronizer implements IDataSynchronizer {
         pristineParentEntity?: any,
         parentProperty?: string
     ): void => {
-        if (isDataRecord(pristineEntity?.[0] ?? [])) {
-            pristineEntity.forEach((p: any[]) => {
-                const match = entity.find((e: any[]) => e[0] === p[0]);
-                
-                if (!match) {
-                    return;
-                }
-                
-                if (match[RuntimeProperties.Deleted]) {
-                    return;
-                }
-                else if (typeof(p[1]) === FunctionType) {
-                    match[1] = p[1];
-                } else {
-                    this.updateModifiedEntity(match[1], p[1], pristineEntities, entity, pristineEntity, '1');
-                }
-            });
-
-            this.markEntriesAsDeleted(entity);
+        if (this.updateDataRecord(entity, pristineEntity, pristineEntities)) {
             return;
         }
         
-        if (Array.isArray(entity) && Array.isArray(pristineEntity)) {
-            if (entity.length > 0 || pristineEntity.length > 0) {
-                this.updateArray(entity, pristineEntity, pristineEntities, parentEntity, pristineParentEntity, parentProperty);
-            }
-    
+        if (this.updateArray(entity, pristineEntity, pristineEntities, parentEntity, pristineParentEntity, parentProperty)) {
             return;
         }
         
@@ -110,18 +85,16 @@ export class DataSynchronizer implements IDataSynchronizer {
             // Update the current property using the pristine property value. When dealing with an object, update
             // its property values recursively. When dealing with a collection of entity objects, update these recursively.
             if (this.isEntityArray(currentProperty, pristineProperty)) {
-                const addedItems = pristineProperty.filter(e => !currentProperty.find(p => propertyMatch(e, p)))
-                addedItems.forEach(a => currentProperty.push(a));
+                const addedItems = pristineProperty.filter((e: any) => !currentProperty.find((p: any) => propertyMatch(e, p)))
+                addedItems.forEach((a: any) => currentProperty.push(a));
                 this.updateModifiedEntities(currentProperty, pristineEntities, entity, pristineEntity);
                 return;
             }
-    
             else if (this.isEntity(currentProperty)) {
                 this.updateModifiedEntity(currentProperty, pristineEntities[getPlural(currentProperty.type)][currentProperty.id], pristineEntities, parentEntity, pristineParentEntity, p);
                 return;
             }
-    
-            if (typeof currentProperty === 'object' && currentProperty && pristineProperty) {
+            else if (typeof currentProperty === 'object' && currentProperty && pristineProperty) {
                 this.updateModifiedEntity(currentProperty, pristineProperty, pristineEntities, entity, pristineEntity, p);
                 return;
             } 
@@ -130,19 +103,45 @@ export class DataSynchronizer implements IDataSynchronizer {
         });
     }
     
+    private updateDataRecord = (entity: any, pristineEntity: any, pristineEntities: Record<string, Record<string, IEntity>>): boolean => {
+        if (!isDataRecord(pristineEntity?.[0] ?? [])) {
+            return false;
+        }
+        
+        pristineEntity.forEach((p: any[]) => {
+            const match = entity.find((e: any[]) => e[0] === p[0]);
+
+            if (!match || match[RuntimeProperties.Deleted]) {
+                return;
+            }
+            else if (typeof(p[1]) === FunctionType) {
+                match[1] = p[1];
+            } else {
+                this.updateModifiedEntity(match[1], p[1], pristineEntities, entity, pristineEntity, '1');
+            }
+        });
+
+        this.markEntriesAsDeleted(entity);
+        return true;
+    }
+    
     private updateArray (
             entity: any[], 
             pristineEntity: any[], 
             pristineEntities: Record<string, Record<string, any>>,
-            parentEntity?: IUpdatable,
-            pristineParentEntity?: IUpdatable,
+            parentEntity?: IEntity,
+            pristineParentEntity?: IEntity,
             parentProperty?: string
-        ): void {
-
+        ): boolean {
+        if (!Array.isArray(entity) || !Array.isArray(pristineEntity) || (entity.length == 0 && pristineEntity.length == 0)) {
+            return false;
+        }
+        
+        const existingItems = entity.filter(e => !pristineEntity.find(p => propertyMatch(e, p)));
         const matchedItems = pristineEntity.filter(e => entity.find(p => propertyMatch(e, p)));
         const itemsToAdd = pristineEntity.filter(e => !entity.find(p => propertyMatch(e, p)));
-
-        matchedItems.forEach(i => {
+        
+        existingItems.concat(matchedItems).forEach(i => {
             const currentValue: any = entity.find(p => propertyMatch(i, p));
 
             if (!i[RuntimeProperties.Deleted]) {
@@ -158,12 +157,13 @@ export class DataSynchronizer implements IDataSynchronizer {
         });
 
         this.markEntriesAsDeleted(entity);
+        return true;
     }
     
     private markEntriesAsDeleted = (item: any[]) => {
         // Mark deleted items as such in the array
         const itemsToDelete = item.filter(i => i[RuntimeProperties.Deleted]);
-        itemsToDelete.forEach(i => item.delete(i, false));
+        itemsToDelete.forEach(i => item.delete(i));
     }
     
     private updatePropertyValue = (
@@ -193,33 +193,11 @@ export class DataSynchronizer implements IDataSynchronizer {
         return item[first] ?? item[second] ?? Object.keys(item)[0] ?? 'unknown';
     }
     
-    private isEntityArray = (entities: IUpdatable[], pristineEntities: IUpdatable[]): boolean => {
+    private isEntityArray = (entities: IEntity[], pristineEntities: IEntity[]): boolean => {
         return (Array.isArray(entities) && this.isEntity(entities[0])) || (Array.isArray(pristineEntities) && this.isEntity(pristineEntities[0]));
     }
     
-    private isEntity = (entity: IUpdatable): boolean => {
+    private isEntity = (entity: IEntity): boolean => {
         return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
-    }
-    
-    private removeDeletedEntries = (item: any) => {
-        if (item === undefined) {
-            return;
-        }
-    
-        const properties = Object.keys(item);
-    
-        properties.forEach(p => {
-            const value = item[p];
-    
-            if (Array.isArray(value)) {
-                value.removeDeleted();
-    
-                value.forEach(e => {
-                    this.removeDeletedEntries(e);
-                })
-            } else if (typeof value === 'object') {
-                this.removeDeletedEntries(value);
-            }
-        });
     }
 }

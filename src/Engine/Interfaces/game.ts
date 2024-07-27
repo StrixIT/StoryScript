@@ -219,7 +219,7 @@ export interface IGame {
     /**
      * The function executed when the player attacks an enemy.
      * @param combatRound The setup for this combat round
-     * @param boolean True if the enemy can retaliate (default), false otherwise
+     * @param retaliate True if the enemy can retaliate (default), false otherwise
      */
     fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): void;
 

@@ -1,9 +1,9 @@
 export class DataKeys {
-    static HIGHSCORES: string = 'highScores';
-    static PARTY: string = 'party';
-    static STATISTICS: string = 'statistics';
-    static WORLD: string = 'world';
-    static WORLDPROPERTIES: string = 'worldProperties';
-    static GAME = 'game';
-    static PLAYEDMEDIA = 'playedMedia';
+    static readonly HIGHSCORES: string = 'highScores';
+    static readonly PARTY: string = 'party';
+    static readonly STATISTICS: string = 'statistics';
+    static readonly WORLD: string = 'world';
+    static readonly WORLDPROPERTIES: string = 'worldProperties';
+    static readonly GAME = 'game';
+    static readonly PLAYEDMEDIA = 'playedMedia';
 }

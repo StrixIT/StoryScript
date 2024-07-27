@@ -136,5 +136,7 @@ describe("DataSynchronizer", () => {
         synchronizer.updateModifiedEntity(skeleton, garden, pristineEntities);
 
         expect(skeleton.destinations).toHaveLength(2);
+        expect(skeleton.destinations[0].name).toBe("Enter the basement");
+        expect(skeleton.destinations[0].barrier).not.toBeNull();
     });
 });

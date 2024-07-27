@@ -205,12 +205,12 @@ export function addArrayExtensions() {
     if ((<any>Array.prototype).remove === undefined) {
         Object.defineProperty(Array.prototype, 'remove', {
             enumerable: false,
-            value: function (item: any, usePropertyMatch: boolean) {
+            value: function (item: any) {
                 if (!item) {
                     return null;
                 }
 
-                let entry = find(item, this, usePropertyMatch)[0];
+                let entry = find(item, this, false)[0];
                 let index = -1;
 
                 if (typeof entry === 'undefined') {
@@ -238,14 +238,13 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'delete', {
             enumerable: false,
             writable: true,
-            value: function (item: any, usePropertyMatch?: boolean) {
+            value: function (item: any) {
                 const collection = this;
-                usePropertyMatch = typeof usePropertyMatch === 'undefined' ? false : usePropertyMatch;
 
                 // Only add a deletion record when the item is removed from the array and the
                 // item does not have the 'added' flag. This means the item is originally from
                 // this array.
-                let entry = collection.remove(item, usePropertyMatch);
+                let entry = collection.remove(item);
 
                 if (entry && !entry[RuntimeProperties.Added]) {
                     collection[deletedCollection] = collection[deletedCollection] || [];

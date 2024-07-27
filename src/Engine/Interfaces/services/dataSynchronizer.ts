@@ -1,19 +1,19 @@
-import { IUpdatable } from "../updatable";
+import {IEntity} from "storyScript/Interfaces/entity.ts";
 
 export interface IDataSynchronizer {
     updateModifiedEntities(
-        entities: IUpdatable[],
+        entities: IEntity[],
         pristineEntities: Record<string, Record<string, any>>,
-        parentEntity?: IUpdatable,
-        pristineParentEntity?: IUpdatable
+        parentEntity?: IEntity,
+        pristineParentEntity?: IEntity
     ): void;
 
     updateModifiedEntity (
-        entity: IUpdatable, 
-        pristineEntity: IUpdatable, 
+        entity: IEntity, 
+        pristineEntity: IEntity, 
         pristineEntities: Record<string, Record<string, any>>,
-        parentEntity?: IUpdatable,
-        pristineParentEntity?: IUpdatable,
+        parentEntity?: IEntity,
+        pristineParentEntity?: IEntity,
         parentProperty?: string
     ): void;
 }

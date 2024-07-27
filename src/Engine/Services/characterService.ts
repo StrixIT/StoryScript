@@ -15,10 +15,10 @@ export class CharacterService implements ICharacterService {
     constructor(private _game: IGame, private _rules: IRules) {
     }
 
-    getSheetAttributes = (): string[] => this._rules.character.getSheetAttributes && this._rules.character.getSheetAttributes() || [];
+    getSheetAttributes = (): string[] => this._rules.character.getSheetAttributes?.() || [];
 
     setupCharacter = (): ICreateCharacter => {
-        var sheet = (this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet()) || { steps: []};
+        const sheet = (this._rules.character.getCreateCharacterSheet?.()) || { steps: []};
         this.prepareSheet(sheet);
         this._game.createCharacterSheet = sheet;
         return sheet;
@@ -26,7 +26,7 @@ export class CharacterService implements ICharacterService {
 
     limitSheetInput = (value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
         if (!isNaN(value)) {
-            var totalAssigned = 0;
+            let totalAssigned = 0;
 
             attribute.entries.forEach((innerEntry, index) => {
                 if (index !== attribute.entries.indexOf(entry)) {
@@ -53,24 +53,22 @@ export class CharacterService implements ICharacterService {
     }
 
     distributionDone = (sheet: ICreateCharacter, step?: ICreateCharacterStep): boolean => {
-        var done = true;
+        let done = true;
 
         if (step) {
             done = this.checkStep(step);
         }
-        else {
-            if (sheet && sheet.steps) {
-                sheet.steps.forEach(step => {
-                    done = this.checkStep(step);
-                });
-            }
+        else if (sheet?.steps) {
+            sheet.steps.forEach(step => {
+                done = this.checkStep(step);
+            });
         }
 
         return done;
     }
 
     createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
-        var character = null;
+        let character: ICharacter = null;
 
         if (this._rules.character.createCharacter) {
 
@@ -89,7 +87,7 @@ export class CharacterService implements ICharacterService {
     }
 
     setupLevelUp = (): ICreateCharacter => {
-        var sheet = this._rules.character.getLevelUpSheet && this._rules.character.getLevelUpSheet();
+        const sheet = this._rules.character.getLevelUpSheet?.();
 
         if (sheet) {
             this.prepareSheet(sheet);
