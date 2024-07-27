@@ -1,3 +1,3 @@
-const gameName = 'QuestForTheKing';
+const gameName = 'MyRolePlayingGame';
 
 export default gameName;

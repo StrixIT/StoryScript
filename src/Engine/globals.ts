@@ -1,8 +1,6 @@
 ﻿import { RuntimeProperties } from "./runtimeProperties";
 import { getId, getKeyPropertyNames, propertyMatch } from "./utilities";
 
-export const recordKeyPropertyName: string = 'recordKey';
-
 const deletedCollection: string = '_deleted';
 
 if (Function.prototype.proxy === undefined) {
@@ -250,14 +248,19 @@ export function addArrayExtensions() {
                 let entry = collection.remove(item, usePropertyMatch);
 
                 if (entry && !entry[RuntimeProperties.Added]) {
+                    collection[deletedCollection] = collection[deletedCollection] || [];
+                    
+                    if (entry[RuntimeProperties.Deleted])
+                    {
+                        collection[deletedCollection].push(entry);
+                        return;
+                    }
+                    
                     const { first, second } = getKeyPropertyNames(entry);
                     const keyProps = 
                         first && second ? { [first]: entry[first], [second]: entry[second] } :
-                        first ? { [first]: entry[first] } :
-                        second ? { [second]: entry[second] } : 
-                        { [Object.keys(entry)[0]]: recordKeyPropertyName }
-
-                    collection[deletedCollection] = collection[deletedCollection] || [];
+                        first ? { [first]: entry[first] } : { [second]: entry[second] };
+                    
                     collection[deletedCollection].push({ ...keyProps, [RuntimeProperties.Deleted]: true });
                 }
             }

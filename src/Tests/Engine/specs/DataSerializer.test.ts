@@ -1,15 +1,16 @@
 import { describe, beforeAll, beforeEach, afterEach, test, expect } from 'vitest';
 import { ICollection, ICompiledLocation } from "../../../Engine/Interfaces/storyScript";
-import { GetFunctions } from "storyScript/ObjectConstructors.ts";
+import {GetFunctions, GetRegisteredEntities} from "storyScript/ObjectConstructors.ts";
 import { ObjectFactory } from "storyScript/ObjectFactory.ts";
 import { DataSerializer } from "storyScript/Services/DataSerializer.ts";
 import { RunGame } from "../../../Games/MyRolePlayingGame/run";
+import {IEntity} from "storyScript/Interfaces/entity.ts";
 
 const worldData = JSON.stringify({"data":[{"destinations":[{}],"items":[{"type":"item","id":"journal"}],"type":"location","id":"basement","actions":[],"combatActions":[],"features":[],"trade":[],"enemies":[],"persons":[]},{"destinations":[{}],"enemies":[{"items":[{"type":"item","id":"sword"},{"open":{},"type":"item","id":"basementkey"}],"type":"enemy","id":"bandit"}],"combatActions":[{}],"type":"location","id":"dirtroad","actions":[],"features":[],"trade":[],"items":[],"persons":[]},{"destinations":[{}],"enterEvents":[{}],"actions":[{},{}],"type":"location","id":"garden","combatActions":[],"features":[],"trade":[],"items":[],"enemies":[],"persons":[]},{"destinations":[{}],"trade":[{"buy":{},"sell":{},"type":"trade","id":"yourpersonalcloset"}],"type":"location","id":"library","actions":[],"combatActions":[],"features":[],"items":[],"enemies":[],"persons":[]},{"destinations":[{},{},{}],"persons":[{"items":[{"type":"item","id":"sword"}],"trade":{"buy":{},"sell":{}},"conversation":{"actions":{}},"quests":[{"type":"quest","id":"journal"}],"type":"person","id":"friend"}],"type":"location","id":"start","actions":[],"combatActions":[],"features":[],"trade":[],"items":[],"enemies":[]}]});
 
 describe("DataSerializer", () => {
 
-    let locations: ICollection<ICompiledLocation> = [];
+    let pristineEntities: Record<string, Record<string, IEntity>>;
     const originalWarn: any = console.warn;
 
     const consoleOutput = [];
@@ -23,8 +24,8 @@ describe("DataSerializer", () => {
         // Initialize the world so it is available for saving.
         const gameService = objectFactory.GetGameService();
         gameService.reset();
-    
-        locations = [...game.locations];
+
+        pristineEntities = GetRegisteredEntities();
     });
 
     beforeEach(() => (console.warn = consoleMock));
@@ -65,7 +66,7 @@ describe("DataSerializer", () => {
 
     test("should create and save a JSON clone of the world", function() {
         const serializer = new DataSerializer();
-        const result = serializer.buildClone(null, locations, null);
+        const result = serializer.buildClone(null, pristineEntities, null);
         const resultText = JSON.stringify({ data: result });
         const worldWithoutHashes = replaceHashes(worldData);
         const resultWithoutHashes = replaceHashes(resultText);
@@ -76,7 +77,7 @@ describe("DataSerializer", () => {
 
     test("should create a copy of a complex object", function() {
         const serializer = new DataSerializer();
-        const result = serializer.buildClone(null, locations, locations);
+        const result = serializer.buildClone(null, pristineEntities['locations']);
         const resultText = JSON.stringify({ data: result });
         const worldWithoutHashes = replaceHashes(worldData);
         const resultWithoutHashes = replaceHashes(resultText);

@@ -102,15 +102,15 @@ export class SharedMethodService {
     }
 
     executeAction = (action: IAction, component: any): void => {
-        if (action && action.execute) {
+        if (action?.execute) {
             // Modify the arguments collection to add the game to the collection before calling the function specified.
-            var args = <any[]>[this.game, action];
+            const args = <any[]>[this.game, action];
 
             // Execute the action and when nothing or false is returned, remove it from the current location.
-            var executeFunc = typeof action.execute !== 'function' ? component[action.execute] : action.execute;
-            var result = executeFunc.apply(component, args);
+            const executeFunc = typeof action.execute !== 'function' ? component[action.execute] : action.execute;
+            const result = executeFunc.apply(component, args);
 
-            var typeAndIndex = this.getActionIndex(action);
+            const typeAndIndex = this.getActionIndex(action);
 
             if (!result && typeAndIndex.index !== -1) {
                 if (typeAndIndex.type === ActionType.Regular && this.game.currentLocation.actions) {

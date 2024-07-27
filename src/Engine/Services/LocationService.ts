@@ -33,7 +33,7 @@ export class LocationService implements ILocationService {
         game.locations = this.loadWorld(buildWorld === undefined || buildWorld);
     }
 
-    saveWorld = (locations: ICollection<ICompiledLocation>): void => this._dataService.save(DataKeys.WORLD, locations, this.pristineLocations);
+    saveWorld = (locations: ICollection<ICompiledLocation>): void => this._dataService.save(DataKeys.WORLD, locations);
 
     copyWorld = (): ICollection<ICompiledLocation> => this._dataService.copy(this._game.locations, this.pristineLocations);
 
@@ -153,7 +153,7 @@ export class LocationService implements ILocationService {
             locations = this._dataService.load(DataKeys.WORLD);
 
             if (isEmpty(locations)) {
-                this._dataService.save(DataKeys.WORLD, this.pristineLocations, this.pristineLocations);
+                this._dataService.save(DataKeys.WORLD, this.pristineLocations);
                 locations = this._dataService.load(DataKeys.WORLD);
             }
         }
@@ -413,6 +413,8 @@ function addKeyAction(game: IGame, destination: IDestination) {
 function setDestination(destination: IDestination) {
     // Set the barrier selected actions to the first one available for each barrier.
     // Further, replace combine functions with their target ids.
+    destination.target = getId(destination.target);
+    
     if (destination.barrier) {
         if (destination.barrier.key) {
             const key = destination.barrier.key;

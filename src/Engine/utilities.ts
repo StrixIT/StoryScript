@@ -1,5 +1,5 @@
 ﻿import { IDefinitions } from './Interfaces/definitions';
-import { compareString, recordKeyPropertyName } from './globals';
+import { compareString } from './globals';
 import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
 import { StateList, StateListEntry } from './Interfaces/stateList';
 import {FunctionType, ObjectType, StringType} from "../../constants.ts";
@@ -68,8 +68,8 @@ export function propertyMatch(first: any, second: any): boolean {
     let { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
 
     if (firstProperty && secondProperty) {
-        return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty]))
-        && (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
+        return getValue(first[firstProperty]) === getValue(second[firstProperty])
+        && getValue(first[secondProperty]) === getValue(second[secondProperty]);
     }
 
     if (firstProperty || secondProperty) {
@@ -77,15 +77,10 @@ export function propertyMatch(first: any, second: any): boolean {
         (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
     }
 
-    // This is to match deleted record entries.
-    firstProperty = Object.keys(first)[0];
-    secondProperty = Object.keys(second)[0];
-    const isRecord = first[firstProperty] === recordKeyPropertyName || second[secondProperty] === recordKeyPropertyName; 
-
-    return isRecord ? Object.keys(first)[0] === Object.keys(second)[0] : false;
+    return false;
 }
 
-function getKeyProperties(pristine: any, current: any): { first: string, second: string } {
+function getKeyProperties(pristine: any, current: any): { first?: string, second?: string } {
     const { first: pristineFirst, second: pristineSecond } = getKeyPropertyNames(pristine);
     const { first: currentFirst, second: currentSecond } = getKeyPropertyNames(current);
     return { first: pristineFirst && currentFirst ? pristineFirst : null, second: pristineSecond && currentSecond ? pristineSecond : null };

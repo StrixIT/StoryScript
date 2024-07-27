@@ -1,5 +1,5 @@
 ﻿import { DataKeys } from '../DataKeys';
-import { getPlural, isEmpty } from '../utilities';
+import { isEmpty } from '../utilities';
 import { setReadOnlyProperties, GetFunctions, GetRegisteredEntities } from '../ObjectConstructors';
 import { IDataService } from '../Interfaces/services/dataService';
 import { ILocalStorageService } from '../Interfaces/services/localStorageService';
@@ -11,8 +11,8 @@ export class DataService implements IDataService {
     constructor(private _localStorageService: ILocalStorageService, private serializer: IDataSerializer, private synchronizer: IDataSynchronizer, private _gameNameSpace: string) {
     }
     
-    save = <T>(key: string, value: T, pristineValues?: T): void => {
-        const clone = this.serializer.buildClone(value, pristineValues);
+    save = <T>(key: string, value: T): void => {
+        const clone = this.serializer.buildClone(value, GetRegisteredEntities());
         this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
     }
 
@@ -56,8 +56,8 @@ export class DataService implements IDataService {
         this._localStorageService.remove(this._gameNameSpace + '_' + key);
     }
 
-    copy = <T>(value: T, pristineValue: T): T => {
-        return this.serializer.buildClone(null, value, pristineValue);
+    copy = <T>(value: T): T => {
+        return this.serializer.buildClone(null,  GetRegisteredEntities(), value);
     }
 
     getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');

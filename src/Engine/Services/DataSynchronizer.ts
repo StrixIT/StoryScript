@@ -3,7 +3,6 @@ import { IUpdatable } from "storyScript/Interfaces/updatable";
 import { RuntimeProperties } from "storyScript/runtimeProperties";
 import {getKeyPropertyNames, getPlural, isDataRecord, propertyMatch} from "storyScript/utilities";
 import {FunctionType} from "../../../constants.ts";
-import {Run} from "storyScript/run.ts";
 
 export class DataSynchronizer implements IDataSynchronizer {
     updateModifiedEntities = (
