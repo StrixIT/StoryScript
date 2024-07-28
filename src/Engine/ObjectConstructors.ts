@@ -1,19 +1,19 @@
-import { IDefinitions } from './Interfaces/definitions';
-import { ILocation } from './Interfaces/location';
-import { IEnemy } from './Interfaces/enemy';
-import { IPerson } from './Interfaces/person';
-import { IItem } from './Interfaces/item';
-import { IKey } from './Interfaces/key';
-import { IFeature } from './Interfaces/feature';
-import { IQuest } from './Interfaces/quest';
-import { IAction } from './Interfaces/action';
-import { DataKeys } from './DataKeys';
-import { getSingular, getPlural, getId } from './utilities';
-import { ICombinable } from './Interfaces/combinations/combinable';
-import { ICombine } from './Interfaces/combinations/combine';
-import { IEquipment } from './Interfaces/equipment';
-import { ActionStatus, IParty } from './Interfaces/storyScript';
-import { ISaveGame } from './Interfaces/saveGame';
+import {IDefinitions} from './Interfaces/definitions';
+import {ILocation} from './Interfaces/location';
+import {IEnemy} from './Interfaces/enemy';
+import {IPerson} from './Interfaces/person';
+import {IItem} from './Interfaces/item';
+import {IKey} from './Interfaces/key';
+import {IFeature} from './Interfaces/feature';
+import {IQuest} from './Interfaces/quest';
+import {IAction} from './Interfaces/action';
+import {DataKeys} from './DataKeys';
+import {getId, getPlural, getSingular} from './utilities';
+import {ICombinable} from './Interfaces/combinations/combinable';
+import {ICombine} from './Interfaces/combinations/combine';
+import {IEquipment} from './Interfaces/equipment';
+import {ActionStatus, IParty} from './Interfaces/storyScript';
+import {ISaveGame} from './Interfaces/saveGame';
 import {FunctionType} from "../../constants.ts";
 
 const _entityCollections: string[] = [
@@ -48,7 +48,7 @@ let registration = true;
 
 export function buildEntities(): void {
     const allDefinitions = Object.getOwnPropertyNames(_definitions);
-    
+
     // Build all entities once to determine their id.
     allDefinitions.forEach(p => {
         _definitions[p].forEach((f: Function) => {
@@ -67,16 +67,16 @@ export function buildEntities(): void {
     });
 }
 
-export function GetDefinitions(): IDefinitions { 
-    return _definitions; 
+export function GetDefinitions(): IDefinitions {
+    return _definitions;
 }
 
-export function GetDescriptions(): Map<string, string> { 
-    return _registeredDescriptions; 
+export function GetDescriptions(): Map<string, string> {
+    return _registeredDescriptions;
 }
 
-export function GetRegisteredEntities() { 
-    return _registeredEntities; 
+export function GetRegisteredEntities() {
+    return _registeredEntities;
 }
 
 export function Location(entity: ILocation): ILocation {
@@ -115,16 +115,14 @@ export function setReadOnlyProperties(key: string, data: any) {
     if (key.startsWith(DataKeys.GAME + '_')) {
         data.world.forEach((location: ILocation) => {
             setReadOnlyLocationProperties(location);
-        });     
-        
+        });
+
         setReadOnlyCharacterProperties((<ISaveGame>data).party)
-    }
-    else if (key  === DataKeys.WORLD) {
+    } else if (key === DataKeys.WORLD) {
         data.forEach((location: ILocation) => {
             setReadOnlyLocationProperties(location);
-        });     
-    }
-    else if (key === DataKeys.PARTY) {
+        });
+    } else if (key === DataKeys.PARTY) {
         setReadOnlyCharacterProperties(<IParty>data);
     }
 }
@@ -143,7 +141,7 @@ export function initCollection(entity: any, property: string) {
     if (_gameCollections.indexOf(property) === -1) {
         return;
     }
-    
+
     const collection = entity[property] || [];
 
     if ((property === 'features' || property === 'trade') && collection.length) {
@@ -162,7 +160,7 @@ export function initCollection(entity: any, property: string) {
 
         inlineCollection.forEach((e: any) => {
             collection.push(e);
-            
+
             if (e.id) {
                 registerEntity(e);
             }
@@ -209,7 +207,7 @@ export function InitEntityCollection(entity: any, property: string) {
 
 export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
     const compiledEntity = entityFunction();
-    _registeredIds.set(getEntityKey(<any>compiledEntity), getIdFromName({ id: '', name: name })?.toLowerCase());
+    _registeredIds.set(getEntityKey(<any>compiledEntity), getIdFromName({id: '', name: name})?.toLowerCase());
     return entityFunction();
 }
 
@@ -219,19 +217,27 @@ function registerEntity(entity: any): void {
 
     if (!_registeredEntities[type][entity.id]) {
         _registeredEntities[type][entity.id] = entity;
-    } 
+    }
 }
 
 function Create(type: string, entity: any, id?: string) {
     switch (type) {
-        case 'location': return createLocation(entity);
-        case 'enemy': return EnemyBase(entity, 'enemy', id);
-        case 'person': return createPerson(entity, id);
-        case 'item': return createItem(entity, id);
-        case 'feature': return createFeature(entity, id);
-        case 'quest': return CreateObject(entity, 'quest', id);
-        case 'action': return CreateObject(entity, 'action', id);
-        case 'trade': return CreateObject(entity, 'trade', id);
+        case 'location':
+            return createLocation(entity);
+        case 'enemy':
+            return EnemyBase(entity, 'enemy', id);
+        case 'person':
+            return createPerson(entity, id);
+        case 'item':
+            return createItem(entity, id);
+        case 'feature':
+            return createFeature(entity, id);
+        case 'quest':
+            return CreateObject(entity, 'quest', id);
+        case 'action':
+            return CreateObject(entity, 'action', id);
+        case 'trade':
+            return CreateObject(entity, 'trade', id);
     }
 }
 
@@ -243,7 +249,7 @@ function createLocation(entity: ILocation) {
             if (d.barrier?.key) {
                 d.barrier.key = getId(d.barrier.key);
             }
-            
+
             d.target = getId(d.target);
         });
     }
@@ -291,12 +297,11 @@ function EnemyBase<T extends IEnemy>(entity: T, type: string, id?: string): T {
     return enemy;
 }
 
-function CreateObject<T>(entity: T, type: string, id?: string)
-{
+function CreateObject<T>(entity: T, type: string, id?: string) {
     if (typeof entity === FunctionType) {
         id = getId(<Function>entity);
     }
-    
+
     const compiledEntity = getCompiledEntity(entity, type);
     const entityKey = getEntityKey(compiledEntity);
     checkInlineConflict(id, entityKey);
@@ -312,13 +317,13 @@ function CreateObject<T>(entity: T, type: string, id?: string)
 
         if (compiledEntity.description) {
             loadPictureFromDescription(compiledEntity, compiledEntity.description);
-            
+
             if (!_registeredDescriptions.get(descriptionKey)) {
                 _registeredDescriptions.set(descriptionKey, compiledEntity.description);
             }
-        }     
+        }
     }
-    
+
     return <T><unknown>compiledEntity;
 }
 
@@ -360,7 +365,7 @@ function getCompiledEntity(entity: any, type: string): { id: string, type: strin
     return compiledEntity;
 }
 
-function loadPictureFromDescription (entity: any, description: string): void {
+function loadPictureFromDescription(entity: any, description: string): void {
     const parser = new DOMParser();
     const htmlDoc = parser.parseFromString(description, 'text/html');
     const pictureElement = htmlDoc.getElementsByClassName('picture')[0];
@@ -376,20 +381,17 @@ function getEntityKey(entity: object): string {
         const value = entity[p];
         const type = typeof value;
         let text: string;
-        
+
         if (p === 'description' || Array.isArray(value)) {
             text = undefined;
-        } 
-        else if (type === 'object') {
+        } else if (type === 'object') {
             text = p.toString();
-        } 
-        else if (type === 'function') {
-            text =  getId(entity[p]);
-        }
-        else if (type !== "undefined") {
+        } else if (type === 'function') {
+            text = getId(entity[p]);
+        } else if (type !== "undefined") {
             text = p.toString() + '|' + entity[p].toString();
         }
-        
+
         return text;
     }).filter(e => e).join('|');
 }
@@ -402,26 +404,34 @@ function setReadOnlyLocationProperties(location: ILocation) {
 
     Object.defineProperty(location, 'activePersons', {
         get: function () {
-            return location.persons.filter(e => { return !e.inactive; });
+            return location.persons.filter(e => {
+                return !e.inactive;
+            });
         }
     });
 
     Object.defineProperty(location, 'activeEnemies', {
         get: function () {
-            return location.enemies.filter(e => { return !e.inactive; });
+            return location.enemies.filter(e => {
+                return !e.inactive;
+            });
         }
     });
 
     Object.defineProperty(location, 'activeItems', {
         get: function () {
-            return location.items.filter(e => { return !e.inactive; });
+            return location.items.filter(e => {
+                return !e.inactive;
+            });
         }
     });
 
     Object.defineProperty(location, 'activeActions', {
         get: function () {
             return location.actions
-                .filter(([_, v]) => { return v.status !== ActionStatus.Unavailable; })
+                .filter(([_, v]) => {
+                    return v.status !== ActionStatus.Unavailable;
+                })
                 .map(([k, v]) => {
                     v.id = k;
                     return v;
@@ -434,7 +444,9 @@ function setReadOnlyCharacterProperties(party: IParty) {
     party.characters.forEach(c => {
         Object.defineProperty(c, 'combatItems', {
             get: function () {
-                const result = c.items.filter(i => { return canUseInCombat(i.useInCombat, i, c.equipment); });
+                const result = c.items.filter(i => {
+                    return canUseInCombat(i.useInCombat, i, c.equipment);
+                });
 
                 for (const n in c.equipment) {
                     const item = <IItem>c.equipment[n];
@@ -488,6 +500,6 @@ function pushEntity(originalScope: any, originalFunction: any, entity: any) {
     originalFunction.apply(originalScope, [entity]);
 }
 
-function getIdFromName<T extends { name: string, id? : string}>(entity: T): string {
-    return entity.name.toLowerCase().replace(/\s/g,'');
+function getIdFromName<T extends { name: string, id?: string }>(entity: T): string {
+    return entity.name.toLowerCase().replace(/\s/g, '');
 }
