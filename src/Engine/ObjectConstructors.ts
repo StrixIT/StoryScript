@@ -24,9 +24,6 @@ const _entityCollections: string[] = [
     'quests'
 ];
 
-// This string has the key of the current entity being registered.
-let _currentEntityKey: string = null;
-
 // The dictionary containing all registered entity keys and their corresponding ids.
 let _registeredIds: Map<string, string> = new Map<string, string>();
 
@@ -52,7 +49,8 @@ export function buildEntities(): void {
     // Build all entities once to determine their id.
     allDefinitions.forEach(p => {
         _definitions[p].forEach((f: Function) => {
-            buildEntity(f, getId(f));
+            const compiledEntity = f();
+            _registeredIds.set(getEntityKey(compiledEntity), getId(f));
         });
     });
 
@@ -144,12 +142,9 @@ export function initCollection(entity: any, property: string) {
     const collection = entity[property] || [];
 
     if ((property === 'features' || property === 'trade') && collection.length) {
-        // Initialize features that have been declared inline. Check for the existence of a type property to determine
-        // whether the object is already initialized. Store the current entity key, as it will be overridden when inline 
-        // features are build.
-        const locationEntityKey = _currentEntityKey;
-
         const inlineCollection = collection.map((e: { type: string, name: string }) => {
+            // Initialize features that have been declared inline. Check for the existence of a 
+            // type property to determine whether the object is already initialized.
             if (e.type) {
                 return e;
             }
@@ -167,8 +162,6 @@ export function initCollection(entity: any, property: string) {
                 registerEntity(e);
             }
         });
-
-        _currentEntityKey = locationEntityKey;
     }
 
     InitEntityCollection(entity, property);
@@ -188,7 +181,8 @@ export function Register(type: string, entityFunc: Function, testDefinitions?: I
 }
 
 export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
-    buildEntity(entityFunction, getIdFromName({ id: '', name: name })?.toLowerCase());
+    const compiledEntity = entityFunction();
+    _registeredIds.set(getEntityKey(<any>compiledEntity), getIdFromName({ id: '', name: name })?.toLowerCase());
     return entityFunction();
 }
 
@@ -199,17 +193,6 @@ function registerEntity(entity: any): void {
     if (!_registeredEntities[type][entity.id]) {
         _registeredEntities[type][entity.id] = entity;
     } 
-}
-
-function buildEntity(entityFunction: Function, functionName: string) {
-    _currentEntityKey = undefined;
-    
-    entityFunction();
-
-    if (_currentEntityKey) {
-        // Add the key/id registration record.
-        _registeredIds.set(_currentEntityKey, functionName);
-    }
 }
 
 function Create(type: string, entity: any, id?: string) {
@@ -290,8 +273,6 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     const compiledEntity = getCompiledEntity(entity, type);
     const entityKey = getEntityKey(compiledEntity);
     checkInlineConflicht(id, entityKey);
-    _currentEntityKey = entityKey;
-
     const registeredId = _registeredIds.get(entityKey);
 
     if (id && !registeredId) {
@@ -387,11 +368,15 @@ function loadPictureFromDescription (entity: any, description: string): void {
 
 function getEntityKey(entity: object): string {
     return Object.getOwnPropertyNames(entity).sort().map(p => {
-        const type = typeof entity[p];
-        return type === 'object' ? p.toString() 
+        const value = entity[p];
+        const type = typeof value;
+        
+        return p === 'description' ? '' 
+            : Array.isArray(value) ? ''
+            : type === 'object' ? p.toString() 
             : type === 'function' ?  getId(entity[p]) 
             : type !== "undefined" ? p.toString() + '|' + entity[p].toString() : '';
-    }).join('|');
+    }).filter(e => e).join('|');
 }
 
 function setReadOnlyLocationProperties(location: ILocation) {

@@ -57,7 +57,7 @@ export function parseFunction<T extends Function>(text: string) {
     }
 
     return null;
-};
+}
 
 /**
  * This function creates a new function with the callbacks embedded. This makes the new function safe for serialization.
