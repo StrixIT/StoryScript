@@ -30,6 +30,9 @@ let _registeredIds: Map<string, string> = new Map<string, string>();
 // The dictionary containing all registered entity ids and their corresponding descriptions.
 let _registeredDescriptions: Map<string, string> = new Map<string, string>();
 
+// A record to keep all the entities available, fully build.
+const _registeredEntities: Record<string, Record<string, any>> = {};
+
 // The object to hold all game entity definitions.
 let _definitions: IDefinitions = {
     actions: [],
@@ -41,7 +44,7 @@ let _definitions: IDefinitions = {
     quests: []
 };
 
-const _registeredEntities: Record<string, Record<string, any>> = {};
+let registration = true;
 
 export function buildEntities(): void {
     const allDefinitions = Object.getOwnPropertyNames(_definitions);
@@ -53,6 +56,8 @@ export function buildEntities(): void {
             _registeredIds.set(getEntityKey(compiledEntity), getId(f));
         });
     });
+
+    registration = false;
 
     // Build all entities again to add ids to nested entities.
     allDefinitions.forEach(p => {
@@ -155,7 +160,7 @@ export function initCollection(entity: any, property: string) {
 
         collection.length = 0;
 
-        inlineCollection.forEach(e => {
+        inlineCollection.forEach((e: any) => {
             collection.push(e);
             
             if (e.id) {
@@ -178,6 +183,28 @@ export function Register(type: string, entityFunc: Function, testDefinitions?: I
     }
 
     return definitions;
+}
+
+export function InitEntityCollection(entity: any, property: string) {
+    const collection = entity[property] || [];
+
+    Object.defineProperty(entity, property, {
+        enumerable: true,
+        get: function () {
+            return collection;
+        },
+        set: function () {
+            const message = entity.type ? `Cannot set collection ${property} on type ${entity.type}!` : `Cannot set collection ${property}!`;
+            throw new Error(message);
+        }
+    });
+
+    if (_entityCollections.indexOf(property) > -1) {
+        Object.defineProperty(collection, 'add', {
+            writable: true,
+            value: collection.add.proxy(pushEntity)
+        });
+    }
 }
 
 export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
@@ -221,7 +248,7 @@ function createLocation(entity: ILocation) {
         });
     }
 
-    if (!location.destinations) {
+    if (!location.destinations && registration) {
         console.log('No destinations specified for location ' + location.name);
     }
 
@@ -272,7 +299,7 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     
     const compiledEntity = getCompiledEntity(entity, type);
     const entityKey = getEntityKey(compiledEntity);
-    checkInlineConflicht(id, entityKey);
+    checkInlineConflict(id, entityKey);
     const registeredId = _registeredIds.get(entityKey);
 
     if (id && !registeredId) {
@@ -295,7 +322,7 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     return <T><unknown>compiledEntity;
 }
 
-function checkInlineConflicht(id: string, entityKey: string) {
+function checkInlineConflict(id: string, entityKey: string) {
     let inlineConflict = false;
 
     if (id) {
@@ -333,28 +360,6 @@ function getCompiledEntity(entity: any, type: string): { id: string, type: strin
     return compiledEntity;
 }
 
-export function InitEntityCollection(entity: any, property: string) {
-    const collection = entity[property] || [];
-
-    Object.defineProperty(entity, property, {
-        enumerable: true,
-        get: function () {
-            return collection;
-        },
-        set: function () {
-            const message = entity.type ? `Cannot set collection ${property} on type ${entity.type}!` : `Cannot set collection ${property}!`;
-            throw new Error(message);
-        }
-    });
-
-    if (_entityCollections.indexOf(property) > -1) {
-        Object.defineProperty(collection, 'add', {
-            writable: true,
-            value: collection.add.proxy(pushEntity)
-        });
-    }
-}
-
 function loadPictureFromDescription (entity: any, description: string): void {
     const parser = new DOMParser();
     const htmlDoc = parser.parseFromString(description, 'text/html');
@@ -367,15 +372,25 @@ function loadPictureFromDescription (entity: any, description: string): void {
 }
 
 function getEntityKey(entity: object): string {
-    return Object.getOwnPropertyNames(entity).sort().map(p => {
+    return Object.getOwnPropertyNames(entity).sort((a, b) => a.localeCompare(b)).map(p => {
         const value = entity[p];
         const type = typeof value;
+        let text: string;
         
-        return p === 'description' ? '' 
-            : Array.isArray(value) ? ''
-            : type === 'object' ? p.toString() 
-            : type === 'function' ?  getId(entity[p]) 
-            : type !== "undefined" ? p.toString() + '|' + entity[p].toString() : '';
+        if (p === 'description' || Array.isArray(value)) {
+            text = undefined;
+        } 
+        else if (type === 'object') {
+            text = p.toString();
+        } 
+        else if (type === 'function') {
+            text =  getId(entity[p]);
+        }
+        else if (type !== "undefined") {
+            text = p.toString() + '|' + entity[p].toString();
+        }
+        
+        return text;
     }).filter(e => e).join('|');
 }
 
@@ -406,7 +421,7 @@ function setReadOnlyLocationProperties(location: ILocation) {
     Object.defineProperty(location, 'activeActions', {
         get: function () {
             return location.actions
-                .filter(([k, v]) => { return v.status !== ActionStatus.Unavailable; })
+                .filter(([_, v]) => { return v.status !== ActionStatus.Unavailable; })
                 .map(([k, v]) => {
                     v.id = k;
                     return v;
@@ -435,7 +450,7 @@ function setReadOnlyCharacterProperties(party: IParty) {
     });
 }
 
-function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEquipment) => boolean), item, equipment) {
+function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEquipment) => boolean), item: IItem, equipment: {}) {
     const canUse = (typeof flagOrFunction === "function") ? flagOrFunction(item, equipment) : flagOrFunction;
 
     if (canUse && !item.use) {
@@ -453,7 +468,7 @@ function compileCombinations(entry: ICombinable) {
 
         entry.combinations.combine.forEach((combine: ICombine<ICombinable>) => {
             const compiled = combine;
-            (<any>compiled).tool = compiled.tool && (compiled.tool.name);
+            (<any>compiled).tool = compiled.tool?.name;
             combines.push(compiled);
         });
 
@@ -463,7 +478,7 @@ function compileCombinations(entry: ICombinable) {
     }
 }
 
-function pushEntity(originalScope, originalFunction, entity) {
+function pushEntity(originalScope: any, originalFunction: any, entity: any) {
     entity = typeof entity === 'function' ? entity() : entity;
 
     if (!entity.id && entity.name) {
