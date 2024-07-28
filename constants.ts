@@ -6,4 +6,5 @@ export const StartNodeProperty: string = 'startNode';
 export const ObjectType: string = 'object';
 export const StringType: string = 'string';
 export const FunctionType: string = 'function';
+export const UndefinedType: string = 'undefined';
 

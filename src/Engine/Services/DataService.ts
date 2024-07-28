@@ -1,19 +1,24 @@
-﻿import { DataKeys } from '../DataKeys';
-import { isEmpty } from '../utilities';
-import { setReadOnlyProperties, GetRegisteredEntities } from '../ObjectConstructors';
-import { IDataService } from '../Interfaces/services/dataService';
-import { ILocalStorageService } from '../Interfaces/services/localStorageService';
-import { IDataSerializer } from 'storyScript/Interfaces/services/dataSerializer';
-import { IDataSynchronizer } from 'storyScript/Interfaces/services/dataSynchronizer';
+﻿import {DataKeys} from '../DataKeys';
+import {isEmpty} from '../utilities';
+import {setReadOnlyProperties} from '../ObjectConstructors';
+import {IDataService} from '../Interfaces/services/dataService';
+import {ILocalStorageService} from '../Interfaces/services/localStorageService';
+import {IDataSerializer} from 'storyScript/Interfaces/services/dataSerializer';
+import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronizer';
 
 export class DataService implements IDataService {
 
-    constructor(private _localStorageService: ILocalStorageService, private serializer: IDataSerializer, private synchronizer: IDataSynchronizer, private _gameNameSpace: string) {
+    constructor(
+        private _localStorageService: ILocalStorageService,
+        private serializer: IDataSerializer,
+        private synchronizer: IDataSynchronizer,
+        private _pristineEntities: Record<string, Record<string, any>>,
+        private _gameNameSpace: string) {
     }
-    
+
     save = <T>(key: string, value: T): void => {
-        const clone = this.serializer.createSerializableClone(value, GetRegisteredEntities());
-        this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
+        const clone = this.serializer.createSerializableClone(value);
+        this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({data: clone}));
     }
 
     load = <T>(key: string): T => {
@@ -26,25 +31,19 @@ export class DataService implements IDataService {
                 if (isEmpty(data)) {
                     return null;
                 }
-                
-                const pristineEntities = GetRegisteredEntities();
 
-                if (Array.isArray(data) && data[0]?.type && data[0]?.id) {
-                    this.serializer.restoreObjects(data);
-                    this.synchronizer.updateModifiedEntities(data, pristineEntities);
-                }
-                else {
-                    const result = this.serializer.restoreObjects(data);
-                    this.synchronizer.updateModifiedEntity(result, result, pristineEntities);
-                }
-                
+                const result = this.serializer.restoreObjects(data);
+
+                // When loading the game world, pass in the pristine locations as an array. We need this to
+                // loop over all locations as we don't use a container entity.
+                const pristineEntity = key === DataKeys.WORLD ? Object.values(this._pristineEntities['locations']) : undefined;
+                this.synchronizer.synchronizeEntityData(result, pristineEntity);
                 setReadOnlyProperties(key, data);
                 return data;
             }
 
             return null;
-        }
-        catch (exception: any) {
+        } catch (exception: any) {
             console.log('No data loaded for key ' + key + '. Error: ' + exception.message);
         }
 

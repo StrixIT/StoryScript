@@ -1,5 +1,4 @@
 export interface IDataSerializer {
-    createSerializableClone(values: any, pristineValues: Record<string, Record<string, any>>): any;
-
+    createSerializableClone(values: any, clone?: any): any;
     restoreObjects (loaded: any): any;
 }

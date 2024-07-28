@@ -13,9 +13,11 @@ import {
 } from "../../../constants.ts";
 
 export class DataSerializer implements IDataSerializer {
-
-    createSerializableClone = (original: any, pristineValues: Record<string, Record<string, any>>, clone?: any): any => {
-        return this.buildStructureForSerialization(original, clone, undefined, pristineValues);
+    constructor(private _pristineEntities: Record<string, Record<string, any>>) {
+    }
+    
+    createSerializableClone = (original: any, clone?: any): any => {
+        return this.buildStructureForSerialization(original, clone, undefined);
     }
 
     restoreObjects = (
@@ -42,7 +44,7 @@ export class DataSerializer implements IDataSerializer {
         return loaded;
     }
 
-    private buildStructureForSerialization = (original: any, clone: any, pristine: any, pristineValues: Record<string, Record<string, any>>): any => {
+    private buildStructureForSerialization = (original: any, clone: any, pristine: any): any => {
         clone ??= this.createClone(original);
 
         if (clone == original) {
@@ -58,7 +60,7 @@ export class DataSerializer implements IDataSerializer {
             let pristineValue: any;
 
             if (original.type && original.id) {
-                pristine = pristineValues[getPlural(original.type)]?.[original.id];
+                pristine = this._pristineEntities[getPlural(original.type)]?.[original.id];
             }
 
             pristineValue = pristine?.[key];
@@ -67,7 +69,7 @@ export class DataSerializer implements IDataSerializer {
             // which equipment slots are available.
             if (originalValue === null) {
                 clone[key] = null;
-                return true;
+                continue;
             }
 
             if (this.skipProperty(original, originalValue, key)) {
@@ -78,7 +80,7 @@ export class DataSerializer implements IDataSerializer {
                 originalValue = original[key].withDeleted();
             }
 
-            this.getClonedValue({clone, key, original, originalValue, pristine, pristineValue, pristineValues});
+            this.getClonedValue({clone, key, original, originalValue, pristine, pristineValue});
         }
 
         return clone;
@@ -151,14 +153,20 @@ export class DataSerializer implements IDataSerializer {
                 data.clone[data.key] = {};
             }
 
-            this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue, data.pristineValues);
-        } else if (typeof data.originalValue === FunctionType && !data.originalValue.isProxy && data.originalValue.toString() !== data.pristineValue?.toString()) {
-            data.clone[data.key] = serializeFunction(data.originalValue);
+            this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue);
+            return;
+        }
+        
+        if (typeof data.originalValue === FunctionType) {
+            if (!data.originalValue.isProxy && data.originalValue.toString() !== data.pristineValue?.toString()) {
+                data.clone[data.key] = serializeFunction(data.originalValue);
+            }
+            return;
         }
 
-            // Store only values that are different from the pristine value, values that are needed to create a
+        // Store only values that are different from the pristine value, values that are needed to create a
         // traversable world structure, and the key values of deleted array records.
-        else if (data.originalValue != data.pristineValue || isKeyProperty(data.pristine, data.key) || data.original[RuntimeProperties.Deleted] === true) {
+        if (data.originalValue != data.pristineValue || isKeyProperty(data.pristine, data.key) || data.original[RuntimeProperties.Deleted] === true) {
             data.clone[data.key] = data.originalValue;
         }
     }
@@ -185,8 +193,7 @@ export class DataSerializer implements IDataSerializer {
             original: data.originalValue,
             originalValue: data.originalValue[1],
             pristine: match,
-            pristineValue: match?.[1],
-            pristineValues: data.pristineValues
+            pristineValue: match?.[1]
         });
 
         return true;
@@ -198,7 +205,7 @@ export class DataSerializer implements IDataSerializer {
         }
 
         data.clone[data.key] = [];
-        this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue, data.pristineValues);
+        this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue);
 
         const additionalArrayProperties = Object.keys(data.originalValue).filter(v => {
             let isAdditionalProperty = isNaN(parseInt(v));
@@ -223,8 +230,7 @@ export class DataSerializer implements IDataSerializer {
                 original: data.originalValue,
                 originalValue: data.originalValue[p],
                 pristine: data.pristine,
-                pristineValue: data.pristineValue,
-                pristineValues: data.pristineValues
+                pristineValue: data.pristineValue
             });
         });
 

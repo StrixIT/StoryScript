@@ -81,6 +81,38 @@ export class LocationService implements ILocationService {
         }
     }
 
+    initDestinations = (location: ICompiledLocation): void => {
+        // Add a proxy to the destination collection add and delete functions, to replace the target function pointers
+        // with the target id when adding or deleting destinations at runtime.
+        location.destinations.add = location.destinations.add.proxy(this.addDestination, this._game);
+        location.destinations.delete = location.destinations.delete.proxy(this.addDestination, this._game);
+
+        Object.defineProperty(location, 'activeDestinations', {
+            get: function () {
+                return location.destinations.filter(e => { return !e.inactive; });
+            }
+        });
+
+        let selector = location.descriptionSelector;
+
+        Object.defineProperty(location, 'descriptionSelector', {
+            enumerable: true,
+            get: () => selector,
+            set: (value) => {
+                selector = value;
+                this.selectLocationDescription(this._game);
+            }
+        });
+    }
+
+    setDestinations = (location: ICompiledLocation): void => {
+        if (location.destinations) {
+            location.destinations.forEach(destination => {
+                setDestination(destination);
+            });
+        }
+    }
+
     private switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
         var presentLocation: ICompiledLocation;
 
@@ -162,30 +194,6 @@ export class LocationService implements ILocationService {
         return locations;
     }
 
-    private initDestinations = (location: ICompiledLocation): void => {
-        // Add a proxy to the destination collection add and delete functions, to replace the target function pointers
-        // with the target id when adding or deleting destinations at runtime.
-        location.destinations.add = location.destinations.add.proxy(this.addDestination, this._game);
-        location.destinations.delete = location.destinations.delete.proxy(this.addDestination, this._game);
-
-        Object.defineProperty(location, 'activeDestinations', {
-            get: function () {
-                return location.destinations.filter(e => { return !e.inactive; });
-            }
-        });
-
-        var selector = location.descriptionSelector;
-
-        Object.defineProperty(location, 'descriptionSelector', {
-            enumerable: true,
-            get: () => selector,
-            set: (value) => {
-                selector = value;
-                this.selectLocationDescription(this._game);
-            }
-        });
-    }
-
     private initTrade = (game: IGame): void => {
         if (game.currentLocation.trade?.length > 0) {
             game.currentLocation.trade.forEach(t => {
@@ -213,14 +221,6 @@ export class LocationService implements ILocationService {
             var location = <ICompiledLocation>definition();
             this.setDestinations(location);
             compiledLocations.push(location);
-        }
-    }
-
-    private setDestinations = (location: ICompiledLocation): void => {
-        if (location.destinations) {
-            location.destinations.forEach(destination => {
-                setDestination(destination);
-            });
         }
     }
 

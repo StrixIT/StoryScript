@@ -443,7 +443,12 @@ function setReadOnlyLocationProperties(location: ILocation) {
 
     Object.defineProperty(location, 'activeActions', {
         get: function () {
-            return location.actions.filter(([k, v]) => { return v.status !== ActionStatus.Unavailable; }).map(([_, v]) => v);
+            return location.actions
+                .filter(([k, v]) => { return v.status !== ActionStatus.Unavailable; })
+                .map(([k, v]) => {
+                    v.id = k;
+                    return v;
+                });
         }
     });
 }

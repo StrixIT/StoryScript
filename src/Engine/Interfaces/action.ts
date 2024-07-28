@@ -7,6 +7,11 @@ import { ActionStatus } from './enumerations/actionStatus';
  */
 export interface IAction {
     /**
+     * The id of the action, set at runtime.
+     */
+    id?: string;
+
+    /**
      * The text shown for this action (e.g. 'Search').
      */
     text?: string;

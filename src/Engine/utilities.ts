@@ -33,7 +33,7 @@ export function getId(id: Function | string) {
 
 export function isDataRecord(item: any[]): boolean{
     // Check for either object or function values, as tuples are used to store actions as objects and functions now.
-    return item.length === 2 && typeof(item[0]) === StringType && (typeof(item[1]) === ObjectType || typeof(item[1]) === FunctionType);
+    return item?.length && item.length === 2 && typeof(item[0]) === StringType && (typeof(item[1]) === ObjectType || typeof(item[1]) === FunctionType);
 }
 
 export function getKeyPropertyNames(item: any): { first: string, second: string } {
