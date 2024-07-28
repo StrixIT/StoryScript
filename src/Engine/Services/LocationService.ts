@@ -14,7 +14,6 @@ import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
 import { ActionType } from '../Interfaces/enumerations/actionType';
 import { getParsedDocument, checkAutoplay } from './sharedFunctions';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
 
 export class LocationService implements ILocationService {
     private pristineLocations: ICollection<ICompiledLocation>;
@@ -66,13 +65,13 @@ export class LocationService implements ILocationService {
     }
 
     loadLocationDescriptions = (game: IGame): void => {
-        if (!game.currentLocation[RuntimeProperties.Descriptions]) {
+        if (!game.currentLocation.descriptions) {
             const descriptionKey = `location_${game.currentLocation.id}`;
-            game.currentLocation[RuntimeProperties.Description] ??= this._descriptions.get(descriptionKey);
+            game.currentLocation.description ??= this._descriptions.get(descriptionKey);
 
-            if (game.currentLocation[RuntimeProperties.Description]) {
-                this.processVisualFeatures(getParsedDocument('visual-features', game.currentLocation[RuntimeProperties.Description])[0], game);
-                this.processDescriptions(getParsedDocument(RuntimeProperties.Description, game.currentLocation[RuntimeProperties.Description]), game);
+            if (game.currentLocation.description) {
+                this.processVisualFeatures(getParsedDocument('visual-features', game.currentLocation.description)[0], game);
+                this.processDescriptions(getParsedDocument('description', game.currentLocation.description), game);
             }
         }
 
@@ -142,8 +141,8 @@ export class LocationService implements ILocationService {
 
             // remove the return message from the current location destinations.
             game.currentLocation.destinations.forEach(destination => {
-                if ((<any>destination)[RuntimeProperties.IsPreviousLocation]) {
-                    (<any>destination)[RuntimeProperties.IsPreviousLocation] = false;
+                if ((<any>destination).isPreviousLocation) {
+                    (<any>destination).isPreviousLocation = false;
                 }
             });
 
@@ -153,7 +152,7 @@ export class LocationService implements ILocationService {
             // if that is the case.
             game.currentLocation.destinations.forEach(destination => {
                 if (game.previousLocation && destination.target && (<any>destination.target) == game.previousLocation.id) {
-                    (<any>destination)[RuntimeProperties.IsPreviousLocation] = true;
+                    (<any>destination).isPreviousLocation = true;
                 }
 
                 addKeyAction(game, destination);
@@ -162,8 +161,8 @@ export class LocationService implements ILocationService {
     }
 
     private markCurrentLocationAsVisited = (game: IGame): void => {
-        if (!game.currentLocation[RuntimeProperties.HasVisited]) {
-            game.currentLocation[RuntimeProperties.HasVisited] = true;
+        if (!game.currentLocation.hasVisited) {
+            game.currentLocation.hasVisited = true;
             game.statistics.LocationsVisited = game.statistics.LocationsVisited || 0;
             game.statistics.LocationsVisited += 1;
         }
@@ -254,28 +253,28 @@ export class LocationService implements ILocationService {
             return;
         }
 
-        game.currentLocation[RuntimeProperties.Descriptions] = {};
+        game.currentLocation.descriptions = {};
 
         for (var i = 0; i < descriptionNodes.length; i++) {
             var node = descriptionNodes[i];
             var nameAttribute = node.attributes['name']?.nodeValue;
             var name = nameAttribute ? nameAttribute : 'default';
 
-            if (game.currentLocation[RuntimeProperties.Descriptions][name]) {
+            if (game.currentLocation.descriptions[name]) {
                 throw new Error('There is already a description with name ' + name + ' for location ' + game.currentLocation.id + '.');
             }
 
-            game.currentLocation[RuntimeProperties.Descriptions][name] = parseGameProperties(node.innerHTML, this._game);
+            game.currentLocation.descriptions[name] = parseGameProperties(node.innerHTML, this._game);
         }      
     }
 
     private processTextFeatures = (game: IGame): void => {
-        if (!game.currentLocation[RuntimeProperties.Description]) {
+        if (!game.currentLocation.description) {
             return;
         }
 
         var parser = new DOMParser();
-        var htmlDoc = parser.parseFromString(game.currentLocation[RuntimeProperties.Description], 'text/html');
+        var htmlDoc = parser.parseFromString(game.currentLocation.description, 'text/html');
         var featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
         for (var i = 0; i < featureNodes.length; i++) {
@@ -289,12 +288,12 @@ export class LocationService implements ILocationService {
                 node.innerHTML = '';
             }
             else {
-                feature[RuntimeProperties.Description] = node.innerHTML || feature[RuntimeProperties.Description];
-                node.innerHTML = addHtmlSpaces(feature[RuntimeProperties.Description]);
+                feature.description = node.innerHTML || feature.description;
+                node.innerHTML = addHtmlSpaces(feature.description);
             }
         }
         
-        game.currentLocation[RuntimeProperties.Description] = htmlDoc.body.innerHTML;
+        game.currentLocation.description = htmlDoc.body.innerHTML;
     }
 
     private processVisualFeatures = (visualFeatureNode: Element, game: IGame): void => {
@@ -309,9 +308,9 @@ export class LocationService implements ILocationService {
                     const feature = this.getBasicFeatureData(game, node);
 
                     if (feature) {
-                        feature.coords = feature.coords || node.attributes['coords'] && node.attributes['coords'].nodeValue;
-                        feature.shape = feature.shape || node.attributes['shape'] && node.attributes['shape'].nodeValue;
-                        feature[RuntimeProperties.Picture] = feature[RuntimeProperties.Picture] || node.attributes['img'] && node.attributes['img'].nodeValue;
+                        feature.coords ??= node.attributes['coords']?.nodeValue;
+                        feature.shape ??= node.attributes['shape']?.nodeValue;
+                        feature.picture ??= node.attributes['img']?.nodeValue;
                     }
                 }
             }
@@ -332,11 +331,11 @@ export class LocationService implements ILocationService {
         // This is a workaround to restore the description for features that originally have only a placeholder in the 
         // location description and are added later to the location's feature collection. As descriptions are not saved,
         // the description is lost when the browser refreshes.
-        if (feature && !feature[RuntimeProperties.Description]) {
+        if (feature && !feature.description) {
             const pristineFeature = game.definitions.features.get(feature.id)?.();
 
-            if (pristineFeature && pristineFeature[RuntimeProperties.Description]) {
-                feature[RuntimeProperties.Description] = pristineFeature[RuntimeProperties.Description];
+            if (pristineFeature && pristineFeature.description) {
+                feature.description = pristineFeature.description;
 
             }
         }
@@ -347,8 +346,8 @@ export class LocationService implements ILocationService {
     private selectLocationDescription = (game: IGame): boolean => {
         var selector = null;
 
-        if (!game.currentLocation[RuntimeProperties.Descriptions]) {
-            game.currentLocation[RuntimeProperties.Description] = null;
+        if (!game.currentLocation.descriptions) {
+            game.currentLocation.description = null;
             return false;
         }
 
@@ -357,16 +356,16 @@ export class LocationService implements ILocationService {
         if (game.currentLocation.descriptionSelector) {
             // Use this casting to allow the description selector to be a function or a string.
             selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
-            game.currentLocation[RuntimeProperties.Description] = game.currentLocation[RuntimeProperties.Descriptions][selector];
+            game.currentLocation.description = game.currentLocation.descriptions[selector];
         }
         else if (this._rules.exploration && this._rules.exploration.descriptionSelector && (selector = this._rules.exploration.descriptionSelector(game))) {
-            game.currentLocation[RuntimeProperties.Description] = game.currentLocation[RuntimeProperties.Descriptions][selector] || game.currentLocation[RuntimeProperties.Descriptions]['default'] || game.currentLocation[RuntimeProperties.Descriptions][0];
+            game.currentLocation.description = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
         }
         else {
-            game.currentLocation[RuntimeProperties.Description] = game.currentLocation[RuntimeProperties.Descriptions]['default'] || game.currentLocation[RuntimeProperties.Descriptions][Object.keys(game.currentLocation[RuntimeProperties.Descriptions])[0]];
+            game.currentLocation.description = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
         }
 
-        game.currentLocation[RuntimeProperties.Description] = checkAutoplay(this._dataService, game.currentLocation[RuntimeProperties.Description]);
+        game.currentLocation.description = checkAutoplay(this._dataService, game.currentLocation.description);
 
         return true;
     }

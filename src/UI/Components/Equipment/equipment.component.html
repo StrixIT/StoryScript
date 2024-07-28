@@ -1,4 +1,4 @@
-<div class="box-container" class="character-equipment" *ngIf="showEquipment()">
+<div class="character-equipment box-container" *ngIf="showEquipment()">
     <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
     <div class="equipment-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
         <div class="row" *ngIf="isSlotUsed('head')">

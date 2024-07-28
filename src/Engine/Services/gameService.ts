@@ -25,7 +25,7 @@ import { ICombinable } from '../Interfaces/combinations/combinable';
 import { createHash } from '../globals';
 import { IFeature } from '../Interfaces/feature';
 import { compare, selectStateListEntry } from 'storyScript/utilities';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
+import { StateProperties } from 'storyScript/stateProperties.ts';
 import { IParty } from '../Interfaces/party';
 import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
 import { ICombatSetup } from '../Interfaces/combatSetup';
@@ -230,12 +230,12 @@ export class GameService implements IGameService {
     getSaveGames = (): string[] => this._dataService.getSaveKeys();
 
     hasDescription = (entity: { id?: string, description?: string }): boolean => {
-        if (!entity[RuntimeProperties.Description]) {
+        if (!entity.description) {
             return false;
         }
 
         if (!this._parsedDescriptions.get(entity.id)) {
-            var descriptionNode = getParsedDocument(RuntimeProperties.Description, entity[RuntimeProperties.Description])[0];
+            const descriptionNode = getParsedDocument('description', entity.description)[0];
             this._parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
         }
 
@@ -620,8 +620,8 @@ export class GameService implements IGameService {
             set: (value: { title: string, type: string, item: IFeature }) => {
                 currentDescription = value;
 
-                if (currentDescription.item[RuntimeProperties.Description]) {
-                    currentDescription.item[RuntimeProperties.Description] = checkAutoplay(this._dataService, getParsedDocument(RuntimeProperties.Description, currentDescription.item[RuntimeProperties.Description], true)[0].innerHTML);
+                if (currentDescription.item.description) {
+                    currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
                 }
 
                 this._game.playState = PlayState.Description;
@@ -634,8 +634,8 @@ export class GameService implements IGameService {
         this._game.combatLog = [];
 
         this._game.logToLocationLog = (message: string) => {
-            this._game.currentLocation[RuntimeProperties.Log] = this._game.currentLocation[RuntimeProperties.Log] || [];
-            this._game.currentLocation[RuntimeProperties.Log].push(message);
+            this._game.currentLocation.log ??= [];
+            this._game.currentLocation.log.push(message);
         }
 
         this._game.logToActionLog = (message: string) => {

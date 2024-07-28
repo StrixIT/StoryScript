@@ -13,8 +13,7 @@ import { ICombinable } from './Interfaces/combinations/combinable';
 import { ICombine } from './Interfaces/combinations/combine';
 import { IEquipment } from './Interfaces/equipment';
 import { ActionStatus, IParty } from './Interfaces/storyScript';
-import { RuntimeProperties } from './runtimeProperties';
-import { IEntity } from './Interfaces/entity';
+import { StateProperties } from './stateProperties.ts';
 import { ISaveGame } from './Interfaces/saveGame';
 
 // This flag indicates whether the registration phase is active.
@@ -329,7 +328,7 @@ function EnemyBase<T extends IEnemy>(entity: T, type: string, id?: string): T {
 
 function CreateObject<T>(entity: T, type: string, id?: string)
 {
-    var compiledEntity: { id: string, name: string, type: string };
+    let compiledEntity: { id: string, name: string, type: string, description?: string };
     
     if (typeof entity === 'function') {
         id = getId(entity);
@@ -349,16 +348,15 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     // Add the type to the object so we can distinguish between them in the combine functionality.
     compiledEntity.type = type;
     
-    var entityKey = getEntityKey(compiledEntity);
+    const entityKey = getEntityKey(compiledEntity);
     _currentEntityKey = entityKey;
 
-    var inlineConflict = false;
+    let inlineConflict = false;
 
     if (id) {
         _registeredIds.forEach((v, k) => {
             if (v === id && entityKey !== k) {
                 inlineConflict = true;
-                return;
             }
         });
 
@@ -367,14 +365,14 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         }
     }
 
-    var registeredId = _registeredIds.get(entityKey);
+    const registeredId = _registeredIds.get(entityKey);
 
     if (id || registeredId) {
         compiledEntity.id = id || registeredId;
         const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
 
-        if (compiledEntity[RuntimeProperties.Description] && !_registeredDescriptions.get(descriptionKey)) {
-            _registeredDescriptions.set(descriptionKey, entity[RuntimeProperties.Description])
+        if (compiledEntity.description && !_registeredDescriptions.get(descriptionKey)) {
+            _registeredDescriptions.set(descriptionKey, compiledEntity.description)
         }     
     }
 
@@ -387,24 +385,24 @@ function CreateObject<T>(entity: T, type: string, id?: string)
     }
 
     const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
-    const description = _registeredDescriptions.get(descriptionKey);
+    const registeredDescription = _registeredDescriptions.get(descriptionKey);
 
-    if (description) {
-        loadPictureFromDescription(compiledEntity, description);
+    if (registeredDescription) {
+        loadPictureFromDescription(compiledEntity, registeredDescription);
     }
 
     return <T><unknown>compiledEntity;
 }
 
 
-function loadPictureFromDescription (entity: IEntity, description: string): void {
-    var parser = new DOMParser();
-    var htmlDoc = parser.parseFromString(description, 'text/html');
-    var pictureElement = htmlDoc.getElementsByClassName(RuntimeProperties.Picture)[0];
-    var pictureSrc = pictureElement && pictureElement.getAttribute('src');
+function loadPictureFromDescription (entity: any, description: string): void {
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(description, 'text/html');
+    const pictureElement = htmlDoc.getElementsByClassName('picture')[0];
+    const pictureSrc = pictureElement?.getAttribute('src');
 
     if (pictureSrc) {
-        entity[RuntimeProperties.Picture] = pictureSrc;
+        entity.picture = pictureSrc;
     }
 }
 

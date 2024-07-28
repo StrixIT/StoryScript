@@ -1,5 +1,5 @@
 <div>
-    <div class="box-container">
+    <div class="box-container" *ngIf="party.characters.length > 1">
         <div class="box-title">{{party.name}}</div>
         <ul class="list-unstyled">
             <li>{{ texts.currency }} {{ party.currency }}</li>

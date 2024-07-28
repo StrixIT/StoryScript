@@ -1,4 +1,4 @@
-﻿import { RuntimeProperties } from "./runtimeProperties";
+﻿import { StateProperties } from "./stateProperties.ts";
 import { getId, getKeyPropertyNames, propertyMatch } from "./utilities";
 
 const deletedCollection: string = '_deleted';
@@ -117,7 +117,7 @@ export function addArrayExtensions() {
                 }
 
                 // Don't return deleted properties.
-                return result && result[RuntimeProperties.Deleted] ? undefined : result;
+                return result && result[StateProperties.Deleted] ? undefined : result;
             }
         });
     }
@@ -126,7 +126,7 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'all', {
             enumerable: false,
             value: function (id: any) {
-                return find(id, this, false).filter(r => !r[RuntimeProperties.Deleted]);
+                return find(id, this, false).filter(r => !r[StateProperties.Deleted]);
             }
         });
     }
@@ -148,7 +148,7 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'removeDeleted', {
             enumerable: false,
             value: function () {
-                const deleted = this.filter(e => e[RuntimeProperties.Deleted]);
+                const deleted = this.filter(e => e[StateProperties.Deleted]);
 
                 if (deleted.length > 0) {
                     deleted.forEach(d =>{
@@ -178,23 +178,23 @@ export function addArrayExtensions() {
                     existing = withDeleted.indexOf(entity) > -1 ? entity : null;
 
                     if (!existing) {
-                        existing = find(entity, withDeleted, true).sort((a, b) => a[RuntimeProperties.Deleted] ? -1 : 1)[0];
+                        existing = find(entity, withDeleted, true).sort((a, b) => a[StateProperties.Deleted] ? -1 : 1)[0];
                     }
                 }
 
                 // If an existing delete record is found, the item was originally removed from this array.
                 // Remove the deleted record and the added flag so the original situation is restored.
                 // Otherwise, add the added flag.
-                if (existing && existing[RuntimeProperties.Deleted]) {
+                if (existing && existing[StateProperties.Deleted]) {
                     const deletedItems = this[deletedCollection];
 
                     if (deletedItems && deletedItems.indexOf(existing) > -1) {
                         deletedItems.splice(deletedItems.indexOf(existing), 1);
                     }
 
-                    delete entity[RuntimeProperties.Added];
+                    delete entity[StateProperties.Added];
                 } else {
-                    entity[RuntimeProperties.Added] = true;
+                    entity[StateProperties.Added] = true;
                 }
 
                 Array.prototype.push.call(this, entity);
@@ -246,10 +246,10 @@ export function addArrayExtensions() {
                 // this array.
                 let entry = collection.remove(item);
 
-                if (entry && !entry[RuntimeProperties.Added]) {
+                if (entry && !entry[StateProperties.Added]) {
                     collection[deletedCollection] = collection[deletedCollection] || [];
                     
-                    if (entry[RuntimeProperties.Deleted])
+                    if (entry[StateProperties.Deleted])
                     {
                         collection[deletedCollection].push(entry);
                         return;
@@ -260,7 +260,7 @@ export function addArrayExtensions() {
                         first && second ? { [first]: entry[first], [second]: entry[second] } :
                         first ? { [first]: entry[first] } : { [second]: entry[second] };
                     
-                    collection[deletedCollection].push({ ...keyProps, [RuntimeProperties.Deleted]: true });
+                    collection[deletedCollection].push({ ...keyProps, [StateProperties.Deleted]: true });
                 }
             }
         });

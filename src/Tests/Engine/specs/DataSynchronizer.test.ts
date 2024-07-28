@@ -1,6 +1,6 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
-import {RuntimeProperties} from "storyScript/runtimeProperties.ts";
+import {StateProperties} from "storyScript/stateProperties.ts";
 import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit";
 import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots";
 import {RunGame} from '../../../Games/MyRolePlayingGame/run';
@@ -152,7 +152,7 @@ describe("DataSynchronizer", () => {
         const deletedItem = {id: 'sword'};
         removedItem['type'] = 'item';
         deletedItem['type'] = 'item';
-        deletedItem[RuntimeProperties.Deleted] = true;
+        deletedItem[StateProperties.Deleted] = true;
         const skeleton = <IEnemy>{id: 'bandit', items: [removedItem, deletedItem]};
         skeleton['type'] = 'enemy';
         const bandit = {...Bandit()};
@@ -168,7 +168,7 @@ describe("DataSynchronizer", () => {
     test("should update entities added during runtime", function () {
         const addedItem = {id: 'leatherboots'};
         addedItem['type'] = 'item';
-        addedItem[RuntimeProperties.Added] = true;
+        addedItem[StateProperties.Added] = true;
         const skeleton = <IEnemy>{id: 'bandit', items: [addedItem]};
         skeleton['type'] = 'enemy';
         const bandit = {...Bandit()};
@@ -177,7 +177,7 @@ describe("DataSynchronizer", () => {
 
         expect(skeleton.items).toHaveLength(3);
         const boots = skeleton.items.find(i => i.id === 'leatherboots');
-        expect(boots).toEqual({...LeatherBoots(), [RuntimeProperties.Added]: true});
+        expect(boots).toEqual({...LeatherBoots(), [StateProperties.Added]: true});
     });
 
     test("should populate a location from a location skeleton", function () {

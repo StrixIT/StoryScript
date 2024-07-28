@@ -1,13 +1,12 @@
-﻿import { ICollection } from './collection';
-import { IGame } from './game';
-import { IAction } from './action';
-import { IFeatureCollection } from './featureCollection';
-import { IEnemy } from './enemy';
-import { IPerson } from './person';
-import { IItem } from './item';
-import { IDestination } from './destination';
-import { ITrade } from './trade';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
+﻿import {ICollection} from './collection';
+import {IGame} from './game';
+import {IAction} from './action';
+import {IFeatureCollection} from './featureCollection';
+import {IEnemy} from './enemy';
+import {IPerson} from './person';
+import {IItem} from './item';
+import {IDestination} from './destination';
+import {ITrade} from './trade';
 
 /**
  * The base properties for a part of the game world. A StoryScript game world is made up of a collection of locations.
@@ -21,14 +20,14 @@ export interface ILocation {
     /**
      * The location description html file.
      */
-    [RuntimeProperties.Description]: string;
+    description: string;
 
     /**
      * When specified, the functions in this array will be called when the player enters the location.
      * If nothing or false is returned, the function will be removed once it completed. Return true
      * to keep the function and call it every time the player enters the location.
      */
-    enterEvents?:[string, (game: IGame) => void | boolean][];
+    enterEvents?: [string, (game: IGame) => void | boolean][];
 
     /**
      * When specified, the functions in this array will be called when the player leaves the location.

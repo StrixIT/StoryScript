@@ -1,7 +1,7 @@
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer";
 import {initCollection} from "storyScript/ObjectConstructors";
 import {parseFunction, serializeFunction} from "storyScript/globals";
-import {RuntimeProperties} from "storyScript/runtimeProperties";
+import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
 import {getPlural, isDataRecord, isKeyProperty} from "storyScript/utilities";
 import {
@@ -94,7 +94,7 @@ export class DataSerializer implements IDataSerializer {
         initCollection(loaded, key, true);
         this.restoreObjects(value);
 
-        const entriesToDelete = value.filter(e => e?.[RuntimeProperties.Deleted]);
+        const entriesToDelete = value.filter(e => e?.[StateProperties.Deleted]);
 
         entriesToDelete.forEach(e => {
             value.delete(e);
@@ -132,8 +132,8 @@ export class DataSerializer implements IDataSerializer {
             || originalValue.isProxy
             // Exclude descriptions and conversation nodes from the save data, these are not present on the pristine data.
             // Use an additional property to identify them, as their names are quite generic.
-            || (original[IdProperty] && (key === RuntimeProperties.Description || key === RuntimeProperties.Descriptions))
-            || original[StartNodeProperty] && key === RuntimeProperties.Nodes
+            || (original[IdProperty] && (key === 'description' || key === 'descriptions'))
+            || original[StartNodeProperty] && key === 'nodes'
         );
     }
 
@@ -166,7 +166,7 @@ export class DataSerializer implements IDataSerializer {
 
         // Store only values that are different from the pristine value, values that are needed to create a
         // traversable world structure, and the key values of deleted array records.
-        if (data.originalValue != data.pristineValue || isKeyProperty(data.pristine, data.key) || data.original[RuntimeProperties.Deleted] === true) {
+        if (data.originalValue != data.pristineValue || isKeyProperty(data.pristine, data.key) || data.original[StateProperties.Deleted] === true) {
             data.clone[data.key] = data.originalValue;
         }
     }
@@ -179,9 +179,9 @@ export class DataSerializer implements IDataSerializer {
         data.clone[data.key] = [];
         const match = data.pristine?.find((p: any[]) => p[0] === data.originalValue[0]);
 
-        if (!match && data.originalValue[RuntimeProperties.Deleted]) {
+        if (!match && data.originalValue[StateProperties.Deleted]) {
             data.clone[data.key][0] = data.pristineValue[0];
-            data.clone[data.key][RuntimeProperties.Deleted] = true;
+            data.clone[data.key][StateProperties.Deleted] = true;
             return true;
         }
 

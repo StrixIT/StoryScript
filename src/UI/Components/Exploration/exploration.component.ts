@@ -5,7 +5,7 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ObjectFactory } from 'storyScript/ObjectFactory';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
+import { StateProperties } from 'storyScript/stateProperties.ts';
 
 @Component({
     selector: 'exploration',
@@ -46,16 +46,13 @@ export class ExplorationComponent {
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
     executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
-        if (this.game.combinations.tryCombine(barrier))
+        if (this.game.combinations.tryCombine(barrier) || this.game.combinations.activeCombination)
         {
-            return;
-        }
-        else if (this.game.combinations.activeCombination) {
             return;
         }
 
         this._gameService.executeBarrierAction(barrier, action, destination);
     }
 
-    isPreviousLocation = (destination: IDestination): boolean => { return destination[RuntimeProperties.IsPreviousLocation] };
+    isPreviousLocation = (destination: IDestination): boolean => { return (<any>destination).isPreviousLocation };
 }

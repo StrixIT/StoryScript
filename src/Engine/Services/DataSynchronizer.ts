@@ -1,6 +1,5 @@
-import {IEntity} from "storyScript/Interfaces/entity.ts";
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer";
-import {RuntimeProperties} from "storyScript/runtimeProperties";
+import {StateProperties} from "storyScript/stateProperties.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord, propertyMatch} from "storyScript/utilities";
 import {FunctionType, UndefinedType} from "../../../constants.ts";
 
@@ -74,7 +73,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         pristineEntity.forEach((p: any[]) => {
             const match = entity.find((e: any[]) => e[0] === p[0]);
 
-            if (!match || match[RuntimeProperties.Deleted]) {
+            if (!match || match[StateProperties.Deleted]) {
                 return;
             } else if (typeof (p[1]) === FunctionType) {
                 match[1] = p[1];
@@ -90,15 +89,15 @@ export class DataSynchronizer implements IDataSynchronizer {
     private updateArray(
         entity: any[],
         pristineEntity: any[],
-        parentEntity?: IEntity,
-        pristineParentEntity?: IEntity,
+        parentEntity?: any,
+        pristineParentEntity?: any,
         parentProperty?: string
     ): boolean {
         if (!Array.isArray(entity) || !Array.isArray(pristineEntity) || (entity.length == 0 && pristineEntity.length == 0)) {
             return false;
         }
 
-        const existingItems = entity.filter(e => e[RuntimeProperties.Added] && !pristineEntity.find(p => propertyMatch(e, p)));
+        const existingItems = entity.filter(e => e[StateProperties.Added] && !pristineEntity.find(p => propertyMatch(e, p)));
         const matchedItems = pristineEntity.filter(e => entity.find(p => propertyMatch(e, p)));
         const itemsToAdd = pristineEntity.filter(e => !entity.find(p => propertyMatch(e, p)));
 
@@ -107,9 +106,9 @@ export class DataSynchronizer implements IDataSynchronizer {
 
             // In case of an entity with the 'added' flag, 'i' is a skeleton value. Set the pristine entity to 'undefined' 
             // so it will be looked up again later on.
-            const pristineValue = i[RuntimeProperties.Added] && this.isEntity(i) ? undefined : i;
+            const pristineValue = i[StateProperties.Added] && this.isEntity(i) ? undefined : i;
 
-            if (!currentValue[RuntimeProperties.Deleted]) {
+            if (!currentValue[StateProperties.Deleted]) {
                 this.synchronizeEntityData(currentValue, pristineValue, parentEntity, pristineParentEntity, parentProperty);
             }
 
@@ -143,12 +142,12 @@ export class DataSynchronizer implements IDataSynchronizer {
         }
     }
 
-    private isEntity = (entity: IEntity): boolean => {
+    private isEntity = (entity: any): boolean => {
         return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
     }
 
     private markEntriesAsDeleted = (item: any[]) => {
-        const itemsToDelete = item.filter(i => i[RuntimeProperties.Deleted]);
+        const itemsToDelete = item.filter(i => i[StateProperties.Deleted]);
         itemsToDelete.forEach(i => item.delete(i));
     }
 
