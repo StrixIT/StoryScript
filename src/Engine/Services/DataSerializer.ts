@@ -1,5 +1,5 @@
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer";
-import {initCollection} from "storyScript/ObjectConstructors";
+import {InitEntityCollection} from "storyScript/ObjectConstructors";
 import {parseFunction, serializeFunction} from "storyScript/globals";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
@@ -91,7 +91,7 @@ export class DataSerializer implements IDataSerializer {
             return false;
         }
 
-        initCollection(loaded, key, true);
+        InitEntityCollection(loaded, key);
         this.restoreObjects(value);
 
         const entriesToDelete = value.filter(e => e?.[StateProperties.Deleted]);

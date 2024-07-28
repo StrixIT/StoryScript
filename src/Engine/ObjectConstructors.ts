@@ -13,11 +13,16 @@ import { ICombinable } from './Interfaces/combinations/combinable';
 import { ICombine } from './Interfaces/combinations/combine';
 import { IEquipment } from './Interfaces/equipment';
 import { ActionStatus, IParty } from './Interfaces/storyScript';
-import { StateProperties } from './stateProperties.ts';
 import { ISaveGame } from './Interfaces/saveGame';
+import {FunctionType} from "../../constants.ts";
 
-// This flag indicates whether the registration phase is active.
-let _registration: boolean = true;
+const _entityCollections: string[] = [
+    'features',
+    'items',
+    'enemies',
+    'persons',
+    'quests'
+];
 
 // This string has the key of the current entity being registered.
 let _currentEntityKey: string = null;
@@ -25,6 +30,7 @@ let _currentEntityKey: string = null;
 // The dictionary containing all registered entity keys and their corresponding ids.
 let _registeredIds: Map<string, string> = new Map<string, string>();
 
+// The dictionary containing all registered entity ids and their corresponding descriptions.
 let _registeredDescriptions: Map<string, string> = new Map<string, string>();
 
 // The object to hold all game entity definitions.
@@ -38,30 +44,22 @@ let _definitions: IDefinitions = {
     quests: []
 };
 
-export interface FunctionCollection {
-    [type: string]: { [id: string]: { function: Function, hash: number } }
-}
-
 const _registeredEntities: Record<string, Record<string, any>> = {};
 
-// The object to hold all game entity functions.
-const _functions: FunctionCollection = {};
-
 export function buildEntities(): void {
-    // Build all entities once to register them with their id.
-    Object.getOwnPropertyNames(_definitions).forEach(p => {
+    const allDefinitions = Object.getOwnPropertyNames(_definitions);
+    
+    // Build all entities once to determine their id.
+    allDefinitions.forEach(p => {
         _definitions[p].forEach((f: Function) => {
             buildEntity(f, getId(f));
         });
     });
 
-    _registration = false;
-
-    // Build all entities again to register their functions.
-    Object.getOwnPropertyNames(_definitions).forEach(p => {
+    // Build all entities again to add ids to nested entities.
+    allDefinitions.forEach(p => {
         _definitions[p].forEach((f: Function) => {
-            const entity = f();
-            registerEntity(entity);
+            registerEntity(f());
         });
     });
 }
@@ -73,7 +71,6 @@ export function GetDefinitions(): IDefinitions {
 export function GetDescriptions(): Map<string, string> { 
     return _registeredDescriptions; 
 }
-
 
 export function GetRegisteredEntities() { 
     return _registeredEntities; 
@@ -129,16 +126,7 @@ export function setReadOnlyProperties(key: string, data: any) {
     }
 }
 
-
-export function initCollection(entity: any, property: string, skipRegistration?: boolean) {
-    const _entityCollections: string[] = [
-        'features',
-        'items',
-        'enemies',
-        'persons',
-        'quests'
-    ];
-
+export function initCollection(entity: any, property: string) {
     const _gameCollections: string[] = _entityCollections.concat([
         'trade',
         'actions',
@@ -155,13 +143,13 @@ export function initCollection(entity: any, property: string, skipRegistration?:
     
     const collection = entity[property] || [];
 
-    if ((property === 'features' || property === 'trade') && entity[property]) {
+    if ((property === 'features' || property === 'trade') && collection.length) {
         // Initialize features that have been declared inline. Check for the existence of a type property to determine
         // whether the object is already initialized. Store the current entity key, as it will be overridden when inline 
         // features are build.
         const locationEntityKey = _currentEntityKey;
 
-        const inlineCollection = (<[]>entity[property]).map((e: { type: string, name: string }) => {
+        const inlineCollection = collection.map((e: { type: string, name: string }) => {
             if (e.type) {
                 return e;
             }
@@ -174,10 +162,8 @@ export function initCollection(entity: any, property: string, skipRegistration?:
 
         inlineCollection.forEach(e => {
             collection.push(e);
-
-            // Do not register entities when rebuilding clones from stored data. They will then appear to be part of the
-            // pristine data used for comparison in the data synchronizer, and removed entities aren't properly detected.
-            if (e.id && !skipRegistration) {
+            
+            if (e.id) {
                 registerEntity(e);
             }
         });
@@ -185,29 +171,7 @@ export function initCollection(entity: any, property: string, skipRegistration?:
         _currentEntityKey = locationEntityKey;
     }
 
-    Object.defineProperty(entity, property, {
-        enumerable: true,
-        get: function () {
-            return collection;
-        },
-        set: function () {
-            var type = entity.type ? entity.type : null;
-            var messageStart = 'Cannot set collection ' + property;
-            var message = type ? messageStart + ' on type ' + type : messageStart + '.';
-            throw new Error(message);
-        }
-    });
-
-    // Set proxy functions so entities are correctly build when passed as functions and
-    // objects added are marked as added.
-    const readOnlyCollection: [] = entity[property];
-
-    if (_entityCollections.indexOf(property) > -1) {
-        Object.defineProperty(readOnlyCollection, 'add', {
-            writable: true,
-            value: readOnlyCollection.add.proxy(pushEntity)
-        });
-    } 
+    InitEntityCollection(entity, property);
 }
 
 export function Register(type: string, entityFunc: Function, testDefinitions?: IDefinitions): IDefinitions {
@@ -224,16 +188,7 @@ export function Register(type: string, entityFunc: Function, testDefinitions?: I
 }
 
 export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
-    // When creating an entity dynamically, make sure we're in registration mode first. Store the
-    // old state so normal object creation is not messed up because of dynamic entities created
-    // during the normal registration phase.
-    var registrationState = _registration;
-    _registration = true;
-
     buildEntity(entityFunction, getIdFromName({ id: '', name: name })?.toLowerCase());
-
-    _registration = registrationState;
-
     return entityFunction();
 }
 
@@ -246,9 +201,9 @@ function registerEntity(entity: any): void {
     } 
 }
 
-function buildEntity(entityFunction: Function, functionName: string): any {
-    _currentEntityKey = null;
-
+function buildEntity(entityFunction: Function, functionName: string) {
+    _currentEntityKey = undefined;
+    
     entityFunction();
 
     if (_currentEntityKey) {
@@ -283,7 +238,7 @@ function createLocation(entity: ILocation) {
         });
     }
 
-    if (!location.destinations && _registration) {
+    if (!location.destinations) {
         console.log('No destinations specified for location ' + location.name);
     }
 
@@ -302,25 +257,25 @@ function createLocation(entity: ILocation) {
 }
 
 function createPerson(entity: IPerson, id?: string) {
-    var person = EnemyBase(entity, 'person', id);
+    const person = EnemyBase(entity, 'person', id);
     initCollection(person, 'quests');
     return person;
 }
 
 function createItem(entity: IItem, id?: string) {
-    var item = CreateObject(entity, 'item', id);
+    const item = CreateObject(entity, 'item', id);
     compileCombinations(item);
     return item;
 }
 
 function createFeature(entity: IFeature, id?: string) {
-    var feature = CreateObject(entity, 'feature', id);
+    const feature = CreateObject(entity, 'feature', id);
     compileCombinations(feature);
     return feature;
 }
 
 function EnemyBase<T extends IEnemy>(entity: T, type: string, id?: string): T {
-    var enemy = CreateObject(entity, type, id);
+    const enemy = CreateObject(entity, type, id);
     compileCombinations(enemy);
     initCollection(enemy, 'items');
     return enemy;
@@ -328,29 +283,38 @@ function EnemyBase<T extends IEnemy>(entity: T, type: string, id?: string): T {
 
 function CreateObject<T>(entity: T, type: string, id?: string)
 {
-    let compiledEntity: { id: string, name: string, type: string, description?: string };
+    if (typeof entity === FunctionType) {
+        id = getId(<Function>entity);
+    }
     
-    if (typeof entity === 'function') {
-        id = getId(entity);
-        compiledEntity = entity();
-    } else {
-        compiledEntity = <any>entity;
-    }
-
-    if (compiledEntity.id) {
-        throw new Error('Property \'id\' is used by StoryScript. Don\'t use it on your own types.');
-    }
-
-    if (compiledEntity.type && compiledEntity.type !== type) {
-        throw new Error('Property \'type\' is used by StoryScript. Don\'t use it on your own types.');
-    }
-
-    // Add the type to the object so we can distinguish between them in the combine functionality.
-    compiledEntity.type = type;
-    
+    const compiledEntity = getCompiledEntity(entity, type);
     const entityKey = getEntityKey(compiledEntity);
+    checkInlineConflicht(id, entityKey);
     _currentEntityKey = entityKey;
 
+    const registeredId = _registeredIds.get(entityKey);
+
+    if (id && !registeredId) {
+        _registeredIds.set(entityKey, id);
+    }
+
+    if (id || registeredId) {
+        compiledEntity.id = id || registeredId;
+        const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
+
+        if (compiledEntity.description) {
+            loadPictureFromDescription(compiledEntity, compiledEntity.description);
+            
+            if (!_registeredDescriptions.get(descriptionKey)) {
+                _registeredDescriptions.set(descriptionKey, compiledEntity.description);
+            }
+        }     
+    }
+    
+    return <T><unknown>compiledEntity;
+}
+
+function checkInlineConflicht(id: string, entityKey: string) {
     let inlineConflict = false;
 
     if (id) {
@@ -361,39 +325,54 @@ function CreateObject<T>(entity: T, type: string, id?: string)
         });
 
         if (inlineConflict) {
-            throw new Error('Duplicate id detected: ' + compiledEntity.id + '. You cannot use names for entities declared inline that are the same as the names of stand-alone entities.');
+            throw new Error('Duplicate id detected: ' + id + '. You cannot use names for entities declared inline that are the same as the names of stand-alone entities.');
         }
     }
-
-    const registeredId = _registeredIds.get(entityKey);
-
-    if (id || registeredId) {
-        compiledEntity.id = id || registeredId;
-        const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
-
-        if (compiledEntity.description && !_registeredDescriptions.get(descriptionKey)) {
-            _registeredDescriptions.set(descriptionKey, compiledEntity.description)
-        }     
-    }
-
-    if (id && !registeredId) {
-        _registeredIds.set(entityKey, id);
-    }
-
-    if (_registration) {
-        return <T><unknown>compiledEntity;
-    }
-
-    const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
-    const registeredDescription = _registeredDescriptions.get(descriptionKey);
-
-    if (registeredDescription) {
-        loadPictureFromDescription(compiledEntity, registeredDescription);
-    }
-
-    return <T><unknown>compiledEntity;
 }
 
+function getCompiledEntity(entity: any, type: string): { id: string, type: string, description?: string } {
+    let compiledEntity: { id: string, type: string };
+
+    if (typeof entity === FunctionType) {
+        compiledEntity = entity();
+    } else {
+        compiledEntity = entity;
+    }
+
+    if (compiledEntity.id) {
+        throw new Error('Property \'id\' is used by StoryScript. Don\'t use it on your own types.');
+    }
+
+    if (compiledEntity.type && compiledEntity.type !== type) {
+        throw new Error('Property \'type\' is used by StoryScript. Don\'t use it on your own types.');
+    }
+
+    // Add the type to the object, so we can distinguish between them in the combine functionality.
+    compiledEntity.type = type;
+    return compiledEntity;
+}
+
+export function InitEntityCollection(entity: any, property: string) {
+    const collection = entity[property] || [];
+
+    Object.defineProperty(entity, property, {
+        enumerable: true,
+        get: function () {
+            return collection;
+        },
+        set: function () {
+            const message = entity.type ? `Cannot set collection ${property} on type ${entity.type}!` : `Cannot set collection ${property}!`;
+            throw new Error(message);
+        }
+    });
+
+    if (_entityCollections.indexOf(property) > -1) {
+        Object.defineProperty(collection, 'add', {
+            writable: true,
+            value: collection.add.proxy(pushEntity)
+        });
+    }
+}
 
 function loadPictureFromDescription (entity: any, description: string): void {
     const parser = new DOMParser();
@@ -455,10 +434,10 @@ function setReadOnlyCharacterProperties(party: IParty) {
     party.characters.forEach(c => {
         Object.defineProperty(c, 'combatItems', {
             get: function () {
-                var result = c.items.filter(i => { return canUseInCombat(i.useInCombat, i, c.equipment); });
+                const result = c.items.filter(i => { return canUseInCombat(i.useInCombat, i, c.equipment); });
 
-                for (var n in c.equipment) {
-                    var item = <IItem>c.equipment[n];
+                for (const n in c.equipment) {
+                    const item = <IItem>c.equipment[n];
 
                     if (item && canUseInCombat(item.useInCombat, item, c.equipment)) {
                         result.push(item);
@@ -472,7 +451,7 @@ function setReadOnlyCharacterProperties(party: IParty) {
 }
 
 function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEquipment) => boolean), item, equipment) {
-    var canUse = (typeof flagOrFunction === "function") ? flagOrFunction(item, equipment) : flagOrFunction;
+    const canUse = (typeof flagOrFunction === "function") ? flagOrFunction(item, equipment) : flagOrFunction;
 
     if (canUse && !item.use) {
         console.log(`Item ${item.name} declares it can be used in combat but has no use function.`)
@@ -484,11 +463,11 @@ function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEqu
 
 function compileCombinations(entry: ICombinable) {
     if (entry.combinations) {
-        var combines = <ICombine<ICombinable>[]>[];
-        var failText = entry.combinations.failText;
+        const combines = <ICombine<ICombinable>[]>[];
+        const failText = entry.combinations.failText;
 
         entry.combinations.combine.forEach((combine: ICombine<ICombinable>) => {
-            var compiled = combine;
+            const compiled = combine;
             (<any>compiled).tool = compiled.tool && (compiled.tool.name);
             combines.push(compiled);
         });
@@ -507,7 +486,7 @@ function pushEntity(originalScope, originalFunction, entity) {
     }
 
     originalFunction.apply(originalScope, [entity]);
-};
+}
 
 function getIdFromName<T extends { name: string, id? : string}>(entity: T): string {
     return entity.name.toLowerCase().replace(/\s/g,'');
