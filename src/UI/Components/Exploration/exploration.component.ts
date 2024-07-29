@@ -32,15 +32,15 @@ export class ExplorationComponent {
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-    getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
+    getButtonClass = (action: [string, IAction]): string => this._sharedMethodService.getButtonClass(action);
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    disableActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
+    disableActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action[1].status == undefined ? false : action[1].status == ActionStatus.Disabled;
 
-    hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
+    hideActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action[1].status == undefined ? false : action[1].status == ActionStatus.Unavailable;
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
+    executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
 
     // Do not remove this method nor its arguments, it is called dynamically from the executeAction method of the SharedMethodService!
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);

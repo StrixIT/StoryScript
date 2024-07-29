@@ -438,9 +438,6 @@ function setReadOnlyLocationProperties(location: ILocation) {
             return location.actions
                 .filter(([_, v]) => {
                     return v.status !== ActionStatus.Unavailable && !(<any>v).inactive;
-                })
-                .map(([_, v]) => {
-                    return v;
                 });
         }
     });

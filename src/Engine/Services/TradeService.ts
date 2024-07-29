@@ -14,10 +14,10 @@ export class TradeService implements ITradeService {
     }
 
     trade = (trade: IPerson | ITrade): void => {
-        var isPerson = trade && trade['type'] === 'person';
+        const isPerson = trade && trade['type'] === 'person';
 
         this._game.trade = isPerson ? (<IPerson>trade).trade : trade;
-        var trader = this._game.trade;
+        const trader = this._game.trade;
 
         if (isPerson) {
             trader.currency = (<IPerson>trade).currency;
@@ -61,7 +61,7 @@ export class TradeService implements ITradeService {
     sell = (item: IItem, trade: ITrade): boolean => {
         if (!this.pay(item, trade, trade.sell, this._game.party, true)) {
             return false;
-        };
+        }
 
         this._game.activeCharacter.items.delete(item);
         trade.sell.items.delete(item);

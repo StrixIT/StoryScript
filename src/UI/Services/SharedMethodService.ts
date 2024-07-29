@@ -52,8 +52,8 @@ export class SharedMethodService {
     trade = (trade: IPerson | ITrade): boolean => {
         var locationTrade = <ITrade>trade;
 
-        if (locationTrade && !(<any>locationTrade).type && locationTrade.id) {
-            trade = this.game.currentLocation.trade.find(t => t.id === locationTrade.id);
+        if (locationTrade && !(<any>locationTrade).type && Array.isArray(locationTrade)) {
+            trade = this.game.currentLocation.trade.find(t => t.id === locationTrade[0]);
         }
 
         this._tradeService.trade(trade);
@@ -79,8 +79,8 @@ export class SharedMethodService {
         this._gameService.initCombat();
     }
 
-    getButtonClass = (action: IAction): string => {
-        var type = action.actionType || ActionType.Regular;
+    getButtonClass = (action: [string, IAction]): string => {
+        var type = action[1].actionType || ActionType.Regular;
         var buttonClass = 'btn-';
 
         switch (type) {
@@ -101,13 +101,15 @@ export class SharedMethodService {
         return buttonClass;
     }
 
-    executeAction = (action: IAction, component: any): void => {
-        if (action?.execute) {
+    executeAction = (action: [string, IAction], component: any): void => {
+        const execute = action?.[1]?.execute;
+        
+        if (execute) {
             // Modify the arguments collection to add the game to the collection before calling the function specified.
             const args = <any[]>[this.game, action];
 
             // Execute the action and when nothing or false is returned, remove it from the current location.
-            const executeFunc = typeof action.execute !== 'function' ? component[action.execute] : action.execute;
+            const executeFunc = typeof execute !== 'function' ? component[execute] : execute;
             const result = executeFunc.apply(component, args);
 
             const typeAndIndex = this.getActionIndex(action);
@@ -133,12 +135,12 @@ export class SharedMethodService {
 
     canUseItem = (character: ICharacter, item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, character, item));
     
-    private getActionIndex = (action: IAction): { type: number, index: number} => {
+    private getActionIndex = (action: [string, IAction]): { type: number, index: number} => {
         let index = -1;
         let type = -1;
 
         this.game.currentLocation.actions.forEach(([k, v], i) => {
-            if (v === action) {
+            if (k === action[0]) {
                 index = i;
                 type = 0;
             }
@@ -146,7 +148,7 @@ export class SharedMethodService {
 
         if (index == -1) {
             this.game.currentLocation.combatActions.forEach(([k, v], i) => {
-                if (v === action) {
+                if (k === action[0]) {
                     index = i;
                     type = 2;
                 }

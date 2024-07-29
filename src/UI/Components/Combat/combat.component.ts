@@ -33,12 +33,12 @@ export class CombatComponent {
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-    getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
+    getButtonClass = (action: [string, IAction]): string => this._sharedMethodService.getButtonClass(action);
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
+    executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
 
     getTargetName = (target: IEnemy | ICharacter): string => {
-        var type = (<any>target).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
+        const type = (<any>target).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
         const ofSameType = this.game.currentLocation.activeEnemies.filter(e => e.name === target.name);
         return type === TargetType.Enemy && ofSameType.length > 1 ? this.texts.format(this.texts.enemyCombatName, [target.name, (ofSameType.indexOf(target) + 1).toString()]) : target.name;
     }
