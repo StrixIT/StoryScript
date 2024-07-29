@@ -154,6 +154,12 @@ export class DataSerializer implements IDataSerializer {
             }
 
             this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue);
+
+            // Do not include empty objects in the serialized data.
+            if (Object.keys(data.clone[data.key]).length === 0) {
+                delete data.clone[data.key];
+            }
+
             return;
         }
         
@@ -204,6 +210,11 @@ export class DataSerializer implements IDataSerializer {
             return false;
         }
 
+        // Do not include empty arrays in the serialized data.
+        if (!data.originalValue.length) {
+            return true;
+        }
+        
         data.clone[data.key] = [];
         this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue);
 

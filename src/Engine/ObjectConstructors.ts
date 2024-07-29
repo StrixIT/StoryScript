@@ -24,8 +24,25 @@ const _entityCollections: string[] = [
     'quests'
 ];
 
+const _actionAndEventCollections: string[] = [
+    'actions',
+    'combatActions',
+    'enterEvents',
+    'leaveEvents'
+];
+
+const _gameCollections: string[] = _entityCollections.concat(_actionAndEventCollections).concat([
+    'trade',
+    'destinations',
+    'combine'
+]);
+
 // The dictionary containing all registered entity keys and their corresponding ids.
 let _registeredIds: Map<string, string> = new Map<string, string>();
+
+// The dictionary containing all registered entity keys and their corresponding id-less entities.
+// This is used to set the ids of nested entities after the entities have been build.
+let _idLessEntities: Map<string, { id: string }[]> = new Map<string, { id: string }[]>();
 
 // The dictionary containing all registered entity ids and their corresponding descriptions.
 let _registeredDescriptions: Map<string, string> = new Map<string, string>();
@@ -43,29 +60,6 @@ let _definitions: IDefinitions = {
     persons: [],
     quests: []
 };
-
-let registration = true;
-
-export function buildEntities(): void {
-    const allDefinitions = Object.getOwnPropertyNames(_definitions);
-
-    // Build all entities once to determine their id.
-    allDefinitions.forEach(p => {
-        _definitions[p].forEach((f: Function) => {
-            const compiledEntity = f();
-            _registeredIds.set(getEntityKey(compiledEntity), getId(f));
-        });
-    });
-
-    registration = false;
-
-    // Build all entities again to add ids to nested entities.
-    allDefinitions.forEach(p => {
-        _definitions[p].forEach((f: Function) => {
-            registerEntity(f());
-        });
-    });
-}
 
 export function GetDefinitions(): IDefinitions {
     return _definitions;
@@ -111,6 +105,36 @@ export function Action(action: IAction): IAction {
     return Create('action', action);
 }
 
+export function buildEntities(): void {
+    const allDefinitions = Object.getOwnPropertyNames(_definitions);
+    const allEntities = [];
+
+    // Build all entities. Stand-alone entities will not have an id after the first build. We need
+    // to look these up in registeredIds map to set their ids before registering them.
+    allDefinitions.forEach(p => {
+        _definitions[p].forEach((f: Function) => {
+            const compiledEntity = f();
+            const entityKey = getEntityKey(compiledEntity);
+            _registeredIds.set(entityKey, getId(f));
+            allEntities.push(compiledEntity);
+        });
+    });
+
+    allEntities.forEach(e => {
+        const entityKey = getEntityKey(e);
+        const id = _registeredIds.get(entityKey);
+
+        _idLessEntities.get(entityKey)?.forEach(e => {
+            e.id = id;
+        })
+
+        registerEntity(e);
+    });
+
+    // We don't need this data anymore, clean it up.
+    _idLessEntities.clear();
+}
+
 export function setReadOnlyProperties(key: string, data: any) {
     if (key.startsWith(DataKeys.GAME + '_')) {
         data.world.forEach((location: ILocation) => {
@@ -127,49 +151,6 @@ export function setReadOnlyProperties(key: string, data: any) {
     }
 }
 
-export function initCollection(entity: any, property: string) {
-    const _gameCollections: string[] = _entityCollections.concat([
-        'trade',
-        'actions',
-        'combatActions',
-        'destinations',
-        'enterEvents',
-        'leaveEvents',
-        'combine'
-    ]);
-
-    if (_gameCollections.indexOf(property) === -1) {
-        return;
-    }
-
-    const collection = entity[property] || [];
-
-    if ((property === 'features' || property === 'trade') && collection.length) {
-        const inlineCollection = collection.map((e: { type: string, name: string }) => {
-            // Initialize features that have been declared inline. Check for the existence of a 
-            // type property to determine whether the object is already initialized.
-            if (e.type) {
-                return e;
-            }
-
-            const typeName = getSingular(property);
-            return Create(typeName, e, getIdFromName(e));
-        });
-
-        collection.length = 0;
-
-        inlineCollection.forEach((e: any) => {
-            collection.push(e);
-
-            if (e.id) {
-                registerEntity(e);
-            }
-        });
-    }
-
-    InitEntityCollection(entity, property);
-}
-
 export function Register(type: string, entityFunc: Function, testDefinitions?: IDefinitions): IDefinitions {
     const definitions = testDefinitions ?? _definitions;
 
@@ -183,8 +164,19 @@ export function Register(type: string, entityFunc: Function, testDefinitions?: I
     return definitions;
 }
 
-export function InitEntityCollection(entity: any, property: string) {
+export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
+    const compiledEntity = entityFunction();
+    _registeredIds.set(getEntityKey(<any>compiledEntity), getIdFromName({id: '', name: name})?.toLowerCase());
+    return entityFunction();
+}
+
+export function InitEntityCollection(entity: any, property: string, isRegistration?: boolean) {
     const collection = entity[property] || [];
+
+    // Set the ids of actions using their tuple key value.
+    if (isRegistration && _actionAndEventCollections.indexOf(property) > -1) {
+        (<[string, IAction][]>collection).forEach(a => a[1].id = a[0]);
+    }
 
     Object.defineProperty(entity, property, {
         enumerable: true,
@@ -203,12 +195,6 @@ export function InitEntityCollection(entity: any, property: string) {
             value: collection.add.proxy(pushEntity)
         });
     }
-}
-
-export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
-    const compiledEntity = entityFunction();
-    _registeredIds.set(getEntityKey(<any>compiledEntity), getIdFromName({id: '', name: name})?.toLowerCase());
-    return entityFunction();
 }
 
 function registerEntity(entity: any): void {
@@ -254,7 +240,7 @@ function createLocation(entity: ILocation) {
         });
     }
 
-    if (!location.destinations && registration) {
+    if (!location.destinations) {
         console.log('No destinations specified for location ' + location.name);
     }
 
@@ -266,6 +252,8 @@ function createLocation(entity: ILocation) {
     initCollection(location, 'items');
     initCollection(location, 'enemies');
     initCollection(location, 'persons');
+    initCollection(location, 'enterEvents');
+    initCollection(location, 'leaveEvents');
 
     setReadOnlyLocationProperties(location);
 
@@ -322,9 +310,48 @@ function CreateObject<T>(entity: T, type: string, id?: string) {
                 _registeredDescriptions.set(descriptionKey, compiledEntity.description);
             }
         }
+    } else {
+        if (!_idLessEntities.has(entityKey)) {
+            _idLessEntities.set(entityKey, []);
+        }
+        
+        _idLessEntities.get(entityKey).push(compiledEntity);
     }
 
     return <T><unknown>compiledEntity;
+}
+
+function initCollection(entity: any, property: string) {
+    if (_gameCollections.indexOf(property) === -1) {
+        return;
+    }
+
+    const collection = entity[property] || [];
+
+    if ((property === 'features' || property === 'trade') && collection.length) {
+        const inlineCollection = collection.map((e: { type: string, name: string }) => {
+            // Initialize features that have been declared inline. Check for the existence of a 
+            // type property to determine whether the object is already initialized.
+            if (e.type) {
+                return e;
+            }
+
+            const typeName = getSingular(property);
+            return Create(typeName, e, getIdFromName(e));
+        });
+
+        collection.length = 0;
+
+        inlineCollection.forEach((e: any) => {
+            collection.push(e);
+
+            if (e.id) {
+                registerEntity(e);
+            }
+        });
+    }
+
+    InitEntityCollection(entity, property, true);
 }
 
 function checkInlineConflict(id: string, entityKey: string) {
@@ -403,40 +430,33 @@ function setReadOnlyLocationProperties(location: ILocation) {
     }
 
     Object.defineProperty(location, 'activePersons', {
-        get: function () {
-            return location.persons.filter(e => {
-                return !e.inactive;
-            });
-        }
+        get: () => filterInactive(location.persons)
     });
 
     Object.defineProperty(location, 'activeEnemies', {
-        get: function () {
-            return location.enemies.filter(e => {
-                return !e.inactive;
-            });
-        }
+        get: () => filterInactive(location.enemies)
     });
 
     Object.defineProperty(location, 'activeItems', {
-        get: function () {
-            return location.items.filter(e => {
-                return !e.inactive;
-            });
-        }
+        get: () => filterInactive(location.items)
     });
 
     Object.defineProperty(location, 'activeActions', {
         get: function () {
             return location.actions
                 .filter(([_, v]) => {
-                    return v.status !== ActionStatus.Unavailable;
+                    return v.status !== ActionStatus.Unavailable && !(<any>v).inactive;
                 })
-                .map(([k, v]) => {
-                    v.id = k;
+                .map(([_, v]) => {
                     return v;
                 });
         }
+    });
+}
+
+function filterInactive(items: any[]) {
+    return items.filter(e => {
+        return !e.inactive;
     });
 }
 

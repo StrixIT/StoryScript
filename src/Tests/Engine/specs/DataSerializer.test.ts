@@ -19,69 +19,39 @@ const worldData = [{
     "destinations": [{"target": "garden"}],
     "items": [{"type": "item", "id": "journal"}],
     "type": "location",
-    "id": "basement",
-    "actions": [],
-    "combatActions": [],
-    "features": [],
-    "trade": [],
-    "enemies": [],
-    "persons": []
+    "id": "basement"
 }, {
     "destinations": [{"target": "start"}],
     "enemies": [{
-        "items": [{"type": "item", "id": "sword"}, {"open": {}, "type": "item", "id": "basementkey"}],
+        "items": [{"type": "item", "id": "sword"}, {"type": "item", "id": "basementkey"}],
         "type": "enemy",
         "id": "bandit"
     }],
-    "combatActions": [["RunInside", {}]],
+    "combatActions": [["RunInside", {"id": "RunInside"}]],
     "type": "location",
-    "id": "dirtroad",
-    "actions": [],
-    "features": [],
-    "trade": [],
-    "items": [],
-    "persons": []
+    "id": "dirtroad"
 }, {
     "destinations": [{"target": "start"}],
     "enterEvents": [["Squirrel"]],
-    "actions": [["SearchShed", {}], ["LookInPond", {}]],
+    "actions": [["SearchShed", {"id": "SearchShed"}], ["LookInPond", {"id": "LookInPond"}]],
     "type": "location",
-    "id": "garden",
-    "combatActions": [],
-    "features": [],
-    "trade": [],
-    "items": [],
-    "enemies": [],
-    "persons": []
+    "id": "garden"
 }, {
     "destinations": [{"target": "start"}],
-    "trade": [{"buy": {}, "sell": {}, "type": "trade", "id": "yourpersonalcloset"}],
+    "trade": [{"type": "trade", "id": "yourpersonalcloset"}],
     "type": "location",
-    "id": "library",
-    "actions": [],
-    "combatActions": [],
-    "features": [],
-    "items": [],
-    "enemies": [],
-    "persons": []
+    "id": "library"
 }, {
     "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
     "persons": [{
         "items": [{"type": "item", "id": "sword"}],
-        "trade": {"buy": {}, "sell": {}},
         "conversation": {"actions": [["addHedgehog"]]},
         "quests": [{"type": "quest", "id": "journal"}],
         "type": "person",
         "id": "friend"
     }],
     "type": "location",
-    "id": "start",
-    "actions": [],
-    "combatActions": [],
-    "features": [],
-    "trade": [],
-    "items": [],
-    "enemies": []
+    "id": "start"
 }];
 
 const locationWithAddedDestination = {
@@ -99,15 +69,9 @@ const locationWithAddedDestination = {
         "ss_added": true
     }],
     "enterEvents": [["Squirrel"]],
-    "actions": [["SearchShed", {}], ["LookInPond", {}]],
+    "actions": [["SearchShed", {"id": "SearchShed"}], ["LookInPond", {"id": "LookInPond"}]],
     "type": "location",
-    "id": "garden",
-    "combatActions": [],
-    "features": [],
-    "trade": [],
-    "items": [],
-    "enemies": [],
-    "persons": []
+    "id": "garden"
 };
 
 const partyData = {
@@ -155,7 +119,7 @@ describe("DataSerializer", () => {
         const result = serializer.createSerializableClone(locations);
         expect(result).toEqual(worldData);
     });
-    
+
     test("should restore a world skeleton from a serialized file", function () {
         const result = serializer.createSerializableClone(serializer.restoreObjects(worldData));
         expect(result).toEqual(worldData);
@@ -195,10 +159,10 @@ describe("DataSerializer", () => {
     });
 
     test("should serialize character data with only skeleton data", function () {
-        const character= new Character();
+        const character = new Character();
         character.name = "Test";
         character.items = [
-          Sword()  
+            Sword()
         ];
 
         const characterData = <IParty>{
@@ -211,5 +175,5 @@ describe("DataSerializer", () => {
         const result = serializer.createSerializableClone(characterData);
         expect(result).toEqual(partyData);
     });
-    
+
 });
