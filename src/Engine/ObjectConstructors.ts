@@ -24,14 +24,11 @@ const _entityCollections: string[] = [
     'quests'
 ];
 
-const _actionAndEventCollections: string[] = [
+const _gameCollections: string[] = _entityCollections.concat([
     'actions',
     'combatActions',
     'enterEvents',
-    'leaveEvents'
-];
-
-const _gameCollections: string[] = _entityCollections.concat(_actionAndEventCollections).concat([
+    'leaveEvents',
     'trade',
     'destinations',
     'combine'
@@ -170,13 +167,8 @@ export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
     return entityFunction();
 }
 
-export function InitEntityCollection(entity: any, property: string, isRegistration?: boolean) {
+export function InitEntityCollection(entity: any, property: string) {
     const collection = entity[property] || [];
-
-    // Set the ids of actions using their tuple key value.
-    if (isRegistration && _actionAndEventCollections.indexOf(property) > -1) {
-        (<[string, IAction][]>collection).forEach(a => a[1].id = a[0]);
-    }
 
     Object.defineProperty(entity, property, {
         enumerable: true,
@@ -351,7 +343,7 @@ function initCollection(entity: any, property: string) {
         });
     }
 
-    InitEntityCollection(entity, property, true);
+    InitEntityCollection(entity, property);
 }
 
 function checkInlineConflict(id: string, entityKey: string) {

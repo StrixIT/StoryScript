@@ -2,6 +2,7 @@ import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronize
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord, propertyMatch} from "storyScript/utilities";
 import {FunctionType, UndefinedType} from "../../../constants.ts";
+import {InitEntityCollection} from "storyScript/ObjectConstructors.ts";
 
 export class DataSynchronizer implements IDataSynchronizer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {
@@ -78,6 +79,10 @@ export class DataSynchronizer implements IDataSynchronizer {
             } else if (typeof (p[1]) === FunctionType) {
                 match[1] = p[1];
             } else {
+                if (!match[1]) {
+                    match.push({});
+                }
+                
                 this.synchronizeEntityData(match[1], p[1], entity, pristineEntity, '1');
             }
         });
@@ -93,8 +98,15 @@ export class DataSynchronizer implements IDataSynchronizer {
         pristineParentEntity?: any,
         parentProperty?: string
     ): boolean {
-        if (!Array.isArray(entity) || !Array.isArray(pristineEntity) || (entity.length == 0 && pristineEntity.length == 0)) {
+        if (!Array.isArray(entity) || !Array.isArray(pristineEntity)) {
             return false;
+        }
+
+        if ((entity.length == 0 && pristineEntity.length == 0)) {
+            // Empty arrays weren't included in the serialized data. Call InitEntityCollection
+            // on them now to properly restore entities.
+            InitEntityCollection(parentEntity, parentProperty);
+            return true;
         }
 
         const existingItems = entity.filter(e => e[StateProperties.Added] && !pristineEntity.find(p => propertyMatch(e, p)));

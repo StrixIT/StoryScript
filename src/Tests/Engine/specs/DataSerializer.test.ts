@@ -27,13 +27,13 @@ const worldData = [{
         "type": "enemy",
         "id": "bandit"
     }],
-    "combatActions": [["RunInside", {"id": "RunInside"}]],
+    "combatActions": [["RunInside"]],
     "type": "location",
     "id": "dirtroad"
 }, {
     "destinations": [{"target": "start"}],
     "enterEvents": [["Squirrel"]],
-    "actions": [["SearchShed", {"id": "SearchShed"}], ["LookInPond", {"id": "LookInPond"}]],
+    "actions": [["SearchShed"], ["LookInPond"]],
     "type": "location",
     "id": "garden"
 }, {
@@ -69,7 +69,7 @@ const locationWithAddedDestination = {
         "ss_added": true
     }],
     "enterEvents": [["Squirrel"]],
-    "actions": [["SearchShed", {"id": "SearchShed"}], ["LookInPond", {"id": "LookInPond"}]],
+    "actions": [["SearchShed"], ["LookInPond"]],
     "type": "location",
     "id": "garden"
 };
@@ -90,6 +90,31 @@ const partyData = {
                     "type": "item",
                     "id": "sword"
                 }
+            ],
+            "equipment": {
+                "head": null,
+                "body": null,
+                "leftHand": null,
+                "rightHand": null,
+                "feet": null
+            }
+        }
+    ]
+};
+
+const partyDataEmptyArrays = {
+    "name": "Test Party",
+    "currency": 10,
+    "quests": [],
+    "characters": [
+        {
+            "name": "Test",
+            "level": 1,
+            "hitpoints": 10,
+            "strength": 1,
+            "agility": 1,
+            "intelligence": 1,
+            "items": [
             ],
             "equipment": {
                 "head": null,
@@ -176,4 +201,22 @@ describe("DataSerializer", () => {
         expect(result).toEqual(partyData);
     });
 
+    test("should serialize character data with empty arrays present", function () {
+        const character = new Character();
+        character.name = "Test";
+        character.items = [
+        ];
+
+        const characterData = <IParty>{
+            name: "Test Party",
+            currency: 10,
+            characters: [
+                character
+            ],
+            quests: []
+        };
+        const result = serializer.createSerializableClone(characterData);
+        expect(result).toEqual(partyDataEmptyArrays);
+    });
+    
 });

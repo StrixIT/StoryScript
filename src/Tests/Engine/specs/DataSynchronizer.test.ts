@@ -16,6 +16,7 @@ import {Journal} from "../../../Games/MyRolePlayingGame/items/journal.ts";
 import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {getId} from "storyScript/utilities.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
+import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 
 describe("DataSynchronizer", () => {
 
@@ -23,20 +24,13 @@ describe("DataSynchronizer", () => {
         "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
         "persons": [{
             "items": [{"type": "item", "id": "sword"}],
-            "trade": {"buy": {}, "sell": {}},
             "conversation": {"actions": [["addHedgehog"]]},
             "quests": [{"type": "quest", "id": "journal"}],
             "type": "person",
             "id": "friend"
         }],
         "type": "location",
-        "id": "start",
-        "actions": [],
-        "combatActions": [],
-        "features": [],
-        "trade": [],
-        "items": [],
-        "enemies": []
+        "id": "start"
     };
 
     const gardenLocationSkeleton = JSON.parse(JSON.stringify({
@@ -54,15 +48,9 @@ describe("DataSynchronizer", () => {
             "ss_added": true
         }],
         "enterEvents": [["Squirrel"]],
-        "actions": [["SearchShed", {}], ["LookInPond", {}]],
+        "actions": [["SearchShed"], ["LookInPond"]],
         "type": "location",
-        "id": "garden",
-        "combatActions": [],
-        "features": [],
-        "trade": [],
-        "items": [],
-        "enemies": [],
-        "persons": []
+        "id": "garden"
     }));
 
     const multipleLocations = [
@@ -70,28 +58,17 @@ describe("DataSynchronizer", () => {
             "destinations": [{"target": "garden"}],
             "items": [{"type": "item", "id": "journal"}],
             "type": "location",
-            "id": "basement",
-            "actions": [],
-            "combatActions": [],
-            "features": [],
-            "trade": [],
-            "enemies": [],
-            "persons": []
+            "id": "basement"
         }, {
             "destinations": [{"target": "start"}],
             "enemies": [{
-                "items": [{"type": "item", "id": "sword"}, {"open": {}, "type": "item", "id": "basementkey"}],
+                "items": [{"type": "item", "id": "sword"}, {"type": "item", "id": "basementkey"}],
                 "type": "enemy",
                 "id": "bandit"
             }],
-            "combatActions": [["RunInside", {}]],
+            "combatActions": [["RunInside"]],
             "type": "location",
-            "id": "dirtroad",
-            "actions": [],
-            "features": [],
-            "trade": [],
-            "items": [],
-            "persons": []
+            "id": "dirtroad"
         }
     ];
 
@@ -185,7 +162,8 @@ describe("DataSynchronizer", () => {
         const skeleton = dataSerializer.restoreObjects(startLocationSkeleton);
         dataSynchronizer.synchronizeEntityData(skeleton, start);
         expect(startLocationSkeleton.destinations).toEqual(start.destinations);
-        expect(startLocationSkeleton.items).toEqual(start.items);
+        expect(start.items).toHaveLength(0);
+        expect(start.persons[0].trade).not.toBeNull();
         expect(startLocationSkeleton.persons[0].items).toEqual(start.persons[0].items);
         expect((<any>startLocationSkeleton).descriptionSelector).toEqual(start.descriptionSelector);
     });
@@ -208,8 +186,10 @@ describe("DataSynchronizer", () => {
     });
 
     test("should restore Party data", function () {
-        const skeleton = dataSerializer.restoreObjects(partyData);
+        const skeleton = <IParty>dataSerializer.restoreObjects(partyData);
         dataSynchronizer.synchronizeEntityData(skeleton);
         expect(skeleton.characters[0].name).toBe('Test');
+        expect(skeleton.characters[0].items.length).toBe(0);
+        expect(skeleton.quests.length).toBe(0);
     });
 });

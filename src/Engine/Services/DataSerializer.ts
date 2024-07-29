@@ -156,10 +156,7 @@ export class DataSerializer implements IDataSerializer {
             this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue);
 
             // Do not include empty objects in the serialized data.
-            if (Object.keys(data.clone[data.key]).length === 0) {
-                delete data.clone[data.key];
-            }
-
+            this.removeEmptyObjects(data.clone, data.key);
             return;
         }
         
@@ -210,9 +207,10 @@ export class DataSerializer implements IDataSerializer {
             return false;
         }
 
-        // Do not include empty arrays in the serialized data.
-        if (!data.originalValue.length) {
-            return true;
+        // Do not include empty arrays in the serialized data when we have a pristine value to compare
+        // to. Otherwise, keep empty arrays as they are needed to correctly reconstruct the object.
+        if (data.pristine && !data.originalValue.length) {
+            return false;
         }
         
         data.clone[data.key] = [];
@@ -246,5 +244,18 @@ export class DataSerializer implements IDataSerializer {
         });
 
         return true;
+    }
+
+    private removeEmptyObjects = (clone: any, key: string) => {
+        const addedObject = clone[key];
+
+        if (Object.keys(addedObject).length === 0) {
+            if (Array.isArray(clone)) {
+                clone.splice(clone.indexOf(addedObject), 1);
+            }
+            else {
+                delete clone[key];
+            }
+        }
     }
 }
