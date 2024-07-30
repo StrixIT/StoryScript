@@ -1,5 +1,5 @@
 import { ICharacter, IGame, IInterfaceTexts, IParty } from 'storyScript/Interfaces/storyScript';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -11,7 +11,7 @@ export class PartyComponent {
     @Input() party!: IParty;
 
     constructor() {
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

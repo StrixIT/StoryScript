@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { IInterfaceTexts, PlayState, IGame } from 'storyScript/Interfaces/storyScript';
 import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
 import { EncounterModalComponent } from '../Components/EncounterModal/encountermodal.component';
@@ -17,7 +17,7 @@ export class ModalService {
     constructor() {
         this._modalService = inject(NgbModal);
         this._gameService = inject(GameService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._gameService.watchPlayState(this.openOrCloseModal);

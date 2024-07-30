@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { addFunctionExtensions, createFunctionHash, addArrayExtensions, compareString, parseFunction, createHash } from 'storyScript/globals';
+import { addFunctionExtensions, addArrayExtensions, compareString, parseFunction, createHash } from 'storyScript/globals';
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
@@ -12,7 +12,7 @@ describe("Utilities", function() {
         addFunctionExtensions();
 
         function MyFunction() {
-        };
+        }
 
         const result = MyFunction.name;
         expect(result).toEqual('MyFunction');
@@ -69,17 +69,6 @@ describe("Utilities", function() {
     test("Creating a hash for null should return 0", function() {
         const result = createHash(null);
         expect(result).toBe(0);
-    });
-
-    test("Creating a function hash should get a unique hash for each function", function() {
-        function FirstFunction(x, y) { return x + y; };
-        function SecondFunction(x, y) { if (x === null && y === null) { return null; } else { return x > y; } };
-        const firstFunctionHash = createFunctionHash(FirstFunction);
-        const secondFunctionHash = createFunctionHash(SecondFunction);
-
-        expect(firstFunctionHash).toEqual(-582951769);
-        expect(secondFunctionHash).toEqual(389068928);
-        expect(firstFunctionHash).not.toEqual(secondFunctionHash);
     });
 
     test("should get an entity using the function name", function() {
@@ -181,7 +170,7 @@ describe("Utilities", function() {
         const testArray = [
             itemOne,
             itemTwo
-        ];;
+        ];
         const result = testArray.all(Sword);
 
         expect(result).not.toBeUndefined();

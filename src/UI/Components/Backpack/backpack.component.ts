@@ -2,7 +2,7 @@ import { ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interface
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -20,7 +20,7 @@ export class BackpackComponent {
         this._characterService = inject(CharacterService);
         this._sharedMethodService = inject(SharedMethodService);
         this._gameService = inject(GameService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useBackpack = true;

@@ -1,6 +1,6 @@
 import {IConversationNode, IConversationReply, IGame} from 'storyScript/Interfaces/storyScript';
 import {ConversationService} from 'storyScript/Services/ConversationService';
-import {ObjectFactory} from 'storyScript/ObjectFactory';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 
@@ -13,7 +13,7 @@ export class ConversationComponent {
 
     constructor() {
         this._conversationService = inject(ConversationService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
     }
 

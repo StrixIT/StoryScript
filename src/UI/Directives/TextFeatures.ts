@@ -3,7 +3,7 @@ import { compareString } from 'storyScript/globals';
 import { addHtmlSpaces } from 'storyScript/utilities';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Directive, ElementRef, Renderer2, HostListener, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedMethodService } from '../Services/SharedMethodService';
@@ -22,7 +22,7 @@ export class TextFeatures  implements OnDestroy {
         this._gameService = inject(GameService);
         this._elem = inject(ElementRef);
         this._renderer = inject(Renderer2);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this._combinationSubscription = this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
         this.refreshFeatures(true);

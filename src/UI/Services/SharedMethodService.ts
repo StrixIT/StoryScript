@@ -5,7 +5,7 @@ import { TradeService } from 'storyScript/Services/TradeService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { IGame } from 'storyScript/Interfaces/game';
 import { Subject } from 'rxjs';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { ModalService } from './ModalService';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class SharedMethodService {
     constructor() {
         // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
         const modalService = inject(ModalService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this._gameService = inject(GameService);
         this._conversationService = inject(ConversationService);
         this._tradeService = inject(TradeService);

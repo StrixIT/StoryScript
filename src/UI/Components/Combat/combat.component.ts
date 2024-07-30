@@ -1,7 +1,7 @@
 import { IInterfaceTexts, IGame, IAction, IEnemy, IItem, ICharacter, ICollection, TargetType, ICombatTurn } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -16,7 +16,7 @@ export class CombatComponent {
     constructor() {
         this._gameService = inject(GameService);
         this._sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.multiCharacter = this.game.party.characters.length > 1;

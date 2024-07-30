@@ -1,7 +1,7 @@
 import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
 import { compareString } from 'storyScript/globals';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -14,7 +14,7 @@ export class LocationVisualComponent {
     
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

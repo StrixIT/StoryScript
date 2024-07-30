@@ -11,7 +11,7 @@ import {
     ICompiledLocation,
     IItem
 } from 'storyScript/Interfaces/storyScript';
-import {ObjectFactory} from 'storyScript/ObjectFactory';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {RunGame} from '../../../Games/MyRolePlayingGame/run';
 
 describe("ObjectConstructors", function () {
@@ -129,7 +129,7 @@ describe("ObjectConstructors", function () {
 describe('ObjectFactory', function () {
 
     test("should return all services", function () {
-        const factory = ObjectFactory.GetInstance();
+        const factory = ServiceFactory.GetInstance();
 
         let characterService = factory.GetCharacterService();
         expect(characterService).not.toBeNull();

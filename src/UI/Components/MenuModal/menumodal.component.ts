@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -16,7 +16,7 @@ export class MenuModalComponent {
     constructor() {
         this._activeModal = inject(NgbActiveModal);
         this._gameService = inject(GameService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.state = PlayState.Menu;

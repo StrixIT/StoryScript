@@ -2,7 +2,7 @@ import { IGame, IInterfaceTexts, IQuest, ICollection } from 'storyScript/Interfa
 import { isEmpty } from 'storyScript/utilities';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -16,7 +16,7 @@ export class QuestComponent {
     constructor() {
         this._characterService = inject(CharacterService);
         const sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         sharedMethodService.useQuests = true;

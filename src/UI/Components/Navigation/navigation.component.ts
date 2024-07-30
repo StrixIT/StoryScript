@@ -1,6 +1,6 @@
 import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, ViewChild, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 import { Observable, OperatorFunction, Subject, debounceTime, distinctUntilChanged, filter, map, merge, switchMap } from 'rxjs';
@@ -15,7 +15,7 @@ export class NavigationComponent {
 
     constructor() {
         this._gameService = inject(GameService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.locations = this.game.definitions['locations'].map(l => {

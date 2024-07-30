@@ -2,7 +2,7 @@ import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, IDestination, IBarrie
 import { isEmpty } from 'storyScript/utilities';
 import { GameService } from 'storyScript/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 import { StateProperties } from 'storyScript/stateProperties.ts';
@@ -18,7 +18,7 @@ export class ExplorationComponent {
     constructor() {
         this._gameService = inject(GameService);
         this._sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }

@@ -19,7 +19,7 @@ import { ICombinationService } from './Interfaces/services/combinationService';
 import { DataSerializer } from './Services/DataSerializer';
 import { DataSynchronizer } from './Services/DataSynchronizer';
 
-export class ObjectFactory {
+export class ServiceFactory {
     private readonly _game: IGame = <IGame>{};
     private readonly _texts: IInterfaceTexts;
     private readonly _rules: IRules;
@@ -30,7 +30,7 @@ export class ObjectFactory {
     private readonly _conversationService: IConversationService;
     private readonly _combinationService: ICombinationService;
 
-    private static _instance: ObjectFactory;
+    private static _instance: ServiceFactory;
 
     constructor (
         nameSpace: string, 
@@ -52,7 +52,7 @@ export class ObjectFactory {
         const locationService = new LocationService(dataService, this._rules, this._game, this._game.definitions, descriptions);
         this._combinationService = new CombinationService(dataService, locationService, this._game, this._rules, this._texts);
         this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, helperService, this._game, this._texts);
-        ObjectFactory._instance = this;
+        ServiceFactory._instance = this;
     }
 
     GetGame = (): IGame => this._game;
@@ -71,5 +71,5 @@ export class ObjectFactory {
 
     GetCombinationService = (): ICombinationService => this._combinationService;
 
-    static readonly GetInstance = () => ObjectFactory._instance;
+    static readonly GetInstance = () => ServiceFactory._instance;
 }

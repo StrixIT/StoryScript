@@ -22,10 +22,8 @@ import { IBarrierAction } from '../Interfaces/barrierAction';
 import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
-import { createHash } from '../globals';
 import { IFeature } from '../Interfaces/feature';
 import { compare, selectStateListEntry } from 'storyScript/utilities';
-import { StateProperties } from 'storyScript/stateProperties.ts';
 import { IParty } from '../Interfaces/party';
 import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
 import { ICombatSetup } from '../Interfaces/combatSetup';
@@ -322,7 +320,7 @@ export class GameService implements IGameService {
     stopMusic = (): boolean => this._musicStopped = true;
 
     playSound = (fileName: string, completeCallBack?: () => void): void => {
-        this._game.sounds.soundQueue.set(createHash(fileName + Math.floor(Math.random() * 1000)), { value: fileName, playing: false, completeCallBack: completeCallBack });
+        this._game.sounds.soundQueue.set(this.createHash(fileName + Math.floor(Math.random() * 1000)), { value: fileName, playing: false, completeCallBack: completeCallBack });
     }
 
     watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void {
@@ -719,5 +717,21 @@ export class GameService implements IGameService {
         }
 
         this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+    }
+
+    private createHash(value: string): number {
+        let hash = 0;
+
+        if (!value || value.length == 0) {
+            return hash;
+        }
+
+        for (let i = 0; i < value.length; i++) {
+            const char = value.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+
+        return hash;
     }
 }

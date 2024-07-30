@@ -1,4 +1,4 @@
-import { ObjectFactory } from './ObjectFactory';
+import { ServiceFactory } from './ServiceFactory';
 import { addFunctionExtensions, addArrayExtensions } from './globals';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
@@ -12,14 +12,17 @@ import { assetRegex } from '../../constants';
  * @param rules Your game rules
  */
 export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
-    if (!ObjectFactory.GetInstance()) {
+    let instance = ServiceFactory.GetInstance();
+    
+    if (!instance) {
         addFunctionExtensions();
         addArrayExtensions();
         importAssets();
         buildEntities();
-
-        new ObjectFactory(nameSpace, rules, texts);
+        instance = new ServiceFactory(nameSpace, rules, texts);
     }
+    
+    return instance;
 }
 
 export function importAssets() {
@@ -36,10 +39,10 @@ export function importAssets() {
 /* v8 ignore start */
 function loadAssetsWithRequire() {
     // Note that this regex cannot be extracted from here as that will break the require usage.
-    const assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/);
+    const assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9/]+\.ts$/);
 
     assets.keys().forEach(k => {
-        // Require the asset so it is loaded as a module.
+        // Require the asset, so it is loaded as a module.
         const asset = assets(k);
         const type = getAssetType(k);
         
@@ -68,7 +71,7 @@ function loadAssetsWithImport() {
     for (const path in modules)
     {
         let asset = modules[path];
-        let type = getAssetType(path.match(assetRegex)[1]);
+        let type = getAssetType(assetRegex.exec(path)[1]);
         let property = Object.getOwnPropertyNames(asset)[0];
 
         // Register the asset with the proper type.

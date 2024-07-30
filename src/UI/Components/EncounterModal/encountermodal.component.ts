@@ -1,6 +1,6 @@
 import { Component, Input, ElementRef, inject } from '@angular/core';
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import type { IModalSettings } from '../modalSettings';
 import { getTemplate } from '../../helpers';
 
@@ -13,7 +13,7 @@ export class EncounterModalComponent {
 
     constructor() {
         const hostElement = inject(ElementRef);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.element = hostElement.nativeElement;

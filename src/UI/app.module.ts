@@ -11,7 +11,7 @@ import { TradeService } from 'storyScript/Services/TradeService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ConversationService } from 'storyScript/Services/ConversationService';
 import { CombinationService } from 'storyScript/Services/CombinationService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 
 import { EncounterComponent } from './Components/Encounter/encounter.component';
 import { NavigationComponent } from './Components/Navigation/navigation.component';
@@ -50,7 +50,7 @@ import './styles/storyscript.css';
 import 'game/ui/styles/game.css'
 import 'game/run';
 
-const objectFactory = ObjectFactory.GetInstance();
+const serviceFactory = ServiceFactory.GetInstance();
 
 @NgModule({
     imports: [
@@ -100,12 +100,12 @@ const objectFactory = ObjectFactory.GetInstance();
         NgbActiveModal,
         SharedMethodService,
         ModalService,
-        { provide: ObjectFactory, useValue: objectFactory },
-        { provide: TradeService, useValue: objectFactory.GetTradeService() },
-        { provide: ConversationService, useValue: objectFactory.GetConversationService() },
-        { provide: GameService, useValue: objectFactory.GetGameService() },
-        { provide: CharacterService, useValue: objectFactory.GetCharacterService() },
-        { provide: CombinationService, useValue: objectFactory.GetCombinationService() }
+        { provide: ServiceFactory, useValue: serviceFactory },
+        { provide: TradeService, useValue: serviceFactory.GetTradeService() },
+        { provide: ConversationService, useValue: serviceFactory.GetConversationService() },
+        { provide: GameService, useValue: serviceFactory.GetGameService() },
+        { provide: CharacterService, useValue: serviceFactory.GetCharacterService() },
+        { provide: CombinationService, useValue: serviceFactory.GetCombinationService() }
     ]
 })
 

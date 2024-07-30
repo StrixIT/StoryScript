@@ -8,7 +8,6 @@ import { DataKeys } from '../DataKeys';
 import { IFeature } from '../Interfaces/feature';
 import { IDestination } from '../Interfaces/destination';
 import { IKey } from '../Interfaces/key';
-import { createFunctionHash } from '../globals';
 import { addHtmlSpaces, getId, isEmpty, parseGameProperties } from '../utilities';
 import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
@@ -375,11 +374,10 @@ function addKeyAction(game: IGame, destination: IDestination) {
     if (destination.barrier?.key) {
         const key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
         let existingAction = null;
-        const keyActionHash = createFunctionHash(key.open.execute);
 
         if (destination.barrier.actions) {
             destination.barrier.actions.forEach(([k, v]) => {
-                if (createFunctionHash(v.execute) === keyActionHash) {
+                if (k === key.id) {
                     existingAction = v;
                 }
             });
@@ -391,15 +389,14 @@ function addKeyAction(game: IGame, destination: IDestination) {
         if (existingAction) {
             destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
         }
-
-        const keyId = key.id;
+        
         let partyKey = null;
 
         game.party.characters.forEach(c => {
-            partyKey = partyKey ?? c.items.get(keyId);
+            partyKey = partyKey ?? c.items.get(key.id);
         });
 
-        const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(keyId));
+        const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(key.id));
 
         if (barrierKey) {
             destination.barrier.actions.push([barrierKey.id, barrierKey.open]);

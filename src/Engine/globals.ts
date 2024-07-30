@@ -5,15 +5,15 @@ const deletedCollection: string = '_deleted';
 
 if (Function.prototype.proxy === undefined) {
     // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
-    Function.prototype.proxy = function (proxyFunction: Function, ...params) {
-        var originalFunction = this;
+    Function.prototype.proxy = function (proxyFunction: Function, ...params: any[]) {
+        const originalFunction = this;
 
         return (function () {
             // Creating an object to attach the function to is a workaround to not
             // trigger the TypeScript error TS2683: 'this' implicitly has type 'any'.
-            var func = { 
+            const func = { 
                 func: function () {
-                    var args = [].slice.call(arguments);
+                    const args = [].slice.call(arguments);
             
                     if (originalFunction) {
                         args.splice(0, 0, this);
@@ -48,11 +48,11 @@ export function addFunctionExtensions() {
 // This allows deserializing functions added at runtime without using eval.
 // Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
 export function parseFunction<T extends Function>(text: string) {
-    const funcReg = /function[\s]*([a-zA-Z0-9]*)(\([\s\w\d,]*\))[\s]*({[\S\s]*})/gmi;
-    var match = funcReg.exec(text);
+    const funcReg = /function[\s]*([a-z\d]*)(\([\s\w\d,]*\))[\s]*({[\S\s]*})/gmi;
+    const match = funcReg.exec(text);
 
     if (match) {
-        var args = match[2].substring(1, match[2].length - 1);
+        const args = match[2].substring(1, match[2].length - 1);
         return <T>(new Function(args, match[3]));
     }
 
@@ -68,12 +68,12 @@ export function parseFunction<T extends Function>(text: string) {
 export function makeSerializeSafe<T extends Function>(functionDefinition: T, callbacks: { [key: string]: Function }): T {
     let serialized = serializeFunction(functionDefinition);
 
-    for (var key in callbacks) {
-        var callback = callbacks[key];
+    for (const key in callbacks) {
+        const callback = callbacks[key];
 
         if (callback) {
             if (serialized.indexOf(key) > -1) {
-                var startIndex = serialized.indexOf('{') + 1;
+                const startIndex = serialized.indexOf('{') + 1;
                 serialized = serialized.substring(0, startIndex) + `const ${key} = ${serializeFunction(callback)};` + serialized.substring(startIndex);
             }
         }
@@ -83,7 +83,7 @@ export function makeSerializeSafe<T extends Function>(functionDefinition: T, cal
 }
 
 export function serializeFunction(value: Function) {
-    const _functionArgumentRegex = /\([a-z-A-Z0-9:, ]{1,}\)/;
+    const _functionArgumentRegex = /\([a-z-A-Z0-9:, ]+\)/;
 
     // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
     // to a function. Convert values that have an arrow notation.
@@ -91,10 +91,10 @@ export function serializeFunction(value: Function) {
     const argumentString = functionString.substring(0, functionString.indexOf('{'));
 
     if (argumentString.indexOf('function') == -1) {
-        var arrowIndex = argumentString.indexOf('=>');
+        const arrowIndex = argumentString.indexOf('=>');
 
         // The arguments regex will fail when no arguments are used in production mode. Use empty brackets in that case.
-        var args = functionString.match(_functionArgumentRegex)?.[0] || '()';
+        const args = _functionArgumentRegex.exec(functionString)?.[0] || '()';
 
         functionString = 'function' + args + functionString.substring(arrowIndex + 2).trim();
     }
@@ -117,7 +117,7 @@ export function addArrayExtensions() {
                 }
 
                 // Don't return deleted properties.
-                return result && result[StateProperties.Deleted] ? undefined : result;
+                return result?.[StateProperties.Deleted] ? undefined : result;
             }
         });
     }
@@ -148,10 +148,10 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'removeDeleted', {
             enumerable: false,
             value: function () {
-                const deleted = this.filter(e => e[StateProperties.Deleted]);
+                const deleted = this.filter((e: any) => e[StateProperties.Deleted]);
 
                 if (deleted.length > 0) {
-                    deleted.forEach(d =>{
+                    deleted.forEach((d: any) =>{
                         const index = this.indexOf(d);
                         Array.prototype.splice.call(this, index, 1);
                     });
@@ -178,14 +178,14 @@ export function addArrayExtensions() {
                     existing = withDeleted.indexOf(entity) > -1 ? entity : null;
 
                     if (!existing) {
-                        existing = find(entity, withDeleted, true).sort((a, b) => a[StateProperties.Deleted] ? -1 : 1)[0];
+                        existing = find(entity, withDeleted, true).sort((a, _) => a[StateProperties.Deleted] ? -1 : 1)[0];
                     }
                 }
 
                 // If an existing delete record is found, the item was originally removed from this array.
                 // Remove the deleted record and the added flag so the original situation is restored.
                 // Otherwise, add the added flag.
-                if (existing && existing[StateProperties.Deleted]) {
+                if (existing?.[StateProperties.Deleted]) {
                     const deletedItems = this[deletedCollection];
 
                     if (deletedItems && deletedItems.indexOf(existing) > -1) {
@@ -256,9 +256,15 @@ export function addArrayExtensions() {
                     }
                     
                     const { first, second } = getKeyPropertyNames(entry);
-                    const keyProps = 
-                        first && second ? { [first]: entry[first], [second]: entry[second] } :
-                        first ? { [first]: entry[first] } : { [second]: entry[second] };
+                    let keyProps: { [x: string]: any; };
+                    
+                    if (first && second) {
+                        keyProps = { [first]: entry[first], [second]: entry[second] };
+                    } else if (first) {
+                        keyProps = {[first]: entry[first]}
+                    } else {
+                        keyProps = {[second]: entry[second]};
+                    }
                     
                     collection[deletedCollection].push({ ...keyProps, [StateProperties.Deleted]: true });
                 }
@@ -278,26 +284,6 @@ export function addArrayExtensions() {
             }
         });
     }
-}
-
-export function createFunctionHash(func: Function): number {
-    return createHash(func.toString());
-}
-
-export function createHash(value: string): number {
-    let hash = 0;
-
-    if (!value || value.length == 0) {
-        return hash;
-    }
-
-    for (let i = 0; i < value.length; i++) {
-        const char = value.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-
-    return hash;
 }
 
 export function compareString(left: string, right: string): boolean {
@@ -325,7 +311,7 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
     id = getId(id);
 
     return Array.prototype.filter.call(array, (x: { id: string, target: Function | string } | Function) => { 
-        var currentId = typeof x === 'function' ? x : x.target ?? x.id;
+        const currentId = typeof x === 'function' ? x : x.target ?? x.id;
         return compareString(getId(currentId), id);
     });
 }
