@@ -1,7 +1,6 @@
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer";
 import {StateProperties} from "storyScript/stateProperties.ts";
-import {getKeyPropertyNames, getPlural, isDataRecord, propertyMatch} from "storyScript/utilities";
-import {FunctionType, UndefinedType} from "../../../constants.ts";
+import {getPlural, isDataRecord, propertyMatch} from "storyScript/utilities";
 import {InitEntityCollection} from "storyScript/ObjectConstructors.ts";
 
 export class DataSynchronizer implements IDataSynchronizer {
@@ -23,7 +22,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             return;
         }
 
-        if (typeof pristineEntity === UndefinedType && this.isEntity(entity)) {
+        if (typeof pristineEntity === 'undefined' && this.isEntity(entity)) {
             pristineEntity = this._pristineEntities[getPlural(entity.type)][entity.id];
         }
 
@@ -33,7 +32,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             let currentProperty = entity[p];
 
             // If there is no pristine entity, recurse down the object to find entities to synchronize.
-            if (typeof pristineEntity === UndefinedType) {
+            if (typeof pristineEntity === 'undefined') {
                 if (Array.isArray(currentProperty) || typeof currentProperty === 'object') {
                     this.synchronizeEntityData(currentProperty, undefined, entity, pristineEntity, p);
                 }
@@ -59,10 +58,10 @@ export class DataSynchronizer implements IDataSynchronizer {
 
             if (Array.isArray(pristineProperty) || typeof pristineProperty === 'object') {
                 this.synchronizeEntityData(currentProperty, pristineProperty, entity, pristineEntity, p);
-                return;
             }
-
-            this.updatePropertyValue(p, entity, parentEntity, pristineProperty);
+            
+            // Either the property is the same on the entity and the pristine entity (a key value)
+            // or the value was changed at runtime. Either way, do nothing.
         });
     }
 
@@ -76,13 +75,13 @@ export class DataSynchronizer implements IDataSynchronizer {
 
             if (!match || match[StateProperties.Deleted]) {
                 return;
-            } else if (typeof (p[1]) === FunctionType) {
+            } else if (typeof (p[1]) === 'function') {
                 match[1] = p[1];
             } else {
                 if (!match[1]) {
                     match.push({});
                 }
-                
+
                 this.synchronizeEntityData(match[1], p[1], entity, pristineEntity, '1');
             }
         });
@@ -136,24 +135,6 @@ export class DataSynchronizer implements IDataSynchronizer {
         return true;
     }
 
-    private updatePropertyValue = (
-        propertyName: string,
-        entity: any,
-        parentEntity: any,
-        pristineProperty: any,
-    ) => {
-        const currentValue = entity[propertyName];
-
-        if (currentValue !== pristineProperty) {
-            if (typeof currentValue === FunctionType && typeof pristineProperty === FunctionType && currentValue.toString() === pristineProperty.toString()) {
-                console.log(`Property ${propertyName} on ${this.getItemName(entity) ?? this.getItemName(parentEntity)} is a non-modified function`);
-                return;
-            }
-
-            console.log(`Property ${propertyName} on ${this.getItemName(entity) ?? this.getItemName(parentEntity)} was modified. It's value of '${currentValue}' is retained.`);
-        }
-    }
-
     private isEntity = (entity: any): boolean => {
         return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
     }
@@ -161,10 +142,5 @@ export class DataSynchronizer implements IDataSynchronizer {
     private markEntriesAsDeleted = (item: any[]) => {
         const itemsToDelete = item.filter(i => i[StateProperties.Deleted]);
         itemsToDelete.forEach(i => item.delete(i));
-    }
-
-    private getItemName = (item: any): string => {
-        const {first, second} = getKeyPropertyNames(item);
-        return item[first] ?? item[second] ?? Object.keys(item)[0] ?? 'unknown';
     }
 }

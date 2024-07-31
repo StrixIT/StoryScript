@@ -8,6 +8,7 @@ import { randomList } from '../utilities';
 import { ITradeService } from '../Interfaces/services/tradeService';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { IParty } from '../Interfaces/party';
+import {StateProperties} from "storyScript/stateProperties.ts";
 
 export class TradeService implements ITradeService {
     constructor(private _game: IGame, private _texts: IInterfaceTexts) {
@@ -75,28 +76,30 @@ export class TradeService implements ITradeService {
     }
 
     private initTrade = (): ITrade => {
-        var trader = this._game.trade;
+        const trader = this._game.trade;
 
         if (!trader) {
             return null;
         }
+        
+        let itemsForSale = trader.buy.items ? trader.buy.items.slice() : undefined;
 
-        var itemsForSale = trader.buy.items ? trader.buy.items.slice() : undefined;
-
-        var buySelector = (item: IItem) => {
+        const buySelector = (item: IItem) => {
             return trader.buy.itemSelector(this._game, item);
         };
 
-        if ((trader.buy.initCollection && trader.buy.initCollection(this._game, trader) || !itemsForSale)) {
-            var collection = <any>(trader.ownItemsOnly ? this._game.person.items : this._game.definitions.items);
-            itemsForSale = randomList<IItem>(collection, trader.buy.maxItems, 'items', this._game.definitions, buySelector);
+        // When visiting a trader for the first time and he has an initCollection function set, set the items for sale.
+        if (!trader[StateProperties.Triggered] && (trader.buy.initCollection?.(this._game, trader) || !itemsForSale)) {
+            const collection = <any>(trader.ownItemsOnly ? this._game.person.items : this._game.definitions.items);
+            itemsForSale = randomList<IItem>(collection, trader.buy.maxItems, buySelector);
+            trader[StateProperties.Triggered] = true;
         }
 
-        var sellSelector = (item: IItem) => {
+        const sellSelector = (item: IItem) => {
             return trader.sell.itemSelector(this._game, item);
         };
 
-        var itemsToSell = randomList<IItem>(this._game.activeCharacter.items, trader.sell.maxItems, 'items', this._game.definitions, sellSelector);
+        const itemsToSell = randomList<IItem>(this._game.activeCharacter.items, trader.sell.maxItems, sellSelector);
 
         if (!trader.buy.items) {
             trader.buy.items = [];
@@ -106,7 +109,7 @@ export class TradeService implements ITradeService {
         // Also do filter existing items using the buy selector, so items that were added before but should not
         // be available from the trader anymore are removed. Also do apply the maxItems property again.
         trader.buy.items.length = 0;
-        itemsForSale.filter(buySelector).slice(0, trader.buy.maxItems).forEach(i => trader.buy.items.add(i));
+        itemsForSale?.filter(buySelector).slice(0, trader.buy.maxItems).forEach(i => trader.buy.items.add(i));
 
         if (!trader.sell.items) {
             trader.sell.items = [];
@@ -119,17 +122,17 @@ export class TradeService implements ITradeService {
     }
 
     private pay = (item: IItem, trader: ITrade, stock: IStock, party: IParty, characterSells: boolean): boolean => {
-        var price = item.value;
+        let price = item.value;
 
         if (stock.priceModifier != undefined) {
-            var modifier = typeof stock.priceModifier === 'function' ? (<any>stock).priceModifier(this._game) : stock.priceModifier;
+            const modifier = typeof stock.priceModifier === 'function' ? (<any>stock).priceModifier(this._game) : stock.priceModifier;
             price = Math.round(item.value * modifier);
         }
 
         party.currency = party.currency || 0;
         trader.currency = trader.currency || 0;
 
-        var canAffort = characterSells ? trader.currency - price >= 0 : party.currency - price >= 0;
+        const canAffort = characterSells ? trader.currency - price >= 0 : party.currency - price >= 0;
 
         if (canAffort) {
             party.currency = characterSells ? party.currency + price : party.currency - price;

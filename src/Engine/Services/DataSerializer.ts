@@ -3,11 +3,8 @@ import {InitEntityCollection} from "storyScript/ObjectConstructors";
 import {parseFunction, serializeFunction} from "storyScript/globals";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
-import {getPlural, isDataRecord, isKeyProperty} from "storyScript/utilities";
+import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilities";
 import {
-    FunctionType,
-    ObjectType,
-    StringType,
     IdProperty,
     StartNodeProperty
 } from "../../../constants.ts";
@@ -34,9 +31,9 @@ export class DataSerializer implements IDataSerializer {
                 continue;
             }
 
-            if (typeof value === ObjectType) {
+            if (typeof value === 'object') {
                 this.restoreObjects(value);
-            } else if (typeof value === StringType && value.indexOf('function') > -1) {
+            } else if (typeof value === 'string' && value.indexOf('function') > -1) {
                 loaded[key] = parseFunction(value);
             }
         }
@@ -77,7 +74,11 @@ export class DataSerializer implements IDataSerializer {
             }
 
             if (Array.isArray(originalValue)) {
-                originalValue = original[key].withDeleted();
+                const deletedEntries = originalValue.getDeleted();
+                
+                if (deletedEntries) {
+                    originalValue = originalValue.concat(deletedEntries);
+                }
             }
 
             this.getClonedValue({clone, key, original, originalValue, pristine, pristineValue});
@@ -120,7 +121,7 @@ export class DataSerializer implements IDataSerializer {
         if (Array.isArray(values)) {
             clone = [];
         } else {
-            clone = typeof values === ObjectType ? {} : values;
+            clone = typeof values === 'object' ? {} : values;
         }
 
         return clone;
@@ -146,7 +147,7 @@ export class DataSerializer implements IDataSerializer {
             return;
         }
 
-        if (typeof data.originalValue === ObjectType) {
+        if (typeof data.originalValue === 'object') {
             if (Array.isArray(data.clone)) {
                 data.clone.push({});
             } else {
@@ -160,7 +161,7 @@ export class DataSerializer implements IDataSerializer {
             return;
         }
         
-        if (typeof data.originalValue === FunctionType) {
+        if (typeof data.originalValue === 'function') {
             if (!data.originalValue.isProxy && data.originalValue.toString() !== data.pristineValue?.toString()) {
                 data.clone[data.key] = serializeFunction(data.originalValue);
             }
@@ -169,7 +170,7 @@ export class DataSerializer implements IDataSerializer {
 
         // Store only values that are different from the pristine value, values that are needed to create a
         // traversable world structure, and the key values of deleted array records.
-        if (data.originalValue != data.pristineValue || isKeyProperty(data.pristine, data.key) || data.original[StateProperties.Deleted] === true) {
+        if (data.originalValue != data.pristineValue || this.isKeyProperty(data.pristine, data.key) || data.original[StateProperties.Deleted] === true) {
             data.clone[data.key] = data.originalValue;
         }
     }
@@ -257,5 +258,11 @@ export class DataSerializer implements IDataSerializer {
                 delete clone[key];
             }
         }
+    }
+
+    private isKeyProperty = (item: any, propertyName: string): boolean =>
+    {
+        const keyProperties = getKeyPropertyNames(item);
+        return keyProperties.first === propertyName || keyProperties.second === propertyName;
     }
 }

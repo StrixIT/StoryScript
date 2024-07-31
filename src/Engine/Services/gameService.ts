@@ -23,7 +23,7 @@ import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
 import { IFeature } from '../Interfaces/feature';
-import { compare, selectStateListEntry } from 'storyScript/utilities';
+import { selectStateListEntry } from 'storyScript/utilities';
 import { IParty } from '../Interfaces/party';
 import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
 import { ICombatSetup } from '../Interfaces/combatSetup';
@@ -301,9 +301,9 @@ export class GameService implements IGameService {
         }
     }
 
-    executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
-        action.execute(this._game, barrier, destination);
-        barrier.actions.delete(barrier.actions.find(([k, v]) => v === action));
+    executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
+        action[1].execute(this._game, barrier, destination);
+        barrier.actions.delete(barrier.actions.find(([k, v]) => k === action[0]));
         this.saveGame();
     }
 
@@ -419,7 +419,7 @@ export class GameService implements IGameService {
                 }
             });
 
-            items.sort((a: IItem, b: IItem) => compare(b.targetType, a.targetType) || compare(a.name, b.name))
+            items.sort((a: IItem, b: IItem) => b.targetType.localeCompare(a.targetType) || a.name.localeCompare(b.name));
 
             const targetType = items[0]?.targetType ?? TargetType.Enemy;
 

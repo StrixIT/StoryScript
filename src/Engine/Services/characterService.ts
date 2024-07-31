@@ -161,7 +161,7 @@ export class CharacterService implements ICharacterService {
             character.equipment[type] = item;
         }
 
-        character.items.remove(item);
+        character.items.splice(character.items.indexOf(item), 1);
         return true;
     }
 

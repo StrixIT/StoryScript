@@ -12,11 +12,10 @@ import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
 import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
-import {Journal} from "../../../Games/MyRolePlayingGame/items/journal.ts";
 import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
-import {getId} from "storyScript/utilities.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
 import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
+import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
 
 describe("DataSynchronizer", () => {
 
@@ -88,10 +87,11 @@ describe("DataSynchronizer", () => {
 
     let dataSerializer: IDataSerializer;
     let dataSynchronizer: IDataSynchronizer;
+    let pristineEntities: Record<string, Record<string, any>>;
 
     beforeAll(() => {
         RunGame();
-        const pristineEntities = GetRegisteredEntities();
+        pristineEntities = GetRegisteredEntities();
         dataSerializer = new DataSerializer(pristineEntities);
         dataSynchronizer = new DataSynchronizer(pristineEntities);
     });
@@ -121,6 +121,11 @@ describe("DataSynchronizer", () => {
         // Reset the updated properties so we can compare the rest of the properties.
         skeleton.name = bandit.name;
         skeleton.attack = bandit.attack;
+
+        // Clear the functions so we can do a full compare.
+        (<IKey>skeleton.items[1]).open.execute = null;
+        (<IKey>bandit.items[1]).open.execute = null;
+        
         expect(skeleton).toEqual(bandit);
     });
 
@@ -161,28 +166,27 @@ describe("DataSynchronizer", () => {
         const start = Start();
         const skeleton = dataSerializer.restoreObjects(startLocationSkeleton);
         dataSynchronizer.synchronizeEntityData(skeleton, start);
-        expect(startLocationSkeleton.destinations).toEqual(start.destinations);
-        expect(start.items).toHaveLength(0);
-        expect(start.persons[0].trade).not.toBeNull();
-        expect(startLocationSkeleton.persons[0].items).toEqual(start.persons[0].items);
-        expect((<any>startLocationSkeleton).descriptionSelector).toEqual(start.descriptionSelector);
+        expect(startLocationSkeleton).toEqual(start);
     });
 
     test("should populate a location from a location skeleton and keep the additions", function () {
         const garden = Garden();
         const skeleton = dataSerializer.restoreObjects(gardenLocationSkeleton);
         dataSynchronizer.synchronizeEntityData(skeleton, garden);
+
         expect(skeleton.destinations).toHaveLength(2);
-        expect(skeleton.destinations[0].name).toBe("Enter the basement");
-        expect(skeleton.destinations[0].barrier).not.toBeNull();
+        const newDestination = skeleton.destinations[0];
+        skeleton.destinations.splice(0, 1);
+        expect(skeleton).toEqual(garden);
+        expect(newDestination.name).toBe("Enter the basement");
+        expect(newDestination.barrier).not.toBeNull();
     });
 
     test("should populate locations", function () {
+        const expected = [ pristineEntities['locations']['basement'], pristineEntities['locations']['dirtroad'] ];
         const skeleton = dataSerializer.restoreObjects(multipleLocations);
         dataSynchronizer.synchronizeEntityData(skeleton);
-        const journal = Journal();
-        expect(skeleton).toHaveLength(2);
-        expect(skeleton.find(l => l.id === getId(Basement)).items[0]).toEqual(journal);
+        expect(skeleton).toEqual(expected);
     });
 
     test("should restore Party data", function () {

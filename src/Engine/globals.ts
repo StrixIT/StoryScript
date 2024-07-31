@@ -1,5 +1,6 @@
 ﻿import { StateProperties } from "./stateProperties.ts";
 import { getId, getKeyPropertyNames, propertyMatch } from "./utilities";
+import {TypeProperty} from "../../constants.ts";
 
 const deletedCollection: string = '_deleted';
 
@@ -131,15 +132,11 @@ export function addArrayExtensions() {
         });
     }
 
-    if ((<any>Array.prototype).withDeleted === undefined) {
-        Object.defineProperty(Array.prototype, 'withDeleted', {
+    if ((<any>Array.prototype).getDeleted === undefined) {
+        Object.defineProperty(Array.prototype, 'getDeleted', {
             enumerable: false,
             value: function () {
-                if (this[deletedCollection]) {
-                    return [...this, ...this[deletedCollection]];
-                }
-
-                return this;
+                return this[deletedCollection];
             }
         });
     }
@@ -170,66 +167,33 @@ export function addArrayExtensions() {
                 if (typeof entity === 'undefined') {
                     return;
                 }
+                
+                let deleted: any;
 
-                const withDeleted = this.withDeleted();
-                let existing = null;
-
-                if (withDeleted.length > 0) {
-                    existing = withDeleted.indexOf(entity) > -1 ? entity : null;
-
-                    if (!existing) {
-                        existing = find(entity, withDeleted, true).sort((a, _) => a[StateProperties.Deleted] ? -1 : 1)[0];
-                    }
+                // Add a unique id to identify the add record if it doesn't have one yet, so we can
+                // match it to a delete record when appropriate. Otherwise, try and get a matching 
+                // delete record to see whether the record originally came from this array.
+                if (entity[StateProperties.Id]) {
+                    deleted = this.getDeleted()?.find((e: { [StateProperties.Id]: string; }) => e[StateProperties.Id] === entity[StateProperties.Id]);
+                } 
+                else {
+                    addUniqueId(entity);    
                 }
 
                 // If an existing delete record is found, the item was originally removed from this array.
-                // Remove the deleted record and the added flag so the original situation is restored.
-                // Otherwise, add the added flag.
-                if (existing?.[StateProperties.Deleted]) {
+                // Remove the deleted record, the added flag and unique id so the original situation is
+                // restored. Otherwise, add the added flag.
+                if (deleted) {
                     const deletedItems = this[deletedCollection];
-
-                    if (deletedItems && deletedItems.indexOf(existing) > -1) {
-                        deletedItems.splice(deletedItems.indexOf(existing), 1);
-                    }
-
+                    deletedItems.splice(deletedItems.indexOf(deleted), 1);
+                    delete entity[StateProperties.Id];
                     delete entity[StateProperties.Added];
-                } else {
+                }
+                else {
                     entity[StateProperties.Added] = true;
                 }
 
                 Array.prototype.push.call(this, entity);
-            }
-        });
-    }
-
-    if ((<any>Array.prototype).remove === undefined) {
-        Object.defineProperty(Array.prototype, 'remove', {
-            enumerable: false,
-            value: function (item: any) {
-                if (!item) {
-                    return null;
-                }
-
-                let entry = find(item, this, false)[0];
-                let index = -1;
-
-                if (typeof entry === 'undefined') {
-                    index = this.indexOf(item);
-
-                    if (index === -1) {
-                        return null;
-                    }
-
-                    entry = item;
-                }
-                
-                if (!entry) {
-                    return null;
-                }
-
-                index = this.indexOf(entry);
-                Array.prototype.splice.call(this, index, 1);
-                return entry;
             }
         });
     }
@@ -239,34 +203,53 @@ export function addArrayExtensions() {
             enumerable: false,
             writable: true,
             value: function (item: any) {
+                if (typeof item === 'undefined') {
+                    return;
+                }
+
                 const collection = this;
+                let entry = find(item, this, false)[0];
+                let index: number;
+                
+                if (typeof entry === 'undefined') {
+                    index = collection.indexOf(item);
+                } else {
+                    index  = this.indexOf(entry);
+                }
+
+                if (index === -1) {
+                    return;
+                }
+                
+                Array.prototype.splice.call(this, index, 1);
+                collection[deletedCollection] = collection[deletedCollection] || [];
+                
+                // If a deletion record is deleted, simply move it to the deleted collection.
+                if (item[StateProperties.Deleted])
+                {
+                    collection[deletedCollection].push(item);
+                    return;
+                }
 
                 // Only add a deletion record when the item is removed from the array and the
-                // item does not have the 'added' flag. This means the item is originally from
-                // this array.
-                let entry = collection.remove(item);
-
-                if (entry && !entry[StateProperties.Added]) {
-                    collection[deletedCollection] = collection[deletedCollection] || [];
+                // item does not have the 'added' flag. Otherwise, it came from another array
+                // that has the deletion record for this item.
+                if (!item[StateProperties.Added]) {
+                    // Add a unique id to the item to track it if it doesn't have one yet.
+                    addUniqueId(item);
                     
-                    if (entry[StateProperties.Deleted])
-                    {
-                        collection[deletedCollection].push(entry);
-                        return;
-                    }
-                    
-                    const { first, second } = getKeyPropertyNames(entry);
+                    const { first, second } = getKeyPropertyNames(item);
                     let keyProps: { [x: string]: any; };
                     
                     if (first && second) {
-                        keyProps = { [first]: entry[first], [second]: entry[second] };
+                        keyProps = { [first]: item[first], [second]: item[second] };
                     } else if (first) {
-                        keyProps = {[first]: entry[first]}
+                        keyProps = {[first]: item[first]}
                     } else {
-                        keyProps = {[second]: entry[second]};
+                        keyProps = {[second]: item[second]};
                     }
                     
-                    collection[deletedCollection].push({ ...keyProps, [StateProperties.Deleted]: true });
+                    collection[deletedCollection].push({ ...keyProps, [StateProperties.Deleted]: true, [StateProperties.Id]: item[StateProperties.Id] });
                 }
             }
         });
@@ -314,4 +297,10 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
         const currentId = typeof x === 'function' ? x : x.target ?? x.id;
         return compareString(getId(currentId), id);
     });
+}
+
+function addUniqueId(entity: any) {
+    if (entity[TypeProperty] && !entity[StateProperties.Id]) {
+        entity[StateProperties.Id] = crypto.randomUUID();
+    }
 }

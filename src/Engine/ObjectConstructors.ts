@@ -14,7 +14,7 @@ import {ICombine} from './Interfaces/combinations/combine';
 import {IEquipment} from './Interfaces/equipment';
 import {ActionStatus, IParty} from './Interfaces/storyScript';
 import {ISaveGame} from './Interfaces/saveGame';
-import {FunctionType} from "../../constants.ts";
+import {TypeProperty} from "../../constants.ts";
 
 const _entityCollections: string[] = [
     'features',
@@ -36,10 +36,6 @@ const _gameCollections: string[] = _entityCollections.concat([
 
 // The dictionary containing all registered entity keys and their corresponding ids.
 let _registeredIds: Map<string, string> = new Map<string, string>();
-
-// The dictionary containing all registered entity keys and their corresponding id-less entities.
-// This is used to set the ids of nested entities after the entities have been build.
-let _idLessEntities: Map<string, { id: string }[]> = new Map<string, { id: string }[]>();
 
 // The dictionary containing all registered entity ids and their corresponding descriptions.
 let _registeredDescriptions: Map<string, string> = new Map<string, string>();
@@ -118,18 +114,53 @@ export function buildEntities(): void {
     });
 
     allEntities.forEach(e => {
-        const entityKey = getEntityKey(e);
-        const id = _registeredIds.get(entityKey);
-
-        _idLessEntities.get(entityKey)?.forEach(e => {
-            e.id = id;
-        })
-
+        fixUpEntity(e);
         registerEntity(e);
     });
+}
 
-    // We don't need this data anymore, clean it up.
-    _idLessEntities.clear();
+function fixUpEntity(entity: { type: string, id?: string, description?: string }) {
+    const entityKey = getEntityKey(entity);
+    const id = _registeredIds.get(entityKey);
+
+    if (!id) {
+        return;
+    }
+
+    entity.id ??= id;
+    
+    if (entity.description) {
+        const descriptionKey = `${entity.type}_${entity.id}`;
+
+        if (!_registeredDescriptions.get(descriptionKey)) {
+            _registeredDescriptions.set(descriptionKey, entity.description);
+        }
+
+        loadPictureFromDescription(entity, entity.description);
+    }
+
+    Object.keys(entity)
+        .filter(p => entity[p][TypeProperty])
+        .forEach(p => fixUpEntity(entity[p]));
+    
+    Object.keys(entity)
+        .filter(p => Array.isArray(entity[p]) && entity[p].length && entity[p][0][TypeProperty])
+        .forEach(p => entity[p].forEach((e: {
+            type: string;
+            id: string;
+            description?: string;
+        }) => fixUpEntity(e)));
+}
+
+function loadPictureFromDescription(entity: any, description: string): void {
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(description, 'text/html');
+    const pictureElement = htmlDoc.getElementsByClassName('picture')[0];
+    const pictureSrc = pictureElement?.getAttribute('src');
+
+    if (pictureSrc) {
+        entity.picture = pictureSrc;
+    }
 }
 
 export function setReadOnlyProperties(key: string, data: any) {
@@ -278,38 +309,19 @@ function EnemyBase<T extends IEnemy>(entity: T, type: string, id?: string): T {
 }
 
 function CreateObject<T>(entity: T, type: string, id?: string) {
-    if (typeof entity === FunctionType) {
-        id = getId(<Function>entity);
+    if (typeof entity === 'function') {
+        id = getId(entity);
     }
 
     const compiledEntity = getCompiledEntity(entity, type);
     const entityKey = getEntityKey(compiledEntity);
     checkInlineConflict(id, entityKey);
-    const registeredId = _registeredIds.get(entityKey);
 
-    if (id && !registeredId) {
+    if (id && !_registeredIds.has(entityKey)) {
         _registeredIds.set(entityKey, id);
     }
-
-    if (id || registeredId) {
-        compiledEntity.id = id || registeredId;
-        const descriptionKey = `${compiledEntity.type}_${compiledEntity.id}`;
-
-        if (compiledEntity.description) {
-            loadPictureFromDescription(compiledEntity, compiledEntity.description);
-
-            if (!_registeredDescriptions.get(descriptionKey)) {
-                _registeredDescriptions.set(descriptionKey, compiledEntity.description);
-            }
-        }
-    } else {
-        if (!_idLessEntities.has(entityKey)) {
-            _idLessEntities.set(entityKey, []);
-        }
-        
-        _idLessEntities.get(entityKey).push(compiledEntity);
-    }
-
+    
+    fixUpEntity(compiledEntity);
     return <T><unknown>compiledEntity;
 }
 
@@ -365,7 +377,7 @@ function checkInlineConflict(id: string, entityKey: string) {
 function getCompiledEntity(entity: any, type: string): { id: string, type: string, description?: string } {
     let compiledEntity: { id: string, type: string };
 
-    if (typeof entity === FunctionType) {
+    if (typeof entity === 'function') {
         compiledEntity = entity();
     } else {
         compiledEntity = entity;
@@ -382,17 +394,6 @@ function getCompiledEntity(entity: any, type: string): { id: string, type: strin
     // Add the type to the object, so we can distinguish between them in the combine functionality.
     compiledEntity.type = type;
     return compiledEntity;
-}
-
-function loadPictureFromDescription(entity: any, description: string): void {
-    const parser = new DOMParser();
-    const htmlDoc = parser.parseFromString(description, 'text/html');
-    const pictureElement = htmlDoc.getElementsByClassName('picture')[0];
-    const pictureSrc = pictureElement?.getAttribute('src');
-
-    if (pictureSrc) {
-        entity.picture = pictureSrc;
-    }
 }
 
 function getEntityKey(entity: object): string {

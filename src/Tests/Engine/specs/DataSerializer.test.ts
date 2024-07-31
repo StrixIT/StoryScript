@@ -14,6 +14,7 @@ import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {Character} from "../../../Games/MyRolePlayingGame/types.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
+import {StateProperties} from "storyScript/stateProperties.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -180,6 +181,8 @@ describe("DataSerializer", () => {
         (<(game: IGame) => boolean>searchShedAction.execute)(game);
 
         const result = serializer.createSerializableClone(game.currentLocation);
+        // Remove the unique id to be able to compare the rest of the properties.
+        delete result.destinations[1][StateProperties.Id];
         expect(result).toEqual(locationWithAddedDestination);
     });
 

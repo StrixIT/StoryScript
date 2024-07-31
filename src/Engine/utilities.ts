@@ -2,13 +2,6 @@
 import { compareString } from './globals';
 import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
 import { StateList, StateListEntry } from './Interfaces/stateList';
-import {FunctionType, ObjectType, StringType} from "../../constants.ts";
-
-export function compare(a: any, b: any) {
-    if (a > b) return +1;
-    if (a < b) return -1;
-    return 0;
-}
 
 export function getId(id: Function | string) {
     let actualId: string;
@@ -33,7 +26,7 @@ export function getId(id: Function | string) {
 
 export function isDataRecord(item: any[]): boolean{
     // Check for either object or function values, as tuples are used to store actions as objects and functions now.
-    return item?.length && item.length === 2 && typeof(item[0]) === StringType && (typeof(item[1]) === ObjectType || typeof(item[1]) === FunctionType);
+    return item?.length && item.length === 2 && typeof(item[0]) === 'string' && (typeof(item[1]) === 'object' || typeof(item[1]) === 'function');
 }
 
 export function getKeyPropertyNames(item: any): { first: string, second: string } {
@@ -52,12 +45,6 @@ export function getKeyPropertyNames(item: any): { first: string, second: string 
     secondKeyProperty ??= item.combinationType !== undefined ? 'combinationType' : null;
 
     return { first: firstKeyProperty, second: secondKeyProperty };
-}
-
-export function isKeyProperty(item: any, propertyName: string): boolean
-{
-    const keyProperties = getKeyPropertyNames(item); 
-    return keyProperties.first === propertyName || keyProperties.second === propertyName;
 }
 
 export function propertyMatch(first: any, second: any): boolean {
@@ -86,23 +73,36 @@ function getKeyProperties(pristine: any, current: any): { first?: string, second
     return { first: pristineFirst && currentFirst ? pristineFirst : null, second: pristineSecond && currentSecond ? pristineSecond : null };
 }
 
-export function getValue(value: any): string {
+function getValue(value: any): string {
     return typeof value === 'function' ? value.name.toLowerCase() : value;
 }
 
 export function getPlural(name: string): string {
-    return name.endsWith('y') ? 
-            name.substring(0, name.length - 1) + 'ies' 
-            : name.endsWith('s') ? 
-                name 
-                : name + 's';
+    let plural: string;
+    
+    if (name.endsWith('y')) {
+        plural = name.substring(0, name.length - 1) + 'ies';
+    } else if (name.endsWith('s')) {
+        plural = name;
+    } else {
+        plural = name + 's';
+    }
+    
+    return  plural;
 }
 
 export function getSingular(name: string): string {
-    return name.endsWith('ies') ? 
-            name.substring(0, name.length - 3) + 'y' 
-            : name.endsWith('e') ? name
-                : name.substring(0, name.length - 1);
+    let singular: string;
+
+    if (name.endsWith('ies')) {
+        singular = name.substring(0, name.length - 3) + 'y';
+    } else if (name.endsWith('e')) {
+        singular = name
+    } else {
+        singular = name.substring(0, name.length - 1);
+    }
+
+    return  singular;
 }
 
 export function addHtmlSpaces(text: string): string {
@@ -110,11 +110,11 @@ export function addHtmlSpaces(text: string): string {
         return null;
     }
 
-    if (text.substr(0, 1).trim() !== '' && text.substr(0, 6) !== '&nbsp;') {
+    if (text.substring(0, 1).trim() !== '' && !text.startsWith('&nbsp;')) {
         text = '&nbsp;' + text;
     }
 
-    if (text.substr(text.length - 1, 1).trim() !== '' && text.substr(text.length - 6, 6) !== '&nbsp;') {
+    if (text.substring(text.length - 1, 1).trim() !== '' && text.substring(text.length - 6, 6) !== '&nbsp;') {
         text = text + '&nbsp;';
     }
 
@@ -122,30 +122,35 @@ export function addHtmlSpaces(text: string): string {
 }
 
 export function isEmpty(object: any, property?: string) {
-    var objectToCheck = property ? object[property] : object;
-    return objectToCheck ? Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0 : true;
+    const objectToCheck = property ? object[property] : object;
+    
+    if (objectToCheck) {
+        return Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0;
+    }
+    
+    return true;
 }
 
 export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
-    var collection = definitions[type];
+    const collection = definitions[type];
 
     if (!collection) {
         return null;
     }
 
-    var selection = getFilteredInstantiatedCollection<T>(collection, selector);
+    const selection = getFilteredInstantiatedCollection<T>(collection, selector);
 
     if (selection.length == 0) {
         return null;
     }
 
-    var index = Math.floor(Math.random() * selection.length);
+    const index = Math.floor(Math.random() * selection.length);
     return selection[index];
 }
 
-export function randomList<T>(collection: T[] | ([() => T]), count: number, type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T[] {
-    var selection = getFilteredInstantiatedCollection<T>(collection, selector);
-    var results = <T[]>[];
+export function randomList<T>(collection: T[] | ([() => T]), count: number, selector?: (item: T) => boolean): T[] {
+    const selection = getFilteredInstantiatedCollection<T>(collection, selector);
+    const results = <T[]>[];
 
     if (count === undefined) {
         count = selection.length;
@@ -153,7 +158,7 @@ export function randomList<T>(collection: T[] | ([() => T]), count: number, type
 
     if (selection.length > 0) {
         while (results.length < count && results.length < selection.length) {
-            var index = Math.floor(Math.random() * selection.length);
+            const index = Math.floor(Math.random() * selection.length);
 
             if (results.indexOf(selection[index]) == -1) {
                 results.push(selection[index]);
@@ -166,10 +171,6 @@ export function randomList<T>(collection: T[] | ([() => T]), count: number, type
 
 export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
     return entity.id ? compareString(entity.id, definition.name) : false;
-}
-
-export function clone<T>(entity: T): T {
-    return extend(Array.isArray(entity) ? Array(entity.length).fill({}) : {}, entity);
 }
 
 export function parseGameProperties(lines: string, game: IGame): string {
@@ -219,13 +220,13 @@ export function createPromiseForCallback<T>(callBack: Function): { promise: Prom
     let resolveFunc = null;
 
     const promiseCallback = () => { 
-        var callBackResult = callBack();
+        const callBackResult = callBack();
         Promise.resolve(callBackResult).then(() => {
             resolveFunc?.();
         });
      }
 
-    const promiseFunc = function(resolve, reject) {
+    const promiseFunc = function(resolve: any) {
         resolveFunc = resolve;
     }
 
@@ -272,10 +273,10 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
 
 export function selectStateListEntry(game: IGame, stateList: StateList) {
             // Evaluate custom functions first.
-            var customFunctions = stateList[''];
+            const customFunctions = stateList[''];
             let result = null;
     
-            for (var n in customFunctions) {
+            for (const n in customFunctions) {
                 result = (<((game: IGame) => string)><unknown>customFunctions[n])(game);
     
                 if (result) {
@@ -284,7 +285,7 @@ export function selectStateListEntry(game: IGame, stateList: StateList) {
             }
     
             // Next, get the entries in this order: Location, PlayState, GameState.
-            var filteredEntries = Object.keys(stateList)
+            const filteredEntries = Object.keys(stateList)
                                     .map(e => mapPlaylistEntries(game, e, stateList[e]))
                                     .filter(e => e);
             
@@ -305,7 +306,7 @@ function selectCandidate(game: IGame, key: string, item: (GameState | PlayState 
     const functionName = (<Function>item)?.name;
     const currentLocationId = game.currentLocation?.id;
 
-    var order = item === game.state ? 3 
+    const order = item === game.state ? 3 
     : item ===  game.playState ? 2 
     : functionName && currentLocationId && compareString(functionName, currentLocationId) ? 1 
     : 0;
@@ -314,7 +315,7 @@ function selectCandidate(game: IGame, key: string, item: (GameState | PlayState 
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], selector?: (item: T) => boolean) {
-    var collectionToFilter = <T[]>[];
+    let collectionToFilter = <T[]>[];
 
     if (typeof collection[0] === 'function') {
         (<[() => T]>collection).forEach((def: () => T) => {
@@ -326,22 +327,4 @@ function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], sel
     }
 
     return selector ? collectionToFilter.filter(selector) : collectionToFilter;
-}
-
-function extend(target, source) {
-    const keys = Object.keys(source);
-
-    for (let i = 0, ii = keys.length; i < ii; ++i) {
-        const key = keys[i];
-        const obj = source[key];
-        const isArray = Array.isArray(obj);
-        
-        if (target[key] === undefined) {
-            target[key] = isArray ? [] : null;
-        }
-        
-        target[key] = Array.isArray(obj) ? extend(Array(obj.length).fill({}), obj) : typeof obj === 'object' ? extend({}, obj) : obj;
-    }
-
-    return target;
 }

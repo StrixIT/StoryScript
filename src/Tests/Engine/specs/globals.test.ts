@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { addFunctionExtensions, addArrayExtensions, compareString, parseFunction, createHash } from 'storyScript/globals';
+import { addFunctionExtensions, addArrayExtensions, compareString, parseFunction } from 'storyScript/globals';
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
@@ -64,11 +64,6 @@ describe("Utilities", function() {
         const result = myFunction(2, 3);
         
         expect(result).toEqual(5);
-    });
-
-    test("Creating a hash for null should return 0", function() {
-        const result = createHash(null);
-        expect(result).toBe(0);
     });
 
     test("should get an entity using the function name", function() {
@@ -182,16 +177,14 @@ describe("Utilities", function() {
     test("should not change anything when removing a non-existing item", function() {
         addArrayExtensions();
         const testArray = getTestArray();
-        testArray.remove('');
-
+        testArray.delete('');
         expect(testArray.length).toBe(2);
     });
 
     test("should remove an entity using the function name", function() {
         addArrayExtensions();
         const testArray = getTestArray();
-        testArray.remove(Journal);
-
+        testArray.delete(Journal);
         expect(testArray.length).toBe(1);
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
     });
@@ -199,7 +192,7 @@ describe("Utilities", function() {
     test("should remove an entity using an id string", function() {
         addArrayExtensions();
         const testArray = getTestArray();
-        testArray.remove(Journal.name);
+        testArray.delete(Journal.name);
 
         expect(testArray.length).toBe(1);
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
@@ -208,7 +201,7 @@ describe("Utilities", function() {
     test("should NOT remove an entity when passing it in as a new object", function() {
         addArrayExtensions();
         const testArray = getTestArray();
-        testArray.remove(Journal());
+        testArray.delete(Journal());
 
         expect(testArray.length).toBe(2);
         expect(compareId(testArray[1].id, Journal)).toBeTruthy();
@@ -219,7 +212,7 @@ describe("Utilities", function() {
         const testArray = getTestArray();
         const journal = testArray[1];
         expect(journal.id).toBe(Journal.name.toLowerCase());
-        testArray.remove(journal);
+        testArray.delete(journal);
 
         expect(testArray.length).toBe(1);
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
@@ -239,7 +232,7 @@ describe("Utilities", function() {
             },
             gardenDestination
         ];
-        testArray.remove(gardenDestination.target);
+        testArray.delete(gardenDestination.target);
 
         expect(testArray.length).toBe(1);
         expect(testArray[0].target).toBe('Bedroom');
@@ -260,7 +253,7 @@ describe("Utilities", function() {
             }
         ];
 
-        testArray.remove(<any>Garden);
+        testArray.delete(<any>Garden);
 
         expect(testArray.length).toBe(1);
         expect(testArray[0].target).toBe('Bedroom');

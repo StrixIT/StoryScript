@@ -11,7 +11,7 @@ interface Array<T> {
     delete?(id: string | ((...params: any) => T) | T): void;
     all(id: Function): T[];
     clear(): void;
-    withDeleted(): T[];
+    getDeleted(): T[];
     removeDeleted(): void;
 }
 
