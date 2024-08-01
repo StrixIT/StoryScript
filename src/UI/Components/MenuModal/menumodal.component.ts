@@ -4,6 +4,7 @@ import { IGame, IInterfaceTexts, PlayState } from 'storyScript/Interfaces/storyS
 import { GameService } from 'storyScript/Services/gameService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { getTemplate } from '../../helpers';
+import {HelperService} from "storyScript/Services/helperService.ts";
 
 @Component({
     selector: 'menu-modal',
@@ -12,10 +13,12 @@ import { getTemplate } from '../../helpers';
 export class MenuModalComponent {
     private _activeModal: NgbActiveModal;
     private _gameService: GameService;
+    private _helperService: HelperService;
     
     constructor() {
         this._activeModal = inject(NgbActiveModal);
         this._gameService = inject(GameService);
+        this._helperService = inject(HelperService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
@@ -62,7 +65,7 @@ export class MenuModalComponent {
     overwriteSelected = (): boolean => this._gameService.getSaveGames().indexOf(this.selectedGame) > -1;
 
     saveGame = (): void => {
-        this._gameService.saveGame(this.selectedGame);
+        this._helperService.saveGame(this.selectedGame);
         this.closeModal();
     }
 

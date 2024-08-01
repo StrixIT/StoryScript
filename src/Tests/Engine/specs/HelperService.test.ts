@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { HelperService } from 'storyScript/Services/helperService';
-import { IEnemy, ICharacter, IGame, IDefinitions, IItem } from 'storyScript/Interfaces/storyScript';
-import { IHelperService } from 'storyScript/Interfaces/services/helperService';
+import {IEnemy, ICharacter, IGame, IDefinitions, IItem, IHelpers, IRules} from 'storyScript/Interfaces/storyScript';
+import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 
 describe("HelperService", function() {
 
@@ -126,7 +126,7 @@ describe("HelperService", function() {
 
 });
 
-function getService(): { service: IHelperService, definitions: IDefinitions } {
+function getService(): { service: IHelpers, definitions: IDefinitions } {
     const key = function BasementKey() { return <IItem>{ id: 'basementkey'}; };
     const journal = function Journal() { return <IItem>{ id: 'journal' }; };
     const boots = function LeatherBoots() { return <IItem>{ id: 'leatherboots' }; };
@@ -150,7 +150,7 @@ function getService(): { service: IHelperService, definitions: IDefinitions } {
         quests: []
     }
     
-    return { service: new HelperService(<IGame>{}, definitions), definitions: definitions };
+    return { service: new HelperService(<IDataService>{}, <IGame>{}, <IRules>{}, definitions), definitions: definitions };
 }
 
 function find(collection, name) {

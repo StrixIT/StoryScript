@@ -1,5 +1,5 @@
-﻿import { StateProperties } from "./stateProperties.ts";
-import { getId, getKeyPropertyNames, propertyMatch } from "./utilities";
+﻿import {StateProperties} from "./stateProperties.ts";
+import {getId, getKeyPropertyNames, propertyMatch} from "./utilities";
 import {TypeProperty} from "../../constants.ts";
 
 const deletedCollection: string = '_deleted';
@@ -12,15 +12,15 @@ if (Function.prototype.proxy === undefined) {
         return (function () {
             // Creating an object to attach the function to is a workaround to not
             // trigger the TypeScript error TS2683: 'this' implicitly has type 'any'.
-            const func = { 
+            const func = {
                 func: function () {
                     const args = [].slice.call(arguments);
-            
+
                     if (originalFunction) {
                         args.splice(0, 0, this);
                         args.splice(1, 0, originalFunction);
                     }
-                    
+
                     return proxyFunction.apply(this, args.concat(...params));
                 }
             };
@@ -33,7 +33,7 @@ if (Function.prototype.proxy === undefined) {
 
 export function addFunctionExtensions() {
     console.log(Function.prototype.name);
-    
+
     /* v8 ignore start  */
     if (Function.prototype.name === undefined) {
         // This is only used by legacy browsers
@@ -66,7 +66,9 @@ export function parseFunction<T extends Function>(text: string) {
  * @param callbacks The callback functions to embed. Use the names the callbacks have in the main function body.
  * @returns The main function with the callbacks embedded.
  */
-export function makeSerializeSafe<T extends Function>(functionDefinition: T, callbacks: { [key: string]: Function }): T {
+export function makeSerializeSafe<T extends Function>(functionDefinition: T, callbacks: {
+    [key: string]: Function
+}): T {
     let serialized = serializeFunction(functionDefinition);
 
     for (const key in callbacks) {
@@ -112,8 +114,7 @@ export function addArrayExtensions() {
 
                 if (id) {
                     result = find(id, this, false)[0];
-                }
-                else {
+                } else {
                     result = this[0];
                 }
 
@@ -141,24 +142,6 @@ export function addArrayExtensions() {
         });
     }
 
-    if ((<any>Array.prototype).removeDeleted === undefined) {
-        Object.defineProperty(Array.prototype, 'removeDeleted', {
-            enumerable: false,
-            value: function () {
-                const deleted = this.filter((e: any) => e[StateProperties.Deleted]);
-
-                if (deleted.length > 0) {
-                    deleted.forEach((d: any) =>{
-                        const index = this.indexOf(d);
-                        Array.prototype.splice.call(this, index, 1);
-                    });
-                }
-
-                return this;
-            }
-        });
-    }
-
     if ((<any>Array.prototype).add === undefined) {
         Object.defineProperty(Array.prototype, 'add', {
             enumerable: false,
@@ -167,17 +150,18 @@ export function addArrayExtensions() {
                 if (typeof entity === 'undefined') {
                     return;
                 }
-                
+
                 let deleted: any;
 
                 // Add a unique id to identify the add record if it doesn't have one yet, so we can
                 // match it to a delete record when appropriate. Otherwise, try and get a matching 
                 // delete record to see whether the record originally came from this array.
                 if (entity[StateProperties.Id]) {
-                    deleted = this.getDeleted()?.find((e: { [StateProperties.Id]: string; }) => e[StateProperties.Id] === entity[StateProperties.Id]);
-                } 
-                else {
-                    addUniqueId(entity);    
+                    deleted = this.getDeleted()?.find((e: {
+                        [StateProperties.Id]: string;
+                    }) => e[StateProperties.Id] === entity[StateProperties.Id]);
+                } else {
+                    addUniqueId(entity);
                 }
 
                 // If an existing delete record is found, the item was originally removed from this array.
@@ -188,8 +172,7 @@ export function addArrayExtensions() {
                     deletedItems.splice(deletedItems.indexOf(deleted), 1);
                     delete entity[StateProperties.Id];
                     delete entity[StateProperties.Added];
-                }
-                else {
+                } else {
                     entity[StateProperties.Added] = true;
                 }
 
@@ -210,23 +193,22 @@ export function addArrayExtensions() {
                 const collection = this;
                 let entry = find(item, this, false)[0];
                 let index: number;
-                
+
                 if (typeof entry === 'undefined') {
                     index = collection.indexOf(item);
                 } else {
-                    index  = this.indexOf(entry);
+                    index = this.indexOf(entry);
                 }
 
                 if (index === -1) {
                     return;
                 }
-                
+
                 Array.prototype.splice.call(this, index, 1);
                 collection[deletedCollection] = collection[deletedCollection] || [];
-                
+
                 // If a deletion record is deleted, simply move it to the deleted collection.
-                if (item[StateProperties.Deleted])
-                {
+                if (item[StateProperties.Deleted]) {
                     collection[deletedCollection].push(item);
                     return;
                 }
@@ -237,19 +219,23 @@ export function addArrayExtensions() {
                 if (!item[StateProperties.Added]) {
                     // Add a unique id to the item to track it if it doesn't have one yet.
                     addUniqueId(item);
-                    
-                    const { first, second } = getKeyPropertyNames(item);
+
+                    const {first, second} = getKeyPropertyNames(item);
                     let keyProps: { [x: string]: any; };
-                    
+
                     if (first && second) {
-                        keyProps = { [first]: item[first], [second]: item[second] };
+                        keyProps = {[first]: item[first], [second]: item[second]};
                     } else if (first) {
                         keyProps = {[first]: item[first]}
                     } else {
                         keyProps = {[second]: item[second]};
                     }
-                    
-                    collection[deletedCollection].push({ ...keyProps, [StateProperties.Deleted]: true, [StateProperties.Id]: item[StateProperties.Id] });
+
+                    collection[deletedCollection].push({
+                        ...keyProps,
+                        [StateProperties.Deleted]: true,
+                        [StateProperties.Id]: item[StateProperties.Id]
+                    });
                 }
             }
         });
@@ -272,8 +258,7 @@ export function addArrayExtensions() {
 export function compareString(left: string, right: string): boolean {
     if ((left === undefined && right === undefined) || (left === null && right === null)) {
         return true;
-    }
-    else if ((left === null || left === undefined) || (right === null  || right === undefined)) {
+    } else if ((left === null || left === undefined) || (right === null || right === undefined)) {
         return false;
     }
 
@@ -282,7 +267,7 @@ export function compareString(left: string, right: string): boolean {
 
 function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
     if (typeof id === 'object') {
-        let result = Array.prototype.filter.call(array, (x: any) => x === id );
+        let result = Array.prototype.filter.call(array, (x: any) => x === id);
 
         if (result.length === 0 && usePropertyMatch) {
             result = Array.prototype.filter.call(array, p => propertyMatch(id, p));
@@ -293,7 +278,7 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
 
     id = getId(id);
 
-    return Array.prototype.filter.call(array, (x: { id: string, target: Function | string } | Function) => { 
+    return Array.prototype.filter.call(array, (x: { id: string, target: Function | string } | Function) => {
         const currentId = typeof x === 'function' ? x : x.target ?? x.id;
         return compareString(getId(currentId), id);
     });

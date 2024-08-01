@@ -5,19 +5,18 @@ import { IPerson } from '../Interfaces/person';
 import { IGame } from '../Interfaces/game';
 import { IRules } from '../Interfaces/rules/rules';
 import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
-import { SaveWorldState, removeItemFromParty } from './sharedFunctions';
+import { removeItemFromParty } from './sharedFunctions';
 import { compareString } from '../globals';
 import { ICombinationService } from '../Interfaces/services/combinationService';
-import { IDataService } from '../Interfaces/services//dataService';
-import { ILocationService } from '../Interfaces/services/locationService';
 import { ICombinationAction } from '../Interfaces/combinations/combinationAction';
 import { ICombinable } from '../Interfaces/combinations/combinable';
 import { ICombineResult } from '../Interfaces/combinations/combineResult';
 import { IActiveCombination } from '../Interfaces/combinations/activeCombination';
 import { getId } from 'storyScript/utilities';
+import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 
 export class CombinationService implements ICombinationService {
-    constructor(private _dataService: IDataService, private _locationService: ILocationService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+    constructor(private _helperService: IHelpers, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
     }
 
     getCombinationActions = (): ICombinationAction[] => this._rules.setup.getCombinationActions ? this._rules.setup.getCombinationActions() : [];
@@ -102,7 +101,7 @@ export class CombinationService implements ICombinationService {
                 this.removeFeature(combo.selectedTool);
             }
 
-            SaveWorldState(this._dataService, this._locationService, this._game, this._rules);
+            this._helperService.saveGame();
         }
 
         this._game.combinations.combinationResult.text = result.text;

@@ -43,13 +43,13 @@ export class ServiceFactory {
         this._texts = texts;
         this._rules = rules;
         const localStorageService = new LocalStorageService();
-        const helperService = new HelperService(this._game, definitions);
         const dataService = new DataService(localStorageService, new DataSerializer(this._registeredEntities), new DataSynchronizer(this._registeredEntities), this._registeredEntities, nameSpace);
+        const helperService = new HelperService(dataService, this._game, this._rules, definitions);
         this._tradeService = new TradeService(this._game, this._texts,definitions);
         this._conversationService = new ConversationService(dataService, this._game);
         this._characterService = new CharacterService(this._game, this._rules);
         const locationService = new LocationService(dataService, this._rules, this._game, this._registeredEntities);
-        this._combinationService = new CombinationService(dataService, locationService, this._game, this._rules, this._texts);
+        this._combinationService = new CombinationService(helperService, this._game, this._rules, this._texts);
         this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, helperService, this._game, this._texts);
         ServiceFactory._instance = this;
     }

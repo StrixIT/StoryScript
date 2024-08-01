@@ -1,36 +1,17 @@
-import { IGame } from '../Interfaces/game';
-import { DataKeys } from '../DataKeys';
-import { IDataService } from '../Interfaces/services/dataService';
-import { ILocationService } from '../Interfaces/services/locationService';
-import { ICharacter } from '../Interfaces/character';
-import { IItem } from '../Interfaces/item';
-import { IRules } from '../Interfaces/rules/rules';
-import { IParty } from '../Interfaces/party';
-
-export function SaveWorldState(dataService: IDataService, locationService: ILocationService, game: IGame, rules: IRules) {
-    if (rules.general.beforeSave) {
-        rules.general.beforeSave(game);
-    }
-
-    dataService.save(DataKeys.PARTY, game.party);
-    dataService.save(DataKeys.STATISTICS, game.statistics);
-    dataService.save(DataKeys.WORLDPROPERTIES, game.worldProperties);
-    locationService.saveWorld(game.locations);
-
-    if (rules.general.afterSave) {
-        rules.general.afterSave(game);
-    }
-}
+import {DataKeys} from '../DataKeys';
+import {IDataService} from '../Interfaces/services/dataService';
+import {ICharacter} from '../Interfaces/character';
+import {IItem} from '../Interfaces/item';
+import {IParty} from '../Interfaces/party';
 
 export function getParsedDocument(tag: string, value?: string, wrapIfNotFound?: boolean) {
     if (!value) {
         return null;
     }
 
-    var parser = new DOMParser();
-    var htmlDoc = parser.parseFromString(value, 'text/html');
-
-    var elements = htmlDoc.getElementsByTagName(tag);
+    const parser = new DOMParser();
+    let htmlDoc = parser.parseFromString(value, 'text/html');
+    let elements = htmlDoc.getElementsByTagName(tag);
 
     if (!elements.length && wrapIfNotFound) {
         value = `<${tag}>${value}</${tag}>`;
@@ -58,21 +39,21 @@ export function removeItemFromParty(party: IParty, item: IItem) {
         if (deleted) {
             return;
         }
-        
+
         deleted = removeItemFromItemsAndEquipment(c, item);
     });
 }
 
 export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem): boolean {
     let deleted = false;
-    
+
     if (character.items.get(item)) {
         character.items.delete(item);
         deleted = true;
     }
 
     if (character.equipment) {
-        for (var n in character.equipment) {
+        for (const n in character.equipment) {
             if (item === character.equipment[n]) {
                 character.equipment[n] = null;
                 deleted = true;
@@ -81,7 +62,7 @@ export function removeItemFromItemsAndEquipment(character: ICharacter, item: IIt
             if (deleted) {
                 break;
             }
-        };
+        }
     }
 
     return deleted;
@@ -89,15 +70,14 @@ export function removeItemFromItemsAndEquipment(character: ICharacter, item: IIt
 
 function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLElement>, playedAudio: string[]) {
     Array.from(elements).forEach(e => {
-        var originalText = e.outerHTML;
-        var source = e.getElementsByTagName('source')[0]?.getAttribute('src')?.toLowerCase() 
-                        ?? e.getAttribute('src')?.toLowerCase();
+        const originalText = e.outerHTML;
+        const source = e.getElementsByTagName('source')[0]?.getAttribute('src')?.toLowerCase()
+            ?? e.getAttribute('src')?.toLowerCase();
 
         if (originalText && source) {
             if (playedAudio.indexOf(source) < 0) {
                 playedAudio.push(source);
-            } 
-            else {
+            } else {
                 e.removeAttribute('autoplay');
                 value = value.replace(originalText, e.outerHTML);
             }

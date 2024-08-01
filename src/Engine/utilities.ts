@@ -1,7 +1,7 @@
-﻿import { IDefinitions } from './Interfaces/definitions';
-import { compareString } from './globals';
-import { GameState, IGame, ILocation, PlayState } from './Interfaces/storyScript';
-import { StateList, StateListEntry } from './Interfaces/stateList';
+﻿import {IDefinitions} from './Interfaces/definitions';
+import {compareString} from './globals';
+import {GameState, IGame, ILocation, PlayState} from './Interfaces/storyScript';
+import {StateList, StateListEntry} from './Interfaces/stateList';
 
 export function getId(id: Function | string) {
     let actualId: string;
@@ -9,42 +9,41 @@ export function getId(id: Function | string) {
     if (typeof id === 'function') {
         actualId = id.name;
         let nameParts = actualId.split('_');
-    
+
         // This is a workaround with function names changing when building for production.
         // E.g. Start becomes Start_Start.
         /* v8 ignore next 3 */
         if (nameParts.length > 1) {
             actualId = nameParts[0];
         }
-    } 
-    else {
+    } else {
         actualId = id;
     }
 
     return actualId?.toLowerCase();
 }
 
-export function isDataRecord(item: any[]): boolean{
+export function isDataRecord(item: any[]): boolean {
     // Check for either object or function values, as tuples are used to store actions as objects and functions now.
-    return item?.length && item.length === 2 && typeof(item[0]) === 'string' && (typeof(item[1]) === 'object' || typeof(item[1]) === 'function');
+    return item?.length && item.length === 2 && typeof (item[0]) === 'string' && (typeof (item[1]) === 'object' || typeof (item[1]) === 'function');
 }
 
 export function getKeyPropertyNames(item: any): { first: string, second: string } {
     if (typeof item === 'undefined') {
-        return { first: null, second: null };
+        return {first: null, second: null};
     }
-    
+
     if (isDataRecord(item)) {
-        return { first: '0', second: null };
+        return {first: '0', second: null};
     }
 
     let firstKeyProperty = item.id !== undefined ? 'id' : null;
     firstKeyProperty ??= item.target !== undefined ? 'target' : null;
     firstKeyProperty ??= item.tool !== undefined ? 'tool' : null;
-    let secondKeyProperty =  item.type !== undefined ? 'type' : null;
+    let secondKeyProperty = item.type !== undefined ? 'type' : null;
     secondKeyProperty ??= item.combinationType !== undefined ? 'combinationType' : null;
 
-    return { first: firstKeyProperty, second: secondKeyProperty };
+    return {first: firstKeyProperty, second: secondKeyProperty};
 }
 
 export function propertyMatch(first: any, second: any): boolean {
@@ -52,34 +51,24 @@ export function propertyMatch(first: any, second: any): boolean {
         return false;
     }
 
-    let { first: firstProperty, second: secondProperty } = getKeyProperties(first, second);
+    let {first: firstProperty, second: secondProperty} = getKeyProperties(first, second);
 
     if (firstProperty && secondProperty) {
         return getValue(first[firstProperty]) === getValue(second[firstProperty])
-        && getValue(first[secondProperty]) === getValue(second[secondProperty]);
+            && getValue(first[secondProperty]) === getValue(second[secondProperty]);
     }
 
     if (firstProperty || secondProperty) {
         return (firstProperty && getValue(first[firstProperty]) === getValue(second[firstProperty])) ||
-        (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
+            (secondProperty && getValue(first[secondProperty]) === getValue(second[secondProperty]));
     }
 
     return false;
 }
 
-function getKeyProperties(pristine: any, current: any): { first?: string, second?: string } {
-    const { first: pristineFirst, second: pristineSecond } = getKeyPropertyNames(pristine);
-    const { first: currentFirst, second: currentSecond } = getKeyPropertyNames(current);
-    return { first: pristineFirst && currentFirst ? pristineFirst : null, second: pristineSecond && currentSecond ? pristineSecond : null };
-}
-
-function getValue(value: any): string {
-    return typeof value === 'function' ? value.name.toLowerCase() : value;
-}
-
 export function getPlural(name: string): string {
     let plural: string;
-    
+
     if (name.endsWith('y')) {
         plural = name.substring(0, name.length - 1) + 'ies';
     } else if (name.endsWith('s')) {
@@ -87,8 +76,8 @@ export function getPlural(name: string): string {
     } else {
         plural = name + 's';
     }
-    
-    return  plural;
+
+    return plural;
 }
 
 export function getSingular(name: string): string {
@@ -102,7 +91,7 @@ export function getSingular(name: string): string {
         singular = name.substring(0, name.length - 1);
     }
 
-    return  singular;
+    return singular;
 }
 
 export function addHtmlSpaces(text: string): string {
@@ -123,11 +112,11 @@ export function addHtmlSpaces(text: string): string {
 
 export function isEmpty(object: any, property?: string) {
     const objectToCheck = property ? object[property] : object;
-    
+
     if (objectToCheck) {
         return Array.isArray(objectToCheck) ? objectToCheck.length === 0 : Object.keys(objectToCheck).length === 0;
     }
-    
+
     return true;
 }
 
@@ -179,8 +168,7 @@ export function parseGameProperties(lines: string, game: IGame): string {
     let result = lines;
     let parseMatch = null;
 
-    while ((parseMatch = propertyRegex.exec(lines)) !== null)
-    {
+    while ((parseMatch = propertyRegex.exec(lines)) !== null) {
         let property = <unknown>game;
         let replacement = parseMatch[0];
         let index = null;
@@ -195,15 +183,14 @@ export function parseGameProperties(lines: string, game: IGame): string {
             if (property.hasOwnProperty(e)) {
                 property = property[e];
                 propertyFound = true;
-            }
-            else {
+            } else {
                 propertyFound = false;
             }
 
             if (!isNaN(index) && Array.isArray(property)) {
                 property = property[index];
             }
-        }); 
+        });
 
         if (propertyFound) {
             replacement = property;
@@ -216,27 +203,27 @@ export function parseGameProperties(lines: string, game: IGame): string {
     return result;
 }
 
-export function createPromiseForCallback<T>(callBack: Function): { promise: Promise<T>, promiseCallback : () => void } {
+export function createPromiseForCallback<T>(callBack: Function): { promise: Promise<T>, promiseCallback: () => void } {
     let resolveFunc = null;
 
-    const promiseCallback = () => { 
+    const promiseCallback = () => {
         const callBackResult = callBack();
         Promise.resolve(callBackResult).then(() => {
             resolveFunc?.();
         });
-     }
+    }
 
-    const promiseFunc = function(resolve: any) {
+    const promiseFunc = function (resolve: any) {
         resolveFunc = resolve;
     }
 
     const promise = new Promise<T>(promiseFunc);
 
-    return { promise, promiseCallback };              
+    return {promise, promiseCallback};
 }
 
 export function wait(timeInMs: number, callBack: Function): Promise<void> {
-    const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
+    const {promise, promiseCallback} = createPromiseForCallback<void>(callBack);
 
     setTimeout(() => {
         promiseCallback();
@@ -246,7 +233,8 @@ export function wait(timeInMs: number, callBack: Function): Promise<void> {
 }
 
 export function interval(intervalTimeInMs: number, repeat: number, intervalCallback: Function, finalCallback?: Function): Promise<void> {
-    const { promise, promiseCallback } = createPromiseForCallback<void>(finalCallback ?? (() => {}));
+    const {promise, promiseCallback} = createPromiseForCallback<void>(finalCallback ?? (() => {
+    }));
 
     let count = 0;
 
@@ -261,8 +249,7 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
                 setTimeout(() => {
                     promiseCallback();
                 }, intervalTimeInMs);
-            }
-            else {
+            } else {
                 promiseCallback();
             }
         }
@@ -272,28 +259,28 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
 }
 
 export function selectStateListEntry(game: IGame, stateList: StateList) {
-            // Evaluate custom functions first.
-            const customFunctions = stateList[''];
-            let result = null;
-    
-            for (const n in customFunctions) {
-                result = (<((game: IGame) => string)><unknown>customFunctions[n])(game);
-    
-                if (result) {
-                    return result;
-                }
-            }
-    
-            // Next, get the entries in this order: Location, PlayState, GameState.
-            const filteredEntries = Object.keys(stateList)
-                                    .map(e => mapPlaylistEntries(game, e, stateList[e]))
-                                    .filter(e => e);
-            
-            result = filteredEntries.map(e => selectCandidate(game, e.key, e.item))
-                .filter(i => i.order > 0)
-                .sort((a, b) => a.order - b.order)[0];
-    
-            return result?.key;
+    // Evaluate custom functions first.
+    const customFunctions = stateList[''];
+    let result = null;
+
+    for (const n in customFunctions) {
+        result = (<((game: IGame) => string)><unknown>customFunctions[n])(game);
+
+        if (result) {
+            return result;
+        }
+    }
+
+    // Next, get the entries in this order: Location, PlayState, GameState.
+    const filteredEntries = Object.keys(stateList)
+        .map(e => mapPlaylistEntries(game, e, stateList[e]))
+        .filter(e => e);
+
+    result = filteredEntries.map(e => selectCandidate(game, e.key, e.item))
+        .filter(i => i.order > 0)
+        .sort((a, b) => a.order - b.order)[0];
+
+    return result?.key;
 }
 
 function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
@@ -302,16 +289,29 @@ function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
         .sort((a, b) => a.order - b.order)[0];
 }
 
+function getKeyProperties(pristine: any, current: any): { first?: string, second?: string } {
+    const {first: pristineFirst, second: pristineSecond} = getKeyPropertyNames(pristine);
+    const {first: currentFirst, second: currentSecond} = getKeyPropertyNames(current);
+    return {
+        first: pristineFirst && currentFirst ? pristineFirst : null,
+        second: pristineSecond && currentSecond ? pristineSecond : null
+    };
+}
+
+function getValue(value: any): string {
+    return typeof value === 'function' ? value.name.toLowerCase() : value;
+}
+
 function selectCandidate(game: IGame, key: string, item: (GameState | PlayState | (() => ILocation) | ((game: IGame) => string) | string)) {
     const functionName = (<Function>item)?.name;
     const currentLocationId = game.currentLocation?.id;
 
-    const order = item === game.state ? 3 
-    : item ===  game.playState ? 2 
-    : functionName && currentLocationId && compareString(functionName, currentLocationId) ? 1 
-    : 0;
+    const order = item === game.state ? 3
+        : item === game.playState ? 2
+            : functionName && currentLocationId && compareString(functionName, currentLocationId) ? 1
+                : 0;
 
-    return { key, item, order };
+    return {key, item, order};
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], selector?: (item: T) => boolean) {
@@ -321,8 +321,7 @@ function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], sel
         (<[() => T]>collection).forEach((def: () => T) => {
             collectionToFilter.push(def());
         });
-    }
-    else {
+    } else {
         collectionToFilter = <T[]>collection;
     }
 

@@ -7,10 +7,12 @@ import { IGame } from 'storyScript/Interfaces/game';
 import { Subject } from 'rxjs';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { ModalService } from './ModalService';
+import {HelperService} from "storyScript/Services/helperService.ts";
 
 @Injectable()
 export class SharedMethodService {
     private _gameService: GameService;
+    private _helperService: HelperService;
     private _conversationService: ConversationService;
     private _tradeService: TradeService;
 
@@ -21,6 +23,7 @@ export class SharedMethodService {
         const modalService = inject(ModalService);
         const objectFactory = inject(ServiceFactory);
         this._gameService = inject(GameService);
+        this._helperService = inject(HelperService);
         this._conversationService = inject(ConversationService);
         this._tradeService = inject(TradeService);
         this.game = objectFactory.GetGame();
@@ -125,7 +128,7 @@ export class SharedMethodService {
             }
 
             // After each action, save the game.
-            this._gameService.saveGame();
+            this._helperService.saveGame();
         }
     }
 

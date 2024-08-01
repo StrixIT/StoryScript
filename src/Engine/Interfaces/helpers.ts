@@ -41,4 +41,11 @@ export interface IHelpers {
      * @param selector The id of the enemy to add
      */        
     getEnemy(selector: string): IEnemy;
+
+    /**
+     * Saves the game. Supply a name to save the state using a name. Leave it
+     * blank to use the default save game name.
+     * @param name
+     */
+    saveGame(name?: string): void;
 }

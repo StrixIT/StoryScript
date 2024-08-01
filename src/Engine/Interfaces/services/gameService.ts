@@ -16,7 +16,6 @@ export interface IGameService {
     levelUp(character: ICharacter): ICharacter;
     reset(): void;
     restart(skipIntro?: boolean): void;
-    saveGame(name?: string): void;
     getSaveGames(): string[];
     loadGame(name: string): void;
     hasDescription(entity: { id?: string, description?: string }): boolean;
