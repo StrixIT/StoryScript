@@ -3,7 +3,6 @@ import { ILocation } from '../Interfaces/location';
 import { ICompiledLocation } from '../Interfaces/compiledLocation';
 import { IRules } from '../Interfaces/rules/rules';
 import { IGame } from '../Interfaces/game';
-import { IDefinitions } from '../Interfaces/definitions';
 import { DataKeys } from '../DataKeys';
 import { IFeature } from '../Interfaces/feature';
 import { IDestination } from '../Interfaces/destination';
@@ -13,25 +12,51 @@ import { ILocationService } from '../Interfaces/services/locationService';
 import { IDataService } from '../Interfaces/services//dataService';
 import { ActionType } from '../Interfaces/enumerations/actionType';
 import { getParsedDocument, checkAutoplay } from './sharedFunctions';
+import {setDestination} from "storyScript/ObjectConstructors.ts";
 
 export class LocationService implements ILocationService {
-    private pristineLocations: ICollection<ICompiledLocation>;
-
     constructor(
         private _dataService: IDataService, 
         private _rules: IRules, 
-        private _game: IGame, 
-        private _definitions: IDefinitions, 
-        private _descriptions: Map<string, string>
+        private _game: IGame,
+        private _pristineEntities: Record<string, Record<string, any>>
     ) {}
 
     init = (game: IGame, buildWorld?: boolean): void => {
         game.currentLocation = null;
         game.previousLocation = null;
-        game.locations = this.loadWorld(buildWorld === undefined || buildWorld);
+        let locations: Record<string, ICompiledLocation>;
+
+        if (buildWorld === undefined || buildWorld) {
+            locations = this._dataService.load(DataKeys.WORLD);
+
+            if (isEmpty(locations)) {
+                this._dataService.save(DataKeys.WORLD, this._pristineEntities.locations);
+                locations = this._dataService.load(DataKeys.WORLD);
+            }
+        }
+        else {
+            locations = this._game.locations;
+        }
+
+        Object.values(locations).forEach(l => this.initDestinations(l));
+        game.locations = locations;
+        game.locations.get = (id) => {
+            if (!id) {
+                return undefined;
+            }
+            
+            if (typeof id === 'string') {
+                return locations[id.toLowerCase()];
+            } else if (typeof id === 'function') {
+                return locations[id.name.toLowerCase()];
+            } else {
+                return locations[id.id]
+            }
+        }
     }
 
-    saveWorld = (locations: ICollection<ICompiledLocation>): void => this._dataService.save(DataKeys.WORLD, locations);
+    saveWorld = (locations: Record<string, ICompiledLocation>): void => this._dataService.save(DataKeys.WORLD, locations);
 
     changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
         // Clear the play state on travel.
@@ -64,14 +89,9 @@ export class LocationService implements ILocationService {
     }
 
     loadLocationDescriptions = (game: IGame): void => {
-        if (!game.currentLocation.descriptions) {
-            const descriptionKey = `location_${game.currentLocation.id}`;
-            game.currentLocation.description ??= this._descriptions.get(descriptionKey);
-
-            if (game.currentLocation.description) {
-                this.processVisualFeatures(getParsedDocument('visual-features', game.currentLocation.description)[0], game);
-                this.processDescriptions(getParsedDocument('description', game.currentLocation.description), game);
-            }
+        if (!game.currentLocation.descriptions && game.currentLocation.description) {
+            this.processVisualFeatures(getParsedDocument('visual-features', game.currentLocation.description)[0], game);
+            this.processDescriptions(getParsedDocument('description', game.currentLocation.description), game);
         }
 
         if (this.selectLocationDescription(game)) {
@@ -103,14 +123,6 @@ export class LocationService implements ILocationService {
         });
     }
 
-    setDestinations = (location: ICompiledLocation): void => {
-        if (location.destinations) {
-            location.destinations.forEach(destination => {
-                setDestination(destination);
-            });
-        }
-    }
-
     private switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
         var presentLocation: ICompiledLocation;
 
@@ -130,7 +142,7 @@ export class LocationService implements ILocationService {
             return false;
         }
 
-        var key = getId(location) ?? presentLocation.id;
+        const key = getId(location) ?? presentLocation.id;
         game.currentLocation = game.locations.get(key);
         return true;
     }
@@ -154,7 +166,7 @@ export class LocationService implements ILocationService {
                     (<any>destination).isPreviousLocation = true;
                 }
 
-                addKeyAction(game, destination);
+                this.addKeyAction(game, destination);
             });
         }
     }
@@ -165,31 +177,6 @@ export class LocationService implements ILocationService {
             game.statistics.LocationsVisited = game.statistics.LocationsVisited || 0;
             game.statistics.LocationsVisited += 1;
         }
-    }
-
-    private loadWorld = (buildWorld: boolean): ICollection<ICompiledLocation> => {
-        const locations = this.getLocations(buildWorld);
-        locations.forEach(l => this.initDestinations(l));
-        return locations;
-    }
-
-    private getLocations = (buildWorld: boolean): ICollection<ICompiledLocation> => {
-        let locations;
-
-        if (buildWorld) {
-            this.pristineLocations = this.buildWorld();
-            locations = this._dataService.load(DataKeys.WORLD);
-
-            if (isEmpty(locations)) {
-                this._dataService.save(DataKeys.WORLD, this.pristineLocations);
-                locations = this._dataService.load(DataKeys.WORLD);
-            }
-        }
-        else {
-            locations = this._game.locations;
-        }
-
-        return locations;
     }
 
     private initTrade = (game: IGame): void => {
@@ -206,25 +193,9 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private buildWorld = (): ICollection<ICompiledLocation> => {
-        var locations = this._definitions.locations;
-        var compiledLocations = [];
-        this.processLocations(locations, compiledLocations);
-        return compiledLocations;
-    }
-
-    private processLocations = (locations: (() => ILocation)[], compiledLocations: ICollection<ICompiledLocation>): void => {
-        for (var n in locations) {
-            var definition = locations[n];
-            var location = <ICompiledLocation>definition();
-            this.setDestinations(location);
-            compiledLocations.push(location);
-        }
-    }
-
     private addDestination = (originalScope, originalFunction, destination, game): void => {
         setDestination(destination);
-        addKeyAction(game, destination);
+        this.addKeyAction(game, destination);
         originalFunction.call(originalScope, destination);
     }
 
@@ -331,9 +302,9 @@ export class LocationService implements ILocationService {
         // location description and are added later to the location's feature collection. As descriptions are not saved,
         // the description is lost when the browser refreshes.
         if (feature && !feature.description) {
-            const pristineFeature = game.definitions.features.get(feature.id)?.();
+            const pristineFeature = Object.values(this._pristineEntities.features).get(feature.id);
 
-            if (pristineFeature && pristineFeature.description) {
+            if (pristineFeature?.description) {
                 feature.description = pristineFeature.description;
 
             }
@@ -368,57 +339,37 @@ export class LocationService implements ILocationService {
 
         return true;
     }
-}
 
-function addKeyAction(game: IGame, destination: IDestination) {
-    if (destination.barrier?.key) {
-        const key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>game.helpers.getItem(destination.barrier.key);
-        let existingAction = null;
+    private addKeyAction = (game: IGame, destination: IDestination) => {
+        if (destination.barrier?.key) {
+            const key = typeof destination.barrier.key === 'function' ? destination.barrier.key() : <IKey>Object.values(this._pristineEntities.items).get(destination.barrier.key);
+            let existingAction = null;
 
-        if (destination.barrier.actions) {
-            destination.barrier.actions.forEach(([k, v]) => {
-                if (k === key.id) {
-                    existingAction = v;
-                }
+            if (destination.barrier.actions) {
+                destination.barrier.actions.forEach(([k, v]) => {
+                    if (k === key.id) {
+                        existingAction = v;
+                    }
+                });
+            }
+            else {
+                destination.barrier.actions = [];
+            }
+
+            if (existingAction) {
+                destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
+            }
+
+            let partyKey = null;
+
+            game.party.characters.forEach(c => {
+                partyKey = partyKey ?? c.items.get(key.id);
             });
-        }
-        else {
-            destination.barrier.actions = [];
-        }
 
-        if (existingAction) {
-            destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
-        }
-        
-        let partyKey = null;
+            const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(key.id));
 
-        game.party.characters.forEach(c => {
-            partyKey = partyKey ?? c.items.get(key.id);
-        });
-
-        const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(key.id));
-
-        if (barrierKey) {
-            destination.barrier.actions.push([barrierKey.id, barrierKey.open]);
-        }
-    }
-}
-
-function setDestination(destination: IDestination) {
-    // Set the barrier selected actions to the first one available for each barrier.
-    // Further, replace combine functions with their target ids.
-    destination.target = getId(destination.target);
-    
-    if (destination.barrier) {
-        if (destination.barrier.key) {
-            const key = destination.barrier.key;
-            destination.barrier.key = getId(key);
-        }
-
-        if (destination.barrier.combinations?.combine) {
-            for (const n in destination.barrier.combinations.combine) {
-                const combination = destination.barrier.combinations.combine[n];
-                combination.tool = <any>getId(<any>combination.tool);
+            if (barrierKey) {
+                destination.barrier.actions.push([barrierKey.id, barrierKey.open]);
             }
         }
     }

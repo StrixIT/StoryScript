@@ -12,10 +12,8 @@ import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
 import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
-import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
 import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
-import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
 
 describe("DataSynchronizer", () => {
 
@@ -100,9 +98,7 @@ describe("DataSynchronizer", () => {
         const skeleton = <IEnemy>{id: 'bandit'};
         skeleton['type'] = 'enemy';
         const bandit = {...Bandit()};
-
         dataSynchronizer.synchronizeEntityData(skeleton, bandit);
-
         expect(skeleton).toEqual(bandit);
     });
 
@@ -121,11 +117,6 @@ describe("DataSynchronizer", () => {
         // Reset the updated properties so we can compare the rest of the properties.
         skeleton.name = bandit.name;
         skeleton.attack = bandit.attack;
-
-        // Clear the functions so we can do a full compare.
-        (<IKey>skeleton.items[1]).open.execute = null;
-        (<IKey>bandit.items[1]).open.execute = null;
-        
         expect(skeleton).toEqual(bandit);
     });
 
@@ -183,7 +174,7 @@ describe("DataSynchronizer", () => {
     });
 
     test("should populate locations", function () {
-        const expected = [ pristineEntities['locations']['basement'], pristineEntities['locations']['dirtroad'] ];
+        const expected = [ pristineEntities.locations.basement, pristineEntities.locations.dirtroad ];
         const skeleton = dataSerializer.restoreObjects(multipleLocations);
         dataSynchronizer.synchronizeEntityData(skeleton);
         expect(skeleton).toEqual(expected);

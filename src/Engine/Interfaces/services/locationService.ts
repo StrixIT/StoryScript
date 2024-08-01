@@ -6,6 +6,6 @@ import { IGame } from '../game';
 export interface ILocationService {
     init(game: IGame, buildWorld?: boolean): void;
     loadLocationDescriptions(game: IGame): void;
-    saveWorld(locations: ICollection<ICompiledLocation>): void;
+    saveWorld(locations: Record<string, ICompiledLocation>): void;
     changeLocation(location: string | (() => ILocation), travel: boolean, game: IGame): void;
 }

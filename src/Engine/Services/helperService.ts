@@ -8,16 +8,16 @@ import { random } from '../utilities';
 import { compareString } from '../globals';
 
 export class HelperService implements IHelpers {
-    constructor(private _game: IGame) {
+    constructor(private _game: IGame, private _definitions: IDefinitions) {
     }
 
-    randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => random<IEnemy>('enemies', this._game.definitions, <(enemy: IEnemy) => boolean>selector);
+    randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => random<IEnemy>('enemies', this._definitions, <(enemy: IEnemy) => boolean>selector);
 
-    randomItem = (selector?: (item: IItem) => boolean): IItem => random<IItem>('items', this._game.definitions, <(item: IItem) => boolean>selector);
+    randomItem = (selector?: (item: IItem) => boolean): IItem => random<IItem>('items', this._definitions, <(item: IItem) => boolean>selector);
     
-    getItem = (selector: string): IItem => this.find<IItem>(selector, 'items', this._game.definitions);
+    getItem = (selector: string): IItem => this.find<IItem>(selector, 'items', this._definitions);
 
-    getEnemy = (selector: string): IEnemy => this.find<IEnemy>(selector, 'enemies', this._game.definitions);
+    getEnemy = (selector: string): IEnemy => this.find<IEnemy>(selector, 'enemies', this._definitions);
 
     rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {
         let sides = 0;

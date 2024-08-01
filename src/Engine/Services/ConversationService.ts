@@ -14,7 +14,7 @@ import { IDataService } from '../Interfaces/services/dataService';
 import { parseGameProperties } from 'storyScript/utilities';
 
 export class ConversationService implements IConversationService {
-    constructor(private _dataService: IDataService, private _game: IGame, private _descriptions: Map<string, string>) {
+    constructor(private _dataService: IDataService, private _game: IGame) {
     }
 
     talk = (person: IPerson): void => {
@@ -60,7 +60,7 @@ export class ConversationService implements IConversationService {
 
         persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
             const descriptionKey = `person_${person.id}`;
-            const conversationElement = getParsedDocument('conversation', person.description ?? this._descriptions.get(descriptionKey))[0];
+            const conversationElement = getParsedDocument('conversation', person.description)[0];
             const defaultReply = this.getDefaultReply(conversationElement, person);
             const conversationNodes = conversationElement.getElementsByTagName('node');
 

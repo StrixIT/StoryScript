@@ -36,9 +36,9 @@ export class DataService implements IDataService {
 
                 // When loading the game world, pass in the pristine locations as an array. We need this to
                 // loop over all locations as we don't use a container entity.
-                const pristineEntity = key === DataKeys.WORLD ? Object.values(this._pristineEntities['locations']) : undefined;
+                const pristineEntity = key === DataKeys.WORLD ? this._pristineEntities['locations'] : undefined;
                 this.synchronizer.synchronizeEntityData(result, pristineEntity);
-                setReadOnlyProperties(key, data);
+                setReadOnlyProperties(key, result);
                 return data;
             }
 

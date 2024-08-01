@@ -1,6 +1,4 @@
-﻿import { IDefinitions } from './definitions';
-import { ICharacter } from './character';
-import { ILocationCollection } from './locationCollection';
+﻿import { ICharacter } from './character';
 import { ICompiledLocation } from './compiledLocation';
 import { ScoreEntry } from './scoreEntry';
 import { IPerson } from './person';
@@ -23,11 +21,6 @@ import { ICombatTurn } from './combatTurn';
  */
 export interface IGame {
     /**
-     * All the definitions created for this game.
-     */
-    definitions: IDefinitions;
-
-    /**
      * The sheet to create a character for the game.
      */
     createCharacterSheet?: ICreateCharacter;
@@ -45,7 +38,9 @@ export interface IGame {
     /**
      * All the locations in the game world.
      */
-    locations: ILocationCollection;
+    locations: Record<string, ICompiledLocation> & {
+        get?(id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation;
+    };
 
     /**
      * The location in the game world the player is currently at.

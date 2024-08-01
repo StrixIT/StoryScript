@@ -32,7 +32,7 @@ export interface ISaveGame {
     /**
      * The world locations to save.
      */
-    world: ICollection<ICompiledLocation>;
+    world: Record<string, ICompiledLocation>;
 
     /**
      * The state of the game when saved.

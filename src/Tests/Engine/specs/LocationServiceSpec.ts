@@ -15,17 +15,14 @@ describe("LocationService", function() {
             }
         };
 
-        const game = <IGame>{
-            definitions: {}
-        };
-
+        const game = <IGame>{};
         const service = getService(dataService, {}, game);
         service.init(game);
 
         expect(game.changeLocation).not.toBeNull();
         expect(game.currentLocation).toBeNull();
         expect(game.previousLocation).toBeNull();
-        expect(game.locations.length).toBe(0);
+        expect(game.locations).toEqual({});
     });
 
     test("save world should call dataservice save", function() {
@@ -36,22 +33,23 @@ describe("LocationService", function() {
         vi.spyOn(dataService, 'save');
 
         const service = getService(dataService);
-        service.saveWorld(<ICollection<ICompiledLocation>>{});
+        service.saveWorld(<Record<string, ICompiledLocation>>{});
         expect(dataService.save).toHaveBeenCalled();
     });
 
     test("should set the location description", function() {
         const game = <IGame>{
             statistics: {},
-            locations: [
-                <ICompiledLocation>{
+            locations: <Record<string, ICompiledLocation>>{
+                start: {
                     id: 'start',
                     type: 'location',
                     description: undefined,
                     name: 'Start'
                 }
-            ]
+            }
         };
+        
         const rules = <IRules>{
             setup: {}
         }
@@ -75,5 +73,5 @@ function getService(dataService?, rules?, game?, definitions?, descriptions?) {
         load: function(key) { return data; }
     }
 
-    return new LocationService(dataService, rules || {}, game || {}, definitions || {}, descriptions || {});
+    return new LocationService(dataService, rules || {}, game || {}, {});
 }

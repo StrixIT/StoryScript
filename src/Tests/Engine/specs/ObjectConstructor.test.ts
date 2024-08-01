@@ -23,7 +23,7 @@ describe("ObjectConstructors", function () {
     test("should get the game definitions", function () {
         const result = <any>GetDefinitions();
         expect(result).not.toEqual(null);
-        expect(result.locations.length).toEqual(5);
+        expect(Object.values(result.locations).length).toEqual(5);
         expect(result.items.length).toEqual(4);
         expect(result.enemies.length).toEqual(1);
         expect(result.persons.length).toEqual(1);

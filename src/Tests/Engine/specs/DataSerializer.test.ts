@@ -129,14 +129,13 @@ const partyDataEmptyArrays = {
 };
 
 describe("DataSerializer", () => {
-    let definitions: IDefinitions;
     let locations: ICompiledLocation[];
     let serializer: IDataSerializer;
+    let registeredEntities: Record<string, Record<string, any>>
 
     beforeAll(() => {
         RunGame();
-        definitions = GetDefinitions();
-        const registeredEntities = GetRegisteredEntities();
+        registeredEntities = GetRegisteredEntities();
         serializer = new DataSerializer(registeredEntities);
         locations = Object.values(registeredEntities['locations']);
     });
@@ -168,13 +167,12 @@ describe("DataSerializer", () => {
 
     test("should create and save a JSON clone with items added at runtime", function () {
         const game = <IGame>{};
-        game.definitions = definitions;
-        game.helpers = new HelperService(game);
+        const definitions = <IDefinitions>{ items: [] };
+        game.helpers = new HelperService(game, definitions);
         game.party = <IParty>{};
         game.party.characters = [];
-        const locationService = new LocationService(<IDataService>{}, <IRules>{}, game, definitions, new Map<string, string>());
+        const locationService = new LocationService(<IDataService>{}, <IRules>{}, game, registeredEntities);
         const garden = <ICompiledLocation>Garden();
-        locationService.setDestinations(garden);
         locationService.initDestinations(garden);
         const searchShedAction = garden.actions.find(a => a[0] === 'SearchShed')[1];
         game.currentLocation = garden;

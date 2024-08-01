@@ -12,9 +12,9 @@ import {getId, getPlural, getSingular} from './utilities';
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
 import {IEquipment} from './Interfaces/equipment';
-import {ActionStatus, IParty} from './Interfaces/storyScript';
+import {ActionStatus, ICompiledLocation, IDestination, IParty} from './Interfaces/storyScript';
 import {ISaveGame} from './Interfaces/saveGame';
-import {TypeProperty} from "../../constants.ts";
+import {Enemies, Features, Items, Locations, Persons, Quests} from "../../constants.ts";
 
 const _entityCollections: string[] = [
     'features',
@@ -37,9 +37,6 @@ const _gameCollections: string[] = _entityCollections.concat([
 // The dictionary containing all registered entity keys and their corresponding ids.
 let _registeredIds: Map<string, string> = new Map<string, string>();
 
-// The dictionary containing all registered entity ids and their corresponding descriptions.
-let _registeredDescriptions: Map<string, string> = new Map<string, string>();
-
 // A record to keep all the entities available, fully build.
 const _registeredEntities: Record<string, Record<string, any>> = {};
 
@@ -56,10 +53,6 @@ let _definitions: IDefinitions = {
 
 export function GetDefinitions(): IDefinitions {
     return _definitions;
-}
-
-export function GetDescriptions(): Map<string, string> {
-    return _registeredDescriptions;
 }
 
 export function GetRegisteredEntities() {
@@ -99,80 +92,41 @@ export function Action(action: IAction): IAction {
 }
 
 export function buildEntities(): void {
-    const allDefinitions = Object.getOwnPropertyNames(_definitions);
-    const allEntities = [];
-
-    // Build all entities. Stand-alone entities will not have an id after the first build. We need
-    // to look these up in registeredIds map to set their ids before registering them.
+    // Build all entities and register them and their ids. The order in which the definitions are read
+    // is very important! Entities that can contain other entities should be built AFTER the entities 
+    // they may contain. Otherwise, the entity id will not be resolved and actions depending on the id
+    // to be present cannot be carried out.
+    const allDefinitions = [
+        Features,
+        Quests,
+        Items,
+        Enemies,
+        Persons,
+        Locations
+    ];
+    
     allDefinitions.forEach(p => {
         _definitions[p].forEach((f: Function) => {
             const compiledEntity = f();
             const entityKey = getEntityKey(compiledEntity);
-            _registeredIds.set(entityKey, getId(f));
-            allEntities.push(compiledEntity);
+            compiledEntity.id = getId(f); 
+            _registeredIds.set(entityKey, compiledEntity.id);
+            loadDependentData(compiledEntity);
+            registerEntity(compiledEntity);
         });
     });
-
-    allEntities.forEach(e => {
-        fixUpEntity(e);
-        registerEntity(e);
-    });
-}
-
-function fixUpEntity(entity: { type: string, id?: string, description?: string }) {
-    const entityKey = getEntityKey(entity);
-    const id = _registeredIds.get(entityKey);
-
-    if (!id) {
-        return;
-    }
-
-    entity.id ??= id;
-    
-    if (entity.description) {
-        const descriptionKey = `${entity.type}_${entity.id}`;
-
-        if (!_registeredDescriptions.get(descriptionKey)) {
-            _registeredDescriptions.set(descriptionKey, entity.description);
-        }
-
-        loadPictureFromDescription(entity, entity.description);
-    }
-
-    Object.keys(entity)
-        .filter(p => entity[p][TypeProperty])
-        .forEach(p => fixUpEntity(entity[p]));
-    
-    Object.keys(entity)
-        .filter(p => Array.isArray(entity[p]) && entity[p].length && entity[p][0][TypeProperty])
-        .forEach(p => entity[p].forEach((e: {
-            type: string;
-            id: string;
-            description?: string;
-        }) => fixUpEntity(e)));
-}
-
-function loadPictureFromDescription(entity: any, description: string): void {
-    const parser = new DOMParser();
-    const htmlDoc = parser.parseFromString(description, 'text/html');
-    const pictureElement = htmlDoc.getElementsByClassName('picture')[0];
-    const pictureSrc = pictureElement?.getAttribute('src');
-
-    if (pictureSrc) {
-        entity.picture = pictureSrc;
-    }
 }
 
 export function setReadOnlyProperties(key: string, data: any) {
     if (key.startsWith(DataKeys.GAME + '_')) {
-        data.world.forEach((location: ILocation) => {
-            setReadOnlyLocationProperties(location);
+        Object.values(data.world).forEach(l => {
+            setReadOnlyLocationProperties(<ILocation>l);
         });
 
         setReadOnlyCharacterProperties((<ISaveGame>data).party)
     } else if (key === DataKeys.WORLD) {
-        data.forEach((location: ILocation) => {
-            setReadOnlyLocationProperties(location);
+        Object.values(data).forEach(l => {
+            setReadOnlyLocationProperties(<ILocation>l);
         });
     } else if (key === DataKeys.PARTY) {
         setReadOnlyCharacterProperties(<IParty>data);
@@ -217,6 +171,26 @@ export function InitEntityCollection(entity: any, property: string) {
             writable: true,
             value: collection.add.proxy(pushEntity)
         });
+    }
+}
+
+export function setDestination(destination: IDestination) {
+    // Set the barrier selected actions to the first one available for each barrier.
+    // Further, replace combine functions with their target ids.
+    destination.target = getId(destination.target);
+
+    if (destination.barrier) {
+        if (destination.barrier.key) {
+            const key = destination.barrier.key;
+            destination.barrier.key = getId(key);
+        }
+
+        if (destination.barrier.combinations?.combine) {
+            for (const n in destination.barrier.combinations.combine) {
+                const combination = destination.barrier.combinations.combine[n];
+                combination.tool = <any>getId(<any>combination.tool);
+            }
+        }
     }
 }
 
@@ -315,14 +289,48 @@ function CreateObject<T>(entity: T, type: string, id?: string) {
 
     const compiledEntity = getCompiledEntity(entity, type);
     const entityKey = getEntityKey(compiledEntity);
+
     checkInlineConflict(id, entityKey);
 
-    if (id && !_registeredIds.has(entityKey)) {
-        _registeredIds.set(entityKey, id);
+    if (!id && _registeredIds.has(entityKey)) {
+        id = _registeredIds.get(entityKey);
     }
     
-    fixUpEntity(compiledEntity);
+    if (id) {
+        compiledEntity.id = id;
+        loadDependentData(compiledEntity);
+    }
+    
     return <T><unknown>compiledEntity;
+}
+
+function loadDependentData(entity: any) {
+    if (entity.description) {
+        loadPictureFromDescription(entity, entity.description);
+    }
+    
+    if (entity.type === 'location') {
+        setDestinations(entity);
+    }
+}
+
+function loadPictureFromDescription(entity: any, description: string): void {
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(description, 'text/html');
+    const pictureElement = htmlDoc.getElementsByClassName('picture')[0];
+    const pictureSrc = pictureElement?.getAttribute('src');
+
+    if (pictureSrc) {
+        entity.picture = pictureSrc;
+    }
+}
+
+function setDestinations (location: ICompiledLocation): void {
+    if (location.destinations) {
+        location.destinations.forEach(destination => {
+            setDestination(destination);
+        });
+    }
 }
 
 function initCollection(entity: any, property: string) {

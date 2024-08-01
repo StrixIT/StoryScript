@@ -7,9 +7,9 @@ describe("HelperService", function() {
 
     test("should retrieve a random item", function() {
         const { service } = getService();
-        var random = service.randomItem();
+        const random = service.randomItem();
 
-        var itemIds = [
+        const itemIds = [
             'basementkey',
             'journal',
             'leatherboots',
@@ -22,9 +22,9 @@ describe("HelperService", function() {
 
     test("should retrieve a random enemy", function() {
         const { service } = getService();
-        var random = service.randomEnemy();
+        const random = service.randomEnemy();
 
-        var enemyIds = [
+        const enemyIds = [
             'bandit'
         ];
 
@@ -34,9 +34,9 @@ describe("HelperService", function() {
 
     test("should retrieve an item using its id", function() {
         const { service, definitions } = getService();
-        var expected = find(definitions.items, 'Sword');
+        const expected = find(definitions.items, 'Sword');
 
-        var getWithId = service.getItem('Sword');
+        const getWithId = service.getItem('Sword');
 
         expect(getWithId).toEqual(expected);
     });
@@ -44,41 +44,41 @@ describe("HelperService", function() {
     test("should retrieve an enemy using its id", function() {
         const { service, definitions } = getService();
         const expected: IEnemy = find(definitions.enemies, 'Bandit');
-        var getWithId = service.getEnemy('Bandit');
+        const getWithId = service.getEnemy('Bandit');
         expect(getWithId).toEqual(expected);
     });
 
     test("should return a number between 1 and six using rollDice with a number of 6 sides", function() {
         const { service } = getService();
-        var result = service.rollDice(6);
+        const result = service.rollDice(6);
         expect(result).toBeGreaterThanOrEqual(1);
         expect(result).toBeLessThanOrEqual(6);
     });
 
     test("should return a number between 3 and eighteen using rollDice with a number of 6 sides and 3 dice", function() {
         const { service } = getService();
-        var result = service.rollDice(6, 3);
+        const result = service.rollDice(6, 3);
         expect(result).toBeGreaterThanOrEqual(3);
         expect(result).toBeLessThanOrEqual(18);
     });
     
     test("should return a number between 8 and twenty-three using rollDice with a number of 6 sides, 3 dice and a bonus of 5", function() {
         const { service } = getService();
-        var result = service.rollDice(6, 3, 5);
+        const result = service.rollDice(6, 3, 5);
         expect(result).toBeGreaterThanOrEqual(8);
         expect(result).toBeLessThanOrEqual(23);
     });
 
     test("should return a number between 7 and thirty-five using rollDice with a string of 4d8+3", function() {
         const { service } = getService();
-        var result = service.rollDice('4d8+3');
+        const result = service.rollDice('4d8+3');
         expect(result).toBeGreaterThanOrEqual(7);
         expect(result).toBeLessThanOrEqual(35);
     });
 
     test("should return a number between 7 and fourthy-six using rollDice with a string of 4d12-2", function() {
         const { service } = getService();
-        var result = service.rollDice('4d12-2');
+        const result = service.rollDice('4d12-2');
         expect(result).toBeGreaterThanOrEqual(2);
         expect(result).toBeLessThanOrEqual(46);
     });
@@ -86,7 +86,7 @@ describe("HelperService", function() {
     test("should calculate the correct attack bonus for an enemy", function() {
         const { service } = getService();
 
-        var enemy = <IEnemy>{
+        const enemy = <IEnemy>{
             items: <any>[
                 {
                     name: 'Left dagger',
@@ -98,7 +98,7 @@ describe("HelperService", function() {
                 }
             ]
         }
-        var result = service.calculateBonus(enemy, 'attack');
+        const result = service.calculateBonus(enemy, 'attack');
 
         expect(result).toBe(5);
     });
@@ -106,7 +106,7 @@ describe("HelperService", function() {
     test("should calculate the correct defense bonus for a character", function() {
         const { service } = getService();
 
-        var character = <ICharacter><unknown>{
+        const character = <ICharacter><unknown>{
             defense: 1,
             items: [
                 {
@@ -119,7 +119,7 @@ describe("HelperService", function() {
                 }
             ]
         }
-        var result = service.calculateBonus(character, 'defense');
+        const result = service.calculateBonus(character, 'defense');
         
         expect(result).toBe(6);
     });
@@ -149,12 +149,8 @@ function getService(): { service: IHelperService, definitions: IDefinitions } {
         persons: [],
         quests: []
     }
-
-    var game = <IGame>{
-        definitions: definitions
-    };
-
-    return { service: new HelperService(game), definitions: definitions };
+    
+    return { service: new HelperService(<IGame>{}, definitions), definitions: definitions };
 }
 
 function find(collection, name) {

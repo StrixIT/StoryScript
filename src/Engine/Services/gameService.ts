@@ -182,7 +182,7 @@ export class GameService implements IGameService {
     }
 
     loadGame = (name: string): void => {
-        var saveGame = this._dataService.load<ISaveGame>(DataKeys.GAME + '_' + name);
+        const saveGame = this._dataService.load<ISaveGame>(DataKeys.GAME + '_' + name);
 
         if (saveGame) {
             this._game.loading = true;
@@ -372,8 +372,8 @@ export class GameService implements IGameService {
     private resume = (locationName: string): void => {
         this.initSetInterceptors();
 
-        var lastLocation = this._game.locations.get(locationName) || this._game.locations.get('start');
-        var previousLocationName = this._game.party.previousLocationId;
+        const lastLocation = this._game.locations.get(locationName) || this._game.locations.start;
+        const previousLocationName = this._game.party.previousLocationId;
 
         if (previousLocationName) {
             this._game.previousLocation = this._game.locations.get(previousLocationName);

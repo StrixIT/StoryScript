@@ -9,9 +9,10 @@ import { ITradeService } from '../Interfaces/services/tradeService';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { IParty } from '../Interfaces/party';
 import {StateProperties} from "storyScript/stateProperties.ts";
+import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
 export class TradeService implements ITradeService {
-    constructor(private _game: IGame, private _texts: IInterfaceTexts) {
+    constructor(private _game: IGame, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {
     }
 
     trade = (trade: IPerson | ITrade): void => {
@@ -90,7 +91,7 @@ export class TradeService implements ITradeService {
 
         // When visiting a trader for the first time and he has an initCollection function set, set the items for sale.
         if (!trader[StateProperties.Triggered] && (trader.buy.initCollection?.(this._game, trader) || !itemsForSale)) {
-            const collection = <any>(trader.ownItemsOnly ? this._game.person.items : this._game.definitions.items);
+            const collection = <any>(trader.ownItemsOnly ? this._game.person.items : this._definitions.items);
             itemsForSale = randomList<IItem>(collection, trader.buy.maxItems, buySelector);
             trader[StateProperties.Triggered] = true;
         }
