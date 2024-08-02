@@ -19,7 +19,7 @@ describe("LocationService", function () {
 
         const game = <IGame>{};
         const service = getService(dataService, {}, game);
-        service.init(true);
+        service.init();
 
         expect(game.changeLocation).not.toBeNull();
         expect(game.currentLocation).toBeNull();

@@ -104,7 +104,7 @@ export class GameService implements IGameService {
         };
         
         this._dataService.save(DefaultSaveGame, emptySave);
-        this._locationService.init(true);
+        this._locationService.init();
 
         // Save here to use the before and after save hooks after refreshing the world,
         // if there is a beforeSave hook defined.
@@ -152,7 +152,7 @@ export class GameService implements IGameService {
             this._game.loading = true;
             this._game.party = saveGame.party;
             this._game.locations = saveGame.world;
-            this._locationService.init(false);
+            this._locationService.init();
             this._game.currentLocation = this._game.locations.get(saveGame.party.currentLocationId);
 
             // Use the afterSave hook here combine the loaded world with other saved data.
@@ -513,7 +513,7 @@ export class GameService implements IGameService {
         };
 
         this.setupCombinations();
-        this._locationService.init(true);
+        this._locationService.init();
 
         this._game.changeLocation = (location, travel) => 
         { 

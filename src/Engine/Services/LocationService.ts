@@ -19,11 +19,11 @@ export class LocationService implements ILocationService {
     ) {
     }
 
-    init = (buildWorld: boolean): void => {
+    init = (): void => {
         this._game.currentLocation = null;
         this._game.previousLocation = null;
 
-        if (buildWorld) {
+        if (!this._game.locations) {
             this._game.locations = {};
             this._definitions.locations.forEach(l => this._game.locations[getId(l)] = <ICompiledLocation>l());
             Object.values(this._game.locations).forEach(l => setReadOnlyLocationProperties(<ICompiledLocation>l));
