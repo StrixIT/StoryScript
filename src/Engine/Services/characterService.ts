@@ -109,7 +109,7 @@ export class CharacterService implements ICharacterService {
     }
 
     pickupItem = (character: ICharacter, item: IItem): boolean => {
-        var isCombining = this._game.combinations && this._game.combinations.activeCombination;
+        const isCombining = this._game.combinations?.activeCombination;
 
         if (isCombining) {
             this._game.combinations.tryCombine(item)

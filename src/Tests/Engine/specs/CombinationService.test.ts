@@ -230,10 +230,5 @@ function getService(game?: IGame, rules?: IRules, texts?: IInterfaceTexts, helpe
         format: () => ''
     }
 
-    helperService ??= <IHelpers>{
-        saveGame: () => {
-        },
-    }
-
-    return new CombinationService(helperService, game || <IGame>{}, rules || Rules(), texts);
+    return new CombinationService(game || <IGame>{}, rules || Rules(), texts);
 }

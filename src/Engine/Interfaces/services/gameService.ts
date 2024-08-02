@@ -26,4 +26,5 @@ export interface IGameService {
     getCurrentMusic(): string;
     watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void;
     watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void;
+    saveGame(name?: string): void;
 }

@@ -27,8 +27,7 @@ export class ServiceFactory {
     private readonly _texts: IInterfaceTexts;
     private readonly _rules: IRules;
     private readonly _registeredEntities: Record<string, Record<string, any>>;
-
-    private readonly _HelperService: IHelpers;
+    
     private readonly _dataSerializer: IDataSerializer;
     private readonly _dataSynchronizer: IDataSynchronizer;
     private readonly _characterService: ICharacterService;
@@ -53,13 +52,12 @@ export class ServiceFactory {
         this._dataSerializer = new DataSerializer(this._registeredEntities);
         this._dataSynchronizer = new DataSynchronizer(this._registeredEntities);
         const dataService = new DataService(localStorageService, this._dataSerializer, this._dataSynchronizer, nameSpace);
-        this._HelperService = new HelperService(dataService, this._game, this._rules, definitions);
         this._tradeService = new TradeService(this._game, this._texts,definitions);
         this._conversationService = new ConversationService(this._game);
         this._characterService = new CharacterService(this._game, this._rules);
         const locationService = new LocationService(definitions, this._rules, this._game);
-        this._combinationService = new CombinationService(this._HelperService, this._game, this._rules, this._texts);
-        this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, this._HelperService, this._game, this._texts);
+        this._combinationService = new CombinationService(this._game, this._rules, this._texts);
+        this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, new HelperService(definitions), this._game, this._texts);
         ServiceFactory._instance = this;
     }
 
@@ -74,8 +72,6 @@ export class ServiceFactory {
     GetRules = (): IRules => this._rules;
 
     GetTexts = (): IInterfaceTexts => this._texts;
-    
-    GetHelperService = (): IHelpers => this._HelperService;
 
     GetGameService = (): IGameService => this._gameService;
 

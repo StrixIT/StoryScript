@@ -3,39 +3,11 @@ import {IEnemy} from '../Interfaces/enemy';
 import {IItem} from '../Interfaces/item';
 import {ICollection} from '../Interfaces/collection';
 import {IDefinitions} from '../Interfaces/definitions';
-import {IGame} from '../Interfaces/game';
 import {random} from '../utilityFunctions';
 import {compareString} from '../globalFunctions';
-import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
-import {DefaultSaveGame} from "../../../constants.ts";
 
 export class HelperService implements IHelpers {
-    constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules, private _definitions: IDefinitions) {
-    }
-
-    saveGame = (name?: string): void => {
-        name ??= DefaultSaveGame;
-        this._rules.general?.beforeSave?.(this._game);
-
-        const saveGame = <ISaveGame>{
-            name: name,
-            party: this._game.party,
-            world: this._game.locations,
-            statistics: this._game.statistics,
-            state: this._game.state,
-            playedAudio: this._game.sounds.playedAudio
-        };
-
-        this._dataService.save(name, saveGame);
-
-        if ( this._game.playState === PlayState.Menu) {
-            this._game.playState = null;
-        }
-
-        this._rules.general.afterSave?.(this._game);
+    constructor(private _definitions: IDefinitions) {
     }
     
     randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => random<IEnemy>('enemies', this._definitions, <(enemy: IEnemy) => boolean>selector);

@@ -1,18 +1,27 @@
-import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, IDestination, IBarrier, IBarrierAction, ActionStatus } from 'storyScript/Interfaces/storyScript';
-import { isEmpty } from 'storyScript/utilityFunctions';
-import { GameService } from 'storyScript/Services/gameService';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
-import { StateProperties } from 'storyScript/stateProperties.ts';
+import {
+    ActionStatus,
+    IAction,
+    IBarrier,
+    IBarrierAction,
+    IDestination,
+    IGame,
+    IInterfaceTexts,
+    IPerson,
+    ITrade
+} from 'storyScript/Interfaces/storyScript';
+import {isEmpty} from 'storyScript/utilityFunctions';
+import {GameService} from 'storyScript/Services/gameService';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'exploration',
     template: getTemplate('exploration', await import('./exploration.component.html'))
 })
 export class ExplorationComponent {
-    private _gameService: GameService; 
+    private _gameService: GameService;
     private _sharedMethodService: SharedMethodService;
 
     constructor() {
@@ -46,13 +55,14 @@ export class ExplorationComponent {
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
     executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
-        if (this.game.combinations.tryCombine(barrier) || this.game.combinations.activeCombination)
-        {
+        if (this.game.combinations.tryCombine(barrier) || this.game.combinations.activeCombination) {
             return;
         }
 
         this._gameService.executeBarrierAction(barrier, action, destination);
     }
 
-    isPreviousLocation = (destination: IDestination): boolean => { return (<any>destination).isPreviousLocation };
+    isPreviousLocation = (destination: IDestination): boolean => {
+        return (<any>destination).isPreviousLocation
+    };
 }

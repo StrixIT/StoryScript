@@ -30,6 +30,7 @@ import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 import {Characters, DefaultSaveGame, HighScores, Items, Quests} from "../../../constants.ts";
 import {InitEntityCollection} from "storyScript/ObjectConstructors.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
+import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -108,7 +109,7 @@ export class GameService implements IGameService {
         // Save here to use the before and after save hooks after refreshing the world,
         // if there is a beforeSave hook defined.
         if (this._rules.general?.beforeSave) {
-            this._helperService.saveGame();
+            this.saveGame();
         }
 
         if (this._game.party?.currentLocationId) {
@@ -130,12 +131,12 @@ export class GameService implements IGameService {
         this._game.changeLocation?.('Start');
         this.initSetInterceptors();
         this._game.state = GameState.Play;
-        this._helperService.saveGame();
+        this.saveGame();
     }
 
     levelUp = (character: ICharacter): ICharacter => {
         const levelUpResult = this._characterService.levelUp(character);
-        this._helperService.saveGame();
+        this.saveGame();
         return levelUpResult;
     }
 
@@ -237,7 +238,7 @@ export class GameService implements IGameService {
                 this._game.state = GameState.GameOver;
             }
 
-            this._helperService.saveGame();
+            this.saveGame();
             this.initCombatRound(false);
         });
     }
@@ -265,7 +266,7 @@ export class GameService implements IGameService {
     executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
         action[1].execute(this._game, barrier, destination);
         barrier.actions.delete(barrier.actions.find(([k, v]) => k === action[0]));
-        this._helperService.saveGame();
+        this.saveGame();
     }
 
     getCurrentMusic = (): string => {
@@ -317,6 +318,29 @@ export class GameService implements IGameService {
         if (watchers.indexOf(callBack) < 0) {
             watchers.push(callBack);
         }
+    }
+
+    saveGame = (name?: string): void => {
+        name ??= DefaultSaveGame;
+        this._rules.general?.beforeSave?.(this._game);
+
+        const saveGame = <ISaveGame>{
+            name: name,
+            party: this._game.party,
+            world: this._game.locations,
+            worldProperties: this._game.worldProperties,
+            statistics: this._game.statistics,
+            state: this._game.state,
+            playedAudio: this._game.sounds.playedAudio
+        };
+
+        this._dataService.save(name, saveGame);
+
+        if ( this._game.playState === PlayState.Menu) {
+            this._game.playState = null;
+        }
+
+        this._rules.general.afterSave?.(this._game);
     }
 
     private setReadOnlyPartyProperties = (party: IParty) => {
@@ -496,7 +520,7 @@ export class GameService implements IGameService {
             this._locationService.changeLocation(location, travel, this._game);
 
             if (travel) {
-                this._helperService.saveGame();
+                this.saveGame();
             }
         };
 
@@ -508,7 +532,7 @@ export class GameService implements IGameService {
             this.watchState<PlayState>('playState', this._rules.general.playStateChange);
         }
     }
-
+    
     private initSetInterceptors = (): void => {
         const defaultPartyName = this._game.party.name ?? '';
         let score = this._game.party.score || 0;
@@ -652,9 +676,9 @@ export class GameService implements IGameService {
                 }
             },
             activeCombination: null,
-            tryCombine: (target: ICombinable): boolean => {
-                var activeCombo = this._game.combinations.activeCombination;
-                var result = this._combinationService.tryCombination(target);
+            tryCombine: (target: ICombinable): ICombineResult => {
+                const activeCombo = this._game.combinations.activeCombination;
+                const result = this._combinationService.tryCombination(target);
 
                 if (result.text) {
                     let featuresToRemove: string[] = [];
@@ -670,10 +694,9 @@ export class GameService implements IGameService {
                     }
 
                     this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
-                    return true;
                 }
-
-                return false;
+                
+                return result;
             },
             getCombineClass: (tool: ICombinable): string => {
                 return this._combinationService.getCombineClass(tool);

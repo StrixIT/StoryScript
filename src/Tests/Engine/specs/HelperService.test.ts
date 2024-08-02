@@ -150,7 +150,7 @@ function getService(): { service: IHelpers, definitions: IDefinitions } {
         quests: []
     }
     
-    return { service: new HelperService(<IDataService>{}, <IGame>{}, <IRules>{}, definitions), definitions: definitions };
+    return { service: new HelperService(definitions), definitions: definitions };
 }
 
 function find(collection, name) {

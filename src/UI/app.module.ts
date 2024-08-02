@@ -49,7 +49,6 @@ import './styles/storyscript.css';
 
 import 'game/ui/styles/game.css'
 import 'game/run';
-import {HelperService} from "storyScript/Services/helperService.ts";
 
 const serviceFactory = ServiceFactory.GetInstance();
 
@@ -102,7 +101,6 @@ const serviceFactory = ServiceFactory.GetInstance();
         SharedMethodService,
         ModalService,
         { provide: ServiceFactory, useValue: serviceFactory },
-        { provide: HelperService, useValue: serviceFactory.GetHelperService() },
         { provide: TradeService, useValue: serviceFactory.GetTradeService() },
         { provide: ConversationService, useValue: serviceFactory.GetConversationService() },
         { provide: GameService, useValue: serviceFactory.GetGameService() },

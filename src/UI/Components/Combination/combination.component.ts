@@ -27,5 +27,5 @@ export class CombinationComponent {
 
     getCombineClass = (action: ICombinationAction): string => this.game.combinations.activeCombination && this.game.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
     
-    tryCombination = (source: ICombinable): ICombineResult => this._combinationService.tryCombination(source);   
+    tryCombination = (source: ICombinable): ICombineResult => this.game.combinations.tryCombine(source);   
 }

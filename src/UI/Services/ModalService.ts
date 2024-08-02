@@ -6,20 +6,17 @@ import {IGame, IInterfaceTexts, PlayState} from 'storyScript/Interfaces/storyScr
 import {MenuModalComponent} from '../Components/MenuModal/menumodal.component';
 import {EncounterModalComponent} from '../Components/EncounterModal/encountermodal.component';
 import {IModalSettings} from '../Components/modalSettings';
-import {HelperService} from "storyScript/Services/helperService.ts";
 
 @Injectable()
 export class ModalService {
     private _modalService: NgbModal;
     private _gameService: GameService;
-    private _helperService: HelperService;
     private _activeModal = <NgbModalRef>null;
     private _previousModalState = <PlayState>null;
 
     constructor() {
         this._modalService = inject(NgbModal);
         this._gameService = inject(GameService);
-        this._helperService = inject(HelperService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
@@ -83,7 +80,7 @@ export class ModalService {
                 this._activeModal.componentInstance.closeAction(this.game);
             }
 
-            this._helperService.saveGame();
+            this._gameService.saveGame();
         }
 
         if (dismiss) {

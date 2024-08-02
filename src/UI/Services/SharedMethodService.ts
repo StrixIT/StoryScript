@@ -1,18 +1,16 @@
-import { Injectable, inject } from '@angular/core';
-import { ITrade, IAction, ActionType, IPerson, ICombinable, IItem, ICharacter } from 'storyScript/Interfaces/storyScript';
-import { GameService } from 'storyScript/Services/gameService';
-import { TradeService } from 'storyScript/Services/TradeService';
-import { ConversationService } from 'storyScript/Services/ConversationService';
-import { IGame } from 'storyScript/Interfaces/game';
-import { Subject } from 'rxjs';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { ModalService } from './ModalService';
-import {HelperService} from "storyScript/Services/helperService.ts";
+import {inject, Injectable} from '@angular/core';
+import {ActionType, IAction, ICharacter, ICombinable, IItem, IPerson, ITrade} from 'storyScript/Interfaces/storyScript';
+import {GameService} from 'storyScript/Services/gameService';
+import {TradeService} from 'storyScript/Services/TradeService';
+import {ConversationService} from 'storyScript/Services/ConversationService';
+import {IGame} from 'storyScript/Interfaces/game';
+import {Subject} from 'rxjs';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {ModalService} from './ModalService';
 
 @Injectable()
 export class SharedMethodService {
     private _gameService: GameService;
-    private _helperService: HelperService;
     private _conversationService: ConversationService;
     private _tradeService: TradeService;
 
@@ -23,7 +21,6 @@ export class SharedMethodService {
         const modalService = inject(ModalService);
         const objectFactory = inject(ServiceFactory);
         this._gameService = inject(GameService);
-        this._helperService = inject(HelperService);
         this._conversationService = inject(ConversationService);
         this._tradeService = inject(TradeService);
         this.game = objectFactory.GetGame();
@@ -43,9 +40,10 @@ export class SharedMethodService {
     enemiesPresent = (): boolean => this.game.currentLocation?.activeEnemies?.length > 0;
 
     tryCombine = (combinable: ICombinable): boolean => {
-        var result = this.game.combinations.tryCombine(combinable);
-        this.combinationSource.next(result);
-        return result;
+        const result = this.game.combinations.tryCombine(combinable);
+        const showText = !!result.text;
+        this.combinationSource.next(showText);
+        return showText;
     }
 
     talk = (person: IPerson): void => {
@@ -53,7 +51,7 @@ export class SharedMethodService {
     }
 
     trade = (trade: IPerson | ITrade): boolean => {
-        var locationTrade = <ITrade>trade;
+        const locationTrade = <ITrade>trade;
 
         if (locationTrade && !(<any>locationTrade).type && Array.isArray(locationTrade)) {
             trade = this.game.currentLocation.trade.find(t => t.id === locationTrade[0]);
@@ -65,10 +63,13 @@ export class SharedMethodService {
         return true;
     };
 
-    hasDescription = (entity: { id?: string, description?: string }): boolean => this._gameService.hasDescription(entity);
+    hasDescription = (entity: {
+        id?: string,
+        description?: string
+    }): boolean => this._gameService.hasDescription(entity);
 
     showDescription = (type: string, item: any, title: string): void => {
-        this.game.currentDescription = { title: title, type: type, item: item };
+        this.game.currentDescription = {title: title, type: type, item: item};
     }
 
     startCombat = (person?: IPerson): void => {
@@ -83,22 +84,22 @@ export class SharedMethodService {
     }
 
     getButtonClass = (action: [string, IAction]): string => {
-        var type = action[1].actionType || ActionType.Regular;
-        var buttonClass = 'btn-';
+        const type = action[1].actionType || ActionType.Regular;
+        let buttonClass = 'btn-';
 
         switch (type) {
-            case ActionType.Regular: {
+            case ActionType.Regular:
                 buttonClass += 'info'
-            } break;
-            case ActionType.Check: {
+                break;
+            case ActionType.Check:
                 buttonClass += 'warning';
-            } break;
-            case ActionType.Combat: {
+                break;
+            case ActionType.Combat:
                 buttonClass += 'danger';
-            } break;
-            case ActionType.Trade: {
+                break;
+            case ActionType.Trade:
                 buttonClass += 'secondary';
-            } break;
+                break;
         }
 
         return buttonClass;
@@ -106,7 +107,7 @@ export class SharedMethodService {
 
     executeAction = (action: [string, IAction], component: any): void => {
         const execute = action?.[1]?.execute;
-        
+
         if (execute) {
             // Modify the arguments collection to add the game to the collection before calling the function specified.
             const args = <any[]>[this.game, action];
@@ -128,7 +129,7 @@ export class SharedMethodService {
             }
 
             // After each action, save the game.
-            this._helperService.saveGame();
+            this._gameService.saveGame();
         }
     }
 
@@ -137,8 +138,8 @@ export class SharedMethodService {
     }
 
     canUseItem = (character: ICharacter, item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, character, item));
-    
-    private getActionIndex = (action: [string, IAction]): { type: number, index: number} => {
+
+    private getActionIndex = (action: [string, IAction]): { type: number, index: number } => {
         let index = -1;
         let type = -1;
 
@@ -158,6 +159,6 @@ export class SharedMethodService {
             });
         }
 
-        return { type, index };
+        return {type, index};
     }
 }

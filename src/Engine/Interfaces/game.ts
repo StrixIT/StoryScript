@@ -15,6 +15,7 @@ import {ICombinable} from './combinations/combinable';
 import {IParty} from './party';
 import {ICombatSetup} from './combatSetup';
 import {ICombatTurn} from './combatTurn';
+import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 
 /**
  * The StoryScript main game object.
@@ -156,7 +157,7 @@ export interface IGame {
          * Try the combination the player has created.
          * @param target The target of the combination
          */
-        tryCombine(target: ICombinable): boolean;
+        tryCombine(target: ICombinable): ICombineResult;
     }
 
     /**
