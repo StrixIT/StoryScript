@@ -8,11 +8,6 @@ import {IParty} from './party';
  */
 export interface ISaveGame {
     /**
-     * The save game name.
-     */
-    name?: string;
-
-    /**
      * The party to save
      */
     party: IParty;
@@ -31,11 +26,6 @@ export interface ISaveGame {
      * The world locations to save.
      */
     world: Record<string, ICompiledLocation>;
-
-    /**
-     * The state of the game when saved.
-     */
-    state: GameState,
 
     /**
      * The autoplaying audio that was started already.
