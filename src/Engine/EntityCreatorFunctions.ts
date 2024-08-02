@@ -7,10 +7,10 @@ import {IKey} from './Interfaces/key';
 import {IFeature} from './Interfaces/feature';
 import {IQuest} from './Interfaces/quest';
 import {IAction} from './Interfaces/action';
-import {getId, getPlural, getSingular, parseGameProperties} from './utilityFunctions';
+import {getId, getPlural, getSingular} from './utilityFunctions';
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
-import {ActionStatus, ICompiledLocation, IDestination} from './Interfaces/storyScript';
+import {ActionStatus, ICompiledLocation, IDestination, IGame} from './Interfaces/storyScript';
 import {Enemies, Features, Items, Locations, Persons, Quests} from "../../constants.ts";
 import {getParsedDocument} from "storyScript/Services/sharedFunctions.ts";
 
@@ -70,6 +70,14 @@ export function Action(action: IAction): IAction {
     return Create('action', action);
 }
 
+export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
+    const compiledEntity = <any>entityFunction();
+    const entityKey = getEntityKey(<any>compiledEntity);
+    compiledEntity.id = getIdFromName({id: '', name: name})?.toLowerCase();
+    _registeredIds.set(entityKey, compiledEntity.id);
+    return compiledEntity;
+}
+
 export function buildEntities(definitions: IDefinitions): Record<string, Record<string, any>> {
     // Build all entities and register them and their ids. The order in which the definitions are read
     // is very important! Entities that can contain other entities should be built AFTER the entities 
@@ -90,7 +98,7 @@ export function buildEntities(definitions: IDefinitions): Record<string, Record<
             const entityKey = getEntityKey(compiledEntity);
             compiledEntity.id = getId(f);
             _registeredIds.set(entityKey, compiledEntity.id);
-            loadDependentData(compiledEntity);
+            parseDescriptionData(compiledEntity);
             registerEntity(compiledEntity);
         });
     });
@@ -124,12 +132,6 @@ export function setReadOnlyLocationProperties(location: ILocation) {
                 });
         }
     });
-}
-
-export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
-    const compiledEntity = entityFunction();
-    _registeredIds.set(getEntityKey(<any>compiledEntity), getIdFromName({id: '', name: name})?.toLowerCase());
-    return entityFunction();
 }
 
 export function InitEntityCollection(entity: any, property: string) {
@@ -196,6 +198,47 @@ export function getBasicFeatureData(location: ICompiledLocation, node: HTMLEleme
     }
 
     return feature;
+}
+
+export function parseGamePropertiesInTemplate(lines: string, game?: IGame): string {
+    const propertyRegex = /{(?:[a-zA-Z\[\]0-9]{1,}[.]{0,1}){1,}}/g;
+    const indexRegex = /\[[0-9]{1,}\]/g;
+    let result = lines;
+    let parseMatch = null;
+
+    while ((parseMatch = propertyRegex.exec(lines)) !== null) {
+        let property = <unknown>game;
+        let replacement = parseMatch[0];
+        let index = null;
+        let propertyFound = false;
+
+        parseMatch[0].replace(/{|}/g, '').split('.').forEach((e: string) => {
+            if (index = indexRegex.exec(e)) {
+                e = e.replace(index, '');
+                index = parseInt(index[0].replace(/\[|\]/g, ''));
+            }
+
+            if (property.hasOwnProperty(e)) {
+                property = property[e];
+                propertyFound = true;
+            } else {
+                propertyFound = false;
+            }
+
+            if (!isNaN(index) && Array.isArray(property)) {
+                property = property[index];
+            }
+        });
+
+        if (propertyFound) {
+            replacement = property;
+        }
+
+        lines = lines.replace(`${parseMatch[0]}`, '');
+        result = result.replace(`${parseMatch[0]}`, replacement);
+    }
+
+    return result;
 }
 
 function registerEntity(entity: any): void {
@@ -302,13 +345,13 @@ function CreateObject<T>(entity: T, type: string, id?: string) {
 
     if (id) {
         compiledEntity.id = id;
-        loadDependentData(compiledEntity);
+        parseDescriptionData(compiledEntity);
     }
 
     return <T><unknown>compiledEntity;
 }
 
-function loadDependentData(entity: any) {
+function parseDescriptionData(entity: any) {
     if (entity.description) {
         loadPictureFromDescription(entity, entity.description);
     }
@@ -343,7 +386,7 @@ function loadDescriptions(location: ICompiledLocation): void {
             throw new Error('There is already a description with name ' + name + ' for location ' + location.id + '.');
         }
 
-        location.descriptions[name] = parseGameProperties(element.innerHTML);
+        location.descriptions[name] = element.innerHTML;
     }
 }
 

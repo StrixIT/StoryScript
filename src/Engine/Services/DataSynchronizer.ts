@@ -1,7 +1,7 @@
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {getPlural, isDataRecord, propertyMatch} from "storyScript/utilityFunctions";
-import {InitEntityCollection, setReadOnlyLocationProperties} from "storyScript/ObjectConstructors.ts";
+import {InitEntityCollection, setReadOnlyLocationProperties} from "storyScript/EntityCreatorFunctions.ts";
 
 export class DataSynchronizer implements IDataSynchronizer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {

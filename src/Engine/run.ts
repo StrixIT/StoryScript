@@ -2,7 +2,7 @@ import {ServiceFactory} from './ServiceFactory';
 import {addArrayExtensions, addFunctionExtensions} from './globalFunctions';
 import {IInterfaceTexts} from './Interfaces/interfaceTexts';
 import {IRules} from './Interfaces/rules/rules';
-import {buildEntities} from './ObjectConstructors';
+import {buildEntities} from './EntityCreatorFunctions';
 import {assetRegex} from '../../constants';
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
@@ -19,8 +19,8 @@ export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
         addFunctionExtensions();
         addArrayExtensions();
         const definitions = importAssets();
-        const registedEntities = buildEntities(definitions);
-        instance = new ServiceFactory(nameSpace, definitions, registedEntities, rules, texts);
+        const registeredEntities = buildEntities(definitions);
+        instance = new ServiceFactory(nameSpace, definitions, registeredEntities, rules, texts);
     }
 
     return instance;

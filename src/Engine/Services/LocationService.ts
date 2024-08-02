@@ -4,11 +4,16 @@ import {IRules} from '../Interfaces/rules/rules';
 import {IGame} from '../Interfaces/game';
 import {IDestination} from '../Interfaces/destination';
 import {IKey} from '../Interfaces/key';
-import {addHtmlSpaces, getId, parseGameProperties} from '../utilityFunctions';
+import {addHtmlSpaces, getId} from '../utilityFunctions';
 import {ILocationService} from '../Interfaces/services/locationService';
 import {ActionType} from '../Interfaces/enumerations/actionType';
 import {checkAutoplay} from './sharedFunctions';
-import {getBasicFeatureData, setDestination, setReadOnlyLocationProperties} from "storyScript/ObjectConstructors.ts";
+import {
+    getBasicFeatureData,
+    parseGamePropertiesInTemplate,
+    setDestination,
+    setReadOnlyLocationProperties
+} from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
 export class LocationService implements ILocationService {
@@ -43,7 +48,7 @@ export class LocationService implements ILocationService {
                 }
             });
         });
-        
+
         this.addLocationGet(this._game.locations);
     }
 
@@ -70,7 +75,7 @@ export class LocationService implements ILocationService {
 
     loadLocationDescriptions = (game: IGame): void => {
         if (this.selectLocationDescription(game)) {
-            parseGameProperties(game.currentLocation.description, this._game);
+            parseGamePropertiesInTemplate(game.currentLocation.description, this._game);
             this.processTextFeatures(game.currentLocation);
         }
     }
@@ -259,10 +264,10 @@ export class LocationService implements ILocationService {
 
     private addKeyAction = (game: IGame, destination: IDestination) => {
         if (destination.barrier?.key) {
-            const key = typeof destination.barrier.key === 'function' ? 
-                destination.barrier.key() 
+            const key = typeof destination.barrier.key === 'function' ?
+                destination.barrier.key()
                 : <IKey>this._definitions.items.get(destination.barrier.key)();
-            
+
             let existingAction = null;
 
             if (destination.barrier.actions) {

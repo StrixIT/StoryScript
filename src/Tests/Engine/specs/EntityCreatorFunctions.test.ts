@@ -1,10 +1,13 @@
+/**
+ * @vitest-environment jsdom
+ */
 import {beforeAll, describe, expect, test} from 'vitest';
 import {
     Feature,
     IAction,
     IBarrier,
     ICompiledLocation,
-    IFeature,
+    IFeature, IGame,
     IKey,
     ILocation,
     Location,
@@ -13,8 +16,9 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {RunGame} from '../../../Games/MyRolePlayingGame/run';
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
+import {parseGamePropertiesInTemplate} from "storyScript/EntityCreatorFunctions.ts";
 
-describe("ObjectConstructors", function () {
+describe("EntityCreatorFunctions", function () {
 
     beforeAll(() => {
         RunGame();
@@ -94,32 +98,36 @@ describe("ObjectConstructors", function () {
         expect((<any>result).type).toBe('feature');
     });
 
-});
+    test("game property should be parsed in string", function () {
+        const value = "Hi there, {game.activeCharacter.name}!";
+        const expected = "Hi there, John!";
+        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { name: 'John'}});
 
-describe('ObjectFactory', function () {
-
-    test("should return all services", function () {
-        const factory = ServiceFactory.GetInstance();
-
-        let characterService = factory.GetCharacterService();
-        expect(characterService).not.toBeNull();
-
-        const combinationService = factory.GetCombinationService();
-        expect(combinationService).not.toBeNull();
-
-        const conversationService = factory.GetConversationService();
-        expect(conversationService).not.toBeNull();
-
-        const gameService = factory.GetGameService();
-        expect(gameService).not.toBeNull();
-
-        const tradeService = factory.GetTradeService();
-        expect(tradeService).not.toBeNull();
-
-        const texts = factory.GetTexts();
-        expect(texts).not.toBeNull();
-
-        const rules = factory.GetRules();
-        expect(rules).not.toBeNull();
+        expect(expected).toEqual(actual);
     });
-})
+
+    test("game property should be parsed in string when game part is not included", function () {
+        const value = "Hi there, {activeCharacter.name}!";
+        const expected = "Hi there, John!";
+        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { name: 'John'}});
+
+        expect(expected).toEqual(actual);
+    });
+
+    test("game property with index should be parsed in string", function () {
+        const value = "Hi there. That's a nice {game.activeCharacter.items[0].name}!";
+        const expected = "Hi there. That's a nice Sword!";
+        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { items: [ { name: 'Sword' }]}});
+
+        expect(expected).toEqual(actual);
+    });
+
+    test("unknown property should not be parsed in string", function () {
+        const value = "Hi there {game.activeCharacter.dummy}!";
+        const expected = value;
+        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { items: [ { name: 'Sword' }]}});
+
+        expect(expected).toEqual(actual);
+    });
+    
+});

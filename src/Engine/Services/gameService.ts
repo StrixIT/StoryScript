@@ -28,7 +28,7 @@ import {ICombatTurn} from '../Interfaces/combatTurn';
 import {TargetType} from '../Interfaces/enumerations/targetType';
 import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 import {Characters, DefaultSaveGame, HighScores, Items, Quests} from "../../../constants.ts";
-import {InitEntityCollection} from "storyScript/ObjectConstructors.ts";
+import {InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 

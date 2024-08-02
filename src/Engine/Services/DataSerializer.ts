@@ -1,5 +1,5 @@
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer";
-import {InitEntityCollection} from "storyScript/ObjectConstructors";
+import {InitEntityCollection} from "storyScript/EntityCreatorFunctions";
 import {parseFunction, serializeFunction} from "storyScript/globalFunctions";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";

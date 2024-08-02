@@ -10,7 +10,7 @@ import { IConversationReply } from '../Interfaces/conversations/conversationRepl
 import { IConversationReplies } from '../Interfaces/conversations/conversationReplies';
 import { IConversation } from '../Interfaces/conversations/conversation';
 import { getParsedDocument, checkAutoplay } from './sharedFunctions';
-import { parseGameProperties } from 'storyScript/utilityFunctions';
+import {parseGamePropertiesInTemplate} from "storyScript/EntityCreatorFunctions.ts";
 
 export class ConversationService implements IConversationService {
     constructor(private _game: IGame) {
@@ -103,11 +103,9 @@ export class ConversationService implements IConversationService {
     }
 
     private processConversationNodes = (conversationNodes: HTMLCollectionOf<Element>, person: IPerson, defaultReply: string) => {
-        for (var i = 0; i < conversationNodes.length; i++) {
-            var node = conversationNodes[i];
-            var newNode = this.getNewNode(person, node);
-
-            this.processReplyNodes(person, node, newNode, defaultReply);
+        for (const element of conversationNodes) {
+            const newNode = this.getNewNode(person, element);
+            this.processReplyNodes(person, element, newNode, defaultReply);
 
             if (!newNode.replies && defaultReply) {
                 newNode.replies = {
@@ -120,13 +118,13 @@ export class ConversationService implements IConversationService {
                 };
             }
 
-            newNode.lines = parseGameProperties(node.innerHTML.trim(), this._game);;
+            newNode.lines = parseGamePropertiesInTemplate(element.innerHTML.trim(), this._game);
             person.conversation.nodes.push(newNode);
         }
     }
 
     private getNewNode = (person: IPerson, node: Element): IConversationNode => {
-        var nameAttribute = this.GetNodeValue(node, 'name');
+        let nameAttribute = this.GetNodeValue(node, 'name');
 
         if (!nameAttribute && console) {
             console.log('Missing name attribute on node for conversation for person ' + person.id + '. Using \'default\' as default name');
@@ -146,15 +144,13 @@ export class ConversationService implements IConversationService {
     }
 
     private processReplyNodes = (person: IPerson, node: Element, newNode: IConversationNode, defaultReply: string): void => {
-        for (var j = 0; j < node.childNodes.length; j++) {
-            var replies = node.childNodes[j];
-
+        for (const replies of node.childNodes) {
             if (compareString(replies.nodeName, 'replies')) {
-                var addDefaultValue = this.GetNodeValue(replies, 'default-reply');
-                var addDefaultReply = compareString(addDefaultValue, 'false') ? false : true;
+                const addDefaultValue = this.GetNodeValue(replies, 'default-reply');
+                const addDefaultReply = !compareString(addDefaultValue, 'false');
 
                 newNode.replies = <IConversationReplies>{
-                    defaultReply: <boolean>addDefaultReply,
+                    defaultReply: addDefaultReply,
                     options: []
                 };
 
@@ -163,7 +159,7 @@ export class ConversationService implements IConversationService {
 
                 if (defaultReply && newNode.replies.defaultReply) {
                     newNode.replies.options.push(<IConversationReply>{
-                        lines: parseGameProperties(defaultReply, this._game)
+                        lines: parseGamePropertiesInTemplate(defaultReply, this._game)
                     });
                 }
             }
@@ -171,29 +167,27 @@ export class ConversationService implements IConversationService {
     }
 
     private buildReplies = (person: IPerson, newNode: IConversationNode, replies: ChildNode): void => {
-        for (var k = 0; k < replies.childNodes.length; k++) {
-            var replyNode = replies.childNodes[k];
-
+        for (const replyNode of replies.childNodes) {
             if (compareString(replyNode.nodeName, 'reply')) {
-                var requires = this.GetNodeValue(replyNode, 'requires');
-                var linkToNode = this.GetNodeValue(replyNode, 'node');
-                var trigger = this.GetNodeValue(replyNode, 'trigger');
-                var questStart = this.GetNodeValue(replyNode, 'quest-start');
-                var questComplete = this.GetNodeValue(replyNode, 'quest-complete');
-                var setStart = this.GetNodeValue(replyNode, 'set-start');
+                const requires = this.GetNodeValue(replyNode, 'requires');
+                const linkToNode = this.GetNodeValue(replyNode, 'node');
+                const trigger = this.GetNodeValue(replyNode, 'trigger');
+                const questStart = this.GetNodeValue(replyNode, 'quest-start');
+                const questComplete = this.GetNodeValue(replyNode, 'quest-complete');
+                const setStart = this.GetNodeValue(replyNode, 'set-start');
 
                 if (trigger && !person.conversation.actions.some(([k, v]) => k === trigger)) {
                     console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
                 }
 
-                var reply = <IConversationReply>{
+                const reply = <IConversationReply>{
                     requires: requires,
                     linkToNode: linkToNode,
                     trigger: trigger,
                     questStart: questStart,
                     questComplete: questComplete,
                     setStart: setStart,
-                    lines: parseGameProperties((<any>replyNode).innerHTML.trim(), this._game)
+                    lines: parseGamePropertiesInTemplate((<any>replyNode).innerHTML.trim(), this._game)
                 };
 
                 newNode.replies.options.push(reply);
