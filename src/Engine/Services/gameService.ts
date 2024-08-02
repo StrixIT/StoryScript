@@ -54,7 +54,7 @@ export class GameService implements IGameService {
         const playedAudio = saveGame.playedAudio;
         
         this._rules.setup?.setupGame?.(this._game);
-        this.setupGame(playedAudio);
+        this.setupGame(playedAudio ?? []);
         this.initTexts();
 
         if (!restart) {
