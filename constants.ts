@@ -9,3 +9,7 @@ export const Items: string = 'items';
 export const Enemies: string = 'enemies';
 export const Persons: string = 'persons';
 export const Locations: string = 'locations';
+export const Party: string = 'party';
+export const Characters: string = 'characters';
+export const DefaultSaveGame: string = "ss_default";
+export const HighScores: string = 'highScores';

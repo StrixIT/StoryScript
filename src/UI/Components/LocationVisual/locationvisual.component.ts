@@ -1,5 +1,5 @@
 import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
-import { compareString } from 'storyScript/globals';
+import { compareString } from 'storyScript/globalFunctions';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';

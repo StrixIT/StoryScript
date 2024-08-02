@@ -1,8 +1,7 @@
-import {DataKeys} from '../DataKeys';
-import {IDataService} from '../Interfaces/services/dataService';
 import {ICharacter} from '../Interfaces/character';
 import {IItem} from '../Interfaces/item';
 import {IParty} from '../Interfaces/party';
+import {IGame} from "storyScript/Interfaces/game.ts";
 
 export function getParsedDocument(tag: string, value?: string, wrapIfNotFound?: boolean) {
     if (!value) {
@@ -22,13 +21,12 @@ export function getParsedDocument(tag: string, value?: string, wrapIfNotFound?: 
     return elements;
 }
 
-export function checkAutoplay(dataService: IDataService, value: string) {
+export function checkAutoplay(game: IGame, value: string) {
     // Check media with the autoplay property to play only once.
     const descriptionDocument = new DOMParser().parseFromString(value, 'text/html');
-    const playedAudio = dataService.load<string[]>(DataKeys.PLAYEDMEDIA) || [];
-    value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('audio'), playedAudio);
-    value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('video'), playedAudio);
-    dataService.save(DataKeys.PLAYEDMEDIA, playedAudio);
+    value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('audio'), game.sounds.playedAudio);
+    value = checkAutoplayProperties(value, descriptionDocument.getElementsByTagName('video'), game.sounds.playedAudio);
+    game.sounds.playedAudio.push();
     return value;
 }
 

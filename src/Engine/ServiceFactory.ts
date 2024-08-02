@@ -10,7 +10,6 @@ import { LocationService } from './Services/LocationService';
 import { CombinationService } from './Services/CombinationService';
 import { CharacterService } from './Services/characterService';
 import { GameService } from './Services/gameService';
-import {GetDefinitions, GetRegisteredEntities} from './ObjectConstructors';
 import { ICharacterService } from './Interfaces/services/characterService';
 import { IGameService } from './Interfaces/services//gameService';
 import { ITradeService } from './Interfaces/services/tradeService';
@@ -18,6 +17,10 @@ import { IConversationService } from './Interfaces/services/conversationService'
 import { ICombinationService } from './Interfaces/services/combinationService';
 import { DataSerializer } from './Services/DataSerializer';
 import { DataSynchronizer } from './Services/DataSynchronizer';
+import {IHelpers} from "storyScript/Interfaces/helpers.ts";
+import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
+import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
+import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
 
 export class ServiceFactory {
     private readonly _game: IGame = <IGame>{};
@@ -25,6 +28,9 @@ export class ServiceFactory {
     private readonly _rules: IRules;
     private readonly _registeredEntities: Record<string, Record<string, any>>;
 
+    private readonly _HelperService: IHelpers;
+    private readonly _dataSerializer: IDataSerializer;
+    private readonly _dataSynchronizer: IDataSynchronizer;
     private readonly _characterService: ICharacterService;
     private readonly _gameService: IGameService;
     private readonly _tradeService: ITradeService;
@@ -34,33 +40,42 @@ export class ServiceFactory {
     private static _instance: ServiceFactory;
 
     constructor (
-        nameSpace: string, 
+        nameSpace: string,
+        definitions: IDefinitions,
+        registeredEntities: Record<string, Record<string, any>>,
         rules: IRules, 
         texts: IInterfaceTexts
     ) {
-        const definitions = GetDefinitions();
-        this._registeredEntities = GetRegisteredEntities();
         this._texts = texts;
         this._rules = rules;
+        this._registeredEntities = registeredEntities;
         const localStorageService = new LocalStorageService();
-        const dataService = new DataService(localStorageService, new DataSerializer(this._registeredEntities), new DataSynchronizer(this._registeredEntities), this._registeredEntities, nameSpace);
-        const helperService = new HelperService(dataService, this._game, this._rules, definitions);
+        this._dataSerializer = new DataSerializer(this._registeredEntities);
+        this._dataSynchronizer = new DataSynchronizer(this._registeredEntities);
+        const dataService = new DataService(localStorageService, this._dataSerializer, this._dataSynchronizer, nameSpace);
+        this._HelperService = new HelperService(dataService, this._game, this._rules, definitions);
         this._tradeService = new TradeService(this._game, this._texts,definitions);
-        this._conversationService = new ConversationService(dataService, this._game);
+        this._conversationService = new ConversationService(this._game);
         this._characterService = new CharacterService(this._game, this._rules);
-        const locationService = new LocationService(dataService, this._rules, this._game, this._registeredEntities);
-        this._combinationService = new CombinationService(helperService, this._game, this._rules, this._texts);
-        this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, helperService, this._game, this._texts);
+        const locationService = new LocationService(definitions, this._rules, this._game);
+        this._combinationService = new CombinationService(this._HelperService, this._game, this._rules, this._texts);
+        this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, this._HelperService, this._game, this._texts);
         ServiceFactory._instance = this;
     }
 
-    get RegisteredEntities() { return this._registeredEntities };
+    get AvailableLocations() { 
+        return Object.values(this._registeredEntities.locations).map(l => { 
+            return { id: l.id, name: l.name }
+        }) ;
+    };
 
     GetGame = (): IGame => this._game;
 
     GetRules = (): IRules => this._rules;
 
     GetTexts = (): IInterfaceTexts => this._texts;
+    
+    GetHelperService = (): IHelpers => this._HelperService;
 
     GetGameService = (): IGameService => this._gameService;
 
@@ -71,6 +86,10 @@ export class ServiceFactory {
     GetCharacterService = (): ICharacterService => this._characterService;
 
     GetCombinationService = (): ICombinationService => this._combinationService;
+
+    GetDataSerializer = (): IDataSerializer => this._dataSerializer;
+
+    GetDataSynchronizer = (): IDataSynchronizer => this._dataSynchronizer;
 
     static readonly GetInstance = () => ServiceFactory._instance;
 }

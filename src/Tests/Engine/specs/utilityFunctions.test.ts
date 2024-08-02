@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest';
 import { IGame } from 'storyScript/Interfaces/storyScript';
-import { getPlural, getSingular, isEmpty, addHtmlSpaces, equals, parseGameProperties } from 'storyScript/utilities';
+import { getPlural, getSingular, isEmpty, addHtmlSpaces, equals, parseGameProperties } from 'storyScript/utilityFunctions';
 
-describe("Utilities", function() {
+describe("UtilityFunctions", function() {
 
     test("should get the correct plural of enemy", function() {
         var result = getPlural('enemy');

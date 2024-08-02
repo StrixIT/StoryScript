@@ -1,9 +1,9 @@
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer";
 import {InitEntityCollection} from "storyScript/ObjectConstructors";
-import {parseFunction, serializeFunction} from "storyScript/globals";
+import {parseFunction, serializeFunction} from "storyScript/globalFunctions";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
-import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilities";
+import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
 import {
     IdProperty,
     StartNodeProperty

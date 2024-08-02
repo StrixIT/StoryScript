@@ -1,23 +1,25 @@
-import { describe, test, expect, vi } from 'vitest';
-import { LocationService } from 'storyScript/Services/LocationService';
-import { IGame, ICollection, ICompiledLocation, IRules } from 'storyScript/Interfaces/storyScript';
+import {describe, expect, test} from 'vitest';
+import {LocationService} from 'storyScript/Services/LocationService';
+import {ICompiledLocation, IGame, IRules} from 'storyScript/Interfaces/storyScript';
+import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
+import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
 
-describe("LocationService", function() {
+describe("LocationService", function () {
 
-    test("init should build the world and add the change location function to the game", function() {
+    test("init should build the world and add the change location function to the game", function () {
         const dataService = {
             value: null,
-            load: function() {
+            load: function () {
                 return this.value;
             },
-            save: function(key, data) {
+            save: function (key, data) {
                 this.value = data;
             }
         };
 
         const game = <IGame>{};
         const service = getService(dataService, {}, game);
-        service.init(game);
+        service.init(true);
 
         expect(game.changeLocation).not.toBeNull();
         expect(game.currentLocation).toBeNull();
@@ -25,19 +27,7 @@ describe("LocationService", function() {
         expect(game.locations).toEqual({});
     });
 
-    test("save world should call dataservice save", function() {
-        const dataService = {
-            save: function() {}
-        };
-
-        vi.spyOn(dataService, 'save');
-
-        const service = getService(dataService);
-        service.saveWorld(<Record<string, ICompiledLocation>>{});
-        expect(dataService.save).toHaveBeenCalled();
-    });
-
-    test("should set the location description", function() {
+    test("should set the location description", function () {
         const game = <IGame>{
             statistics: {},
             locations: <Record<string, ICompiledLocation>>{
@@ -49,7 +39,7 @@ describe("LocationService", function() {
                 }
             }
         };
-        
+
         const rules = <IRules>{
             setup: {}
         }
@@ -69,9 +59,13 @@ function getService(dataService?, rules?, game?, definitions?, descriptions?) {
     let data = null;
 
     dataService = dataService || {
-        save: function(key, value) { data = value; },
-        load: function(key) { return data; }
+        save: function (key, value) {
+            data = value;
+        },
+        load: function (key) {
+            return data;
+        }
     }
 
-    return new LocationService(dataService, rules || {}, game || {}, {});
+    return new LocationService(definitions ?? {}, rules ?? {}, game ?? {});
 }

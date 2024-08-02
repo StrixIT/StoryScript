@@ -1,12 +1,12 @@
 import { describe, test, expect } from 'vitest';
-import { addFunctionExtensions, addArrayExtensions, compareString, parseFunction } from 'storyScript/globals';
+import { addFunctionExtensions, addArrayExtensions, compareString, parseFunction } from 'storyScript/globalFunctions';
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ILocation, ICollection, IDestination } from 'storyScript/Interfaces/storyScript';
-import { getId } from 'storyScript/utilities';
+import { getId } from 'storyScript/utilityFunctions';
 import { compareId } from '../helpers';
 
-describe("Utilities", function() {
+describe("globalFunctions", function() {
 
     test("named functions should have a name property", function() {
         addFunctionExtensions();

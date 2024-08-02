@@ -8,8 +8,6 @@ import { IItem } from '../Interfaces/item';
 import { IBarrier } from '../Interfaces/barrier';
 import { IDestination } from '../Interfaces/destination';
 import { ScoreEntry } from '../Interfaces/scoreEntry';
-import { IStatistics } from '../Interfaces/statistics';
-import { DataKeys } from '../DataKeys';
 import { getParsedDocument, checkAutoplay, removeItemFromItemsAndEquipment } from './sharedFunctions';
 import { DefaultTexts } from '../defaultTexts';
 import { IGameService } from '../Interfaces/services//gameService';
@@ -22,13 +20,16 @@ import { GameState } from '../Interfaces/enumerations/gameState';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { ICombinable } from '../Interfaces/combinations/combinable';
 import { IFeature } from '../Interfaces/feature';
-import { selectStateListEntry } from 'storyScript/utilities';
+import { selectStateListEntry } from 'storyScript/utilityFunctions';
 import { IParty } from '../Interfaces/party';
 import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
 import { ICombatSetup } from '../Interfaces/combatSetup';
 import { ICombatTurn } from '../Interfaces/combatTurn';
 import { TargetType } from '../Interfaces/enumerations/targetType';
 import {IHelpers} from "storyScript/Interfaces/helpers.ts";
+import {Characters, DefaultSaveGame, HighScores, Items, Quests} from "../../../constants.ts";
+import {InitEntityCollection} from "storyScript/ObjectConstructors.ts";
+import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -45,18 +46,19 @@ export class GameService implements IGameService {
             this._game.worldProperties = {};
         }
 
-        if (this._rules.setup && this._rules.setup.setupGame) {
-            this._rules.setup.setupGame(this._game);
-        }
-
-        this.setupGame();
+        const saveGame = this._dataService.load<ISaveGame>(DefaultSaveGame) ?? <ISaveGame>{};
+        this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
+        this._game.party = saveGame.party;
+        this.setReadOnlyPartyProperties(this._game.party);
+        this._game.locations = saveGame.world;
+        const playedAudio = saveGame.playedAudio;
+        
+        this._rules.setup?.setupGame?.(this._game);
+        this.setupGame(playedAudio);
         this.initTexts();
-        this._game.highScores = this._dataService.load<ScoreEntry[]>(DataKeys.HIGHSCORES);
-        this._game.party = this._dataService.load<IParty>(DataKeys.PARTY);
 
         if (!restart) {
-            this._game.statistics = this._dataService.load<IStatistics>(DataKeys.STATISTICS) || this._game.statistics || {};
-            this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
+            this._game.statistics = saveGame.statistics || this._game.statistics || {};
         }
 
         // Use the afterSave hook here to combine the initialized world with other saved data.
@@ -70,8 +72,8 @@ export class GameService implements IGameService {
         }
         
         let locationName = this._game.party?.currentLocationId;
-        var characterSheet = this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet();
-        var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
+        const characterSheet = this._rules.character.getCreateCharacterSheet?.();
+        const hasCreateCharacterSteps = characterSheet?.steps?.length > 0;
         let isNewGame = false;
 
         if (!hasCreateCharacterSteps && !this._game.party) {
@@ -94,10 +96,14 @@ export class GameService implements IGameService {
     }
 
     reset = (): void => {
-        this._dataService.remove(DataKeys.WORLD);
-        this._dataService.remove(DataKeys.PLAYEDMEDIA);
-        this._locationService.init(this._game);
-        this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES);
+        const emptySave = <ISaveGame>{
+            party: this._game.party,
+            statistics: this._game.statistics, 
+            state: this._game.state
+        };
+        
+        this._dataService.save(DefaultSaveGame, emptySave);
+        this._locationService.init(true);
 
         // Save here to use the before and after save hooks after refreshing the world,
         // if there is a beforeSave hook defined.
@@ -118,20 +124,11 @@ export class GameService implements IGameService {
             return;
         }
 
-        this._dataService.save(DataKeys.PARTY, this._game.party);
-        this._game.party = this._dataService.load(DataKeys.PARTY);
+        this.setReadOnlyPartyProperties(this._game.party);
         this._game.party.characters[0].isActiveCharacter = true;
-
-        if (this._rules.setup.gameStart) {
-            this._rules.setup.gameStart(this._game);
-        }
-
-        if (!this._game.currentLocation) {
-            this._game.changeLocation('Start');
-        }
-
+        this._rules.setup.gameStart?.(this._game);
+        this._game.changeLocation?.('Start');
         this.initSetInterceptors();
-
         this._game.state = GameState.Play;
         this._helperService.saveGame();
     }
@@ -143,24 +140,18 @@ export class GameService implements IGameService {
     }
 
     restart = (skipIntro?: boolean): void => {
-        this._dataService.remove(DataKeys.PARTY);
-        this._dataService.remove(DataKeys.STATISTICS);
-        this._dataService.remove(DataKeys.WORLDPROPERTIES);
-        this._dataService.remove(DataKeys.WORLD);
-        this._dataService.remove(DataKeys.PLAYEDMEDIA);
+        this._dataService.remove(DefaultSaveGame);
         this.init(true, skipIntro);
     }
 
     loadGame = (name: string): void => {
-        const saveGame = this._dataService.load<ISaveGame>(DataKeys.GAME + '_' + name);
+        const saveGame = this._dataService.load<ISaveGame>(name);
 
         if (saveGame) {
             this._game.loading = true;
             this._game.party = saveGame.party;
             this._game.locations = saveGame.world;
-            this._game.worldProperties = saveGame.worldProperties;
-        
-            this._locationService.init(this._game, false);
+            this._locationService.init(false);
             this._game.currentLocation = this._game.locations.get(saveGame.party.currentLocationId);
 
             // Use the afterSave hook here combine the loaded world with other saved data.
@@ -328,6 +319,37 @@ export class GameService implements IGameService {
         }
     }
 
+    private setReadOnlyPartyProperties = (party: IParty) => {
+        if (!party) {
+            return;
+        }
+        
+        InitEntityCollection(party, Quests);
+        InitEntityCollection(party, Characters);
+
+        party.characters.forEach(c => {
+            InitEntityCollection(c, Items);
+
+            Object.defineProperty(c, 'combatItems', {
+                get: function () {
+                    const result = c.items.filter(i => {
+                        return canUseInCombat(i.useInCombat, i, c.equipment);
+                    });
+
+                    for (const n in c.equipment) {
+                        const item = <IItem>c.equipment[n];
+
+                        if (item && canUseInCombat(item.useInCombat, item, c.equipment)) {
+                            result.push(item);
+                        }
+                    }
+
+                    return result;
+                }
+            });
+        });
+    }
+    
     private initTexts = (): void => {
         var defaultTexts = new DefaultTexts();
 
@@ -361,7 +383,7 @@ export class GameService implements IGameService {
             score: 0
         };
 
-        var character = this._characterService.createCharacter(this._game, characterData);
+        const character = this._characterService.createCharacter(this._game, characterData);
         character.items = character.items || [];
         this._game.party.characters.push(character);
     }
@@ -436,7 +458,7 @@ export class GameService implements IGameService {
         }
     }
 
-    private setupGame = (): void => {
+    private setupGame = (playedAudio: string[]): void => {
         this.initLogs();
 
         Object.defineProperty(this._game, 'activeCharacter', {
@@ -462,11 +484,12 @@ export class GameService implements IGameService {
             startMusic: this.startMusic,
             stopMusic: this.stopMusic,
             playSound: this.playSound,
-            soundQueue: new Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>
+            soundQueue: new Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>,
+            playedAudio: playedAudio
         };
 
         this.setupCombinations();
-        this._locationService.init(this._game);
+        this._locationService.init(true);
 
         this._game.changeLocation = (location, travel) => 
         { 
@@ -572,7 +595,7 @@ export class GameService implements IGameService {
                     }
                     
                     this.updateHighScore();
-                    this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+                    this._dataService.save(HighScores, this._game.highScores);
                 }
 
                 gameState = state;
@@ -589,7 +612,7 @@ export class GameService implements IGameService {
                 currentDescription = value;
 
                 if (currentDescription.item.description) {
-                    currentDescription.item.description = checkAutoplay(this._dataService, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+                    currentDescription.item.description = checkAutoplay(this._game, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
                 }
 
                 this._game.playState = PlayState.Description;
@@ -686,7 +709,7 @@ export class GameService implements IGameService {
             this._game.highScores.push(scoreEntry);
         }
 
-        this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+        this._dataService.save(HighScores, this._game.highScores);
     }
 
     private createHash(value: string): number {
@@ -704,4 +727,14 @@ export class GameService implements IGameService {
 
         return hash;
     }
+}
+
+function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEquipment) => boolean), item: IItem, equipment: {}) {
+    const canUse = (typeof flagOrFunction === "function") ? flagOrFunction(item, equipment) : flagOrFunction;
+
+    if (canUse && !item.use) {
+        console.log(`Item ${item.name} declares it can be used in combat but has no use function.`)
+    }
+
+    return canUse;
 }

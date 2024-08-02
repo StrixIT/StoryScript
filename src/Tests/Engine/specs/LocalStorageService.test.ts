@@ -1,50 +1,45 @@
-import { describe, test, expect } from 'vitest';
-import { LocalStorageService } from 'storyScript/Services/LocalStorageService';
-import { DataKeys } from 'storyScript/DataKeys';
+import {describe, expect, test} from 'vitest';
+import {LocalStorageService} from 'storyScript/Services/LocalStorageService';
 
-describe("LocalStorage", function() {
+describe("LocalStorage", function () {
 
-    test("should store a value and retrieve it", function() {
-        var service = new LocalStorageService();
+    test("should store a value and retrieve it", function () {
+        const service = new LocalStorageService();
 
-        var key = 'storage';
-        var value = JSON.stringify({
+        const key = 'storage';
+        const value = JSON.stringify({
             name: 'test',
-            values: [ 1, 2 ]
+            values: [1, 2]
         });
 
         service.set(key, value);
 
-        var loadedValue = JSON.parse(service.get(key));
+        const loadedValue = JSON.parse(service.get(key));
 
         expect(loadedValue.name).toBe('test');
 
         // Use toEqual here because the parsed object isn't really an array.
-        expect(loadedValue.values).toEqual([ 1, 2 ]);
+        expect(loadedValue.values).toEqual([1, 2]);
 
         // Clean up
         localStorage.removeItem('StoryScript_' + key);
     });
 
-    test("should get all the keys of saved values for the game", function() {
-        var service = new LocalStorageService();
-        var gameKey = 'MyRolePlayingGame' + '_' + DataKeys.GAME + '_';
+    test("should get all the keys of saved values for the game", function () {
+        const service = new LocalStorageService();
+        const keys = ['storage', 'new', 'test'].sort();
+        const values = [1, 2, 3];
 
-        var keys = [ 'storage', 'new', 'test' ].sort();
-        var values = [ 1, 2, 3];
-
-        for (var i = 0; i < keys.length; i++)
-        {
-            service.set(gameKey + keys[i], values[i]);
+        for (let i = 0; i < keys.length; i++) {
+            service.set(keys[i], values[i]);
         }
 
-        var storageKeys = service.getKeys(gameKey).sort();
+        const storageKeys = service.getKeys().sort();
         expect(storageKeys).toEqual(keys);
 
         // Clean up
-        for (var i = 0; i < keys.length; i++)
-        {
-            localStorage.removeItem('StoryScript_' + gameKey + keys[i]);
+        for (let i = 0; i < keys.length; i++) {
+            localStorage.removeItem('StoryScript_' + keys[i]);
         }
     });
 });

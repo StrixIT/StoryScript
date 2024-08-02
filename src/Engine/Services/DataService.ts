@@ -1,6 +1,4 @@
-﻿import {DataKeys} from '../DataKeys';
-import {isEmpty} from '../utilities';
-import {setReadOnlyProperties} from '../ObjectConstructors';
+﻿import {isEmpty} from '../utilityFunctions';
 import {IDataService} from '../Interfaces/services/dataService';
 import {ILocalStorageService} from '../Interfaces/services/localStorageService';
 import {IDataSerializer} from 'storyScript/Interfaces/services/dataSerializer';
@@ -12,18 +10,17 @@ export class DataService implements IDataService {
         private _localStorageService: ILocalStorageService,
         private serializer: IDataSerializer,
         private synchronizer: IDataSynchronizer,
-        private _pristineEntities: Record<string, Record<string, any>>,
         private _gameNameSpace: string) {
     }
 
     save = <T>(key: string, value: T): void => {
         const clone = this.serializer.createSerializableClone(value);
-        this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({data: clone}));
+        this._localStorageService.set(this.getKey(key), JSON.stringify({data: clone}));
     }
 
     load = <T>(key: string): T => {
         try {
-            const jsonData = this._localStorageService.get(this._gameNameSpace + '_' + key);
+            const jsonData = this._localStorageService.get(this.getKey(key));
 
             if (jsonData) {
                 const data = JSON.parse(jsonData).data;
@@ -33,12 +30,7 @@ export class DataService implements IDataService {
                 }
 
                 const result = this.serializer.restoreObjects(data);
-
-                // When loading the game world, pass in the pristine locations as an array. We need this to
-                // loop over all locations as we don't use a container entity.
-                const pristineEntity = key === DataKeys.WORLD ? this._pristineEntities['locations'] : undefined;
-                this.synchronizer.synchronizeEntityData(result, pristineEntity);
-                setReadOnlyProperties(key, result);
+                this.synchronizer.synchronizeEntityData(result);
                 return data;
             }
 
@@ -51,8 +43,12 @@ export class DataService implements IDataService {
     }
 
     remove = (key: string): void => {
-        this._localStorageService.remove(this._gameNameSpace + '_' + key);
+        this._localStorageService.remove(this.getKey(key));
     }
 
-    getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');
+    getSaveKeys = (): string[] => this._localStorageService.getKeys(this.getKey());
+    
+    private getKey = (key?: string): string => {
+        return `${this._gameNameSpace}_${key}`;
+    }
 }

@@ -1,9 +1,9 @@
-import { describe, test, expect } from 'vitest';
-import { ConversationService } from 'storyScript/Services/ConversationService';
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
-describe("ConversationService", function() {
+import {describe, expect, test} from 'vitest';
+import {ConversationService} from 'storyScript/Services/ConversationService';
 
-    test("should return the lines of a conversation node", function() {
+describe("ConversationService", function () {
+
+    test("should return the lines of a conversation node", function () {
         const node = {
             lines: 'My lines'
         }
@@ -14,6 +14,6 @@ describe("ConversationService", function() {
 
 });
 
-function getService(dataService?: IDataService, game?: any) {
-    return new ConversationService(dataService || <IDataService>{}, game || {});
+function getService(game?: any) {
+    return new ConversationService(game || {});
 }

@@ -1,5 +1,5 @@
 import { IGame, IInterfaceTexts, IQuest, ICollection } from 'storyScript/Interfaces/storyScript';
-import { isEmpty } from 'storyScript/utilities';
+import { isEmpty } from 'storyScript/utilityFunctions';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';

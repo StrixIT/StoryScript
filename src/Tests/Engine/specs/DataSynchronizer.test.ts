@@ -5,15 +5,16 @@ import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit";
 import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots";
 import {RunGame} from '../../../Games/MyRolePlayingGame/run';
 import {IEnemy} from "../../../Games/MyRolePlayingGame/interfaces/enemy.ts";
-import {GetRegisteredEntities} from "storyScript/ObjectConstructors.ts";
 import {IKey} from "../../../Games/MyRolePlayingGame/interfaces/key.ts";
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
-import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
 import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
 import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
+import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
+import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
+import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 
 describe("DataSynchronizer", () => {
 
@@ -85,13 +86,12 @@ describe("DataSynchronizer", () => {
 
     let dataSerializer: IDataSerializer;
     let dataSynchronizer: IDataSynchronizer;
-    let pristineEntities: Record<string, Record<string, any>>;
 
     beforeAll(() => {
         RunGame();
-        pristineEntities = GetRegisteredEntities();
-        dataSerializer = new DataSerializer(pristineEntities);
-        dataSynchronizer = new DataSynchronizer(pristineEntities);
+        const serviceFactory = ServiceFactory.GetInstance();
+        dataSerializer = serviceFactory.GetDataSerializer();
+        dataSynchronizer = serviceFactory.GetDataSynchronizer();
     });
 
     test("should add plain properties and new relations to a skeleton entity", function () {
@@ -174,9 +174,9 @@ describe("DataSynchronizer", () => {
     });
 
     test("should populate locations", function () {
-        const expected = [ pristineEntities.locations.basement, pristineEntities.locations.dirtroad ];
+        const expected = [Basement(), DirtRoad()];
         const skeleton = dataSerializer.restoreObjects(multipleLocations);
-        dataSynchronizer.synchronizeEntityData(skeleton);
+        dataSynchronizer.synchronizeEntityData(skeleton, expected);
         expect(skeleton).toEqual(expected);
     });
 

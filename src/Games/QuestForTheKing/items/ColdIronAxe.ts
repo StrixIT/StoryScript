@@ -2,7 +2,7 @@
 import { ClassType } from '../classType';
 import description from './ColdIronAxe.html';
 import { IEnemy, IGame } from '../types';
-import { equals } from 'storyScript/utilities';
+import { equals } from 'storyScript/utilityFunctions';
 import { ShadowDog } from '../enemies/ShadowDog';
 import { Constants } from '../constants';
 

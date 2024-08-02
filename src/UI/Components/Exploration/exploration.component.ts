@@ -1,5 +1,5 @@
 import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, IDestination, IBarrier, IBarrierAction, ActionStatus } from 'storyScript/Interfaces/storyScript';
-import { isEmpty } from 'storyScript/utilities';
+import { isEmpty } from 'storyScript/utilityFunctions';
 import { GameService } from 'storyScript/Services/gameService';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';

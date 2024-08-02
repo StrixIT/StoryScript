@@ -1,5 +1,4 @@
 import {beforeAll, describe, expect, test} from 'vitest';
-import {GetDefinitions, GetRegisteredEntities} from "storyScript/ObjectConstructors.ts";
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {RunGame} from "../../../Games/MyRolePlayingGame/run";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
@@ -15,6 +14,12 @@ import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {Character} from "../../../Games/MyRolePlayingGame/types.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {StateProperties} from "storyScript/stateProperties.ts";
+import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
+import {ServiceFactory} from "storyScript/ServiceFactory.ts";
+import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
+import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
+import {Library} from "../../../Games/MyRolePlayingGame/locations/Library.ts";
+import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -129,19 +134,23 @@ const partyDataEmptyArrays = {
 };
 
 describe("DataSerializer", () => {
-    let locations: ICompiledLocation[];
-    let serializer: IDataSerializer;
-    let registeredEntities: Record<string, Record<string, any>>
 
+    let serializer: IDataSerializer;
+    
     beforeAll(() => {
         RunGame();
-        registeredEntities = GetRegisteredEntities();
-        serializer = new DataSerializer(registeredEntities);
-        locations = Object.values(registeredEntities['locations']);
+        const serviceFactory = ServiceFactory.GetInstance();
+        serializer = serviceFactory.GetDataSerializer();
     });
 
     test("should create and save a JSON clone of the world", function () {
-        const result = serializer.createSerializableClone(locations);
+        const result = serializer.createSerializableClone([
+            Basement(),
+            DirtRoad(),
+            Garden(),
+            Library(),
+            Start()
+        ]);
         expect(result).toEqual(worldData);
     });
 
@@ -167,11 +176,11 @@ describe("DataSerializer", () => {
 
     test("should create and save a JSON clone with items added at runtime", function () {
         const game = <IGame>{};
-        const definitions = <IDefinitions>{ items: [] };
-        game.helpers = new HelperService(game, definitions);
+        const definitions = <IDefinitions><unknown>{ items: [ BasementKey ] };
+        game.helpers = new HelperService(<IDataService>{}, game, <IRules>{}, definitions);
         game.party = <IParty>{};
         game.party.characters = [];
-        const locationService = new LocationService(<IDataService>{}, <IRules>{}, game, registeredEntities);
+        const locationService = new LocationService(definitions, <IRules>{}, game);
         const garden = <ICompiledLocation>Garden();
         locationService.initDestinations(garden);
         const searchShedAction = garden.actions.find(a => a[0] === 'SearchShed')[1];

@@ -33,5 +33,5 @@ function getService(): { dataService: IDataService, storageService: ILocalStorag
     const synchronizerMock = <IDataSynchronizer>{
         synchronizeEntityData: () => {}
     }
-    return { dataService: new DataService(storageService, serializer, synchronizerMock, pristineEntities, TESTGAMEPREFIX), storageService };
+    return { dataService: new DataService(storageService, serializer, synchronizerMock, TESTGAMEPREFIX), storageService };
 }

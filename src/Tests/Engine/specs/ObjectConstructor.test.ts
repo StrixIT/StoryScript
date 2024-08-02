@@ -1,18 +1,18 @@
-import {describe, beforeAll, test, expect} from 'vitest';
-import {GetDefinitions} from 'storyScript/ObjectConstructors';
+import {beforeAll, describe, expect, test} from 'vitest';
 import {
-    Location,
-    ILocation,
-    IBarrier,
-    IKey,
-    IAction,
-    IFeature,
     Feature,
+    IAction,
+    IBarrier,
     ICompiledLocation,
-    IItem
+    IFeature,
+    IKey,
+    ILocation,
+    Location,
 } from 'storyScript/Interfaces/storyScript';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {RunGame} from '../../../Games/MyRolePlayingGame/run';
+import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
+import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 
 describe("ObjectConstructors", function () {
 
@@ -20,57 +20,27 @@ describe("ObjectConstructors", function () {
         RunGame();
     });
 
-    test("should get the game definitions", function () {
-        const result = <any>GetDefinitions();
-        expect(result).not.toEqual(null);
-        expect(Object.values(result.locations).length).toEqual(5);
-        expect(result.items.length).toEqual(4);
-        expect(result.enemies.length).toEqual(1);
-        expect(result.persons.length).toEqual(1);
-        expect(result.quests.length).toEqual(1);
-        expect(result.actions.length).toEqual(0);
-    });
+    test("should create the Start location with read-only properties", function () {
+        const start = <ICompiledLocation>Start();
+        expect(start).not.toEqual(null);
+        expect(start.id).toEqual('start');
+        expect((<any>start).type).toEqual('location');
 
-    test("should create the Start location", function () {
-        const definitions = GetDefinitions()
-        const definition = find(definitions.locations, 'Start');
-        const result = <ICompiledLocation>definition();
+        expect(start.activeItems.length).toEqual(0);
 
-        expect(result).not.toEqual(null);
-        expect(result.id).toEqual('start');
-        expect((<any>result).type).toEqual('location');
-    });
-
-    test("should create a location with read-only properties", function () {
-        const definitions = GetDefinitions()
-        const definition = find(definitions.locations, 'Start');
-        const result = <ICompiledLocation>definition();
-
-        expect(result.activeItems.length).toEqual(0);
-
-        // Add an item to activeItems to see whether the array is read-only indeed.
-        result.items.push(<IItem>{});
-        expect(result.activeItems.length).toEqual(1);
-
+        // Check that the activeItems array is present and 
+        // both it and the items array cannot be replaced.
         expect(function () {
-            result.activeItems = [];
+            start.items = [];
         }).toThrow();
-    });
 
-    test("should create a location with arrays that cannot be replaced and execute functions on add", function () {
-        const definitions = GetDefinitions()
-        const definition = find(definitions.locations, 'Start');
-        const result = definition();
-
-        // Check that the items array cannot be replaced.
         expect(function () {
-            result.items = [];
+            start.activeItems = [];
         }).toThrow();
 
         // Add an item definition to the items array, and check that the function was executed.
-        const swordDef = find(definitions.items, 'Sword');
-        result.items.add(swordDef);
-        const addedItem = result.items[0];
+        start.items.add(Sword);
+        const addedItem = start.items[0];
         expect(typeof addedItem).toBe('object');
     });
 
@@ -153,7 +123,3 @@ describe('ObjectFactory', function () {
         expect(rules).not.toBeNull();
     });
 })
-
-function find<T>(collection: (() => T)[], name: string) {
-    return collection.find(l => l.name === name);
-}

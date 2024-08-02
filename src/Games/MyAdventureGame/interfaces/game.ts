@@ -1,5 +1,5 @@
-﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers } from 'storyScript/Interfaces/storyScript';
-import { IPerson, IEnemy, IItem, ICompiledLocation, IParty, ILocation, Character } from '../types';
+﻿import {IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers} from 'storyScript/Interfaces/storyScript';
+import {Character, ICompiledLocation, IEnemy, IItem, ILocation, IParty, IPerson} from '../types';
 
 // Your game-specific game interface.
 export interface IGame extends StoryScriptIGame {
@@ -9,6 +9,9 @@ export interface IGame extends StoryScriptIGame {
     locations: Record<string, ICompiledLocation> & {
         get?(id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation;
     };
+    worldProperties: {
+        takenFlask: boolean;
+    },
     currentLocation: ICompiledLocation;
     previousLocation: ICompiledLocation;
     helpers: IHelpers;

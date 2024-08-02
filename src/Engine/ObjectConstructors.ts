@@ -7,14 +7,12 @@ import {IKey} from './Interfaces/key';
 import {IFeature} from './Interfaces/feature';
 import {IQuest} from './Interfaces/quest';
 import {IAction} from './Interfaces/action';
-import {DataKeys} from './DataKeys';
-import {getId, getPlural, getSingular} from './utilities';
+import {getId, getPlural, getSingular, parseGameProperties} from './utilityFunctions';
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
-import {IEquipment} from './Interfaces/equipment';
-import {ActionStatus, ICompiledLocation, IDestination, IParty} from './Interfaces/storyScript';
-import {ISaveGame} from './Interfaces/saveGame';
+import {ActionStatus, ICompiledLocation, IDestination} from './Interfaces/storyScript';
 import {Enemies, Features, Items, Locations, Persons, Quests} from "../../constants.ts";
+import {getParsedDocument} from "storyScript/Services/sharedFunctions.ts";
 
 const _entityCollections: string[] = [
     'features',
@@ -39,25 +37,6 @@ let _registeredIds: Map<string, string> = new Map<string, string>();
 
 // A record to keep all the entities available, fully build.
 const _registeredEntities: Record<string, Record<string, any>> = {};
-
-// The object to hold all game entity definitions.
-let _definitions: IDefinitions = {
-    actions: [],
-    locations: [],
-    features: [],
-    items: [],
-    enemies: [],
-    persons: [],
-    quests: []
-};
-
-export function GetDefinitions(): IDefinitions {
-    return _definitions;
-}
-
-export function GetRegisteredEntities() {
-    return _registeredEntities;
-}
 
 export function Location(entity: ILocation): ILocation {
     return Create('location', entity);
@@ -91,7 +70,7 @@ export function Action(action: IAction): IAction {
     return Create('action', action);
 }
 
-export function buildEntities(): void {
+export function buildEntities(definitions: IDefinitions): Record<string, Record<string, any>> {
     // Build all entities and register them and their ids. The order in which the definitions are read
     // is very important! Entities that can contain other entities should be built AFTER the entities 
     // they may contain. Otherwise, the entity id will not be resolved and actions depending on the id
@@ -104,46 +83,47 @@ export function buildEntities(): void {
         Persons,
         Locations
     ];
-    
+
     allDefinitions.forEach(p => {
-        _definitions[p].forEach((f: Function) => {
+        definitions[p]?.forEach((f: Function) => {
             const compiledEntity = f();
             const entityKey = getEntityKey(compiledEntity);
-            compiledEntity.id = getId(f); 
+            compiledEntity.id = getId(f);
             _registeredIds.set(entityKey, compiledEntity.id);
             loadDependentData(compiledEntity);
             registerEntity(compiledEntity);
         });
     });
+
+    return _registeredEntities;
 }
 
-export function setReadOnlyProperties(key: string, data: any) {
-    if (key.startsWith(DataKeys.GAME + '_')) {
-        Object.values(data.world).forEach(l => {
-            setReadOnlyLocationProperties(<ILocation>l);
-        });
-
-        setReadOnlyCharacterProperties((<ISaveGame>data).party)
-    } else if (key === DataKeys.WORLD) {
-        Object.values(data).forEach(l => {
-            setReadOnlyLocationProperties(<ILocation>l);
-        });
-    } else if (key === DataKeys.PARTY) {
-        setReadOnlyCharacterProperties(<IParty>data);
-    }
-}
-
-export function Register(type: string, entityFunc: Function, testDefinitions?: IDefinitions): IDefinitions {
-    const definitions = testDefinitions ?? _definitions;
-
-    // Add the entity function to the definitions object for creating entities at run-time.
-    definitions[type] = definitions[type] || {};
-
-    if (definitions[type].indexOf(entityFunc) === -1) {
-        definitions[type].push(entityFunc);
+export function setReadOnlyLocationProperties(location: ILocation) {
+    // If the location already has the active collections, we don't need to do anything else.
+    if ((<any>location).activePersons) {
+        return;
     }
 
-    return definitions;
+    Object.defineProperty(location, 'activePersons', {
+        get: () => filterInactive(location.persons)
+    });
+
+    Object.defineProperty(location, 'activeEnemies', {
+        get: () => filterInactive(location.enemies)
+    });
+
+    Object.defineProperty(location, 'activeItems', {
+        get: () => filterInactive(location.items)
+    });
+
+    Object.defineProperty(location, 'activeActions', {
+        get: function () {
+            return location.actions
+                .filter(([_, v]) => {
+                    return v.status !== ActionStatus.Unavailable && !(<any>v).inactive;
+                });
+        }
+    });
 }
 
 export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
@@ -192,6 +172,30 @@ export function setDestination(destination: IDestination) {
             }
         }
     }
+}
+
+export function getBasicFeatureData(location: ICompiledLocation, node: HTMLElement): IFeature {
+    const nameAttribute = node.attributes['name']?.nodeValue;
+
+    if (!nameAttribute) {
+        throw new Error('There is no name attribute for a feature node for location ' + location.id + '.');
+    }
+
+    const feature = location.features.get(nameAttribute);
+
+    // This is a workaround to restore the description for features that originally have only a placeholder in the 
+    // location description and are added later to the location's feature collection. As descriptions are not saved,
+    // the description is lost when the browser refreshes.
+    if (feature && !feature.description) {
+        const pristineFeature = Object.values(_registeredEntities.features).get(feature.id);
+
+        if (pristineFeature?.description) {
+            feature.description = pristineFeature.description;
+
+        }
+    }
+
+    return feature;
 }
 
 function registerEntity(entity: any): void {
@@ -295,12 +299,12 @@ function CreateObject<T>(entity: T, type: string, id?: string) {
     if (!id && _registeredIds.has(entityKey)) {
         id = _registeredIds.get(entityKey);
     }
-    
+
     if (id) {
         compiledEntity.id = id;
         loadDependentData(compiledEntity);
     }
-    
+
     return <T><unknown>compiledEntity;
 }
 
@@ -308,8 +312,10 @@ function loadDependentData(entity: any) {
     if (entity.description) {
         loadPictureFromDescription(entity, entity.description);
     }
-    
+
     if (entity.type === 'location') {
+        processVisualFeatures(entity);
+        loadDescriptions(entity);
         setDestinations(entity);
     }
 }
@@ -325,7 +331,47 @@ function loadPictureFromDescription(entity: any, description: string): void {
     }
 }
 
-function setDestinations (location: ICompiledLocation): void {
+function loadDescriptions(location: ICompiledLocation): void {
+    location.descriptions = {};
+    const nodes = getParsedDocument('description', location.description);
+
+    for (const element of nodes) {
+        const nameAttribute = element.attributes['name']?.nodeValue;
+        const name = nameAttribute || 'default';
+
+        if (location.descriptions[name]) {
+            throw new Error('There is already a description with name ' + name + ' for location ' + location.id + '.');
+        }
+
+        location.descriptions[name] = parseGameProperties(element.innerHTML);
+    }
+}
+
+function processVisualFeatures(location: ICompiledLocation): void {
+    const visualFeatureNode = getParsedDocument('visual-features', location.description)[0]
+
+    if (visualFeatureNode) {
+        location.features.collectionPicture = visualFeatureNode.attributes['img']?.nodeValue;
+
+        if (location.features.length > 0) {
+            const areaNodes = visualFeatureNode.getElementsByTagName('area');
+
+            for (const element of areaNodes) {
+                const feature = getBasicFeatureData(location, element);
+
+                if (feature) {
+                    feature.coords ??= element.attributes['coords']?.nodeValue;
+                    feature.shape ??= element.attributes['shape']?.nodeValue;
+                    feature.picture ??= element.attributes['img']?.nodeValue;
+                }
+            }
+        }
+
+        visualFeatureNode.parentNode.removeChild(visualFeatureNode);
+    }
+}
+
+function setDestinations(location: ICompiledLocation): void {
     if (location.destinations) {
         location.destinations.forEach(destination => {
             setDestination(destination);
@@ -424,72 +470,11 @@ function getEntityKey(entity: object): string {
     }).filter(e => e).join('|');
 }
 
-function setReadOnlyLocationProperties(location: ILocation) {
-    // If the location already has the active collections, we don't need to do anything else.
-    if ((<any>location).activePersons) {
-        return;
-    }
-
-    Object.defineProperty(location, 'activePersons', {
-        get: () => filterInactive(location.persons)
-    });
-
-    Object.defineProperty(location, 'activeEnemies', {
-        get: () => filterInactive(location.enemies)
-    });
-
-    Object.defineProperty(location, 'activeItems', {
-        get: () => filterInactive(location.items)
-    });
-
-    Object.defineProperty(location, 'activeActions', {
-        get: function () {
-            return location.actions
-                .filter(([_, v]) => {
-                    return v.status !== ActionStatus.Unavailable && !(<any>v).inactive;
-                });
-        }
-    });
-}
-
 function filterInactive(items: any[]) {
     return items.filter(e => {
         return !e.inactive;
     });
 }
-
-function setReadOnlyCharacterProperties(party: IParty) {
-    party.characters.forEach(c => {
-        Object.defineProperty(c, 'combatItems', {
-            get: function () {
-                const result = c.items.filter(i => {
-                    return canUseInCombat(i.useInCombat, i, c.equipment);
-                });
-
-                for (const n in c.equipment) {
-                    const item = <IItem>c.equipment[n];
-
-                    if (item && canUseInCombat(item.useInCombat, item, c.equipment)) {
-                        result.push(item);
-                    }
-                }
-
-                return result;
-            }
-        });
-    });
-}
-
-function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEquipment) => boolean), item: IItem, equipment: {}) {
-    const canUse = (typeof flagOrFunction === "function") ? flagOrFunction(item, equipment) : flagOrFunction;
-
-    if (canUse && !item.use) {
-        console.log(`Item ${item.name} declares it can be used in combat but has no use function.`)
-    }
-
-    return canUse;
-}
-
 
 function compileCombinations(entry: ICombinable) {
     if (entry.combinations) {

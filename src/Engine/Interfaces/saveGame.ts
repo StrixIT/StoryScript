@@ -1,9 +1,7 @@
-import { ICollection } from './collection';
-import { ICompiledLocation } from './compiledLocation';
-import { ICharacter } from './character';
-import { IStatistics } from './statistics';
-import { GameState } from './enumerations/gameState';
-import { IParty } from './party';
+import {ICompiledLocation} from './compiledLocation';
+import {IStatistics} from './statistics';
+import {GameState} from './enumerations/gameState';
+import {IParty} from './party';
 
 /**
  * An object to save the game state.
@@ -27,8 +25,8 @@ export interface ISaveGame {
     /**
      * The properties of the world to save.
      */
-    worldProperties: any;
-
+    worldProperties: {};
+    
     /**
      * The world locations to save.
      */
@@ -37,5 +35,10 @@ export interface ISaveGame {
     /**
      * The state of the game when saved.
      */
-    state: GameState
+    state: GameState,
+
+    /**
+     * The autoplaying audio that was started already.
+     */
+    playedAudio: []
 }

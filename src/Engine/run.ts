@@ -1,9 +1,10 @@
 import { ServiceFactory } from './ServiceFactory';
-import { addFunctionExtensions, addArrayExtensions } from './globals';
+import { addFunctionExtensions, addArrayExtensions } from './globalFunctions';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
-import { buildEntities, Register } from './ObjectConstructors';
+import { buildEntities } from './ObjectConstructors';
 import { assetRegex } from '../../constants';
+import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
 /**
  * This function bootstraps and runs your game.
@@ -17,27 +18,30 @@ export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
     if (!instance) {
         addFunctionExtensions();
         addArrayExtensions();
-        importAssets();
-        buildEntities();
-        instance = new ServiceFactory(nameSpace, rules, texts);
+        const definitions = importAssets();
+        const registedEntities = buildEntities(definitions);
+        instance = new ServiceFactory(nameSpace, definitions, registedEntities, rules, texts);
     }
     
     return instance;
 }
 
-export function importAssets() {
+export function importAssets(): IDefinitions {
     /* v8 ignore next 3 */
     if (process.env.WEBPACK_BUILDER) {
-        loadAssetsWithRequire();
+        return loadAssetsWithRequire();
     }
     
     if (import.meta.env?.VITE_BUILDER) {
-        loadAssetsWithImport();
+        return loadAssetsWithImport();
     }
+    
+    throw new Error('No loader found for importing the game assets!');
 }
 
 /* v8 ignore start */
-function loadAssetsWithRequire() {
+function loadAssetsWithRequire(): IDefinitions {
+    const definitions= <IDefinitions>{};
     // Note that this regex cannot be extracted from here as that will break the require usage.
     const assets = require.context('game', true, /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9/]+\.ts$/);
 
@@ -51,12 +55,15 @@ function loadAssetsWithRequire() {
         const property = assetProperties[1];
 
         // Register the asset with the proper type.
-        Register(type, asset[property]);
+        Register(definitions, type, asset[property]);
     });
+    
+    return definitions;
 }
 /* v8 ignore stop */
 
-function loadAssetsWithImport() {
+function loadAssetsWithImport(): IDefinitions {
+    const definitions= <IDefinitions>{};
     const modules = import.meta.glob([
         'game/actions/**/*.ts',
         'game/features/**/*.ts',
@@ -75,10 +82,21 @@ function loadAssetsWithImport() {
         let property = Object.getOwnPropertyNames(asset)[0];
 
         // Register the asset with the proper type.
-        Register(type, asset[property]);
+        Register(definitions, type, asset[property]);
     }
+    
+    return definitions;
 }
 
 function getAssetType(path: string): string {
     return path.replace('./', '').split('/')[0];
+}
+
+function Register(definitions: IDefinitions, type: string, entityFunc: Function) {
+     // Add the entity function to the definitions object for creating entities at run-time.
+    definitions[type] = definitions[type] || [];
+
+    if (definitions[type].indexOf(entityFunc) === -1) {
+        definitions[type].push(entityFunc);
+    }
 }

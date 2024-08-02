@@ -4,7 +4,7 @@ import {IPerson} from '../Interfaces/person';
 import {ITrade} from '../Interfaces/trade';
 import {IItem} from '../Interfaces/item';
 import {IStock} from '../Interfaces/stock';
-import {randomList} from '../utilities';
+import {randomList} from '../utilityFunctions';
 import {ITradeService} from '../Interfaces/services/tradeService';
 import {PlayState} from '../Interfaces/enumerations/playState';
 import {IParty} from '../Interfaces/party';

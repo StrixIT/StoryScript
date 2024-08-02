@@ -2,7 +2,7 @@ import { IGame } from '../Interfaces/game';
 import { IPerson } from '../Interfaces/person';
 import { IItem } from '../Interfaces/item';
 import { IQuest } from '../Interfaces/quest';
-import { compareString } from '../globals';
+import { compareString } from '../globalFunctions';
 import { IConversationService } from '../Interfaces/services/conversationService';
 import { PlayState } from '../Interfaces/enumerations/playState';
 import { IConversationNode } from '../Interfaces/conversations/conversationNode';
@@ -10,11 +10,10 @@ import { IConversationReply } from '../Interfaces/conversations/conversationRepl
 import { IConversationReplies } from '../Interfaces/conversations/conversationReplies';
 import { IConversation } from '../Interfaces/conversations/conversation';
 import { getParsedDocument, checkAutoplay } from './sharedFunctions';
-import { IDataService } from '../Interfaces/services/dataService';
-import { parseGameProperties } from 'storyScript/utilities';
+import { parseGameProperties } from 'storyScript/utilityFunctions';
 
 export class ConversationService implements IConversationService {
-    constructor(private _dataService: IDataService, private _game: IGame) {
+    constructor(private _game: IGame) {
     }
 
     talk = (person: IPerson): void => {
@@ -29,7 +28,7 @@ export class ConversationService implements IConversationService {
         person.conversation.conversationLog ??= [];
 
         person.conversation.conversationLog.push({
-            lines: checkAutoplay(this._dataService, node.lines),
+            lines: checkAutoplay(this._game, node.lines),
             reply: reply.lines
         });
 
@@ -81,7 +80,7 @@ export class ConversationService implements IConversationService {
             return;
         }
 
-        activeNode.lines = checkAutoplay(this._dataService, activeNode.lines);
+        activeNode.lines = checkAutoplay(this._game, activeNode.lines);
         person.conversation.activeNode = activeNode;
 
         this.initReplies(person);
@@ -285,7 +284,7 @@ export class ConversationService implements IConversationService {
         }
 
         if (activeNode?.lines) {
-            activeNode.lines = checkAutoplay(this._dataService, activeNode.lines);
+            activeNode.lines = checkAutoplay(this._game, activeNode.lines);
         }
     }
     

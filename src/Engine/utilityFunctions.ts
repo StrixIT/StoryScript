@@ -1,5 +1,5 @@
 ﻿import {IDefinitions} from './Interfaces/definitions';
-import {compareString} from './globals';
+import {compareString} from './globalFunctions';
 import {GameState, IGame, ILocation, PlayState} from './Interfaces/storyScript';
 import {StateList, StateListEntry} from './Interfaces/stateList';
 
@@ -162,7 +162,8 @@ export function equals<T extends { id?: string }>(entity: T, definition: () => T
     return entity.id ? compareString(entity.id, definition.name) : false;
 }
 
-export function parseGameProperties(lines: string, game: IGame): string {
+// TODO: what is this function for??
+export function parseGameProperties(lines: string, game?: IGame): string {
     const propertyRegex = /{(?:[a-zA-Z\[\]0-9]{1,}[.]{0,1}){1,}}/g;
     const indexRegex = /\[[0-9]{1,}\]/g;
     let result = lines;
