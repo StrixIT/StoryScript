@@ -503,6 +503,7 @@ export class GameService implements IGameService {
             }
         });
 
+        this._game.worldProperties ??= {};
         this._game.fight = this.fight;
         this._game.sounds = { 
             startMusic: this.startMusic,
@@ -691,9 +692,10 @@ export class GameService implements IGameService {
                         if (result.removeTool) {
                             featuresToRemove.push(activeCombo.selectedTool.id);
                         }
-                    }
 
-                    this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
+                        this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
+                        this.saveGame();
+                    }
                 }
                 
                 return result;

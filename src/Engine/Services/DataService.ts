@@ -31,7 +31,7 @@ export class DataService implements IDataService {
 
                 const result = this.serializer.restoreObjects(data);
                 this.synchronizer.synchronizeEntityData(result);
-                return data;
+                return result;
             }
 
             return null;

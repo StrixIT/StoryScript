@@ -115,7 +115,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         const existingItems = entity.filter(e => e[StateProperties.Added] && !pristineEntity.find(p => propertyMatch(e, p)));
         const matchedItems = pristineEntity.filter(e => entity.find(p => propertyMatch(e, p)));
-        const itemsToAdd = pristineEntity.filter(e => !entity.find(p => propertyMatch(e, p)));
+        const itemsToAdd = pristineEntity.filter(e => !entity.concat(entity.getDeleted()).find(p => propertyMatch(e, p)));
 
         existingItems.concat(matchedItems).forEach(i => {
             const currentValue: any = entity.find(p => propertyMatch(i, p));

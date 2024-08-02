@@ -120,8 +120,11 @@ describe("DataSynchronizer", () => {
         expect(skeleton).toEqual(bandit);
     });
 
-    test("should remove removed relations (design-time) and deleted relations (run-time) from a collection", function () {
+    test("should remove removed relations (design-time) and deleted relations (run-time) from a collection, and add newly added ones", function () {
+        // We'll pretend the leather boots were deleted during editing.
         const removedItem = {id: 'leatherboots'}
+        
+        // In contrast, we'll simulate that the sword was removed from the bandit during runtime.
         const deletedItem = {id: 'sword'};
         removedItem['type'] = 'item';
         deletedItem['type'] = 'item';
@@ -131,8 +134,13 @@ describe("DataSynchronizer", () => {
         const bandit = {...Bandit()};
         const key = BasementKey();
 
+        // We need to call restoreObjects first to move the deleted entity to the _deleted shadow array.
+        // This will happen at runtime too.
+        dataSerializer.restoreObjects(skeleton);
         dataSynchronizer.synchronizeEntityData(skeleton, bandit);
 
+        // The Basement key is on the original and should have been restored as it wasn't on the serialized entity and
+        // there wasn't a delete record for it either.
         expect(skeleton.items).toHaveLength(1);
         expect(skeleton.items[0].id).toBe('basementkey');
         expect((<IKey>skeleton.items[0]).open.text).toBe(key.open.text);
