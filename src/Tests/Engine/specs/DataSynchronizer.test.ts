@@ -15,75 +15,158 @@ import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
+import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
+import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
+
+const startLocationSkeleton = {
+    "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
+    "persons": [{
+        "items": [{"type": "item", "id": "sword"}],
+        "conversation": {"actions": [["addHedgehog"]]},
+        "quests": [{"type": "quest", "id": "journal"}],
+        "type": "person",
+        "id": "friend"
+    }],
+    "type": "location",
+    "id": "start"
+};
+
+const gardenLocationSkeleton = {
+    "destinations": [{"target": "start"}, {
+        "name": "Enter the basement",
+        "target": "basement",
+        "barrier": {
+            "key": "basementkey",
+            "name": "Wooden trap door",
+            "actions": [["Inspect", {
+                "text": "Inspect",
+                "execute": "function(game2){\n                      game2.logToLocationLog(\"The trap door looks old but still strong due to steel reinforcements. It is locked.\");\n                    }"
+            }]]
+        },
+        "ss_added": true
+    }],
+    "enterEvents": [["Squirrel"]],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
+
+const multipleLocations = [
+    {
+        "destinations": [{"target": "garden"}],
+        "items": [{"type": "item", "id": "journal"}],
+        "type": "location",
+        "id": "basement"
+    }, {
+        "destinations": [{"target": "start"}],
+        "enemies": [{
+            "items": [{"type": "item", "id": "sword"}, {"type": "item", "id": "basementkey"}],
+            "type": "enemy",
+            "id": "bandit"
+        }],
+        "combatActions": [["RunInside"]],
+        "type": "location",
+        "id": "dirtroad"
+    }
+];
+
+const partyData = {
+    "characters": [{
+        "name": "Test",
+        "level": 1,
+        "hitpoints": 10,
+        "currentHitpoints": 10,
+        "strength": 3,
+        "agility": 1,
+        "intelligence": 1,
+        "items": [],
+        "equipment": {"head": null}
+    }], "quests": [], "score": 0
+}
+
+const libraryWithTrader = {
+    "destinations": [
+        {
+            "target": "start",
+            "isPreviousLocation": true
+        }
+    ],
+    "trade": [
+        {
+            "type": "trade",
+            "id": "yourpersonalcloset",
+            "ownItemsOnly": false,
+            "ss_triggered": true,
+            "currency": 0,
+            "buy": {
+                "items": [
+                    {
+                        "type": "item",
+                        "id": "sword",
+                        "ss_uniqueId": "13846303-0dbd-46b4-b3bb-9d6f42fd2d2f",
+                        "ss_added": true
+                    }
+                ]
+            },
+            "sell": {
+                "items": [
+                    {
+                        "type": "item",
+                        "id": "leatherboots",
+                        "ss_uniqueId": "9e57b587-2052-4341-9c6c-e7d2ed8a91f7",
+                        "ss_added": true
+                    }
+                ]
+            }
+        }
+    ],
+    "type": "location",
+    "id": "library",
+    "actions": [
+        [
+            "yourpersonalcloset",
+            {
+                "text": "Your personal closet",
+                "actionType": 3,
+                "execute": "trade",
+                "ss_added": true
+            }
+        ]
+    ],
+    "hasVisited": true
+};
+
+const gardenWithDeletedAction = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [["Squirrel"]],
+    "actions": [["SearchShed"], {
+        "0": "LookInPond",
+        "ss_deleted": true,
+    }, ["Test"]],
+    "type": "location",
+    "id": "garden"
+};
+
+const gardenWithDeletedEvent = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [{ "0": "Squirrel", "ss_deleted" : true }, ["Test"]],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
+
+const gardenWithAddedEvent = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [["Squirrel"], [ "Test", { "function": `function(game){
+          return true;
+    }`, "ss_added": true }]],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
 
 describe("DataSynchronizer", () => {
-
-    const startLocationSkeleton = {
-        "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
-        "persons": [{
-            "items": [{"type": "item", "id": "sword"}],
-            "conversation": {"actions": [["addHedgehog"]]},
-            "quests": [{"type": "quest", "id": "journal"}],
-            "type": "person",
-            "id": "friend"
-        }],
-        "type": "location",
-        "id": "start"
-    };
-
-    const gardenLocationSkeleton = JSON.parse(JSON.stringify({
-        "destinations": [{"target": "start"}, {
-            "name": "Enter the basement",
-            "target": "basement",
-            "barrier": {
-                "key": "basementkey",
-                "name": "Wooden trap door",
-                "actions": [["Inspect", {
-                    "text": "Inspect",
-                    "execute": "function(game2){\n                      game2.logToLocationLog(\"The trap door looks old but still strong due to steel reinforcements. It is locked.\");\n                    }"
-                }]]
-            },
-            "ss_added": true
-        }],
-        "enterEvents": [["Squirrel"]],
-        "actions": [["SearchShed"], ["LookInPond"]],
-        "type": "location",
-        "id": "garden"
-    }));
-
-    const multipleLocations = [
-        {
-            "destinations": [{"target": "garden"}],
-            "items": [{"type": "item", "id": "journal"}],
-            "type": "location",
-            "id": "basement"
-        }, {
-            "destinations": [{"target": "start"}],
-            "enemies": [{
-                "items": [{"type": "item", "id": "sword"}, {"type": "item", "id": "basementkey"}],
-                "type": "enemy",
-                "id": "bandit"
-            }],
-            "combatActions": [["RunInside"]],
-            "type": "location",
-            "id": "dirtroad"
-        }
-    ];
-
-    const partyData = {
-        "characters": [{
-            "name": "Test",
-            "level": 1,
-            "hitpoints": 10,
-            "currentHitpoints": 10,
-            "strength": 3,
-            "agility": 1,
-            "intelligence": 1,
-            "items": [],
-            "equipment": {"head": null}
-        }], "quests": [], "score": 0
-    }
-
+    
     let dataSerializer: IDataSerializer;
     let dataSynchronizer: IDataSynchronizer;
 
@@ -195,4 +278,37 @@ describe("DataSynchronizer", () => {
         expect(skeleton.characters[0].items.length).toBe(0);
         expect(skeleton.quests.length).toBe(0);
     });
+
+    test("should restore added actions", function () {
+        const skeleton = <ICompiledLocation>dataSerializer.restoreObjects(libraryWithTrader);
+        dataSynchronizer.synchronizeEntityData(skeleton);
+        expect(skeleton.actions.length).toBe(1);
+        expect(skeleton.actions[0][1][StateProperties.Added]).toBeTruthy;
+        
+        const sword = skeleton.trade[0].buy.items[0];
+        expect(sword).not.toBeUndefined();
+        delete sword[StateProperties.Id];
+        delete sword[StateProperties.Added];
+        expect(sword).toEqual(Sword());
+    });
+
+    test("should restore location without deleted and no longer present action", function () {
+        const skeleton = <ICompiledLocation>dataSerializer.restoreObjects(gardenWithDeletedAction);
+        dataSynchronizer.synchronizeEntityData(skeleton);
+        expect(skeleton.actions.length).toBe(1);
+    });
+
+    test("should restore location without deleted and no longer present events", function () {
+        const skeleton = <ICompiledLocation>dataSerializer.restoreObjects(gardenWithDeletedEvent);
+        dataSynchronizer.synchronizeEntityData(skeleton);
+        expect(skeleton.enterEvents.length).toBe(0);
+    });
+
+    test("should restore location with added events, without making data records read-only", function () {
+        const skeleton = <ICompiledLocation>dataSerializer.restoreObjects(gardenWithAddedEvent);
+        dataSynchronizer.synchronizeEntityData(skeleton);
+        expect(skeleton.enterEvents.length).toBe(2);
+        expect(skeleton.enterEvents[1][1]).toBeTypeOf('function');
+    });
+    
 });

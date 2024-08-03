@@ -117,7 +117,7 @@ export class CombinationService implements ICombinationService {
 
         this._game.combinations.activeCombination = null;
 
-        let combination = target.combinations && target.combinations.combine ? target.combinations.combine.filter(c => {
+        let combination = target.combinations?.combine ? target.combinations.combine.filter(c => {
             const toolMatch = type.requiresTool && c.tool && this.isMatch(c.tool, tool);
             return c.combinationType === type.text && (!type.requiresTool || toolMatch);
         })[0] : null;
@@ -127,7 +127,7 @@ export class CombinationService implements ICombinationService {
             const anyTool = <any>tool;
 
             if (anyTool && anyTool.type === 'item' && target && anyTool.type === 'item') {
-                combination = tool.combinations && tool.combinations.combine ? tool.combinations.combine.filter(c => c.combinationType === type.text && this.isMatch(c.tool, target))[0] : null;
+                combination = tool.combinations?.combine ? tool.combinations.combine.filter(c => c.combinationType === type.text && this.isMatch(c.tool, target))[0] : null;
             }
         }
 

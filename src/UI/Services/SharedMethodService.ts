@@ -18,7 +18,7 @@ export class SharedMethodService {
 
     constructor() {
         // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
-        const modalService = inject(ModalService);
+        inject(ModalService);
         const objectFactory = inject(ServiceFactory);
         this._gameService = inject(GameService);
         this._conversationService = inject(ConversationService);
@@ -41,9 +41,8 @@ export class SharedMethodService {
 
     tryCombine = (combinable: ICombinable): boolean => {
         const result = this.game.combinations.tryCombine(combinable);
-        const showText = !!result.text;
-        this.combinationSource.next(showText);
-        return showText;
+        this.combinationSource.next(result.success);
+        return result.success;
     }
 
     talk = (person: IPerson): void => {

@@ -99,8 +99,7 @@ export class TextFeatures implements OnDestroy {
 
             if (feature) {
                 const result = this.game.combinations.tryCombine(feature);
-                const showText = !!result.text;
-                this._sharedMethodService.setCombineState(showText);
+                this._sharedMethodService.setCombineState(result.success);
                 this.addCombineClass(ev, feature);
             }
         }

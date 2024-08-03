@@ -55,7 +55,7 @@ export class ExplorationComponent {
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
     executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
-        if (this.game.combinations.tryCombine(barrier) || this.game.combinations.activeCombination) {
+        if (this.game.combinations.tryCombine(barrier).success || this.game.combinations.activeCombination) {
             return;
         }
 

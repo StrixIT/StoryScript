@@ -27,7 +27,7 @@ import {ICombatTurn} from '../Interfaces/combatTurn';
 import {TargetType} from '../Interfaces/enumerations/targetType';
 import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 import {Characters, DefaultSaveGame, HighScores, Items, Quests} from "../../../constants.ts";
-import {InitEntityCollection, getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
+import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 
@@ -151,6 +151,9 @@ export class GameService implements IGameService {
             this._game.loading = true;
             this._game.party = saveGame.party;
             this._game.locations = saveGame.world;
+            this._game.worldProperties = saveGame.worldProperties;
+            this._game.statistics = saveGame.statistics;
+            this._game.sounds.playedAudio = saveGame.playedAudio;
             this._locationService.init();
             this._game.currentLocation = this._game.locations.get(saveGame.party.currentLocationId);
 
@@ -200,27 +203,18 @@ export class GameService implements IGameService {
     }
 
     initCombat = (): void => {
-        if (this._rules.combat && this._rules.combat.initCombat) {
-            this._rules.combat.initCombat(this._game, this._game.currentLocation);
-        }
-
+        this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
         this.initCombatRound(true);
-
-        this._game.currentLocation.activeEnemies.forEach(enemy => {
-            if (enemy.onAttack) {
-                enemy.onAttack(this._game);
-            }
-        });
-
+        this._game.currentLocation.activeEnemies.forEach(enemy => enemy.onAttack?.(this._game));
         this._game.playState = PlayState.Combat;
     }
 
     fight = (combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
-        if (!this._rules.combat || !this._rules.combat.fight) {
+        if (!this._rules.combat?.fight) {
             return;
         }
 
-        var promise = this._rules.combat.fight(this._game, combatRound, retaliate);
+        const promise = this._rules.combat.fight(this._game, combatRound, retaliate);
 
         return Promise.resolve(promise).then(() => {
             combatRound.forEach((s, i) => {
@@ -240,10 +234,10 @@ export class GameService implements IGameService {
     }
 
     useItem = (character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void => {
-        var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, character, item) && item.use) ?? item.use;
+        const useItem = (this._rules.exploration?.onUseItem?.(this._game, character, item) && item.use) ?? item.use;
 
         if (useItem) {
-            var promise = item.use(this._game, character, item, target);
+            const promise = item.use(this._game, character, item, target);
 
             return Promise.resolve(promise).then(() => {
                 if (item.charges !== undefined) {
@@ -261,7 +255,7 @@ export class GameService implements IGameService {
 
     executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
         action[1].execute(this._game, barrier, destination);
-        barrier.actions.delete(barrier.actions.find(([k, v]) => k === action[0]));
+        barrier.actions.delete(barrier.actions.find(([k, _]) => k === action[0]));
         this.saveGame();
     }
 
@@ -294,12 +288,12 @@ export class GameService implements IGameService {
     }
 
     watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
-        var watcherNames = `_${stateName}Watchers`;
-        var watchers = this[watcherNames] ?? [];
+        const watcherNames = `_${stateName}Watchers`;
+        const watchers = this[watcherNames] ?? [];
         this[watcherNames] = watchers;
 
         if (watchers.length === 0) {
-            var state = this._game[stateName];
+            let state = this._game[stateName];
 
             Object.defineProperty(this._game, stateName, {
                 enumerable: true,
@@ -373,9 +367,9 @@ export class GameService implements IGameService {
     }
 
     private initTexts = (): void => {
-        var defaultTexts = new DefaultTexts();
+        const defaultTexts = new DefaultTexts();
 
-        for (var n in defaultTexts.texts) {
+        for (const n in defaultTexts.texts) {
             this._texts[n] = this._texts[n] ? this._texts[n] : defaultTexts.texts[n];
         }
 
@@ -385,7 +379,6 @@ export class GameService implements IGameService {
 
     private resume = (locationName: string): void => {
         this.initSetInterceptors();
-
         const lastLocation = this._game.locations.get(locationName) || this._game.locations.start;
         const previousLocationName = this._game.party.previousLocationId;
 
@@ -394,7 +387,6 @@ export class GameService implements IGameService {
         }
 
         this._locationService.changeLocation(lastLocation.id, false, this._game);
-
         this._game.state = GameState.Play;
     }
 
@@ -462,22 +454,15 @@ export class GameService implements IGameService {
         }
 
         if (enemy.currency) {
-            var party = this._game.party;
-            party.currency = party.currency || 0;
-            party.currency += enemy.currency || 0;
+            this._game.party.currency ??= 0;
+            this._game.party.currency += enemy.currency || 0;
         }
 
-        this._game.statistics.enemiesDefeated = this._game.statistics.enemiesDefeated || 0;
+        this._game.statistics.enemiesDefeated ??= 0;
         this._game.statistics.enemiesDefeated += 1;
         this._game.currentLocation.enemies.delete(enemy);
-
-        if (this._rules.combat && this._rules.combat.enemyDefeated) {
-            this._rules.combat.enemyDefeated(this._game, character, enemy);
-        }
-
-        if (enemy.onDefeat) {
-            enemy.onDefeat(this._game);
-        }
+        this._rules.combat?.enemyDefeated?.(this._game, character, enemy);
+        enemy.onDefeat?.(this._game);
     }
 
     private setupGame = (playedAudio: string[]): void => {
@@ -486,7 +471,7 @@ export class GameService implements IGameService {
         Object.defineProperty(this._game, 'activeCharacter', {
             configurable: true,
             get: () => {
-                var result = this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0];
+                const result = this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0];
 
                 if (!result.isActiveCharacter) {
                     result.isActiveCharacter = true;
@@ -568,12 +553,9 @@ export class GameService implements IGameService {
                     return currentHitpoints[c.name];
                 },
                 set: value => {
-                    var change = value - currentHitpoints[c.name];
+                    const change = value - currentHitpoints[c.name];
                     currentHitpoints[c.name] = value;
-
-                    if (this._rules.character.hitpointsChange) {
-                        this._rules.character.hitpointsChange(this._game, c, change);
-                    }
+                    this._rules.character.hitpointsChange?.(this._game, c, change);
                 }
             });
         });
@@ -584,13 +566,13 @@ export class GameService implements IGameService {
                 return score;
             },
             set: value => {
-                var change = value - score;
+                const change = value - score;
                 score = value;
 
                 // Todo: separate score and xp(?)
                 // Change when xp can be lost.
                 if (change > 0) {
-                    var levelUp = this._rules.general?.scoreChange && this._rules.general.scoreChange(this._game, change);
+                    const levelUp = this._rules.general?.scoreChange?.(this._game, change);
 
                     if (levelUp) {
                         this._game.playState = null;
@@ -609,11 +591,7 @@ export class GameService implements IGameService {
             set: state => {
                 if (state === GameState.GameOver || state === GameState.Victory) {
                     this._game.playState = null;
-
-                    if (this._rules.general?.determineFinalScore) {
-                        this._rules.general.determineFinalScore(this._game);
-                    }
-
+                    this._rules.general?.determineFinalScore?.(this._game);
                     this.updateHighScore();
                     this._dataService.save(HighScores, this._game.highScores);
                 }
@@ -664,7 +642,7 @@ export class GameService implements IGameService {
                 text: null,
                 featuresToRemove: [],
                 reset: (): void => {
-                    var result = this._game.combinations.combinationResult;
+                    const result = this._game.combinations.combinationResult;
                     result.done = false;
                     result.text = null;
                     result.featuresToRemove.length = 0;
@@ -701,17 +679,13 @@ export class GameService implements IGameService {
     }
 
     private updateHighScore = (): void => {
-        var scoreEntry = {name: this._game.party.name, score: this._game.party.score};
-
-        if (!this._game.highScores || !this._game.highScores.length) {
-            this._game.highScores = [];
-        }
-
-        var scoreAdded = false;
+        const scoreEntry = {name: this._game.party.name, score: this._game.party.score};
+        this._game.highScores ??= [];
+        let scoreAdded = false;
 
         this._game.highScores.forEach((entry) => {
             if (this._game.party.score > entry.score && !scoreAdded) {
-                var index = this._game.highScores.indexOf(entry);
+                const index = this._game.highScores.indexOf(entry);
 
                 if (this._game.highScores.length >= 5) {
                     this._game.highScores.splice(index, 1, scoreEntry);

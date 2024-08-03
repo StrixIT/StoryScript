@@ -5,6 +5,7 @@ import {Sword} from '../../../Games/MyRolePlayingGame/items/sword';
 import {ICollection, IDestination, ILocation} from 'storyScript/Interfaces/storyScript';
 import {getId} from 'storyScript/utilityFunctions';
 import {compareId} from '../helpers';
+import {StateProperties} from "storyScript/stateProperties.ts";
 
 describe("globalFunctions", function () {
 
@@ -228,6 +229,17 @@ describe("globalFunctions", function () {
         expect(testArray[0].target).toBe('Bedroom');
     });
 
+    test("should add the added flag to the value of an added datarecord", function () {
+        addArrayExtensions();
+        const actionRecords = [['First', { name: 'first' }]];
+        actionRecords.add(['Second', { name: 'second' }]);
+        expect(actionRecords[1][1][StateProperties.Added]).toBeTruthy();
+
+        const eventRecords = [['First', () => true]];
+        eventRecords.add(['Second', () => false]);
+        expect(eventRecords[1][1][StateProperties.Added]).toBeTruthy();
+    });
+    
 });
 
 function getTestArray() {

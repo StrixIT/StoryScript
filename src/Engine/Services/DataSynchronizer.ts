@@ -2,6 +2,7 @@ import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronize
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {getPlural, isDataRecord, propertyMatch} from "storyScript/utilityFunctions";
 import {InitEntityCollection, setReadOnlyLocationProperties} from "storyScript/EntityCreatorFunctions.ts";
+import {isEntity} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSynchronizer implements IDataSynchronizer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {
@@ -22,16 +23,19 @@ export class DataSynchronizer implements IDataSynchronizer {
             return;
         }
 
-        if (this.isEntity(entity)) {
+        if (isEntity(entity)) {
             if (typeof pristineEntity === 'undefined') {
                 pristineEntity = this._pristineEntities[getPlural(entity.type)][entity.id];
             }
-            else if (entity.type === 'location') {
+            
+            if (entity.type === 'location') {
                 setReadOnlyLocationProperties(entity);
             }
         }
 
-        let propertyNames = (pristineEntity && Object.keys(pristineEntity)) ?? (entity && Object.keys(entity)) ?? [];
+        let propertyNames = 
+            ((pristineEntity && Object.keys(pristineEntity)) ?? [])
+            .concat((entity && Object.keys(entity)) ?? []);
 
         propertyNames.forEach(p => {
             let currentProperty = entity[p];
@@ -45,7 +49,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             }
 
             let pristineProperty = pristineEntity[p];
-
+            
             if (typeof currentProperty === 'undefined') {
                 if (Array.isArray(pristineProperty)) {
                     entity[p] = [];
@@ -61,6 +65,15 @@ export class DataSynchronizer implements IDataSynchronizer {
 
             currentProperty = entity[p];
 
+            if (typeof pristineProperty === 'undefined') {
+                if (Array.isArray(currentProperty)) {
+                    pristineProperty = [];
+                }
+                else if (typeof currentProperty === 'object') {
+                    pristineProperty = {};
+                }
+            }
+            
             if (Array.isArray(pristineProperty) || typeof pristineProperty === 'object') {
                 this.synchronizeEntityData(currentProperty, pristineProperty, entity, pristineEntity, p);
             }
@@ -71,14 +84,19 @@ export class DataSynchronizer implements IDataSynchronizer {
     }
 
     private updateDataRecord = (entity: any, pristineEntity: any): boolean => {
-        if (!isDataRecord(pristineEntity?.[0] ?? [])) {
+        if (!isDataRecord(pristineEntity?.[0]) && !isDataRecord(entity?.[0])) {
             return false;
         }
 
         pristineEntity.forEach((p: any[]) => {
-            const match = entity.find((e: any[]) => e[0] === p[0]);
+            const match = entity.concat(entity.getDeleted()).find((e: any[]) => e[0] === p[0]);
 
-            if (!match || match[StateProperties.Deleted]) {
+            if (!match) {
+                // If there is no match, it means the record was added during design-time.
+                // Add it to the entity as well.
+                entity.push(p);
+            }
+            else if (match[StateProperties.Deleted]) {
                 return;
             } else if (typeof (p[1]) === 'function') {
                 match[1] = p[1];
@@ -91,6 +109,17 @@ export class DataSynchronizer implements IDataSynchronizer {
             }
         });
 
+        const newRecords = entity.filter((e: any[]) => !pristineEntity.find(p => p[0] === e[0]));
+        const recordsToRemove = newRecords.filter((e: any[]) => !e[1]?.[StateProperties.Added]);
+        recordsToRemove.forEach(r => entity.splice(entity.indexOf(r), 1));
+        const recordsToKeep = newRecords.filter((e: any[]) => e[1]?.[StateProperties.Added]);
+        recordsToKeep.forEach(r => {
+            if (r[1].function) {
+                r[1] = r[1].function;
+                r[1][StateProperties.Added] = true;
+            }
+        })
+        
         this.markEntriesAsDeleted(entity);
         return true;
     }
@@ -106,7 +135,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             return false;
         }
 
-        if ((entity.length == 0 && pristineEntity.length == 0)) {
+        if (entity.length == 0 && pristineEntity.length == 0 && isEntity[parentEntity[parentProperty]]) {
             // Empty arrays weren't included in the serialized data. Call InitEntityCollection
             // on them now to properly restore entities.
             InitEntityCollection(parentEntity, parentProperty);
@@ -122,7 +151,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
             // In case of an entity with the 'added' flag, 'i' is a skeleton value. Set the pristine entity to 'undefined' 
             // so it will be looked up again later on.
-            const pristineValue = i[StateProperties.Added] && this.isEntity(i) ? undefined : i;
+            const pristineValue = i[StateProperties.Added] && isEntity(i) ? undefined : i;
 
             if (!currentValue[StateProperties.Deleted]) {
                 this.synchronizeEntityData(currentValue, pristineValue, parentEntity, pristineParentEntity, parentProperty);
@@ -138,10 +167,6 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         this.markEntriesAsDeleted(entity);
         return true;
-    }
-
-    private isEntity = (entity: any): boolean => {
-        return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
     }
 
     private markEntriesAsDeleted = (item: any[]) => {

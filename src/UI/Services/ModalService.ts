@@ -23,7 +23,7 @@ export class ModalService {
         this._gameService.watchPlayState(this.openOrCloseModal);
     }
 
-    private game: IGame;
+    private readonly game: IGame;
     private texts: IInterfaceTexts;
 
     private openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {

@@ -28,33 +28,20 @@ export class LocationService implements ILocationService {
         this._game.previousLocation = null;
 
         if (!this._game.locations) {
+            // When we don't have any locations yet, we're starting a new game. Use the definitions to build
+            // all the locations and set their readonly properties.
             this._game.locations = {};
             this._definitions.locations.forEach(l => this._game.locations[getId(l)] = <ICompiledLocation>l());
             Object.values(this._game.locations).forEach(l => setReadOnlyLocationProperties(<ICompiledLocation>l));
         }
 
-        Object.values(this._game.locations).forEach(l => {
-            const compiledLocation = <ICompiledLocation>l;
-            this.initDestinations(compiledLocation);
-            let selector = compiledLocation.descriptionSelector;
-
-            Object.defineProperty(compiledLocation, 'descriptionSelector', {
-                enumerable: true,
-                get: () => selector,
-                set: (value) => {
-                    selector = value;
-                    this.selectLocationDescription(this._game);
-                }
-            });
-        });
-
-        this.addLocationGet(this._game.locations);
+        this.setupLocations();
     }
 
     changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
         // Clear the play state on travel.
         game.playState = null;
-
+        this._rules.exploration?.leaveLocation?.(game, game.currentLocation);
         this.playEvents(game, 'leaveEvents');
 
         // If there is no location, we are starting a new game. We're done here.
@@ -84,9 +71,6 @@ export class LocationService implements ILocationService {
         // with the target id when adding or deleting destinations at runtime.
         location.destinations.add = location.destinations.add.proxy(this.addDestination, this._game);
 
-        // TODO: is this correct??
-        location.destinations.delete = location.destinations.delete.proxy(this.addDestination, this._game);
-
         Object.defineProperty(location, 'activeDestinations', {
             get: function () {
                 return location.destinations.filter(e => {
@@ -94,6 +78,25 @@ export class LocationService implements ILocationService {
                 });
             }
         });
+    }
+    
+    private setupLocations = () => {
+        Object.values(this._game.locations).forEach(l => {
+            const compiledLocation = <ICompiledLocation>l;
+            this.initDestinations(compiledLocation);
+            let selector = compiledLocation.descriptionSelector;
+
+            Object.defineProperty(compiledLocation, 'descriptionSelector', {
+                enumerable: true,
+                get: () => selector,
+                set: (value) => {
+                    selector = value;
+                    this.selectLocationDescription(this._game);
+                }
+            });
+        });
+
+        this.addLocationGet(this._game.locations);
     }
 
     private addLocationGet = (locations: Record<string, ICompiledLocation>) => {

@@ -218,7 +218,7 @@ export interface IGame {
      * @param combatRound The setup for this combat round
      * @param retaliate True if the enemy can retaliate (default), false otherwise
      */
-    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): void;
+    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
 
     /**
      * The setup for the next combat round. This object is used to track

@@ -7,7 +7,7 @@ import {
     IdProperty,
     StartNodeProperty
 } from "../../../constants.ts";
-import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
+import {isEntity, parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSerializer implements IDataSerializer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {
@@ -92,7 +92,10 @@ export class DataSerializer implements IDataSerializer {
             return false;
         }
 
-        InitEntityCollection(loaded, key);
+        if (isEntity(loaded[key])) {
+            InitEntityCollection(loaded, key);
+        }
+        
         this.restoreObjects(value);
 
         const entriesToDelete = value.filter(e => e?.[StateProperties.Deleted]);
@@ -183,10 +186,19 @@ export class DataSerializer implements IDataSerializer {
         data.clone[data.key] = [];
         const match = data.pristine?.find((p: any[]) => p[0] === data.originalValue[0]);
 
-        if (!match && data.originalValue[StateProperties.Deleted]) {
-            data.clone[data.key][0] = data.pristineValue[0];
-            data.clone[data.key][StateProperties.Deleted] = true;
-            return true;
+        if (!match) {
+            const cloneArray = data.clone[data.key];
+            const value = data.originalValue[1];
+            
+            if (value[StateProperties.Deleted]) {
+                cloneArray[0] = data.pristineValue[0];
+                cloneArray[1] = {[StateProperties.Deleted]: true};
+                return true;
+            } else if (typeof value === 'function' && value[StateProperties.Added]) {
+                cloneArray[0] = data.originalValue[0];
+                cloneArray[1] = { "function": serializeFunction(value), [StateProperties.Added]: true };
+                return true;
+            }
         }
 
         data.clone[data.key][0] = data.originalValue[0];

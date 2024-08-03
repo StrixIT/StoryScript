@@ -1,6 +1,5 @@
 import {ICompiledLocation} from './compiledLocation';
 import {IStatistics} from './statistics';
-import {GameState} from './enumerations/gameState';
 import {IParty} from './party';
 
 /**
@@ -21,7 +20,7 @@ export interface ISaveGame {
      * The properties of the world to save.
      */
     worldProperties: {};
-    
+
     /**
      * The world locations to save.
      */

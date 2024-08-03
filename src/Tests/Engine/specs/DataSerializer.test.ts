@@ -133,6 +133,35 @@ const partyDataEmptyArrays = {
     ]
 };
 
+const gardenWithDeletedAction = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [["Squirrel"]],
+    "actions": [["SearchShed"], {
+        "0": "LookInPond",
+        "ss_deleted": true,
+    }],
+    "type": "location",
+    "id": "garden"
+};
+
+const gardenWithDeletedEvent = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [{ "0": "Squirrel", "ss_deleted" : true }],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
+
+const gardenWithAddedEvent = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [["Squirrel"], [ "Test", { "function": `function(game){
+          return true;
+    }`, "ss_added": true }]],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
+
 describe("DataSerializer", () => {
 
     let serializer: IDataSerializer;
@@ -227,6 +256,31 @@ describe("DataSerializer", () => {
         };
         const result = serializer.createSerializableClone(characterData);
         expect(result).toEqual(partyDataEmptyArrays);
+    });
+
+    test("should serialize deleted actions with deleted flag", function () {
+        const garden = Garden();
+        garden.actions.delete(garden.actions[1]);
+        const serialized = serializer.createSerializableClone(garden);
+        expect(serialized).toEqual(gardenWithDeletedAction);
+    });
+
+    test("should serialize deleted events with deleted flag", function () {
+        const garden = Garden();
+        garden.enterEvents.delete(garden.enterEvents[0]);
+        const serialized = serializer.createSerializableClone(garden);
+        expect(serialized).toEqual(gardenWithDeletedEvent);
+    });
+
+    test("should serialize added events with added flag", function () {
+        const garden = Garden();
+        garden.enterEvents.add(['Test', (game) => { return true; }]);
+        const serialized = serializer.createSerializableClone(garden);
+        const expectedFunction = <any>gardenWithAddedEvent.enterEvents[1][1];
+        expectedFunction.function = expectedFunction.function.replace(/\s{2,}/g,' ');
+        const actualFunction = <any>serialized.enterEvents[1][1];
+        actualFunction.function = actualFunction.function.replace(/\s{2,}/g,' ');
+        expect(serialized).toEqual(gardenWithAddedEvent);
     });
     
 });

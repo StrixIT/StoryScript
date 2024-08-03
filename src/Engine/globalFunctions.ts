@@ -1,5 +1,5 @@
 ﻿import {StateProperties} from "./stateProperties.ts";
-import {compareString, getId, getKeyPropertyNames, propertyMatch} from "./utilityFunctions";
+import {compareString, getId, getKeyPropertyNames, isDataRecord, propertyMatch} from "./utilityFunctions";
 import {TypeProperty} from "../../constants.ts";
 
 const deletedCollection: string = '_deleted';
@@ -111,7 +111,10 @@ export function addArrayExtensions() {
                     deletedItems.splice(deletedItems.indexOf(deleted), 1);
                     delete entity[StateProperties.Id];
                     delete entity[StateProperties.Added];
-                } else {
+                } else if (isDataRecord(entity)) {
+                    entity[1][StateProperties.Added] = true;
+                }
+                else {
                     entity[StateProperties.Added] = true;
                 }
 
@@ -170,11 +173,18 @@ export function addArrayExtensions() {
                         keyProps = {[second]: item[second]};
                     }
 
-                    collection[deletedCollection].push({
-                        ...keyProps,
-                        [StateProperties.Deleted]: true,
-                        [StateProperties.Id]: item[StateProperties.Id]
-                    });
+                    if (item[StateProperties.Id]) {
+                        collection[deletedCollection].push({
+                            ...keyProps,
+                            [StateProperties.Deleted]: true,
+                            [StateProperties.Id]: item[StateProperties.Id]
+                        });
+                    } else {
+                        collection[deletedCollection].push({
+                            ...keyProps,
+                            [StateProperties.Deleted]: true
+                        });
+                    }
                 }
             }
         });

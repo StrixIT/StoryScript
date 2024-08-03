@@ -9,6 +9,10 @@ import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {compareString, parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
 
+export function isEntity(entity: any): boolean {
+    return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
+}
+
 export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
     const collection = definitions[type];
 
@@ -107,8 +111,8 @@ export function serializeFunction(value: Function) {
 }
 
 export function parseGamePropertiesInTemplate(lines: string, game?: IGame): string {
-    const propertyRegex = /{(?:[a-zA-Z\[\]0-9]{1,}[.]{0,1}){1,}}/g;
-    const indexRegex = /\[[0-9]{1,}\]/g;
+    const propertyRegex = /{(?:[a-zA-Z\[\]0-9]+[.]?)+}/g;
+    const indexRegex = /\[\d+]/g;
     let result = lines;
     let parseMatch = null;
 
@@ -119,15 +123,18 @@ export function parseGamePropertiesInTemplate(lines: string, game?: IGame): stri
         let propertyFound = false;
 
         parseMatch[0].replace(/{|}/g, '').split('.').forEach((e: string) => {
-            if (index = indexRegex.exec(e)) {
+            index = indexRegex.exec(e);
+            
+            if (index) {
                 e = e.replace(index, '');
                 index = parseInt(index[0].replace(/\[|\]/g, ''));
             }
-
+            
             if (property.hasOwnProperty(e)) {
                 property = property[e];
                 propertyFound = true;
-            } else {
+            }
+            else {
                 propertyFound = false;
             }
 
@@ -183,11 +190,6 @@ export function checkAutoplay(game: IGame, value: string) {
     const htmlDocumentFromString = parseHtmlDocumentFromString(value);
     value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);
     value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('video'), game.sounds.playedAudio);
-    
-    if (value) {
-        game.sounds.playedAudio.push(value);
-    }
-    
     return value;
 }
 
@@ -241,17 +243,20 @@ function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], sel
     return selector ? collectionToFilter.filter(selector) : collectionToFilter;
 }
 
+const autoplayAttribute = 'autoplay';
+const sourceAttribute = 'src';
+
 function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLElement>, playedAudio: string[]) {
     Array.from(elements).forEach(e => {
         const originalText = e.outerHTML;
-        const source = e.getElementsByTagName('source')[0]?.getAttribute('src')?.toLowerCase()
-            ?? e.getAttribute('src')?.toLowerCase();
+        const source = e.getElementsByTagName('source')[0]?.getAttribute(sourceAttribute)?.toLowerCase()
+            ?? e.getAttribute(sourceAttribute)?.toLowerCase();
 
-        if (originalText && source) {
+        if (originalText && source && e.hasAttribute(autoplayAttribute)) {
             if (playedAudio.indexOf(source) < 0) {
                 playedAudio.push(source);
             } else {
-                e.removeAttribute('autoplay');
+                e.removeAttribute(autoplayAttribute);
                 value = value.replace(originalText, e.outerHTML);
             }
         }
@@ -263,11 +268,15 @@ function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLE
 function selectCandidate(game: IGame, key: string, item: (GameState | PlayState | (() => ILocation) | ((game: IGame) => string) | string)) {
     const functionName = (<Function>item)?.name;
     const currentLocationId = game.currentLocation?.id;
-
-    const order = item === game.state ? 3
-        : item === game.playState ? 2
-            : functionName && currentLocationId && compareString(functionName, currentLocationId) ? 1
-                : 0;
+    let order: number;
+    
+    if (item === game.state) {
+        order = 3;
+    } else if (item === game.playState) {
+        order = 2;
+    } else {
+        order = functionName && currentLocationId && compareString(functionName, currentLocationId) ? 1 : 0
+    }
 
     return {key, item, order};
 }
