@@ -261,6 +261,10 @@ export class DataSerializer implements IDataSerializer {
 
     private removeEmptyObjects = (clone: any, key: string) => {
         const addedObject = clone[key];
+        
+        if (!addedObject) {
+            return;
+        }
 
         if (Object.keys(addedObject).length === 0) {
             if (Array.isArray(clone)) {

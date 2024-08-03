@@ -157,7 +157,7 @@ export class DataSynchronizer implements IDataSynchronizer {
                 this.synchronizeEntityData(currentValue, pristineValue, parentEntity, pristineParentEntity, parentProperty);
             }
 
-            itemsToAdd.push(currentValue);
+            itemsToAdd.splice(0, 0, currentValue);
         });
 
         entity.length = 0;
