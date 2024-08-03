@@ -199,25 +199,25 @@ button {
     padding-bottom: 10px;
 }
 
-#character-equipment .box-title {
+.character-equipment .box-title {
     margin-bottom: 0;
 }
 
-#character-equipment .row {
+.character-equipment .row {
     margin-top: 5px;
 }
 
-#character-equipment .item-box {
+.character-equipment .item-box {
     border-top: 1px solid var(--black);;
     min-height: 25px;
     line-height: 25px;
 }
 
-#character-equipment .item-box.no-border {
+.character-equipment .item-box.no-border {
     border: none;
 }
 
-#character-equipment .item-box.side-borders {
+.character-equipment .item-box.side-borders {
     border-top: none;
 }
 
@@ -229,7 +229,7 @@ button {
     display: none;
 }
 
-#portraitFrame {
+.portraitFrame {
     float: right;
 }
 
@@ -321,4 +321,22 @@ feature {
 
 .is-active {
     border: solid 5px;
+}
+
+.not-appliccable {
+    line-height: normal;
+    visibility: hidden;
+}
+
+.enemy-row, .character-row, .fight-row {
+    margin-top: 25px;
+}
+
+.fight-row {
+    display: flex;
+    justify-content: center;
+}
+
+.unavailable {
+    opacity: .5;
 }

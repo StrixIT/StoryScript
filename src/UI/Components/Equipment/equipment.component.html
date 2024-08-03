@@ -1,6 +1,6 @@
-<div class="box-container" id="character-equipment" *ngIf="showEquipment()">
+<div class="character-equipment box-container" *ngIf="showEquipment()">
     <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
-    <div id="equipment-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
+    <div class="equipment-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
         <div class="row" *ngIf="isSlotUsed('head')">
             <div class="col-12">
                 <div>
@@ -23,13 +23,13 @@
         </div>
         <div class="row">
             <div class="col-3">
-                <span *ngIf="isSlotUsed('hands') || isSlotUsed('rightHand') || isSlotUsed('rightRing')">{{ texts.rightHand }}</span>
+                <span *ngIf="isSlotUsed('hands') || isSlotUsed('rightHand') || isSlotUsed('rightRing')">{{ texts.rightRing }}</span>
             </div>
             <div class="col-6">
                 <span *ngIf="isSlotUsed('body')">{{ texts.body }}</span>
             </div>
             <div class="col-3">
-                <span *ngIf="isSlotUsed('hands') || isSlotUsed('leftHand') || isSlotUsed('leftRing')">{{ texts.leftHand }}</span>
+                <span *ngIf="isSlotUsed('hands') || isSlotUsed('leftHand') || isSlotUsed('leftRing')">{{ texts.leftRing }}</span>
             </div>
             <div class="col-3">
                 <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(character.equipment.hands)">{{ character.equipment.hands?.name }}</div>
@@ -69,7 +69,7 @@
         <div class="row" *ngFor="let slot of customSlots()">
             <div class="col-12">
                 <div>
-                    {{ slot }}
+                    {{ texts[slot] }}
                 </div>
                 <div class="item-box" (click)="unequipItem(character.equipment[slot])">
                     {{ character.equipment[slot]?.name }}

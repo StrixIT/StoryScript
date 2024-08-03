@@ -1,1 +1,15 @@
 export const assetRegex = /(actions|enemies|features|items|locations|persons|quests)\/[a-zA-Z0-9\/]{1,}\.ts$/;
+export const IdProperty: string = 'id';
+export const TypeProperty: string = 'type';
+export const TargetProperty: string = 'target';
+export const StartNodeProperty: string = 'startNode';
+export const Features: string = 'features';
+export const Quests: string = 'quests';
+export const Items: string = 'items';
+export const Enemies: string = 'enemies';
+export const Persons: string = 'persons';
+export const Locations: string = 'locations';
+export const Party: string = 'party';
+export const Characters: string = 'characters';
+export const DefaultSaveGame: string = "ss_default";
+export const HighScores: string = 'highScores';

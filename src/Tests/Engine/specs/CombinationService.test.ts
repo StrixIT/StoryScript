@@ -1,18 +1,27 @@
-import { describe, test, expect, beforeAll } from 'vitest';
-import { CombinationService } from 'storyScript/Services/CombinationService';
-import { ICombinable, IGame, ICombinationAction, ICombinationMatchResult, IInterfaceTexts, ICharacter } from 'storyScript/Interfaces/storyScript';
-import { Rules } from '../../../Games/MyRolePlayingGame/types';
-import { DefaultTexts } from 'storyScript/defaultTexts';
-import { IActiveCombination } from '../../../Engine/Interfaces/combinations/activeCombination';
-import { Combinations } from '../../../Games/MyAdventureGame/combinations';
-import { addArrayExtensions } from '../../../Engine/globals';
+import {beforeAll, describe, expect, test} from 'vitest';
+import {CombinationService} from 'storyScript/Services/CombinationService';
+import {
+    ICharacter,
+    ICombinable,
+    ICombinationAction,
+    ICombinationMatchResult,
+    IGame,
+    IHelpers,
+    IInterfaceTexts,
+    IRules
+} from 'storyScript/Interfaces/storyScript';
+import {Rules} from '../../../Games/MyRolePlayingGame/types';
+import {DefaultTexts} from 'storyScript/defaultTexts';
+import {IActiveCombination} from 'storyScript/Interfaces/combinations/activeCombination.ts';
+import {Combinations} from '../../../Games/MyAdventureGame/combinations';
+import {addArrayExtensions} from 'storyScript/globalFunctions.ts';
 
-describe("CombinationService", function() {
+describe("CombinationService", function () {
 
     beforeAll(() => addArrayExtensions());
 
-    test("should return the combinations defined for the game", function() {
-        var rules = {
+    test("should return the combinations defined for the game", function () {
+        const rules = <IRules>{
             setup: {
                 getCombinationActions: (): ICombinationAction[] => {
                     return [
@@ -33,7 +42,7 @@ describe("CombinationService", function() {
                             text: Combinations.LOOKAT,
                             preposition: 'at',
                             requiresTool: false,
-                            failText: (game, target, tool): string => { 
+                            failText: (game, target, tool): string => {
                                 return 'You look at the ' + target.name + '. There is nothing special about it';
                             }
                         }
@@ -42,53 +51,52 @@ describe("CombinationService", function() {
             }
         };
 
-        var service = getService(null, rules);
-        var result = service.getCombinationActions();
-        var names = result.map(c => c.text);
+        const service = getService(null, rules);
+        const result = service.getCombinationActions();
+        const names = result.map(c => c.text);
         expect(names).toEqual(combinationActionNames);
     });
 
-    describe("Selection classes", function() {
+    describe("Selection classes", function () {
 
-        test("should return an empty string for a class when there is no active combination and no tool", function() {
-            var service = getService({
+        test("should return an empty string for a class when there is no active combination and no tool", function () {
+            const service = getService(<IGame>{
                 combinations: {}
             });
-            var result = service.getCombineClass(null);
+            const result = service.getCombineClass(null);
             expect(result).toBe('');
         });
 
-        test("should return the hiding class when there is an active combination and no tool", function() {
-            var service = getService({
+        test("should return the hiding class when there is an active combination and no tool", function () {
+            const service = getService(<IGame>{
                 combinations: {
                     activeCombination: {}
                 }
             });
-            var result = service.getCombineClass(null);
+            const result = service.getCombineClass(null);
             expect(result).toBe('combine-active-hide');
         });
 
-        test("should return an empty string for a class when there is a tool but no active combination", function() {
-            var service = getService({
-                combinations: {
-                }
+        test("should return an empty string for a class when there is a tool but no active combination", function () {
+            const service = getService(<IGame>{
+                combinations: {}
             });
-            var result = service.getCombineClass(<ICombinable>{});
+            const result = service.getCombineClass(<ICombinable>{});
             expect(result).toBe('');
         });
 
-        test("should return the selectable class when there is a tool and an active combination but without a tool match", function() {
-            var service = getService({
+        test("should return the selectable class when there is a tool and an active combination but without a tool match", function () {
+            const service = getService(<IGame>{
                 combinations: {
                     activeCombination: {}
                 }
             });
-            var result = service.getCombineClass(<ICombinable>{});
+            const result = service.getCombineClass(<ICombinable>{});
             expect(result).toBe('combine-selectable');
         });
 
-        test("should return the selected class when there is a tool and an active combination that has a tool with the same id", function() {
-            var service = getService({
+        test("should return the selected class when there is a tool and an active combination that has a tool with the same id", function () {
+            const service = getService(<IGame>{
                 combinations: {
                     activeCombination: {
                         selectedTool: {
@@ -97,63 +105,63 @@ describe("CombinationService", function() {
                     }
                 }
             });
-            var result = service.getCombineClass(<ICombinable>{ id: 'test' });
+            const result = service.getCombineClass(<ICombinable>{id: 'test'});
             expect(result).toBe('combine-active-selected');
         });
 
     });
 
-    describe("Try combinations", function() {
+    describe("Try combinations", function () {
 
-        test("should fail a combination when there is no target or active combination", function() {
-            var game = <IGame>{
+        test("should fail a combination when there is no target or active combination", function () {
+            const game = <IGame>{
                 combinations: {
-                    activeCombination: {
-                    },
-                    combinationResult: {
-                    }
+                    activeCombination: {},
+                    combinationResult: {}
                 }
             };
 
-            var texts = {
+            const texts = {
                 noCombination: "You {2} the {0} {3} the {1}. Nothing happens.",
                 noCombinationNoTool: "You {1} {2} the {0}. Nothing happens.",
                 format: new DefaultTexts().format
             }
 
-            var service = getService(game, null, texts);
-            var result = service.tryCombination(<ICombinable>{});
+            const service = getService(game, null, texts);
+            let result = service.tryCombination(<ICombinable>{});
             expect(result.success).toBeFalsy();
 
-            var target = { name: 'Ball' };
+            const target = {name: 'Ball'};
 
-            var result = service.tryCombination(target);
+            result = service.tryCombination(target);
             expect(result.success).toBeFalsy();
 
-            var activeCombination = game.combinations.activeCombination;
-            activeCombination.selectedCombinationAction = { text: 'Take' };
+            const activeCombination = game.combinations.activeCombination;
+            activeCombination.selectedCombinationAction = {text: 'Take'};
 
-            var result = service.tryCombination(target);
+            result = service.tryCombination(target);
             expect(result.success).toBeFalsy();
             expect(result.text).toBe('Take Ball: You Take the Ball. Nothing happens.');
         });
 
-        test("should remove only the target feature, not all features of the type", function() {    
+        test("should remove only the target feature, not all features of the type", function () {
             const combinationType = Combinations.TOUCH;
 
-            const target = { name: 'Ball', type: 'item', id: 'ball', combinations: {
-                combine: [
-                    {
-                        combinationType: combinationType,
-                        match: (game, target, tool): ICombinationMatchResult => {
-                            return { 
-                                text: '', 
-                                removeTarget: true 
-                            };
-                        }
-                    },
-                ]
-            } };
+            const target = {
+                name: 'Ball', type: 'item', id: 'ball', combinations: {
+                    combine: [
+                        {
+                            combinationType: combinationType,
+                            match: (game, target, tool): ICombinationMatchResult => {
+                                return {
+                                    text: '',
+                                    removeTarget: true
+                                };
+                            }
+                        },
+                    ]
+                }
+            };
 
             const ofSameType = JSON.parse(JSON.stringify(target));
 
@@ -162,7 +170,7 @@ describe("CombinationService", function() {
                     ofSameType
                 ]
             };
-            
+
             const game = <IGame>{
                 combinations: {
                     activeCombination: <IActiveCombination>{
@@ -186,51 +194,41 @@ describe("CombinationService", function() {
                 activeCharacter: character
             };
 
-            var rules = {
-                general: {
-
-                }
+            const rules = <IRules>{
+                general: {}
             };
 
-            var service = getService(game, rules);
-            
-            var result = service.tryCombination(target);
+            const service = getService(game, rules);
+
+            const result = service.tryCombination(target);
             expect(result.success).toBeTruthy();
             expect(result.removeTarget).toBeTruthy();
             expect(game.currentLocation.items.length).toBe(0);
             expect(game.activeCharacter.items.length).toBe(1);
         });
 
-        test("should throw an error when there are two combinations of the same type without a tool or with the same tool", function() {
+        test("should throw an error when there are two combinations of the same type without a tool or with the same tool", function () {
             // Todo: create test!
         });
 
-        test("should work with two combinations of the same type but with different tools", function() {
+        test("should work with two combinations of the same type but with different tools", function () {
             // Todo: create test!
         });
     });
 
 });
 
-var combinationActionNames = [
+const combinationActionNames = [
     'Walk',
     'Use',
     'Touch',
     'Look'
 ];
 
-function getService(game?, rules?, texts?, dataService?, locationService?) {
+function getService(game?: IGame, rules?: IRules, texts?: IInterfaceTexts, helperService?: IHelpers) {
     texts ??= <IInterfaceTexts>{
         format: () => ''
     }
 
-    dataService ??= {
-        save: () => {},
-    }
-
-    locationService ??= {
-        saveWorld: () => {}
-    }
-
-    return new CombinationService(dataService, locationService, game || {}, rules || Rules(), texts);
+    return new CombinationService(game || <IGame>{}, rules || Rules(), texts);
 }

@@ -3,7 +3,7 @@
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
+            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
                 <div *ngFor="let character of game.party.characters">
                     <backpack [character]="character"></backpack>
                 </div>

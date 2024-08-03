@@ -1,9 +1,8 @@
-import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
+import {IFeature, IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'location-text',
@@ -11,10 +10,10 @@ import { RuntimeProperties } from 'storyScript/runtimeProperties';
 })
 export class LocationTextComponent {
     private _sharedMethodService: SharedMethodService;
-    
+
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.worldProperties = [];
@@ -28,13 +27,15 @@ export class LocationTextComponent {
 
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 
-    get log() { return this.game.currentLocation[RuntimeProperties.Log] };
+    get log() {
+        return this.game.currentLocation.log
+    };
 
     private initWorldProperties = (): void => {
-        for (var n in this.game.worldProperties) {
-            if (this.game.worldProperties.hasOwnProperty(n) && this.texts.worldProperties && this.texts.worldProperties.hasOwnProperty(n)) {
-                var value = this.texts.worldProperties[n];
-                this.worldProperties.push({ name: n, value: value});
+        for (const n in this.game.worldProperties) {
+            if (this.game.worldProperties.hasOwnProperty(n) && this.texts.worldProperties?.hasOwnProperty(n)) {
+                const value = this.texts.worldProperties[n];
+                this.worldProperties.push({name: n, value: value});
             }
         }
     }

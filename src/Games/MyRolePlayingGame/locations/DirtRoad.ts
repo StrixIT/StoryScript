@@ -1,6 +1,6 @@
-﻿import { IGame, Location } from '../types';
-import { Start } from './start';
-import { Bandit } from '../enemies/bandit';
+﻿import {IGame, Location} from '../types';
+import {Start} from './start';
+import {Bandit} from '../enemies/bandit';
 import description from './DirtRoad.html';
 
 export function DirtRoad() {
@@ -16,16 +16,18 @@ export function DirtRoad() {
         enemies: [
             Bandit()
         ],
-        combatActions: [
-            {
-                text: 'Run back inside',
-                execute: (game: IGame) => {
-                    game.changeLocation('Start');
-                    game.logToActionLog(`You storm back into your house and slam the 
-                                        door behind you. You where lucky... this time!`);
-                    return true;
+        combatActions:
+            [[
+                'RunInside',
+                {
+                    text: 'Run back inside',
+                    execute: (game: IGame) => {
+                        game.changeLocation('Start');
+                        game.logToActionLog(`You storm back into your house and slam the 
+                                door behind you. You where lucky... this time!`);
+                        return true;
+                    }
                 }
-            }
-        ]
+            ]]
     });
 }

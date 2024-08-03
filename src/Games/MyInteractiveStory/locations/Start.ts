@@ -16,22 +16,6 @@ export function Start() {
                 name: 'Approach the horse',
                 target: Horse,
             }
-        ],
-        features: [
-        ],
-        items: [
-        ],
-        enemies: [
-        ],
-        persons: [
-        ],
-        enterEvents: [
-        ],
-        leaveEvents: [
-        ],
-        actions: [
-        ],
-        combatActions: [
-        ],
+        ]
     });
 }

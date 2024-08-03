@@ -43,8 +43,8 @@ export interface ICreateCharacterStep {
      * A function that executes when the step is to be displayed to the player.
      * @param party The party created so far
      * @param character The character sheet filled in so far
-     * @param previousStep The step just completed by the player
      * @param currentStep The step about to be shown to the player
+     * @param previousStep The step just completed by the player, or undefined if the step to be displayed is the first step in the sheet.
      */
-    initStep?(party: IParty, character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep): void;
+    initStep?(party: IParty, character: ICreateCharacter, currentStep: ICreateCharacterStep, previousStep?: number): void;
 }

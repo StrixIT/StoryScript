@@ -1,8 +1,8 @@
-import { ICharacter, IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
+import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { GameService } from 'storyScript/Services/gameService';
-import { Component, ElementRef, HostListener, inject } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
 @Component({
@@ -15,7 +15,7 @@ export class MainComponent {
     private _hostElement: ElementRef;
 
     constructor() {
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this._hostElement = inject(ElementRef);
         this._sharedMethodService= inject(SharedMethodService)
         this._gameService= inject(GameService);
@@ -30,10 +30,6 @@ export class MainComponent {
     texts: IInterfaceTexts;
 
     showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
-
-    setActive(character: ICharacter) {
-        this.game.activeCharacter = character;
-    }
 
     private stopAutoplay = () => {
         var mediaElements = this._hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');

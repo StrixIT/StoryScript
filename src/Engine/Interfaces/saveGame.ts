@@ -1,19 +1,11 @@
-import { ICollection } from './collection';
-import { ICompiledLocation } from './compiledLocation';
-import { ICharacter } from './character';
-import { IStatistics } from './statistics';
-import { GameState } from './enumerations/gameState';
-import { IParty } from './party';
+import {ICompiledLocation} from './compiledLocation';
+import {IStatistics} from './statistics';
+import {IParty} from './party';
 
 /**
  * An object to save the game state.
  */
 export interface ISaveGame {
-    /**
-     * The save game name.
-     */
-    name?: string;
-
     /**
      * The party to save
      */
@@ -27,15 +19,15 @@ export interface ISaveGame {
     /**
      * The properties of the world to save.
      */
-    worldProperties: any;
+    worldProperties: {};
 
     /**
      * The world locations to save.
      */
-    world: ICollection<ICompiledLocation>;
+    world: Record<string, ICompiledLocation>;
 
     /**
-     * The state of the game when saved.
+     * The autoplaying audio that was started already.
      */
-    state: GameState
+    playedAudio: []
 }

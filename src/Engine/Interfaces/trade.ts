@@ -61,7 +61,7 @@ export interface ITrade {
     buy?: IStock & {
           
         /**
-         * This function runs when ititiating trade and determines whether the list of items
+         * This function runs when initiating trade and determines whether the list of items
          * available for buying should be refreshed. Return true to refresh the lists, false 
          * to keep them as they were.
          * @param game The game object

@@ -1,15 +1,14 @@
-import { IGame, IFeature, PlayState } from 'storyScript/Interfaces/storyScript';
-import { compareString } from 'storyScript/globals';
-import { addHtmlSpaces } from 'storyScript/utilities';
-import { CombinationService } from 'storyScript/Services/CombinationService';
-import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Directive, ElementRef, Renderer2, HostListener, OnDestroy, inject } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { SharedMethodService } from '../Services/SharedMethodService';
+import {IFeature, IGame, PlayState} from 'storyScript/Interfaces/storyScript';
+import {addHtmlSpaces, compareString} from 'storyScript/utilityFunctions';
+import {CombinationService} from 'storyScript/Services/CombinationService';
+import {GameService} from 'storyScript/Services/gameService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Directive, ElementRef, HostListener, inject, OnDestroy, Renderer2} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {SharedMethodService} from '../Services/SharedMethodService';
 
-@Directive({ selector: '[textFeatures]' })
-export class TextFeatures  implements OnDestroy {
+@Directive({selector: '[textFeatures]'})
+export class TextFeatures implements OnDestroy {
     private _sharedMethodService: SharedMethodService;
     private _combinationService: CombinationService;
     private _gameService: GameService;
@@ -22,7 +21,7 @@ export class TextFeatures  implements OnDestroy {
         this._gameService = inject(GameService);
         this._elem = inject(ElementRef);
         this._renderer = inject(Renderer2);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this._combinationSubscription = this._sharedMethodService.combinationChange$.subscribe(p => this.refreshFeatures(p));
         this.refreshFeatures(true);
@@ -30,7 +29,7 @@ export class TextFeatures  implements OnDestroy {
         this.changes = new MutationObserver((mutations: MutationRecord[]) => {
             mutations.forEach((mutation: MutationRecord) => this.refreshFeatures(true));
         });
-  
+
         this.changes.observe(this._elem.nativeElement, {
             attributes: true,
             childList: true,
@@ -49,7 +48,7 @@ export class TextFeatures  implements OnDestroy {
 
     private changes: MutationObserver;
     private _combinationSubscription: Subscription;
-    
+
     game: IGame;
 
     ngOnDestroy(): void {
@@ -59,7 +58,7 @@ export class TextFeatures  implements OnDestroy {
     @HostListener('click', ['$event']) onClick($event: any) {
         this.click($event);
     }
-      
+
     @HostListener('mouseover', ['$event']) onMouseOver($event: any) {
         this.mouseOver($event);
     }
@@ -72,13 +71,13 @@ export class TextFeatures  implements OnDestroy {
 
             featureArray.filter((e) => e.innerHTML.trim() === '')
                 .map((e) => {
-                    var feature = this.game.currentLocation.features.get(e.getAttribute('name'));
+                    const feature = this.game.currentLocation.features.get(e.getAttribute('name'));
 
                     if (feature) {
-                        this.game.currentLocation.description = this.game.currentLocation.description.replace(new RegExp('<feature name="' + feature.id +'">\s*<\/feature>'), '<feature name="' + feature.id +'">' + addHtmlSpaces(feature.description) + '<\/feature>');
+                        this.game.currentLocation.description = this.game.currentLocation.description.replace(new RegExp('<feature name="' + feature.id + '">\s*<\/feature>'), '<feature name="' + feature.id + '">' + addHtmlSpaces(feature.description) + '<\/feature>');
                     }
                 });
-            
+
             // Remove the text of deleted features.
             featureArray.filter((e) => e.innerHTML.trim() !== '')
                 .map((e) => {
@@ -96,11 +95,11 @@ export class TextFeatures  implements OnDestroy {
 
     private click = (ev: any) => {
         if (this.isFeatureNode(ev)) {
-            var feature = this.getFeature(ev);
+            const feature = this.getFeature(ev);
 
             if (feature) {
-                var result = this.game.combinations.tryCombine(feature);
-                this._sharedMethodService.setCombineState(result);
+                const result = this.game.combinations.tryCombine(feature);
+                this._sharedMethodService.setCombineState(result.success);
                 this.addCombineClass(ev, feature);
             }
         }
@@ -108,23 +107,23 @@ export class TextFeatures  implements OnDestroy {
 
     private mouseOver = (ev: any) => {
         if (this.isFeatureNode(ev)) {
-            var feature = this.getFeature(ev);
+            const feature = this.getFeature(ev);
             this.addCombineClass(ev, feature);
         }
     };
 
-    private isFeatureNode = (ev: any): boolean  => {
-        var nodeType = ev.target && ev.target.nodeName;
+    private isFeatureNode = (ev: any): boolean => {
+        const nodeType = ev.target && ev.target.nodeName;
         return compareString(nodeType, 'feature');
     }
 
     private getFeature = (ev: any): IFeature => {
-        var featureName = ev.target.getAttribute('name');
+        const featureName = ev.target.getAttribute('name');
         return this.game.currentLocation.features.get(featureName);
     }
 
     private addCombineClass = (ev: any, feature: IFeature) => {
-        var combineClass= this._combinationService.getCombineClass(feature);
+        const combineClass = this._combinationService.getCombineClass(feature);
 
         if (combineClass) {
             this._renderer.addClass(ev.target, combineClass);

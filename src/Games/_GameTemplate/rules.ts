@@ -1,5 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character } from './types';
+import { IGame, IEnemy, Character, ICombatSetup } from './types';
 
 export function Rules(): IRules {
     return {
@@ -44,13 +44,13 @@ export function Rules(): IRules {
         },
 
         combat: {     
-            fight: (game: IGame, character: ICharacter, enemy: IEnemy, retaliate?: boolean) => {
+            fight: (game: IGame, combatSetup: ICombatSetup, retaliate?: boolean) => {
                 retaliate = retaliate == undefined ? true : retaliate;
 
                 // Implement character attack here.
 
                 if (retaliate) {
-                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
+                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.currentHitpoints > 0; }).forEach(enemy => {
                         // Implement monster attack here
                     });
                 }

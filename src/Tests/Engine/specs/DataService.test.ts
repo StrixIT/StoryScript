@@ -26,12 +26,12 @@ var saveKeys = [
 
 function getService(): { dataService: IDataService, storageService: ILocalStorageService } {
     const storageService = getStorageServiceMock();
+    const pristineEntities = {};
     storageService.set(saveKeys[0], '');
     storageService.set(saveKeys[1], '');
-    const serializer = new DataSerializer();
+    const serializer = new DataSerializer(pristineEntities);
     const synchronizerMock = <IDataSynchronizer>{
-        updateModifiedEntities: () => {},
-        updateModifiedEntity: () => {}
+        synchronizeEntityData: () => {}
     }
     return { dataService: new DataService(storageService, serializer, synchronizerMock, TESTGAMEPREFIX), storageService };
 }

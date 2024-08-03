@@ -18,7 +18,17 @@ export interface IInterfaceTexts {
     use?: string;
     drop?: string;
     enemies?: string;
+    fight?: string;
     attack?: string;
+    attackWith?: string;
+    aid?: string;
+    aidWith?: string;
+    noWeapon?: string,
+    useCombatItem?: string,
+    combatRound?: string,
+    enemyHitpoints?: string,
+    enemyCombatName?: string,
+    characterHitpoints?: string,
     newGame?: string;
     firstCharacter?: string,
     secondCharacter?: string,

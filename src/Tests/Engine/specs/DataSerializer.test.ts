@@ -1,93 +1,194 @@
-import { describe, beforeAll, beforeEach, afterEach, test, expect } from 'vitest';
-import { ICollection, ICompiledLocation } from "../../../Engine/Interfaces/storyScript";
-import { GetFunctions } from "../../../Engine/ObjectConstructors";
-import { ObjectFactory } from "../../../Engine/ObjectFactory";
-import { DataSerializer } from "../../../Engine/Services/DataSerializer";
-import { RunGame } from "../../../Games/MyRolePlayingGame/run";
+import {beforeAll, describe, expect, test} from 'vitest';
+import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
+import {RunGame} from "../../../Games/MyRolePlayingGame/run";
+import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
+import {IGame} from "../../../Games/MyRolePlayingGame/interfaces/game.ts";
+import {HelperService} from "storyScript/Services/helperService.ts";
+import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
+import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
+import {ICompiledLocation} from "../../../Games/MyAdventureGame/interfaces/location.ts";
+import {LocationService} from "storyScript/Services/LocationService.ts";
+import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
+import {IRules} from "storyScript/Interfaces/rules/rules.ts";
+import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
+import {Character} from "../../../Games/MyRolePlayingGame/types.ts";
+import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
+import {StateProperties} from "storyScript/stateProperties.ts";
+import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
+import {ServiceFactory} from "storyScript/ServiceFactory.ts";
+import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
+import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
+import {Library} from "../../../Games/MyRolePlayingGame/locations/Library.ts";
+import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 
-const worldData = JSON.stringify({"data":[{"name":"Basement","description":null,"destinations":[{"name":"To the garden","target":"garden"}],"items":[{"name":"Joe's journal","equipmentType":10,"type":"item","id":"journal"}],"type":"location","id":"basement","actions":[],"combatActions":[],"features":[],"trade":[],"enemies":[],"persons":[]},{"name":"Dirt road","description":null,"destinations":[{"name":"Enter your home","target":"start"}],"enemies":[{"name":"Bandit","description":null,"hitpoints":10,"attack":"1d6","items":[{"name":"Sword","description":null,"damage":3,"equipmentType":6,"value":5,"type":"item","id":"sword"},{"name":"Basement key","keepAfterUse":false,"open":{"text":"Open","execute":"function#item|basementkey|open|execute#1481145921"},"equipmentType":10,"type":"item","id":"basementkey"}],"type":"enemy","id":"bandit","picture":"resources/bandit.jpg"}],"combatActions":[{"text":"Run back inside","execute":"function#location|dirtroad|combatActions|0|execute#-34161269"}],"type":"location","id":"dirtroad","actions":[],"features":[],"trade":[],"items":[],"persons":[]},{"name":"Garden","description":null,"destinations":[{"name":"Enter your home","target":"start"}],"enterEvents":[{"Squirrel":"function#location|garden|enterEvents|0|Squirrel#-1552061099"}],"actions":[{"text":"Search the Shed","execute":"function#location|garden|actions|0|execute#630024115"},{"text":"Look in the pond","execute":"function#location|garden|actions|1|execute#1867314870"}],"type":"location","id":"garden","combatActions":[],"features":[],"trade":[],"items":[],"enemies":[],"persons":[]},{"name":"Library","description":null,"destinations":[{"name":"Back to the living room","target":"start"}],"trade":[{"name":"Your personal closet","text":"Do you want to take something out of your closet or put it back in?","buy":{"text":"Take out of closet","emptyText":"The closet is empty","itemSelector":"function#trade|yourpersonalcloset|buy|itemSelector#-757288170","maxItems":5,"priceModifier":0},"sell":{"text":"Put back in closet","emptyText":"You have nothing to put in the your closet","itemSelector":"function#trade|yourpersonalcloset|sell|itemSelector#-757288170","maxItems":5,"priceModifier":"function#trade|yourpersonalcloset|sell|priceModifier#-1683809711"},"type":"trade","id":"yourpersonalcloset"}],"type":"location","id":"library","actions":[],"combatActions":[],"features":[],"items":[],"enemies":[],"persons":[]},{"name":"Home","description":null,"descriptionSelector":"function#location|start|descriptionSelector#1949117004","destinations":[{"name":"To the library","target":"library"},{"name":"To the garden","target":"garden"},{"name":"Out the front door","target":"dirtroad"}],"persons":[{"description":null,"name":"Joe","hitpoints":10,"attack":"1d6","items":[{"name":"Sword","description":null,"damage":3,"equipmentType":6,"value":5,"type":"item","id":"sword"}],"currency":10,"trade":{"ownItemsOnly":true,"buy":{"text":"I'm willing to part with these items...","emptyText":"I have nothing left to sell to you...","itemSelector":"function#person|friend|trade|buy|itemSelector#-757288170","maxItems":5},"sell":{"text":"These items look good, I'd like to buy them from you","emptyText":"You have nothing left that I'm interested in","itemSelector":"function#person|friend|trade|sell|itemSelector#-757288170","maxItems":5}},"conversation":{"actions":{"addHedgehog":"function#person|friend|conversation|actions|addHedgehog#-1850455813"}},"quests":[{"name":"Find Joe's journal","status":"function#quest|journal|status#-2037195664","start":"function#quest|journal|start#-1813683549","checkDone":"function#quest|journal|checkDone#-1599822227","complete":"function#quest|journal|complete#68237773","type":"quest","id":"journal"}],"type":"person","id":"friend","picture":"resources/bandit.jpg"}],"type":"location","id":"start","actions":[],"combatActions":[],"features":[],"trade":[],"items":[],"enemies":[]}]});
+const worldData = [{
+    "destinations": [{"target": "garden"}],
+    "items": [{"type": "item", "id": "journal"}],
+    "type": "location",
+    "id": "basement"
+}, {
+    "destinations": [{"target": "start"}],
+    "enemies": [{
+        "items": [{"type": "item", "id": "sword"}, {"type": "item", "id": "basementkey"}],
+        "type": "enemy",
+        "id": "bandit"
+    }],
+    "combatActions": [["RunInside"]],
+    "type": "location",
+    "id": "dirtroad"
+}, {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [["Squirrel"]],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+}, {
+    "destinations": [{"target": "start"}],
+    "trade": [{"type": "trade", "id": "yourpersonalcloset"}],
+    "type": "location",
+    "id": "library"
+}, {
+    "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
+    "persons": [{
+        "items": [{"type": "item", "id": "sword"}],
+        "conversation": {"actions": [["addHedgehog"]]},
+        "quests": [{"type": "quest", "id": "journal"}],
+        "type": "person",
+        "id": "friend"
+    }],
+    "type": "location",
+    "id": "start"
+}];
+
+const locationWithAddedDestination = {
+    "destinations": [{"target": "start"}, {
+        "name": "Enter the basement",
+        "target": "basement",
+        "barrier": {
+            "key": "basementkey",
+            "name": "Wooden trap door",
+            "actions": [["Inspect", {
+                "text": "Inspect",
+                "execute": "function(game2){\n                      game2.logToLocationLog(\"The trap door looks old but still strong due to steel reinforcements. It is locked.\");\n                    }"
+            }]]
+        },
+        "ss_added": true
+    }],
+    "enterEvents": [["Squirrel"]],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
+
+const partyData = {
+    "name": "Test Party",
+    "currency": 10,
+    "characters": [
+        {
+            "name": "Test",
+            "level": 1,
+            "hitpoints": 10,
+            "strength": 1,
+            "agility": 1,
+            "intelligence": 1,
+            "items": [
+                {
+                    "type": "item",
+                    "id": "sword"
+                }
+            ],
+            "equipment": {
+                "head": null,
+                "body": null,
+                "leftHand": null,
+                "rightHand": null,
+                "feet": null
+            }
+        }
+    ]
+};
+
+const partyDataEmptyArrays = {
+    "name": "Test Party",
+    "currency": 10,
+    "quests": [],
+    "characters": [
+        {
+            "name": "Test",
+            "level": 1,
+            "hitpoints": 10,
+            "strength": 1,
+            "agility": 1,
+            "intelligence": 1,
+            "items": [
+            ],
+            "equipment": {
+                "head": null,
+                "body": null,
+                "leftHand": null,
+                "rightHand": null,
+                "feet": null
+            }
+        }
+    ]
+};
+
+const gardenWithDeletedAction = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [["Squirrel"]],
+    "actions": [["SearchShed"], {
+        "0": "LookInPond",
+        "ss_deleted": true,
+    }],
+    "type": "location",
+    "id": "garden"
+};
+
+const gardenWithDeletedEvent = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [{ "0": "Squirrel", "ss_deleted" : true }],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
+
+const gardenWithAddedEvent = {
+    "destinations": [{"target": "start"}],
+    "enterEvents": [["Squirrel"], [ "Test", { "function": `function(game){
+          return true;
+    }`, "ss_added": true }]],
+    "actions": [["SearchShed"], ["LookInPond"]],
+    "type": "location",
+    "id": "garden"
+};
 
 describe("DataSerializer", () => {
 
-    let locations: ICollection<ICompiledLocation> = [];
-    const originalWarn: any = console.warn;
-
-    const consoleOutput = [];
-    const consoleMock: any = (output: any[]) => consoleOutput.push(output);
-
+    let serializer: IDataSerializer;
+    
     beforeAll(() => {
         RunGame();
-        const objectFactory = ObjectFactory.GetInstance();
-        const game = objectFactory.GetGame();
-    
-        // Initialize the world so it is available for saving.
-        const gameService = objectFactory.GetGameService();
-        gameService.reset();
-    
-        locations = [...game.locations];
+        const serviceFactory = ServiceFactory.GetInstance();
+        serializer = serviceFactory.GetDataSerializer();
     });
 
-    beforeEach(() => (console.warn = consoleMock));
-    afterEach(() => (console.warn = originalWarn));
-
-    test("should recreate locations from a JSON clone of the world and warn when the order of functions in an array changed", function() {
-        const serializer = new DataSerializer();
-        const result = serializer.restoreObjects(GetFunctions(), null, JSON.parse(worldData).data);
-        const resultText = JSON.stringify({ data: serializer.buildClone(null, result, null) });
-        const worldWithoutHashes = replaceHashes(worldData);
-        const resultWithoutHashes = replaceHashes(resultText);
-
-        expect(worldWithoutHashes).toBe(resultWithoutHashes);
-        expect(consoleOutput.length).toBe(0);
-
-        const functionList = <any>GetFunctions();
-        const gardenFunction0 = functionList.locations['garden|actions|0|execute'];
-        const gardenFunction1 = functionList.locations['garden|actions|1|execute'];
-        const old0Hash = gardenFunction0.hash;
-        const old1Hash = gardenFunction1.hash;
-        gardenFunction0.hash = old1Hash;
-        gardenFunction1.hash = old0Hash;
-        
-        const saveResult = serializer.restoreObjects(GetFunctions(), null, JSON.parse(worldData).data);
-        const saveResultText = JSON.stringify({ data: serializer.buildClone(null, saveResult, null) });
-        const saveResultWithoutHashes = replaceHashes(saveResultText);
-
-        expect(consoleOutput).toEqual([
-            `Function with key: garden|actions|0|execute was found but the hash does not match the stored hash (old hash: 630024115, new hash: 1867314870)! Did you change the order of actions in an array and/or change the function content? If you changed the order, you need to reset the game world. If you changed only the content, you can ignore this warning.`,
-            `Function with key: garden|actions|1|execute was found but the hash does not match the stored hash (old hash: 1867314870, new hash: 630024115)! Did you change the order of actions in an array and/or change the function content? If you changed the order, you need to reset the game world. If you changed only the content, you can ignore this warning.`
+    test("should create and save a JSON clone of the world", function () {
+        const result = serializer.createSerializableClone([
+            Basement(),
+            DirtRoad(),
+            Garden(),
+            Library(),
+            Start()
         ]);
-
-        gardenFunction0.hash = old0Hash;
-        gardenFunction1.hash = old1Hash;
-        
-        expect(worldWithoutHashes).toBe(saveResultWithoutHashes);
+        expect(result).toEqual(worldData);
     });
 
-    test("should create and save a JSON clone of the world", function() {
-        const serializer = new DataSerializer();
-        const result = serializer.buildClone(null, locations, null);
-        const resultText = JSON.stringify({ data: result });
-        const worldWithoutHashes = replaceHashes(worldData);
-        const resultWithoutHashes = replaceHashes(resultText);
-
-        expect(result).not.toBe(null);
-        expect(resultWithoutHashes).toBe(worldWithoutHashes);
+    test("should restore a world skeleton from a serialized file", function () {
+        const result = serializer.createSerializableClone(serializer.restoreObjects(worldData));
+        expect(result).toEqual(worldData);
     });
 
-    test("should create a copy of a complex object", function() {
-        const serializer = new DataSerializer();
-        const result = serializer.buildClone(null, locations, locations);
-        const resultText = JSON.stringify({ data: result });
-        const worldWithoutHashes = replaceHashes(worldData);
-        const resultWithoutHashes = replaceHashes(resultText);
-
-        // Compare the copy to the serialized world, as the clone does not have functions but only function pointers.
-        expect(resultWithoutHashes).toEqual(worldWithoutHashes);
-    });
-
-    test("should create a clone with additional array properties when present", function() {
-        const serializer = new DataSerializer();
-
+    test("should create a clone with additional array properties when present", function () {
         const objectToCopy = {
             testArray: [
                 1,
@@ -97,30 +198,89 @@ describe("DataSerializer", () => {
         };
 
         (<any>objectToCopy.testArray).mapPath = 'test';
-
-        const result = serializer.buildClone(null, objectToCopy, objectToCopy);
-        const resultText = JSON.stringify({ data: result });
-
+        const result = serializer.createSerializableClone(objectToCopy, null);
+        const resultText = JSON.stringify({data: result});
         expect(resultText).toContain('"testArray_arrProps":{"mapPath":"test"}');
     });
 
+    test("should create and save a JSON clone with items added at runtime", function () {
+        const game = <IGame>{};
+        const definitions = <IDefinitions><unknown>{ items: [ BasementKey ] };
+        game.helpers = new HelperService(definitions);
+        game.party = <IParty>{};
+        game.party.characters = [];
+        const locationService = new LocationService(definitions, <IRules>{}, game);
+        const garden = <ICompiledLocation>Garden();
+        locationService.initDestinations(garden);
+        const searchShedAction = garden.actions.find(a => a[0] === 'SearchShed')[1];
+        game.currentLocation = garden;
+        (<(game: IGame) => boolean>searchShedAction.execute)(game);
+
+        const result = serializer.createSerializableClone(game.currentLocation);
+        // Remove the unique id to be able to compare the rest of the properties.
+        delete result.destinations[1][StateProperties.Id];
+        expect(result).toEqual(locationWithAddedDestination);
+    });
+
+    test("should serialize character data with only skeleton data", function () {
+        const character = new Character();
+        character.name = "Test";
+        character.items = [
+            Sword()
+        ];
+
+        const characterData = <IParty>{
+            name: "Test Party",
+            currency: 10,
+            characters: [
+                character
+            ]
+        };
+        const result = serializer.createSerializableClone(characterData);
+        expect(result).toEqual(partyData);
+    });
+
+    test("should serialize character data with empty arrays present", function () {
+        const character = new Character();
+        character.name = "Test";
+        character.items = [
+        ];
+
+        const characterData = <IParty>{
+            name: "Test Party",
+            currency: 10,
+            characters: [
+                character
+            ],
+            quests: []
+        };
+        const result = serializer.createSerializableClone(characterData);
+        expect(result).toEqual(partyDataEmptyArrays);
+    });
+
+    test("should serialize deleted actions with deleted flag", function () {
+        const garden = Garden();
+        garden.actions.delete(garden.actions[1]);
+        const serialized = serializer.createSerializableClone(garden);
+        expect(serialized).toEqual(gardenWithDeletedAction);
+    });
+
+    test("should serialize deleted events with deleted flag", function () {
+        const garden = Garden();
+        garden.enterEvents.delete(garden.enterEvents[0]);
+        const serialized = serializer.createSerializableClone(garden);
+        expect(serialized).toEqual(gardenWithDeletedEvent);
+    });
+
+    test("should serialize added events with added flag", function () {
+        const garden = Garden();
+        garden.enterEvents.add(['Test', (game) => { return true; }]);
+        const serialized = serializer.createSerializableClone(garden);
+        const expectedFunction = <any>gardenWithAddedEvent.enterEvents[1][1];
+        expectedFunction.function = expectedFunction.function.replace(/\s{2,}/g,' ');
+        const actualFunction = <any>serialized.enterEvents[1][1];
+        actualFunction.function = actualFunction.function.replace(/\s{2,}/g,' ');
+        expect(serialized).toEqual(gardenWithAddedEvent);
+    });
+    
 });
-
-const hashRegex = /function#[[a-zA-Z0-9|]*#[-0-9]{6,11}/g;
-const timeStampRegex = /\"ss_buildTimeStamp\"\:[ 0-9]{2,}\,/g;
-
-function replaceHashes(text: string) {
-    const hashMatches = text.match(hashRegex);
-
-    hashMatches?.forEach(m => {
-        text = text.replace(m, m.substring(0, m.lastIndexOf('#') + 1));
-    });
-
-    const timeStampMatches = text.match(timeStampRegex);
-
-    timeStampMatches?.forEach(m => {
-        text = text.replace(m, '');
-    });
-
-    return text;
-}

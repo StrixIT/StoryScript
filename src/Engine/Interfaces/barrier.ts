@@ -9,7 +9,7 @@ export interface IBarrier extends ICombinable {
     /**
      * The actions the player can perform on the barrier (e.g. inspect or open).
      */
-    actions?: IBarrierAction[];
+    actions?: [string, IBarrierAction][];
 
     /**
      * The key to use to remove this barrier.

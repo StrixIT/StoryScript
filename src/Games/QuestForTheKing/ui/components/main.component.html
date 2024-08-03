@@ -1,0 +1,35 @@
+<div>
+    <navigation></navigation>
+    <div class="container-fluid body-content">
+        <sound></sound>
+        <div class="row">
+            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
+                <party [party]="game.party"></party>
+            </div>
+            <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
+                <div *ngIf="!game.state">
+                    {{ texts.loading }}
+                </div>
+                <div *ngIf="game.state == 'Play'">
+                    <encounter></encounter>
+                    <location-visual></location-visual>
+                    <location-text></location-text>
+                    <!-- <action-log></action-log> -->
+                    <ground></ground>
+                    <exploration></exploration>
+                    <enemy></enemy>
+                </div>
+                <intro></intro>
+                <create-character></create-character>
+                <level-up></level-up>
+                <game-over></game-over>
+                <victory></victory>
+            </div>
+        </div>
+        <div class="row" *ngIf="game.state === 'Play'">
+            <div class="col-12">
+                <combination></combination>
+            </div>
+        </div>
+    </div>
+</div>

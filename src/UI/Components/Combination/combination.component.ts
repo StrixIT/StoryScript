@@ -1,5 +1,5 @@
 import { IInterfaceTexts, IGame, ICombinable, ICombinationAction, ICombineResult } from 'storyScript/Interfaces/storyScript';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
@@ -13,7 +13,7 @@ export class CombinationComponent {
 
     constructor() {
         this._combinationService = inject(CombinationService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.combineActions = this._combinationService.getCombinationActions();
@@ -27,5 +27,5 @@ export class CombinationComponent {
 
     getCombineClass = (action: ICombinationAction): string => this.game.combinations.activeCombination && this.game.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
     
-    tryCombination = (source: ICombinable): ICombineResult => this._combinationService.tryCombination(source);   
+    tryCombination = (source: ICombinable): ICombineResult => this.game.combinations.tryCombine(source);   
 }

@@ -1,23 +1,22 @@
-import { ILocalStorageService } from '../Interfaces/services/localStorageService';
+import {ILocalStorageService} from '../Interfaces/services/localStorageService';
 
-const STORYSCRIPTKEY: string = 'StoryScript';
+const StoryScriptPrefix: string = 'StoryScript_';
 
 export class LocalStorageService implements ILocalStorageService {
-    get = (key: string): any => localStorage.getItem(STORYSCRIPTKEY + '_' + key);
+    get = (key: string): any => localStorage.getItem(StoryScriptPrefix + key);
 
-    set = (key: string, value: any): void => localStorage.setItem(STORYSCRIPTKEY + '_' + key, value);
+    set = (key: string, value: any): void => localStorage.setItem(StoryScriptPrefix + key, value);
 
-    remove = (key: string): void => localStorage.removeItem(STORYSCRIPTKEY + '_' + key);
+    remove = (key: string): void => localStorage.removeItem(StoryScriptPrefix + key);
 
-    getKeys = (prefix: string): string[] => {
-        var result = [];
-        prefix = STORYSCRIPTKEY + '_' + prefix;
+    getKeys = (): string[] => {
+        const result = [];
 
-        for (var key in localStorage) {
-            if (localStorage.hasOwnProperty(key) && key.startsWith(prefix)) {
-                result.push(key.replace(prefix, ''));
+        for (const key in localStorage) {
+            if (localStorage.hasOwnProperty(key) && key.startsWith(StoryScriptPrefix)) {
+                result.push(key.replace(StoryScriptPrefix, ''));
             }
-            }
+        }
 
         return result;
     }
