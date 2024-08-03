@@ -6,7 +6,7 @@
             <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
                 <party [party]="game.party"></party>
             </div>
-            <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
+            <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">
                 <div *ngIf="!game.state">
                     {{ texts.loading }}
                 </div>

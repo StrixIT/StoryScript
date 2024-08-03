@@ -1,17 +1,15 @@
-﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers, ICollection } from 'storyScript/Interfaces/storyScript';
-import { ICompiledLocation, Character, ILocation, IParty, IPerson, IEnemy, IItem } from '../types';
-import { IWorldProperties } from './worldProperties';
-
-export interface ILocationCollection extends ICollection<ICompiledLocation> {
-    get?(id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation;
-}
+﻿import {IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers} from 'storyScript/Interfaces/storyScript';
+import {Character, ICompiledLocation, IEnemy, IItem, ILocation, IParty, IPerson} from '../types';
+import {IWorldProperties} from "./worldProperties.ts";
 
 // Your game-specific game interface.
 export interface IGame extends StoryScriptIGame {
     party: IParty,
     activeCharacter: Character;
     person: IPerson;
-    locations: ILocationCollection;
+    locations: Record<string, ICompiledLocation> & {
+        get?(id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation;
+    };
     currentLocation: ICompiledLocation;
     previousLocation: ICompiledLocation;
     worldProperties: IWorldProperties;

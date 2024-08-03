@@ -36,9 +36,8 @@ export function Start() {
                 target: SouthRoad,
             }
         ],
-        enterEvents: [{
-            'Night':
-            nightFall
-        }]
+        enterEvents: [[
+            'Night', nightFall
+        ]]
     });
 }

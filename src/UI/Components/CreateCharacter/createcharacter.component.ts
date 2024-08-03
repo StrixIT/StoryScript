@@ -1,7 +1,7 @@
 import { IGame, IInterfaceTexts, ICreateCharacterStep, IRules } from 'storyScript/Interfaces/storyScript';
 import { GameService } from 'storyScript/Services/gameService';
 import { CharacterService } from 'storyScript/Services/characterService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -17,7 +17,7 @@ export class CreateCharacterComponent {
     constructor() {
         this._characterService = inject(CharacterService);
         this._gameService = inject(GameService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this._rules = objectFactory.GetRules();
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();

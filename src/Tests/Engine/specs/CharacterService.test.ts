@@ -6,7 +6,7 @@ import { LeatherBoots } from '../../../Games/MyRolePlayingGame/items/leatherBoot
 import { Journal } from '../../../Games/MyRolePlayingGame/items/journal';
 import { Sword } from '../../../Games/MyRolePlayingGame/items/sword';
 import { ICharacterRules } from 'storyScript/Interfaces/rules/characterRules';
-import { addArrayExtensions } from 'storyScript/globals';
+import { addArrayExtensions } from 'storyScript/globalFunctions';
 
 describe("CharacterService", function() {
 
@@ -17,23 +17,23 @@ describe("CharacterService", function() {
     describe("Character sheet", function() {
 
         test("should return the properties defined for the character sheet", function() {
-            var service = getService();
-            var result = service.getSheetAttributes().sort();
-            var expected = sheetAttributes.sort();
+            const service = getService();
+            const result = service.getSheetAttributes().sort();
+            const expected = sheetAttributes.sort();
             expect(result).toEqual(expected);
         });
 
         test("should set the first step of the character sheet as the selected step when starting character creation", function() {    
-            var game = <IGame>{};
+            const game = <IGame>{};
 
-            var service = getService(game);
-            var result = service.setupCharacter();
-            var gameSheet = game.createCharacterSheet;
-            var createSheet = Rules().character.getCreateCharacterSheet();
+            const service = getService(game);
+            const result = service.setupCharacter();
+            const gameSheet = game.createCharacterSheet;
+            const createSheet = Rules().character.getCreateCharacterSheet();
             createSheet.currentStep = 0;
 
             // Remove the next step function from the object for comparison.
-            var nextStep = result.nextStep;
+            const nextStep = result.nextStep;
             delete result.nextStep;
 
             expect(result).toEqual(createSheet);
@@ -46,7 +46,7 @@ describe("CharacterService", function() {
         });
 
         test("should set the first step of the level up sheet as the selected step preparing level up", function() {
-            var rules = {
+            const rules = {
                 character: {
                     getLevelUpSheet: function() {
                         return levelUpSheet
@@ -54,11 +54,11 @@ describe("CharacterService", function() {
                 }
             };
 
-            var game = <IGame>{};
+            const game = <IGame>{};
 
-            var service = getService(game, rules);
-            var result = service.setupLevelUp();
-            var gameSheet = game.createCharacterSheet;
+            const service = getService(game, rules);
+            const result = service.setupLevelUp();
+            const gameSheet = game.createCharacterSheet;
 
             expect(result).toBe(levelUpSheet);
             expect(gameSheet).toBe(levelUpSheet);
@@ -66,52 +66,52 @@ describe("CharacterService", function() {
         });
 
         test("should use a value of 1 when a non-number value was specified", function() {
-            var service = new CharacterService(null, null);
-            var value = 'test';
-            var attribute = getAttributes();
-            var entry = attribute.entries[0]
+            const service = new CharacterService(null, null);
+            const value = 'test';
+            const attribute = getAttributes();
+            const entry = attribute.entries[0]
             service.limitSheetInput(parseInt(value), attribute, entry);
             expect(entry.value).toBe(1);
         });
 
         test("should not allow an attribute to go above the maximum", function() {
-            var service = new CharacterService(null, null);
-            var value = 5;
-            var attribute = getAttributes();
-            var entry = attribute.entries[0]
+            const service = new CharacterService(null, null);
+            const value = 5;
+            const attribute = getAttributes();
+            const entry = attribute.entries[0]
             service.limitSheetInput(value, attribute, entry);
             expect(entry.value).toBe(5);
         });
 
         test("should not allow an attribute to go below the maximum", function() {
-            var service = new CharacterService(null, null);
-            var value = -5;
-            var attribute = getAttributes();
-            var entry = attribute.entries[0]
+            const service = new CharacterService(null, null);
+            const value = -5;
+            const attribute = getAttributes();
+            const entry = attribute.entries[0]
             service.limitSheetInput(value, attribute, entry);
             expect(entry.value).toBe(1);
         });
 
         test("should not allow the total to go above the amount of points to distribute", function() {
-            var service = new CharacterService(null, null);
-            var value = 5;
-            var attribute = getAttributes();
+            const service = new CharacterService(null, null);
+            const value = 5;
+            const attribute = getAttributes();
 
-            for (var i = 0; i < attribute.entries.length; i++)
+            for (let i = 0; i < attribute.entries.length; i++)
             {
-                var entry = attribute.entries[i]
+                const entry = attribute.entries[i]
                 service.limitSheetInput(value, attribute, entry);
             }
 
-            var entries = attribute.entries;
+            const entries = attribute.entries;
             expect(entries[0].value).toBe(5);
             expect(entries[1].value).toBe(4);
             expect(entries[2].value).toBe(1);
         });
 
         test("should return true when distribution is done", function() {
-            var service = new CharacterService(null, null);
-            var options = {
+            const service = new CharacterService(null, null);
+            const options = {
                 steps: [
                     {
                         attributes: [
@@ -121,29 +121,29 @@ describe("CharacterService", function() {
                 ]
             };
 
-            var attributes = options.steps[0].attributes;
+            const attributes = options.steps[0].attributes;
             attributes[0].entries[0].value = 5;
             attributes[0].entries[1].value = 4;
 
-            var result = service.distributionDone(options, options.steps[0]);
+            let result = service.distributionDone(options, options.steps[0]);
             expect(result).toBeTruthy();
 
             // Add an additional step. Both should be complete true is returned.
             attributes.push(getAttributes());
 
-            var result = service.distributionDone(options);
+            result = service.distributionDone(options);
             expect(result).toBeFalsy();
 
             attributes[1].entries[0].value = 5;
             attributes[1].entries[1].value = 4;
 
-            var result = service.distributionDone(options);
+            result = service.distributionDone(options);
             expect(result).toBeTruthy();
         });
 
         test("should return true when text questions have been answered", function() {
-            var service = new CharacterService(null, null);
-            var options = {
+            const service = new CharacterService(null, null);
+            const options = {
                 steps: [
                     {
                         attributes: [
@@ -153,7 +153,7 @@ describe("CharacterService", function() {
                 ]
             };
 
-            var entries = options.steps[0].attributes[0].entries;
+            const entries = options.steps[0].attributes[0].entries;
             delete entries[0].max;
             delete entries[1].max;
             delete entries[2].max;
@@ -161,21 +161,21 @@ describe("CharacterService", function() {
             entries[1].value = null;
             entries[2].value = null;
 
-            var result = service.distributionDone(options, options.steps[0]);
+            let result = service.distributionDone(options, options.steps[0]);
             expect(result).toBeFalsy();
 
             entries[0].value = 'One';
             entries[1].value = 'Two';
             entries[2].value = null;
 
-            var result = service.distributionDone(options, options.steps[0]);
+            result = service.distributionDone(options, options.steps[0]);
             expect(result).toBeFalsy();
 
             entries[0].value = 'One';
             entries[1].value = 'Two';
             entries[2].value = 'Three';
 
-            var result = service.distributionDone(options, options.steps[0]);
+            result = service.distributionDone(options, options.steps[0]);
             expect(result).toBeTruthy();
         });
 
@@ -184,7 +184,7 @@ describe("CharacterService", function() {
     describe("Create character", function() {
 
         test("Should return a created character with attribute and text values filled", function() {
-            var rules = <IRules>{
+            const rules = <IRules>{
                 character: <ICharacterRules>{
                     createCharacter: () => {
                         return <any>{
@@ -196,10 +196,10 @@ describe("CharacterService", function() {
                 }
             }
             
-            var game = <IGame>{};
-            var service = new CharacterService(game, rules);
+            const game = <IGame>{};
+            const service = new CharacterService(game, rules);
 
-            var sheet = <ICreateCharacter>{
+            const sheet = <ICreateCharacter>{
                 steps: [
                     {
                         questions: [
@@ -226,7 +226,7 @@ describe("CharacterService", function() {
                 ]
             }
 
-            var result = <any>service.createCharacter(game, sheet);
+            const result = <any>service.createCharacter(game, sheet);
 
             expect(result.name).toBe('Test');
             expect(result.strength).toBe(2);
@@ -234,9 +234,9 @@ describe("CharacterService", function() {
         });
 
         test("Should return an empty character when no create character rule is available", function() {
-            var game = <IGame>{};
-            var service = new CharacterService(game, <IRules>{ character: {} });
-            var result = service.createCharacter(game, <ICreateCharacter>{});
+            const game = <IGame>{};
+            const service = new CharacterService(game, <IRules>{ character: {} });
+            const result = service.createCharacter(game, <ICreateCharacter>{});
 
             expect(result).not.toBeNull();
             expect(result.name).toBe(null);
@@ -247,16 +247,16 @@ describe("CharacterService", function() {
     describe("Equip", function() {
 
         test("should allow equipping a non-miscellaneous item", function() {
-            var boots = LeatherBoots();
-            var service = getService();
-            var result = service.isEquippable(boots);
+            const boots = LeatherBoots();
+            const service = getService();
+            const result = service.isEquippable(boots);
             expect(result).toBeTruthy();
         });
 
         test("should disallow equipping a miscellaneous item", function() {
-            var journal = Journal();
-            var service = getService();
-            var result = service.isEquippable(journal);
+            const journal = Journal();
+            const service = getService();
+            const result = service.isEquippable(journal);
 
             expect(result).toBeFalsy();
         });
@@ -267,8 +267,8 @@ describe("CharacterService", function() {
                 items: []
             }
 
-            var service = getService();
-            var boots = LeatherBoots();
+            const service = getService();
+            const boots = LeatherBoots();
             character.items.push(boots);
             service.equipItem(character, boots);
 
@@ -283,8 +283,8 @@ describe("CharacterService", function() {
                 items: []
             }
 
-            var service = getService();
-            var twoHandedSword = <IItem>{
+            const service = getService();
+            const twoHandedSword = <IItem>{
                 equipmentType: [
                     EquipmentType.RightHand,
                     EquipmentType.LeftHand
@@ -304,16 +304,16 @@ describe("CharacterService", function() {
                 items: []
             }
 
-            var service = getService();
-            var sword = Sword();
+            const service = getService();
+            const sword = Sword();
             sword.unequip = function(item, game) {
                 return false;
             }
 
             character.equipment.rightHand = sword;
 
-            var newSword = Sword();
-            var result = service.equipItem(character, newSword);
+            const newSword = Sword();
+            const result = service.equipItem(character, newSword);
 
             expect(result).toBeFalsy();
             expect(character.equipment.rightHand).toBe(sword);
@@ -327,8 +327,8 @@ describe("CharacterService", function() {
                 items: []
             };
 
-            var service = getService();
-            var sword = Sword();
+            const service = getService();
+            const sword = Sword();
 
             sword.unequip = function(character, item, game) {
                 return false;
@@ -336,14 +336,14 @@ describe("CharacterService", function() {
 
             character.equipment.rightHand = sword;
 
-            var twoHandedSword = <IItem>{
+            const twoHandedSword = <IItem>{
                 equipmentType: [
                     EquipmentType.RightHand,
                     EquipmentType.LeftHand
                 ]
             };
 
-            var result = service.equipItem(character, twoHandedSword);
+            const result = service.equipItem(character, twoHandedSword);
 
             expect(result).toBeFalsy();
             expect(character.equipment.rightHand).toBe(sword);
@@ -358,9 +358,9 @@ describe("CharacterService", function() {
                 items: []
             };
 
-            var service = getService();
+            const service = getService();
 
-            var twoHandedSword = <IItem>{
+            const twoHandedSword = <IItem>{
                 equipmentType: [
                     EquipmentType.RightHand,
                     EquipmentType.LeftHand
@@ -370,12 +370,12 @@ describe("CharacterService", function() {
                 }
             };
 
-            var sword = Sword();
+            const sword = Sword();
 
             character.equipment.rightHand = twoHandedSword;
             character.equipment.leftHand = twoHandedSword;
 
-            var result = service.equipItem(character, sword);
+            const result = service.equipItem(character, sword);
 
             expect(result).toBeFalsy();
             expect(character.equipment.rightHand).toBe(twoHandedSword);
@@ -387,14 +387,14 @@ describe("CharacterService", function() {
                 equipment: <any>{}
             };
 
-            var service = getService();
+            const service = getService();
 
-            var sword = Sword();
+            const sword = Sword();
             sword.equip = function(character, item, game) {
                 return false;
             }
 
-            var result = service.equipItem(character, sword);
+            const result = service.equipItem(character, sword);
 
             expect(result).toBeFalsy();
             expect(character.equipment.rightHand).toBeUndefined();
@@ -406,9 +406,9 @@ describe("CharacterService", function() {
                 items: []
             };
             
-            var service = getService();
-            var equippedBoots = LeatherBoots();
-            var backPackBoots = LeatherBoots();
+            const service = getService();
+            const equippedBoots = LeatherBoots();
+            const backPackBoots = LeatherBoots();
             character.equipment.feet = equippedBoots;
             character.items.push(backPackBoots);
             service.equipItem(character, backPackBoots);
@@ -426,7 +426,7 @@ describe("CharacterService", function() {
                 items: []
             };
 
-            var rules = {
+            const rules = {
                 character: {
                     beforeEquip: function(game, character, item) {
                         return false;
@@ -434,10 +434,10 @@ describe("CharacterService", function() {
                 }
             }
 
-            var service = getService({}, rules);
-            var sword = Sword();
+            const service = getService({}, rules);
+            const sword = Sword();
 
-            var result = service.equipItem(character, sword);
+            const result = service.equipItem(character, sword);
 
             expect(result).toBeFalsy();
             expect(character.equipment.rightHand).toBeUndefined();
@@ -449,7 +449,7 @@ describe("CharacterService", function() {
                 items: []
             };
 
-            var rules = {
+            const rules = {
                 character: {
                     beforeUnequip: function(game, character, item) {
                         return false;
@@ -457,11 +457,11 @@ describe("CharacterService", function() {
                 }
             }
 
-            var service = getService({}, rules);
-            var sword = Sword();
+            const service = getService({}, rules);
+            const sword = Sword();
             character.equipment.rightHand = sword;
 
-            var result = service.unequipItem(character, sword);
+            const result = service.unequipItem(character, sword);
 
             expect(result).toBeFalsy();
             expect(character.equipment.rightHand).toBe(sword);
@@ -475,14 +475,14 @@ describe("CharacterService", function() {
                 items: []
             };
 
-            var service = getService();
-            var result = service.isSlotUsed(character, 'rightHand');
+            const service = getService();
+            const result = service.isSlotUsed(character, 'rightHand');
 
             expect(result).toBeFalsy();
         });
 
         test("should return true when an equipment slot is used", function() {
-            var sword = Sword();
+            const sword = Sword();
 
             const character = <ICharacter>{
                 equipment: {
@@ -491,14 +491,14 @@ describe("CharacterService", function() {
                 items: []
             }
 
-            var service = getService();
-            var result = service.isSlotUsed(character, 'rightHand');
+            const service = getService();
+            const result = service.isSlotUsed(character, 'rightHand');
 
             expect(result).toBeTruthy();
         });
 
         test("should drop an item the character has in his backpack", function() {
-            var sword = Sword();
+            const sword = Sword();
 
             const character = <ICharacter>{
                 items: [
@@ -506,13 +506,13 @@ describe("CharacterService", function() {
                 ]
             };
 
-            var game = <IGame>{
+            const game = <IGame>{
                 currentLocation: {
                     items: []
                 }
             };
 
-            var service = getService(game);
+            const service = getService(game);
             service.dropItem(character, sword);
 
             expect(character.items.length).toBe(0);
@@ -521,24 +521,24 @@ describe("CharacterService", function() {
         });
 
         test("should return the status of a quest when it is a string", function() {
-            var quest = <IQuest>{
+            const quest = <IQuest>{
                 status: 'Started'
             }
 
-            var service = getService();
-            var result = service.questStatus(quest);
+            const service = getService();
+            const result = service.questStatus(quest);
 
             expect(result).toBe(<string>quest.status);
         });
 
         test("should return the status of a quest when it is returned by a function", function() {
-            var quest = <any>{
+            const quest = <any>{
                 status: function() { return 'Started' },
                 checkDone: function() { return true }
             }
 
-            var service = getService();
-            var result = service.questStatus(quest);
+            const service = getService();
+            const result = service.questStatus(quest);
 
             expect(result).toBe(result);
         });
@@ -553,9 +553,9 @@ describe("CharacterService", function() {
                 strength: 1
             };
 
-            var game = <IGame>{};
+            const game = <IGame>{};
 
-            var rules = <IRules>{
+            const rules = <IRules>{
                 character: <ICharacterRules>{
                     levelUp: (character: any) => {
                         character.isLevelled = true;
@@ -564,12 +564,12 @@ describe("CharacterService", function() {
                 }
             }
 
-            var sheet = levelUpSheet;
+            const sheet = levelUpSheet;
             levelUpSheet.steps[0].questions[0].selectedEntry = levelUpSheet.steps[0].questions[0].entries[0];
             game.createCharacterSheet = sheet;
 
-            var service = new CharacterService(game, rules);
-            var result = <any>service.levelUp(character);
+            const service = new CharacterService(game, rules);
+            let result = <any>service.levelUp(character);
 
             expect(result).not.toBeNull();
             expect(result.isLevelled).toBeTruthy();
@@ -617,13 +617,13 @@ function getAttributes(): ICreateCharacterAttribute {
     };
 }
 
-var sheetAttributes = [
+const sheetAttributes = [
     'strength',
     'agility',
     'intelligence'
 ];
 
-var levelUpSheet = <ICreateCharacter>{
+const levelUpSheet = <ICreateCharacter>{
     steps: [
         {
             questions: [

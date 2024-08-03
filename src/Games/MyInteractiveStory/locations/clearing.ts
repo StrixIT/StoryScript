@@ -6,23 +6,6 @@ export function Clearing() {
         name: 'Clearing',
         description: description,
         destinations: [
-            
-        ],
-        features: [
-        ],
-        items: [
-        ],
-        enemies: [
-        ],
-        persons: [
-        ],
-        enterEvents: [
-        ],
-        leaveEvents: [
-        ],
-        actions: [
-        ],
-        combatActions: [
-        ],
+        ]
     });
 }

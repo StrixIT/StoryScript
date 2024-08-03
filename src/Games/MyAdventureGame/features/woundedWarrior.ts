@@ -1,4 +1,4 @@
-import { Feature } from '../types';
+import {Feature, IGame} from '../types';
 import { Combinations } from '../combinations';
 import { Flask } from '../items/flask';
 
@@ -10,7 +10,7 @@ export function WoundedWarrior() {
             combine: [
                 {
                     combinationType: Combinations.LOOKAT,
-                    match: (game, target, tool): string => {
+                    match: (game: IGame, target, tool): string => {
                         if (!game.worldProperties.takenFlask) {
                             game.worldProperties.takenFlask = true;
                             game.activeCharacter.items.add(Flask);

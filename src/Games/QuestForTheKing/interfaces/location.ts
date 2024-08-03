@@ -6,7 +6,7 @@ export function Location(entity: ILocation): ILocation  {
 }
 
 export interface ILocation extends StoryScriptILocation {
-    actions?: ICollection<IAction>;
+    actions?: [string, IAction][];
     destinations?: ICollection<IDestination>;
     enemies?: ICollection<IEnemy>;
     items?: ICollection<IItem>;
@@ -14,7 +14,7 @@ export interface ILocation extends StoryScriptILocation {
 }
 
 export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {
-    actions?: ICollection<IAction>;
+    actions?: [string, IAction][];
     destinations?: ICollection<IDestination>;
     enemies?: ICollection<IEnemy>;
     items?: ICollection<IItem>;

@@ -1,42 +1,41 @@
-﻿import { IRules } from '../Interfaces/rules/rules';
-import { IGame } from '../Interfaces/game';
-import { IInterfaceTexts } from '../Interfaces/interfaceTexts';
-import { ICharacter } from '../Interfaces/character';
-import { ISaveGame } from '../Interfaces/saveGame';
-import { IEnemy } from '../Interfaces/enemy';
-import { IItem } from '../Interfaces/item';
-import { IBarrier } from '../Interfaces/barrier';
-import { IDestination } from '../Interfaces/destination';
-import { ScoreEntry } from '../Interfaces/scoreEntry';
-import { IStatistics } from '../Interfaces/statistics';
-import { DataKeys } from '../DataKeys';
-import { SaveWorldState, getParsedDocument, checkAutoplay, removeItemFromItemsAndEquipment } from './sharedFunctions';
-import { DefaultTexts } from '../defaultTexts';
-import { IGameService } from '../Interfaces/services//gameService';
-import { IDataService } from '../Interfaces/services//dataService';
-import { ILocationService } from '../Interfaces/services/locationService';
-import { ICharacterService } from '../Interfaces/services/characterService';
-import { ICombinationService } from '../Interfaces/services/combinationService';
-import { IHelperService } from '../Interfaces/services//helperService';
-import { IBarrierAction } from '../Interfaces/barrierAction';
-import { GameState } from '../Interfaces/enumerations/gameState';
-import { PlayState } from '../Interfaces/enumerations/playState';
-import { ICombinable } from '../Interfaces/combinations/combinable';
-import { createHash } from '../globals';
-import { IFeature } from '../Interfaces/feature';
-import { compare, selectStateListEntry } from 'storyScript/utilities';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
-import { IParty } from '../Interfaces/party';
-import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
-import { ICombatSetup } from '../Interfaces/combatSetup';
-import { ICombatTurn } from '../Interfaces/combatTurn';
-import { TargetType } from '../Interfaces/enumerations/targetType';
+﻿import {IRules} from '../Interfaces/rules/rules';
+import {IGame} from '../Interfaces/game';
+import {IInterfaceTexts} from '../Interfaces/interfaceTexts';
+import {ICharacter} from '../Interfaces/character';
+import {ISaveGame} from '../Interfaces/saveGame';
+import {IEnemy} from '../Interfaces/enemy';
+import {IItem} from '../Interfaces/item';
+import {IBarrier} from '../Interfaces/barrier';
+import {IDestination} from '../Interfaces/destination';
+import {ScoreEntry} from '../Interfaces/scoreEntry';
+import {checkAutoplay, removeItemFromItemsAndEquipment, selectStateListEntry} from './sharedFunctions';
+import {DefaultTexts} from '../defaultTexts';
+import {IGameService} from '../Interfaces/services//gameService';
+import {IDataService} from '../Interfaces/services//dataService';
+import {ILocationService} from '../Interfaces/services/locationService';
+import {ICharacterService} from '../Interfaces/services/characterService';
+import {ICombinationService} from '../Interfaces/services/combinationService';
+import {IBarrierAction} from '../Interfaces/barrierAction';
+import {GameState} from '../Interfaces/enumerations/gameState';
+import {PlayState} from '../Interfaces/enumerations/playState';
+import {ICombinable} from '../Interfaces/combinations/combinable';
+import {IFeature} from '../Interfaces/feature';
+import {IParty} from '../Interfaces/party';
+import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
+import {ICombatSetup} from '../Interfaces/combatSetup';
+import {ICombatTurn} from '../Interfaces/combatTurn';
+import {TargetType} from '../Interfaces/enumerations/targetType';
+import {IHelpers} from "storyScript/Interfaces/helpers.ts";
+import {Characters, DefaultSaveGame, HighScores, Items, Quests} from "../../../constants.ts";
+import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
+import {IEquipment} from "storyScript/Interfaces/equipment.ts";
+import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
     private _musicStopped: boolean = false;
 
-    constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelperService, private _game: IGame, private _texts: IInterfaceTexts) {
+    constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelpers, private _game: IGame, private _texts: IInterfaceTexts) {
     }
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
@@ -47,33 +46,36 @@ export class GameService implements IGameService {
             this._game.worldProperties = {};
         }
 
-        if (this._rules.setup && this._rules.setup.setupGame) {
-            this._rules.setup.setupGame(this._game);
-        }
-
-        this.setupGame();
-        this.initTexts();
-        this._game.highScores = this._dataService.load<ScoreEntry[]>(DataKeys.HIGHSCORES);
-        this._game.party = this._dataService.load<IParty>(DataKeys.PARTY);
+        const saveGame = this._dataService.load<ISaveGame>(DefaultSaveGame) ?? <ISaveGame>{};
+        this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
+        this._game.party = saveGame.party;
+        this.setReadOnlyPartyProperties(this._game.party);
+        this._game.locations = saveGame.world;
+        this._game.worldProperties = saveGame.worldProperties ?? {};
 
         if (!restart) {
-            this._game.statistics = this._dataService.load<IStatistics>(DataKeys.STATISTICS) || this._game.statistics || {};
-            this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES) || this._game.worldProperties || {};
+            this._game.statistics = saveGame.statistics || this._game.statistics || {};
         }
+
+        const playedAudio = saveGame.playedAudio ?? [];
+
+        this._rules.setup?.setupGame?.(this._game);
+        this.setupGame(playedAudio);
+        this.initTexts();
 
         // Use the afterSave hook here to combine the initialized world with other saved data.
         if (this._rules.general?.afterSave) {
             this._rules.general.afterSave(this._game);
         }
-        
+
         if (!this._game.party && this._rules.setup.intro && !skipIntro) {
             this._game.state = GameState.Intro;
             return;
         }
-        
+
         let locationName = this._game.party?.currentLocationId;
-        var characterSheet = this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet();
-        var hasCreateCharacterSteps = characterSheet && characterSheet.steps && characterSheet.steps.length > 0;
+        const characterSheet = this._rules.character.getCreateCharacterSheet?.();
+        const hasCreateCharacterSteps = characterSheet?.steps?.length > 0;
         let isNewGame = false;
 
         if (!hasCreateCharacterSteps && !this._game.party) {
@@ -88,18 +90,20 @@ export class GameService implements IGameService {
             if (!isNewGame && this._rules.setup.continueGame) {
                 this._rules.setup.continueGame(this._game);
             }
-        }
-        else {
+        } else {
             this._characterService.setupCharacter();
             this._game.state = GameState.CreateCharacter;
         }
     }
 
     reset = (): void => {
-        this._dataService.remove(DataKeys.WORLD);
-        this._dataService.remove(DataKeys.PLAYEDMEDIA);
-        this._locationService.init(this._game);
-        this._game.worldProperties = this._dataService.load(DataKeys.WORLDPROPERTIES);
+        const emptySave = <ISaveGame>{
+            party: this._game.party,
+            statistics: this._game.statistics
+        };
+
+        this._dataService.save(DefaultSaveGame, emptySave);
+        this._locationService.init();
 
         // Save here to use the before and after save hooks after refreshing the world,
         // if there is a beforeSave hook defined.
@@ -120,79 +124,37 @@ export class GameService implements IGameService {
             return;
         }
 
-        this._dataService.save(DataKeys.PARTY, this._game.party);
-        this._game.party = this._dataService.load(DataKeys.PARTY);
+        this.setReadOnlyPartyProperties(this._game.party);
         this._game.party.characters[0].isActiveCharacter = true;
-
-        if (this._rules.setup.gameStart) {
-            this._rules.setup.gameStart(this._game);
-        }
-
-        if (!this._game.currentLocation) {
-            this._game.changeLocation('Start');
-        }
-
+        this._rules.setup.gameStart?.(this._game);
+        this._game.changeLocation?.('Start');
         this.initSetInterceptors();
-
         this._game.state = GameState.Play;
         this.saveGame();
     }
 
     levelUp = (character: ICharacter): ICharacter => {
-        var levelUpResult = this._characterService.levelUp(character);
+        const levelUpResult = this._characterService.levelUp(character);
         this.saveGame();
         return levelUpResult;
     }
 
     restart = (skipIntro?: boolean): void => {
-        this._dataService.remove(DataKeys.PARTY);
-        this._dataService.remove(DataKeys.STATISTICS);
-        this._dataService.remove(DataKeys.WORLDPROPERTIES);
-        this._dataService.remove(DataKeys.WORLD);
-        this._dataService.remove(DataKeys.PLAYEDMEDIA);
+        this._dataService.remove(DefaultSaveGame);
         this.init(true, skipIntro);
     }
 
-    saveGame = (name?: string): void => {
-        if (name) {
-            if (this._rules.general?.beforeSave) {
-                this._rules.general.beforeSave(this._game);
-            }
-
-            var saveGame = <ISaveGame>{
-                name: name,
-                party: this._game.party,
-                world: this._locationService.copyWorld(),
-                worldProperties: this._game.worldProperties,
-                statistics: this._game.statistics,
-                state: this._game.state
-            };
-
-            this._dataService.save(DataKeys.GAME + '_' + name, saveGame);
-
-            if ( this._game.playState === PlayState.Menu) {
-                this._game.playState = null;
-            }
-
-            if (this._rules.general?.afterSave) {
-                this._rules.general.afterSave(this._game);
-            }
-        }
-        else {
-            SaveWorldState(this._dataService, this._locationService, this._game, this._rules);
-        }
-    }
-
     loadGame = (name: string): void => {
-        var saveGame = this._dataService.load<ISaveGame>(DataKeys.GAME + '_' + name);
+        const saveGame = this._dataService.load<ISaveGame>(name);
 
         if (saveGame) {
             this._game.loading = true;
             this._game.party = saveGame.party;
             this._game.locations = saveGame.world;
             this._game.worldProperties = saveGame.worldProperties;
-        
-            this._locationService.init(this._game, false);
+            this._game.statistics = saveGame.statistics;
+            this._game.sounds.playedAudio = saveGame.playedAudio;
+            this._locationService.init();
             this._game.currentLocation = this._game.locations.get(saveGame.party.currentLocationId);
 
             // Use the afterSave hook here combine the loaded world with other saved data.
@@ -205,11 +167,9 @@ export class GameService implements IGameService {
             }
 
             this._game.actionLog = [];
-            this._game.state = saveGame.state;
-
             this.initSetInterceptors();
-            
-            if ( this._game.playState === PlayState.Menu) {
+
+            if (this._game.playState === PlayState.Menu) {
                 this._game.playState = null;
             }
 
@@ -230,12 +190,12 @@ export class GameService implements IGameService {
     getSaveGames = (): string[] => this._dataService.getSaveKeys();
 
     hasDescription = (entity: { id?: string, description?: string }): boolean => {
-        if (!entity[RuntimeProperties.Description]) {
+        if (!entity.description) {
             return false;
         }
 
         if (!this._parsedDescriptions.get(entity.id)) {
-            var descriptionNode = getParsedDocument(RuntimeProperties.Description, entity[RuntimeProperties.Description])[0];
+            const descriptionNode = getParsedDocument('description', entity.description)[0];
             this._parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
         }
 
@@ -243,28 +203,18 @@ export class GameService implements IGameService {
     }
 
     initCombat = (): void => {
-        if (this._rules.combat && this._rules.combat.initCombat) {
-            this._rules.combat.initCombat(this._game, this._game.currentLocation);
-        }
-
-        this.initCombatRound();
-
-        this._game.currentLocation.activeEnemies.forEach(enemy => {
-            if (enemy.onAttack) {
-                enemy.onAttack(this._game);
-            }
-        });
-
+        this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
+        this.initCombatRound(true);
+        this._game.currentLocation.activeEnemies.forEach(enemy => enemy.onAttack?.(this._game));
         this._game.playState = PlayState.Combat;
     }
 
     fight = (combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
-        if (!this._rules.combat || !this._rules.combat.fight)
-        {
+        if (!this._rules.combat?.fight) {
             return;
         }
 
-        var promise = this._rules.combat.fight(this._game, combatRound, retaliate);
+        const promise = this._rules.combat.fight(this._game, combatRound, retaliate);
 
         return Promise.resolve(promise).then(() => {
             combatRound.forEach((s, i) => {
@@ -279,22 +229,22 @@ export class GameService implements IGameService {
             }
 
             this.saveGame();
-            this.initCombatRound();
+            this.initCombatRound(false);
         });
     }
 
     useItem = (character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void => {
-        var useItem = (this._rules.exploration?.onUseItem && this._rules.exploration.onUseItem(this._game, character, item) && item.use) ?? item.use;
+        const useItem = (this._rules.exploration?.onUseItem?.(this._game, character, item) && item.use) ?? item.use;
 
         if (useItem) {
-            var promise = item.use(this._game, character, item, target);
+            const promise = item.use(this._game, character, item, target);
 
             return Promise.resolve(promise).then(() => {
                 if (item.charges !== undefined) {
                     if (!isNaN(item.charges)) {
                         item.charges--;
                     }
-            
+
                     if (item.charges <= 0) {
                         removeItemFromItemsAndEquipment(character, item);
                     }
@@ -303,9 +253,9 @@ export class GameService implements IGameService {
         }
     }
 
-    executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
-        action.execute(this._game, barrier, destination);
-        barrier.actions.delete(action);
+    executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
+        action[1].execute(this._game, barrier, destination);
+        barrier.actions.delete(barrier.actions.find(([k, _]) => k === action[0]));
         this.saveGame();
     }
 
@@ -322,7 +272,11 @@ export class GameService implements IGameService {
     stopMusic = (): boolean => this._musicStopped = true;
 
     playSound = (fileName: string, completeCallBack?: () => void): void => {
-        this._game.sounds.soundQueue.set(createHash(fileName + Math.floor(Math.random() * 1000)), { value: fileName, playing: false, completeCallBack: completeCallBack });
+        this._game.sounds.soundQueue.set(this.createHash(fileName + Math.floor(Math.random() * 1000)), {
+            value: fileName,
+            playing: false,
+            completeCallBack: completeCallBack
+        });
     }
 
     watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void {
@@ -334,13 +288,13 @@ export class GameService implements IGameService {
     }
 
     watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
-        var watcherNames = `_${stateName}Watchers`;
-        var watchers = this[watcherNames] ?? [];
+        const watcherNames = `_${stateName}Watchers`;
+        const watchers = this[watcherNames] ?? [];
         this[watcherNames] = watchers;
 
         if (watchers.length === 0) {
-            var state = this._game[stateName];
-    
+            let state = this._game[stateName];
+
             Object.defineProperty(this._game, stateName, {
                 enumerable: true,
                 configurable: true,
@@ -354,16 +308,68 @@ export class GameService implements IGameService {
                 }
             });
         }
-    
+
         if (watchers.indexOf(callBack) < 0) {
             watchers.push(callBack);
         }
     }
 
-    private initTexts = (): void => {
-        var defaultTexts = new DefaultTexts();
+    saveGame = (name?: string): void => {
+        name ??= DefaultSaveGame;
+        this._rules.general?.beforeSave?.(this._game);
 
-        for (var n in defaultTexts.texts) {
+        const saveGame = <ISaveGame>{
+            party: this._game.party,
+            world: this._game.locations,
+            worldProperties: this._game.worldProperties,
+            statistics: this._game.statistics,
+            playedAudio: this._game.sounds.playedAudio
+        };
+
+        this._dataService.save(name, saveGame);
+
+        if (this._game.playState === PlayState.Menu) {
+            this._game.playState = null;
+        }
+
+        this._rules.general.afterSave?.(this._game);
+    }
+
+    private setReadOnlyPartyProperties = (party: IParty) => {
+        if (!party) {
+            return;
+        }
+
+        InitEntityCollection(party, Quests);
+        InitEntityCollection(party, Characters);
+
+        party.characters.forEach(c => {
+            InitEntityCollection(c, Items);
+
+            Object.defineProperty(c, 'combatItems', {
+                get: function () {
+                    const result = c.items.filter(i => {
+                        return canUseInCombat(i.useInCombat, i, c.equipment);
+                    });
+
+                    for (const n in c.equipment) {
+                        const item = <IItem>c.equipment[n];
+
+                        if (item && canUseInCombat(item.useInCombat, item, c.equipment)) {
+                            result.push(item);
+                        }
+                    }
+
+                    return result;
+                }
+            });
+        });
+    }
+
+    private initTexts = (): void => {
+        const defaultTexts = new DefaultTexts();
+
+        for (const n in defaultTexts.texts) {
             this._texts[n] = this._texts[n] ? this._texts[n] : defaultTexts.texts[n];
         }
 
@@ -373,40 +379,41 @@ export class GameService implements IGameService {
 
     private resume = (locationName: string): void => {
         this.initSetInterceptors();
-
-        var lastLocation = this._game.locations.get(locationName) || this._game.locations.get('start');
-        var previousLocationName = this._game.party.previousLocationId;
+        const lastLocation = this._game.locations.get(locationName) || this._game.locations.start;
+        const previousLocationName = this._game.party.previousLocationId;
 
         if (previousLocationName) {
             this._game.previousLocation = this._game.locations.get(previousLocationName);
         }
 
         this._locationService.changeLocation(lastLocation.id, false, this._game);
-
         this._game.state = GameState.Play;
     }
 
-    private createCharacter = (characterData : ICreateCharacter): void => {
+    private createCharacter = (characterData: ICreateCharacter): void => {
         this._game.party = this._game.party ?? <IParty>{
             characters: [],
             quests: [],
             score: 0
         };
 
-        var character = this._characterService.createCharacter(this._game, characterData);
+        const character = this._characterService.createCharacter(this._game, characterData);
         character.items = character.items || [];
         this._game.party.characters.push(character);
     }
 
-    private initCombatRound = () => {
+    private initCombatRound = (newFight: boolean) => {
         const enemies = this._game.currentLocation.activeEnemies;
-        enemies.forEach(e => e.currentHitpoints = e.hitpoints);
 
-        this._game.combat ??= <ICombatSetup<ICombatTurn>>[];
-        this._game.combat.round ??= 0;
+        if (newFight) {
+            this._game.combat = <ICombatSetup<ICombatTurn>>[];
+            enemies.forEach(e => e.currentHitpoints = e.hitpoints);
+            this._game.combat.round = 0;
+        }
+
         this._game.combat.round++;
 
-        this._game.party.characters.forEach((c, i) => { 
+        this._game.party.characters.forEach((c, i) => {
             const allies = this._game.party.characters.filter(a => a != c);
             const items = c.combatItems ?? [];
 
@@ -418,9 +425,9 @@ export class GameService implements IGameService {
                 }
             });
 
-            items.sort((a: IItem, b: IItem) => compare(b.targetType, a.targetType) || compare(a.name, b.name))
+            items.sort((a: IItem, b: IItem) => b.targetType.localeCompare(a.targetType) || a.name.localeCompare(b.name));
 
-            const targetType = items[0]?.targetType;
+            const targetType = items[0]?.targetType ?? TargetType.Enemy;
 
             this._game.combat[i] = <ICombatTurn>{
                 character: c,
@@ -431,7 +438,7 @@ export class GameService implements IGameService {
             };
         });
 
-        this._rules.combat?.initCombatRound(this._game, this._game.combat);
+        this._rules.combat?.initCombatRound?.(this._game, this._game.combat);
     }
 
     private enemyDefeated = (character: ICharacter, enemy: IEnemy): void => {
@@ -447,31 +454,24 @@ export class GameService implements IGameService {
         }
 
         if (enemy.currency) {
-            var party = this._game.party;
-            party.currency = party.currency || 0;
-            party.currency += enemy.currency || 0;
+            this._game.party.currency ??= 0;
+            this._game.party.currency += enemy.currency || 0;
         }
 
-        this._game.statistics.enemiesDefeated = this._game.statistics.enemiesDefeated || 0;
+        this._game.statistics.enemiesDefeated ??= 0;
         this._game.statistics.enemiesDefeated += 1;
         this._game.currentLocation.enemies.delete(enemy);
-
-        if (this._rules.combat && this._rules.combat.enemyDefeated) {
-            this._rules.combat.enemyDefeated(this._game, character, enemy);
-        }
-
-        if (enemy.onDefeat) {
-            enemy.onDefeat(this._game);
-        }
+        this._rules.combat?.enemyDefeated?.(this._game, character, enemy);
+        enemy.onDefeat?.(this._game);
     }
 
-    private setupGame = (): void => {
+    private setupGame = (playedAudio: string[]): void => {
         this.initLogs();
 
         Object.defineProperty(this._game, 'activeCharacter', {
             configurable: true,
             get: () => {
-                var result = this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0];
+                const result = this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0];
 
                 if (!result.isActiveCharacter) {
                     result.isActiveCharacter = true;
@@ -487,18 +487,18 @@ export class GameService implements IGameService {
         });
 
         this._game.fight = this.fight;
-        this._game.sounds = { 
+        this._game.sounds = {
             startMusic: this.startMusic,
             stopMusic: this.stopMusic,
             playSound: this.playSound,
-            soundQueue: new Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>
+            soundQueue: new Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>,
+            playedAudio: playedAudio
         };
 
         this.setupCombinations();
-        this._locationService.init(this._game);
+        this._locationService.init();
 
-        this._game.changeLocation = (location, travel) => 
-        { 
+        this._game.changeLocation = (location, travel) => {
             this._locationService.changeLocation(location, travel, this._game);
 
             if (travel) {
@@ -528,13 +528,13 @@ export class GameService implements IGameService {
                 let partyName = defaultPartyName;
 
                 if (!partyName) {
-                    this._game.party.characters.forEach((c, i) =>{
+                    this._game.party.characters.forEach((c, i) => {
                         const separator = i == this._game.party.characters.length - 1 ? ' & ' : ', ';
 
                         if (partyName) {
                             partyName += separator;
                         }
-        
+
                         partyName += c.name;
                     });
                 }
@@ -553,12 +553,9 @@ export class GameService implements IGameService {
                     return currentHitpoints[c.name];
                 },
                 set: value => {
-                    var change = value - currentHitpoints[c.name];
+                    const change = value - currentHitpoints[c.name];
                     currentHitpoints[c.name] = value;
-
-                    if (this._rules.character.hitpointsChange) {
-                        this._rules.character.hitpointsChange(this._game, c, change);
-                    }
+                    this._rules.character.hitpointsChange?.(this._game, c, change);
                 }
             });
         });
@@ -569,14 +566,14 @@ export class GameService implements IGameService {
                 return score;
             },
             set: value => {
-                var change = value - score;
+                const change = value - score;
                 score = value;
 
                 // Todo: separate score and xp(?)
                 // Change when xp can be lost.
                 if (change > 0) {
-                    var levelUp = this._rules.general?.scoreChange && this._rules.general.scoreChange(this._game, change);
-    
+                    const levelUp = this._rules.general?.scoreChange?.(this._game, change);
+
                     if (levelUp) {
                         this._game.playState = null;
                         this._game.state = GameState.LevelUp;
@@ -585,40 +582,34 @@ export class GameService implements IGameService {
                 }
             }
         });
-    
+
         Object.defineProperty(this._game, 'state', {
             configurable: true,
-            get: () =>
-            {
+            get: () => {
                 return gameState;
             },
             set: state => {
                 if (state === GameState.GameOver || state === GameState.Victory) {
                     this._game.playState = null;
-
-                    if (this._rules.general?.determineFinalScore) {
-                        this._rules.general.determineFinalScore(this._game);
-                    }
-                    
+                    this._rules.general?.determineFinalScore?.(this._game);
                     this.updateHighScore();
-                    this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+                    this._dataService.save(HighScores, this._game.highScores);
                 }
 
                 gameState = state;
             }
         });
-  
+
         Object.defineProperty(this._game, 'currentDescription', {
             configurable: true,
-            get: () =>
-            {
+            get: () => {
                 return currentDescription;
             },
             set: (value: { title: string, type: string, item: IFeature }) => {
                 currentDescription = value;
 
-                if (currentDescription.item[RuntimeProperties.Description]) {
-                    currentDescription.item[RuntimeProperties.Description] = checkAutoplay(this._dataService, getParsedDocument(RuntimeProperties.Description, currentDescription.item[RuntimeProperties.Description], true)[0].innerHTML);
+                if (currentDescription.item.description) {
+                    currentDescription.item.description = checkAutoplay(this._game, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
                 }
 
                 this._game.playState = PlayState.Description;
@@ -631,8 +622,8 @@ export class GameService implements IGameService {
         this._game.combatLog = [];
 
         this._game.logToLocationLog = (message: string) => {
-            this._game.currentLocation[RuntimeProperties.Log] = this._game.currentLocation[RuntimeProperties.Log] || [];
-            this._game.currentLocation[RuntimeProperties.Log].push(message);
+            this._game.currentLocation.log ??= [];
+            this._game.currentLocation.log.push(message);
         }
 
         this._game.logToActionLog = (message: string) => {
@@ -651,16 +642,16 @@ export class GameService implements IGameService {
                 text: null,
                 featuresToRemove: [],
                 reset: (): void => {
-                    var result = this._game.combinations.combinationResult;
+                    const result = this._game.combinations.combinationResult;
                     result.done = false;
                     result.text = null;
                     result.featuresToRemove.length = 0;
                 }
             },
             activeCombination: null,
-            tryCombine: (target: ICombinable): boolean => {
-                var activeCombo = this._game.combinations.activeCombination;
-                var result = this._combinationService.tryCombination(target);
+            tryCombine: (target: ICombinable): ICombineResult => {
+                const activeCombo = this._game.combinations.activeCombination;
+                const result = this._combinationService.tryCombination(target);
 
                 if (result.text) {
                     let featuresToRemove: string[] = [];
@@ -673,13 +664,13 @@ export class GameService implements IGameService {
                         if (result.removeTool) {
                             featuresToRemove.push(activeCombo.selectedTool.id);
                         }
-                    }
 
-                    this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
-                    return true;
+                        this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
+                        this.saveGame();
+                    }
                 }
 
-                return false;
+                return result;
             },
             getCombineClass: (tool: ICombinable): string => {
                 return this._combinationService.getCombineClass(tool);
@@ -688,22 +679,17 @@ export class GameService implements IGameService {
     }
 
     private updateHighScore = (): void => {
-        var scoreEntry = { name: this._game.party.name, score: this._game.party.score };
-
-        if (!this._game.highScores || !this._game.highScores.length) {
-            this._game.highScores = [];
-        }
-
-        var scoreAdded = false;
+        const scoreEntry = {name: this._game.party.name, score: this._game.party.score};
+        this._game.highScores ??= [];
+        let scoreAdded = false;
 
         this._game.highScores.forEach((entry) => {
             if (this._game.party.score > entry.score && !scoreAdded) {
-                var index = this._game.highScores.indexOf(entry);
+                const index = this._game.highScores.indexOf(entry);
 
                 if (this._game.highScores.length >= 5) {
                     this._game.highScores.splice(index, 1, scoreEntry);
-                }
-                else {
+                } else {
                     this._game.highScores.splice(index, 0, scoreEntry);
                 }
 
@@ -715,6 +701,32 @@ export class GameService implements IGameService {
             this._game.highScores.push(scoreEntry);
         }
 
-        this._dataService.save(DataKeys.HIGHSCORES, this._game.highScores);
+        this._dataService.save(HighScores, this._game.highScores);
     }
+
+    private createHash(value: string): number {
+        let hash = 0;
+
+        if (!value || value.length == 0) {
+            return hash;
+        }
+
+        for (let i = 0; i < value.length; i++) {
+            const char = value.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+
+        return hash;
+    }
+}
+
+function canUseInCombat(flagOrFunction: boolean | ((item: IItem, equipment: IEquipment) => boolean), item: IItem, equipment: {}) {
+    const canUse = (typeof flagOrFunction === "function") ? flagOrFunction(item, equipment) : flagOrFunction;
+
+    if (canUse && !item.use) {
+        console.log(`Item ${item.name} declares it can be used in combat but has no use function.`)
+    }
+
+    return canUse;
 }

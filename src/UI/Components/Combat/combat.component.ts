@@ -1,7 +1,7 @@
 import { IInterfaceTexts, IGame, IAction, IEnemy, IItem, ICharacter, ICollection, TargetType, ICombatTurn } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -16,7 +16,7 @@ export class CombatComponent {
     constructor() {
         this._gameService = inject(GameService);
         this._sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.multiCharacter = this.game.party.characters.length > 1;
@@ -33,12 +33,12 @@ export class CombatComponent {
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-    getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
+    getButtonClass = (action: [string, IAction]): string => this._sharedMethodService.getButtonClass(action);
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
+    executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
 
     getTargetName = (target: IEnemy | ICharacter): string => {
-        var type = (<any>target).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
+        const type = (<any>target).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
         const ofSameType = this.game.currentLocation.activeEnemies.filter(e => e.name === target.name);
         return type === TargetType.Enemy && ofSameType.length > 1 ? this.texts.format(this.texts.enemyCombatName, [target.name, (ofSameType.indexOf(target) + 1).toString()]) : target.name;
     }
@@ -77,7 +77,11 @@ export class CombatComponent {
     canUseItem = (character: ICharacter, item: IItem): boolean => item.use ? this._sharedMethodService.canUseItem(character, item) : true;
 
     private split = (array, size) => {
-        let result = [];
+        const result = [];
+        
+        if (!array) {
+            return result;
+        }
 
         for (let i = 0; i < array.length; i += size) {
             let chunk = array.slice(i, i + size);

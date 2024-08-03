@@ -15,14 +15,16 @@ export function Troll() {
         enemies: [
             TrollEnemy()          
         ],
-        actions: [
-            {
-                text: 'Open the cage',
-                execute: (game: IGame) => {
-                    game.logToLocationLog(game.currentLocation.descriptions['opencage']);
-                    game.worldProperties.freedFaeries = true;
-                }
-            }
-        ]
+        actions:
+            [[
+                'OpenCage',
+                    {
+                        text: 'Open the cage',
+                        execute: (game: IGame) => {
+                            game.logToLocationLog(game.currentLocation.descriptions['opencage']);
+                            game.worldProperties.freedFaeries = true;
+                        }
+                    }
+            ]]
     });
 }

@@ -28,24 +28,6 @@ export function SouthRoad() {
                 name: 'The Central Forest',
                 target: CentralForest,
             }
-		],
-		features: [
-		],
-		items: [
-		],
-		enemies: [
-		],
-		persons: [
-		],
-		trade: [
-		],
-		enterEvents: [
-		],
-		leaveEvents: [
-		],
-		actions: [
-		],
-		combatActions: [
-		],
+		]
 	});
 }

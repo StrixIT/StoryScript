@@ -11,7 +11,7 @@ export interface IParty {
     /**
      * The members of the party.
      */
-    characters: ICharacter[];
+    characters: ICollection<ICharacter>;
 
     /**
      * The amount of credits the party has, in whatever form.

@@ -34,24 +34,6 @@ export function NorthRoad() {
                 name: 'The Central Forest',
                 target: CentralForest,
             }
-		],
-		features: [
-		],
-		items: [
-		],
-		enemies: [
-		],
-		persons: [
-		],
-		trade: [
-		],
-		enterEvents: [
-		],
-		leaveEvents: [
-		],
-		actions: [
-		],
-		combatActions: [
-		],
+		]
 	});
 }

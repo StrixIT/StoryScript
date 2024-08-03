@@ -116,12 +116,12 @@ export function format (template: string, tokens: string | string[]): string {
             }
         })
 
-        for (var i = 0; i < tokens.length; i++) {
-            var pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
-            var match = new RegExp(pattern).exec(template);
+        for (let i = 0; i < tokens.length; i++) {
+            const pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
+            const match = new RegExp(pattern).exec(template);
 
             if (match) {
-                var matchReplacement = match[0].replace('{' + i + '}', '');
+                const matchReplacement = match[0].replace('{' + i + '}', '');
 
                 if (tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
                     template = template.replace(match[0], ' ');

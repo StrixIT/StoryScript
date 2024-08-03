@@ -18,9 +18,9 @@ export function Dryad() {
                 target: CentralForest
             }           
         ],
-        leaveEvents: [
-            {
-                'LeaveDryad':
+        leaveEvents:
+            [[
+                'LeaveDryad',
                 (game: IGame) => {
                     if (game.currentLocation.descriptionSelector === 'return') {
                         game.currentLocation.descriptionSelector = null;
@@ -31,7 +31,6 @@ export function Dryad() {
 
                     return true;
                 }
-            }
-        ]
+            ]]
     });
 }

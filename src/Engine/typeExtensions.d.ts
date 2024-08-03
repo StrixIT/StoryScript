@@ -6,13 +6,18 @@ interface Function {
 // These are needed to let TypeScript recognize the new methods defined.
 interface Array<T> {
     get?(id?: string | ((...params: any) => T) | T): T;
+
     add?(id?: string | ((...params: any) => T) | T): T;
+
     remove?(id: string | ((...params: any) => T) | T): void;
-    delete?(id: string | ((...params: any) => T) | T, usePropertyMatch?: boolean): void;
+
+    delete?(id: string | ((...params: any) => T) | T): void;
+
     all(id: Function): T[];
+
     clear(): void;
-    withDeleted(): T[];
-    removeDeleted(): void;
+
+    getDeleted(): T[];
 }
 
 // This is needed to be able to import .html files. Do not remove this.

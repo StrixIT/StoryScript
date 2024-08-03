@@ -1,6 +1,14 @@
 import { describe, test, expect } from 'vitest';
 import { TradeService } from 'storyScript/Services/TradeService';
-import { ITrade, ICompiledLocation, IPerson, PlayState, IGame, ICharacter } from 'storyScript/Interfaces/storyScript';
+import {
+    ITrade,
+    ICompiledLocation,
+    IPerson,
+    PlayState,
+    IGame,
+    ICharacter,
+    IDefinitions
+} from 'storyScript/Interfaces/storyScript';
 import { IStock } from 'storyScript/Interfaces/stock';
 
 describe("TradeService", function() {
@@ -35,9 +43,6 @@ describe("TradeService", function() {
     test("should start trade with a person", function() {
         var game = <IGame>{
             activeCharacter: {
-                items: []
-            },
-            definitions: {
                 items: []
             }
         };
@@ -75,10 +80,10 @@ describe("TradeService", function() {
             persons: [trader]
         };
 
-        var service = getService(game, texts);
+        const service = getService(game, texts, <IDefinitions>{ items: [] });
 
         service.trade(trader);
-        var activeTrade = game.trade;
+        const activeTrade = game.trade;
 
         expect(activeTrade).toBe(trader.trade);
         expect(game.person).toBe(trader);
@@ -89,10 +94,10 @@ describe("TradeService", function() {
 
 });
 
-function getService(game: IGame, texts?) {
+function getService(game: IGame, texts?, definitions?: IDefinitions) {
     game.activeCharacter = game.activeCharacter || <ICharacter>{
         items: []
     };
 
-    return new TradeService(game, texts || {});
+    return new TradeService(game, texts || {}, definitions ?? <IDefinitions>{});
 }

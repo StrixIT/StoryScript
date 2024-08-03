@@ -1,51 +1,41 @@
-﻿import { DataKeys } from '../DataKeys';
-import { getPlural, isEmpty } from '../utilities';
-import { setReadOnlyProperties, GetFunctions, GetRegisteredEntities } from '../ObjectConstructors';
-import { IDataService } from '../Interfaces/services/dataService';
-import { ILocalStorageService } from '../Interfaces/services/localStorageService';
-import { IDataSerializer } from 'storyScript/Interfaces/services/dataSerializer';
-import { IDataSynchronizer } from 'storyScript/Interfaces/services/dataSynchronizer';
+﻿import {isEmpty} from '../utilityFunctions';
+import {IDataService} from '../Interfaces/services/dataService';
+import {ILocalStorageService} from '../Interfaces/services/localStorageService';
+import {IDataSerializer} from 'storyScript/Interfaces/services/dataSerializer';
+import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronizer';
 
 export class DataService implements IDataService {
 
-    constructor(private _localStorageService: ILocalStorageService, private serializer: IDataSerializer, private synchronizer: IDataSynchronizer, private _gameNameSpace: string) {
+    constructor(
+        private _localStorageService: ILocalStorageService,
+        private serializer: IDataSerializer,
+        private synchronizer: IDataSynchronizer,
+        private _gameNameSpace: string) {
     }
-    
-    save = <T>(key: string, value: T, pristineValues?: T): void => {
-        var clone = this.serializer.buildClone(null, value, pristineValues);
-        this._localStorageService.set(this._gameNameSpace + '_' + key, JSON.stringify({ data: clone }));
+
+    save = <T>(key: string, value: T): void => {
+        const clone = this.serializer.createSerializableClone(value);
+        this._localStorageService.set(this.getKey(key), JSON.stringify({data: clone}));
     }
 
     load = <T>(key: string): T => {
         try {
-            var jsonData = this._localStorageService.get(this._gameNameSpace + '_' + key);
+            const jsonData = this._localStorageService.get(this.getKey(key));
 
             if (jsonData) {
-                var data = JSON.parse(jsonData).data;
+                const data = JSON.parse(jsonData).data;
 
                 if (isEmpty(data)) {
                     return null;
                 }
 
-                var functionList = GetFunctions();
-                var pristineEntities = GetRegisteredEntities();
-
-                if (Array.isArray(data) && data[0]?.type && data[0]?.id) {
-                    this.serializer.restoreObjects(functionList, null, data);
-                    const pristineCollection = pristineEntities[getPlural(data[0]?.type)];
-                    this.synchronizer.updateModifiedEntities(data, pristineEntities, Object.keys(pristineCollection).map(k => pristineCollection[k]));
-                }
-                else {
-                    const result = this.serializer.restoreObjects(functionList, null, data);
-                    this.synchronizer.updateModifiedEntity(result, result, pristineEntities);
-                }
-                setReadOnlyProperties(key, data);
-                return data;
+                const result = this.serializer.restoreObjects(data);
+                this.synchronizer.synchronizeEntityData(result);
+                return result;
             }
 
             return null;
-        }
-        catch (exception: any) {
+        } catch (exception: any) {
             console.log('No data loaded for key ' + key + '. Error: ' + exception.message);
         }
 
@@ -53,12 +43,12 @@ export class DataService implements IDataService {
     }
 
     remove = (key: string): void => {
-        this._localStorageService.remove(this._gameNameSpace + '_' + key);
+        this._localStorageService.remove(this.getKey(key));
     }
 
-    copy = <T>(value: T, pristineValue: T): T => {
-        return this.serializer.buildClone(null, value, pristineValue);
+    getSaveKeys = (): string[] => this._localStorageService.getKeys(this.getKey());
+    
+    private getKey = (key?: string): string => {
+        return `${this._gameNameSpace}_${key}`;
     }
-
-    getSaveKeys = (): string[] => this._localStorageService.getKeys(this._gameNameSpace + '_' + DataKeys.GAME + '_');
 }

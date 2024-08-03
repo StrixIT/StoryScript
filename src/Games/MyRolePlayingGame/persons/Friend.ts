@@ -20,7 +20,7 @@ export function Friend() {
             buy: {
                 text: 'I\'m willing to part with these items...',
                 emptyText: 'I have nothing left to sell to you...',
-                itemSelector: (game: IGame, item: IItem) => {
+                itemSelector: (_: IGame, item: IItem) => {
                     return item.value != undefined;
                 },
                 maxItems: 5
@@ -28,23 +28,23 @@ export function Friend() {
             sell: {
                 text: 'These items look good, I\'d like to buy them from you',
                 emptyText: 'You have nothing left that I\'m interested in',
-                itemSelector: (game: IGame, item: IItem) => {
+                itemSelector: (_: IGame, item: IItem) => {
                     return item.value != undefined;
                 },
                 maxItems: 5
             }
         },
         conversation: {
-            actions: {
-                'addHedgehog': (game: IGame, person: IPerson) => {
-                    var garden = game.locations.get(Garden);
+            actions: [[
+                'addHedgehog', (game: IGame, _: IPerson) => {
+                    const garden = game.locations.get(Garden);
                     garden.hasVisited = false;
 
-                    garden.enterEvents.add({ 'Hedgehog': (game: IGame) => {
+                    garden.enterEvents.add(['Hedgehog', (game: IGame) => {
                         game.logToLocationLog('Ah! There is the hedgehog Joe was talking about.');
-                    }});
+                    }]);
                 }
-            }
+            ]]
         },
         quests: [
             Journal()

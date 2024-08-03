@@ -43,6 +43,7 @@ export interface ICombatRules {
      * Return false if the enemy should not drop the item.
      * @param game The active game
      * @param character The character defeating the enemy
+     * @param enemy The enemy defeated
      * @param item The item about to be unequipped
      */
     beforeDrop?(game: IGame, character: ICharacter, enemy: IEnemy, item: IItem): boolean;

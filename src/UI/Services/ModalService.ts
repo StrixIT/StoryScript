@@ -1,11 +1,11 @@
-import { Injectable, inject } from '@angular/core';
-import { NgbModal, NgbModalRef, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { GameService } from 'storyScript/Services/gameService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { IInterfaceTexts, PlayState, IGame } from 'storyScript/Interfaces/storyScript';
-import { MenuModalComponent } from '../Components/MenuModal/menumodal.component';
-import { EncounterModalComponent } from '../Components/EncounterModal/encountermodal.component';
-import { IModalSettings } from '../Components/modalSettings';
+import {inject, Injectable} from '@angular/core';
+import {NgbModal, NgbModalOptions, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {GameService} from 'storyScript/Services/gameService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {IGame, IInterfaceTexts, PlayState} from 'storyScript/Interfaces/storyScript';
+import {MenuModalComponent} from '../Components/MenuModal/menumodal.component';
+import {EncounterModalComponent} from '../Components/EncounterModal/encountermodal.component';
+import {IModalSettings} from '../Components/modalSettings';
 
 @Injectable()
 export class ModalService {
@@ -17,13 +17,13 @@ export class ModalService {
     constructor() {
         this._modalService = inject(NgbModal);
         this._gameService = inject(GameService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._gameService.watchPlayState(this.openOrCloseModal);
     }
 
-    private game: IGame;
+    private readonly game: IGame;
     private texts: IInterfaceTexts;
 
     private openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {
@@ -33,9 +33,11 @@ export class ModalService {
 
         const settings = this.getStateSettings(newState);
 
-        const modalOptions = <NgbModalOptions>{ beforeDismiss: () => {
-            this.closeModal(false);
-        }, backdrop: settings.canClose !== undefined && !settings.canClose ? 'static' : null, keyboard: false  };
+        const modalOptions = <NgbModalOptions>{
+            beforeDismiss: () => {
+                this.closeModal(false);
+            }, backdrop: settings.canClose !== undefined && !settings.canClose ? 'static' : null, keyboard: false
+        };
 
         // 1. If there is already an active modal:
         if (this._activeModal) {
@@ -50,7 +52,7 @@ export class ModalService {
             if (newState === null) {
                 this.closeModal(true);
             }
-            // c. If the new state is not NULL, don't open a new modal. Instead, just store the old state
+                // c. If the new state is not NULL, don't open a new modal. Instead, just store the old state
             // so we can switch back to it later. If there
             else {
                 this._previousModalState = oldState;
@@ -63,8 +65,7 @@ export class ModalService {
         if (newState !== null) {
             if (newState === PlayState.Menu) {
                 this._activeModal = this._modalService.open(MenuModalComponent, modalOptions);
-            }
-            else {
+            } else {
                 this._activeModal = this._modalService.open(EncounterModalComponent, modalOptions);
                 this._activeModal.componentInstance.element.parentElement.classList.add('encounter-modal');
                 this._activeModal.componentInstance.settings = settings;
@@ -91,34 +92,27 @@ export class ModalService {
     }
 
     private getStateSettings = (value: PlayState): IModalSettings => {
-        var modalSettings: IModalSettings = {
+        const modalSettings: IModalSettings = {
             title: '',
             closeText: this.texts.closeModal
         };
 
-        switch (value) {
-            case PlayState.Combat: {
-                modalSettings.title = this.texts.combatTitle;
-                modalSettings.canClose = false;
-            } break;
-            case PlayState.Conversation: {
-                var person = this.game.person;
-                modalSettings.title = person.conversation.title || this.texts.format(this.texts.talk, [person.name]);
-                modalSettings.canClose = true;
-            } break;
-            case PlayState.Trade: {
-                var trader = this.game.trade;
-                modalSettings.title = trader.name;
-                modalSettings.canClose = true;
-            } break;
-            case PlayState.Description: {
-                modalSettings.title = this.game.currentDescription.title;
-                modalSettings.description = this.game.currentDescription.item.description;
-                modalSettings.descriptionType = this.game.currentDescription.type;
-                modalSettings.canClose = true;
-            } break;
-            default: {
-            } break;
+        if (value === PlayState.Combat) {
+            modalSettings.title = this.texts.combatTitle;
+            modalSettings.canClose = false;
+        } else if (value === PlayState.Conversation) {
+            const person = this.game.person;
+            modalSettings.title = person.conversation.title || this.texts.format(this.texts.talk, [person.name]);
+            modalSettings.canClose = true;
+        } else if (value === PlayState.Trade) {
+            const trader = this.game.trade;
+            modalSettings.title = trader.name;
+            modalSettings.canClose = true;
+        } else if (value === PlayState.Description) {
+            modalSettings.title = this.game.currentDescription.title;
+            modalSettings.description = this.game.currentDescription.item.description;
+            modalSettings.descriptionType = this.game.currentDescription.type;
+            modalSettings.canClose = true;
         }
 
         return modalSettings;

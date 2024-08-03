@@ -1,7 +1,7 @@
 import { DefaultEquipment, ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 
@@ -17,7 +17,7 @@ export class EquipmentComponent {
     constructor() {
         this._characterService = inject(CharacterService);
         this._sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useEquipment = true;
     }
