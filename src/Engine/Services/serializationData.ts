@@ -1,5 +1,4 @@
-export interface SerializationData
-{
+export interface SerializationData {
     clone: any;
     key: string;
     original: any;

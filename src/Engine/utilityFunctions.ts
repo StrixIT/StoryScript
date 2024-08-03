@@ -1,7 +1,12 @@
-﻿import {IDefinitions} from './Interfaces/definitions';
-import {compareString} from './globalFunctions';
-import {GameState, IGame, ILocation, PlayState} from './Interfaces/storyScript';
-import {StateList, StateListEntry} from './Interfaces/stateList';
+﻿export function compareString(left: string, right: string): boolean {
+    if ((left === undefined && right === undefined) || (left === null && right === null)) {
+        return true;
+    } else if ((left === null || left === undefined) || (right === null || right === undefined)) {
+        return false;
+    }
+
+    return left.toLowerCase() === right.toLowerCase();
+}
 
 export function getId(id: Function | string) {
     let actualId: string;
@@ -94,6 +99,11 @@ export function getSingular(name: string): string {
     return singular;
 }
 
+export function parseHtmlDocumentFromString(document: string) {
+    const parser = new DOMParser();
+    return parser.parseFromString(document, 'text/html');
+}
+
 export function addHtmlSpaces(text: string): string {
     if (!text) {
         return null;
@@ -118,44 +128,6 @@ export function isEmpty(object: any, property?: string) {
     }
 
     return true;
-}
-
-export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
-    const collection = definitions[type];
-
-    if (!collection) {
-        return null;
-    }
-
-    const selection = getFilteredInstantiatedCollection<T>(collection, selector);
-
-    if (selection.length == 0) {
-        return null;
-    }
-
-    const index = Math.floor(Math.random() * selection.length);
-    return selection[index];
-}
-
-export function randomList<T>(collection: T[] | ([() => T]), count: number, selector?: (item: T) => boolean): T[] {
-    const selection = getFilteredInstantiatedCollection<T>(collection, selector);
-    const results = <T[]>[];
-
-    if (count === undefined) {
-        count = selection.length;
-    }
-
-    if (selection.length > 0) {
-        while (results.length < count && results.length < selection.length) {
-            const index = Math.floor(Math.random() * selection.length);
-
-            if (results.indexOf(selection[index]) == -1) {
-                results.push(selection[index]);
-            }
-        }
-    }
-
-    return results;
 }
 
 export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
@@ -217,37 +189,6 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
     return promise;
 }
 
-export function selectStateListEntry(game: IGame, stateList: StateList) {
-    // Evaluate custom functions first.
-    const customFunctions = stateList[''];
-    let result = null;
-
-    for (const n in customFunctions) {
-        result = (<((game: IGame) => string)><unknown>customFunctions[n])(game);
-
-        if (result) {
-            return result;
-        }
-    }
-
-    // Next, get the entries in this order: Location, PlayState, GameState.
-    const filteredEntries = Object.keys(stateList)
-        .map(e => mapPlaylistEntries(game, e, stateList[e]))
-        .filter(e => e);
-
-    result = filteredEntries.map(e => selectCandidate(game, e.key, e.item))
-        .filter(i => i.order > 0)
-        .sort((a, b) => a.order - b.order)[0];
-
-    return result?.key;
-}
-
-function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
-    return entry.map(i => selectCandidate(game, key, i))
-        .filter(i => i.order > 0)
-        .sort((a, b) => a.order - b.order)[0];
-}
-
 function getKeyProperties(pristine: any, current: any): { first?: string, second?: string } {
     const {first: pristineFirst, second: pristineSecond} = getKeyPropertyNames(pristine);
     const {first: currentFirst, second: currentSecond} = getKeyPropertyNames(current);
@@ -259,30 +200,4 @@ function getKeyProperties(pristine: any, current: any): { first?: string, second
 
 function getValue(value: any): string {
     return typeof value === 'function' ? value.name.toLowerCase() : value;
-}
-
-function selectCandidate(game: IGame, key: string, item: (GameState | PlayState | (() => ILocation) | ((game: IGame) => string) | string)) {
-    const functionName = (<Function>item)?.name;
-    const currentLocationId = game.currentLocation?.id;
-
-    const order = item === game.state ? 3
-        : item === game.playState ? 2
-            : functionName && currentLocationId && compareString(functionName, currentLocationId) ? 1
-                : 0;
-
-    return {key, item, order};
-}
-
-function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], selector?: (item: T) => boolean) {
-    let collectionToFilter = <T[]>[];
-
-    if (typeof collection[0] === 'function') {
-        (<[() => T]>collection).forEach((def: () => T) => {
-            collectionToFilter.push(def());
-        });
-    } else {
-        collectionToFilter = <T[]>collection;
-    }
-
-    return selector ? collectionToFilter.filter(selector) : collectionToFilter;
 }

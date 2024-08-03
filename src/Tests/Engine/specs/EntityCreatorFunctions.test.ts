@@ -3,20 +3,24 @@
  */
 import {beforeAll, describe, expect, test} from 'vitest';
 import {
+    EquipmentType,
     Feature,
     IAction,
     IBarrier,
     ICompiledLocation,
-    IFeature, IGame,
+    IFeature,
     IKey,
     ILocation,
     Location,
 } from 'storyScript/Interfaces/storyScript';
-import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {RunGame} from '../../../Games/MyRolePlayingGame/run';
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
-import {parseGamePropertiesInTemplate} from "storyScript/EntityCreatorFunctions.ts";
+import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
+import {customEntity, DynamicEntity} from "storyScript/EntityCreatorFunctions.ts";
+import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
+import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
+import {Item} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
 
 describe("EntityCreatorFunctions", function () {
 
@@ -98,36 +102,39 @@ describe("EntityCreatorFunctions", function () {
         expect((<any>result).type).toBe('feature');
     });
 
-    test("game property should be parsed in string", function () {
-        const value = "Hi there, {game.activeCharacter.name}!";
-        const expected = "Hi there, John!";
-        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { name: 'John'}});
 
-        expect(expected).toEqual(actual);
+    test("should correctly create a dynamic entity", function () {
+        const dynamicItem = function Lamp() {
+            return Item({
+                name: 'Magic Lamp',
+                equipmentType: EquipmentType.Miscellaneous,
+                value: 10
+            })
+        };
+
+        const lamp = DynamicEntity(dynamicItem);
+        expect(lamp).not.toBeNull();
+        expect(lamp.id).toBe('lamp');
+        expect((<any>lamp).type).toBe('item');
+        expect(lamp.value).toBe(10);
     });
 
-    test("game property should be parsed in string when game part is not included", function () {
-        const value = "Hi there, {activeCharacter.name}!";
-        const expected = "Hi there, John!";
-        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { name: 'John'}});
-
-        expect(expected).toEqual(actual);
+    test("should throw when creating a custom entity without a name", function () {
+        expect(function () {
+            customEntity(Bandit, {name: '', hitpoints: 15});
+        }).toThrow();
     });
 
-    test("game property with index should be parsed in string", function () {
-        const value = "Hi there. That's a nice {game.activeCharacter.items[0].name}!";
-        const expected = "Hi there. That's a nice Sword!";
-        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { items: [ { name: 'Sword' }]}});
-
-        expect(expected).toEqual(actual);
+    test("should correctly create a custom entity", function () {
+        const name = 'Jack';
+        const boots = LeatherBoots();
+        const emptyText = 'I\'ve nothing left';
+        const result = customEntity(Friend, {name: name, items: [boots], trade: {buy: {emptyText: emptyText}}});
+        expect(result).not.toBeNull();
+        expect(result.id).toBe(name.toLowerCase());
+        expect(result.items.length).toBe(2);
+        expect(result.items[1]).toEqual(boots);
+        expect(result.trade.buy.emptyText).toBe(emptyText);
     });
 
-    test("unknown property should not be parsed in string", function () {
-        const value = "Hi there {game.activeCharacter.dummy}!";
-        const expected = value;
-        const actual = parseGamePropertiesInTemplate(value, <IGame>{ activeCharacter: { items: [ { name: 'Sword' }]}});
-
-        expect(expected).toEqual(actual);
-    });
-    
 });

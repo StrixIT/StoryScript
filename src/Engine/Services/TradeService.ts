@@ -4,12 +4,12 @@ import {IPerson} from '../Interfaces/person';
 import {ITrade} from '../Interfaces/trade';
 import {IItem} from '../Interfaces/item';
 import {IStock} from '../Interfaces/stock';
-import {randomList} from '../utilityFunctions';
 import {ITradeService} from '../Interfaces/services/tradeService';
 import {PlayState} from '../Interfaces/enumerations/playState';
 import {IParty} from '../Interfaces/party';
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
+import {randomList} from "storyScript/Services/sharedFunctions.ts";
 
 export class TradeService implements ITradeService {
     constructor(private _game: IGame, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {

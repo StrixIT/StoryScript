@@ -3,13 +3,13 @@ import {IEnemy} from '../Interfaces/enemy';
 import {IItem} from '../Interfaces/item';
 import {ICollection} from '../Interfaces/collection';
 import {IDefinitions} from '../Interfaces/definitions';
-import {random} from '../utilityFunctions';
-import {compareString} from '../globalFunctions';
+import {compareString} from '../utilityFunctions';
+import {random} from "storyScript/Services/sharedFunctions.ts";
 
 export class HelperService implements IHelpers {
     constructor(private _definitions: IDefinitions) {
     }
-    
+
     randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => random<IEnemy>('enemies', this._definitions, <(enemy: IEnemy) => boolean>selector);
 
     randomItem = (selector?: (item: IItem) => boolean): IItem => random<IItem>('items', this._definitions, <(item: IItem) => boolean>selector);

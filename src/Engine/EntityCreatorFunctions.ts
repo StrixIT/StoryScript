@@ -7,12 +7,11 @@ import {IKey} from './Interfaces/key';
 import {IFeature} from './Interfaces/feature';
 import {IQuest} from './Interfaces/quest';
 import {IAction} from './Interfaces/action';
-import {getId, getPlural, getSingular} from './utilityFunctions';
+import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './utilityFunctions';
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
-import {ActionStatus, ICompiledLocation, IDestination, IGame} from './Interfaces/storyScript';
+import {ActionStatus, ICompiledLocation, IDestination} from './Interfaces/storyScript';
 import {Enemies, Features, Items, Locations, Persons, Quests} from "../../constants.ts";
-import {getParsedDocument} from "storyScript/Services/sharedFunctions.ts";
 
 const _entityCollections: string[] = [
     'features',
@@ -70,12 +69,28 @@ export function Action(action: IAction): IAction {
     return Create('action', action);
 }
 
-export function DynamicEntity<T>(entityFunction: () => T, name: string): T {
+export function DynamicEntity<T>(entityFunction: () => T): T {
     const compiledEntity = <any>entityFunction();
-    const entityKey = getEntityKey(<any>compiledEntity);
-    compiledEntity.id = getIdFromName({id: '', name: name})?.toLowerCase();
+    const entityKey = getEntityKey(compiledEntity);
+    compiledEntity.id = getId(entityFunction);
     _registeredIds.set(entityKey, compiledEntity.id);
     return compiledEntity;
+}
+
+export function customEntity<T, C extends { name: string }>(definition: () => T, customData: C): T {
+    if (!customData.name) {
+        throw new Error('A custom entity needs a custom name!');
+    }
+    
+    const customEntity = <any>extend(definition(), customData);
+    const customEntityKey = getEntityKey(customEntity);
+    
+    if (!_registeredIds.has(customEntityKey)) {
+        _registeredIds.set(customEntityKey, getIdFromName(customEntity));
+    }
+    
+    customEntity.id = _registeredIds.get(customEntityKey);
+    return customEntity;
 }
 
 export function buildEntities(definitions: IDefinitions): Record<string, Record<string, any>> {
@@ -200,45 +215,21 @@ export function getBasicFeatureData(location: ICompiledLocation, node: HTMLEleme
     return feature;
 }
 
-export function parseGamePropertiesInTemplate(lines: string, game?: IGame): string {
-    const propertyRegex = /{(?:[a-zA-Z\[\]0-9]{1,}[.]{0,1}){1,}}/g;
-    const indexRegex = /\[[0-9]{1,}\]/g;
-    let result = lines;
-    let parseMatch = null;
-
-    while ((parseMatch = propertyRegex.exec(lines)) !== null) {
-        let property = <unknown>game;
-        let replacement = parseMatch[0];
-        let index = null;
-        let propertyFound = false;
-
-        parseMatch[0].replace(/{|}/g, '').split('.').forEach((e: string) => {
-            if (index = indexRegex.exec(e)) {
-                e = e.replace(index, '');
-                index = parseInt(index[0].replace(/\[|\]/g, ''));
-            }
-
-            if (property.hasOwnProperty(e)) {
-                property = property[e];
-                propertyFound = true;
-            } else {
-                propertyFound = false;
-            }
-
-            if (!isNaN(index) && Array.isArray(property)) {
-                property = property[index];
-            }
-        });
-
-        if (propertyFound) {
-            replacement = property;
-        }
-
-        lines = lines.replace(`${parseMatch[0]}`, '');
-        result = result.replace(`${parseMatch[0]}`, replacement);
+export function getParsedDocument(tag: string, value?: string, wrapIfNotFound?: boolean) {
+    if (!value) {
+        return null;
     }
 
-    return result;
+    let htmlDoc = parseHtmlDocumentFromString(value);
+    let elements = htmlDoc.getElementsByTagName(tag);
+
+    if (!elements.length && wrapIfNotFound) {
+        value = `<${tag}>${value}</${tag}>`;
+        htmlDoc = parseHtmlDocumentFromString(value);
+        elements = htmlDoc.getElementsByTagName(tag);
+    }
+
+    return elements;
 }
 
 function registerEntity(entity: any): void {
@@ -364,8 +355,7 @@ function parseDescriptionData(entity: any) {
 }
 
 function loadPictureFromDescription(entity: any, description: string): void {
-    const parser = new DOMParser();
-    const htmlDoc = parser.parseFromString(description, 'text/html');
+    const htmlDoc = parseHtmlDocumentFromString(description);
     const pictureElement = htmlDoc.getElementsByClassName('picture')[0];
     const pictureSrc = pictureElement?.getAttribute('src');
 
@@ -548,4 +538,23 @@ function pushEntity(originalScope: any, originalFunction: any, entity: any) {
 
 function getIdFromName<T extends { name: string, id?: string }>(entity: T): string {
     return entity.name.toLowerCase().replace(/\s/g, '');
+}
+
+function extend<T>(target: T, source: {}) {
+    const keys = Object.keys(source);
+
+    for (const key of keys) {
+        const value = source[key];
+        const isArray = Array.isArray(value);
+        
+        if (isArray) {
+            value.forEach(e => target[key].push(e));
+        } else if (typeof value === 'object') {
+            target[key] = extend(target[key], value);
+        } else {
+            target[key] = value;
+        }
+    }
+
+    return target;
 }

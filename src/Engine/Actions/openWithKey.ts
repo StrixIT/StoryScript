@@ -2,7 +2,7 @@
 import {IBarrier} from '../Interfaces/barrier';
 import {IDestination} from '../Interfaces/destination';
 import {IKey} from '../Interfaces/key';
-import {makeSerializeSafe} from '../globalFunctions';
+import {makeSerializeSafe} from "storyScript/Services/sharedFunctions.ts";
 
 /**
  * A basic function to remove a barrier using a key and then execute a callback function. When it is not specified that the player

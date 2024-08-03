@@ -1,6 +1,5 @@
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer";
 import {InitEntityCollection} from "storyScript/EntityCreatorFunctions";
-import {parseFunction, serializeFunction} from "storyScript/globalFunctions";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
@@ -8,6 +7,7 @@ import {
     IdProperty,
     StartNodeProperty
 } from "../../../constants.ts";
+import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSerializer implements IDataSerializer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {

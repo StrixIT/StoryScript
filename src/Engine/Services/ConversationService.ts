@@ -1,16 +1,16 @@
-import { IGame } from '../Interfaces/game';
-import { IPerson } from '../Interfaces/person';
-import { IItem } from '../Interfaces/item';
-import { IQuest } from '../Interfaces/quest';
-import { compareString } from '../globalFunctions';
-import { IConversationService } from '../Interfaces/services/conversationService';
-import { PlayState } from '../Interfaces/enumerations/playState';
-import { IConversationNode } from '../Interfaces/conversations/conversationNode';
-import { IConversationReply } from '../Interfaces/conversations/conversationReply';
-import { IConversationReplies } from '../Interfaces/conversations/conversationReplies';
-import { IConversation } from '../Interfaces/conversations/conversation';
-import { getParsedDocument, checkAutoplay } from './sharedFunctions';
-import {parseGamePropertiesInTemplate} from "storyScript/EntityCreatorFunctions.ts";
+import {IGame} from '../Interfaces/game';
+import {IPerson} from '../Interfaces/person';
+import {IItem} from '../Interfaces/item';
+import {IQuest} from '../Interfaces/quest';
+import {IConversationService} from '../Interfaces/services/conversationService';
+import {PlayState} from '../Interfaces/enumerations/playState';
+import {IConversationNode} from '../Interfaces/conversations/conversationNode';
+import {IConversationReply} from '../Interfaces/conversations/conversationReply';
+import {IConversationReplies} from '../Interfaces/conversations/conversationReplies';
+import {IConversation} from '../Interfaces/conversations/conversation';
+import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
+import {compareString} from "storyScript/utilityFunctions.ts";
+import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
 
 export class ConversationService implements IConversationService {
     constructor(private _game: IGame) {
@@ -34,31 +34,22 @@ export class ConversationService implements IConversationService {
 
         this.processReply(person, reply);
 
-        var questProgress = reply.questStart || reply.questComplete;
+        const questProgress = reply.questStart || reply.questComplete;
 
         if (questProgress) {
-            var status = reply.questStart ? 'questStart' : 'questComplete';
+            const status = reply.questStart ? 'questStart' : 'questComplete';
             this.questProgress(status, person, reply);
         }
     }
 
-    getLines = (nodeOrReply: IConversationNode | IConversationReply): string => {
-        if (nodeOrReply && nodeOrReply.lines) {
-            return nodeOrReply.lines;
-        }
-
-        return null;
-    }
-
     private loadConversations = (): void => {
-        const persons = this._game.currentLocation && this._game.currentLocation.persons;
+        const persons = this._game.currentLocation?.persons;
 
         if (!persons) {
             return;
         }
 
         persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
-            const descriptionKey = `person_${person.id}`;
             const conversationElement = getParsedDocument('conversation', person.description)[0];
             const defaultReply = this.getDefaultReply(conversationElement, person);
             const conversationNodes = conversationElement.getElementsByTagName('node');
@@ -74,7 +65,7 @@ export class ConversationService implements IConversationService {
 
     private initConversation(person: IPerson): void {
         this._game.person = person;
-        var activeNode = this.getActiveNode(person);
+        const activeNode = this.getActiveNode(person);
 
         if (!activeNode) {
             return;
@@ -89,13 +80,12 @@ export class ConversationService implements IConversationService {
     }
 
     private getDefaultReply = (conversationElement: Element, person: IPerson): string => {
-        var defaultReplyNodes = conversationElement.getElementsByTagName('default-reply');
-        var defaultReply: string = null;
+        const defaultReplyNodes = conversationElement.getElementsByTagName('default-reply');
+        let defaultReply: string = null;
 
         if (defaultReplyNodes.length > 1) {
             throw new Error('More than one default reply in conversation for person ' + person.id + '.');
-        }
-        else if (defaultReplyNodes.length === 1) {
+        } else if (defaultReplyNodes.length === 1) {
             defaultReply = defaultReplyNodes[0].innerHTML.trim();
         }
 
@@ -131,7 +121,9 @@ export class ConversationService implements IConversationService {
             nameAttribute = 'default';
         }
 
-        if (person.conversation.nodes.some((node) => { return node.node == nameAttribute; })) {
+        if (person.conversation.nodes.some((node) => {
+            return node.node == nameAttribute;
+        })) {
             throw new Error('Duplicate nodes with name ' + name + ' for conversation for person ' + person.id + '.');
         }
 
@@ -176,7 +168,7 @@ export class ConversationService implements IConversationService {
                 const questComplete = this.GetNodeValue(replyNode, 'quest-complete');
                 const setStart = this.GetNodeValue(replyNode, 'set-start');
 
-                if (trigger && !person.conversation.actions.some(([k, v]) => k === trigger)) {
+                if (trigger && !person.conversation.actions.some(([k, _]) => k === trigger)) {
                     console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
                 }
 
@@ -197,8 +189,7 @@ export class ConversationService implements IConversationService {
 
     private checkNodes = (person: IPerson): void => {
         person.conversation.nodes.forEach(n => {
-            if (n.replies && n.replies.options)
-            {
+            if (n.replies?.options) {
                 n.replies.options.forEach(r => {
                     if (r.linkToNode && !person.conversation.nodes.some(n => n.node === r.linkToNode)) {
                         console.log('No node ' + r.linkToNode + ' to link to found for node ' + n.node + '.');
@@ -212,22 +203,24 @@ export class ConversationService implements IConversationService {
         });
     }
 
-    private GetNodeValue = (node: Node, attribute: string): string => (<any>node).attributes[attribute] && (<any>node).attributes[attribute].value
+    private GetNodeValue = (node: Node, attribute: string): string => (<any>node).attributes[attribute]?.value
 
     private getActiveNode = (person: IPerson): IConversationNode => {
-        if (!person || !person.conversation) {
+        if (!person?.conversation) {
             return null;
         }
 
-        var conversation = person.conversation;
-        var activeNode = conversation.activeNode;
+        const conversation = person.conversation;
+        let activeNode = conversation.activeNode;
 
         if (!activeNode) {
             activeNode = conversation.selectActiveNode ? conversation.selectActiveNode(this._game, person) : null;
         }
 
         if (!activeNode) {
-            activeNode = conversation.nodes.filter((node) => { return compareString(node.node, person.conversation.startNode); })[0];
+            activeNode = conversation.nodes.filter((node) => {
+                return compareString(node.node, person.conversation.startNode);
+            })[0];
         }
 
         if (!activeNode) {
@@ -238,14 +231,16 @@ export class ConversationService implements IConversationService {
     }
 
     private initReplies = (person: IPerson): void => {
-        var activeNode = person.conversation.activeNode;
+        const activeNode = person.conversation.activeNode;
 
         if (activeNode.replies) {
-            for (var n in activeNode.replies.options) {
-                var reply = activeNode.replies.options[n];
+            for (const n in activeNode.replies.options) {
+                const reply = activeNode.replies.options[n];
 
                 if (reply.linkToNode) {
-                    if (!person.conversation.nodes.some((node) => { return node.node === reply.linkToNode; })) {
+                    if (!person.conversation.nodes.some((node) => {
+                        return node.node === reply.linkToNode;
+                    })) {
                         console.log('No node ' + reply.linkToNode + ' found to link to for reply ' + reply.lines + '!');
                     }
                 }
@@ -259,43 +254,48 @@ export class ConversationService implements IConversationService {
 
     private processReply = (person: IPerson, reply: IConversationReply) => {
         this.executeAction(reply.trigger, person);
-        
+
         if (reply.setStart) {
-            const startNode = person.conversation.nodes.filter((node) => { return node.node == reply.setStart; })[0];
+            const startNode = person.conversation.nodes.filter((node) => {
+                return node.node == reply.setStart;
+            })[0];
             person.conversation.startNode = startNode.node;
         }
 
         let activeNode = null;
 
         if (reply.linkToNode) {
-            activeNode = person.conversation.nodes.filter((node) => { return node.node == reply.linkToNode; })[0];
+            activeNode = person.conversation.nodes.filter((node) => {
+                return node.node == reply.linkToNode;
+            })[0];
             person.conversation.activeNode = activeNode;
             this.executeAction(activeNode.trigger, person);
             this.setReplyStatus(person.conversation, activeNode);
-        }
-        else {
+        } else {
             person.conversation.activeNode = null;
         }
 
-        if (activeNode?.lines) {
-            activeNode.lines = checkAutoplay(this._game, activeNode.lines);
+        if (!activeNode?.lines) {
+            return;
         }
+
+        activeNode!.lines = checkAutoplay(this._game, activeNode!.lines);
     }
-    
+
     private executeAction = (key, person) => {
-        const action = key ? person.conversation.actions.find(([k, v]) => k === key)?.[1] : null;
+        const action = key ? person.conversation.actions.find(([k, _]) => k === key)?.[1] : null;
         action?.(this._game, person);
     }
 
-    private checkReplyAvailability = (activeNode: IConversationNode, reply: IConversationReply) : boolean => {
-        var isAvailable = true;
-        var requirements = reply.requires.split(',');
+    private checkReplyAvailability = (activeNode: IConversationNode, reply: IConversationReply): boolean => {
+        let isAvailable = true;
+        const requirements = reply.requires.split(',');
 
-        for (var m in requirements) {
-            var requirement = requirements[m];
-            var values = requirement.toLowerCase().trim().split('=');
-            var type = values[0];
-            var value = values[1];
+        for (const m in requirements) {
+            const requirement = requirements[m];
+            const values = requirement.toLowerCase().trim().split('=');
+            const type = values[0];
+            const value = values[1];
 
             if (!type || !value) {
                 console.log('Invalid reply requirement for node ' + activeNode.node + '!');
@@ -312,7 +312,7 @@ export class ConversationService implements IConversationService {
     }
 
     private checkReplyRequirements = (activeNode: IConversationNode, type: string, value: string): boolean => {
-        var isAvailable = true;
+        let isAvailable: boolean;
 
         switch (type) {
             case 'item': {
@@ -327,51 +327,55 @@ export class ConversationService implements IConversationService {
                     hasItem = c.items.get(value) != undefined;
 
                     if (!hasItem) {
-                        for (var i in c.equipment) {
-                            var slotItem = <IItem>c.equipment[i];
-                            hasItem = slotItem != undefined && slotItem != null && compareString(slotItem.id, value);
+                        for (const i in c.equipment) {
+                            const slotItem = <IItem>c.equipment[i];
+                            hasItem = slotItem && compareString(slotItem.id, value);
                         }
                     }
                 });
 
                 isAvailable = hasItem;
-            } break;
+            }
+                break;
             case 'location': {
                 // Check location visited
-                var location = this._game.locations.get(value);
+                const location = this._game.locations.get(value);
 
                 if (!location) {
                     console.log('Invalid location ' + value + ' for reply requirement for node ' + activeNode.node + '!');
                 }
 
                 isAvailable = location.hasVisited === true;
-            } break;
+            }
+                break;
             case 'quest-start':
             case 'quest-done':
             case 'quest-complete': {
                 // Check quest start, quest done or quest complete.
-                var quest = this._game.party.quests.get(value);
+                const quest = this._game.party.quests.get(value);
                 isAvailable = quest != undefined &&
                     (type === 'quest-start' ? true : type === 'quest-done' ?
                         quest.checkDone(this._game, quest) : quest.completed);
-            } break;
+            }
+                break;
             default: {
                 // Check attributes
-                var attribute = this._game.activeCharacter[type];
+                const attribute = this._game.activeCharacter[type];
 
                 if (!attribute) {
                     console.log('Invalid attribute ' + type + ' for reply requirement for node ' + activeNode.node + '!');
                 }
 
                 isAvailable = isNaN(attribute) ? attribute === value : parseInt(attribute) >= parseInt(value);
-            } break;
+            }
+                break;
         }
 
         return isAvailable;
     }
 
     private setReplyStatus = (conversation: IConversation, node: IConversationNode): void => {
-        if (node.replies && node.replies.options) {
+        if (node.replies?.options) {
             node.replies.options.forEach(reply => {
                 if (reply.available == undefined) {
                     reply.available = true;
@@ -384,8 +388,8 @@ export class ConversationService implements IConversationService {
     }
 
     private questProgress = (type: string, person: IPerson, reply: IConversationReply): void => {
-        var quest: IQuest;
-        var start = type === 'questStart';
+        let quest: IQuest;
+        const start = type === 'questStart';
 
         if (start) {
             quest = person.quests.get(reply[type]);
@@ -403,8 +407,7 @@ export class ConversationService implements IConversationService {
                 quest.started = true;
                 quest.completed = false;
             }
-        }
-        else {
+        } else {
             quest = this._game.party.quests.get(reply[type]);
 
             if (!quest.completed) {

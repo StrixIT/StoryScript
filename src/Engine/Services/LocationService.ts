@@ -4,13 +4,12 @@ import {IRules} from '../Interfaces/rules/rules';
 import {IGame} from '../Interfaces/game';
 import {IDestination} from '../Interfaces/destination';
 import {IKey} from '../Interfaces/key';
-import {addHtmlSpaces, getId} from '../utilityFunctions';
+import {addHtmlSpaces, getId, parseHtmlDocumentFromString} from '../utilityFunctions';
 import {ILocationService} from '../Interfaces/services/locationService';
 import {ActionType} from '../Interfaces/enumerations/actionType';
-import {checkAutoplay} from './sharedFunctions';
+import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
 import {
     getBasicFeatureData,
-    parseGamePropertiesInTemplate,
     setDestination,
     setReadOnlyLocationProperties
 } from "storyScript/EntityCreatorFunctions.ts";
@@ -215,9 +214,8 @@ export class LocationService implements ILocationService {
         if (!location.description) {
             return;
         }
-
-        const parser = new DOMParser();
-        const htmlDoc = parser.parseFromString(location.description, 'text/html');
+        
+        const htmlDoc = parseHtmlDocumentFromString(location.description);
         const featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
         for (const element of featureNodes) {

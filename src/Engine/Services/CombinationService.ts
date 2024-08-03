@@ -6,13 +6,12 @@ import {IGame} from '../Interfaces/game';
 import {IRules} from '../Interfaces/rules/rules';
 import {IInterfaceTexts} from '../Interfaces/interfaceTexts';
 import {removeItemFromParty} from './sharedFunctions';
-import {compareString} from '../globalFunctions';
 import {ICombinationService} from '../Interfaces/services/combinationService';
 import {ICombinationAction} from '../Interfaces/combinations/combinationAction';
 import {ICombinable} from '../Interfaces/combinations/combinable';
 import {ICombineResult} from '../Interfaces/combinations/combineResult';
 import {IActiveCombination} from '../Interfaces/combinations/activeCombination';
-import {getId} from 'storyScript/utilityFunctions';
+import {compareString, getId} from 'storyScript/utilityFunctions';
 
 export class CombinationService implements ICombinationService {
     constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {

@@ -1,9 +1,9 @@
 import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
-import { compareString } from 'storyScript/globalFunctions';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import {compareString} from "storyScript/utilityFunctions.ts";
 
 @Component({
     selector: 'location-visual',
@@ -25,14 +25,14 @@ export class LocationVisualComponent {
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 
     getFeatureCoordinates = (feature: IFeature): { top: string, left: string} => {
-        var coords = feature.coords.split(',');
-        var top = null, left = null;
+        const coords = feature.coords.split(',');
+        let top = null, left = null;
 
         if (compareString(feature.shape, 'poly')) {
-            var x = [], y = [];
+            const x = [], y = [];
 
-            for (var i = 0; i < coords.length; i++) {
-                var value = coords[i];
+            for (let i = 0; i < coords.length; i++) {
+                const value = coords[i];
                 if (i % 2 === 0) {
                     x.push(value);
                 }

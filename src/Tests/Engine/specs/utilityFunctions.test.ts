@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest';
-import {addHtmlSpaces, equals, getPlural, getSingular, isEmpty} from 'storyScript/utilityFunctions';
+import {addHtmlSpaces, compareString, equals, getPlural, getSingular, isEmpty} from 'storyScript/utilityFunctions';
 
 describe("UtilityFunctions", function () {
 
@@ -68,6 +68,18 @@ describe("UtilityFunctions", function () {
         const result = equals({id: 'test'}, Test);
 
         expect(result).toBeTruthy();
+    });
+
+    test("should return correct results when comparing strings", function () {
+        expect(compareString(undefined, undefined)).toBeTruthy();
+        expect(compareString(null, null)).toBeTruthy();
+        expect(compareString(null, undefined)).toBeFalsy();
+        expect(compareString(undefined, null)).toBeFalsy();
+        expect(compareString('', null)).toBeFalsy();
+        expect(compareString(null, '')).toBeFalsy();
+        expect(compareString('', '')).toBeTruthy();
+        expect(compareString('Test', 'test')).toBeTruthy();
+        expect(compareString('Test', 'TEST')).toBeTruthy();
     });
 
 });

@@ -1,11 +1,11 @@
 ﻿import {StateProperties} from "./stateProperties.ts";
-import {getId, getKeyPropertyNames, propertyMatch} from "./utilityFunctions";
+import {compareString, getId, getKeyPropertyNames, propertyMatch} from "./utilityFunctions";
 import {TypeProperty} from "../../constants.ts";
 
 const deletedCollection: string = '_deleted';
 
 if (Function.prototype.proxy === undefined) {
-    // This code has to be outside of the addFunctionExtensions to have the correct function scope for the proxy.
+    // This code has to be outside the addFunctionExtensions to have the correct function scope for the proxy.
     Function.prototype.proxy = function (proxyFunction: Function, ...params: any[]) {
         const originalFunction = this;
 
@@ -32,8 +32,6 @@ if (Function.prototype.proxy === undefined) {
 }
 
 export function addFunctionExtensions() {
-    console.log(Function.prototype.name);
-
     /* v8 ignore start  */
     if (Function.prototype.name === undefined) {
         // This is only used by legacy browsers
@@ -44,65 +42,6 @@ export function addFunctionExtensions() {
         });
     }
     /* v8 ignore stop  */
-}
-
-// This allows deserializing functions added at runtime without using eval.
-// Found at https://stackoverflow.com/questions/7650071/is-there-a-way-to-create-a-function-from-a-string-with-javascript
-export function parseFunction<T extends Function>(text: string) {
-    const funcReg = /function[\s]*([a-z\d]*)(\([\s\w\d,]*\))[\s]*({[\S\s]*})/gmi;
-    const match = funcReg.exec(text);
-
-    if (match) {
-        const args = match[2].substring(1, match[2].length - 1);
-        return <T>(new Function(args, match[3]));
-    }
-
-    return null;
-}
-
-/**
- * This function creates a new function with the callbacks embedded. This makes the new function safe for serialization.
- * @param functionDefinition The main function to make safe for serialization.
- * @param callbacks The callback functions to embed. Use the names the callbacks have in the main function body.
- * @returns The main function with the callbacks embedded.
- */
-export function makeSerializeSafe<T extends Function>(functionDefinition: T, callbacks: {
-    [key: string]: Function
-}): T {
-    let serialized = serializeFunction(functionDefinition);
-
-    for (const key in callbacks) {
-        const callback = callbacks[key];
-
-        if (callback) {
-            if (serialized.indexOf(key) > -1) {
-                const startIndex = serialized.indexOf('{') + 1;
-                serialized = serialized.substring(0, startIndex) + `const ${key} = ${serializeFunction(callback)};` + serialized.substring(startIndex);
-            }
-        }
-    }
-
-    return parseFunction<T>(serialized);
-}
-
-export function serializeFunction(value: Function) {
-    const _functionArgumentRegex = /\([a-z-A-Z0-9:, ]+\)/;
-
-    // Functions added during runtime must be serialized using the function() notation in order to be deserialized back
-    // to a function. Convert values that have an arrow notation.
-    let functionString = value.toString();
-    const argumentString = functionString.substring(0, functionString.indexOf('{'));
-
-    if (argumentString.indexOf('function') == -1) {
-        const arrowIndex = argumentString.indexOf('=>');
-
-        // The arguments regex will fail when no arguments are used in production mode. Use empty brackets in that case.
-        const args = _functionArgumentRegex.exec(functionString)?.[0] || '()';
-
-        functionString = 'function' + args + functionString.substring(arrowIndex + 2).trim();
-    }
-
-    return functionString;
 }
 
 export function addArrayExtensions() {
@@ -253,16 +192,6 @@ export function addArrayExtensions() {
             }
         });
     }
-}
-
-export function compareString(left: string, right: string): boolean {
-    if ((left === undefined && right === undefined) || (left === null && right === null)) {
-        return true;
-    } else if ((left === null || left === undefined) || (right === null || right === undefined)) {
-        return false;
-    }
-
-    return left.toLowerCase() === right.toLowerCase();
 }
 
 function find(id: any, array: any[], usePropertyMatch: boolean): any[] {

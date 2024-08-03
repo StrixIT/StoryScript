@@ -1,6 +1,5 @@
 import {IFeature, IGame, PlayState} from 'storyScript/Interfaces/storyScript';
-import {compareString} from 'storyScript/globalFunctions';
-import {addHtmlSpaces} from 'storyScript/utilityFunctions';
+import {addHtmlSpaces, compareString} from 'storyScript/utilityFunctions';
 import {CombinationService} from 'storyScript/Services/CombinationService';
 import {GameService} from 'storyScript/Services/gameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
