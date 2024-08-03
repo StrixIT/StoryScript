@@ -1,5 +1,5 @@
-import { IEquipment as StoryScriptIEquipment } from 'storyScript/Interfaces/storyScript';
-import { IItem } from '../types';
+import {IEquipment as StoryScriptIEquipment} from 'storyScript/Interfaces/storyScript';
+import {IItem} from '../types';
 
 export interface IEquipment extends StoryScriptIEquipment {
     head?: IItem;

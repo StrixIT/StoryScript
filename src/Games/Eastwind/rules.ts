@@ -1,20 +1,22 @@
-﻿import { StateList } from 'storyScript/Interfaces/stateList';
-import { IRules, ICharacter, ICreateCharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
-import { createPromiseForCallback, selectStateListEntry } from 'storyScript/utilities';
-import { Constants } from './constants';
-import { Class } from './interfaces/class';
-import { Beach } from './locations/Beach';
-import { Junglestart } from './locations/junglestart';
-import { Shipbattle } from './locations/shipbattle';
-import { ShipBow } from './locations/ShipBow';
-import { Shipsdeck } from './locations/shipsdeck';
-import { ShipsHold } from './locations/ShipsHold';
-import { ShipsHoldAft } from './locations/ShipsHoldAft';
-import { ShipsholdFront } from './locations/ShipsholdFront';
-import { ShipStern } from './locations/shipStern';
-import { Start } from './locations/start';
-import { Waterworld } from './locations/Waterworld';
-import { IGame, IEnemy, Character, ILocation, IEquipment } from './types';
+﻿import {StateList} from 'storyScript/Interfaces/stateList';
+import {GameState, ICharacter, ICombinationAction, ICreateCharacter, IRules} from 'storyScript/Interfaces/storyScript';
+import {Constants} from './constants';
+import {Class} from './interfaces/class';
+import {Beach} from './locations/Beach';
+import {Junglestart} from './locations/junglestart';
+import {Shipbattle} from './locations/shipbattle';
+import {ShipBow} from './locations/ShipBow';
+import {Shipsdeck} from './locations/shipsdeck';
+import {ShipsHold} from './locations/ShipsHold';
+import {ShipsHoldAft} from './locations/ShipsHoldAft';
+import {ShipsholdFront} from './locations/ShipsholdFront';
+import {ShipStern} from './locations/shipStern';
+import {Start} from './locations/start';
+import {Waterworld} from './locations/Waterworld';
+import {Character, IEnemy, IEquipment, IGame} from './types';
+import {selectStateListEntry} from "storyScript/Services/sharedFunctions.ts";
+import {createPromiseForCallback} from "storyScript/utilityFunctions.ts";
+import {ICombatSetup} from "./interfaces/combatSetup.ts";
 
 const combatTimeout: number = 1000;
 
@@ -32,8 +34,8 @@ const locationGradients = <StateList>{
         Waterworld
     ],
     'gradient-jungle': [
-    Junglestart
-],
+        Junglestart
+    ],
     'gradient-intro': [
         GameState.Intro
     ]
@@ -56,7 +58,8 @@ export function Rules(): IRules {
             fadeMusicInterval: 200,
             getCombinationActions: (): ICombinationAction[] => {
                 return [
-                    {text: Constants.LOOKAT,
+                    {
+                        text: Constants.LOOKAT,
                         requiresTool: false,
                         failText: (game, target, tool): string => {
                             return 'you look at the ' + target.name + '. There is nothing special about it.';
@@ -79,47 +82,46 @@ export function Rules(): IRules {
                             return 'You cannot pick that up';
                         }
                     },
-    
+
                 ];
             },
             playList: {
                 'Medieval.mp3': [GameState.CreateCharacter, GameState.Intro],
                 'underwater.mp3': [GameState.Play],
                 'Shipshold.mp3':
-                [
-                    ShipsHold, ShipsHoldAft,ShipsholdFront
-                ],
+                    [
+                        ShipsHold, ShipsHoldAft, ShipsholdFront
+                    ],
                 'Beach.mp3':
-                [
-                    Beach
-                ],
+                    [
+                        Beach
+                    ],
                 'Shipbattle.mp3':
-                [
-                    Shipbattle
-                ],
+                    [
+                        Shipbattle
+                    ],
                 'Waterworld.mp3':
-                [
-                    Waterworld
-                ],
-               
-                
-            },
-            autoBackButton: false
+                    [
+                        Waterworld
+                    ],
+
+
+            }
         },
 
-        general: {  
+        general: {
             scoreChange: (game: IGame, change: number): boolean => {
                 // Implement logic to occur when the score changes. Return true when the character gains a level.
                 return false;
             },
-            gameStateChange: (game) => {
+            gameStateChange: (game: IGame) => {
                 setGradient(game);
             },
-            playStateChange: (game) => {
+            playStateChange: (game: IGame) => {
                 setModalBackground(game);
             }
         },
-        
+
         character: {
             getSheetAttributes: (): string[] => {
                 return [
@@ -162,14 +164,16 @@ export function Rules(): IRules {
                                     ]
                                 }
                             ],
-                            nextStepSelector: (_, currentStep) => {
+                            nextStepSelector: (party, character, currentStep) => {
                                 switch (currentStep.questions[0].selectedEntry.value) {
                                     case '2': {
                                         return 2;
-                                    };
+                                    }
+                                        ;
                                     case '3': {
                                         return 3;
-                                    };
+                                    }
+                                        ;
                                     default: {
                                         return 0;
                                     }
@@ -195,8 +199,8 @@ export function Rules(): IRules {
                                         }
                                     ]
                                 }
-                            ],          
-                            nextStepSelector(character, currentStep) {
+                            ],
+                            nextStepSelector(party, character, currentStep) {
                                 var selectedClass = currentStep.questions[0].selectedEntry.value;
                                 var confirmStep = character.steps[9];
                                 confirmStep.questions[0].question = `You have chosen the path of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
@@ -354,7 +358,7 @@ export function Rules(): IRules {
                             nextStepSelector: 9
                         },
                         {
-                            initStep: (character, previousStep, currentStep) => {
+                            initStep: (party, character, currentStep, previousStep) => {
                                 var classSelect = character.steps[2].questions[0];
                                 var selectedClass = classSelect.selectedEntry ? classSelect.selectedEntry.value : null;
                                 var points = {
@@ -377,11 +381,10 @@ export function Rules(): IRules {
 
                                 // Update the class selector step to use when processing the character sheet data.
                                 classSelect.selectedEntry = classSelect.entries.filter(entry => entry.value === selectedClass)[0];
-                                
-                                var nextQuestion = currentStep.questions[0]; 
 
-                                if (previousStep > 2)
-                                {
+                                var nextQuestion = currentStep.questions[0];
+
+                                if (previousStep > 2) {
                                     nextQuestion.question = `Your path seems to be that of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
                                 }
 
@@ -402,14 +405,16 @@ export function Rules(): IRules {
                                     ]
                                 }
                             ],
-                            nextStepSelector(_, currentStep) {
+                            nextStepSelector(party, character, currentStep) {
                                 switch (currentStep.questions[0].selectedEntry.value) {
                                     case 'no': {
                                         return 2;
-                                    };
+                                    }
+                                        ;
                                     case 'yes': {
                                         return 10;
-                                    };
+                                    }
+                                        ;
                                     default: {
                                         return 0;
                                     }
@@ -438,19 +443,25 @@ export function Rules(): IRules {
                         character.agility = 1;
                         character.intelligence = 1;
                         character.class = Class.Warrior;
-                    }; break;
+                    }
+                        ;
+                        break;
                     case Class.Rogue: {
                         character.strength = 1;
                         character.agility = 3;
                         character.intelligence = 1;
                         character.class = Class.Rogue;
-                    }; break;
+                    }
+                        ;
+                        break;
                     case Class.Wizard: {
                         character.strength = 1;
                         character.agility = 1;
                         character.intelligence = 3;
                         character.class = Class.Wizard;
-                    }; break;
+                    }
+                        ;
+                        break;
                 }
 
                 return character;
@@ -463,10 +474,12 @@ export function Rules(): IRules {
             }
         },
 
-        combat: {     
-            fight: (game: IGame, enemy: IEnemy): Promise<void> | void => {
+        combat: {
+            fight: (game: IGame, combatRound: ICombatSetup): Promise<void> | void => {
+                var character = combatRound[0].character;
+                var enemy = combatRound[0].target;
                 game.combatLog.length = 0;
-                var equipment = game.character.equipment;
+                var equipment = character.equipment;
 
                 if (equipment.rightHand?.attackText) {
                     game.logToCombatLog(equipment.rightHand?.attackText);
@@ -478,7 +491,7 @@ export function Rules(): IRules {
 
                 SetAttackImage(equipment, game);
 
-                var damage = game.helpers.rollDice('1d6') + game.character.strength + game.helpers.calculateBonus(game.character, 'damage');
+                var damage = game.helpers.rollDice('1d6') + character.strength + game.helpers.calculateBonus(character, 'damage');
                 var attackSound = equipment.rightHand?.attackSound ?? equipment.leftHand?.attackSound;
                 return fight(game, enemy, attackSound, damage);
             }
@@ -490,16 +503,15 @@ export function fight(game: IGame, enemy: IEnemy, attackSound: string, damage: n
     var callBack = () => continueFight(game, enemy, damage);
 
     if (attackSound) {
-        const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
+        const {promise, promiseCallback} = createPromiseForCallback<void>(callBack);
         game.sounds.playSound(attackSound, promiseCallback);
-        return promise;              
-    }
-    else {
+        return promise;
+    } else {
         callBack();
     }
 }
 
-const continueFight = function(game: IGame, currentEnemy: IEnemy, damage: number): Promise<void> | void {
+const continueFight = function (game: IGame, currentEnemy: IEnemy, damage: number): Promise<void> | void {
     game.combatLog.push('You do ' + damage + ' damage to the ' + currentEnemy.name + '!');
     currentEnemy.hitpoints -= damage;
 
@@ -509,11 +521,12 @@ const continueFight = function(game: IGame, currentEnemy: IEnemy, damage: number
 
     var promise: Promise<void> | void = null;
 
-    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(async enemy => {
+    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => {
+        return enemy.hitpoints > 0;
+    }).forEach(async enemy => {
         if (!promise) {
             promise = waitPromise();
-        }
-        else {
+        } else {
             promise = promise.then(() => waitPromise());
         }
 
@@ -523,27 +536,25 @@ const continueFight = function(game: IGame, currentEnemy: IEnemy, damage: number
     return promise;
 }
 
-const waitPromise = function(): Promise<void>
-{
-    return new Promise<void>(function(resolve) {
+const waitPromise = function (): Promise<void> {
+    return new Promise<void>(function (resolve) {
         setTimeout(() => {
             resolve();
-          }, combatTimeout);
+        }, combatTimeout);
     });
 }
 
 const enemyAttack = function (game: IGame, enemy: IEnemy): Promise<void> | void {
     game.combatLog.push(enemy.attackText ?? 'The ' + enemy.name + ' attacks!');
-    
+
     var attackSound = enemy.attackSound;
     var callBack = () => enemyAttacks(game, enemy);
 
     if (attackSound) {
-        const { promise, promiseCallback } = createPromiseForCallback<void>(callBack);
+        const {promise, promiseCallback} = createPromiseForCallback<void>(callBack);
         game.sounds.playSound(attackSound, promiseCallback);
-        return promise;              
-    }
-    else {
+        return promise;
+    } else {
         callBack();
     }
 }
@@ -551,7 +562,7 @@ const enemyAttack = function (game: IGame, enemy: IEnemy): Promise<void> | void 
 const enemyAttacks = function (game: IGame, enemy: IEnemy): Promise<void> | void {
     var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
     game.combatLog.push('The ' + enemy.name + ' does ' + damage + ' damage!');
-    game.character.currentHitpoints -= damage;
+    game.activeCharacter.currentHitpoints -= damage;
 }
 
 function SetAttackImage(equipment: IEquipment, game: IGame) {
@@ -576,15 +587,14 @@ function SetAttackImage(equipment: IEquipment, game: IGame) {
     }
 }
 
-const setGradient = function(game: IGame) {
+const setGradient = function (game: IGame) {
     var gradientClass = selectStateListEntry(game, locationGradients);
 
     if (gradientClass) {
         // When refreshing the page, the UIRootElement is not yet on the game so use a timeout.
         if (game.UIRootElement) {
             setGradientClass(game.UIRootElement, gradientClass);
-        }
-        else {
+        } else {
             setTimeout(() => {
                 setGradientClass(game.UIRootElement, gradientClass);
             });
@@ -592,17 +602,17 @@ const setGradient = function(game: IGame) {
     }
 }
 
-const setGradientClass = function(element: HTMLElement, className: string) {
-    element.classList.forEach(c => { 
+const setGradientClass = function (element: HTMLElement, className: string) {
+    element.classList.forEach(c => {
         if (c.startsWith('gradient')) {
             element.classList.remove(c);
-        } 
+        }
     });
 
     element.classList.add(className);
 }
 
-const setModalBackground = function(game: IGame) {
+const setModalBackground = function (game: IGame) {
     var background = selectStateListEntry(game, encounterBackgrounds);
 
     if (background) {

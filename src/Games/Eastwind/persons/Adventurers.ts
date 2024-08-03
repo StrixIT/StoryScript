@@ -12,8 +12,6 @@ export function Adventurers() {
 		],
 		canAttack: false,
 		conversation: {
-			actions: {
-			}
 		},
 	});
 }

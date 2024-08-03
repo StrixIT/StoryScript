@@ -39,6 +39,6 @@ export {
     Quest,
     Location, 
     CustomTexts, 
-    Rules, 
-    Character 
+    Rules,
+    Character
 }

@@ -1,5 +1,5 @@
 import { Shipbattle } from '../locations/shipbattle';
-import { IGame, IPerson, Person } from '../types';
+import { IGame, Person } from '../types';
 import description from './Elsa.html';
 
 export function Elsa() {
@@ -14,11 +14,9 @@ export function Elsa() {
 		],
 		canAttack: false,
 		conversation: {
-			actions: {
-				'goToCombat': (game: IGame) => {
-					game.changeLocation(Shipbattle);
-				} 
-			}
+			actions: [
+				['goToCombat', (game: IGame) => game.changeLocation(Shipbattle)]
+			]
 		},
 	});
 }

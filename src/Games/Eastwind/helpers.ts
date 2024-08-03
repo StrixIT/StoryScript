@@ -1,8 +1,8 @@
-import { IEnemy, IGame, IItem } from "./types";
-import { fight } from "./rules";
+import {IEnemy, IGame, IItem} from "./types";
+import {fight} from "./rules";
+import {ICharacter} from "storyScript/Interfaces/character.ts";
 
-export function castCombatSpell(game: IGame, spell: IItem, target?: IEnemy): Promise<void> | void
-{
+export function castCombatSpell(game: IGame, character: ICharacter, spell: IItem, target?: IEnemy): Promise<void> | void {
     game.combatLog.length = 0;
 
     if (spell.attackText) {

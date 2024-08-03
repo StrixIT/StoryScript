@@ -1,26 +1,26 @@
-﻿import { ICharacter, ICollection, IEquipment as StoryScriptEquipment } from 'storyScript/Interfaces/storyScript';
-import { custom } from 'storyScript/utilities';
-import { Class } from './interfaces/class';
-import { Firebolt } from './items/firebolt';
-import { Healingpotion } from './items/healingPotion';
-import { Sword } from './items/sword';
-import { Map } from './items/map';
-import { IEquipment, IItem } from './types';
+﻿import {ICharacter, ICollection} from 'storyScript/Interfaces/storyScript';
+import {Class} from './interfaces/class';
+import {Firebolt} from './items/firebolt';
+import {Healingpotion} from './items/healingPotion';
+import {Sword} from './items/sword';
+import {Map} from './items/map';
+import {IEquipment, IItem} from './types';
+import {customEntity} from "storyScript/EntityCreatorFunctions.ts";
 
 export class Character implements ICharacter {
     name: string = '';
-    score: number = 0;
     hitpoints: number = 10;
     currentHitpoints: number = 1000;
     currency?: number;
-    
+    score?: number = 0;
+
     // Add character properties here.
     strength?: number = 1;
     agility?: number = 1;
     intelligence?: number = 1;
     class?: Class;
     level?: number = 1;
-    
+
     items: ICollection<IItem> = [
         Healingpotion(),
         Firebolt(),
@@ -42,7 +42,7 @@ export class Character implements ICharacter {
             rightRing: null,
             legs: null,
             feet: null,
-            spell: custom(Firebolt, { name: 'Special Bolt' })
+            spell: customEntity(Firebolt, {name: 'Special Bolt'})
         }
     }
 }

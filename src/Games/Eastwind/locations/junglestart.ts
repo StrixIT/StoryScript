@@ -1,33 +1,25 @@
-import { IGame, Location } from '../types';
-import { Junglepond } from './Junglepond';
+import {Location} from '../types';
+import {Junglepond} from './Junglepond';
 import description from './junglestart.html';
 
 export function Junglestart() {
-	return Location({
-		name: 'Junglestart',
-		description: description,
-		destinations: [
-			{	name: 'Go East',
-				target: Junglepond,
-			  },
-		],
-		features: [
-		],
-		items: [
-		],
-		enemies: [
-		],
-		persons: [
-		],
-		trade: [
-		],
-		enterEvents: [
-		],
-		leaveEvents: [
-		],
-		actions: [
-		],
-		combatActions: [
-		],
-	});
+    return Location({
+        name: 'Junglestart',
+        description: description,
+        destinations: [
+            {
+                name: 'Go East',
+                target: Junglepond,
+            },
+        ],
+        features: [],
+        items: [],
+        enemies: [],
+        persons: [],
+        trade: [],
+        enterEvents: [],
+        leaveEvents: [],
+        actions: [],
+        combatActions: [],
+    });
 }

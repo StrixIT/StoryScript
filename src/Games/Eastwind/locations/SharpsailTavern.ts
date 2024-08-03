@@ -1,9 +1,9 @@
-import {Location} from '../../types';
-import description from './JungleEast1.html';
+import {Location} from '../types';
+import description from './Sharpsail_tavern.html';
 
-export function JungleEast1() {
+export function SharpsailTavern() {
     return Location({
-        name: 'JungleEast1',
+        name: 'Sharpsail_tavern',
         description: description,
         destinations: [],
         features: [],

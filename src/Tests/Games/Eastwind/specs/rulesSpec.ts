@@ -1,6 +1,8 @@
+import { describe, beforeAll, test, expect } from 'vitest';
+
 describe("Rules", function() {
 
-    it("should test one of your rules", function() {
+    test("should test one of your rules", function() {
 
     });
 
