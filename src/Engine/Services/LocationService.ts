@@ -264,38 +264,40 @@ export class LocationService implements ILocationService {
     }
 
     private addKeyAction = (game: IGame, destination: IDestination) => {
-        if (destination.barrier?.key) {
-            const key = typeof destination.barrier.key === 'function' ?
-                destination.barrier.key()
-                : <IKey>this._definitions.items.get(destination.barrier.key)();
-
-            let existingAction = null;
-
-            if (destination.barrier.actions) {
-                destination.barrier.actions.forEach(([k, v]) => {
-                    if (k === key.id) {
-                        existingAction = v;
-                    }
+        destination.barriers?.forEach(([k, b]) => {
+            if (b.key) {
+                const key = typeof b.key === 'function' ?
+                    b.key()
+                    : <IKey>this._definitions.items.get(b.key)();
+    
+                let existingAction = null;
+    
+                if (b.actions) {
+                    b.actions.forEach(([k, v]) => {
+                        if (k === key.id) {
+                            existingAction = v;
+                        }
+                    });
+                } else {
+                    b.actions = [];
+                }
+    
+                if (existingAction) {
+                    b.actions.splice(b.actions.indexOf(existingAction), 1);
+                }
+    
+                let partyKey = null;
+    
+                game.party.characters.forEach(c => {
+                    partyKey = partyKey ?? c.items.get(key.id);
                 });
-            } else {
-                destination.barrier.actions = [];
+    
+                const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(key.id));
+    
+                if (barrierKey) {
+                    b.actions.push([barrierKey.id, barrierKey.open]);
+                }
             }
-
-            if (existingAction) {
-                destination.barrier.actions.splice(destination.barrier.actions.indexOf(existingAction), 1);
-            }
-
-            let partyKey = null;
-
-            game.party.characters.forEach(c => {
-                partyKey = partyKey ?? c.items.get(key.id);
-            });
-
-            const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(key.id));
-
-            if (barrierKey) {
-                destination.barrier.actions.push([barrierKey.id, barrierKey.open]);
-            }
-        }
+        });
     }
 }

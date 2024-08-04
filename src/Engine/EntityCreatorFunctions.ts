@@ -186,18 +186,20 @@ export function setDestination(destination: IDestination) {
     // Further, replace combine functions with their target ids.
     destination.target = getId(destination.target);
 
-    if (destination.barrier) {
-        if (destination.barrier.key) {
-            const key = destination.barrier.key;
-            destination.barrier.key = getId(key);
-        }
-
-        if (destination.barrier.combinations?.combine) {
-            for (const n in destination.barrier.combinations.combine) {
-                const combination = destination.barrier.combinations.combine[n];
-                combination.tool = <any>getId(<any>combination.tool);
+    if (destination.barriers) {
+        destination.barriers.forEach(([k, b]) => {
+            if (b.key) {
+                const key = b.key;
+                b.key = getId(key);
             }
-        }
+
+            if (b.combinations?.combine) {
+                for (const n in b.combinations.combine) {
+                    const combination = b.combinations.combine[n];
+                    combination.tool = <any>getId(<any>combination.tool);
+                }
+            }
+        });
     }
 }
 
@@ -277,11 +279,13 @@ function createLocation(entity: ILocation) {
 
     if (location.destinations) {
         location.destinations.forEach(d => {
-            if (d.barrier?.key) {
-                d.barrier.key = getId(d.barrier.key);
-            }
+            d.barriers?.forEach(([k, b]) => {
+                if (b.key) {
+                    b.key = getId(b.key);
+                }
 
-            d.target = getId(d.target);
+                d.target = getId(d.target);
+            });
         });
     }
 

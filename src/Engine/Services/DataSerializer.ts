@@ -66,19 +66,33 @@ export class DataSerializer implements IDataSerializer {
                 continue;
             }
 
-            if (this.skipProperty(original, originalValue, key)) {
+            if (originalValue === undefined || originalValue.isProxy) {
                 continue;
             }
+            
+            let newValue: any = originalValue;
 
+            // Add deleted entries to the array. Create a new array for this to prevent changing
+            // the one used at runtime. Also copy over additional properties that may be there,
+            // except for the array of deleted entities. This is handled differently.
             if (Array.isArray(originalValue)) {
                 const deletedEntries = originalValue.getDeleted();
-
-                if (deletedEntries) {
-                    originalValue = originalValue.concat(deletedEntries);
-                }
+                newValue = [...originalValue];
+                deletedEntries.forEach(e => newValue.push(e));
+                const additionalProperties = Object.keys(originalValue).filter(k => k !== '_deleted' && !newValue[k]);
+                additionalProperties.forEach(p => {
+                    newValue[p] = originalValue[p];
+                });
             }
 
-            this.getClonedValue({clone, key, original, originalValue, pristine, pristineValue});
+            this.getClonedValue({
+                clone: clone, 
+                key: key, 
+                original: original, 
+                originalValue: newValue,
+                pristine: pristine,
+                pristineValue: pristineValue
+            });
         }
 
         return clone;
@@ -121,17 +135,6 @@ export class DataSerializer implements IDataSerializer {
         }
 
         return clone;
-    }
-
-    private skipProperty = (original: any, originalValue: any, key: string): boolean => {
-        return (
-            originalValue === undefined
-            || originalValue.isProxy
-            // Exclude descriptions and conversation nodes from the save data, these are not present on the pristine data.
-            // Use an additional property to identify them, as their names are quite generic.
-            || (original[IdProperty] && (key === 'description' || key === 'descriptions'))
-            || original[StartNodeProperty] && key === 'nodes'
-        );
     }
 
     private getClonedValue = (data: SerializationData): void => {
@@ -233,7 +236,7 @@ export class DataSerializer implements IDataSerializer {
         this.buildStructureForSerialization(resultArray, data.originalValue, data.pristineValue);
 
         // Delete empty objects from the array.
-        const emptyItems = resultArray.filter(e => !Object.values(e).find(v => typeof v !== 'undefined' || v !== null));
+        const emptyItems = resultArray.filter(e =>typeof e === 'object' && !Object.values(e).find(v => typeof v !== 'undefined' || v !== null));
         emptyItems.forEach(e => resultArray.splice(resultArray.indexOf(e), 1));
 
         const additionalArrayProperties = Object.keys(data.originalValue).filter(v => {

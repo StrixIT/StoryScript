@@ -31,19 +31,20 @@ export function Garden() {
                         game.currentLocation.destinations.add({
                             name: 'Enter the basement',
                             target: Basement,
-                            barrier: {
-                                key: BasementKey,
-                                name: 'Wooden trap door',
-                                actions: [[
-                                    'Inspect',
-                                    {
-                                        text: 'Inspect',
-                                        execute: (game: IGame) => {
-                                            game.logToLocationLog('The trap door looks old but still strong due to steel reinforcements. It is locked.');
+                            barriers: [
+                                ['TrapDoor', {
+                                    key: BasementKey,
+                                    name: 'Wooden trap door',
+                                    actions: [[
+                                        'Inspect',
+                                        {
+                                            text: 'Inspect',
+                                            execute: (game: IGame) => {
+                                                game.logToLocationLog('The trap door looks old but still strong due to steel reinforcements. It is locked.');
+                                            }
                                         }
-                                    }
-                                ]]
-                            }
+                                    ]]
+                                }]]
                         });
                     }
                 }],

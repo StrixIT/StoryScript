@@ -8,7 +8,6 @@ import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
 import {ICompiledLocation} from "../../../Games/MyAdventureGame/interfaces/location.ts";
 import {LocationService} from "storyScript/Services/LocationService.ts";
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {Character} from "../../../Games/MyRolePlayingGame/types.ts";
@@ -65,14 +64,14 @@ const locationWithAddedDestination = {
     "destinations": [{"target": "start"}, {
         "name": "Enter the basement",
         "target": "basement",
-        "barrier": {
+        "barriers": [["TrapDoor", {
             "key": "basementkey",
             "name": "Wooden trap door",
             "actions": [["Inspect", {
                 "text": "Inspect",
                 "execute": "function(game2){\n                      game2.logToLocationLog(\"The trap door looks old but still strong due to steel reinforcements. It is locked.\");\n                    }"
             }]]
-        },
+        }]],
         "ss_added": true
     }],
     "enterEvents": [["Squirrel"]],
@@ -121,8 +120,7 @@ const partyDataEmptyArrays = {
             "strength": 1,
             "agility": 1,
             "intelligence": 1,
-            "items": [
-            ],
+            "items": [],
             "equipment": {
                 "head": null,
                 "body": null,
@@ -147,7 +145,7 @@ const gardenWithDeletedAction = {
 
 const gardenWithDeletedEvent = {
     "destinations": [{"target": "start"}],
-    "enterEvents": [{ "0": "Squirrel", "ss_deleted" : true }],
+    "enterEvents": [{"0": "Squirrel", "ss_deleted": true}],
     "actions": [["SearchShed"], ["LookInPond"]],
     "type": "location",
     "id": "garden"
@@ -155,9 +153,11 @@ const gardenWithDeletedEvent = {
 
 const gardenWithAddedEvent = {
     "destinations": [{"target": "start"}],
-    "enterEvents": [["Squirrel"], [ "Test", { "function": `function(game){
+    "enterEvents": [["Squirrel"], ["Test", {
+        "function": `function(game){
           return true;
-    }`, "ss_added": true }]],
+    }`, "ss_added": true
+    }]],
     "actions": [["SearchShed"], ["LookInPond"]],
     "type": "location",
     "id": "garden"
@@ -167,14 +167,14 @@ const locationWithNullDestinationTarget = {
     "id": "test",
     "type": "location",
     "destinations": [
-        { "target": "test" }
+        {"target": "test"}
     ]
 };
 
 describe("DataSerializer", () => {
 
     let serializer: IDataSerializer;
-    
+
     beforeAll(() => {
         RunGame();
         const serviceFactory = ServiceFactory.GetInstance();
@@ -214,7 +214,7 @@ describe("DataSerializer", () => {
 
     test("should create and save a JSON clone with items added at runtime", function () {
         const game = <IGame>{};
-        const definitions = <IDefinitions><unknown>{ items: [ BasementKey ] };
+        const definitions = <IDefinitions><unknown>{items: [BasementKey]};
         game.helpers = new HelperService(definitions);
         game.party = <IParty>{};
         game.party.characters = [];
@@ -228,6 +228,13 @@ describe("DataSerializer", () => {
         const result = serializer.createSerializableClone(game.currentLocation);
         // Remove the unique id to be able to compare the rest of the properties.
         delete result.destinations[1][StateProperties.Id];
+
+        // Remove whitespaces in the function strings to make the compare work.
+        const expectedBarrierAction = (<any>locationWithAddedDestination).destinations[1].barriers[0][1].actions[0][1];
+        (<any>expectedBarrierAction).execute = expectedBarrierAction.execute.toString().replace(/\s{2,}/g, ' ');
+        const actualBarrierAction = (<any>result).destinations[1].barriers[0][1].actions[0][1];
+        (<any>actualBarrierAction).execute = actualBarrierAction.execute.toString().replace(/\s{2,}/g, ' ');
+
         expect(result).toEqual(locationWithAddedDestination);
     });
 
@@ -252,8 +259,7 @@ describe("DataSerializer", () => {
     test("should serialize character data with empty arrays present", function () {
         const character = new Character();
         character.name = "Test";
-        character.items = [
-        ];
+        character.items = [];
 
         const characterData = <IParty>{
             name: "Test Party",
@@ -283,12 +289,14 @@ describe("DataSerializer", () => {
 
     test("should serialize added events with added flag", function () {
         const garden = Garden();
-        garden.enterEvents.add(['Test', (game) => { return true; }]);
+        garden.enterEvents.add(['Test', (game) => {
+            return true;
+        }]);
         const serialized = serializer.createSerializableClone(garden);
         const expectedFunction = <any>gardenWithAddedEvent.enterEvents[1][1];
-        expectedFunction.function = expectedFunction.function.replace(/\s{2,}/g,' ');
+        expectedFunction.function = expectedFunction.function.replace(/\s{2,}/g, ' ');
         const actualFunction = <any>serialized.enterEvents[1][1];
-        actualFunction.function = actualFunction.function.replace(/\s{2,}/g,' ');
+        actualFunction.function = actualFunction.function.replace(/\s{2,}/g, ' ');
         expect(serialized).toEqual(gardenWithAddedEvent);
     });
 
@@ -305,17 +313,21 @@ describe("DataSerializer", () => {
                 target: 'test'
             }]
         };
-        
+
         const locationToSerialize = {...locationWithEmptyDestinationTarget};
 
-        const dataSerializer = new DataSerializer({ 'locations': {
-            'test': locationWithEmptyDestinationTarget
-        }});
-        
-        const serialized = dataSerializer.createSerializableClone({ 'locations': {
-            'test': locationToSerialize
-        }});
-        
+        const dataSerializer = new DataSerializer({
+            'locations': {
+                'test': locationWithEmptyDestinationTarget
+            }
+        });
+
+        const serialized = dataSerializer.createSerializableClone({
+            'locations': {
+                'test': locationToSerialize
+            }
+        });
+
         expect(serialized.locations.test).toEqual(locationWithNullDestinationTarget);
     });
 

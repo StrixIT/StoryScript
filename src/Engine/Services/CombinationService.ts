@@ -172,9 +172,11 @@ export class CombinationService implements ICombinationService {
         // reference, objects of the same type should be left alone.
         this._game.currentLocation.features?.delete(feature);
         this._game.currentLocation.destinations?.forEach(d => {
-            if (d.barrier === feature) {
-                d.barrier = null;
-            }
+            d.barriers.forEach(([k, b]) => {
+                if (b === feature) {
+                    d.barriers.delete([k, b]);
+                }
+            })
         });
 
         removeItemFromParty(this._game.party, <IItem>feature);

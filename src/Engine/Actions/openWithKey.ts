@@ -9,19 +9,19 @@ import {makeSerializeSafe} from "storyScript/Services/sharedFunctions.ts";
  * should keep the key after using it, it is removed from his item list.
  * @param callback The callback function to invoke after the barrier is removed.
  */
-export function OpenWithKey(callback?: (game: IGame, barrier: IBarrier, destination: IDestination) => void) {
-    return makeSerializeSafe((game: IGame, barrier: IBarrier, destination: IDestination) => {
-        const key = typeof barrier.key === 'function' ? barrier.key() : <IKey>game.helpers.getItem(barrier.key);
+export function OpenWithKey(callback?: (game: IGame, barrier: [string, IBarrier], destination: IDestination) => void) {
+    return makeSerializeSafe((game: IGame, barrier: [string, IBarrier], destination: IDestination) => {
+        const key = typeof barrier[1].key === 'function' ? barrier[1].key() : <IKey>game.helpers.getItem(barrier[1].key);
 
         if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {
             game.party.characters.forEach(c => {
-                c.items.delete(barrier.key);
+                c.items.delete(barrier[1].key);
             });
 
-            game.currentLocation.items.delete(barrier.key);
+            game.currentLocation.items.delete(barrier[1].key);
         }
 
-        delete destination.barrier;
+        destination.barriers.delete(barrier);
 
         if (typeof callback !== 'undefined' && callback) {
             callback(game, barrier, destination);

@@ -76,7 +76,7 @@ export function addArrayExtensions() {
         Object.defineProperty(Array.prototype, 'getDeleted', {
             enumerable: false,
             value: function () {
-                return this[deletedCollection];
+                return this[deletedCollection] ?? [];
             }
         });
     }
@@ -133,14 +133,7 @@ export function addArrayExtensions() {
                 }
 
                 const collection = this;
-                let entry = find(item, this, false)[0];
-                let index: number;
-
-                if (typeof entry === 'undefined') {
-                    index = collection.indexOf(item);
-                } else {
-                    index = this.indexOf(entry);
-                }
+                const index = findIndex(collection, item);
 
                 if (index === -1) {
                     return;
@@ -202,6 +195,26 @@ export function addArrayExtensions() {
             }
         });
     }
+}
+
+function findIndex(collection: any[], item: any) {
+    let entry;
+
+    if (isDataRecord(item)) {
+        entry = collection.find(e => e[0] === item[0]);
+    } else {
+        entry = find(item, collection, false)[0];
+    }
+
+    let index: number;
+
+    if (typeof entry === 'undefined') {
+        index = collection.indexOf(item);
+    } else {
+        index = collection.indexOf(entry);
+    }
+    
+    return index;
 }
 
 function find(id: any, array: any[], usePropertyMatch: boolean): any[] {

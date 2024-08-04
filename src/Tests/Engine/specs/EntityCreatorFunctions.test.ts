@@ -66,7 +66,7 @@ describe("EntityCreatorFunctions", function () {
                 destinations: [
                     {
                         name: 'Test barrier',
-                        barrier: <IBarrier>{
+                        barriers: [['Barrier', <IBarrier>{
                             name: 'Door',
                             key: Key,
                             actions: [[
@@ -77,14 +77,14 @@ describe("EntityCreatorFunctions", function () {
                                     }
                                 }
                             ]]
-                        }
+                        }]]
                     }
                 ]
             });
         }
 
         const result = locationWithBarrier();
-        const key = result.destinations[0].barrier.key;
+        const key = result.destinations[0].barriers[0][1].key;
         expect(typeof key).toBe('string');
         expect(key).toBe('key');
     });

@@ -36,6 +36,8 @@ export class HelperService implements IHelpers {
                 const modifier = compositeOrSides.match(/[+-]/i);
                 bonus = bonus > 0 ? modifier?.[0] === '+' ? bonus : bonus * -1 : 0;
             }
+        } else {
+            sides = compositeOrSides;
         }
 
         let result = 0;
