@@ -20,6 +20,7 @@ import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
 import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {Library} from "../../../Games/MyRolePlayingGame/locations/Library.ts";
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
+import {IDestination} from "storyScript/Interfaces/destination.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -162,6 +163,14 @@ const gardenWithAddedEvent = {
     "id": "garden"
 };
 
+const locationWithNullDestinationTarget = {
+    "id": "test",
+    "type": "location",
+    "destinations": [
+        { "target": "test" }
+    ]
+};
+
 describe("DataSerializer", () => {
 
     let serializer: IDataSerializer;
@@ -282,5 +291,33 @@ describe("DataSerializer", () => {
         actualFunction.function = actualFunction.function.replace(/\s{2,}/g,' ');
         expect(serialized).toEqual(gardenWithAddedEvent);
     });
-    
+
+    test("should not serialize an array with only empty objects", function () {
+        const locationWithEmptyDestinationTarget = {
+            name: 'Test',
+            id: 'test',
+            type: 'location',
+            destinations: <IDestination[]>[{
+                name: 'No destination',
+                target: null
+            }, {
+                name: 'With destination',
+                target: 'test'
+            }]
+        };
+        
+        const locationToSerialize = {...locationWithEmptyDestinationTarget};
+
+        const dataSerializer = new DataSerializer({ 'locations': {
+            'test': locationWithEmptyDestinationTarget
+        }});
+        
+        const serialized = dataSerializer.createSerializableClone({ 'locations': {
+            'test': locationToSerialize
+        }});
+        
+        expect(serialized.locations.test).toEqual(locationWithNullDestinationTarget);
+    });
+
+
 });

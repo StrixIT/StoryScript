@@ -37,6 +37,10 @@ let _registeredIds: Map<string, string> = new Map<string, string>();
 // A record to keep all the entities available, fully build.
 const _registeredEntities: Record<string, Record<string, any>> = {};
 
+export function isEntity(entity: any): boolean {
+    return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
+}
+
 export function Location(entity: ILocation): ILocation {
     return Create('location', entity);
 }
@@ -81,14 +85,14 @@ export function customEntity<T, C extends { name: string }>(definition: () => T,
     if (!customData.name) {
         throw new Error('A custom entity needs a custom name!');
     }
-    
+
     const customEntity = <any>extend(definition(), customData);
     const customEntityKey = getEntityKey(customEntity);
-    
+
     if (!_registeredIds.has(customEntityKey)) {
         _registeredIds.set(customEntityKey, getIdFromName(customEntity));
     }
-    
+
     customEntity.id = _registeredIds.get(customEntityKey);
     return customEntity;
 }
@@ -149,7 +153,13 @@ export function setReadOnlyLocationProperties(location: ILocation) {
     });
 }
 
-export function InitEntityCollection(entity: any, property: string) {
+export function InitEntityCollection(entity: any, property: string, checkIsEntity?: boolean) {
+    checkIsEntity = typeof checkIsEntity === 'undefined' ? true : checkIsEntity;
+
+    if (checkIsEntity && !isEntity[entity[property]]) {
+        return;
+    }
+
     const collection = entity[property] || [];
 
     Object.defineProperty(entity, property, {
@@ -442,7 +452,7 @@ function initCollection(entity: any, property: string) {
         });
     }
 
-    InitEntityCollection(entity, property);
+    InitEntityCollection(entity, property, false);
 }
 
 function checkInlineConflict(id: string, entityKey: string) {
@@ -546,7 +556,7 @@ function extend<T>(target: T, source: {}) {
     for (const key of keys) {
         const value = source[key];
         const isArray = Array.isArray(value);
-        
+
         if (isArray) {
             value.forEach(e => target[key].push(e));
         } else if (typeof value === 'object') {

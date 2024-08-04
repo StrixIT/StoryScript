@@ -3,18 +3,15 @@ import {InitEntityCollection} from "storyScript/EntityCreatorFunctions";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
-import {
-    IdProperty,
-    StartNodeProperty
-} from "../../../constants.ts";
-import {isEntity, parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
+import {IdProperty, StartNodeProperty} from "../../../constants.ts";
+import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSerializer implements IDataSerializer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {
     }
-    
-    createSerializableClone = (original: any, clone?: any): any => {
-        return this.buildStructureForSerialization(original, clone, undefined);
+
+    createSerializableClone = (original: any): any => {
+        return this.buildStructureForSerialization(undefined, original, undefined);
     }
 
     restoreObjects = (
@@ -41,7 +38,7 @@ export class DataSerializer implements IDataSerializer {
         return loaded;
     }
 
-    private buildStructureForSerialization = (original: any, clone: any, pristine: any): any => {
+    private buildStructureForSerialization = (clone: any, original: any, pristine: any): any => {
         clone ??= this.createClone(original);
 
         if (clone == original) {
@@ -75,7 +72,7 @@ export class DataSerializer implements IDataSerializer {
 
             if (Array.isArray(originalValue)) {
                 const deletedEntries = originalValue.getDeleted();
-                
+
                 if (deletedEntries) {
                     originalValue = originalValue.concat(deletedEntries);
                 }
@@ -86,18 +83,14 @@ export class DataSerializer implements IDataSerializer {
 
         return clone;
     }
-    
+
     private restoreArray = (value: any, loaded: any, key: string): boolean => {
         if (!Array.isArray(value)) {
             return false;
         }
 
-        if (isEntity(loaded[key])) {
-            InitEntityCollection(loaded, key);
-        }
-        
+        InitEntityCollection(loaded, key);
         this.restoreObjects(value);
-
         const entriesToDelete = value.filter(e => e?.[StateProperties.Deleted]);
 
         entriesToDelete.forEach(e => {
@@ -157,13 +150,17 @@ export class DataSerializer implements IDataSerializer {
                 data.clone[data.key] = {};
             }
 
-            this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue);
+            const createdObject = data.clone[data.key];
+            this.buildStructureForSerialization(createdObject, data.originalValue, data.pristineValue);
 
             // Do not include empty objects in the serialized data.
-            this.removeEmptyObjects(data.clone, data.key);
+            if (!Array.isArray(data.clone) && typeof (createdObject) === 'object' && Object.keys(createdObject).length === 0) {
+                delete data.clone[data.key];
+            }
+
             return;
         }
-        
+
         if (typeof data.originalValue === 'function') {
             if (!data.originalValue.isProxy && data.originalValue.toString() !== data.pristineValue?.toString()) {
                 data.clone[data.key] = serializeFunction(data.originalValue);
@@ -184,24 +181,24 @@ export class DataSerializer implements IDataSerializer {
         }
 
         data.clone[data.key] = [];
+        const record = data.clone[data.key];
         const match = data.pristine?.find((p: any[]) => p[0] === data.originalValue[0]);
 
         if (!match) {
-            const cloneArray = data.clone[data.key];
             const value = data.originalValue[1];
-            
+
             if (value[StateProperties.Deleted]) {
-                cloneArray[0] = data.pristineValue[0];
-                cloneArray[1] = {[StateProperties.Deleted]: true};
+                record[0] = data.pristineValue[0];
+                record[1] = {[StateProperties.Deleted]: true};
                 return true;
             } else if (typeof value === 'function' && value[StateProperties.Added]) {
-                cloneArray[0] = data.originalValue[0];
-                cloneArray[1] = { "function": serializeFunction(value), [StateProperties.Added]: true };
+                record[0] = data.originalValue[0];
+                record[1] = {"function": serializeFunction(value), [StateProperties.Added]: true};
                 return true;
             }
         }
 
-        data.clone[data.key][0] = data.originalValue[0];
+        record[0] = data.originalValue[0];
 
         this.getClonedValue(<SerializationData>{
             clone: data.clone[data.key],
@@ -211,6 +208,11 @@ export class DataSerializer implements IDataSerializer {
             pristine: match,
             pristineValue: match?.[1]
         });
+
+        // Delete empty objects from the record.
+        if (record[1] && !Object.keys(record[1]).length) {
+            record.splice(1, 1);
+        }
 
         return true;
     }
@@ -225,9 +227,14 @@ export class DataSerializer implements IDataSerializer {
         if (data.pristine && !data.originalValue.length) {
             return false;
         }
-        
+
         data.clone[data.key] = [];
-        this.buildStructureForSerialization(data.originalValue, data.clone[data.key], data.pristineValue);
+        const resultArray = data.clone[data.key];
+        this.buildStructureForSerialization(resultArray, data.originalValue, data.pristineValue);
+
+        // Delete empty objects from the array.
+        const emptyItems = resultArray.filter(e => !Object.values(e).find(v => typeof v !== 'undefined' || v !== null));
+        emptyItems.forEach(e => resultArray.splice(resultArray.indexOf(e), 1));
 
         const additionalArrayProperties = Object.keys(data.originalValue).filter(v => {
             let isAdditionalProperty = isNaN(parseInt(v));
@@ -259,25 +266,7 @@ export class DataSerializer implements IDataSerializer {
         return true;
     }
 
-    private removeEmptyObjects = (clone: any, key: string) => {
-        const addedObject = clone[key];
-        
-        if (!addedObject) {
-            return;
-        }
-
-        if (Object.keys(addedObject).length === 0) {
-            if (Array.isArray(clone)) {
-                clone.splice(clone.indexOf(addedObject), 1);
-            }
-            else {
-                delete clone[key];
-            }
-        }
-    }
-
-    private isKeyProperty = (item: any, propertyName: string): boolean =>
-    {
+    private isKeyProperty = (item: any, propertyName: string): boolean => {
         const keyProperties = getKeyPropertyNames(item);
         return keyProperties.first === propertyName || keyProperties.second === propertyName;
     }

@@ -149,7 +149,7 @@ const gardenWithDeletedAction = {
 
 const gardenWithDeletedEvent = {
     "destinations": [{"target": "start"}],
-    "enterEvents": [{ "0": "Squirrel", "ss_deleted" : true }, ["Test"]],
+    "enterEvents": [{"0": "Squirrel", "ss_deleted": true}, ["Test"]],
     "actions": [["SearchShed"], ["LookInPond"]],
     "type": "location",
     "id": "garden"
@@ -157,16 +157,18 @@ const gardenWithDeletedEvent = {
 
 const gardenWithAddedEvent = {
     "destinations": [{"target": "start"}],
-    "enterEvents": [["Squirrel"], [ "Test", { "function": `function(game){
+    "enterEvents": [["Squirrel"], ["Test", {
+        "function": `function(game){
           return true;
-    }`, "ss_added": true }]],
+    }`, "ss_added": true
+    }]],
     "actions": [["SearchShed"], ["LookInPond"]],
     "type": "location",
     "id": "garden"
 };
 
 describe("DataSynchronizer", () => {
-    
+
     let dataSerializer: IDataSerializer;
     let dataSynchronizer: IDataSynchronizer;
 
@@ -206,7 +208,7 @@ describe("DataSynchronizer", () => {
     test("should remove removed relations (design-time) and deleted relations (run-time) from a collection, and add newly added ones", function () {
         // We'll pretend the leather boots were deleted during editing.
         const removedItem = {id: 'leatherboots'}
-        
+
         // In contrast, we'll simulate that the sword was removed from the bandit during runtime.
         const deletedItem = {id: 'sword'};
         removedItem['type'] = 'item';
@@ -257,8 +259,8 @@ describe("DataSynchronizer", () => {
         dataSynchronizer.synchronizeEntityData(skeleton, garden);
 
         expect(skeleton.destinations).toHaveLength(2);
-        const newDestination = skeleton.destinations[0];
-        skeleton.destinations.splice(0, 1);
+        const newDestination = skeleton.destinations[1];
+        skeleton.destinations.splice(1, 1);
         expect(skeleton).toEqual(garden);
         expect(newDestination.name).toBe("Enter the basement");
         expect(newDestination.barrier).not.toBeNull();
@@ -284,7 +286,7 @@ describe("DataSynchronizer", () => {
         dataSynchronizer.synchronizeEntityData(skeleton);
         expect(skeleton.actions.length).toBe(1);
         expect(skeleton.actions[0][1][StateProperties.Added]).toBeTruthy;
-        
+
         const sword = skeleton.trade[0].buy.items[0];
         expect(sword).not.toBeUndefined();
         delete sword[StateProperties.Id];
@@ -310,5 +312,5 @@ describe("DataSynchronizer", () => {
         expect(skeleton.enterEvents.length).toBe(2);
         expect(skeleton.enterEvents[1][1]).toBeTypeOf('function');
     });
-    
+
 });

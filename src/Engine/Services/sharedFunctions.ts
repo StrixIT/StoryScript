@@ -9,10 +9,6 @@ import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {compareString, parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
 
-export function isEntity(entity: any): boolean {
-    return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
-}
-
 export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
     const collection = definitions[type];
 
@@ -124,17 +120,16 @@ export function parseGamePropertiesInTemplate(lines: string, game?: IGame): stri
 
         parseMatch[0].replace(/{|}/g, '').split('.').forEach((e: string) => {
             index = indexRegex.exec(e);
-            
+
             if (index) {
                 e = e.replace(index, '');
                 index = parseInt(index[0].replace(/\[|\]/g, ''));
             }
-            
+
             if (property.hasOwnProperty(e)) {
                 property = property[e];
                 propertyFound = true;
-            }
-            else {
+            } else {
                 propertyFound = false;
             }
 
@@ -269,7 +264,7 @@ function selectCandidate(game: IGame, key: string, item: (GameState | PlayState 
     const functionName = (<Function>item)?.name;
     const currentLocationId = game.currentLocation?.id;
     let order: number;
-    
+
     if (item === game.state) {
         order = 3;
     } else if (item === game.playState) {
