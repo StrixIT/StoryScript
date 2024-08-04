@@ -8,7 +8,7 @@ export function BlackKey() {
         equipmentType: EquipmentType.Miscellaneous,
         open: {
             text: 'Open de deur met de zwarte sleutel',
-            execute: OpenWithKey((game: IGame, barrier: IBarrier, destination: IDestination) => {
+            execute: OpenWithKey((game: IGame, barrier: [string, IBarrier], destination: IDestination) => {
                 game.logToLocationLog('Je opent de deur.');
                 destination.name = 'Donkere kamer';
             })

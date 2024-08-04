@@ -23,24 +23,25 @@ export function RoomOne() {
             {
                 name: 'Noord',
                 target: RightCorridor,
-                barrier: {
-                    name: 'Houten deur',
-                    actions: [
-                        ['Inspect',
-                            {
-                                text: 'Onderzoek de deur',
-                                execute: Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
-                            }],
-                        ['Open',
-                            {
-                                text: 'Open de deur',
-                                execute: Open((game: IGame, barrier: IBarrier, destination: IDestination) => {
-                                    game.logToLocationLog('Je opent de eikenhouten deur.');
-                                    destination.name = 'Gang (noord)';
-                                })
-                            }
-                        ]]
-                }
+                barriers: [
+                    ['WoodenDoor', {
+                        name: 'Houten deur',
+                        actions: [
+                            ['Inspect',
+                                {
+                                    text: 'Onderzoek de deur',
+                                    execute: Inspect('Een eikenhouten deur met een ijzeren hendel. De deur is niet op slot.')
+                                }],
+                            ['Open',
+                                {
+                                    text: 'Open de deur',
+                                    execute: Open((game: IGame, barrier: [string, IBarrier], destination: IDestination) => {
+                                        game.logToLocationLog('Je opent de eikenhouten deur.');
+                                        destination.name = 'Gang (noord)';
+                                    })
+                                }
+                            ]]
+                    }]]
             },
             {
                 name: 'Tweede deur (west)',

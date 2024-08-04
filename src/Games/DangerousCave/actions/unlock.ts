@@ -25,7 +25,7 @@ export function Unlock(settings: UnlockSettings): IAction {
                 settings.fail(game);
                 game.logToActionLog('Het lukt niet.');
                 return true;
-            };
+            }
         }
     });
 }
