@@ -20,6 +20,7 @@ import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {Library} from "../../../Games/MyRolePlayingGame/locations/Library.ts";
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
+import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -171,6 +172,12 @@ const locationWithNullDestinationTarget = {
     ]
 };
 
+const arrayDataWithAdditionalProperty = {
+    "testArray": [1, 2, 3], 
+    "testArray_arrProps": 
+        {"mapPath": "test"}
+};
+
 describe("DataSerializer", () => {
 
     let serializer: IDataSerializer;
@@ -207,9 +214,16 @@ describe("DataSerializer", () => {
         };
 
         (<any>objectToCopy.testArray).mapPath = 'test';
-        const result = serializer.createSerializableClone(objectToCopy, null);
-        const resultText = JSON.stringify({data: result});
-        expect(resultText).toContain('"testArray_arrProps":{"mapPath":"test"}');
+        const result = JSON.parse(JSON.stringify(serializer.createSerializableClone(objectToCopy)));
+        expect(result).toEqual(arrayDataWithAdditionalProperty);
+    });
+
+    test("should restore additional array properties when present", function () {
+        const result = serializer.restoreObjects(arrayDataWithAdditionalProperty);
+        const expectedValues = [1,2,3];
+        const actualValues = [...result.testArray]
+        expect(actualValues).toEqual(expectedValues);
+        expect(result.testArray.mapPath).toBe("test");
     });
 
     test("should create and save a JSON clone with items added at runtime", function () {

@@ -66,7 +66,7 @@ export class DataSerializer implements IDataSerializer {
                 continue;
             }
 
-            if (originalValue === undefined || originalValue.isProxy) {
+            if (this.skipProperty(original, originalValue, key)) {
                 continue;
             }
             
@@ -116,7 +116,7 @@ export class DataSerializer implements IDataSerializer {
 
         if (additionalArrayProperties) {
             Object.keys(additionalArrayProperties).forEach(k => {
-                loaded[k] = additionalArrayProperties[k];
+                value[k] = additionalArrayProperties[k];
             });
 
             delete loaded[arrayPropertyKey];
@@ -269,6 +269,17 @@ export class DataSerializer implements IDataSerializer {
         return true;
     }
 
+    private skipProperty = (original: any, originalValue: any, key: string): boolean => {
+        return (
+            originalValue === undefined
+            || originalValue.isProxy
+            // Exclude descriptions and conversation nodes from the save data, these are not present on the pristine data.
+            // Use an additional property to identify them, as their names are quite generic.
+            || (original[IdProperty] && (key === 'description' || key === 'descriptions'))
+            || original[StartNodeProperty] && key === 'nodes'
+        );
+    }
+    
     private isKeyProperty = (item: any, propertyName: string): boolean => {
         const keyProperties = getKeyPropertyNames(item);
         return keyProperties.first === propertyName || keyProperties.second === propertyName;
