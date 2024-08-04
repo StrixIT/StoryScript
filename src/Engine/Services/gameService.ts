@@ -253,9 +253,9 @@ export class GameService implements IGameService {
         }
     }
 
-    executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
+    executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): void => {
         action[1].execute(this._game, barrier, destination);
-        barrier.actions.delete(barrier.actions.find(([k, _]) => k === action[0]));
+        barrier[1].actions.delete(barrier[1].actions.find(([k, _]) => k === action[0]));
         this.saveGame();
     }
 

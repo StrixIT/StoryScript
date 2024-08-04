@@ -22,7 +22,7 @@ export interface IGameService {
     initCombat(): void;
     fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
     useItem(character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void;
-    executeBarrierAction(barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void;
+    executeBarrierAction(barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): void;
     getCurrentMusic(): string;
     watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void;
     watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void;

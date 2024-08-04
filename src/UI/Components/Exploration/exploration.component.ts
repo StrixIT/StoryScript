@@ -54,8 +54,8 @@ export class ExplorationComponent {
     // Do not remove this method nor its arguments, it is called dynamically from the executeAction method of the SharedMethodService!
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
-    executeBarrierAction = (barrier: IBarrier, action: [string, IBarrierAction], destination: IDestination): void => {
-        if (this.game.combinations.tryCombine(barrier).success || this.game.combinations.activeCombination) {
+    executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): void => {
+        if (this.game.combinations.tryCombine(barrier[1]).success || this.game.combinations.activeCombination) {
             return;
         }
 
