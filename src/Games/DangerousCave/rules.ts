@@ -168,7 +168,7 @@ export function Rules(): IRules {
                 //game.logToActionLog('Je komt aan in ' + location.name);
 
                 if (location.id != 'start' && !location.hasVisited) {
-                    game.activeCharacter.score += 1;
+                    game.party.score += 1;
                 }
 
                 if (location.activeEnemies) {
@@ -190,16 +190,16 @@ export function Rules(): IRules {
                 var check = game.helpers.rollDice(6, character.kracht);
                 var characterDamage = check + character.oplettendheid + game.helpers.calculateBonus(character, 'schade') - game.helpers.calculateBonus(enemy, 'verdediging');
                 game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
-                enemy.hitpoints -= characterDamage;
+                enemy.currentHitpoints -= characterDamage;
 
-                if (enemy.hitpoints <= 0) {
+                if (enemy.currentHitpoints <= 0) {
                     game.logToCombatLog('Je verslaat de ' + enemy.name + '!');
                     game.logToActionLog('De ' + enemy.name + ' is dood.');
                     game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
                 }
 
                 game.currentLocation.activeEnemies.filter((enemy: IEnemy) => {
-                    return enemy.hitpoints > 0;
+                    return enemy.currentHitpoints > 0;
                 }).forEach(function (enemy) {
                     var check = game.helpers.rollDice(enemy.attack);
                     var enemyDamage = Math.max(0, (check - (character.vlugheid + game.helpers.calculateBonus(character, 'verdediging'))) + game.helpers.calculateBonus(enemy, 'schade'));
@@ -210,7 +210,7 @@ export function Rules(): IRules {
 
             enemyDefeated: (game: IGame, enemy: IEnemy): void => {
                 if (enemy.reward) {
-                    game.activeCharacter.score += enemy.reward;
+                    game.party.score += enemy.reward;
                 }
             }
         },
