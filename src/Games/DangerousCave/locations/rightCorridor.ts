@@ -1,7 +1,7 @@
-﻿import { IGame, Location } from '../types';
-import description from './arena.html' 
-import { CrossRoads } from './crossRoads';
-import { RoomOne } from './roomOne';
+﻿import {Location} from '../types';
+import description from './arena.html'
+import {CrossRoads} from './crossRoads';
+import {RoomOne} from './roomOne';
 
 export function RightCorridor() {
     return Location({

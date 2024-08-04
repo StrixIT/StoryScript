@@ -1,4 +1,4 @@
-﻿import { IQuest as StoryScriptIQuest, Quest as StoryScriptQuest } from 'storyScript/Interfaces/storyScript';
+﻿import {IQuest as StoryScriptIQuest, Quest as StoryScriptQuest} from 'storyScript/Interfaces/storyScript';
 
 export function Quest(entity: IQuest): IQuest {
     return StoryScriptQuest(entity);

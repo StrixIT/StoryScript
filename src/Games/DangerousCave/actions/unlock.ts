@@ -13,9 +13,9 @@ export function Unlock(settings: UnlockSettings): IAction {
         text: settings && settings.text || 'Slot openen',
         actionType: ActionType.Check,
         execute: function (game: IGame) {
-            var check = game.helpers.rollDice(game.character.vlugheid + 'd6');
+            var check = game.helpers.rollDice(game.activeCharacter.vlugheid + 'd6');
             var result;
-            result = check * game.character.vlugheid;
+            result = check * game.activeCharacter.vlugheid;
 
             if (result >= settings.difficulty) {
                 settings.success(game);

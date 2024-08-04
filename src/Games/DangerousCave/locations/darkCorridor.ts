@@ -1,8 +1,8 @@
-﻿import { IGame, Location } from '../types';
+﻿import {Location} from '../types';
 import description from './darkCorridor.html'
-import { Orc } from '../enemies/orc';
-import { CandleLitCave } from './candleLitCave';
-import { CrossRoads } from './crossRoads';
+import {Orc} from '../enemies/orc';
+import {CandleLitCave} from './candleLitCave';
+import {CrossRoads} from './crossRoads';
 
 export function DarkCorridor() {
     return Location({

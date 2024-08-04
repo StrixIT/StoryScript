@@ -1,18 +1,18 @@
-﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction, ICompiledLocation } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character } from './types';
-import { Dagger } from './items/dagger';
-import { LeatherHelmet } from './items/leatherHelmet';
-import { Lantern } from './items/lantern';
-import { Flee } from './actions/flee';
+﻿import {ICharacter, ICompiledLocation, ICreateCharacter, IRules} from 'storyScript/Interfaces/storyScript';
+import {Character, IEnemy, IGame} from './types';
+import {Dagger} from './items/dagger';
+import {LeatherHelmet} from './items/leatherHelmet';
+import {Lantern} from './items/lantern';
+import {Flee} from './actions/flee';
+import {ICombatSetup} from "./interfaces/combatSetup.ts";
 
 export function Rules(): IRules {
     return {
-        setup: {
-        },
+        setup: {},
 
         general: {
             scoreChange: (game: IGame, change: number): boolean => {
-                var character = game.character;
+                var character = game.activeCharacter;
                 character.scoreToNextLevel += change;
                 var levelUp = character.level >= 1 && character.scoreToNextLevel >= 2 + (2 * (character.level));
 
@@ -140,8 +140,7 @@ export function Rules(): IRules {
 
                 if (reward != 'gezondheid') {
                     character[reward]++;
-                }
-                else {
+                } else {
                     character.hitpoints += 10;
                     character.currentHitpoints += 10;
                 }
@@ -156,8 +155,8 @@ export function Rules(): IRules {
                 return character;
             },
 
-            hitpointsChange(game: IGame, change: number) {
-                if (game.character.hitpoints < 5) {
+            hitpointsChange(game: IGame, character: ICharacter, change: number) {
+                if (game.activeCharacter.hitpoints < 5) {
                     game.logToActionLog('Pas op! Je bent zwaar gewond!');
                     game.logToCombatLog('Pas op! Je bent zwaar gewond!');
                 }
@@ -169,7 +168,7 @@ export function Rules(): IRules {
                 //game.logToActionLog('Je komt aan in ' + location.name);
 
                 if (location.id != 'start' && !location.hasVisited) {
-                    game.character.score += 1;
+                    game.activeCharacter.score += 1;
                 }
 
                 if (location.activeEnemies) {
@@ -185,9 +184,11 @@ export function Rules(): IRules {
                 addFleeAction(game, location);
             },
 
-            fight: (game: IGame, enemy: IEnemy): void => {
-                var check = game.helpers.rollDice(6, game.character.kracht);
-                var characterDamage = check + game.character.oplettendheid + game.helpers.calculateBonus(game.character, 'schade') - game.helpers.calculateBonus(enemy, 'verdediging');
+            fight: (game: IGame, combatSetup: ICombatSetup, retaliate?: boolean): void => {
+                var character = combatSetup[0].character;
+                var enemy = combatSetup[0].target;
+                var check = game.helpers.rollDice(6, character.kracht);
+                var characterDamage = check + character.oplettendheid + game.helpers.calculateBonus(character, 'schade') - game.helpers.calculateBonus(enemy, 'verdediging');
                 game.logToCombatLog('Je doet de ' + enemy.name + ' ' + characterDamage + ' schade!');
                 enemy.hitpoints -= characterDamage;
 
@@ -197,17 +198,19 @@ export function Rules(): IRules {
                     game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
                 }
 
-                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(function (enemy) {
+                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => {
+                    return enemy.hitpoints > 0;
+                }).forEach(function (enemy) {
                     var check = game.helpers.rollDice(enemy.attack);
-                    var enemyDamage = Math.max(0, (check - (game.character.vlugheid + game.helpers.calculateBonus(game.character, 'verdediging'))) + game.helpers.calculateBonus(enemy, 'schade'));
+                    var enemyDamage = Math.max(0, (check - (character.vlugheid + game.helpers.calculateBonus(character, 'verdediging'))) + game.helpers.calculateBonus(enemy, 'schade'));
                     game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
-                    game.character.currentHitpoints -= enemyDamage;
+                    character.currentHitpoints -= enemyDamage;
                 });
             },
 
             enemyDefeated: (game: IGame, enemy: IEnemy): void => {
                 if (enemy.reward) {
-                    game.character.score += enemy.reward;
+                    game.activeCharacter.score += enemy.reward;
                 }
             }
         },
@@ -215,11 +218,11 @@ export function Rules(): IRules {
 
     function addFleeAction(game: IGame, location: ICompiledLocation): void {
         var numberOfEnemies = location.activeEnemies.length;
-        var fleeAction = location.combatActions.get(Flee);
+        var fleeAction = location.combatActions.get('Flee');
 
-        if (!fleeAction && numberOfEnemies > 0 && numberOfEnemies < game.character.vlugheid) {
+        if (!fleeAction && numberOfEnemies > 0 && numberOfEnemies < game.activeCharacter.vlugheid) {
             var action = Flee('');
-            location.combatActions.push(action);
+            location.combatActions.add(['Flee', action]);
         }
     }
 }

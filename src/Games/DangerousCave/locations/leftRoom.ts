@@ -1,8 +1,8 @@
-﻿import { IGame, Location } from '../types';
+﻿import {Location} from '../types';
 import description from './leftRoom.html'
-import { Orc } from '../enemies/orc';
-import { Goblin } from '../enemies/goblin';
-import { RoomOne } from './roomOne';
+import {Orc} from '../enemies/orc';
+import {Goblin} from '../enemies/goblin';
+import {RoomOne} from './roomOne';
 
 export function LeftRoom() {
     return Location({

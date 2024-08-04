@@ -1,9 +1,10 @@
-﻿import { IItem, IGame } from '../types';
+﻿import {IGame, IItem} from '../types';
+import {ICharacter} from "storyScript/Interfaces/character.ts";
 
 export function Heal(potency: string) {
-    return function (game: IGame, item: IItem) {
+    return function (game: IGame, character: ICharacter, item: IItem) {
         var healed = game.helpers.rollDice(potency);
-        game.character.currentHitpoints += healed;
-        game.character.currentHitpoints = Math.min(game.character.currentHitpoints, game.character.hitpoints);
+        game.activeCharacter.currentHitpoints += healed;
+        game.activeCharacter.currentHitpoints = Math.min(game.activeCharacter.currentHitpoints, game.activeCharacter.hitpoints);
     }
 }

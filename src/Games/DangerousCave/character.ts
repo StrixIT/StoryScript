@@ -1,12 +1,12 @@
-﻿import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
-import { IItem } from './types';
+﻿import {ICharacter, ICollection} from 'storyScript/Interfaces/storyScript';
+import {IItem} from './types';
 
 export class Character implements ICharacter {
     name: string = "";
-    score: number = 0;
     hitpoints: number = 20;
     currentHitpoints: number = 20;
-    currency: number = 0;
+    currency?: number = 0;
+    score?: number = 0;
     scoreToNextLevel?: number = 0;
     level?: number = 1;
 
@@ -17,18 +17,7 @@ export class Character implements ICharacter {
 
     items: ICollection<IItem> = [];
 
-    equipment: {
-        head?: IItem,
-        amulet?: IItem,
-        body?: IItem,
-        hands?: IItem,
-        leftHand?: IItem,
-        leftRing?: IItem,
-        rightHand?: IItem,
-        rightRing?: IItem,
-        legs?: IItem,
-        feet?: IItem
-    };
+    equipment: {};
 
     constructor() {
         this.equipment = {

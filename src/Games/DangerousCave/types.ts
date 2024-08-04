@@ -4,29 +4,40 @@ import { IKey, Key } from './interfaces/key'
 import { IEnemy, Enemy } from './interfaces/enemy'
 import { IPerson, Person } from './interfaces/person'
 import { IQuest, Quest } from './interfaces/quest'
+import { IParty } from './interfaces/party'
 import { ICompiledLocation, ILocation, Location } from './interfaces/location'
 import { IGame } from './interfaces/game'
 import { CustomTexts } from './customTexts'
 import { Rules } from './rules'
 import { Character } from './character'
+import { IEquipment } from './interfaces/equipment';
+import { ICombatSetup } from './interfaces/combatSetup'
+import { IDestination } from './interfaces/destination'
 
-export { 
+export type {
+    IParty,
+    IDestination,
     IFeature,
-    Feature,
     IItem,
-    Item,
     IKey,
-    Key,
     IEnemy,
-    Enemy,
     IPerson,
-    Person,
     IQuest,
-    Quest,
     ILocation,
-    ICompiledLocation, 
-    Location, 
-    IGame, 
+    ICompiledLocation,
+    IEquipment,
+    IGame,
+    ICombatSetup
+}
+
+export {
+    Feature,
+    Item,
+    Key,
+    Enemy,
+    Person,
+    Quest,
+    Location,
     CustomTexts, 
     Rules, 
     Character 

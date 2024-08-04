@@ -1,9 +1,8 @@
-﻿import { GameState } from 'storyScript/Interfaces/storyScript';
-import { IGame, Location } from '../types';
-import description from './arena.html' 
-import { Orc } from '../enemies/orc';
-import { Troll } from '../enemies/troll';
-import { CandleLitCave } from './candleLitCave';
+﻿import {IGame, Location} from '../types';
+import description from './arena.html'
+import {Orc} from '../enemies/orc';
+import {Troll} from '../enemies/troll';
+import {CandleLitCave} from './candleLitCave';
 
 export function Arena() {
     return Location({
@@ -18,7 +17,7 @@ export function Arena() {
                 target: CandleLitCave
             }
         ],
-        actions: [
+        actions: [['SearchSymbol',
             {
                 text: 'Onderzoek symbool',
                 execute: function (game: IGame) {
@@ -29,7 +28,7 @@ export function Arena() {
                     game.logToActionLog('Er verschijnt op magische wijze een enorme trol waar het symbool was! Hij valt je aan!');
                 }
             }
-        ]
+        ]]
     });
 
     function onDefeat(game: IGame) {

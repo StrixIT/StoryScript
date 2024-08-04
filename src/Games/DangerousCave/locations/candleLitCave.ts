@@ -24,7 +24,7 @@ export function CandleLitCave() {
                 target: RightCorridor
             }
         ],
-        actions: [
+        actions: [['Search',
             Search({
                 difficulty: 12,
                 success: (game: IGame) => {
@@ -35,6 +35,6 @@ export function CandleLitCave() {
                     game.currentLocation.enemies.push(Orc());
                 }
             })
-        ]
+        ]]
     });
 }

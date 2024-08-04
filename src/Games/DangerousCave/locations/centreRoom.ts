@@ -14,17 +14,17 @@ export function CentreRoom() {
                 target: RoomOne
             }
         ],
-        actions: [
+        actions: [['Search',
             Search({
                 difficulty: 9,
                 success: function (game: IGame) {
                     game.logToLocationLog('Je vindt een schild!');
-                    game.character.items.push(SmallShield());
+                    game.activeCharacter.items.push(SmallShield());
                 },
                 fail: function (game: IGame) {
                     game.logToLocationLog('Je vindt niets.');
                 }
             })
-        ]
+        ]]
     });
 }

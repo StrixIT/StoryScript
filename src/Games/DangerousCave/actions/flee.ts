@@ -1,6 +1,6 @@
 ﻿import { IAction, Action, ActionType, ActionStatus } from 'storyScript/Interfaces/storyScript';
 import { IGame } from '../types';
-import { isEmpty } from 'storyScript/utilities';
+import {isEmpty} from "storyScript/utilityFunctions.ts";
 
 export function Flee(text: string): IAction {
     return Action({
@@ -10,8 +10,8 @@ export function Flee(text: string): IAction {
             return isEmpty(game.currentLocation.activeEnemies) ? ActionStatus.Unavailable : ActionStatus.Available;
         },
         execute: (game: IGame) => {
-            var check = game.helpers.rollDice(game.character.vlugheid + 'd6');
-            var result = check * game.character.vlugheid;
+            var check = game.helpers.rollDice(game.activeCharacter.vlugheid + 'd6');
+            var result = check * game.activeCharacter.vlugheid;
             var totalHitpoints = 0;
 
             game.currentLocation.activeEnemies.forEach(function (enemy) {
@@ -23,7 +23,7 @@ export function Flee(text: string): IAction {
             }
             else {
                 game.logToCombatLog('Je ontsnapping mislukt!');
-            };
+            }
 
             return true;
         }

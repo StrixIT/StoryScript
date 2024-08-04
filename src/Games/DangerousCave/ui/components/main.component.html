@@ -3,11 +3,8 @@
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="character-container" *ngIf="game.state === 'Play'" id="character-container" [ngClass]="{ 'col-4': showCharacterPane() }">
-                <character-sheet></character-sheet>
-                <equipment></equipment>
-                <backpack></backpack>
-                <quests></quests>
+            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
+                <party [party]="game.party"></party>
             </div>
             <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">
                 <div *ngIf="!game.state">
@@ -24,7 +21,10 @@
                 </div>
                 <intro></intro>
                 <create-character></create-character>
-                <level-up></level-up>
+                <!-- TODO: how to make this work? -->
+                <div *ngFor="let character of game.party?.characters">
+                    <level-up [character]="character"></level-up>
+                </div>
                 <game-over></game-over>
                 <victory></victory>
             </div>
