@@ -37,10 +37,6 @@ let _registeredIds: Map<string, string> = new Map<string, string>();
 // A record to keep all the entities available, fully build.
 const _registeredEntities: Record<string, Record<string, any>> = {};
 
-export function isEntity(entity: any): boolean {
-    return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
-}
-
 export function Location(entity: ILocation): ILocation {
     return Create('location', entity);
 }
@@ -153,10 +149,8 @@ export function setReadOnlyLocationProperties(location: ILocation) {
     });
 }
 
-export function InitEntityCollection(entity: any, property: string, checkIsEntity?: boolean) {
-    checkIsEntity = typeof checkIsEntity === 'undefined' ? true : checkIsEntity;
-
-    if (checkIsEntity && !isEntity[entity[property]]) {
+export function InitEntityCollection(entity: any, property: string) {
+    if (_gameCollections.indexOf(property) === -1) {
         return;
     }
 
@@ -456,7 +450,7 @@ function initCollection(entity: any, property: string) {
         });
     }
 
-    InitEntityCollection(entity, property, false);
+    InitEntityCollection(entity, property);
 }
 
 function checkInlineConflict(id: string, entityKey: string) {

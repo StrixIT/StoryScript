@@ -178,6 +178,20 @@ const arrayDataWithAdditionalProperty = {
         {"mapPath": "test"}
 };
 
+const partyWithCharacter = {
+    "characters": [
+        {
+            "name": "",
+            "hitpoints": 10,
+            "currentHitpoints": 10,
+            "items": []
+        }
+    ],
+    "quests": [],
+    "score": 0,
+    "currentLocationId": "start"
+};
+
 describe("DataSerializer", () => {
 
     let serializer: IDataSerializer;
@@ -345,5 +359,33 @@ describe("DataSerializer", () => {
         expect(serialized.locations.test).toEqual(locationWithNullDestinationTarget);
     });
 
+    test("should serialize party with character correctly", function () {
+        const party = <IParty>{
+            characters: [{
+                name: "",
+                hitpoints: 10,
+                currentHitpoints: 10,
+                items: [],
+                equipment: {}
+            }],
+            quests: [],
+            score: 0,
+            currentLocationId: "start"
+        };
 
+        const result = serializer.createSerializableClone(party);
+        expect(result).toEqual(partyWithCharacter);
+    });
+
+    test("should deserialize party with character correctly", function () {
+        const result = <IParty>serializer.restoreObjects(partyWithCharacter);
+        const items = result.characters[0].items;
+        expect(items).not.toBeNull();
+        items.add(Sword);
+        const addedSword = items[0];
+        delete addedSword[StateProperties.Id];
+        delete addedSword[StateProperties.Added];
+        expect(addedSword).toEqual(Sword());
+    });
+    
 });

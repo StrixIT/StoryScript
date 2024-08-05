@@ -235,8 +235,14 @@ export class DataSerializer implements IDataSerializer {
         const resultArray = data.clone[data.key];
         this.buildStructureForSerialization(resultArray, data.originalValue, data.pristineValue);
 
-        // Delete empty objects from the array.
-        const emptyItems = resultArray.filter(e =>typeof e === 'object' && !Object.values(e).find(v => typeof v !== 'undefined' || v !== null));
+        // Delete empty objects from the array. Only remove objects that have no properties or
+        // only properties with no values.
+        const emptyItems = resultArray.filter(e => {
+            if (typeof e !== 'object') {
+                return false;
+            }
+            return !Object.values(e).filter(v => typeof v !== 'undefined' && v !== null && v !== '').length;
+        });
         emptyItems.forEach(e => resultArray.splice(resultArray.indexOf(e), 1));
 
         const additionalArrayProperties = Object.keys(data.originalValue).filter(v => {

@@ -1,7 +1,7 @@
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {getPlural, isDataRecord, propertyMatch} from "storyScript/utilityFunctions";
-import {InitEntityCollection, isEntity, setReadOnlyLocationProperties} from "storyScript/EntityCreatorFunctions.ts";
+import {InitEntityCollection, setReadOnlyLocationProperties} from "storyScript/EntityCreatorFunctions.ts";
 
 export class DataSynchronizer implements IDataSynchronizer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {
@@ -22,7 +22,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             return;
         }
 
-        if (isEntity(entity)) {
+        if (this.isEntity(entity)) {
             if (typeof pristineEntity === 'undefined') {
                 pristineEntity = this._pristineEntities[getPlural(entity.type)][entity.id];
             }
@@ -174,13 +174,17 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         // In case of an entity with the 'added' flag, 'i' is a skeleton value. Set the pristine entity to 'undefined' 
         // so it will be looked up again later on.
-        const pristineValue = element[StateProperties.Added] && isEntity(element) ? undefined : element;
+        const pristineValue = element[StateProperties.Added] && this.isEntity(element) ? undefined : element;
 
         if (!currentValue[StateProperties.Deleted]) {
             this.synchronizeEntityData(currentValue, pristineValue, parentEntity, pristineParentEntity, parentProperty);
         }
 
         return currentValue;
+    }
+    
+    private isEntity = (entity: any): boolean => {
+        return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
     }
 
     private markEntriesAsDeleted = (item: any[]) => {
