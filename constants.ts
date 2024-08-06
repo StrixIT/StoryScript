@@ -11,5 +11,5 @@ export const Persons: string = 'persons';
 export const Locations: string = 'locations';
 export const Party: string = 'party';
 export const Characters: string = 'characters';
-export const DefaultSaveGame: string = "ss_default";
+export const DefaultSaveGame: string = "_gameState";
 export const HighScores: string = 'highScores';

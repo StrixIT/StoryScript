@@ -22,24 +22,25 @@ describe("LocalStorage", function () {
         expect(loadedValue.values).toEqual([1, 2]);
 
         // Clean up
-        localStorage.removeItem('StoryScript_' + key);
+        localStorage.removeItem(key);
     });
 
     test("should get all the keys of saved values for the game", function () {
         const service = new LocalStorageService();
+        const prefix = 'prefix';
         const keys = ['storage', 'new', 'test'].sort();
         const values = [1, 2, 3];
 
         for (let i = 0; i < keys.length; i++) {
-            service.set(keys[i], values[i]);
+            service.set(`${prefix}_${keys[i]}`, values[i]);
         }
 
-        const storageKeys = service.getKeys().sort();
+        const storageKeys = service.getKeys(prefix).sort();
         expect(storageKeys).toEqual(keys);
 
         // Clean up
         for (let i = 0; i < keys.length; i++) {
-            localStorage.removeItem('StoryScript_' + keys[i]);
+            localStorage.removeItem(keys[i]);
         }
     });
 });
