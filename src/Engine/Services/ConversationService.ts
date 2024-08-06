@@ -168,7 +168,7 @@ export class ConversationService implements IConversationService {
                 const questComplete = this.GetNodeValue(replyNode, 'quest-complete');
                 const setStart = this.GetNodeValue(replyNode, 'set-start');
 
-                if (trigger && !person.conversation.actions.some(([k, _]) => k === trigger)) {
+                if (trigger && !person.conversation.actions?.some(([k, _]) => k === trigger)) {
                     console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
                 }
 

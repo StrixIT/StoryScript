@@ -421,7 +421,7 @@ export class GameService implements IGameService {
                 }
             });
 
-            items.sort((a: IItem, b: IItem) => b.targetType.localeCompare(a.targetType) || a.name.localeCompare(b.name));
+            items.sort((a: IItem, b: IItem) => b.targetType?.localeCompare(a.targetType) || a.name.localeCompare(b.name));
 
             const targetType = items[0]?.targetType ?? TargetType.Enemy;
 
