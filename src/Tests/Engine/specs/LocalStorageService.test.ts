@@ -27,12 +27,12 @@ describe("LocalStorage", function () {
 
     test("should get all the keys of saved values for the game", function () {
         const service = new LocalStorageService();
-        const prefix = 'prefix';
+        const prefix = 'prefix_';
         const keys = ['storage', 'new', 'test'].sort();
         const values = [1, 2, 3];
 
         for (let i = 0; i < keys.length; i++) {
-            service.set(`${prefix}_${keys[i]}`, values[i]);
+            service.set(prefix + keys[i], values[i]);
         }
 
         const storageKeys = service.getKeys(prefix).sort();

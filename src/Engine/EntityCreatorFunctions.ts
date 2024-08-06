@@ -23,6 +23,7 @@ const _entityCollections: string[] = [
 
 const _gameCollections: string[] = _entityCollections.concat([
     'actions',
+    'barriers',
     'combatActions',
     'enterEvents',
     'leaveEvents',

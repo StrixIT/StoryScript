@@ -20,7 +20,6 @@ import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {Library} from "../../../Games/MyRolePlayingGame/locations/Library.ts";
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
-import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -173,8 +172,8 @@ const locationWithNullDestinationTarget = {
 };
 
 const arrayDataWithAdditionalProperty = {
-    "testArray": [1, 2, 3], 
-    "testArray_arrProps": 
+    "testArray": [1, 2, 3],
+    "testArray_arrProps":
         {"mapPath": "test"}
 };
 
@@ -234,7 +233,7 @@ describe("DataSerializer", () => {
 
     test("should restore additional array properties when present", function () {
         const result = serializer.restoreObjects(arrayDataWithAdditionalProperty);
-        const expectedValues = [1,2,3];
+        const expectedValues = [1, 2, 3];
         const actualValues = [...result.testArray]
         expect(actualValues).toEqual(expectedValues);
         expect(result.testArray.mapPath).toBe("test");
@@ -387,5 +386,5 @@ describe("DataSerializer", () => {
         delete addedSword[StateProperties.Added];
         expect(addedSword).toEqual(Sword());
     });
-    
+
 });

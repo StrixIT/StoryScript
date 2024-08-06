@@ -1,6 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
 import {beforeAll, describe, expect, test} from "vitest";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {RunGame} from "../../../Games/MyRolePlayingGame/run.ts";

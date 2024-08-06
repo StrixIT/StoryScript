@@ -3,7 +3,7 @@ import {IDataService} from '../Interfaces/services/dataService';
 import {ILocalStorageService} from '../Interfaces/services/localStorageService';
 import {IDataSerializer} from 'storyScript/Interfaces/services/dataSerializer';
 import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronizer';
-import {DefaultSaveGame} from "../../../constants.ts";
+import {GameStateSave, SaveGamePrefix} from "../../../constants.ts";
 
 export class DataService implements IDataService {
 
@@ -47,7 +47,7 @@ export class DataService implements IDataService {
         this._localStorageService.remove(this.getKey(key));
     }
 
-    getSaveKeys = (): string[] => this._localStorageService.getKeys(this.getKey()).filter(k => k !== DefaultSaveGame);
+    getSaveKeys = (): string[] => this._localStorageService.getKeys(this.getKey(SaveGamePrefix));
 
     private getKey = (key?: string): string => {
         return key ? `${this._gameNameSpace}_${key}` : this._gameNameSpace;

@@ -1,6 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
 import {beforeAll, describe, expect, test} from 'vitest';
 import {
     EquipmentType,

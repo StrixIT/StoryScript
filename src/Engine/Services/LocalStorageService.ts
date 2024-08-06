@@ -11,7 +11,7 @@ export class LocalStorageService implements ILocalStorageService {
 
     getKeys = (prefix: string): string[] => {
         const result = [];
-        prefix = `${StoryScriptPrefix}${prefix}_`;
+        prefix = StoryScriptPrefix + prefix;
 
         Object.keys(localStorage).forEach(k => {
             if (k.startsWith(prefix)) {

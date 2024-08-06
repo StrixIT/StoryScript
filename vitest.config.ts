@@ -6,8 +6,10 @@ export default mergeConfig(viteConfig, defineConfig({
     test: {
         environmentMatchGlobs: [
             ['**/Data*.test.ts', 'jsdom'],
-            ['**/ObjectConstructor.test.ts', 'jsdom'],
+            ['**/ServiceFactory.test.ts', 'jsdom'],
+            ['**/EntityCreatorFunctions.test.ts', 'jsdom'],
             ['**/LocalStorageService.test.ts', 'jsdom'],
+            ['**/ConversationService.test.ts', 'jsdom'],
         ],
         coverage: {
             enabled: true,

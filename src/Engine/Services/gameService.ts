@@ -26,7 +26,7 @@ import {ICombatSetup} from '../Interfaces/combatSetup';
 import {ICombatTurn} from '../Interfaces/combatTurn';
 import {TargetType} from '../Interfaces/enumerations/targetType';
 import {IHelpers} from "storyScript/Interfaces/helpers.ts";
-import {Characters, DefaultSaveGame, HighScores, Items, Quests} from "../../../constants.ts";
+import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} from "../../../constants.ts";
 import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
@@ -40,25 +40,21 @@ export class GameService implements IGameService {
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
         this._game.helpers = this._helperService;
-
+        
+        const gameState = this._dataService.load<ISaveGame>(GameStateSave) ?? <ISaveGame>{};
+        this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
+        this._game.party = gameState.party;
+        this.setReadOnlyPartyProperties(this._game.party);
+        this._game.locations = gameState.world;
+        this._game.worldProperties = gameState.worldProperties ?? {};
+        this._game.statistics = gameState.statistics ?? this._game.statistics ?? {};
+        const playedAudio = gameState.playedAudio ?? [];
+        
         if (restart) {
             this._game.statistics = {};
             this._game.worldProperties = {};
         }
-
-        const saveGame = this._dataService.load<ISaveGame>(DefaultSaveGame) ?? <ISaveGame>{};
-        this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
-        this._game.party = saveGame.party;
-        this.setReadOnlyPartyProperties(this._game.party);
-        this._game.locations = saveGame.world;
-        this._game.worldProperties = saveGame.worldProperties ?? {};
-
-        if (!restart) {
-            this._game.statistics = saveGame.statistics || this._game.statistics || {};
-        }
-
-        const playedAudio = saveGame.playedAudio ?? [];
-
+        
         this._rules.setup?.setupGame?.(this._game);
         this.setupGame(playedAudio);
         this.initTexts();
@@ -102,7 +98,7 @@ export class GameService implements IGameService {
             statistics: this._game.statistics
         };
 
-        this._dataService.save(DefaultSaveGame, emptySave);
+        this._dataService.save(GameStateSave, emptySave);
         this._locationService.init();
 
         // Save here to use the before and after save hooks after refreshing the world,
@@ -140,12 +136,12 @@ export class GameService implements IGameService {
     }
 
     restart = (skipIntro?: boolean): void => {
-        this._dataService.remove(DefaultSaveGame);
+        this._dataService.remove(GameStateSave);
         this.init(true, skipIntro);
     }
 
     loadGame = (name: string): void => {
-        const saveGame = this._dataService.load<ISaveGame>(name);
+        const saveGame = this._dataService.load<ISaveGame>(SaveGamePrefix + name);
 
         if (saveGame) {
             this._game.loading = true;
@@ -315,7 +311,7 @@ export class GameService implements IGameService {
     }
 
     saveGame = (name?: string): void => {
-        name ??= DefaultSaveGame;
+        name = name ? SaveGamePrefix + name : GameStateSave;
         this._rules.general?.beforeSave?.(this._game);
 
         const saveGame = <ISaveGame>{

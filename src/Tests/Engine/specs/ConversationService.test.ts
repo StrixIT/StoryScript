@@ -1,6 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
 import {describe, expect, test} from 'vitest';
 import {ConversationService} from 'storyScript/Services/ConversationService';
 import {IPerson} from "storyScript/Interfaces/person.ts";
