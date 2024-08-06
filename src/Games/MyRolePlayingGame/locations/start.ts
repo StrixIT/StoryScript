@@ -9,9 +9,9 @@ export function Start() {
     return Location({
         name: 'Home',
         description: description,
-        descriptionSelector: (game: IGame) => {
-            var date = new Date();
-            var hour = date.getHours();
+        descriptionSelector: (_: IGame) => {
+            const date = new Date();
+            const hour = date.getHours();
 
             if (hour <= 6 || hour >= 18) {
                 return 'night';

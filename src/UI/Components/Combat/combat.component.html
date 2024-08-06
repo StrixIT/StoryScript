@@ -1,25 +1,56 @@
 <div id="combat" *ngIf="game.playState == 'Combat'">
     <div *ngIf="enemiesPresent()">
-        <div>
-            <ul class="list-unstyled" *ngIf="game.currentLocation.activeEnemies.length > 0">
-                <li *ngFor="let enemy of game.currentLocation.activeEnemies">
-                    <button type="button" class="btn btn-danger" (click)="fight(enemy)" [disabled]="!actionsEnabled">{{ texts.format(texts.attack, [enemy.name]) }}</button>
+        <h3>{{ texts.format(texts.combatRound, game.combat.round) }}</h3>
+        <div *ngFor="let enemyRow of enemyRows" class="row enemy-row">
+            <div *ngFor="let enemy of enemyRow" class="col-4">
+                <div>
+                    <h4>{{getTargetName(enemy)}}</h4>
+                    <p class="enemy-health">
+                        {{ texts.format(texts.enemyHitpoints, [enemy.currentHitpoints, enemy.hitpoints]) }}
+                    </p>
                     <img src="{{ enemy.picture }}" *ngIf="enemy.picture" />
-                </li>
-            </ul>
+                </div>
+            </div>
+        </div>
+        <div *ngFor="let characterRow of characterRows" class="row character-row">
+            <div *ngFor="let turn of characterRow" class="col-4">
+                <h4>{{turn.character.name}}</h4>
+                <p class="character-health">
+                    {{ texts.format(texts.characterHitpoints, [turn.character.currentHitpoints, turn.character.hitpoints]) }}
+                </p>
+                <div *ngIf="turn.item">
+                    <div [ngClass]="{ 'not-appliccable': !turn.item.targetType }">
+                        <span>{{ turn.item.targetType === 'Enemy' ? texts.attack : texts.aid }}</span>
+                        <select *ngIf="multiCharacter && turn.target" class="custom-select" [(ngModel)]="turn.target">
+                            <option *ngFor="let target of filteredTargets(turn)" [ngValue]="target" >{{ getTargetName(target) }}</option>
+                        </select>
+                        <input *ngIf="turn.targetsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.target.name" />
+                    </div>
+                    <div *ngIf="turn.itemsAvailable.length">
+                        <span>{{ turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType === 'Ally' ? texts.aidWith : texts.useCombatItem }}</span>
+                        <select *ngIf="turn.itemsAvailable.length > 1" class="custom-select" (ngModelChange)="itemChange($event, turn)" [(ngModel)]="turn.item">
+                            <option *ngFor="let item of turn.itemsAvailable" [ngValue]="item" >{{ item.name }}</option>
+                        </select>
+                        <input *ngIf="turn.itemsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.item.name" />
+                    </div>
+                </div>
+                <div *ngIf="!turn.item">
+                    <span>No item</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 fight-row">
+                <button type="button" class="btn btn-danger" (click)="fight()" [disabled]="!actionsEnabled">{{ texts.fight }}</button>
+            </div>
+        </div>
+        <div>
             <ul class="list-unstyled">
                 <li *ngFor="let action of game.currentLocation.combatActions">
-                    <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="!actionsEnabled">{{ action.text }}</button>
+                    <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="!actionsEnabled">{{ action[1].text }}</button>
                 </li>
             </ul>
         </div>
-    </div>
-    <div>
-        <ul class="list-unstyled">
-            <li *ngFor="let item of game.character.combatItems">
-                <button type="button" class="btn btn-info" *ngIf="canUseItem(item)" (click)="useItem(item)" [disabled]="!actionsEnabled">{{ texts.format(texts.useInCombat, [item.name]) }}</button>
-            </li>
-        </ul>
     </div>
     <div *ngIf="!enemiesPresent()" class="combat-win">
         {{ texts.combatWin }}

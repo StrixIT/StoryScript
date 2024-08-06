@@ -1,9 +1,8 @@
-import { IGame, IConversationNode, IConversationReply } from 'storyScript/Interfaces/storyScript';
-import { ConversationService } from 'storyScript/Services/ConversationService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
+import {IConversationNode, IConversationReply, IGame} from 'storyScript/Interfaces/storyScript';
+import {ConversationService} from 'storyScript/Services/ConversationService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'conversation',
@@ -11,10 +10,10 @@ import { RuntimeProperties } from 'storyScript/runtimeProperties';
 })
 export class ConversationComponent {
     private _conversationService: ConversationService;
-    
+
     constructor() {
         this._conversationService = inject(ConversationService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
     }
 
@@ -22,9 +21,13 @@ export class ConversationComponent {
 
     answer = (node: IConversationNode, reply: IConversationReply): void => this._conversationService.answer(node, reply);
 
-    getLines = (nodeOrReply: IConversationNode | IConversationReply): string => this._conversationService.getLines(nodeOrReply);
+    getLines = (nodeOrReply: IConversationNode | IConversationReply): string => nodeOrReply?.lines || null;
 
-    get activeNode() { return this.game.person.conversation[RuntimeProperties.ActiveNode] };
+    get activeNode() {
+        return this.game.person.conversation.activeNode
+    };
 
-    get conversationLog() { return this.game.person.conversation[RuntimeProperties.ConversationLog] };
+    get conversationLog() {
+        return this.game.person.conversation.conversationLog
+    };
 }

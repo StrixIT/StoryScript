@@ -1,199 +1,293 @@
-import { IDataSerializer } from "storyScript/Interfaces/services/dataSerializer";
-import { IFunctionIdParts } from "storyScript/Interfaces/services/functionIdParts";
-import { GetDescriptions, initCollection } from "storyScript/ObjectConstructors";
-import { parseFunction, serializeFunction } from "storyScript/globals";
-import { RuntimeProperties } from "storyScript/runtimeProperties";
-import { getId, getPlural } from "storyScript/utilities";
+import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer";
+import {InitEntityCollection} from "storyScript/EntityCreatorFunctions";
+import {StateProperties} from "storyScript/stateProperties.ts";
+import {SerializationData} from "storyScript/Services/serializationData.ts";
+import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
+import {IdProperty, StartNodeProperty} from "../../../constants.ts";
+import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSerializer implements IDataSerializer {
-
-    buildClone = (parentKey: string, values, pristineValues, clone?): any => {
-        if (!clone) {
-            clone = Array.isArray(values) ? [] : typeof values === 'object' ? {} : values;
-            if (clone == values) {
-                return clone;
-            }
-        }
-    
-        for (var key in values) {
-            if (!values.hasOwnProperty(key)) {
-                continue;
-            }
-    
-            var value = values[key];
-    
-            if (Array.isArray(value)) {
-                value = (<any>values[key]).withDeleted();
-            }
-    
-            if (value === undefined) {
-                continue;
-            }
-            else if (value === null) {
-                clone[key] = null;
-                continue;
-            }
-            else if (value.isProxy) {
-                continue;
-            }
-            // Exclude descriptions and conversation nodes from the save data so they
-            // are refreshed on every browser refresh.
-            else if (values.id && (key === RuntimeProperties.Description || key === RuntimeProperties.Descriptions)) {
-                clone[key] = null;
-                continue;
-            }
-            else if (parentKey === 'conversation' && key === RuntimeProperties.Nodes) {
-                clone[key] = null;
-                continue;
-            }
-    
-            this.getClonedValue(clone, value, key, pristineValues);
-        }
-    
-        return clone;
+    constructor(private _pristineEntities: Record<string, Record<string, any>>) {
     }
-    
+
+    createSerializableClone = (original: any): any => {
+        return this.buildStructureForSerialization(undefined, original, undefined);
+    }
+
     restoreObjects = (
-        functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, 
-        descriptions: Map<string, string>,
         loaded: any
     ): any => {
-        descriptions = descriptions || GetDescriptions();
-    
         for (const key in loaded) {
             if (!loaded.hasOwnProperty(key)) {
                 continue;
             }
-    
-            var value = loaded[key];
-    
-            if (value === undefined) {
+
+            const value = loaded[key];
+
+            if (this.restoreArray(value, loaded, key)) {
                 continue;
             }
-            else if (Array.isArray(value)) {
-                initCollection(loaded, key, true);
-                this.restoreObjects(functionList, descriptions, value);
-    
-                var arrayPropertyKey = `${key}_arrProps`;
-                var additionalArrayProperties = loaded[arrayPropertyKey];
-    
-                if (additionalArrayProperties) {
-                    Object.keys(additionalArrayProperties).forEach(k => {
-                        loaded[k] = additionalArrayProperties[k];
-                    });
-    
-                    delete loaded[arrayPropertyKey];
-                }
-            }
-            else if (typeof value === 'object') {
-                this.restoreObjects(functionList, descriptions, value);
-            }
-            else if (typeof value === 'string') {
-                this.restoreFunction(functionList, loaded, value, key);
+
+            if (typeof value === 'object') {
+                this.restoreObjects(value);
+            } else if (typeof value === 'string' && value.indexOf('function') > -1) {
+                loaded[key] = parseFunction(value);
             }
         }
-    
+
         return loaded;
     }
 
-    private getClonedValue = (clone: any, value: any, key: string, pristineValues: any): void => {
-        var pristineValue = pristineValues && pristineValues.hasOwnProperty(key) ? pristineValues[key] : undefined;
-    
-        if (Array.isArray(value)) {
-            clone[key] = [];
-            this.buildClone(key, value, pristineValue, clone[key]);
-    
-            var additionalArrayProperties = Object.keys(value).filter(v => {
-                var isAdditionalProperty = isNaN(parseInt(v));
-    
-                if (isAdditionalProperty) {
-                    // add and delete proxies are used for location destinations, these are added in the LocationService.
-                    // Ignore these proxies.
-                    if (v === 'add' || v === 'delete') {
-                        isAdditionalProperty = false;
-                    }
+    private buildStructureForSerialization = (clone: any, original: any, pristine: any): any => {
+        clone ??= this.createClone(original);
+
+        if (clone == original) {
+            return clone;
+        }
+
+        for (const key in original) {
+            if (!original.hasOwnProperty(key)) {
+                continue;
+            }
+
+            let originalValue = original[key];
+            let pristineValue: any;
+
+            if (original.type && original.id) {
+                pristine = this._pristineEntities[getPlural(original.type)]?.[original.id];
+            }
+
+            pristineValue = pristine?.[key];
+
+            // Do add NULL values to the clone, as these can be used as placeholders. This is used by the engine to determine
+            // which equipment slots are available.
+            if (originalValue === null) {
+                clone[key] = null;
+                continue;
+            }
+
+            if (this.skipProperty(original, originalValue, key)) {
+                continue;
+            }
+            
+            let newValue: any = originalValue;
+
+            // Add deleted entries to the array. Create a new array for this to prevent changing
+            // the one used at runtime. Also copy over additional properties that may be there,
+            // except for the array of deleted entities. This is handled differently.
+            if (Array.isArray(originalValue)) {
+                const deletedEntries = originalValue.getDeleted();
+                newValue = [...originalValue];
+                deletedEntries.forEach(e => newValue.push(e));
+                const additionalProperties = Object.keys(originalValue).filter(k => k !== '_deleted' && !newValue[k]);
+                additionalProperties.forEach(p => {
+                    newValue[p] = originalValue[p];
+                });
+            }
+
+            this.getClonedValue({
+                clone: clone, 
+                key: key, 
+                original: original, 
+                originalValue: newValue,
+                pristine: pristine,
+                pristineValue: pristineValue
+            });
+        }
+
+        return clone;
+    }
+
+    private restoreArray = (value: any, loaded: any, key: string): boolean => {
+        if (!Array.isArray(value)) {
+            return false;
+        }
+
+        InitEntityCollection(loaded, key);
+        this.restoreObjects(value);
+        const entriesToDelete = value.filter(e => e?.[StateProperties.Deleted]);
+
+        entriesToDelete.forEach(e => {
+            value.delete(e);
+        });
+
+        const arrayPropertyKey = `${key}_arrProps`;
+        const additionalArrayProperties = loaded[arrayPropertyKey];
+
+        if (additionalArrayProperties) {
+            Object.keys(additionalArrayProperties).forEach(k => {
+                value[k] = additionalArrayProperties[k];
+            });
+
+            delete loaded[arrayPropertyKey];
+        }
+
+        return true;
+    }
+
+    private createClone = (values: any): any => {
+        let clone: any;
+
+        if (Array.isArray(values)) {
+            clone = [];
+        } else {
+            clone = typeof values === 'object' ? {} : values;
+        }
+
+        return clone;
+    }
+
+    private getClonedValue = (data: SerializationData): void => {
+        if (this.processDataRecord(data)) {
+            return;
+        }
+
+        if (this.processArray(data)) {
+            return;
+        }
+
+        if (typeof data.originalValue === 'object') {
+            if (Array.isArray(data.clone)) {
+                data.clone.push({});
+            } else {
+                data.clone[data.key] = {};
+            }
+
+            const createdObject = data.clone[data.key];
+            this.buildStructureForSerialization(createdObject, data.originalValue, data.pristineValue);
+
+            // Do not include empty objects in the serialized data.
+            if (!Array.isArray(data.clone) && typeof (createdObject) === 'object' && Object.keys(createdObject).length === 0) {
+                delete data.clone[data.key];
+            }
+
+            return;
+        }
+
+        if (typeof data.originalValue === 'function') {
+            if (!data.originalValue.isProxy && data.originalValue.toString() !== data.pristineValue?.toString()) {
+                data.clone[data.key] = serializeFunction(data.originalValue);
+            }
+            return;
+        }
+
+        // Store only values that are different from the pristine value, values that are needed to create a
+        // traversable world structure, and the key values of deleted array records.
+        if (data.originalValue != data.pristineValue || this.isKeyProperty(data.pristine, data.key) || data.original[StateProperties.Deleted] === true) {
+            data.clone[data.key] = data.originalValue;
+        }
+    }
+
+    private processDataRecord = (data: SerializationData): boolean => {
+        if (!isDataRecord(data.originalValue)) {
+            return false;
+        }
+
+        data.clone[data.key] = [];
+        const record = data.clone[data.key];
+        const match = data.pristine?.find((p: any[]) => p[0] === data.originalValue[0]);
+
+        if (!match) {
+            const value = data.originalValue[1];
+
+            if (value[StateProperties.Deleted]) {
+                record[0] = data.pristineValue[0];
+                record[1] = {[StateProperties.Deleted]: true};
+                return true;
+            } else if (typeof value === 'function' && value[StateProperties.Added]) {
+                record[0] = data.originalValue[0];
+                record[1] = {"function": serializeFunction(value), [StateProperties.Added]: true};
+                return true;
+            }
+        }
+
+        record[0] = data.originalValue[0];
+
+        this.getClonedValue(<SerializationData>{
+            clone: data.clone[data.key],
+            key: '1',
+            original: data.originalValue,
+            originalValue: data.originalValue[1],
+            pristine: match,
+            pristineValue: match?.[1]
+        });
+
+        // Delete empty objects from the record.
+        if (record[1] && !Object.keys(record[1]).length) {
+            record.splice(1, 1);
+        }
+
+        return true;
+    }
+
+    private processArray = (data: SerializationData): boolean => {
+        if (!Array.isArray(data.originalValue)) {
+            return false;
+        }
+
+        // Do not include empty arrays in the serialized data when we have a pristine value to compare
+        // to. Otherwise, keep empty arrays as they are needed to correctly reconstruct the object.
+        if (data.pristine && !data.originalValue.length) {
+            return false;
+        }
+
+        data.clone[data.key] = [];
+        const resultArray = data.clone[data.key];
+        this.buildStructureForSerialization(resultArray, data.originalValue, data.pristineValue);
+
+        // Delete empty objects from the array. Only remove objects that have no properties or
+        // only properties with no values.
+        const emptyItems = resultArray.filter(e => {
+            if (typeof e !== 'object') {
+                return false;
+            }
+            return !Object.values(e).filter(v => typeof v !== 'undefined' && v !== null && v !== '').length;
+        });
+        emptyItems.forEach(e => resultArray.splice(resultArray.indexOf(e), 1));
+
+        const additionalArrayProperties = Object.keys(data.originalValue).filter(v => {
+            let isAdditionalProperty = isNaN(parseInt(v));
+
+            if (isAdditionalProperty) {
+                // add and delete proxies are used for location destinations, these are added in the LocationService.
+                // Ignore these proxies.
+                if (v === 'add' || v === 'delete') {
+                    isAdditionalProperty = false;
                 }
-    
-                return isAdditionalProperty;
+            }
+
+            return isAdditionalProperty;
+        });
+
+        additionalArrayProperties.forEach(p => {
+            const arrayPropertyKey = `${data.key}_arrProps`;
+            data.clone[arrayPropertyKey] = data.clone[arrayPropertyKey] || {};
+            this.getClonedValue({
+                clone: data.clone[arrayPropertyKey],
+                key: p,
+                original: data.originalValue,
+                originalValue: data.originalValue[p],
+                pristine: data.pristine,
+                pristineValue: data.pristineValue
             });
-    
-            additionalArrayProperties.forEach(p => {
-                var arrayPropertyKey = `${key}_arrProps`;
-                clone[arrayPropertyKey] = clone[arrayPropertyKey] || {};
-                this.getClonedValue(clone[arrayPropertyKey], value[p], p, pristineValue);
-            });
-        }
-        else if (typeof value === 'object') {
-            if (Array.isArray(clone)) {
-                clone.push({});
-            }
-            else {
-                clone[key] = {};
-            }
-    
-            this.buildClone(key, value, pristineValue, clone[key]);
-        }
-        else if (typeof value === 'function') {
-            this.getClonedFunction(clone, value, key);
-        }
-        else {
-            clone[key] = value;
-        }
+        });
+
+        return true;
+    }
+
+    private skipProperty = (original: any, originalValue: any, key: string): boolean => {
+        return (
+            originalValue === undefined
+            || originalValue.isProxy
+            // Exclude descriptions and conversation nodes from the save data, these are not present on the pristine data.
+            // Use an additional property to identify them, as their names are quite generic.
+            || (original[IdProperty] && (key === 'description' || key === 'descriptions'))
+            || original[StartNodeProperty] && key === 'nodes'
+        );
     }
     
-    private getClonedFunction = (clone: any, value: any, key: string): void => {
-        if (!value.isProxy) {
-            if (value.functionId) {
-                clone[key] = value.functionId;
-            } else if (key === 'target') {
-                clone[key] = getId(value);
-            }
-            else {
-                clone[key] = serializeFunction(value);
-            }
-        }
+    private isKeyProperty = (item: any, propertyName: string): boolean => {
+        const keyProperties = getKeyPropertyNames(item);
+        return keyProperties.first === propertyName || keyProperties.second === propertyName;
     }
-    
-    private restoreFunction = (
-        functionList: { [type: string]: { [id: string]: { function: Function, hash: number } } }, 
-        loaded: any, 
-        value: any, 
-        key: string
-    ): void => {
-        if (value.indexOf('function#') > -1) {
-            var parts = this.GetFunctionIdParts(value);
-            var type = getPlural(parts.type);
-            var typeList = functionList[type];
-    
-            if (!typeList[parts.functionId]) {
-                console.log('Function with key: ' + parts.functionId + ' could not be found!');
-                return;
-            }
-            else if (typeList[parts.functionId].hash != parts.hash) {
-                console.warn(`Function with key: ${parts.functionId} was found but the hash does not match the stored hash (old hash: ${parts.hash}, new hash: ${typeList[parts.functionId].hash})! Did you change the order of actions in an array and/or change the function content? If you changed the order, you need to reset the game world. If you changed only the content, you can ignore this warning.`);
-            }
-    
-            loaded[key] = typeList[parts.functionId].function;
-        }
-        else if (typeof value === 'string' && value.indexOf('function') > -1) {
-            loaded[key] = parseFunction(value);
-        }
-    }
-    
-    private GetFunctionIdParts = (value: string): IFunctionIdParts => {
-        var parts = value.split('#');
-        var functionPart = parts[1];
-        var functionParts = functionPart.split('|');
-        var type = functionParts[0];
-        functionParts.splice(0, 1);
-        var functionId = functionParts.join('|');
-        var hash = parseInt(parts[2]);
-    
-        return {
-            type: type,
-            functionId: functionId,
-            hash: hash
-        }
-    }
-    
 }

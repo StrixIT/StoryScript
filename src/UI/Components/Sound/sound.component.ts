@@ -1,7 +1,7 @@
 import { GameService } from 'storyScript/Services/gameService';
 import { Component, NgZone, inject } from '@angular/core';
 import { IGame } from 'storyScript/Interfaces/game';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { getTemplate } from '../../helpers';
 import { IRules } from 'storyScript/Interfaces/storyScript';
 
@@ -24,7 +24,7 @@ export class SoundComponent {
     constructor() {
         this._ngZone = inject(NgZone);
         this._gameService = inject(GameService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this._game = objectFactory.GetGame();
         this._rules = objectFactory.GetRules();
         setInterval(this.checkMusicPlaying, 500);

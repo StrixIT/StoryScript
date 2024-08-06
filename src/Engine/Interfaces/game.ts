@@ -1,44 +1,47 @@
-﻿import { IDefinitions } from './definitions';
-import { ICharacter } from './character';
-import { ILocationCollection } from './locationCollection';
-import { ICompiledLocation } from './compiledLocation';
-import { ScoreEntry } from './scoreEntry';
-import { IPerson } from './person';
-import { ITrade } from './trade';
-import { IFeature } from './feature';
-import { ILocation } from './location';
-import { IEnemy } from './enemy';
-import { IStatistics } from './statistics';
-import { IHelpers } from './helpers';
-import { ICreateCharacter } from './createCharacter/createCharacter';
-import { GameState } from './enumerations/gameState';
-import { PlayState } from './enumerations/playState';
-import { IActiveCombination } from './combinations/activeCombination';
-import { ICombinable } from './combinations/combinable';
+﻿import {ICharacter} from './character';
+import {ICompiledLocation} from './compiledLocation';
+import {ScoreEntry} from './scoreEntry';
+import {IPerson} from './person';
+import {ITrade} from './trade';
+import {IFeature} from './feature';
+import {ILocation} from './location';
+import {IStatistics} from './statistics';
+import {IHelpers} from './helpers';
+import {ICreateCharacter} from './createCharacter/createCharacter';
+import {GameState} from './enumerations/gameState';
+import {PlayState} from './enumerations/playState';
+import {IActiveCombination} from './combinations/activeCombination';
+import {ICombinable} from './combinations/combinable';
+import {IParty} from './party';
+import {ICombatSetup} from './combatSetup';
+import {ICombatTurn} from './combatTurn';
+import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 
 /**
  * The StoryScript main game object.
  */
 export interface IGame {
     /**
-     * All the definitions created for this game.
-     */
-    definitions: IDefinitions;
-
-    /**
      * The sheet to create a character for the game.
      */
     createCharacterSheet?: ICreateCharacter;
 
     /**
-     * The player character.
+     * The player's adventuring party.
      */
-    character: ICharacter;
+    party: IParty;
+
+    /**
+     * The active party character.
+     */
+    activeCharacter: ICharacter;
 
     /**
      * All the locations in the game world.
      */
-    locations: ILocationCollection;
+    locations: Record<string, ICompiledLocation> & {
+        get?(id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation;
+    };
 
     /**
      * The location in the game world the player is currently at.
@@ -56,12 +59,12 @@ export interface IGame {
     highScores: ScoreEntry[];
 
     /**
-     * A log containing descriptions of player actions during the game. 
+     * A log containing descriptions of player actions during the game.
      */
     actionLog: string[];
 
     /**
-     * A log containing descriptions of player actions during combat in the game. 
+     * A log containing descriptions of player actions during combat in the game.
      */
     combatLog: string[];
 
@@ -116,32 +119,32 @@ export interface IGame {
          * is not trying a combination.
          */
         activeCombination: IActiveCombination,
-    
+
         /**
          * The result from the last attempted combination.
          */
         combinationResult:
-        {
-            /**
-             * Indicates whether the combination is done.
-             */
-            done: boolean;
+            {
+                /**
+                 * Indicates whether the combination is done.
+                 */
+                done: boolean;
 
-            /**
-             * The combination result text.
-             */
-            text: string;
+                /**
+                 * The combination result text.
+                 */
+                text: string;
 
-            /**
-             * The features to remove.
-             */
-            featuresToRemove: string[];
+                /**
+                 * The features to remove.
+                 */
+                featuresToRemove: string[];
 
-            /**
-             * Resets the combination result.
-             */
-            reset(): void;
-        }
+                /**
+                 * Resets the combination result.
+                 */
+                reset(): void;
+            }
 
         /**
          * Get the class name to use for the current combine state.
@@ -154,7 +157,7 @@ export interface IGame {
          * Try the combination the player has created.
          * @param target The target of the combination
          */
-        tryCombine(target: ICombinable): boolean;
+        tryCombine(target: ICombinable): ICombineResult;
     }
 
     /**
@@ -182,6 +185,7 @@ export interface IGame {
         stopMusic(): void;
         playSound(fileName: string, completeCallBack?: () => void): void;
         soundQueue: Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>;
+        playedAudio: string[];
     }
 
     /**
@@ -211,8 +215,14 @@ export interface IGame {
 
     /**
      * The function executed when the player attacks an enemy.
-     * @param enemy The enemy to attack
-     * @param boolean True if the enemy can retaliate (default), false otherwise
+     * @param combatRound The setup for this combat round
+     * @param retaliate True if the enemy can retaliate (default), false otherwise
      */
-    fight(enemy: IEnemy, retaliate?: boolean): void;
+    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
+
+    /**
+     * The setup for the next combat round. This object is used to track
+     * which character attacks which enemy using what item or weapon.
+     */
+    combat: ICombatSetup<ICombatTurn>;
 }

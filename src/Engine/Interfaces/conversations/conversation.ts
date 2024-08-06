@@ -1,8 +1,7 @@
-﻿import { IGame } from '../game';
-import { IPerson } from '../person';
-import { IConversationNode } from './conversationNode';
-import { IConversationLogEntry } from './conversationLogEntry';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
+﻿import {IGame} from '../game';
+import {IPerson} from '../person';
+import {IConversationNode} from './conversationNode';
+import {IConversationLogEntry} from './conversationLogEntry';
 
 /**
  * A conversation between the player and a person. The nodes are loaded at run-time from the HTML file of the person.
@@ -29,25 +28,25 @@ export interface IConversation {
      * The actions that can be triggered from the conversation.
      */
 
-    actions?: Record<string, (game: IGame, person: IPerson) => void>;
+    actions?: [string, (game: IGame, person: IPerson) => void][];
 
     /**
      * The nodes that make up this conversation. Loaded from the person HTML at runtime.
      */
-    [RuntimeProperties.Nodes]?: IConversationNode[];
+    nodes?: IConversationNode[];
 
     /**
      * The name of the node to start the conversation with. Set at runtime.
      */
-    [RuntimeProperties.StartNode]?: string;
+    startNode?: string;
 
     /**
      * The node currently active in the conversation.
      */
-    [RuntimeProperties.ActiveNode]?: IConversationNode;
+    activeNode?: IConversationNode;
 
     /**
      * A log of the conversation so far.
      */
-    [RuntimeProperties.ConversationLog]?: IConversationLogEntry[];
+    conversationLog?: IConversationLogEntry[];
 }

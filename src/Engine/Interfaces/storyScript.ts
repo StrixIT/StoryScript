@@ -2,7 +2,10 @@ import type { IInterfaceTexts } from './interfaceTexts'
 import type { IRules } from './rules/rules'
 import type { IGame } from './game'
 import type { ICollection } from './collection'
+import type { IParty } from './party'
 import type { ICharacter } from './character'
+import type { ICombatTurn } from './combatTurn'
+import type { ICombatSetup } from './combatSetup'
 import type { IEquipment } from './equipment'
 import { DefaultEquipment } from './defaultEquipment'
 import type { IAction } from './action'
@@ -20,7 +23,7 @@ import type { IDestination } from './destination'
 import type { IBarrier } from './barrier'
 import type { IBarrierAction } from './barrierAction'
 import type { IHelpers } from './helpers'
-import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../ObjectConstructors'
+import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../EntityCreatorFunctions'
 import { Open } from '../Actions/open';
 import { OpenWithKey } from '../Actions/openWithKey';
 import type { ICombinable } from './combinations/combinable';
@@ -39,17 +42,22 @@ import { PlayState } from './enumerations/playState';
 import { GameState } from './enumerations/gameState';
 import { ActionType } from './enumerations/actionType';
 import { ActionStatus } from './enumerations/actionStatus';
+import { TargetType } from './enumerations/targetType';
 import type { IDefinitions } from './definitions'
 import { ScoreEntry } from './scoreEntry'
 import type { IDynamicStyle } from './dynamicStyle'
 import type { IStatistics } from './statistics'
+import { format } from '../defaultTexts'
 
 export type {
     ICollection, 
     IInterfaceTexts, 
     IRules, 
-    IGame, 
+    IGame,
+    IParty,
     ICharacter,
+    ICombatTurn,
+    ICombatSetup,
     IEquipment,
     IAction,
     IItem, 
@@ -99,5 +107,7 @@ export {
     GameState,
     ActionStatus,
     ActionType,
-    ScoreEntry
+    TargetType,
+    ScoreEntry,
+    format
 }

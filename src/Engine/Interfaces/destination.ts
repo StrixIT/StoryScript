@@ -16,14 +16,14 @@ export interface IDestination {
     style?: string;
 
     /**
-     * True if the barrier is inactive and not visible, false otherwise.
+     * True if the destination is inactive and not visible, false otherwise.
      */
     inactive?: boolean;
 
     /**
-     * A barrier that is blocking travel to the new location.
+     * The barriers that are blocking travel to the new location.
      */
-    barrier?: IBarrier;
+    barriers?: [string, IBarrier][];
 
     /**
      * The location that this destination leads to.

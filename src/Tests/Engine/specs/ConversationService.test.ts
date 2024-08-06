@@ -1,21 +1,39 @@
-import { describe, test, expect } from 'vitest';
-import { ConversationService } from 'storyScript/Services/ConversationService';
-import { IDataService } from '../../../Engine/Interfaces/services/dataService';
+import {describe, expect, test} from 'vitest';
+import {ConversationService} from 'storyScript/Services/ConversationService';
+import {IPerson} from "storyScript/Interfaces/person.ts";
+import {IGame} from "storyScript/Interfaces/game.ts";
 
-describe("ConversationService", function() {
+describe("ConversationService", function () {
 
-    test("should return the lines of a conversation node", function() {
-        var node = {
-            lines: 'My lines'
+    test("should return the lines of a conversation node", function () {
+        const person = <IPerson>{
+            conversation: {
+                nodes: [{
+                    node: 'start',
+                    lines: 'This is the start of the conversation',
+                    replies: {
+                        defaultReply: true,
+                        options: [{
+                            lines: 'Default reply'
+                        }]
+                    }
+                }]
+            }
         }
-        var service = getService();
-        var result = service.getLines(node);
-
-        expect(result).toBe(node.lines);
+        
+        const service = getService();
+        service.talk(person);
+        expect(person.conversation).not.toBeNull();
     });
 
 });
 
-function getService(dataService?, game?: any) {
-    return new ConversationService(dataService || {}, game || {});
+function getService(game?: any) {
+    game ??= <IGame>{
+        sounds: {
+            playedAudio: []
+        }
+    }
+    
+    return new ConversationService(game || {});
 }

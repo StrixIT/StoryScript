@@ -15,8 +15,22 @@ export class DefaultTexts {
         use: 'Use',
         drop: 'Drop',
         enemies: 'Enemies',
-        attack: 'Attack {0}!',
+        enemyHitpoints: 'Health: {0} / {1}',
+        enemyCombatName: "{0} {1}",
+        characterHitpoints: 'Health: {0} / {1}',
+        fight: 'Fight!',
+        noWeapon: 'No weapon!',
+        attack: 'Attack ',
+        attackWith: 'with ',
+        aid: 'Aid',
+        aidWith: 'with ',
+        useCombatItem: 'Use item',
         newGame: 'New game',
+        firstCharacter: 'Create your first character',
+        secondCharacter: 'Create your second character',
+        thirdCharacter: 'Create your third character',
+        nthCharacter: 'Create your {0}th character',
+        nextCharacter: 'Next character',
         nextQuestion: 'Next question',
         startAdventure: 'Start adventure',
         actions: 'Actions',
@@ -49,6 +63,7 @@ export class DefaultTexts {
         encounters: 'Encounters',
         closeModal: 'Close',
         combatTitle: 'Combat',
+        combatRound: 'Combat round {0}',
         value: 'value',
         traderCurrency: 'Trader money: {0} {1}',
         startCombat: 'Start combat',
@@ -84,27 +99,39 @@ export class DefaultTexts {
         cancel: 'Cancel'
     }
 
-    format = (template: string, tokens: string[]): string => {
-        if (template && tokens) {
-            for (var i = 0; i < tokens.length; i++) {
-                var pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
-                var match = new RegExp(pattern).exec(template);
+    format = format;
 
-                if (match) {
-                    var matchReplacement = match[0].replace('{' + i + '}', '');
+    titleCase = (text: string): string => text.substring(0, 1).toUpperCase() + text.substring(1);
+}
 
-                    if (tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
-                        template = template.replace(match[0], ' ');
-                    }
-                    else {
-                        template = template.replace('{' + i + '}', tokens[i]);
-                    }
+export function format (template: string, tokens: string | string[]): string {
+    if (template && tokens) {
+        if (!Array.isArray(tokens)) {
+            tokens = [tokens];
+        }
+
+        tokens.forEach((t, i) => {
+            if (t === undefined) {
+                (<string[]>tokens)[i] = "{undefined}";
+            }
+        })
+
+        for (let i = 0; i < tokens.length; i++) {
+            const pattern = '[ ]{0,1}\\{' + i + '\\}[ ]{0,1}';
+            const match = new RegExp(pattern).exec(template);
+
+            if (match) {
+                const matchReplacement = match[0].replace('{' + i + '}', '');
+
+                if (tokens[i].trim && tokens[i].trim().length == 0 && matchReplacement.length > 1) {
+                    template = template.replace(match[0], ' ');
+                }
+                else {
+                    template = template.replace('{' + i + '}', tokens[i]);
                 }
             }
         }
-
-        return template;
     }
 
-    titleCase = (text: string): string => text.substring(0, 1).toUpperCase() + text.substring(1);
+    return template;
 }

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { Character, IGame, Rules } from '../../../../Games/MyRolePlayingGame/types';
-import { ICharacter, IEnemy, ICompiledLocation, IHelpers, ICreateCharacter } from 'storyScript/Interfaces/storyScript';
+import { ICharacter, IEnemy, ICompiledLocation, IHelpers, ICreateCharacter, ICombatSetup, ICombatTurn } from 'storyScript/Interfaces/storyScript';
 
 describe("Rules", function() {
 
@@ -8,8 +8,8 @@ describe("Rules", function() {
         var service = Rules();
         var character = new Character();
 
-        var game = {
-            character: <ICharacter>character,
+        var game = <IGame>{
+            activeCharacter: <ICharacter>character,
             currentLocation: <ICompiledLocation>{
                 activeEnemies: []
             },
@@ -26,15 +26,18 @@ describe("Rules", function() {
             }
         };
         var enemy = <IEnemy>{
-            hitpoints: 10
+            hitpoints: 10,
+            currentHitpoints: 10
         };
 
-        service.combat.fight(<IGame>game, enemy);
+        const setup = <ICombatSetup<ICombatTurn>>[{ character: character, target: enemy }];
+        setup.round = 1;
+        service.combat.fight(game, setup);
 
         // Character default strength 1 + 6.
         var expected = 3;
 
-        expect(enemy.hitpoints).toEqual(expected);
+        expect(enemy.currentHitpoints).toEqual(expected);
     });
 
     test("should create a new character", function() {

@@ -1,24 +1,24 @@
-﻿import { IRules } from '../Interfaces/rules/rules';
-import { IGame } from '../Interfaces/game';
-import { ICharacter } from '../Interfaces/character';
-import { IItem } from '../Interfaces/item';
-import { IQuest } from '../Interfaces/quest';
-import { ICharacterService } from '../Interfaces/services/characterService';
-import { ICreateCharacter } from '../Interfaces/createCharacter/createCharacter';
-import { ICreateCharacterAttribute } from '../Interfaces/createCharacter/createCharacterAttribute';
-import { ICreateCharacterAttributeEntry } from '../Interfaces/createCharacter/createCharacterAttributeEntry';
-import { ICreateCharacterStep } from '../Interfaces/createCharacter/createCharacterStep';
-import { GameState } from '../Interfaces/enumerations/gameState';
-import { EquipmentType } from '../Interfaces/enumerations/equipmentType';
+﻿import {IRules} from '../Interfaces/rules/rules';
+import {IGame} from '../Interfaces/game';
+import {ICharacter} from '../Interfaces/character';
+import {IItem} from '../Interfaces/item';
+import {IQuest} from '../Interfaces/quest';
+import {ICharacterService} from '../Interfaces/services/characterService';
+import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
+import {ICreateCharacterAttribute} from '../Interfaces/createCharacter/createCharacterAttribute';
+import {ICreateCharacterAttributeEntry} from '../Interfaces/createCharacter/createCharacterAttributeEntry';
+import {ICreateCharacterStep} from '../Interfaces/createCharacter/createCharacterStep';
+import {GameState} from '../Interfaces/enumerations/gameState';
+import {EquipmentType} from '../Interfaces/enumerations/equipmentType';
 
 export class CharacterService implements ICharacterService {
     constructor(private _game: IGame, private _rules: IRules) {
     }
 
-    getSheetAttributes = (): string[] => this._rules.character.getSheetAttributes && this._rules.character.getSheetAttributes() || [];
+    getSheetAttributes = (): string[] => this._rules.character.getSheetAttributes?.() || [];
 
     setupCharacter = (): ICreateCharacter => {
-        var sheet = (this._rules.character.getCreateCharacterSheet && this._rules.character.getCreateCharacterSheet()) || { steps: []};
+        const sheet = (this._rules.character.getCreateCharacterSheet?.()) || {steps: []};
         this.prepareSheet(sheet);
         this._game.createCharacterSheet = sheet;
         return sheet;
@@ -26,7 +26,7 @@ export class CharacterService implements ICharacterService {
 
     limitSheetInput = (value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
         if (!isNaN(value)) {
-            var totalAssigned = 0;
+            let totalAssigned = 0;
 
             attribute.entries.forEach((innerEntry, index) => {
                 if (index !== attribute.entries.indexOf(entry)) {
@@ -42,42 +42,37 @@ export class CharacterService implements ICharacterService {
 
             if (entry.value > entry.max) {
                 entry.value = entry.max;
-            }
-            else if (entry.value < entry.min) {
+            } else if (entry.value < entry.min) {
                 entry.value = entry.min;
             }
-        }
-        else {
+        } else {
             entry.value = entry.min;
         }
     }
 
     distributionDone = (sheet: ICreateCharacter, step?: ICreateCharacterStep): boolean => {
-        var done = true;
+        let done = true;
 
         if (step) {
             done = this.checkStep(step);
-        }
-        else {
-            if (sheet && sheet.steps) {
-                sheet.steps.forEach(step => {
-                    done = this.checkStep(step);
-                });
-            }
+        } else if (sheet?.steps) {
+            sheet.steps.forEach(step => {
+                done = this.checkStep(step);
+            });
         }
 
         return done;
     }
 
     createCharacter = (game: IGame, characterData: ICreateCharacter): ICharacter => {
-        var character = null;
+        let character: ICharacter;
 
         if (this._rules.character.createCharacter) {
 
             character = this._rules.character.createCharacter(game, characterData);
+            character.currentHitpoints = character.hitpoints;
             this.processDefaultSettings(character, characterData);
-        }
-        else {
+        } else {
             // Set a placeholder character to keep the game logic functional when no character is used.
             character = <any>{
                 name: null
@@ -88,7 +83,7 @@ export class CharacterService implements ICharacterService {
     }
 
     setupLevelUp = (): ICreateCharacter => {
-        var sheet = this._rules.character.getLevelUpSheet && this._rules.character.getLevelUpSheet();
+        const sheet = this._rules.character.getLevelUpSheet?.();
 
         if (sheet) {
             this.prepareSheet(sheet);
@@ -98,11 +93,10 @@ export class CharacterService implements ICharacterService {
         return sheet;
     }
 
-    levelUp = (): ICharacter => {
-        var character = this._game.character;
-        var sheet = this._game.createCharacterSheet;
+    levelUp = (character: ICharacter): ICharacter => {
+        const sheet = this._game.createCharacterSheet;
 
-        if (this._rules.character.levelUp && this._rules.character.levelUp(character, sheet)) {
+        if (this._rules.character.levelUp?.(character, sheet)) {
             this.processDefaultSettings(character, sheet);
         }
 
@@ -110,36 +104,46 @@ export class CharacterService implements ICharacterService {
         return character;
     }
 
-    pickupItem = (item: IItem): boolean => {
-        var isCombining = this._game.combinations && this._game.combinations.activeCombination;
+    pickupItem = (character: ICharacter, item: IItem): boolean => {
+        const isCombining = this._game.combinations?.activeCombination;
 
         if (isCombining) {
             this._game.combinations.tryCombine(item)
             return false;
         }
 
-        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, this._game.character, item)) {
+        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, character, item)) {
             return false;
         }
 
         this._game.currentLocation.items.delete(item);
-        this._game.character.items.add(item);
+        character.items.add(item);
 
         return true;
     }
 
-    canEquip = (item: IItem): boolean => item.equipmentType != EquipmentType.Miscellaneous;
+    isEquippable = (item: IItem): boolean => item.equipmentType != EquipmentType.Miscellaneous;
 
-    canDrop = (item: IItem): boolean => typeof item.canDrop === 'function' ? 
-                                            item.canDrop(this._game, item) : typeof item.canDrop === 'undefined' ? 
-                                            true : item.canDrop;
+    canDrop = (item: IItem): boolean => {
+        let canDrop: boolean;
 
-    equipItem = (item: IItem): boolean => {
-        var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
+        if (typeof item.canDrop === 'function') {
+            canDrop = item.canDrop(this._game, item);
+        } else if (typeof item.canDrop === 'undefined') {
+            canDrop = true;
+        } else {
+            canDrop = item.canDrop;
+        }
 
-        for (var n in equipmentTypes) {
-            var type = this.getEquipmentType(equipmentTypes[n]);
-            var unequipped = this.unequip(type);
+        return canDrop
+    };
+
+    equipItem = (character: ICharacter, item: IItem): boolean => {
+        const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
+
+        for (const n in equipmentTypes) {
+            const type = this.getEquipmentType(equipmentTypes[n]);
+            const unequipped = this.unequip(character, type);
 
             if (!unequipped) {
                 return false;
@@ -147,32 +151,32 @@ export class CharacterService implements ICharacterService {
         }
 
         if (this._rules.character.beforeEquip) {
-            if (!this._rules.character.beforeEquip(this._game, this._game.character, item)) {
+            if (!this._rules.character.beforeEquip(this._game, character, item)) {
                 return false;
             }
         }
 
         if (item.equip) {
-            if (!item.equip(item, this._game)) {
+            if (!item.equip(character, item, this._game)) {
                 return false;
             }
         }
 
-        for (var n in equipmentTypes) {
-            var type = this.getEquipmentType(equipmentTypes[n]);
-            this._game.character.equipment[type] = item;
+        for (const n in equipmentTypes) {
+            const type = this.getEquipmentType(equipmentTypes[n]);
+            character.equipment[type] = item;
         }
 
-        this._game.character.items.remove(item);
+        character.items.splice(character.items.indexOf(item), 1);
         return true;
     }
 
-    unequipItem = (item: IItem): boolean => {
-        var equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
+    unequipItem = (character: ICharacter, item: IItem): boolean => {
+        const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
-        for (var n in equipmentTypes) {
-            var type = this.getEquipmentType(equipmentTypes[n]);
-            var unequipped = this.unequip(type);
+        for (const n in equipmentTypes) {
+            const type = this.getEquipmentType(equipmentTypes[n]);
+            const unequipped = this.unequip(character, type);
 
             if (!unequipped) {
                 return false;
@@ -182,29 +186,27 @@ export class CharacterService implements ICharacterService {
         return true;
     }
 
-    isSlotUsed = (slot: string): boolean => {
-        if (this._game.character && this._game.character.equipment) {
-            return this._game.character.equipment[slot] !== undefined;
+    isSlotUsed = (character: ICharacter, slot: string): boolean => {
+        if (character?.equipment) {
+            return character.equipment[slot] !== undefined;
         }
 
         return false;
     }
 
-    dropItem = (item: IItem): void => {
+    dropItem = (character: ICharacter, item: IItem): void => {
         if (!item) {
             return;
         }
 
-        var drop = true;
+        let drop = true;
 
-        if (this._rules.character.beforeDrop)
-        {
-            drop = this._rules.character.beforeDrop(this._game, this._game.character, item);
+        if (this._rules.character.beforeDrop) {
+            drop = this._rules.character.beforeDrop(this._game, character, item);
         }
 
-        if (drop)
-        {
-            this._game.character.items.delete(item);
+        if (drop) {
+            character.items.delete(item);
             this._game.currentLocation.items.add(item);
         }
     }
@@ -215,37 +217,38 @@ export class CharacterService implements ICharacterService {
         if (sheet.steps.length == 0) {
             return;
         }
-        
+
         sheet.currentStep = 0;
 
-        if (sheet.steps[0].questions && sheet.steps[0].questions[0].entries) {
+        if (sheet.steps[0].questions?.[0]?.entries.length > 0) {
             sheet.steps[0].questions[0].selectedEntry = sheet.steps[0].questions[0].entries[0];
+        }
+
+        if (sheet.steps[0].initStep) {
+            sheet.steps[0].initStep(this._game.party, sheet, sheet.steps[0], undefined);
         }
 
         this.setFinish(sheet);
 
-        sheet.nextStep = (data: ICreateCharacter, next: Boolean) => {
-            if (next !== undefined && next !== null && !next)
-            {
+        sheet.nextStep = (data: ICreateCharacter, next: boolean) => {
+            if (next !== undefined && next !== null && !next) {
                 this.setFinish(data);
                 return;
             }
 
-            var selector = data.steps[data.currentStep].nextStepSelector;
-            var previousStep = data.currentStep;
+            const selector = data.steps[data.currentStep].nextStepSelector;
+            const previousStep = data.currentStep;
 
             if (selector) {
-                var nextStep = typeof selector === 'function' ? (<any>selector)(data, data.steps[data.currentStep]) : selector;
-                data.currentStep = nextStep;
-            }
-            else {
+                data.currentStep = typeof selector === 'function' ? (<any>selector)(this._game.party, data, data.steps[data.currentStep]) : selector;
+            } else {
                 data.currentStep++;
             }
 
-            var currentStep = data.steps[data.currentStep];
+            const currentStep = data.steps[data.currentStep];
 
             if (currentStep.initStep) {
-                currentStep.initStep(data, previousStep, currentStep);
+                currentStep.initStep(this._game.party, data, currentStep, previousStep);
             }
 
             if (currentStep.attributes) {
@@ -260,7 +263,7 @@ export class CharacterService implements ICharacterService {
 
             if (currentStep.questions) {
                 currentStep.questions.forEach(question => {
-                    if (question.entries && question.entries.length) {
+                    if (question.entries?.length) {
                         question.selectedEntry = question.entries[0];
                     }
                 });
@@ -269,22 +272,21 @@ export class CharacterService implements ICharacterService {
     }
 
     private checkStep = (step: ICreateCharacterStep): boolean => {
-        var done = true;
+        let done = true;
 
         if (step.attributes) {
             let totalAssignedAll = 0;
 
             step.attributes.forEach(attr => {
-                var totalAssigned = 0;
-                var textChoicesFilled = 0;
+                let totalAssigned = 0;
+                let textChoicesFilled = 0;
 
                 attr.entries.forEach((entry) => {
                     if (!entry.max) {
                         if (entry.value) {
                             textChoicesFilled += 1;
                         }
-                    }
-                    else {
+                    } else {
                         totalAssigned += <number>entry.value || 0;
                     }
                 });
@@ -326,17 +328,17 @@ export class CharacterService implements ICharacterService {
                     });
                 });
             }
-        }); 
+        });
     }
 
-    private unequip = (type: string, currentItem?: IItem): boolean => {
-        var equippedItem = <IItem>this._game.character.equipment[type];
+    private unequip = (character: ICharacter, type: string, currentItem?: IItem): boolean => {
+        const equippedItem = <IItem>character.equipment[type];
 
         if (equippedItem) {
             if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
-                for (var n in equippedItem.equipmentType) {
-                    var type = this.getEquipmentType(equippedItem.equipmentType[n]);
-                    var unEquipped = this.unequip(type, equippedItem);
+                for (const n in equippedItem.equipmentType) {
+                    const type = this.getEquipmentType(equippedItem.equipmentType[n]);
+                    const unEquipped = this.unequip(character, type, equippedItem);
 
                     if (!unEquipped) {
                         return false;
@@ -347,35 +349,35 @@ export class CharacterService implements ICharacterService {
             }
 
             if (this._rules.character.beforeUnequip) {
-                if (!this._rules.character.beforeUnequip(this._game, this._game.character, equippedItem)) {
+                if (!this._rules.character.beforeUnequip(this._game, character, equippedItem)) {
                     return false;
                 }
             }
 
             if (equippedItem.unequip) {
-                if (!equippedItem.unequip(equippedItem, this._game)) {
+                if (!equippedItem.unequip(character, equippedItem, this._game)) {
                     return false;
                 }
             }
 
-            if (equippedItem && equippedItem.equipmentType && this._game.character.items.indexOf(equippedItem) < 0) {
-                this._game.character.items.push(equippedItem);
+            if (equippedItem?.equipmentType && character.items.indexOf(equippedItem) < 0) {
+                character.items.push(equippedItem);
             }
 
-            this._game.character.equipment[type] = null;
+            character.equipment[type] = null;
         }
 
         return true;
     }
 
     private getEquipmentType = (slot: EquipmentType | string): string => {
-        var type = EquipmentType[slot] ?? slot;
+        const type = EquipmentType[slot] ?? slot;
         return type.substring(0, 1).toLowerCase() + type.substring(1);
     }
 
     private setFinish = (data: ICreateCharacter): void => {
-        if (data && data.steps) {
-            var activeStep = data.steps[data.currentStep];
+        if (data?.steps) {
+            const activeStep = data.steps[data.currentStep];
 
             if (activeStep.questions) {
                 activeStep.finish = activeStep.questions.filter(q => q.selectedEntry.finish).length > 0;

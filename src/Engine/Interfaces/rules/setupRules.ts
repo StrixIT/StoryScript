@@ -4,10 +4,10 @@ import { StateList } from '../stateList';
 
 export interface ISetupRules {
     /**
-     * Set this to true if you want to show an automatic destination back to the location the player
-     * visited previously. Used for testing only. This setting is removed when publishing the game.
+     * Set this to a positive value greater than 1 to allow the player to create a party of more than
+     * one character.
      */
-    autoBackButton?: boolean;
+    numberOfCharacters?: number;
 
     /**
      * Set this to true if you want to show an intro screen when the game starts.

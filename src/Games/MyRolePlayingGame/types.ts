@@ -1,3 +1,4 @@
+import { IParty } from './interfaces/party';
 import { IDestination } from './interfaces/destination';
 import { IFeature, Feature } from './interfaces/feature';
 import { IItem, Item } from './interfaces/item';
@@ -11,8 +12,10 @@ import { IGame } from './interfaces/game';
 import { CustomTexts } from './customTexts';
 import { Rules } from './rules';
 import { Character } from './character';
+import { ICombatSetup } from './interfaces/combatSetup';
 
 export type {
+    IParty,
     IDestination,
     IFeature,
     IItem,
@@ -24,6 +27,7 @@ export type {
     ICompiledLocation, 
     IEquipment,
     IGame, 
+    ICombatSetup
 }
 
 export { 

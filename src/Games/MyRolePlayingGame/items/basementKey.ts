@@ -7,7 +7,7 @@ export function BasementKey() {
         keepAfterUse: false,
         open: {
             text: 'Open',
-            execute: OpenWithKey((game: IGame, barrier: IBarrier, destination: IDestination) => {
+            execute: OpenWithKey((game: IGame, barrier: [string, IBarrier], destination: IDestination) => {
                 game.logToLocationLog('You open the trap door. A wooden staircase leads down into the darkness.');
             })
         },

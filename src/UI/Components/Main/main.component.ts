@@ -1,6 +1,6 @@
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
+import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { GameService } from 'storyScript/Services/gameService';
 import { Component, ElementRef, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
@@ -15,7 +15,7 @@ export class MainComponent {
     private _hostElement: ElementRef;
 
     constructor() {
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this._hostElement = inject(ElementRef);
         this._sharedMethodService= inject(SharedMethodService)
         this._gameService= inject(GameService);

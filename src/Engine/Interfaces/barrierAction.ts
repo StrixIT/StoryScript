@@ -17,5 +17,5 @@ export interface IBarrierAction {
      * @param barrier The barrier
      * @param destination The destination the barrier is for
      */
-    execute(game: IGame, barrier: IBarrier, destination: IDestination): void;
+    execute(game: IGame, barrier: [string, IBarrier], destination: IDestination): void;
 }

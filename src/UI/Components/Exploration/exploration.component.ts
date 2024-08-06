@@ -1,24 +1,33 @@
-import { IGame, IInterfaceTexts, IPerson, ITrade, IAction, IDestination, IBarrier, IBarrierAction, ActionStatus } from 'storyScript/Interfaces/storyScript';
-import { isEmpty } from 'storyScript/utilities';
-import { GameService } from 'storyScript/Services/gameService';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ObjectFactory } from 'storyScript/ObjectFactory';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
-import { RuntimeProperties } from 'storyScript/runtimeProperties';
+import {
+    ActionStatus,
+    IAction,
+    IBarrier,
+    IBarrierAction,
+    IDestination,
+    IGame,
+    IInterfaceTexts,
+    IPerson,
+    ITrade
+} from 'storyScript/Interfaces/storyScript';
+import {isEmpty} from 'storyScript/utilityFunctions';
+import {GameService} from 'storyScript/Services/gameService';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'exploration',
     template: getTemplate('exploration', await import('./exploration.component.html'))
 })
 export class ExplorationComponent {
-    private _gameService: GameService; 
+    private _gameService: GameService;
     private _sharedMethodService: SharedMethodService;
 
     constructor() {
         this._gameService = inject(GameService);
         this._sharedMethodService = inject(SharedMethodService);
-        const objectFactory = inject(ObjectFactory);
+        const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
     }
@@ -32,30 +41,28 @@ export class ExplorationComponent {
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-    getButtonClass = (action: IAction): string => this._sharedMethodService.getButtonClass(action);
+    getButtonClass = (action: [string, IAction]): string => this._sharedMethodService.getButtonClass(action);
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    disableActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action.status == undefined ? false : (<any>action).status == ActionStatus.Disabled;
+    disableActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action[1].status == undefined ? false : action[1].status == ActionStatus.Disabled;
 
-    hideActionButton = (action: IAction): boolean => typeof action.status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action.status == undefined ? false : (<any>action).status == ActionStatus.Unavailable;
+    hideActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action[1].status == undefined ? false : action[1].status == ActionStatus.Unavailable;
 
-    executeAction = (action: IAction): void => this._sharedMethodService.executeAction(action, this);
+    executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
 
     // Do not remove this method nor its arguments, it is called dynamically from the executeAction method of the SharedMethodService!
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
 
-    executeBarrierAction = (barrier: IBarrier, action: IBarrierAction, destination: IDestination): void => {
-        if (this.game.combinations.tryCombine(barrier))
-        {
-            return;
-        }
-        else if (this.game.combinations.activeCombination) {
+    executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): void => {
+        if (this.game.combinations.tryCombine(barrier[1]).success || this.game.combinations.activeCombination) {
             return;
         }
 
         this._gameService.executeBarrierAction(barrier, action, destination);
     }
 
-    isPreviousLocation = (destination: IDestination): boolean => { return destination[RuntimeProperties.IsPreviousLocation] };
+    isPreviousLocation = (destination: IDestination): boolean => {
+        return (<any>destination).isPreviousLocation
+    };
 }

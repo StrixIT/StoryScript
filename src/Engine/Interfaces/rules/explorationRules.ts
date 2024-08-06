@@ -1,3 +1,4 @@
+import { ICharacter } from '../character';
 import { ICompiledLocation } from '../compiledLocation';
 import { IGame } from '../game';
 import { IItem } from '../item';
@@ -30,8 +31,9 @@ export interface IExplorationRules {
     /**
      * Use this hook to run code just before the player tries to use an item. Return true if the
      * item's use function should be run after your code has run, false otherwise.
-     * @param game 
-     * @param item 
+     * @param game The active game
+     * @param character The character using the item
+     * @param item The item about to be used
      */
-    onUseItem?(game: IGame, item: IItem): boolean;
+    onUseItem?(game: IGame, character: ICharacter, item: IItem): boolean;
 }

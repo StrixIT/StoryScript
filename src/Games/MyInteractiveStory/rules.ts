@@ -1,11 +1,9 @@
 ﻿import { IRules, ICreateCharacter, ICharacter, ICombinationAction, GameState } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character } from './types';
-import { Start } from './locations/Start';
+import { IGame, IEnemy, Character, ICombatSetup } from './types';
 
 export function Rules(): IRules {
     return {
         setup: {
-            autoBackButton: true,
             playList: {
                 'Contemplate_the_stars.mp3': [GameState.Play]
             },
@@ -49,13 +47,13 @@ export function Rules(): IRules {
         },
 
         combat: {     
-            fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
+            fight: (game: IGame, combatSetup: ICombatSetup, retaliate?: boolean) => {
                 retaliate = retaliate == undefined ? true : retaliate;
 
                 // Implement character attack here.
 
                 if (retaliate) {
-                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.hitpoints > 0; }).forEach(enemy => {
+                    game.currentLocation.activeEnemies.filter((enemy: IEnemy) => { return enemy.currentHitpoints > 0; }).forEach(enemy => {
                         // Implement monster attack here
                     });
                 }

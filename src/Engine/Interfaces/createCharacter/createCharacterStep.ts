@@ -1,6 +1,7 @@
 import { ICreateCharacter } from './createCharacter';
 import { ICreateCharacterQuestion } from './createCharacterQuestion';
 import { ICreateCharacterAttribute } from './createCharacterAttribute';
+import { IParty } from '../party';
 
 /**
  * The definition of a step in the character creation process.
@@ -30,7 +31,7 @@ export interface ICreateCharacterStep {
      * The selector that determines what step will be activated after the current one.
      * Either pass the number of the step or a function returning that number.
      */
-    nextStepSelector?: number | ((character: ICreateCharacter, currentStep: ICreateCharacterStep) => number);
+    nextStepSelector?: number | ((party: IParty, character: ICreateCharacter, currentStep: ICreateCharacterStep) => number);
 
     /**
      * Set this flag to true to mark this step as one of the final steps in character creation. 
@@ -40,9 +41,10 @@ export interface ICreateCharacterStep {
 
         /**
      * A function that executes when the step is to be displayed to the player.
+     * @param party The party created so far
      * @param character The character sheet filled in so far
-     * @param previousStep The step just completed by the player
      * @param currentStep The step about to be shown to the player
+     * @param previousStep The step just completed by the player, or undefined if the step to be displayed is the first step in the sheet.
      */
-    initStep?(character: ICreateCharacter, previousStep: number, currentStep: ICreateCharacterStep): void;
+    initStep?(party: IParty, character: ICreateCharacter, currentStep: ICreateCharacterStep, previousStep?: number): void;
 }

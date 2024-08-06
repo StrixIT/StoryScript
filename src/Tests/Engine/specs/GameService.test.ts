@@ -1,19 +1,21 @@
 import { describe, test, expect } from 'vitest';
 import { GameService } from 'storyScript/Services/gameService';
-import { IItem, IGame } from 'storyScript/Interfaces/storyScript';
+import { IItem, IGame, ICharacter } from 'storyScript/Interfaces/storyScript';
 
 describe("GameService", function() {
 
     test("should call the use function on an item", function() {
-        var used = false;
+        let used = false;
+        const character = <ICharacter>{};
         
-        var item = <IItem>{
-            use: (game: IGame, item: IItem) => {
+        const item = <IItem>{
+            use: (game: IGame, character: ICharacter, item: IItem) => {
                 used = true;
             }
         };
-        var service = getService();
-        service.useItem(item);
+
+        const service = getService();
+        service.useItem(character, item);
 
         expect(used).toBeTruthy();
     });

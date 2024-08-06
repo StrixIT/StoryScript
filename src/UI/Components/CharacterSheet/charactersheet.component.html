@@ -1,15 +1,15 @@
 <div class="box-container" id="character-attributes">
-    <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ game.character.name || texts.characterSheet }}</div>
-    <div id="character-info" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
-        <div id="portraitFrame">
-            <img class="portrait" src="{{game.character.portraitFileName}}" />
+    <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ character.name || texts.characterSheet }}</div>
+    <div class="character-info" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
+        <div class="portraitFrame">
+            <img class="portrait" src="{{character.portraitFileName}}" />
         </div>
         <ul id="attributes-panel" class="list-unstyled">
             <li *ngFor="let attribute of displayCharacterAttributes">
-                {{ texts.titleCase(texts.format(attribute)) }} {{ game.character[attribute] }}
+                {{ texts.titleCase(texts.format(attribute)) }} {{ character[attribute] }}
             </li>
-            <li>{{ texts.hitpoints }} {{ game.character.currentHitpoints }} / {{ game.character.hitpoints }}</li>
-            <li *ngIf="game.character.currency !== undefined">{{ texts.currency }} {{ game.character.currency }}</li>
+            <li>{{ texts.hitpoints }} {{ character.currentHitpoints }} / {{ character.hitpoints }}</li>
+            <li *ngIf="party.characters.length === 1 && party.currency !== undefined">{{ texts.currency }} {{ party.currency }}</li>
         </ul>
         <div class="clearfix"></div>
     </div>
