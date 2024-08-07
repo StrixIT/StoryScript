@@ -41,14 +41,14 @@ export class GameService implements IGameService {
     init = (restart?: boolean, skipIntro?: boolean): void => {
         this._game.helpers = this._helperService;
         
-        const gameState = this._dataService.load<ISaveGame>(GameStateSave) ?? <ISaveGame>{};
+        const gameState = this._dataService.load<ISaveGame>(GameStateSave);
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
-        this._game.party = gameState.party;
+        this._game.party = gameState?.party;
         this.setReadOnlyPartyProperties(this._game.party);
-        this._game.locations = gameState.world;
-        this._game.worldProperties = gameState.worldProperties ?? {};
-        this._game.statistics = gameState.statistics ?? this._game.statistics ?? {};
-        const playedAudio = gameState.playedAudio ?? [];
+        this._game.locations = gameState?.world;
+        this._game.worldProperties = gameState?.worldProperties ?? {};
+        this._game.statistics = gameState?.statistics ?? this._game.statistics ?? {};
+        const playedAudio = gameState?.playedAudio ?? [];
         
         if (restart) {
             this._game.statistics = {};
@@ -60,7 +60,7 @@ export class GameService implements IGameService {
         this.initTexts();
 
         // Use the afterSave hook here to combine the initialized world with other saved data.
-        if (this._rules.general?.afterSave) {
+        if (gameState && this._rules.general?.afterSave) {
             this._rules.general.afterSave(this._game);
         }
 
@@ -123,7 +123,11 @@ export class GameService implements IGameService {
         this.setReadOnlyPartyProperties(this._game.party);
         this._game.party.characters[0].isActiveCharacter = true;
         this._rules.setup.gameStart?.(this._game);
-        this._game.changeLocation?.('Start');
+        
+        if (!this._game.currentLocation) {
+            this._game.changeLocation('Start');
+        }
+        
         this.initSetInterceptors();
         this._game.state = GameState.Play;
         this.saveGame();
