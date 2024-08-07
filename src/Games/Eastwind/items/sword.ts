@@ -1,5 +1,5 @@
 import {Item} from '../types';
-import {EquipmentType} from 'storyScript/Interfaces/storyScript';
+import {EquipmentType, TargetType} from 'storyScript/Interfaces/storyScript';
 import description from './sword.html';
 
 export function Sword() {
@@ -9,6 +9,7 @@ export function Sword() {
         equipmentType: EquipmentType.RightHand,
         attackText: 'You swing your sword',
         attackSound: 'swing3.wav',
-        attackImage: 'Slash.gif'
+        attackImage: 'Slash.gif',
+        targetType: TargetType.Enemy
     });
 }
