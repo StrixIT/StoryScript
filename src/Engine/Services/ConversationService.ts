@@ -50,6 +50,7 @@ export class ConversationService implements IConversationService {
         }
 
         persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
+            person.conversation.actions ??= [];
             const conversationElement = getParsedDocument('conversation', person.description)[0];
             const defaultReply = this.getDefaultReply(conversationElement, person);
             const conversationNodes = conversationElement.getElementsByTagName('node');
@@ -131,7 +132,7 @@ export class ConversationService implements IConversationService {
             node: nameAttribute,
             trigger: this.GetNodeValue(node, 'trigger'),
             lines: '',
-            replies: null,
+            replies: null
         };
     }
 
@@ -168,7 +169,7 @@ export class ConversationService implements IConversationService {
                 const questComplete = this.GetNodeValue(replyNode, 'quest-complete');
                 const setStart = this.GetNodeValue(replyNode, 'set-start');
 
-                if (trigger && !person.conversation.actions?.some(([k, _]) => k === trigger)) {
+                if (trigger && !person.conversation.actions.some(([k, _]) => k === trigger)) {
                     console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
                 }
 
