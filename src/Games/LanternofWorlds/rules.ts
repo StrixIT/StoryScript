@@ -106,16 +106,6 @@ export function Rules(): IRules {
                         modalWrapper.className = `modal-content-wrapper ${newClass}`;
                     }, 0);
                 }
-            },
-            beforeSave: (game: IGame): void => {
-                var maps = groupBy(Object.values(game.locations).filter((l: any) => l.features?.collectionPicture).map((l: any) => l.features? { name: l.features.collectionPicture, map: l.features } : null).filter(e => e !== null), e => e.name);
-                game.worldProperties.maps = Array.from(maps.values()).map(a => { return { name: a[0].name, map: [...a[0].map] }; });
-                Object.values(game.locations).filter((l: any) => l.features?.collectionPicture).forEach((l: any) => {
-                    l.features.length = 0;
-                })
-            },
-            afterSave: (game: IGame): void => {
-                attachMap(game);
             }
         },
         
@@ -194,11 +184,11 @@ export function Rules(): IRules {
                 var selectedStart = characterData.steps[1].questions[0].selectedEntry;
                 var startChoice = { name: 'druidstart', tile: 'fo_2-2' };
 
-                // if (selectedStart && selectedStart.text) {
-                //     startChoice = selectedStart.text === 'You are a druid' ? { name: 'druidstart', tile: 'fo_2-2' }
-                //         : selectedStart.text === 'You are a fisherman' ? { name: 'druidstart', tile: 'fo_2-2' }
-                //         : selectedStart.text === 'You are a veteran warrior' ?{ name: 'druidstart', tile: 'fo_2-2' } : startChoice;
-                // }
+                if (selectedStart && selectedStart.text) {
+                    startChoice = selectedStart.text === 'You are a druid' ? { name: 'druidstart', tile: 'fo_2-2' }
+                        : selectedStart.text === 'You are a fisherman' ? { name: 'druidstart', tile: 'fo_2-2' }
+                        : selectedStart.text === 'You are a veteran warrior' ?{ name: 'druidstart', tile: 'fo_2-2' } : startChoice;
+                }
 
                 game.worldProperties.startChoice = startChoice;
 
@@ -356,13 +346,6 @@ export function Rules(): IRules {
              }
         });
         return map;
-    }
-
-    function attachMap(game: IGame): void {
-        Object.values(game.locations).filter((l: any) => l.features?.collectionPicture).forEach((l: any) => {
-            var features = game.worldProperties.maps?.find(m => m.map.collectionPicture === l.features.collectionPicture).map;
-            features?.forEach(f => l.features.push(f));
-        });
     }
 }
 
