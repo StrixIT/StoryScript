@@ -116,6 +116,24 @@ describe("EntityCreatorFunctions", function () {
         expect(lamp.value).toBe(10);
     });
 
+    test("should use the specified id when creating a dynamic entity", function () {
+        const dynamicItem = function Archway() {
+            return Feature({
+                name: 'Magic Lamp'
+            })
+        };
+
+        const lamp = DynamicEntity(dynamicItem, 'gate');
+        expect(lamp).not.toBeNull();
+        expect(lamp.id).toBe('gate');
+    });
+
+    test("should throw an error when creating a dynamic entity with an anonymous function and no id", function () {
+        expect(() => {
+            const lamp = DynamicEntity(() => Feature({name: 'Magic Lamp'}));
+        }).toThrow();
+    });
+
     test("should throw when creating a custom entity without a name", function () {
         expect(function () {
             customEntity(Bandit, {name: '', hitpoints: 15});

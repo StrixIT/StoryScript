@@ -1,5 +1,5 @@
 import path from 'path';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
 import DotEnv from 'dotenv-webpack';
 import gameName from '../gameName.js';
 
@@ -43,7 +43,7 @@ export default {
     output: output,
     resolve: resolve,
     plugins: [
-        new DotEnv({ path : path.resolve(__dirname, '../.env') })
+        new DotEnv({ path: path.resolve(__dirname, '../.env') })
     ],
-    ignoreWarnings: [ /Accessing import.meta directly is unsupported/ ]
+    ignoreWarnings: [/Accessing import.meta directly is unsupported/]
 }

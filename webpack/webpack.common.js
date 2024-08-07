@@ -24,12 +24,12 @@ export default {
                 ]
             },
             // This is used to remove the script tag used by Vite when working with Webpack.
-            { 
+            {
                 test: /index.html$/,
                 loader: 'string-replace-loader',
                 options: {
-                  search: '<script type="module" src="/src/ui/main.ts"></script>',
-                  replace: '',
+                    search: '<script type="module" src="/src/ui/main.ts"></script>',
+                    replace: '',
                 }
             }
         ],
@@ -38,16 +38,17 @@ export default {
         new ForkTsCheckerWebpackPlugin(),
         new CopyWebpackPlugin({
             patterns: [
-            {
-                from: path.resolve(__dirname, `../src/Games/${gameName}/resources`),
-                to: 'resources',
-                noErrorOnMissing: true
-            },
-            { 
-                from: path.resolve(__dirname, `../src/Games/${gameName}/gameinfo.json`),
-                to: '[name].[ext]'
-            }
-        ]}),
+                {
+                    from: path.resolve(__dirname, `../src/Games/${gameName}/resources`),
+                    to: 'resources',
+                    noErrorOnMissing: true
+                },
+                {
+                    from: path.resolve(__dirname, `../src/Games/${gameName}/gameinfo.json`),
+                    to: '[name][ext]'
+                }
+            ]
+        }),
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash].css',
             chunkFilename: '[name].[contenthash].css',

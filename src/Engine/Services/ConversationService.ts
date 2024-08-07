@@ -50,6 +50,7 @@ export class ConversationService implements IConversationService {
         }
 
         persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
+            person.conversation.actions ??= [];
             const conversationElement = getParsedDocument('conversation', person.description)[0];
             const defaultReply = this.getDefaultReply(conversationElement, person);
             const conversationNodes = conversationElement.getElementsByTagName('node');
@@ -131,7 +132,7 @@ export class ConversationService implements IConversationService {
             node: nameAttribute,
             trigger: this.GetNodeValue(node, 'trigger'),
             lines: '',
-            replies: null,
+            replies: null
         };
     }
 

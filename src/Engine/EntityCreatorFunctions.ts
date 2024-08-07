@@ -70,10 +70,16 @@ export function Action(action: IAction): IAction {
     return Create('action', action);
 }
 
-export function DynamicEntity<T>(entityFunction: () => T): T {
+export function DynamicEntity<T>(entityFunction: () => T, id?: string): T {
     const compiledEntity = <any>entityFunction();
     const entityKey = getEntityKey(compiledEntity);
-    compiledEntity.id = getId(entityFunction);
+    id ??= getId(entityFunction);
+    
+    if (!id) {
+        throw new Error('A dynamic entity needs an id! Either use a named function or specify an id!');
+    }
+    
+    compiledEntity.id = id;
     _registeredIds.set(entityKey, compiledEntity.id);
     return compiledEntity;
 }
