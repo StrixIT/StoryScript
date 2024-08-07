@@ -1,6 +1,5 @@
 import { __dirname } from './webpack.base.js';
-import { resolve } from 'path';
-import { join } from 'path';
+import { join, resolve } from 'path';
 
 export default {
     extends: resolve(__dirname, './webpack.common.js'),

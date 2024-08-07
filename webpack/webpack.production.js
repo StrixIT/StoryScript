@@ -3,14 +3,14 @@ import { __dirname } from './webpack.base.js';
 import { resolve } from 'path';
 
 import jsonfile from 'jsonfile';
-const { readFileSync } = jsonfile;
-
 import { EsbuildPlugin } from 'esbuild-loader';
 import RemovePlugin from 'remove-files-webpack-plugin';
 import ZipPlugin from 'zip-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin';
 import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
+
+const { readFileSync } = jsonfile;
 
 const gameInfo = readFileSync(resolve(__dirname, `../src/Games/${gameName}`, 'gameinfo.json'));
 
@@ -20,13 +20,17 @@ const cleanConfig = {
     }
 };
 
-var plugins = [
+const plugins = [
     new ReplaceInFileWebpackPlugin([{
         dir: 'dist',
         test: [/\.js$/],
         rules: [{
             test: '/storyscript/g',
             search: /<button id="resetbutton"[^>]*>(.*?)<\/button>/g,
+            replace: ''
+        }, {
+            test: '/storyscript/g',
+            search: /<input([\\\w\s.*>"=]*)id="location-selector"[\s\S][^>]*>/gm,
             replace: ''
         }]
     }])
@@ -37,10 +41,12 @@ if (gameInfo.sourcesIncluded) {
         include: ['dist/sources']
     };
 
-    plugins.push(new CopyWebpackPlugin({ patterns: [{
-        from: resolve(__dirname, `../src/Games/${gameName}`),
-        to: 'sources'
-    }]}));
+    plugins.push(new CopyWebpackPlugin({
+        patterns: [{
+            from: resolve(__dirname, `../src/Games/${gameName}`),
+            to: 'sources'
+        }]
+    }));
 
     plugins.push(new ZipPlugin({
         filename: 'sources.zip',
@@ -61,15 +67,15 @@ export default {
             new EsbuildPlugin({ keepNames: true, css: true }),
             new ImageMinimizerPlugin({
                 minimizer: {
-                implementation: ImageMinimizerPlugin.sharpMinify,
-                options: {
-                  encodeOptions: {
-                    jpeg: {
-                      quality: 100,
-                    }
-                  },
-                },
-              }
+                    implementation: ImageMinimizerPlugin.sharpMinify,
+                    options: {
+                        encodeOptions: {
+                            jpeg: {
+                                quality: 100,
+                            }
+                        },
+                    },
+                }
             })
         ],
         nodeEnv: 'production'
