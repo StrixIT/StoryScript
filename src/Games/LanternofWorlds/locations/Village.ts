@@ -85,7 +85,7 @@ export function Village() {
 			{
 				name: "Blacksmith",
 				buy: {
-					description: 'I have these items for sale',
+					text: 'I have these items for sale',
 					emptyText: '',
 					itemSelector: (game: IGame, item: IItem): boolean => {
 						return true;
@@ -93,7 +93,7 @@ export function Village() {
 					maxItems: 2,
 				},
 				sell: {
-					description: 'I will buy these items from you',
+					text: 'I will buy these items from you',
 					emptyText: '',
 					itemSelector: (game: IGame, item: IItem): boolean => {
 						return true;
@@ -104,7 +104,7 @@ export function Village() {
 			{
 				name: "Magic shop",
 				buy: {
-					description: 'I have these trinkets available',
+					text: 'I have these trinkets available',
 					emptyText: '',
 					itemSelector: (game: IGame, item: IItem): boolean => {
 						return true;
@@ -112,7 +112,7 @@ export function Village() {
 					maxItems: 2,
 				},
 				sell: {
-					description: 'Those look interesting',
+					text: 'Those look interesting',
 					emptyText: '',
 					itemSelector: (game: IGame, item: IItem): boolean => {
 						return true;

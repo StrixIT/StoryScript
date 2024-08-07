@@ -1,7 +1,7 @@
 import { IFeatureCollection } from 'storyScript/Interfaces/storyScript';
 import { ILocation, IFeature, Feature } from './types';
 import { Constants } from './Constants';
-import { DynamicEntity } from 'storyScript/ObjectConstructors';
+import { DynamicEntity } from 'storyScript/EntityCreatorFunctions';
 
 export enum TileType {
     Square,

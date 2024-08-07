@@ -1,6 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinable, ICombinationAction, GameState, PlayState } from 'storyScript/Interfaces/storyScript';
-import { clone } from 'storyScript/utilities';
-import { IGame, IFeature, IEnemy, Character, IItem } from './types';
+import {IGame, IFeature, IEnemy, Character, IItem, ICombatSetup} from './types';
 import { Constants } from './Constants';
 import { Sword } from './items/sword';
 import { Potion } from './items/potion';
@@ -10,13 +9,13 @@ export function Rules(): IRules {
     return {
         setup: {
             intro: true,
-            playList: [
-                [GameState.Play, 'play.mp3'],
-                [PlayState.Combat, 'createCharacter.mp3'],
-            ],
+            playList: {
+                'play.mp3': [GameState.Play],
+                'createCharacter.mp3': [PlayState.Combat]
+            },
             gameStart: (game: IGame) => {
-                game.character.items.push(Sword());
-                game.character.items.push(Potion());
+                game.activeCharacter.items.push(Sword());
+                game.activeCharacter.items.push(Potion());
                 game.changeLocation(game.worldProperties.startChoice.name, true);
                 setPlayerPosition(game, game.worldProperties.startChoice.tile);
             },
@@ -109,9 +108,9 @@ export function Rules(): IRules {
                 }
             },
             beforeSave: (game: IGame): void => {
-                var maps = groupBy(game.locations.filter(l => l.features?.collectionPicture).map(l => l.features? { name: l.features.collectionPicture, map: l.features } : null).filter(e => e !== null), e => e.name);
-                game.worldProperties.maps = clone(Array.from(maps.values()).map(a => { return { name: a[0].name, map: a[0].map }; }));
-                game.locations.filter(l => l.features?.collectionPicture).forEach(l => {
+                var maps = groupBy(Object.values(game.locations).filter((l: any) => l.features?.collectionPicture).map((l: any) => l.features? { name: l.features.collectionPicture, map: l.features } : null).filter(e => e !== null), e => e.name);
+                game.worldProperties.maps = Array.from(maps.values()).map(a => { return { name: a[0].name, map: [...a[0].map] }; });
+                Object.values(game.locations).filter((l: any) => l.features?.collectionPicture).forEach((l: any) => {
                     l.features.length = 0;
                 })
             },
@@ -148,7 +147,7 @@ export function Rules(): IRules {
                                     ]
                                 }
                             ],
-                            nextStepSelector: (character, currentStep) => {
+                            nextStepSelector: (party, character, currentStep) => {
                                 switch (currentStep.questions[0].selectedEntry.value) {
                                     case '1': {
                                         return 1;
@@ -209,7 +208,7 @@ export function Rules(): IRules {
         },
 
         exploration: {
-            onUseItem: (game: IGame, item: IItem): boolean => {
+            onUseItem: (game: IGame, character: ICharacter, item: IItem): boolean => {
                 if (item.useSound) {
                     game.sounds.playSound(item.useSound);
                 }
@@ -219,10 +218,10 @@ export function Rules(): IRules {
         },
 
         combat: {     
-            fight: (game: IGame, enemy: IEnemy, retaliate?: boolean) => {
+            fight: (game: IGame, combatRound: ICombatSetup, retaliate?: boolean) => {
                 retaliate = retaliate == undefined ? true : retaliate;
 
-                var playerAttackSound = game.character.equipment.hands?.combatSound ?? 'swing3.wav';
+                var playerAttackSound = game.activeCharacter.equipment.hands?.combatSound ?? 'swing3.wav';
 
                 game.sounds.playSound(playerAttackSound);
 
@@ -234,9 +233,9 @@ export function Rules(): IRules {
                     });
                 }
             },
-            beforeDrop: (game: IGame, enemy: IEnemy, item: IItem): boolean => {
+            beforeDrop: (game: IGame, character: ICharacter, enemy: IEnemy, item: IItem): boolean => {
                 // Instead of dropping items to the ground, put them in the character inventory.
-                game.character.items.push(item);
+                game.activeCharacter.items.push(item);
                 return false;
             }
         },
@@ -360,7 +359,7 @@ export function Rules(): IRules {
     }
 
     function attachMap(game: IGame): void {
-        game.locations.filter(l => l.features?.collectionPicture).forEach(l => {
+        Object.values(game.locations).filter((l: any) => l.features?.collectionPicture).forEach((l: any) => {
             var features = game.worldProperties.maps?.find(m => m.map.collectionPicture === l.features.collectionPicture).map;
             features?.forEach(f => l.features.push(f));
         });

@@ -1,5 +1,5 @@
 import { IGame, Location } from '../../types';
-import description from './fishermanstart.html';
+import description from './Fishermanstart.html';
 
 export function Fishermanstart() {
 	return Location({

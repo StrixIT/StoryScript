@@ -6,9 +6,9 @@ export function Start() {
     return Location({
         name: 'Your adventure begins',
         description: description,
-        enterEvents: [
+        enterEvents: [['ChangeLocation', 
             (game) => { game.changeLocation(Cave) }
-        ],
+        ]],
         destinations: [
             
         ]
