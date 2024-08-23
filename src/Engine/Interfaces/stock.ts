@@ -1,4 +1,3 @@
-import { ICollection } from './collection';
 import { IItem } from './item';
 import { IGame } from './game';
 
@@ -38,5 +37,5 @@ export interface IStock {
     /**
      * The items available for buying or selling.
      */
-    items?: ICollection<IItem>;
+    items?: IItem[];
 }

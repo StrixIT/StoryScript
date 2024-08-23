@@ -30,6 +30,7 @@ import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} fr
 import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
+import {EquipmentType} from "storyScript/Interfaces/enumerations/equipmentType.ts";
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -40,27 +41,27 @@ export class GameService implements IGameService {
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
         this._game.helpers = this._helperService;
-        
-        const gameState = this._dataService.load<ISaveGame>(GameStateSave) ?? <ISaveGame>{};
+
+        const gameState = this._dataService.load<ISaveGame>(GameStateSave);
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
-        this._game.party = gameState.party;
+        this._game.party = gameState?.party;
         this.setReadOnlyPartyProperties(this._game.party);
-        this._game.locations = gameState.world;
-        this._game.worldProperties = gameState.worldProperties ?? {};
-        this._game.statistics = gameState.statistics ?? this._game.statistics ?? {};
-        const playedAudio = gameState.playedAudio ?? [];
-        
+        this._game.locations = gameState?.world;
+        this._game.worldProperties = gameState?.worldProperties ?? {};
+        this._game.statistics = gameState?.statistics ?? this._game.statistics ?? {};
+        const playedAudio = gameState?.playedAudio ?? [];
+
         if (restart) {
             this._game.statistics = {};
             this._game.worldProperties = {};
         }
-        
+
         this._rules.setup?.setupGame?.(this._game);
         this.setupGame(playedAudio);
         this.initTexts();
 
         // Use the afterSave hook here to combine the initialized world with other saved data.
-        if (this._rules.general?.afterSave) {
+        if (gameState && this._rules.general?.afterSave) {
             this._rules.general.afterSave(this._game);
         }
 
@@ -99,6 +100,7 @@ export class GameService implements IGameService {
         };
 
         this._dataService.save(GameStateSave, emptySave);
+        this._game.locations = null;
         this._locationService.init();
 
         // Save here to use the before and after save hooks after refreshing the world,
@@ -123,10 +125,28 @@ export class GameService implements IGameService {
         this.setReadOnlyPartyProperties(this._game.party);
         this._game.party.characters[0].isActiveCharacter = true;
         this._rules.setup.gameStart?.(this._game);
-        this._game.changeLocation?.('Start');
+
+        if (!this._game.currentLocation) {
+            this._game.changeLocation('Start');
+        }
+
         this.initSetInterceptors();
         this._game.state = GameState.Play;
         this.saveGame();
+    }
+
+    resume = (locationName: string): void => {
+        this.initSetInterceptors();
+        this.checkEquipment();
+        const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
+        const previousLocationName = this._game.party.previousLocationId;
+
+        if (previousLocationName) {
+            this._game.previousLocation = this._game.locations.get(previousLocationName);
+        }
+
+        this._locationService.changeLocation(lastLocation.id, false, this._game);
+        this._game.state = GameState.Play;
     }
 
     levelUp = (character: ICharacter): ICharacter => {
@@ -373,19 +393,6 @@ export class GameService implements IGameService {
         this._texts.titleCase = defaultTexts.titleCase;
     }
 
-    private resume = (locationName: string): void => {
-        this.initSetInterceptors();
-        const lastLocation = this._game.locations.get(locationName) || this._game.locations.start;
-        const previousLocationName = this._game.party.previousLocationId;
-
-        if (previousLocationName) {
-            this._game.previousLocation = this._game.locations.get(previousLocationName);
-        }
-
-        this._locationService.changeLocation(lastLocation.id, false, this._game);
-        this._game.state = GameState.Play;
-    }
-
     private createCharacter = (characterData: ICreateCharacter): void => {
         this._game.party = this._game.party ?? <IParty>{
             characters: [],
@@ -611,6 +618,29 @@ export class GameService implements IGameService {
                 this._game.playState = PlayState.Description;
             }
         });
+    }
+
+    // Check whether all the equipment on the characters is in valid equipment slots. The equipment
+    // type may change during editing, leaving items previously equipped in invalid slots
+    private checkEquipment = () => {
+        this._game.party.characters.forEach(c => {
+            if (c.equipment) {
+                Object.keys(c.equipment).forEach(k => {
+                    const item = <IItem>c.equipment[k];
+                    
+                    if (!item?.equipmentType) {
+                        return;
+                    }
+                    
+                    const equipmentType = k.substring(0, 1).toUpperCase() + k.substring(1);
+                    
+                    if (EquipmentType[<number>item.equipmentType] !== equipmentType) {
+                        c.equipment[k] = null;
+                        c.items.push(item);
+                    }
+                });
+            }
+        })
     }
 
     private initLogs = (): void => {

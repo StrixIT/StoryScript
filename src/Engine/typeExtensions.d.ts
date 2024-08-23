@@ -9,8 +9,6 @@ interface Array<T> {
 
     add?(id?: string | ((...params: any) => T) | T): T;
 
-    remove?(id: string | ((...params: any) => T) | T): void;
-
     delete?(id: string | ((...params: any) => T) | T): void;
 
     all(id: Function): T[];

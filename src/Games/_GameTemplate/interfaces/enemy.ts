@@ -1,4 +1,4 @@
-﻿import { IEnemy as StoryScriptIEnemy, Enemy as StoryScriptEnemy, ICollection } from 'storyScript/Interfaces/storyScript';
+﻿import { IEnemy as StoryScriptIEnemy, Enemy as StoryScriptEnemy } from 'storyScript/Interfaces/storyScript';
 import { IFeature, IItem } from '../types';
 
 export function Enemy(entity: IEnemy): IEnemy {
@@ -6,6 +6,6 @@ export function Enemy(entity: IEnemy): IEnemy {
 }
 
 export interface IEnemy extends IFeature, StoryScriptIEnemy {
-    items?: ICollection<IItem>;
+    items?: IItem[];
     // Add game-specific enemy properties here
 }

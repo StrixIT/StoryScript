@@ -1,13 +1,13 @@
 import {describe, expect, test} from 'vitest';
-import {addArrayExtensions, addFunctionExtensions} from 'storyScript/globalFunctions';
+import {addArrayExtensions, addFunctionExtensions} from 'storyScript/arrayAndFunctionExtensions';
 import {Journal} from '../../../Games/MyRolePlayingGame/items/journal';
 import {Sword} from '../../../Games/MyRolePlayingGame/items/sword';
-import {ICollection, IDestination, ILocation} from 'storyScript/Interfaces/storyScript';
+import {IDestination, ILocation} from 'storyScript/Interfaces/storyScript';
 import {getId} from 'storyScript/utilityFunctions';
 import {compareId} from '../helpers';
 import {StateProperties} from "storyScript/stateProperties.ts";
 
-describe("globalFunctions", function () {
+describe("arrayAndFunctionExtensions", function () {
 
     test("named functions should have a name property", function () {
         addFunctionExtensions();
@@ -212,7 +212,7 @@ describe("globalFunctions", function () {
         addArrayExtensions();
         const Garden = () => <ILocation>{};
 
-        const testArray = <ICollection<IDestination>>[
+        const testArray = <IDestination[]>[
             {
                 name: 'To the bedroom',
                 target: 'Bedroom'

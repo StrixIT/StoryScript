@@ -1,5 +1,4 @@
 ﻿import { IItem } from './item';
-import { ICollection } from './collection';
 import { IEquipment } from './equipment';
 
 /**
@@ -29,12 +28,12 @@ export interface ICharacter {
     /**
      * All items the player is carrying in his backpack. Note that equipped items are not in this list.
      */
-    items: ICollection<IItem>;
+    items: IItem[];
 
     /**
      * All items the character has that can be used during combat.
      */
-    combatItems?: ICollection<IItem>;
+    combatItems?: IItem[];
 
     /**
      * The items the character has equipped.
