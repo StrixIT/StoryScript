@@ -22,9 +22,9 @@ export function Arena() {
                 text: 'Onderzoek symbool',
                 execute: function (game: IGame) {
                     game.worldProperties.onDefeat = onDefeat;
-                    var troll = Troll();
+                    const troll = Troll();
                     troll.onDefeat = game.worldProperties.onDefeat;
-                    game.currentLocation.enemies.push(troll);
+                    game.currentLocation.enemies.add(troll);
                     game.logToActionLog('Er verschijnt op magische wijze een enorme trol waar het symbool was! Hij valt je aan!');
                 }
             }
@@ -33,8 +33,8 @@ export function Arena() {
 
     function onDefeat(game: IGame) {
         game.playState = null;
-        var randomEnemy = game.helpers.randomEnemy();
-        game.currentLocation.enemies.push(randomEnemy);
+        const randomEnemy = game.helpers.randomEnemy();
+        game.currentLocation.enemies.add(randomEnemy);
         randomEnemy.onDefeat = game.worldProperties.onDefeat;
     }
 }

@@ -10,9 +10,9 @@ export function Flee(text: string): IAction {
             return isEmpty(game.currentLocation.activeEnemies) ? ActionStatus.Unavailable : ActionStatus.Available;
         },
         execute: (game: IGame) => {
-            var check = game.helpers.rollDice(game.activeCharacter.vlugheid + 'd6');
-            var result = check * game.activeCharacter.vlugheid;
-            var totalHitpoints = 0;
+            const check = game.helpers.rollDice(game.activeCharacter.vlugheid + 'd6');
+            const result = check * game.activeCharacter.vlugheid;
+            let totalHitpoints = 0;
 
             game.currentLocation.activeEnemies.forEach(function (enemy) {
                 totalHitpoints += enemy.hitpoints;

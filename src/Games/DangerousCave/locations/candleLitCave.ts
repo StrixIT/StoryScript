@@ -32,7 +32,7 @@ export function CandleLitCave() {
                 },
                 fail: (game: IGame) => {
                     game.logToActionLog('Terwijl je rondzoekt, struikel je over een losse steen en maak je veel herrie. Er komt een ork op af!');
-                    game.currentLocation.enemies.push(Orc());
+                    game.currentLocation.enemies.add(Orc);
                 }
             })
         ]]

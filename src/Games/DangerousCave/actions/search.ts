@@ -10,12 +10,12 @@ export interface SearchSettings {
 
 export function Search(settings: SearchSettings): IAction {
     return Action({
-        text: settings && settings.text || 'Zoek',
+        text: settings?.text || 'Zoek',
         actionType: ActionType.Check,
         execute: function (game: IGame) {
-            var result;
-            var bonus = game.helpers.calculateBonus(game.activeCharacter, 'oplettendheid') - 1;
-            var check = game.helpers.rollDice(game.activeCharacter.oplettendheid + 'd6');
+            let result;
+            const bonus = game.helpers.calculateBonus(game.activeCharacter, 'oplettendheid') - 1;
+            const check = game.helpers.rollDice(game.activeCharacter.oplettendheid + 'd6');
             result = check * game.activeCharacter.oplettendheid + bonus;
 
             if (result >= settings.difficulty) {
@@ -23,7 +23,6 @@ export function Search(settings: SearchSettings): IAction {
             } else {
                 settings.fail(game);
             }
-            ;
         }
     });
 }

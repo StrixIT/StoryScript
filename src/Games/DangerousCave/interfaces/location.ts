@@ -1,5 +1,4 @@
 ﻿import {
-    ICollection,
     ICompiledLocation as StoryScriptICompiledLocation,
     ILocation as StoryScriptILocation,
     Location as StoryScriptLocation
@@ -15,10 +14,10 @@ export interface ILocation extends StoryScriptILocation {
 }
 
 export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {
-    activeEnemies?: ICollection<IEnemy>;
-    enemies?: ICollection<IEnemy>;
-    activeItems?: ICollection<IItem>;
-    items?: ICollection<IItem>;
-    activePersons?: ICollection<IPerson>;
-    persons?: ICollection<IPerson>;
+    activeEnemies?: IEnemy[];
+    enemies?: IEnemy[];
+    activeItems?: IItem[];
+    items?: IItem[];
+    activePersons?: IPerson[];
+    persons?: IPerson[];
 }

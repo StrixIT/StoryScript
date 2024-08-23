@@ -19,7 +19,7 @@ export function CentreRoom() {
                 difficulty: 9,
                 success: function (game: IGame) {
                     game.logToLocationLog('Je vindt een schild!');
-                    game.activeCharacter.items.push(SmallShield());
+                    game.activeCharacter.items.add(SmallShield);
                 },
                 fail: function (game: IGame) {
                     game.logToLocationLog('Je vindt niets.');

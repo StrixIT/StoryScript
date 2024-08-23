@@ -10,11 +10,11 @@ export interface UnlockSettings {
 
 export function Unlock(settings: UnlockSettings): IAction {
     return Action({
-        text: settings && settings.text || 'Slot openen',
+        text: settings?.text || 'Slot openen',
         actionType: ActionType.Check,
         execute: function (game: IGame) {
-            var check = game.helpers.rollDice(game.activeCharacter.vlugheid + 'd6');
-            var result;
+            const check = game.helpers.rollDice(game.activeCharacter.vlugheid + 'd6');
+            let result;
             result = check * game.activeCharacter.vlugheid;
 
             if (result >= settings.difficulty) {

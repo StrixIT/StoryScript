@@ -50,7 +50,7 @@ export function LeftCorridor() {
                     text: 'Doorzoek de kuil',
                     difficulty: 9,
                     success: (game: IGame) => {
-                        game.currentLocation.items.push(LeatherHelmet());
+                        game.currentLocation.items.add(LeatherHelmet);
                         game.logToLocationLog('In de kuil voel je botten, spinrag en de resten van kleding. Ook vind je er een nog bruikbare helm!')
                     },
                     fail: (game: IGame) => {

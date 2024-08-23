@@ -1,4 +1,4 @@
-﻿import {ICharacter, ICollection} from 'storyScript/Interfaces/storyScript';
+﻿import {ICharacter} from 'storyScript/Interfaces/storyScript';
 import {IItem} from './types';
 
 export class Character implements ICharacter {
@@ -15,7 +15,7 @@ export class Character implements ICharacter {
     oplettendheid?: number = 1;
     verdediging?: number = 1;
 
-    items: ICollection<IItem> = [];
+    items: IItem[] = [];
 
     equipment: {};
 
