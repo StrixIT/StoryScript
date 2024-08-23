@@ -1,5 +1,5 @@
-﻿import { ICharacter, ICollection } from 'storyScript/Interfaces/storyScript';
-import { IItem } from './types';
+﻿import {ICharacter} from 'storyScript/Interfaces/storyScript';
+import {IItem} from './types';
 
 export class Character implements ICharacter {
     name: string = '';
@@ -12,7 +12,7 @@ export class Character implements ICharacter {
     agility?: number = 1;
     intelligence?: number = 1;
 
-    items: ICollection<IItem> = [];
+    items: IItem[] = [];
 
     equipment: {};
 

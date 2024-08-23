@@ -1,5 +1,4 @@
-﻿import {ICollection} from './collection';
-import {IGame} from './game';
+﻿import {IGame} from './game';
 import {IAction} from './action';
 import {IFeatureCollection} from './featureCollection';
 import {IEnemy} from './enemy';
@@ -62,26 +61,26 @@ export interface ILocation {
     /**
      * The enemies that occupy this location.
      */
-    enemies?: ICollection<IEnemy>;
+    enemies?: IEnemy[];
 
     /**
      * The characters at this location that the player can interact with.
      */
-    persons?: ICollection<IPerson>;
+    persons?: IPerson[];
 
     /**
      * The items that can be found at this location.
      */
-    items?: ICollection<IItem>;
+    items?: IItem[];
 
     /**
      * The other locations in the game world that can be reached from this one.
      */
-    destinations?: ICollection<IDestination>;
+    destinations?: IDestination[];
 
     /**
      * Trade objects present at this location. If you don't want to use persons to trade with, you can use this array.
      * Useful for e.g. adding containers like chests to the game.
      */
-    trade?: ICollection<ITrade>;
+    trade?: ITrade[];
 }

@@ -5,7 +5,7 @@ import {IDestination} from 'storyScript/Interfaces/destination';
 import {Open} from 'storyScript/Actions/open';
 import {OpenWithKey} from 'storyScript/Actions/openWithKey';
 import {IKey} from 'storyScript/Interfaces/key';
-import {addArrayExtensions} from 'storyScript/globalFunctions';
+import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions';
 
 describe("StoryScript Actions", function () {
 

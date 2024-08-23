@@ -14,7 +14,12 @@ import {RunGame} from '../../../Games/MyRolePlayingGame/run';
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
-import {customEntity, DynamicEntity} from "storyScript/EntityCreatorFunctions.ts";
+import {
+    customEntity,
+    DynamicEntity,
+    InitEntityCollection,
+    setReadOnlyLocationProperties
+} from "storyScript/EntityCreatorFunctions.ts";
 import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {Item} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
@@ -152,4 +157,23 @@ describe("EntityCreatorFunctions", function () {
         expect(result.trade.buy.emptyText).toBe(emptyText);
     });
 
+    test("should not override read-only properties", function () {
+        const activePersons = [];
+        
+        const location = <ICompiledLocation>{
+            activePersons: activePersons
+        };
+        
+        setReadOnlyLocationProperties(location);
+        expect(location.activePersons).toBe(activePersons);
+    });
+
+    test("should not init unknown collections", function () {
+        const entity = {
+            unknown: undefined
+        }
+
+        InitEntityCollection(entity, 'unknown');
+        expect(entity.unknown).toBeUndefined();
+    });
 });

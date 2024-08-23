@@ -1,4 +1,3 @@
-import {ICollection} from './collection';
 import {ILocation} from './location';
 import {IEnemy} from './enemy';
 import {IPerson} from './person';
@@ -18,27 +17,27 @@ export interface ICompiledLocation extends ILocation {
     /**
      * The enemies that are present (active) at this location.
      */
-    activeEnemies?: ICollection<IEnemy>;
+    activeEnemies?: IEnemy[];
 
     /**
      * The characters that are present (active) at this location that the player can interact with.
      */
-    activePersons?: ICollection<IPerson>;
+    activePersons?: IPerson[];
 
     /**
      * The items that are found (active) at this location.
      */
-    activeItems?: ICollection<IItem>;
+    activeItems?: IItem[];
 
     /**
      * The other locations in the game world that are reachable (active) from this one.
      */
-    activeDestinations?: ICollection<IDestination>;
+    activeDestinations?: IDestination[];
 
     /**
      * The actions the player can choose from (active) at this location.
      */
-    activeActions?: ICollection<IAction>;
+    activeActions?: IAction[];
 
     /**
      * The current description shown to the player for this location.

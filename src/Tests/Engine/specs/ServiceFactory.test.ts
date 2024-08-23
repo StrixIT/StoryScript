@@ -26,10 +26,25 @@ describe('ServiceFactory', function () {
         const tradeService = factory.GetTradeService();
         expect(tradeService).not.toBeNull();
 
+        const dataSerializer = factory.GetDataSerializer();
+        expect(dataSerializer).not.toBeNull();
+
+        const dataSynchronizer = factory.GetDataSynchronizer();
+        expect(dataSynchronizer).not.toBeNull();
+
         const texts = factory.GetTexts();
         expect(texts).not.toBeNull();
 
         const rules = factory.GetRules();
         expect(rules).not.toBeNull();
+
+        const game = factory.GetGame();
+        expect(game).not.toBeNull();
+    });
+
+    test("should return all available locations", function () {
+        const factory = ServiceFactory.GetInstance();
+        const locations = factory.AvailableLocations;
+        expect(locations.length).toBe(5);
     });
 })

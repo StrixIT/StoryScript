@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, IQuest, ICollection } from 'storyScript/Interfaces/storyScript';
+import { IGame, IInterfaceTexts, IQuest } from 'storyScript/Interfaces/storyScript';
 import { isEmpty } from 'storyScript/utilityFunctions';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
@@ -31,9 +31,9 @@ export class QuestComponent {
 
     showCompletedQuests = (): boolean => this.game.party.quests.filter(q => q.completed).length > 0;
 
-    currentQuests = (): ICollection<IQuest> => this.game.party.quests.filter(q => q.completed === false);
+    currentQuests = (): IQuest[] => this.game.party.quests.filter(q => q.completed === false);
 
-    completedQuests = (): ICollection<IQuest> => this.game.party.quests.filter(q => q.completed === true);
+    completedQuests = (): IQuest[] => this.game.party.quests.filter(q => q.completed === true);
 
     questStatus = (quest: IQuest): string => this._characterService.questStatus(quest);
 }
