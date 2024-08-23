@@ -1,5 +1,5 @@
 import {ServiceFactory} from './ServiceFactory';
-import {addArrayExtensions, addFunctionExtensions} from './globalFunctions';
+import {addArrayExtensions, addFunctionExtensions} from './arrayAndFunctionExtensions';
 import {IInterfaceTexts} from './Interfaces/interfaceTexts';
 import {IRules} from './Interfaces/rules/rules';
 import {buildEntities} from './EntityCreatorFunctions';
@@ -36,6 +36,7 @@ export function importAssets(): IDefinitions {
         return loadAssetsWithImport();
     }
 
+    /* v8 ignore next 2 */
     throw new Error('No loader found for importing the game assets!');
 }
 

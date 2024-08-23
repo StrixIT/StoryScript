@@ -1,4 +1,4 @@
-import { IConversationReplies } from './conversationReplies';
+import {IConversationReply} from "./conversationReply.ts";
 
 /**
  * A node of a conversation.
@@ -17,7 +17,7 @@ export interface IConversationNode {
     /**
      * The possible replies of the player for this node.
      */
-    replies: IConversationReplies;
+    replies: IConversationReply[];
 
     /**
     * The action triggered when this node is activated. The trigger string must equal an action in the conversation options.

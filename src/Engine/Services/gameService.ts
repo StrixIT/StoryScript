@@ -100,6 +100,7 @@ export class GameService implements IGameService {
         };
 
         this._dataService.save(GameStateSave, emptySave);
+        this._game.locations = null;
         this._locationService.init();
 
         // Save here to use the before and after save hooks after refreshing the world,

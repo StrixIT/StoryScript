@@ -1,7 +1,6 @@
 import {IHelpers} from '../Interfaces/helpers';
 import {IEnemy} from '../Interfaces/enemy';
 import {IItem} from '../Interfaces/item';
-import {ICollection} from '../Interfaces/collection';
 import {IDefinitions} from '../Interfaces/definitions';
 import {compareString} from '../utilityFunctions';
 import {random} from "storyScript/Services/sharedFunctions.ts";
@@ -50,7 +49,7 @@ export class HelperService implements IHelpers {
         return result;
     }
 
-    calculateBonus = (person: { items?: ICollection<IItem>, equipment?: {} }, type: string) => {
+    calculateBonus = (person: { items?: IItem[], equipment?: {} }, type: string) => {
         let bonus = 0;
 
         if (person[type]) {

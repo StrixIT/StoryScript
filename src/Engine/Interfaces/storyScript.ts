@@ -1,7 +1,6 @@
 import type { IInterfaceTexts } from './interfaceTexts'
 import type { IRules } from './rules/rules'
 import type { IGame } from './game'
-import type { ICollection } from './collection'
 import type { IParty } from './party'
 import type { ICharacter } from './character'
 import type { ICombatTurn } from './combatTurn'
@@ -50,7 +49,6 @@ import type { IStatistics } from './statistics'
 import { format } from '../defaultTexts'
 
 export type {
-    ICollection, 
     IInterfaceTexts, 
     IRules, 
     IGame,
