@@ -138,14 +138,14 @@ export class SharedMethodService {
 
     canUseItem = (character: ICharacter, item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, character, item));
 
-    private getActionIndex = (action: [string, IAction]): { type: number, index: number } => {
+    private getActionIndex = (action: [string, IAction]): { type: ActionType, index: number } => {
         let index = -1;
-        let type = -1;
+        let type = ActionType.Regular;
 
         this.game.currentLocation.actions.forEach(([k, v], i) => {
             if (k === action[0]) {
                 index = i;
-                type = 0;
+                type = ActionType.Regular;
             }
         });
 
@@ -153,7 +153,7 @@ export class SharedMethodService {
             this.game.currentLocation.combatActions.forEach(([k, v], i) => {
                 if (k === action[0]) {
                     index = i;
-                    type = 2;
+                    type = ActionType.Combat;
                 }
             });
         }

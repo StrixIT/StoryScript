@@ -2,8 +2,8 @@
  * Used to differentiate between actions visually (e.g. color).
  */
 export enum ActionType {
-    Regular,
-    Check,
-    Combat,
-    Trade
+    Regular = 'Regular',
+    Check = 'Check',
+    Combat = 'Combat',
+    Trade = 'Trade'
 }
