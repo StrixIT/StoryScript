@@ -1,4 +1,4 @@
-﻿import { IAction, ActionType, Action } from 'storyScript/Interfaces/storyScript';
+﻿import { IAction, ActionType } from 'storyScript/Interfaces/storyScript';
 import { IGame } from '../types';
 
 export interface UnlockSettings {
@@ -9,7 +9,7 @@ export interface UnlockSettings {
 }
 
 export function Unlock(settings: UnlockSettings): IAction {
-    return Action({
+    return {
         text: settings?.text || 'Slot openen',
         actionType: ActionType.Check,
         execute: function (game: IGame) {
@@ -27,7 +27,7 @@ export function Unlock(settings: UnlockSettings): IAction {
                 return true;
             }
         }
-    });
+    };
 }
 
 //deze button moet active blijven, behalve bij een critical fail misschien. Dus een extra setting, kan dat? 

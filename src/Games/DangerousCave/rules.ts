@@ -208,7 +208,7 @@ export function Rules(): IRules {
                 });
             },
 
-            enemyDefeated: (game: IGame, enemy: IEnemy): void => {
+            enemyDefeated: (game: IGame, character: ICharacter, enemy: IEnemy): void => {
                 if (enemy.reward) {
                     game.party.score += enemy.reward;
                 }

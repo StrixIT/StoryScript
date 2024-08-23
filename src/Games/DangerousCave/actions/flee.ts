@@ -1,9 +1,9 @@
-﻿import { IAction, Action, ActionType, ActionStatus } from 'storyScript/Interfaces/storyScript';
+﻿import { IAction, ActionType, ActionStatus } from 'storyScript/Interfaces/storyScript';
 import { IGame } from '../types';
 import {isEmpty} from "storyScript/utilityFunctions.ts";
 
 export function Flee(text: string): IAction {
-    return Action({
+    return {
         text: text || 'Vluchten!',
         actionType: ActionType.Check,
         status: (game: IGame) => {
@@ -27,5 +27,5 @@ export function Flee(text: string): IAction {
 
             return true;
         }
-    });
+    };
 }

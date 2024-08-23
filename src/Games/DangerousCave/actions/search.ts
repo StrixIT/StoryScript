@@ -1,4 +1,4 @@
-﻿import {Action, ActionType, IAction} from 'storyScript/Interfaces/storyScript';
+﻿import {ActionType, IAction} from 'storyScript/Interfaces/storyScript';
 import {IGame} from '../types';
 
 export interface SearchSettings {
@@ -9,7 +9,7 @@ export interface SearchSettings {
 }
 
 export function Search(settings: SearchSettings): IAction {
-    return Action({
+    return {
         text: settings?.text || 'Zoek',
         actionType: ActionType.Check,
         execute: function (game: IGame) {
@@ -24,5 +24,5 @@ export function Search(settings: SearchSettings): IAction {
                 settings.fail(game);
             }
         }
-    });
+    };
 }
