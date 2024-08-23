@@ -22,7 +22,7 @@ import type { IDestination } from './destination'
 import type { IBarrier } from './barrier'
 import type { IBarrierAction } from './barrierAction'
 import type { IHelpers } from './helpers'
-import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../EntityCreatorFunctions'
+import { Feature, Item, Enemy, Person, Key, Location, Quest } from '../EntityCreatorFunctions'
 import { Open } from '../Actions/open';
 import { OpenWithKey } from '../Actions/openWithKey';
 import type { ICombinable } from './combinations/combinable';
@@ -90,7 +90,6 @@ export type {
 
 export { 
     DefaultEquipment,
-    Action, 
     Item, 
     Feature, 
     Enemy,  
