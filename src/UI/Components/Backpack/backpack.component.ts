@@ -8,7 +8,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'backpack',
-    template: getTemplate('backpack', await import('./backpack.component.html'))
+    template: getTemplate('backpack', await import('./backpack.component.html?raw'))
 })
 export class BackpackComponent {
     @Input() character!: ICharacter;

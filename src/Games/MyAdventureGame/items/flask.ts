@@ -1,6 +1,6 @@
 import { Item } from '../types';
 import { EquipmentType } from 'storyScript/Interfaces/storyScript';
-import description from './flask.html';
+import description from './flask.html?raw';
 
 export function Flask() {
     return Item({

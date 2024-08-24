@@ -1,5 +1,5 @@
 import { Location } from '../types';
-import description from './Clearing.html';
+import description from './Clearing.html?raw';
 
 export function Clearing() {
     return Location({

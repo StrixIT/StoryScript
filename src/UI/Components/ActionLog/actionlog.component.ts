@@ -5,7 +5,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'action-log',
-    template: getTemplate('actionlog', await import('./actionlog.component.html'))
+    template: getTemplate('actionlog', await import('./actionlog.component.html?raw'))
 })
 export class ActionLogComponent {
     constructor() {

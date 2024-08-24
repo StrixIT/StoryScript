@@ -6,7 +6,7 @@ import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'location-text',
-    template: getTemplate('locationtext', await import('./locationtext.component.html'))
+    template: getTemplate('locationtext', await import('./locationtext.component.html?raw'))
 })
 export class LocationTextComponent {
     private _sharedMethodService: SharedMethodService;
@@ -19,11 +19,13 @@ export class LocationTextComponent {
         this.worldProperties = [];
 
         this.initWorldProperties();
+        this.useText = !this._sharedMethodService.useVisualLocation;
     }
 
     game: IGame;
     texts: IInterfaceTexts;
     worldProperties: { name: string, value: string }[];
+    useText: boolean;
 
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 

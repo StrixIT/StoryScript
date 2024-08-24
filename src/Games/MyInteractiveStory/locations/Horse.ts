@@ -1,5 +1,5 @@
 import { Location } from '../types';
-import description from './Horse.html';
+import description from './Horse.html?raw';
 
 export function Horse() {
     return Location({
