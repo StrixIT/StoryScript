@@ -1,5 +1,5 @@
 ﻿import {IGame, Location} from '../types';
-import description from './entry.html'
+import description from './entry.html?raw'
 import {Lantern} from '../items/lantern';
 import {Search} from '../actions/search';
 import {RightCorridor} from './rightCorridor';

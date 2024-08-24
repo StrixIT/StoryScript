@@ -1,5 +1,5 @@
 ﻿import {Location} from '../types';
-import description from './darkCorridor.html'
+import description from './darkCorridor.html?raw'
 import {Orc} from '../enemies/orc';
 import {CandleLitCave} from './candleLitCave';
 import {CrossRoads} from './crossRoads';

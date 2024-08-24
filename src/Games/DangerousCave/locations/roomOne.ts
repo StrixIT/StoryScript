@@ -1,5 +1,5 @@
 ﻿import {IGame, Location} from '../types';
-import description from './roomOne.html'
+import description from './roomOne.html?raw'
 import {IBarrier, IDestination, Open} from 'storyScript/Interfaces/storyScript';
 import {Orc} from '../enemies/orc';
 import {BlackKey} from '../items/blackKey';

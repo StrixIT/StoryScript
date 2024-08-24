@@ -1,5 +1,5 @@
 ﻿import {Location} from '../types';
-import description from './rightRoom.html'
+import description from './rightRoom.html?raw'
 import {Search} from '../actions/search';
 import {GiantBat} from '../enemies/giantBat';
 import {CandleLitCave} from './candleLitCave';

@@ -1,5 +1,5 @@
 ﻿import {IGame, Location} from '../types';
-import description from './arena.html'
+import description from './arena.html?raw'
 import {Orc} from '../enemies/orc';
 import {Troll} from '../enemies/troll';
 import {CandleLitCave} from './candleLitCave';

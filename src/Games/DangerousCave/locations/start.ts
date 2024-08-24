@@ -1,5 +1,5 @@
 ﻿import {Location} from '../types';
-import description from './Start.html'
+import description from './Start.html?raw'
 import {Search} from '../actions/search';
 import {Entry} from './entry';
 

@@ -1,5 +1,5 @@
 ﻿import { IGame, Location } from '../types';
-import description from './candleLitCave.html' 
+import description from './candleLitCave.html?raw' 
 import { Search } from '../actions/search';
 import { Orc } from '../enemies/orc';
 import { Arena } from './arena';

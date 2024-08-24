@@ -1,5 +1,5 @@
 ﻿import { IGame, Location } from '../types';
-import description from './centreRoom.html' 
+import description from './centreRoom.html?raw' 
 import { Search } from '../actions/search';
 import { SmallShield } from '../items/smallShield';
 import { RoomOne } from './roomOne';

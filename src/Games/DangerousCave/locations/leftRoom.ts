@@ -1,5 +1,5 @@
 ﻿import {Location} from '../types';
-import description from './leftRoom.html'
+import description from './leftRoom.html?raw'
 import {Orc} from '../enemies/orc';
 import {Goblin} from '../enemies/goblin';
 import {RoomOne} from './roomOne';

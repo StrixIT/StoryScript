@@ -1,5 +1,5 @@
 ﻿import {IGame, Location} from '../types';
-import description from './leftCorridor.html'
+import description from './leftCorridor.html?raw'
 import {Search} from '../actions/search';
 import {DoorOne} from './doorOne';
 import {Entry} from './entry';

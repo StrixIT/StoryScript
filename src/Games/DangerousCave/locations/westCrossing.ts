@@ -1,5 +1,5 @@
 ﻿import {Location} from '../types';
-import description from './westCrossing.html'
+import description from './westCrossing.html?raw'
 import {Open} from 'storyScript/Interfaces/storyScript';
 import {Inspect} from '../actions/inspect';
 import {BlackKey} from '../items/blackKey';

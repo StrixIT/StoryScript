@@ -1,5 +1,5 @@
 ﻿import {IGame, Location} from '../types';
-import description from './crossRoads.html'
+import description from './crossRoads.html?raw'
 import {DarkCorridor} from './darkCorridor';
 import {Temp} from './temp';
 import {WestCrossing} from './westCrossing';

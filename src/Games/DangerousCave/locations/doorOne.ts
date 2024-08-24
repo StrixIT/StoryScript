@@ -1,5 +1,5 @@
 ﻿import {IGame, Location} from '../types';
-import description from './doorOne.html'
+import description from './doorOne.html?raw'
 import {RoomOne} from './roomOne';
 import {Unlock} from '../actions/unlock';
 import {Search} from '../actions/search';

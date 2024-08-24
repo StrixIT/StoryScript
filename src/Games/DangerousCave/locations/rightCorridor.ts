@@ -1,5 +1,5 @@
 ﻿import {Location} from '../types';
-import description from './arena.html'
+import description from './arena.html?raw'
 import {CrossRoads} from './crossRoads';
 import {RoomOne} from './roomOne';
 
