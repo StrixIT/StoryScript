@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'ground',
-    template: getTemplate('ground', await import('./ground.component.html'))
+    template: getTemplate('ground', await import('./ground.component.html?raw'))
 })
 export class GroundComponent {
     private _sharedMethodService: SharedMethodService;

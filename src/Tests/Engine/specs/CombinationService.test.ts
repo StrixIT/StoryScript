@@ -14,7 +14,7 @@ import {Rules} from '../../../Games/MyRolePlayingGame/types';
 import {DefaultTexts} from 'storyScript/defaultTexts';
 import {IActiveCombination} from 'storyScript/Interfaces/combinations/activeCombination.ts';
 import {Combinations} from '../../../Games/MyAdventureGame/combinations';
-import {addArrayExtensions} from 'storyScript/globalFunctions.ts';
+import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions.ts';
 
 describe("CombinationService", function () {
 

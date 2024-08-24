@@ -198,7 +198,7 @@ export function addArrayExtensions() {
 }
 
 function findIndex(collection: any[], item: any) {
-    let entry;
+    let entry: any;
 
     if (isDataRecord(item)) {
         entry = collection.find(e => e[0] === item[0]);

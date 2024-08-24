@@ -3,6 +3,11 @@
  */
 export interface IConversationReply {
     /**
+     * True if this reply is the default reply, available to all nodes. False otherwise.
+     */
+    defaultReply?: boolean;
+
+    /**
      * specifies an item or a character attribute with a minimum number required for this reply to be available.
      */
     requires?: string;

@@ -1,5 +1,4 @@
 ﻿import { IFeature } from './feature';
-import { ICollection } from './collection';
 import { IItem } from './item';
 import { IGame } from './game';
 
@@ -31,7 +30,7 @@ export interface IEnemy extends IFeature {
     /**
      * The items the enemy is carrying.
      */
-    items?: ICollection<IItem>;
+    items?: IItem[];
 
     /**
      * When this flag is set to true, the enemy is not shown to the player, cannot be attacked and will not block the player from travelling.

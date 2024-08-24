@@ -20,7 +20,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-info" [ngClass]="destination.style" (click)="changeLocation(destination.target)" [disabled]="!destination.target || destination.barrier || game.currentLocation.navigationDisabled"><span class="back-label" *ngIf="isPreviousLocation(destination)">{{ texts.back }}</span> {{ destination.name }}</button>
+                <button type="button" class="btn btn-info" [ngClass]="destination.style" (click)="changeLocation(destination.target)" [disabled]="!destination.target || destination.barriers?.length > 0 || game.currentLocation.navigationDisabled"><span class="back-label" *ngIf="isPreviousLocation(destination)">{{ texts.back }}</span> {{ destination.name }}</button>
             </li>
         </ul>
     </div>

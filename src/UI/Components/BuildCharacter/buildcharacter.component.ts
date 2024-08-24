@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'build-character',
-    template: getTemplate('buildcharacter', await import('./buildcharacter.component.html'))
+    template: getTemplate('buildcharacter', await import('./buildcharacter.component.html?raw'))
 })
 export class BuildCharacterComponent {
     @Input() sheet: ICreateCharacter;

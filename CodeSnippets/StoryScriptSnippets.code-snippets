@@ -4,7 +4,7 @@
 		"prefix": "ssLocation",
 		"body": [
 			"import { IGame, Location } from '../types';",
-			"import description from './${TM_FILENAME_BASE}.html';",
+			"import description from './${TM_FILENAME_BASE}.html?raw';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Location({",
@@ -12,25 +12,7 @@
 			"\t\tdescription: description,",
 			"\t\tdestinations: [",
 			"\t\t\t$1",
-			"\t\t],",
-			"\t\tfeatures: [",
-			"\t\t],",
-			"\t\titems: [",
-			"\t\t],",
-			"\t\tenemies: [",
-			"\t\t],",
-			"\t\tpersons: [",
-			"\t\t],",
-			"\t\ttrade: [",
-			"\t\t],",
-			"\t\tenterEvents: [",
-			"\t\t],",
-			"\t\tleaveEvents: [",
-			"\t\t],",
-			"\t\tactions: [",
-			"\t\t],",
-			"\t\tcombatActions: [",
-			"\t\t],",
+			"\t\t]",
 			"\t});",
 			"}"
 		],
@@ -78,7 +60,7 @@
 		"prefix": "ssEnemy",
 		"body": [
 			"import { IGame, Enemy } from '../types';",
-			"import description from './${TM_FILENAME_BASE}.html';",
+			"import description from './${TM_FILENAME_BASE}.html?raw';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Enemy({",
@@ -98,7 +80,7 @@
 		"prefix": "ssPerson",
 		"body": [
 			"import { IGame, IPerson, Person } from '../types';",
-			"import description from './${TM_FILENAME_BASE}.html';",
+			"import description from './${TM_FILENAME_BASE}.html?raw';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Person({",
@@ -125,7 +107,7 @@
 		"body": [
 			"import { IGame, Item } from '../types';",
 			"import { EquipmentType } from 'storyScript/Interfaces/storyScript';",
-			"import description from './${TM_FILENAME_BASE}.html';",
+			"import description from './${TM_FILENAME_BASE}.html?raw';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Item({",
@@ -144,7 +126,7 @@
 		"body": [
 			"import { IGame, Key } from '../types';",
 			"import { EquipmentType } from 'storyScript/Interfaces/storyScript';",
-			"import description from './${TM_FILENAME_BASE}.html';",
+			"import description from './${TM_FILENAME_BASE}.html?raw';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
 			"\treturn Key({",
@@ -177,9 +159,25 @@
 
 	"Barriers": {
 		"scope": "javascript,typescript",
+		"prefix": "ssBarriers",
+		"body": [
+			"barriers: [",
+			"\t{"
+			"\t\tname: '$1',",
+			"\t\tactions: [",
+			"\t\t\t$2",
+			"\t\t],",
+			"\t}"
+			"],"
+		],
+		"description": "Add barriers to a destination"
+	},
+
+	"Barrier": {
+		"scope": "javascript,typescript",
 		"prefix": "ssBarrier",
 		"body": [
-			"barrier: {",
+			"{",
 			"\tname: '$1',",
 			"\tactions: [",
 			"\t\t$2",

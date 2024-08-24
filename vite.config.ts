@@ -1,80 +1,64 @@
-import { defineConfig, normalizePath } from 'vite';
+import {defineConfig, normalizePath} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import {viteStaticCopy} from 'vite-plugin-static-copy';
+import {visualizer} from "rollup-plugin-visualizer";
 import gameName from './gameName.js';
 import path from 'path';
 
 const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
-
-const htmlImport = {
-  name: "htmlImport",
-  /**
-   * Checks to ensure that a html file is being imported.
-   * If it is then it alters the code being passed as being a string being exported by default.
-   * @param {string} code The file as a string.
-   * @param {string} id The absolute path. 
-   * @returns {{code: string}}
-   */
-  transform(code, id) {
-    if (/^.*\.html$/g.test(id)) {
-      code = `export default \`${code}\``;
-    }
-    return { code }
-  }
-}
-
 const resourceRegex = /\\resources\\(.{1,}\.)/;
 
 const plugins = [
-  tsconfigPaths(),
-  checker({
-    typescript: true,
-  }),     
-  viteStaticCopy({
-    watch: {
-      reloadPageOnChange: true
-    },
-    targets: [
-      {
-        src: normalizePath(path.resolve(gamePath, 'resources/**/*.*')),
-        dest: 'resources',
-        rename: (_, extension, fullPath) => {
-          const match = fullPath.match(resourceRegex)[1];
-          return match + extension;
-        }
-      }
-    ]
-  }),
-  htmlImport
+    tsconfigPaths(),
+    checker({
+        typescript: true,
+    }),
+    viteStaticCopy({
+        watch: {
+            reloadPageOnChange: true
+        },
+        targets: [
+            {
+                src: normalizePath(path.resolve(gamePath, 'resources/**/*.*')),
+                dest: 'resources',
+                rename: (_, extension, fullPath) => {
+                    const match = fullPath.match(resourceRegex)[1];
+                    return match + extension;
+                }
+            }
+        ]
+    }),
+    visualizer() as Plugin
 ];
 
 
 // https://vitejs.dev/config/
 export default defineConfig({
-
-  define: {
-    'process.env': {}
-  },
-  resolve: {
-    alias: {
-        storyScript: path.resolve(__dirname, './src/Engine'),
-        game: gamePath
+    base: ``,
+    define: {
+        'process.env': {}
+    },
+    resolve: {
+        alias: {
+            storyScript: path.resolve(__dirname, './src/Engine'),
+            game: gamePath
+        }
+    },
+    plugins: plugins,
+    server: {
+        port: 3000,
+        open: true
+    },
+    preview: {
+        port: 8080,
+    },
+    esbuild: {
+        keepNames: true,
+    },
+    build: {
+        target: 'esNext',
+        outDir: "./dist",
+        sourcemap: 'inline'
     }
-  },
-  plugins: plugins,
-  server: {
-    port: 3000,
-    open: true
-  },
-  preview: {
-    port: 3000,
-  },
-  esbuild: {
-    keepNames: true,
-  },
-  build: {
-    target: 'esNext',
-    outDir: "./dist"
-  }
 })

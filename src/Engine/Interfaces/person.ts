@@ -1,5 +1,4 @@
-﻿import { ICollection } from './collection';
-import { IEnemy } from './enemy';
+﻿import { IEnemy } from './enemy';
 import { ITrade } from './trade';
 import { IQuest } from './quest';
 import { IConversation } from './conversations/conversation';
@@ -26,5 +25,5 @@ export interface IPerson extends IEnemy {
     /**
      * The quests this person has available.
      */
-    quests?: ICollection<IQuest>;
+    quests?: IQuest[];
 }
