@@ -1,5 +1,5 @@
 import {Location} from '../types';
-import description from './shipbattle.html';
+import description from './shipbattle.html?raw';
 import {Shipbattle2} from './shipbattle2';
 
 export function Shipbattle() {

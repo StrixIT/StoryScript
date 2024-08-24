@@ -1,5 +1,5 @@
 import {Person} from '../types';
-import description from './Vigga.html';
+import description from './Vigga.html?raw';
 
 export function Vigga() {
     return Person({

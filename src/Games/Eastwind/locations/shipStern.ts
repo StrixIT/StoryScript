@@ -2,7 +2,7 @@ import {Dante} from '../persons/Dante';
 import {IGame, Location} from '../types';
 import {Shipsdeck} from './shipsdeck';
 import {ShipsHold} from './ShipsHold';
-import description from './shipStern.html';
+import description from './shipStern.html?raw';
 
 export function ShipStern() {
     return Location({

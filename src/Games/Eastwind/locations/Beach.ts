@@ -1,6 +1,6 @@
 import {Constants} from '../constants';
 import {Location} from '../types';
-import description from './Beach.html';
+import description from './Beach.html?raw';
 import {Junglestart} from './junglestart';
 
 export function Beach() {

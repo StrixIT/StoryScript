@@ -1,6 +1,6 @@
 import {IGame, IItem, Item} from '../types';
 import {EquipmentType} from 'storyScript/Interfaces/storyScript';
-import description from './healingPotion.html';
+import description from './healingPotion.html?raw';
 
 export function Healingpotion() {
     return Item({

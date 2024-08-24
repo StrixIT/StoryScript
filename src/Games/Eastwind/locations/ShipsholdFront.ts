@@ -1,6 +1,6 @@
 import {Elsa} from '../persons/Elsa';
 import {IGame, Location} from '../types';
-import description from './ShipsholdFront.html';
+import description from './ShipsholdFront.html?raw';
 
 export function ShipsholdFront() {
     return Location({
@@ -19,7 +19,7 @@ export function ShipsholdFront() {
                 text: 'Investigate the shadow',
                 execute: (game: IGame) => {
                     game.currentLocation.description = game.currentLocation.descriptions['investigate-shadow'];
-                    game.currentLocation.persons.push(Elsa);
+                    game.currentLocation.persons.add(Elsa);
                 }
 			}]
         ],

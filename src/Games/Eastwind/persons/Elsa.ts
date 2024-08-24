@@ -1,6 +1,6 @@
 import { Shipbattle } from '../locations/shipbattle';
 import { IGame, Person } from '../types';
-import description from './Elsa.html';
+import description from './Elsa.html?raw';
 
 export function Elsa() {
 	return Person({

@@ -2,7 +2,7 @@
 import {ShipBow} from './ShipBow';
 import {Shipsdeck} from './shipsdeck';
 import {ShipStern} from './shipStern';
-import description from './Start.html'
+import description from './Start.html?raw'
 
 export function Start() {
     return Location({

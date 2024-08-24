@@ -1,7 +1,7 @@
 import {Vigga} from '../persons/Vigga';
 import {Location} from '../types';
 import {ShipBow} from './ShipBow';
-import description from './shipsdeck.html';
+import description from './shipsdeck.html?raw';
 import {ShipStern} from './shipStern';
 
 export function Shipsdeck() {

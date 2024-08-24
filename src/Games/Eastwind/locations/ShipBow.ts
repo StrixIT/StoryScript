@@ -1,6 +1,6 @@
 import {Adventurers} from '../persons/Adventurers';
 import {Location} from '../types';
-import description from './ShipBow.html';
+import description from './ShipBow.html?raw';
 import {Shipsdeck} from './shipsdeck';
 
 export function ShipBow() {

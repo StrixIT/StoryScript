@@ -1,5 +1,5 @@
 import {Location} from '../types';
-import description from './shipbattle3.html';
+import description from './shipbattle3.html?raw';
 
 export function Shipbattle3() {
     return Location({

@@ -1,6 +1,6 @@
 import {Item} from '../types';
 import {EquipmentType} from 'storyScript/Interfaces/storyScript';
-import description from './Pouch.html';
+import description from './Pouch.html?raw';
 
 export function Pouch() {
     return Item({

@@ -1,6 +1,6 @@
 import {Location} from '../types';
 import {Junglepond} from './Junglepond';
-import description from './junglestart.html';
+import description from './junglestart.html?raw';
 
 export function Junglestart() {
     return Location({

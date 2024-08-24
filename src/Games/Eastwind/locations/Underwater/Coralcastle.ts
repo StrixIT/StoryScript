@@ -1,5 +1,5 @@
 import {Location} from '../../types';
-import description from './Coralcastle.html';
+import description from './Coralcastle.html?raw';
 
 export function Coralcastle() {
     return Location({

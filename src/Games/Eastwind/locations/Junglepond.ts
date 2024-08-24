@@ -1,5 +1,5 @@
 import {IGame, Location} from '../types';
-import description from './Junglepond.html';
+import description from './Junglepond.html?raw';
 
 export function Junglepond() {
     return Location({

@@ -1,5 +1,5 @@
 import {Location} from '../types';
-import description from './Sharpsail_tavern.html';
+import description from './Sharpsail_tavern.html?raw';
 
 export function SharpsailTavern() {
     return Location({

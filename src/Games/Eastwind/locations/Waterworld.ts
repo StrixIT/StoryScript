@@ -1,6 +1,6 @@
 import {IGame, Location} from '../types';
 import {Beach} from './Beach';
-import description from './Waterworld.html';
+import description from './Waterworld.html?raw';
 
 export function Waterworld() {
     return Location({

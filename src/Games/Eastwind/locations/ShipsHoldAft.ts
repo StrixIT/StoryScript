@@ -1,6 +1,6 @@
 import {Rat} from '../enemies/Rat';
 import {Location} from '../types';
-import description from './ShipsHoldAft.html';
+import description from './ShipsHoldAft.html?raw';
 
 export function ShipsHoldAft() {
     return Location({

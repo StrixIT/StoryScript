@@ -1,6 +1,6 @@
 import {Pouch} from '../items/Pouch';
 import {Person} from '../types';
-import description from './Dante.html';
+import description from './Dante.html?raw';
 
 export function Dante() {
     return Person({
@@ -12,7 +12,7 @@ export function Dante() {
         canAttack: false,
         conversation: {
             actions: [
-                ['givePouch', (game, person) => game.activeCharacter.items.push(Pouch)]
+                ['givePouch', (game, person) => game.activeCharacter.items.add(Pouch)]
             ]
         },
     });

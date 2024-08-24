@@ -1,5 +1,5 @@
 import {Location} from '../../types';
-import description from './JungleEast1.html';
+import description from './JungleEast1.html?raw';
 
 export function JungleEast1() {
     return Location({

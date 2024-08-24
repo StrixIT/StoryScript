@@ -1,5 +1,5 @@
 import { IGame, IPerson, Person } from '../types';
-import description from './Adventurers.html';
+import description from './Adventurers.html?raw';
 
 export function Adventurers() {
 	return Person({

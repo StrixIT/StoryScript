@@ -1,5 +1,5 @@
 import {Enemy} from '../types';
-import description from './Pirate.html';
+import description from './Pirate.html?raw';
 
 export function Pirate() {
     return Enemy({

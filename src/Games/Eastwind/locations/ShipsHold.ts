@@ -1,6 +1,6 @@
 import {Constants} from '../constants';
 import {IGame, Location} from '../types';
-import description from './ShipsHold.html';
+import description from './ShipsHold.html?raw';
 import {ShipsHoldAft} from './ShipsHoldAft';
 import {ShipsholdFront} from './ShipsholdFront';
 

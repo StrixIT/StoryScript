@@ -1,5 +1,5 @@
 import {Enemy} from '../types';
-import description from './Rat.html';
+import description from './Rat.html?raw';
 
 export function Rat() {
     return Enemy({

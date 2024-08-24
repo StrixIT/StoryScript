@@ -1,6 +1,6 @@
 import {Pirate} from '../enemies/Pirate';
 import {Location} from '../types';
-import description from './shipbattle2.html';
+import description from './shipbattle2.html?raw';
 import {Waterworld} from './Waterworld';
 
 export function Shipbattle2() {

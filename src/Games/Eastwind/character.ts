@@ -1,4 +1,4 @@
-﻿import {ICharacter, ICollection} from 'storyScript/Interfaces/storyScript';
+﻿import {ICharacter} from 'storyScript/Interfaces/storyScript';
 import {Class} from './interfaces/class';
 import {Firebolt} from './items/firebolt';
 import {Healingpotion} from './items/healingPotion';
@@ -19,7 +19,7 @@ export class Character implements ICharacter {
     class?: Class;
     level?: number = 1;
 
-    items: ICollection<IItem> = [
+    items: IItem[] = [
         Healingpotion(),
         Firebolt(),
         Map()

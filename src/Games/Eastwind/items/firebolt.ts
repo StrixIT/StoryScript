@@ -1,4 +1,4 @@
-import description from './firebolt.html';
+import description from './firebolt.html?raw';
 import {IEquipment, IGame, IItem, Item} from '../types';
 import {PlayState} from 'storyScript/Interfaces/storyScript';
 import {castCombatSpell} from '../helpers';
