@@ -27,7 +27,7 @@ function loadAssetsWithRequire() {
 }
 
 function loadAssetsWithImport() {
-    const modules = import.meta.glob('game/ui/**/*.component.html', { eager: true });
+    const modules = import.meta.glob('game/ui/**/*.component.html?raw', { eager: true });
 
     for (const path in modules)
     {
@@ -36,6 +36,6 @@ function loadAssetsWithImport() {
 }
 
 function AddTemplate(templateName: string, template) {
-    var capture = templateName.match(/([a-z]{1,})\.component\.html$/);
+    const capture = templateName.match(/([a-z]{1,})\.component\.html$/);
     _templates.set(capture[1], template);
 }

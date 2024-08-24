@@ -6,7 +6,7 @@ import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'conversation',
-    template: getTemplate('conversation', await import('./conversation.component.html'))
+    template: getTemplate('conversation', await import('./conversation.component.html?raw'))
 })
 export class ConversationComponent {
     private _conversationService: ConversationService;

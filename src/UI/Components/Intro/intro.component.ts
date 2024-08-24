@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'intro',
-    template: getTemplate('intro', await import('./intro.component.html'))
+    template: getTemplate('intro', await import('./intro.component.html?raw'))
 })
 export class IntroComponent {
     private _gameService: GameService;

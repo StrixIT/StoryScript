@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'equipment',
-    template: getTemplate('equipment', await import('./equipment.component.html'))
+    template: getTemplate('equipment', await import('./equipment.component.html?raw'))
 })
 export class EquipmentComponent {
     @Input() character!: ICharacter;

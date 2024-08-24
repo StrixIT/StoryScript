@@ -18,7 +18,7 @@ import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'exploration',
-    template: getTemplate('exploration', await import('./exploration.component.html'))
+    template: getTemplate('exploration', await import('./exploration.component.html?raw'))
 })
 export class ExplorationComponent {
     private _gameService: GameService;

@@ -8,7 +8,7 @@ import {NgbTypeahead} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'navigation',
-    template: getTemplate('navigation', await import('./navigation.component.html'))
+    template: getTemplate('navigation', await import('./navigation.component.html?raw'))
 })
 export class NavigationComponent {
     private _gameService: GameService;
@@ -19,8 +19,10 @@ export class NavigationComponent {
         this.game = serviceFactory.GetGame();
         this.texts = serviceFactory.GetTexts();
         this.locations = serviceFactory.AvailableLocations;
+        this.isDevelopment = process.env.NODE_ENV !== 'production';
     }
 
+    isDevelopment: boolean;
     game: IGame;
     texts: IInterfaceTexts;
     locations: { id: string, name: string }[];

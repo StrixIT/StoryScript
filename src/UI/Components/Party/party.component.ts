@@ -5,7 +5,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'party',
-    template: getTemplate('party', await import('./party.component.html'))
+    template: getTemplate('party', await import('./party.component.html?raw'))
 })
 export class PartyComponent {
     @Input() party!: IParty;

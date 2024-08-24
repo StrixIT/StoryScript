@@ -1,6 +1,6 @@
 ﻿import { IGame, IItem, Location } from '../types';
 import { Start } from './start';
-import description from './Library.html';
+import description from './Library.html?raw';
 
 export function Library() {
     return Location({

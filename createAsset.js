@@ -1,9 +1,8 @@
 import gameName from './gameName.js';
-const gameDir = `src\\Games\\${gameName}`;
-
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-
 import pkg from 'jsonfile';
+
+const gameDir = `src\\Games\\${gameName}`;
 const { readFileSync } = pkg;
 
 const assetType = process.argv[2];
@@ -70,7 +69,7 @@ if (!includeDescription) {
 
     snippet.body = Object.keys(snippet.body).forEach(k => { 
         const l = snippet.body[k]; 
-        if (!l.match(/import description from \'\.\/\$\{TM_FILENAME_BASE\}\.html';/g) && !l.match(/[\\t]{0,}description:/g)) {
+        if (!l.match(/import description from \'\.\/\$\{TM_FILENAME_BASE\}\.html?raw';/g) && !l.match(/[\\t]{0,}description:/g)) {
             cleaned.push(l);
         } 
     });

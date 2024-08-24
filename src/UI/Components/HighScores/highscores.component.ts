@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'highscores',
-    template: getTemplate('highscores', await import('./highscores.component.html'))
+    template: getTemplate('highscores', await import('./highscores.component.html?raw'))
 })
 export class HighScoresComponent {
     constructor() {
