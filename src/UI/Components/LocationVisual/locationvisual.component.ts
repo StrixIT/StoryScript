@@ -17,6 +17,7 @@ export class LocationVisualComponent {
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
+        this._sharedMethodService.useVisualLocation = true;
     }
 
     game: IGame;
