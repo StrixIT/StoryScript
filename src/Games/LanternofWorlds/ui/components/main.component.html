@@ -10,7 +10,7 @@
                 <div *ngIf="!game.state">
                     {{ texts.loading }}
                 </div>
-                <div *ngIf="game.state == 'Play'">
+                <div *ngIf="game.state == 'Play'" id="play-container">
                     <location-visual></location-visual>
                     <img id="player-icon" src="resources/hero.png" />
                 </div>

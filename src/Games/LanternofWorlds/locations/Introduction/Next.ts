@@ -1,5 +1,5 @@
 import { IGame, Location } from '../../types';
-import description from './Next.html';
+import description from './Next.html?raw';
 import { Next2 } from './Next2';
 
 export function Next() {

@@ -1,5 +1,5 @@
 import { IGame, Enemy } from '../types';
-import description from './cavebug.html';
+import description from './cavebug.html?raw';
 
 export function Cavebug() {
 	return Enemy({

@@ -1,7 +1,11 @@
-﻿import { ILocation as StoryScriptILocation, Location as StoryScriptLocation, ICompiledLocation as StoryScriptICompiledLocation, ICollection } from 'storyScript/Interfaces/storyScript';
-import { IEnemy, IItem, IPerson } from '../types';
+﻿import {
+    ICompiledLocation as StoryScriptICompiledLocation,
+    ILocation as StoryScriptILocation,
+    Location as StoryScriptLocation
+} from 'storyScript/Interfaces/storyScript';
+import {IEnemy, IItem, IPerson} from '../types';
 
-export function Location(entity: ILocation): ILocation  {
+export function Location(entity: ILocation): ILocation {
     return StoryScriptLocation(entity);
 }
 
@@ -11,10 +15,10 @@ export interface ILocation extends StoryScriptILocation {
 }
 
 export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {
-    activeEnemies?: ICollection<IEnemy>;
-    enemies?: ICollection<IEnemy>;
-    activeItems?: ICollection<IItem>;
-    items?: ICollection<IItem>;
-    activePersons?: ICollection<IPerson>;
-    persons?: ICollection<IPerson>;
+    activeEnemies?: IEnemy[];
+    enemies?: IEnemy[];
+    activeItems?: IItem[];
+    items?: IItem[];
+    activePersons?: IPerson[];
+    persons?: IPerson[];
 }

@@ -1,5 +1,5 @@
 import { Location, IGame, IItem } from '../../types'
-import description from './Druidstart.html'
+import description from './Druidstart.html?raw'
 import { forestMap } from '../../maps/forest';
 
 export function Druidstart() {

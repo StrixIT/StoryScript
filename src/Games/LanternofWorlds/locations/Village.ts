@@ -1,5 +1,5 @@
 import { IGame, Location, IFeature } from '../types';
-import description from './Village.html';
+import description from './Village.html?raw';
 import { ICombinable, IItem, PlayState } from 'storyScript/Interfaces/storyScript';
 import { Constants } from '../Constants';
 import { Druidstart } from './Introduction/Druidstart';

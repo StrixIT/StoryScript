@@ -16,6 +16,7 @@ export function Rules(): IRules {
             gameStart: (game: IGame) => {
                 game.activeCharacter.items.push(Sword());
                 game.activeCharacter.items.push(Potion());
+                game.party.currency ??= 50;
                 game.changeLocation(game.worldProperties.startChoice.name, true);
                 setPlayerPosition(game, game.worldProperties.startChoice.tile);
             },

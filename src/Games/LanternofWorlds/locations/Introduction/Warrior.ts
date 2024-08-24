@@ -1,5 +1,5 @@
 import { Location } from '../../types'
-import description from './Warrior.html'
+import description from './Warrior.html?raw'
 import { Tiger } from '../../enemies/Tiger';
 import { forestMap } from '../../maps/forest';
 

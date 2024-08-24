@@ -1,5 +1,5 @@
 ﻿import { Location } from '../../types';
-import description from './Cave.html';
+import description from './Cave.html?raw';
 import { caveMap } from '../../maps/cave';
 import { Cavebug } from '../../enemies/cavebug';
 
