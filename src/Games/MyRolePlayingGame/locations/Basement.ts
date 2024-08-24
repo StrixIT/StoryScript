@@ -1,7 +1,7 @@
 ﻿import { Location } from '../types';
 import { Garden } from './Garden';
 import { Journal } from '../items/journal';
-import description from './Basement.html';
+import description from './Basement.html?raw';
 
 export function Basement() {
     return Location({

@@ -152,7 +152,6 @@ function getService(): { service: IHelpers, definitions: IDefinitions } {
         enemies: [
             bandit
         ],
-        actions: [],
         features: [],
         locations: [],
         persons: [],

@@ -6,7 +6,6 @@ import {IItem} from './Interfaces/item';
 import {IKey} from './Interfaces/key';
 import {IFeature} from './Interfaces/feature';
 import {IQuest} from './Interfaces/quest';
-import {IAction} from './Interfaces/action';
 import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './utilityFunctions';
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
@@ -64,10 +63,6 @@ export function Feature<T extends IFeature>(entity: T): IFeature {
 
 export function Quest<T extends IQuest>(entity: T): T {
     return Create('quest', entity);
-}
-
-export function Action(action: IAction): IAction {
-    return Create('action', action);
 }
 
 export function DynamicEntity<T>(entityFunction: () => T, id?: string): T {
@@ -268,8 +263,6 @@ function Create(type: string, entity: any, id?: string) {
             return createFeature(entity, id);
         case 'quest':
             return CreateObject(entity, 'quest', id);
-        case 'action':
-            return CreateObject(entity, 'action', id);
         case 'trade':
             return CreateObject(entity, 'trade', id);
     }

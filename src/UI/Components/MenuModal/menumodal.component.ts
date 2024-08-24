@@ -7,7 +7,7 @@ import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'menu-modal',
-    template: getTemplate('menumodal', await import('./menumodal.component.html'))
+    template: getTemplate('menumodal', await import('./menumodal.component.html?raw'))
 })
 export class MenuModalComponent {
     private _activeModal: NgbActiveModal;

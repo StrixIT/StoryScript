@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'create-character',
-    template: getTemplate('createcharacter', await import('./createcharacter.component.html'))
+    template: getTemplate('createcharacter', await import('./createcharacter.component.html?raw'))
 })
 export class CreateCharacterComponent {
     private _characterService: CharacterService;

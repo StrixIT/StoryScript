@@ -1,7 +1,7 @@
 ﻿import {IGame, Location} from '../types';
 import {Start} from './start';
 import {Bandit} from '../enemies/bandit';
-import description from './DirtRoad.html';
+import description from './DirtRoad.html?raw';
 
 export function DirtRoad() {
     return Location({

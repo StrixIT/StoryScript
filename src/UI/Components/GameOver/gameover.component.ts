@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'game-over',
-    template: getTemplate('gameover', await import('./gameover.component.html'))
+    template: getTemplate('gameover', await import('./gameover.component.html?raw'))
 })
 export class GameOverComponent {
     private _gameService: GameService;

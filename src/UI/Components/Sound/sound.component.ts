@@ -7,7 +7,7 @@ import { IRules } from 'storyScript/Interfaces/storyScript';
 
 @Component({
     selector: 'sound',
-    template: getTemplate('sound', await import('./sound.component.html'))
+    template: getTemplate('sound', await import('./sound.component.html?raw'))
 })
 export class SoundComponent {
     private _ngZone: NgZone;
