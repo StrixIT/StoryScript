@@ -32,7 +32,6 @@ export class SharedMethodService {
     useBackpack?: boolean;
     useQuests?: boolean;
     useGround?: boolean;
-    useVisualLocation?: boolean;
 
     combinationChange$ = this.combinationSource.asObservable();
 
