@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'combination',
-    template: getTemplate('combination', await import('./combination.component.html'))
+    template: getTemplate('combination', await import('./combination.component.html?raw'))
 })
 export class CombinationComponent {
     private _combinationService: CombinationService

@@ -15,5 +15,4 @@
 
 debug.log
 package-lock.json
-
-.idea/
+stats.html

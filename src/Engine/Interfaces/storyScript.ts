@@ -1,7 +1,6 @@
 import type { IInterfaceTexts } from './interfaceTexts'
 import type { IRules } from './rules/rules'
 import type { IGame } from './game'
-import type { ICollection } from './collection'
 import type { IParty } from './party'
 import type { ICharacter } from './character'
 import type { ICombatTurn } from './combatTurn'
@@ -23,7 +22,7 @@ import type { IDestination } from './destination'
 import type { IBarrier } from './barrier'
 import type { IBarrierAction } from './barrierAction'
 import type { IHelpers } from './helpers'
-import { Action, Feature, Item, Enemy, Person, Key, Location, Quest } from '../EntityCreatorFunctions'
+import { Feature, Item, Enemy, Person, Key, Location, Quest } from '../EntityCreatorFunctions'
 import { Open } from '../Actions/open';
 import { OpenWithKey } from '../Actions/openWithKey';
 import type { ICombinable } from './combinations/combinable';
@@ -50,7 +49,6 @@ import type { IStatistics } from './statistics'
 import { format } from '../defaultTexts'
 
 export type {
-    ICollection, 
     IInterfaceTexts, 
     IRules, 
     IGame,
@@ -92,7 +90,6 @@ export type {
 
 export { 
     DefaultEquipment,
-    Action, 
     Item, 
     Feature, 
     Enemy,  

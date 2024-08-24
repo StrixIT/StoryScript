@@ -8,7 +8,7 @@ import { IParty } from '../../../Games/MyAdventureGame/types';
 
 @Component({
     selector: 'character-sheet',
-    template: getTemplate('charactersheet', await import('./charactersheet.component.html'))
+    template: getTemplate('charactersheet', await import('./charactersheet.component.html?raw'))
 })
 export class CharacterSheetComponent { 
     @Input() character!: ICharacter;

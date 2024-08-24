@@ -21,11 +21,6 @@ export interface IDefinitions {
     features: (() => IFeature)[];
 
     /**
-     * The actions the player can perform in the game world.
-     */
-    actions: (() => IAction)[];
-
-    /**
      * The enemies present in the game world.
      */
     enemies: (() => IEnemy)[];

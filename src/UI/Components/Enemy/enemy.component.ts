@@ -6,7 +6,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'enemy',
-    template: getTemplate('enemy', await import('./enemy.component.html'))
+    template: getTemplate('enemy', await import('./enemy.component.html?raw'))
 })
 export class EnemyComponent {
     private _sharedMethodService: SharedMethodService;
