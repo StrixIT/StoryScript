@@ -58,6 +58,7 @@ export default defineConfig({
     },
     build: {
         target: 'esNext',
-        outDir: "./dist"
+        outDir: "./dist",
+        sourcemap: 'inline'
     }
 })

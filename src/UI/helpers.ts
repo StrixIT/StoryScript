@@ -10,28 +10,12 @@ export function getTemplate(componentName: string, defaultTemplate?: any): strin
 }
 
 function importAssets() {
-    if (process.env.WEBPACK_BUILDER) {
-        loadAssetsWithRequire();
-    }
-    else if (import.meta.env?.VITE_BUILDER) {
-        loadAssetsWithImport();
-    }
-}
+    if (import.meta.env?.VITE_BUILDER) {
+        const modules = import.meta.glob('game/ui/**/*.component.html', {eager: true, query: 'raw'});
 
-function loadAssetsWithRequire() {
-    const modules = require.context('game/ui', true, /.component.html$/);
-
-    modules.keys().map(path => {
-        AddTemplate(path, modules(path).default);
-    });
-}
-
-function loadAssetsWithImport() {
-    const modules = import.meta.glob('game/ui/**/*.component.html?raw', { eager: true });
-
-    for (const path in modules)
-    {
-        AddTemplate(path, (<{default}>modules[path]).default);
+        for (const path in modules) {
+            AddTemplate(path, (<{ default }>modules[path]).default);
+        }
     }
 }
 
