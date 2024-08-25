@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './CastleInside.html';
+import description from './CastleInside.html?raw';
 import { QueenBee } from '../../persons/queenBee';
 
 export function CastleInside() {

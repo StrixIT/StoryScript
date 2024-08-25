@@ -1,8 +1,4 @@
-import { IAction as StoryScriptIAction, Action as StoryScriptAction } from 'storyScript/Interfaces/storyScript';
-
-export function Action(action: IAction): IAction {
-    return StoryScriptAction(action);
-}
+import {IAction as StoryScriptIAction} from 'storyScript/Interfaces/storyScript';
 
 export interface IAction extends StoryScriptIAction {
     level?: number;

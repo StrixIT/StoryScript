@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Roundshield.html';
+import description from './Roundshield.html?raw';
 
 export function Roundshield() {
     return Item({

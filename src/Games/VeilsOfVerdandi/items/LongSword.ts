@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType, TargetType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './LongSword.html';
+import description from './LongSword.html?raw';
 import { Constants } from '../constants';
 
 export function LongSword() {

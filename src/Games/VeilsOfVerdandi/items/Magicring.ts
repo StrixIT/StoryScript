@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Magicring.html';
+import description from './Magicring.html?raw';
 
 export function Magicring() {
     return Item({

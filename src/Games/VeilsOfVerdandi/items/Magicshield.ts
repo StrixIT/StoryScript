@@ -1,6 +1,6 @@
 ﻿import { EquipmentType, PlayState } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Magicshield.html';
+import description from './Magicshield.html?raw';
 import { Character, IGame, Item } from '../types';
 
 export function Magicshield() {

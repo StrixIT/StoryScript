@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Magicflower.html';
+import description from './Magicflower.html?raw';
 
 export function Magicflower() {
     return Item({

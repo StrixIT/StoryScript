@@ -1,5 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ActionStatus, ICreateCharacterStep, format} from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IAction, IParty, ICombatSetup  } from './types';
+import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IParty, ICombatSetup, IAction  } from './types';
 import { CharacterClasses } from './characterClass';
 import { ClassType } from './classType';
 import { TargetType } from '../../Engine/Interfaces/enumerations/targetType';
@@ -79,9 +79,9 @@ export function Rules(): IRules {
             },
 
             createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
-                var character = new Character();
-                var selectedClass = characterData.steps[1].questions[0].selectedEntry.value;
-                var characterClass = CharacterClasses[selectedClass];
+                const character = new Character();
+                const selectedClass = characterData.steps[1].questions[0].selectedEntry.value;
+                const characterClass = CharacterClasses[selectedClass];
                 character.hitpoints = characterClass.hitpoints;
                 character.items = characterClass.inventory.map(i => i());
                 character.class = characterClass;
@@ -118,25 +118,27 @@ export function Rules(): IRules {
                     //     rightHandWeapon = null;
                     // }
 
+                    let combatText = format(s.item.attackText, [character.name]);
+                    let totalDamage = 0;
+                    
                     if (s.item.targetType === TargetType.Enemy) {
-                        var weaponDamage = game.helpers.rollDice(s.item.damage);
-                        var totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (enemy.defence ?? 0));
-                        var combatText = format(s.item.attackText, [character.name]);
+                        const weaponDamage = game.helpers.rollDice(s.item.damage);
+                        totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (enemy.defence ?? 0));
                         enemy.currentHitpoints -= totalDamage;
-                    }
 
-                    if (combatText) {
-                        game.logToCombatLog(combatText + '.');
-                    }
+                        if (combatText) {
+                            game.logToCombatLog(combatText + '.');
+                        }
 
-                    game.logToCombatLog(`${character.name} does ${totalDamage} damage to the ${enemy.name}!`);
+                        game.logToCombatLog(`${character.name} does ${totalDamage} damage to the ${enemy.name}!`);
+                    }
 
                     if (enemy.currentHitpoints <= 0) {
                         game.logToCombatLog(`${character.name} defeats the ${enemy.name}!`);
 
                         if (!game.currentLocation.activeEnemies.some(enemy => enemy.currentHitpoints > 0)) {
-                            var currentSelector = descriptionSelector(game);
-                            var selector = currentSelector ? currentSelector + 'after' : 'after';
+                            const currentSelector = descriptionSelector(game);
+                            let selector = currentSelector ? currentSelector + 'after' : 'after';
                             selector = game.currentLocation.descriptions[selector] ? selector : 'after';
                             game.currentLocation.descriptionSelector = selector;
                             game.playState = null;
@@ -146,7 +148,7 @@ export function Rules(): IRules {
 
                 if (!useBows(combatSetup)) {
                     game.currentLocation.activeEnemies.filter(enemy => { return enemy.currentHitpoints > 0; }).forEach(function (enemy: IEnemy) {
-                        var enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
+                        const enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
                         game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
                         game.activeCharacter.currentHitpoints -= enemyDamage;
                     });
@@ -191,7 +193,7 @@ export function Rules(): IRules {
                 }
 
                 if (game.worldProperties.isNight) {
-                    var element = <HTMLElement>game.UIRootElement?.querySelector('location-container');
+                    const element = <HTMLElement>game.UIRootElement?.querySelector('location-container');
 
                     if (element) {
                         element.style.cssText = 'filter: brightness(50%);';

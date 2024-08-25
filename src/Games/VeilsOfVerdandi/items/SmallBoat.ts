@@ -1,6 +1,6 @@
 import { IGame, Item, Key } from '../types';
 import { EquipmentType } from 'storyScript/Interfaces/storyScript';
-import description from './SmallBoat.html';
+import description from './SmallBoat.html?raw';
 
 export function SmallBoat() {
 	return Key({

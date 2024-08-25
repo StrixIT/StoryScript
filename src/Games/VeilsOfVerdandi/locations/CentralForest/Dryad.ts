@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Dryad.html';
+import description from './Dryad.html?raw';
 import { CentralForest } from './CentralForest';
 import { ForestPond } from './ForestPond';
 

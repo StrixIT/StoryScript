@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Merchant.html';
+import description from './Merchant.html?raw';
 import { SouthRoad } from './SouthRoad';
 
 export function Merchant() {

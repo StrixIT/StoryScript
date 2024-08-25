@@ -2,7 +2,7 @@ import { IGame, Location } from '../../types';
 import { Dryad } from './Dryad';
 import { Treestump } from './Treestump';
 import { Troll } from './Troll';
-import description from './CentralForest.html';
+import description from './CentralForest.html?raw';
 import { NorthRoad } from '../NorthForest/NorthRoad';
 import { SouthRoad } from '../SouthForest/SouthRoad';
 

@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './ForestPond.html';
+import description from './ForestPond.html?raw';
 import { DarkDryad } from '../../enemies/DarkDryad';
 import { Magicshield } from '../../items/Magicshield';
 import { Dryad } from './Dryad';

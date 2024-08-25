@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Cutlass.html';
+import description from './Cutlass.html?raw';
 import { Constants } from '../constants';
 
 export function Claymore() {

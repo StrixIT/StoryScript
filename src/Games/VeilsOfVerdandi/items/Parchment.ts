@@ -1,6 +1,6 @@
 ﻿import { Key, EquipmentType, OpenWithKey, IBarrier } from 'storyScript/Interfaces/storyScript';
 import { IGame, IDestination } from '../types';
-import description from './Parchment.html';
+import description from './Parchment.html?raw';
 
 export function Parchment() {
     return Key( {

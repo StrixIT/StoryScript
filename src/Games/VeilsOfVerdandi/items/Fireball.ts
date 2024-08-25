@@ -1,6 +1,6 @@
 ﻿import { EquipmentType, GameState, PlayState, TargetType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Fireball.html';
+import description from './Fireball.html?raw';
 import { Item } from '../types';
 
 export function Fireball() {

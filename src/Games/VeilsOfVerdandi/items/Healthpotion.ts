@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType, TargetType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Healthpotion.html';
+import description from './Healthpotion.html?raw';
 
 export function Healthpotion() {
     return Item({

@@ -1,6 +1,6 @@
 ﻿import {SmallBoat} from '../../items/SmallBoat';
 import {Location} from '../../types';
-import description from './Fisherman.html';
+import description from './Fisherman.html?raw';
 import {NorthRoad} from './NorthRoad';
 import {Honeycastle} from '../Sea/Honeycastle';
 import {Mermaid} from '../Sea/Mermaid';

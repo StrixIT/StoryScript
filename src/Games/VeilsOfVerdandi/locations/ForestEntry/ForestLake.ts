@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './ForestLake.html';
+import description from './ForestLake.html?raw';
 import { Bandit } from '../../enemies/Bandit';
 import { Goldnecklace } from '../../items/Goldnecklace';
 import { heal, locationComplete } from '../../gameFunctions';

@@ -1,5 +1,5 @@
 ﻿import {Location, IGame} from '../../types';
-import description from './Oceanshrine.html';
+import description from './Oceanshrine.html?raw';
 import {ActionType} from 'storyScript/Interfaces/storyScript';
 import {Magicring} from '../../items/Magicring';
 import {CentralForest} from '../CentralForest/CentralForest';

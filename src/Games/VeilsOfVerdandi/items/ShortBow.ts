@@ -1,6 +1,6 @@
 import { IGame, Item } from '../types';
 import { EquipmentType, TargetType } from 'storyScript/Interfaces/storyScript';
-import description from './ShortBow.html';
+import description from './ShortBow.html?raw';
 import { ClassType } from '../classType';
 import { Constants } from '../constants';
 

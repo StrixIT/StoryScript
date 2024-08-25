@@ -1,6 +1,6 @@
 import { ClassType } from '../classType';
 import { IGame, Enemy } from '../types';
-import description from './GhostBandit.html';
+import description from './GhostBandit.html?raw';
 
 export function GhostBandit() {
 	return Enemy({

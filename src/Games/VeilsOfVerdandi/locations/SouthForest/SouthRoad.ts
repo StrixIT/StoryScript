@@ -2,7 +2,7 @@ import { IGame, Location } from '../../types';
 import { Guardians } from './Guardians';
 import { Merchant } from './Merchant';
 import { CentralForest } from '../CentralForest/CentralForest';
-import description from './SouthRoad.html';
+import description from './SouthRoad.html?raw';
 import { Start } from '../ForestEntry/start';
 
 export function SouthRoad() {

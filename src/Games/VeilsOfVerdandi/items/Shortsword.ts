@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Shortsword.html';
+import description from './Shortsword.html?raw';
 import { Constants } from '../constants';
 
 export function Shortsword() {

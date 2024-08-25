@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Pearl.html';
+import description from './Pearl.html?raw';
 
 export function Pearl() {
     return Item({

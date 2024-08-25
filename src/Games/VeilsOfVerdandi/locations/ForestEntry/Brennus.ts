@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Brennus.html';
+import description from './Brennus.html?raw';
 import { Brennus as BrennusEnemy } from '../../enemies/Brennus';
 import { Start } from './start';
 import { locationComplete } from '../../gameFunctions';

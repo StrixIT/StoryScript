@@ -3,7 +3,7 @@ import { Fisherman } from './Fisherman';
 import { Magicflowers } from './Magicflowers';
 import { Woodcutter } from './Woodcutter';
 import { CentralForest } from '../CentralForest/CentralForest';
-import description from './NorthRoad.html';
+import description from './NorthRoad.html?raw';
 import { Start } from '../ForestEntry/start';
 
 export function NorthRoad() {

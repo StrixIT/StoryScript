@@ -1,7 +1,7 @@
 ﻿import { Person } from 'storyScript/Interfaces/storyScript';
 import { Beesting } from '../items/Beesting';
 import { Magicflower } from '../items/Magicflower';
-import description from './QueenBee.html';
+import description from './QueenBee.html?raw';
 
 export function QueenBee() {
     return Person({

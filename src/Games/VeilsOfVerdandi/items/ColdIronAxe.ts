@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './ColdIronAxe.html';
+import description from './ColdIronAxe.html?raw';
 import { IEnemy, IGame } from '../types';
 import { equals } from 'storyScript/utilityFunctions';
 import { ShadowDog } from '../enemies/ShadowDog';

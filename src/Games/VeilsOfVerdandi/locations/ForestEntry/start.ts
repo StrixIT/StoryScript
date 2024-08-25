@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './start.html';
+import description from './start.html?raw';
 import { Brennus } from './Brennus';
 import { ForestLake } from './ForestLake';
 import { Stonemount } from './Stonemount';

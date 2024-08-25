@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Chainmail.html';
+import description from './Chainmail.html?raw';
 
 export function Chainmail() {
     return Item({

@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Cliffwall.html';
+import description from './Cliffwall.html?raw';
 import { Darkcave } from './Darkcave';
 import { Twoheadedwolf } from '../../enemies/Twoheadedwolf';
 import { Guardians } from './Guardians';

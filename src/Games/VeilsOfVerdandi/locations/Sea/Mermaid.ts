@@ -1,5 +1,5 @@
 import {IGame, Location} from '../../types';
-import description from './Mermaid.html';
+import description from './Mermaid.html?raw';
 import {Pearl} from '../../items/Pearl';
 import {Magicflower} from '../../items/Magicflower';
 import {Fisherman} from '../NorthForest/Fisherman';

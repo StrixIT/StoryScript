@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Honeycastle.html';
+import description from './Honeycastle.html?raw';
 import { Castleapproach } from './Castleapproach';
 import { Fisherman } from '../NorthForest/Fisherman';
 import { Octopus } from './Octopus';

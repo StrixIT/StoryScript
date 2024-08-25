@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Treestump.html';
+import description from './Treestump.html?raw';
 import { Satyr } from '../../enemies/Satyr';
 
 export function Treestump() {

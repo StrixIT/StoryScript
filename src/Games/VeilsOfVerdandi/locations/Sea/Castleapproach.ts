@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Castleapproach.html';
+import description from './Castleapproach.html?raw';
 import { CastleInside } from './CastleInside';
 
 export function Castleapproach() {

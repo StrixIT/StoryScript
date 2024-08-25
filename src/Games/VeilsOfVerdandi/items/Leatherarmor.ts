@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Leatherarmor.html';
+import description from './Leatherarmor.html?raw';
 
 export function LeatherArmor() {
     return Item({

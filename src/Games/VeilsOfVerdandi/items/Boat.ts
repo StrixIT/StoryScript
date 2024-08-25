@@ -1,6 +1,6 @@
 ﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
-import description from './Boat.html';
+import description from './Boat.html?raw';
 
 export function Boat() {
     return Item({

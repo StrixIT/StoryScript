@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Magicflowers.html';
+import description from './Magicflowers.html?raw';
 import { Brownbear } from '../../enemies/Brownbear';
 import { Magicflower } from '../../items/Magicflower';
 

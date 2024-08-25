@@ -1,5 +1,5 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Troll.html';
+import description from './Troll.html?raw';
 import { Troll as TrollEnemy } from '../../enemies/Troll';
 
 export function Troll() {

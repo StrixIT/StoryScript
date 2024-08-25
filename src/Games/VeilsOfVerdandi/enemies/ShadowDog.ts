@@ -1,5 +1,5 @@
 import { IGame, Enemy } from '../types';
-import description from './ShadowDog.html';
+import description from './ShadowDog.html?raw';
 
 export function ShadowDog() {
 	return Enemy({

@@ -1,5 +1,5 @@
 ﻿import {Location, IGame} from '../../types';
-import description from './Stonemount.html';
+import description from './Stonemount.html?raw';
 import {Wolf} from '../../enemies/Wolf';
 import {Start} from './start';
 import {GhostBandit} from '../../enemies/GhostBandit';

@@ -1,5 +1,5 @@
 ﻿import {Location} from '../../types';
-import description from './Guardians.html';
+import description from './Guardians.html?raw';
 import {Cliffwall} from './Cliffwall';
 import {Parchment} from '../../items/Parchment';
 import {SouthRoad} from './SouthRoad';
