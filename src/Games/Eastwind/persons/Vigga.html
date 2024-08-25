@@ -28,33 +28,17 @@
 			</p>
         </p>
         <replies>
-            <reply node="fine" set-start="return">
+            <reply node="fine">
                 Sure, I could use some advice.
             </reply>
-            <reply node="No thanks" set-start="return">
+            <reply node="No thanks">
                 I think I'll manage.
             </reply>
-            <reply node="About the ship" set-start="return">
+            <reply node="About the ship">
                 Ask about the ship.
             </reply>
-            <reply node="About the crew" set-start="return">
+            <reply node="About the crew">
                 Ask about the crew
-            </reply>
-        </replies>
-    </node>
-    <node name="return">
-        <p>
-            Back so soon?
-        </p>
-        <replies>
-            <reply node="garden">
-                I just walked through the garden.
-            </reply>
-            <reply node="key">
-                I found a key.
-            </reply>
-            <reply node="lostjournal">
-                I noticed you seem a bit upset.
             </reply>
         </replies>
     </node>
@@ -110,48 +94,5 @@ Vigga smiles, and then turns back towards the sea.
     <p>Finally, there's old Graham, our navigator. I'm not surprised you haven't met him yet, he can usually be found somewhere down the hold, snoring up a storm. 
     But when he's awake, he has an uncanny sense of direction. He says he can read the clouds and the wind, and the smallest ripple on the ocean's surface.<br>
     I'm not sure I believe him, but we do always end up where we need to be.'</p>
-    </node>
-    <node name="garden">
-        <p>
-            Did you see the hedgehog?
-        </p>
-        <replies default-reply="false">
-            <reply trigger="addHedgehog">
-                No I didn't. I'll pay attention next time.
-            </reply>
-        </replies>
-    </node>
-    <node name="key">
-        <p>
-            Hm. I don't know what lock that's for.
-        </p>
-    </node>
-    <node name="lostjournal">
-        <p>
-            I guess I am. I can't seem to find my personal journal. It is very important to me. Can you help me find it?
-        </p>
-        <replies>
-            <reply node="pleasefindit" quest-start="Journal" set-start="foundjournal">
-                Of course. I'll return it as soon as I see it.
-            </reply>
-        </replies>
-    </node>
-    <node name="pleasefindit">
-        <p>
-            I hope you have better luck than I searching.
-        </p>
-    </node>
-    <node name="foundjournal">
-        <p>
-            Have you found my journal?
-        </p>
-        <replies>
-            <reply>
-                Not yet, sorry.
-            </reply>
-            <reply requires="quest-done=Journal" quest-complete="Journal" set-start="return">
-                Yes I have. Here it is!
-            </reply>
-        </replies>
     </node>
 </conversation>

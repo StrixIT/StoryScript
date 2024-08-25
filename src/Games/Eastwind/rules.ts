@@ -166,17 +166,12 @@ export function Rules(): IRules {
                             ],
                             nextStepSelector: (party, character, currentStep) => {
                                 switch (currentStep.questions[0].selectedEntry.value) {
-                                    case '2': {
+                                    case '2':
                                         return 2;
-                                    }
-                                        ;
-                                    case '3': {
+                                    case '3':
                                         return 3;
-                                    }
-                                        ;
-                                    default: {
+                                    default:
                                         return 0;
-                                    }
                                 }
                             }
                         },
@@ -201,8 +196,8 @@ export function Rules(): IRules {
                                 }
                             ],
                             nextStepSelector(party, character, currentStep) {
-                                var selectedClass = currentStep.questions[0].selectedEntry.value;
-                                var confirmStep = character.steps[9];
+                                const selectedClass = currentStep.questions[0].selectedEntry.value;
+                                const confirmStep = character.steps[9];
                                 confirmStep.questions[0].question = `You have chosen the path of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
                                 return 9;
                             },
@@ -359,9 +354,9 @@ export function Rules(): IRules {
                         },
                         {
                             initStep: (party, character, currentStep, previousStep) => {
-                                var classSelect = character.steps[2].questions[0];
-                                var selectedClass = classSelect.selectedEntry ? classSelect.selectedEntry.value : null;
-                                var points = {
+                                const classSelect = character.steps[2].questions[0];
+                                let selectedClass = classSelect.selectedEntry ? classSelect.selectedEntry.value : null;
+                                const points = {
                                     Warrior: 0,
                                     Rogue: 0,
                                     Wizard: 0
@@ -369,20 +364,20 @@ export function Rules(): IRules {
 
                                 // If questions were answered, calculate which class has the highest score.
                                 if (previousStep > 2) {
-                                    for (var i = 3; i <= previousStep; i++) {
-                                        var selectedEntry = character.steps[i].questions[0].selectedEntry;
+                                    for (let i = 3; i <= previousStep; i++) {
+                                        const selectedEntry = character.steps[i].questions[0].selectedEntry;
                                         points[selectedEntry.value] += selectedEntry.bonus;
                                     }
 
                                     // When the scores are equal, the first class in the list wins (first warrior, then rogue, then wizard).
-                                    var max = Math.max(points.Warrior, points.Rogue, points.Wizard);
+                                    const max = Math.max(points.Warrior, points.Rogue, points.Wizard);
                                     selectedClass = max === points.Warrior ? Class.Warrior : max === points.Rogue ? Class.Rogue : Class.Wizard;
                                 }
 
                                 // Update the class selector step to use when processing the character sheet data.
                                 classSelect.selectedEntry = classSelect.entries.filter(entry => entry.value === selectedClass)[0];
 
-                                var nextQuestion = currentStep.questions[0];
+                                const nextQuestion = currentStep.questions[0];
 
                                 if (previousStep > 2) {
                                     nextQuestion.question = `Your path seems to be that of the ${selectedClass}. Do you want to be a ${selectedClass}?`;
@@ -407,17 +402,12 @@ export function Rules(): IRules {
                             ],
                             nextStepSelector(party, character, currentStep) {
                                 switch (currentStep.questions[0].selectedEntry.value) {
-                                    case 'no': {
+                                    case 'no':
                                         return 2;
-                                    }
-                                        ;
-                                    case 'yes': {
+                                    case 'yes':
                                         return 10;
-                                    }
-                                        ;
-                                    default: {
+                                    default:
                                         return 0;
-                                    }
                                 }
                             },
                         },
@@ -433,34 +423,27 @@ export function Rules(): IRules {
             },
 
             createCharacter: (game: IGame, characterData: ICreateCharacter): ICharacter => {
-                var character = new Character();
-
-                var characterClass = characterData.steps[2].questions[0].selectedEntry.value;
+                const character = new Character();
+                const characterClass = characterData.steps[2].questions[0].selectedEntry.value;
 
                 switch (characterClass) {
-                    case Class.Warrior: {
+                    case Class.Warrior:
                         character.strength = 3;
                         character.agility = 1;
                         character.intelligence = 1;
                         character.class = Class.Warrior;
-                    }
-                        ;
                         break;
-                    case Class.Rogue: {
+                    case Class.Rogue:
                         character.strength = 1;
                         character.agility = 3;
                         character.intelligence = 1;
                         character.class = Class.Rogue;
-                    }
-                        ;
                         break;
-                    case Class.Wizard: {
+                    case Class.Wizard:
                         character.strength = 1;
                         character.agility = 1;
                         character.intelligence = 3;
                         character.class = Class.Wizard;
-                    }
-                        ;
                         break;
                 }
 
@@ -476,10 +459,10 @@ export function Rules(): IRules {
 
         combat: {
             fight: (game: IGame, combatRound: ICombatSetup): Promise<void> | void => {
-                var character = combatRound[0].character;
-                var enemy = combatRound[0].target;
+                const character = combatRound[0].character;
+                const enemy = combatRound[0].target;
                 game.combatLog.length = 0;
-                var equipment = character.equipment;
+                const equipment = character.equipment;
 
                 if (equipment.rightHand?.attackText) {
                     game.logToCombatLog(equipment.rightHand?.attackText);
@@ -489,10 +472,9 @@ export function Rules(): IRules {
                     game.logToCombatLog(equipment.leftHand?.attackText);
                 }
 
-                SetAttackImage(equipment, game);
-
-                var damage = game.helpers.rollDice('1d6') + character.strength + game.helpers.calculateBonus(character, 'damage');
-                var attackSound = equipment.rightHand?.attackSound ?? equipment.leftHand?.attackSound;
+                setAttackImage(equipment, game);
+                const damage = game.helpers.rollDice('1d6') + character.strength + game.helpers.calculateBonus(character, 'damage');
+                const attackSound = equipment.rightHand?.attackSound ?? equipment.leftHand?.attackSound;
                 return fight(game, enemy, attackSound, damage);
             }
         }
@@ -500,7 +482,7 @@ export function Rules(): IRules {
 }
 
 export function fight(game: IGame, enemy: IEnemy, attackSound: string, damage: number): Promise<void> | void {
-    var callBack = () => continueFight(game, enemy, damage);
+    const callBack = () => continueFight(game, enemy, damage);
 
     if (attackSound) {
         const {promise, promiseCallback} = createPromiseForCallback<void>(callBack);
@@ -512,6 +494,7 @@ export function fight(game: IGame, enemy: IEnemy, attackSound: string, damage: n
 }
 
 const continueFight = function (game: IGame, currentEnemy: IEnemy, damage: number): Promise<void> | void {
+    removeAttackImage(game);
     game.combatLog.push('You do ' + damage + ' damage to the ' + currentEnemy.name + '!');
     currentEnemy.hitpoints -= damage;
 
@@ -519,7 +502,7 @@ const continueFight = function (game: IGame, currentEnemy: IEnemy, damage: numbe
         game.combatLog.push('You defeat the ' + currentEnemy.name + '!');
     }
 
-    var promise: Promise<void> | void = null;
+    let promise: Promise<void> | void = null;
 
     game.currentLocation.activeEnemies.filter((enemy: IEnemy) => {
         return enemy.hitpoints > 0;
@@ -547,8 +530,8 @@ const waitPromise = function (): Promise<void> {
 const enemyAttack = function (game: IGame, enemy: IEnemy): Promise<void> | void {
     game.combatLog.push(enemy.attackText ?? 'The ' + enemy.name + ' attacks!');
 
-    var attackSound = enemy.attackSound;
-    var callBack = () => enemyAttacks(game, enemy);
+    const attackSound = enemy.attackSound;
+    const callBack = () => enemyAttacks(game, enemy);
 
     if (attackSound) {
         const {promise, promiseCallback} = createPromiseForCallback<void>(callBack);
@@ -560,13 +543,13 @@ const enemyAttack = function (game: IGame, enemy: IEnemy): Promise<void> | void 
 }
 
 const enemyAttacks = function (game: IGame, enemy: IEnemy): Promise<void> | void {
-    var damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
+    const damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
     game.combatLog.push('The ' + enemy.name + ' does ' + damage + ' damage!');
     game.activeCharacter.currentHitpoints -= damage;
 }
 
-function SetAttackImage(equipment: IEquipment, game: IGame) {
-    var attackImage = equipment.rightHand.attackImage ?? equipment.leftHand.attackImage;
+function setAttackImage(equipment: IEquipment, game: IGame) {
+    const attackImage = equipment.rightHand.attackImage ?? equipment.leftHand.attackImage;
 
     if (attackImage) {
         const attackElementSelector = '.attack-symbol';
@@ -577,8 +560,8 @@ function SetAttackImage(equipment: IEquipment, game: IGame) {
         if (!attackSymbol) {
             const width = enemyPortrait.clientWidth / 2;
             const height = enemyPortrait.clientHeight / 2;
-            var attackSymbolString = `<img class="attack-symbol" style="position:absolute; top:${width}px; left:${height}px; z-index: 20" />`;
-            var attackSymbolElement = new DOMParser().parseFromString(attackSymbolString, "text/html");
+            const attackSymbolString = `<img class="attack-symbol" style="position:absolute; top:${width}px; left:${height}px; z-index: 20" />`;
+            const attackSymbolElement = new DOMParser().parseFromString(attackSymbolString, "text/html");
             portraitContainer.prepend(attackSymbolElement.body.firstElementChild);
             attackSymbol = portraitContainer.querySelector(attackElementSelector);
         }
@@ -587,8 +570,16 @@ function SetAttackImage(equipment: IEquipment, game: IGame) {
     }
 }
 
+function removeAttackImage(game: IGame) {
+    const portraitElement = game.UIRootElement.querySelector('.enemy-portrait');
+
+    if (portraitElement) {
+        portraitElement.parentElement.removeChild(portraitElement.parentElement.children[0]);
+    }
+}
+
 const setGradient = function (game: IGame) {
-    var gradientClass = selectStateListEntry(game, locationGradients);
+    const gradientClass = selectStateListEntry(game, locationGradients);
 
     if (gradientClass) {
         // When refreshing the page, the UIRootElement is not yet on the game so use a timeout.
@@ -613,11 +604,11 @@ const setGradientClass = function (element: HTMLElement, className: string) {
 }
 
 const setModalBackground = function (game: IGame) {
-    var background = selectStateListEntry(game, encounterBackgrounds);
+    const background = selectStateListEntry(game, encounterBackgrounds);
 
     if (background) {
         setTimeout(() => {
-            var modalElement = game.UIRootElement?.getElementsByClassName('encounter-modal')[0] as HTMLElement;
+            const modalElement = game.UIRootElement?.getElementsByClassName('encounter-modal')[0] as HTMLElement;
 
             if (modalElement) {
                 modalElement.style.backgroundImage = `url(resources/${background})`;
