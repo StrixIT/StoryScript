@@ -1,4 +1,4 @@
-<div class="box-container" id="location" *ngIf="!game.currentLocation.features?.collectionPicture">
+<div class="box-container" id="location">
     <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
     <div textFeatures>
         <div [innerHTML]="game.currentLocation.description | safe: 'html'"></div>

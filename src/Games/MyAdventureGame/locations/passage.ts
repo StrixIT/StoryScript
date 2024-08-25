@@ -3,7 +3,7 @@ import { Herbs } from '../items/herbs';
 import { WoundedWarrior } from '../features/woundedWarrior';
 import { Combinations } from '../combinations';
 import { Start } from './start';
-import description from './Passage.html';
+import description from './Passage.html?raw';
 
 export function Passage() {
     return Location({

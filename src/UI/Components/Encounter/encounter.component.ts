@@ -7,7 +7,7 @@ import { TradeService } from 'storyScript/Services/TradeService';
 
 @Component({
     selector: 'encounter',
-    template: getTemplate('encounter', await import('./encounter.component.html'))
+    template: getTemplate('encounter', await import('./encounter.component.html?raw'))
 })
 export class EncounterComponent {
     private _sharedMethodService: SharedMethodService;

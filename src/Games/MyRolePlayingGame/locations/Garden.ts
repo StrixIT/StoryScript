@@ -2,7 +2,7 @@
 import {Start} from './start';
 import {BasementKey} from '../items/basementKey';
 import {Basement} from './Basement';
-import description from './Garden.html';
+import description from './Garden.html?raw';
 
 export function Garden() {
     return Location({

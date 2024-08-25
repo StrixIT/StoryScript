@@ -1,5 +1,5 @@
 /**
- * Used to determine the situational UI to show to the player, e.g. the menu or trade screen.
+ * Used to determine whether an item usable in combat can be used on enemies or party characters.
  */
 export enum TargetType {
     Enemy = 'Enemy',

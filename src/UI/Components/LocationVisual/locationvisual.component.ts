@@ -7,7 +7,7 @@ import {compareString} from "storyScript/utilityFunctions.ts";
 
 @Component({
     selector: 'location-visual',
-    template: getTemplate('locationvisual', await import('./locationvisual.component.html'))
+    template: getTemplate('locationvisual', await import('./locationvisual.component.html?raw'))
 })
 export class LocationVisualComponent {
     private _sharedMethodService: SharedMethodService;

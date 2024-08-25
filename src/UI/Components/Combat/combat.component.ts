@@ -1,4 +1,4 @@
-import { IInterfaceTexts, IGame, IAction, IEnemy, IItem, ICharacter, ICollection, TargetType, ICombatTurn } from 'storyScript/Interfaces/storyScript';
+import { IInterfaceTexts, IGame, IAction, IEnemy, IItem, ICharacter, TargetType, ICombatTurn } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { GameService } from 'storyScript/Services/gameService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'combat',
-    template: getTemplate('combat', await import('./combat.component.html'))
+    template: getTemplate('combat', await import('./combat.component.html?raw'))
 })
 export class CombatComponent {
     private _gameService: GameService;
@@ -28,8 +28,8 @@ export class CombatComponent {
     texts: IInterfaceTexts;
     actionsEnabled: boolean = true;
     multiCharacter: boolean;
-    enemyRows: ICollection<IEnemy>[];
-    characterRows: ICollection<ICharacter>[];
+    enemyRows: IEnemy[];
+    characterRows: ICharacter[];
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 

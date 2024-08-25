@@ -1,5 +1,4 @@
-﻿import { ICollection } from './collection';
-import { IItem } from './item';
+﻿import { IItem } from './item';
 import { IEnemy } from './enemy';
 
 export interface IHelpers {
@@ -16,7 +15,7 @@ export interface IHelpers {
      * @param person The player character or the person to calculate the bonus for.
      * @param type The player attribute to get the bonus for (e.g. attack)
      */
-    calculateBonus(person: { items?: ICollection<IItem>, equipment?: {} }, type: string): number;
+    calculateBonus(person: { items?: IItem[], equipment?: {} }, type: string): number;
 
     /**
      * Get a random enemy to add to the game.

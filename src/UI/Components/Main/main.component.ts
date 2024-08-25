@@ -7,7 +7,7 @@ import { getTemplate } from '../../helpers';
 
 @Component({
     selector: 'main',
-    template: getTemplate('main', await import('./main.component.html'))
+    template: getTemplate('main', await import('./main.component.html?raw'))
 })
 export class MainComponent {
     private _sharedMethodService: SharedMethodService;

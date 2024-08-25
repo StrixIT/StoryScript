@@ -14,7 +14,12 @@ import {RunGame} from '../../../Games/MyRolePlayingGame/run';
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
-import {customEntity, DynamicEntity} from "storyScript/EntityCreatorFunctions.ts";
+import {
+    customEntity,
+    DynamicEntity,
+    InitEntityCollection,
+    setReadOnlyLocationProperties
+} from "storyScript/EntityCreatorFunctions.ts";
 import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {Item} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
@@ -116,6 +121,24 @@ describe("EntityCreatorFunctions", function () {
         expect(lamp.value).toBe(10);
     });
 
+    test("should use the specified id when creating a dynamic entity", function () {
+        const dynamicItem = function Archway() {
+            return Feature({
+                name: 'Magic Lamp'
+            })
+        };
+
+        const lamp = DynamicEntity(dynamicItem, 'gate');
+        expect(lamp).not.toBeNull();
+        expect(lamp.id).toBe('gate');
+    });
+
+    test("should throw an error when creating a dynamic entity with an anonymous function and no id", function () {
+        expect(() => {
+            const lamp = DynamicEntity(() => Feature({name: 'Magic Lamp'}));
+        }).toThrow();
+    });
+
     test("should throw when creating a custom entity without a name", function () {
         expect(function () {
             customEntity(Bandit, {name: '', hitpoints: 15});
@@ -134,4 +157,23 @@ describe("EntityCreatorFunctions", function () {
         expect(result.trade.buy.emptyText).toBe(emptyText);
     });
 
+    test("should not override read-only properties", function () {
+        const activePersons = [];
+        
+        const location = <ICompiledLocation>{
+            activePersons: activePersons
+        };
+        
+        setReadOnlyLocationProperties(location);
+        expect(location.activePersons).toBe(activePersons);
+    });
+
+    test("should not init unknown collections", function () {
+        const entity = {
+            unknown: undefined
+        }
+
+        InitEntityCollection(entity, 'unknown');
+        expect(entity.unknown).toBeUndefined();
+    });
 });

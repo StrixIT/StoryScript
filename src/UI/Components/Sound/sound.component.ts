@@ -1,16 +1,15 @@
-import { GameService } from 'storyScript/Services/gameService';
-import { Component, NgZone, inject } from '@angular/core';
-import { IGame } from 'storyScript/Interfaces/game';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { getTemplate } from '../../helpers';
-import { IRules } from 'storyScript/Interfaces/storyScript';
+import {GameService} from 'storyScript/Services/gameService';
+import {Component, inject} from '@angular/core';
+import {IGame} from 'storyScript/Interfaces/game';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {getTemplate} from '../../helpers';
+import {IRules} from 'storyScript/Interfaces/storyScript';
 
 @Component({
     selector: 'sound',
-    template: getTemplate('sound', await import('./sound.component.html'))
+    template: getTemplate('sound', await import('./sound.component.html?raw'))
 })
 export class SoundComponent {
-    private _ngZone: NgZone;
     private _gameService: GameService;
 
     private _game: IGame;
@@ -20,9 +19,9 @@ export class SoundComponent {
     private _fadingMusic: boolean = false;
     private _currentMusic: string;
     private _currentVolume: number = 1;
+    private _soundQueue: [number, string][] = [];
 
     constructor() {
-        this._ngZone = inject(NgZone);
         this._gameService = inject(GameService);
         const objectFactory = inject(ServiceFactory);
         this._game = objectFactory.GetGame();
@@ -31,17 +30,15 @@ export class SoundComponent {
     }
 
     getCurrentMusic = (): string => {
-        var music = this._gameService.getCurrentMusic();
+        const music = this._gameService.getCurrentMusic();
 
         if (this._rules.setup.fadeMusicInterval) {
 
-            if (!this._currentMusic)
-            {
+            if (!this._currentMusic) {
                 this._currentMusic = music;
             }
 
-            if (!this._fadingMusic && music != this._currentMusic)
-            {
+            if (!this._fadingMusic && music != this._currentMusic) {
                 this._fadingMusic = true;
                 this._fadeInterval = setInterval(() => this.fade(music), this._rules.setup.fadeMusicInterval);
             }
@@ -52,30 +49,25 @@ export class SoundComponent {
         return music;
     }
 
-    getSoundQueue = (): { key: number, value: string }[] => {      
-        const soundQueue = this._game.sounds.soundQueue;
-
-        const queue = Array.from(soundQueue.entries()).filter(v => !v[1].playing).map(e => 
-        {
-            // Use this code outside of the angular change detection to remove sounds that are playing from the list
-            // without triggering the ExpressionChangedAfterItHasBeenCheckedError error. I got this solution reading
-            // https://medium.com/angular-in-depth/boosting-performance-of-angular-applications-with-manual-change-detection-42cb396110fb.
-            this._ngZone.runOutsideAngular(()=>{
-                setTimeout(() => {
-                    soundQueue.get(e[0]).playing = true;
-                }, 0);
-            });
-
-            return { key: e[0], value: e[1].value }; 
+    getSoundQueue = (): [number, string][] => {
+        Array.from(this._game.sounds.soundQueue).forEach(e => {
+            if (!e[1].playing) {
+                this._soundQueue.push([e[0], e[1].value]);
+                e[1].playing = true;
+            }
         });
 
-        return queue;
+        return this._soundQueue;
     }
 
-    soundCompleted = (sound: { key: number, value: string }) => {
-        const soundQueue = this._game.sounds.soundQueue;
-        soundQueue.get(sound.key).completeCallBack?.();
-        soundQueue.delete(sound.key);
+    soundCompleted = (soundKey: number) => {
+        this._game.sounds.soundQueue.get(soundKey).completeCallBack?.();
+        this._game.sounds.soundQueue.delete(soundKey);
+        const index = this._soundQueue.indexOf(this._soundQueue.find(([k, _]) => soundKey === k));
+
+        if (index > -1) {
+            this._soundQueue.splice(index, 1);
+        }
     }
 
     // This code is here to (re)start music playback as soon as the user interacts with the browser.
@@ -84,15 +76,14 @@ export class SoundComponent {
             return;
         }
 
-        var backgroundMusicElement = this.getMusicPlayer(); 
+        const backgroundMusicElement = this.getMusicPlayer();
 
-        if (backgroundMusicElement)
-        {
+        if (backgroundMusicElement) {
             // This will trigger a warning when the user hasn't interacted with the web page yet. Currently (June 1st 2023),
             // I haven't found a way to silence this warning.
-            var audioContext = new window.AudioContext();
-        
-            if (audioContext?.state !== 'suspended') {   
+            const audioContext = new window.AudioContext();
+
+            if (audioContext?.state !== 'suspended') {
                 backgroundMusicElement.play();
                 this._isPlaying = true;
             }
@@ -100,19 +91,18 @@ export class SoundComponent {
     }
 
     private fade = (newMusic: string) => {
-        var newVolume = this._currentVolume - 0.1;
+        const newVolume = this._currentVolume - 0.1;
 
-        if(newVolume >= 0) {
+        if (newVolume >= 0) {
             this._currentVolume = newVolume;
-        }
-        else{
+        } else {
             clearInterval(this._fadeInterval);
             this._currentVolume = 1;
             this._currentMusic = newMusic;
             this._fadingMusic = false;
         }
 
-        var backgroundMusicElement = this.getMusicPlayer();
+        const backgroundMusicElement = this.getMusicPlayer();
         backgroundMusicElement.volume = this._currentVolume;
     }
 

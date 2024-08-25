@@ -3,7 +3,7 @@ import { Garden } from './Garden';
 import { Library } from './Library';
 import { DirtRoad } from './DirtRoad';
 import { Friend } from '../persons/Friend';
-import description from './Start.html';
+import description from './Start.html?raw';
 
 export function Start() {
     return Location({
