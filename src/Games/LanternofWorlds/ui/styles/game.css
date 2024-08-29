@@ -22,7 +22,7 @@ body {
 }
 
 .modal-content.encounter-modal {
-    border-image-source: url('resources/ui/frame.png');
+    border-image-source: url('$resources/ui/frame.png');
     border-image-slice: 30;
     border-image-width: 30;
     padding: 28px 15px 23px 15px;
@@ -66,7 +66,7 @@ encounter-modal .modal-header, encounter-modal .modal-footer {
 }
 
 .combat-modal {
-    background-image: url(resources/maps/CaveBackground.jpg);
+    background-image: url($resources/maps/CaveBackground.jpg);
     color: yellow;
     text-align: center;
 }
