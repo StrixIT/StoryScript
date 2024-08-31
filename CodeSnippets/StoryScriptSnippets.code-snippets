@@ -162,12 +162,12 @@
 		"prefix": "ssBarriers",
 		"body": [
 			"barriers: [",
-			"\t{"
+			"\t{",
 			"\t\tname: '$1',",
 			"\t\tactions: [",
 			"\t\t\t$2",
 			"\t\t],",
-			"\t}"
+			"\t}",
 			"],"
 		],
 		"description": "Add barriers to a destination"
