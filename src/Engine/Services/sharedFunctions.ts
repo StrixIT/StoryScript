@@ -154,7 +154,7 @@ export function selectStateListEntry(game: IGame, stateList: StateList) {
     const customFunctions = stateList[''];
     let result = null;
 
-    customFunctions.filter(f => typeof f === 'function').forEach(f => {
+    customFunctions?.filter(f => typeof f === 'function').forEach(f => {
         result = f(game);
     })
 

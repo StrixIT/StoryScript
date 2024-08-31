@@ -306,12 +306,12 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssFunction",
 		"body": [
-			"{",
-			"\t'$1':",
+			"[",
+			"\t'$1',",
 			"\t(game: IGame) => {",
 			"\t\t$2",
 			"\t}",
-			"}"
+			"]"
 		],
 		"description": "Add a new StoryScript function"
 	},
