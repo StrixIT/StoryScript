@@ -162,12 +162,13 @@
 		"prefix": "ssBarriers",
 		"body": [
 			"barriers: [",
+			"\t[ '$1',",
 			"\t{",
-			"\t\tname: '$1',",
+			"\t\tname: '$2',",
 			"\t\tactions: [",
-			"\t\t\t$2",
+			"\t\t\t$3",
 			"\t\t],",
-			"\t}",
+			"\t}]",
 			"],"
 		],
 		"description": "Add barriers to a destination"
@@ -177,12 +178,12 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssBarrier",
 		"body": [
-			"{",
-			"\tname: '$1',",
+			"[ '$1', {",
+			"\tname: '$2',",
 			"\tactions: [",
-			"\t\t$2",
+			"\t\t$3",
 			"\t],",
-			"},"
+			"}],"
 		],
 		"description": "Add a new destination barrier"
 	},
@@ -213,12 +214,15 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssAction",
 		"body": [
-			"{",
-			"\ttext: '$1',",
-			"\texecute: (game: IGame) => {",
-			"\t\t$2",
-			"\t},",
-			"},"
+			"[",
+			"\t'$1',",
+			"\t\t{",
+			"\t\ttext: '$2',",
+			"\t\texecute: (game: IGame) => {",
+			"\t\t\t$3",
+			"\t\t},",
+			"\t}",
+			"],"
 		],
 		"description": "Add a new action"
 	},
