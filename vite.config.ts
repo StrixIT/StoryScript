@@ -42,7 +42,8 @@ export default defineConfig({
     resolve: {
         alias: {
             storyScript: path.resolve(__dirname, './src/Engine'),
-            game: gamePath
+            game: gamePath,
+            $resources: path.resolve(gamePath, 'resources')
         }
     },
     plugins: plugins,

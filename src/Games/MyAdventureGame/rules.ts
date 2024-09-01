@@ -1,4 +1,4 @@
-import { IRules, ICombinationAction, ICreateCharacter, ICharacter } from 'storyScript/Interfaces/storyScript';
+import { IRules, ICombinationAction, ICreateCharacter, ICharacter, ICombinable } from 'storyScript/Interfaces/storyScript';
 import { Combinations } from './combinations';
 import { IGame, Character, IEnemy, ICombatSetup } from './types';
 
@@ -24,7 +24,7 @@ export function Rules(): IRules {
                         text: Combinations.LOOKAT,
                         preposition: 'at',
                         requiresTool: false,
-                        failText: (game, target, tool): string => { 
+                        failText: (ame: IGame, target: ICombinable, tool: ICombinable): string => { 
                             return 'You look at the ' + target.name + '. There is nothing special about it';
                         }
                     }
