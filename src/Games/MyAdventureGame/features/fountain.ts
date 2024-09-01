@@ -34,7 +34,7 @@ export function Fountain() {
                     combinationType: Combinations.USE,
                     tool: Flask,
                     match: (game, target, tool): string => {
-                        var flask = game.activeCharacter.items.get(Flask);
+                        const flask = game.activeCharacter.items.get(Flask);
 
                         if (flask) {
                             game.activeCharacter.items.delete(flask);

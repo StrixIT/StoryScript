@@ -239,7 +239,26 @@ describe("arrayAndFunctionExtensions", function () {
         eventRecords.add(['Second', () => false]);
         expect(eventRecords[1][1][StateProperties.Added]).toBeTruthy();
     });
-    
+
+    test("should get and remove an action or event function using its id string", function () {
+        addArrayExtensions();
+        const openKey = 'open';
+        const closeKey = 'close';
+        const openText = 'open function';
+        const testArray =[[openKey, () => openText], [closeKey, () => 'close function']];
+        
+        const result = testArray.get(openKey);
+        expect(result).not.toBeNull();
+        const resultFunction = <Function>result[1];
+        expect(resultFunction()).toBe(openText);
+        
+        testArray.delete(closeKey);
+        const deleted = testArray.getDeleted();
+        expect(testArray).toHaveLength(1);
+        expect(deleted).toHaveLength(1);
+        expect(testArray[0][0]).toBe(openKey);
+        expect(deleted[0][0]).toBe(closeKey);
+    });
 });
 
 function getTestArray() {

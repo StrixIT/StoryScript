@@ -28,6 +28,10 @@ button {
     float: none;
 }
 
+.modal-header {
+    display: grid;
+}
+
 .close {
     font-size: 1.5rem;
     font-weight: 700;
@@ -37,8 +41,8 @@ button {
     opacity: .5;
     border: none;
     background: none;
-    margin-right: -5px;
-    margin-top: -25px;
+    justify-self: flex-end;
+    margin-top: -40px;
 }
 
 .menu-bar {
@@ -290,10 +294,6 @@ feature {
     max-width: 50%;
 }
 
-.auto-back-button > .back-label {
-    display: none;
-}
-
 .custom-select {
     position: relative;
     flex: 1 1 0%;
@@ -339,4 +339,8 @@ feature {
 
 .unavailable {
     opacity: .5;
+}
+
+#modal-close-button {
+    
 }

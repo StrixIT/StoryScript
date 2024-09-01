@@ -31,6 +31,15 @@ export class DataSynchronizer implements IDataSynchronizer {
                 setReadOnlyLocationProperties(entity);
             }
         }
+        
+        // If the entity is a record and no pristine entity is found, try getting an entity record
+        // from the pristine entities. This is used to restore the locations when a save game is
+        // synchronized.
+        const firstRecordValue = entity && !Array.isArray(entity) && Object.values(entity)?.[0];
+        
+        if (firstRecordValue && typeof pristineEntity === 'undefined' && this.isEntity(firstRecordValue)) {
+            pristineEntity = this._pristineEntities[getPlural((<{ type: string }>firstRecordValue).type)];
+        }
 
         // Use the properties of both the entity and the pristine entity, but only
         // process them once.
