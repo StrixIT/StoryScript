@@ -8,7 +8,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="!activeNode">
+    <div *ngIf="!activeNode || !activeNode.replies.length">
         Your conversation has ended.
     </div>
     <div id="conversation-history">

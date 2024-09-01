@@ -1,5 +1,5 @@
 ﻿import {ICharacter} from 'storyScript/Interfaces/storyScript';
-import {IItem} from './types';
+import {IEquipment, IItem} from './types';
 
 export class Character implements ICharacter {
     name: string = '';
@@ -14,15 +14,17 @@ export class Character implements ICharacter {
 
     items: IItem[] = [];
 
-    equipment: {};
+    equipment: IEquipment = {};
 
     constructor() {
         this.equipment = {
+            // Remove the slots you don't want to use. Omit them in your IEquipment interface too!
             head: null,
             body: null,
             leftHand: null,
             rightHand: null,
             feet: null
+            // Add your custom slots here. Make sure you add them in your IEquipment interface too.
         }
     }
 }
