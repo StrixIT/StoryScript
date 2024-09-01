@@ -154,12 +154,12 @@ export function selectStateListEntry(game: IGame, stateList: StateList) {
     const customFunctions = stateList[''];
     let result = null;
 
-    for (const n in customFunctions) {
-        result = (<((game: IGame) => string)><unknown>customFunctions[n])(game);
+    customFunctions?.filter(f => typeof f === 'function').forEach(f => {
+        result = f(game);
+    })
 
-        if (result) {
-            return result;
-        }
+    if (result) {
+        return result;
     }
 
     // Next, get the entries in this order: Location, PlayState, GameState.

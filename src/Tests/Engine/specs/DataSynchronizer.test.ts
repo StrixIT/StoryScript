@@ -17,6 +17,10 @@ import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
+import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
+import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
+import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
+import {Journal} from "../../../Games/MyRolePlayingGame/quests/journal.ts";
 
 const startLocationSkeleton = {
     "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
@@ -81,7 +85,10 @@ const partyData = {
         "intelligence": 1,
         "items": [],
         "equipment": {"head": null}
-    }], "quests": [], "score": 0
+    }], "quests": [{
+        "id": "journal",
+        "type": "quest",
+    }], "score": 0
 }
 
 const libraryWithTrader = {
@@ -273,12 +280,52 @@ describe("DataSynchronizer", () => {
         expect(skeleton).toEqual(expected);
     });
 
+    test("should add new locations when synchronizing an existing world", function () {
+        const pristineEntities = {
+            'locations': {
+                'start': Start(),
+                'dirtroad': DirtRoad()
+            },
+            'persons': {
+                'friend': Friend()
+            },
+            'enemies': {
+                'bandit': Bandit()
+            },
+            'items': {
+                'sword': Sword(),
+                'basementkey': BasementKey()
+            },
+            'quests': {
+                'journal': Journal()
+            }
+        };
+
+        const savedData = <ISaveGame>{
+            party: <IParty>{},
+            playedAudio: [],
+            statistics: {},
+            world: {'start': <any>{ ...startLocationSkeleton } },
+            worldProperties: {}
+        };
+
+        const serializer = new DataSerializer(pristineEntities);
+        const restoredData = serializer.restoreObjects(savedData);
+        const synchronizer = new DataSynchronizer(pristineEntities);
+
+        synchronizer.synchronizeEntityData(restoredData);
+        expect(restoredData.world.start).not.toBeNull();
+        expect(restoredData.world.dirtroad).not.toBeNull();
+        expect(restoredData.world.dirtroad).toEqual(pristineEntities.locations.dirtroad);
+    });
+
     test("should restore Party data", function () {
         const skeleton = <IParty>dataSerializer.restoreObjects(partyData);
         dataSynchronizer.synchronizeEntityData(skeleton);
         expect(skeleton.characters[0].name).toBe('Test');
         expect(skeleton.characters[0].items.length).toBe(0);
-        expect(skeleton.quests.length).toBe(0);
+        expect(skeleton.quests.length).toBe(1);
+        expect(skeleton.quests[0].name).toBe(Journal().name);
     });
 
     test("should restore added actions", function () {
