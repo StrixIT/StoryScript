@@ -92,8 +92,8 @@
 			"\t\tquests: [",
 			"\t\t],",
 			"\t\tconversation: {",
-			"\t\t\tactions: {",
-			"\t\t\t}",
+			"\t\t\tactions: [",
+			"\t\t\t]",
 			"\t\t},",
 			"\t});",
 			"}"
