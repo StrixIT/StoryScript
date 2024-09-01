@@ -21,7 +21,7 @@ export function Mermaid() {
                 {
                     text: 'Help the Mermaid',
                     execute: (game: IGame) => {
-                        game.activeCharacter.items.add(Pearl());
+                        game.activeCharacter.items.add(Pearl);
                         setCompleted(game, 'helpmermaid');
                     },
                     activeDay: true
@@ -32,9 +32,8 @@ export function Mermaid() {
                     {
                         text: 'Give the Magic Flower to the Mermaid',
                         execute: (game: IGame) => {
-                            // Todo: should remove item from party.
-                            game.activeCharacter.items.delete(Magicflower);
-                            game.activeCharacter.items.add(Pearl());
+                            game.helpers.removeItemFromParty(Magicflower);
+                            game.activeCharacter.items.add(Pearl);
                             setCompleted(game, 'giveflower');
                         },
                         activeNight: true

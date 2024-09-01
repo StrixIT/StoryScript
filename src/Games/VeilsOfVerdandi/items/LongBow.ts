@@ -4,7 +4,7 @@ import { Constants } from '../constants';
 import { Item } from '../types';
 import { TargetType } from '../../../Engine/Interfaces/storyScript';
 
-export function Bow() {
+export function LongBow() {
     return Item({
         name: 'Long Bow',
         description: description,

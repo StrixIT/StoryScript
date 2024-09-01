@@ -2,6 +2,7 @@
 import description from './Magicflowers.html?raw';
 import { Brownbear } from '../../enemies/Brownbear';
 import { Magicflower } from '../../items/Magicflower';
+import { NorthRoad } from './NorthRoad';
 
 export function Magicflowers() {
     return Location({
@@ -10,7 +11,7 @@ export function Magicflowers() {
         destinations: [
             {
                 name: 'Back to the Map',
-                target: null
+                target: NorthRoad
             }              
         ],            
         enemies: [

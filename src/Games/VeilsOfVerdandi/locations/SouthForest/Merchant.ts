@@ -10,8 +10,10 @@ export function Merchant() {
             {
                 name: 'The South Road',
                 target: SouthRoad
-            },  
-            
-        ]                        
+            }        
+        ],
+        persons: [
+            Merchant()
+        ]                
     });
 }
