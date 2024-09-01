@@ -189,7 +189,11 @@ export class CharacterService implements ICharacterService {
 
     isSlotUsed = (character: ICharacter, slot: string): boolean => {
         if (character?.equipment) {
-            return character.equipment[slot] !== undefined;
+            if (character.equipment[slot] === undefined) {
+                return false;
+            }
+
+            return this._rules.character?.isSlotUsed ? this._rules.character.isSlotUsed(character, slot) : true;
         }
 
         return false;
