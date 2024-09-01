@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="row" *ngFor="let slot of customSlots()">
-            <div class="col-12">
+            <div class="col-12" *ngIf="isSlotUsed(slot)">
                 <div>
                     {{ texts[slot] }}
                 </div>

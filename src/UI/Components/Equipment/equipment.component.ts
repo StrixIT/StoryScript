@@ -33,8 +33,8 @@ export class EquipmentComponent {
     }
 
     customSlots = () => {
-        var defaultSlots = Object.keys(new DefaultEquipment());
-        var customSlots = Object.keys(this.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
+        const defaultSlots = Object.keys(new DefaultEquipment());
+        const customSlots = Object.keys(this.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
         return customSlots;
     }
 }
