@@ -40,4 +40,10 @@ export interface IHelpers {
      * @param selector The id of the enemy to add
      */        
     getEnemy(selector: string): IEnemy;
+
+    /**
+     * Removes an item from the party, checking all character equipment and backpacks.
+     * @param item  The item to remove from the party
+     */
+    removeItemFromParty(item: IItem | (() => IItem)): void;
 }
