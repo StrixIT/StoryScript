@@ -3,10 +3,11 @@ import {IEnemy} from '../Interfaces/enemy';
 import {IItem} from '../Interfaces/item';
 import {IDefinitions} from '../Interfaces/definitions';
 import {compareString} from '../utilityFunctions';
-import {random} from "storyScript/Services/sharedFunctions.ts";
+import {random, removeItemFromParty} from "storyScript/Services/sharedFunctions.ts";
+import { IGame } from '../Interfaces/game';
 
 export class HelperService implements IHelpers {
-    constructor(private _definitions: IDefinitions) {
+    constructor(private _game: IGame, private _definitions: IDefinitions) {
     }
 
     randomEnemy = (selector?: (enemy: IEnemy) => boolean): IEnemy => random<IEnemy>('enemies', this._definitions, <(enemy: IEnemy) => boolean>selector);
@@ -73,6 +74,10 @@ export class HelperService implements IHelpers {
 
         return bonus;
     }
+
+    removeItemFromParty = (item: IItem | (() => IItem)): void => {
+        removeItemFromParty(this._game.party, item);
+    };
 
     private find<T>(selector: string, type: string, definitions: IDefinitions): T {
         const collection = definitions[type];
