@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="row" *ngFor="let slot of customSlots()">
-            <div class="col-12">
+            <div class="col-12" *ngIf="isSlotUsed(slot)">
                 <div class="item-box" (click)="unequipItem(character.equipment[slot])" [ngClass]="character.equipment[slot] ? '' : 'unavailable'">
                     {{ character.equipment[slot]?.name ?? texts[slot] }}
                 </div>

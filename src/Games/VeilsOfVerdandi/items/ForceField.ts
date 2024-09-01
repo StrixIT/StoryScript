@@ -18,7 +18,8 @@ export function ForceField() {
             return game.playState === PlayState.Combat;
         },
         use(game, character: Character, item, target) {
-            character.defense += 1;
+            // Todo: character defense should be boosted until the end of combat
+            //character.defense += 1;
         },
     });
 }

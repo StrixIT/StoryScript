@@ -1,6 +1,7 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Merchant.html?raw';
 import { SouthRoad } from './SouthRoad';
+import { Merchant as MerchantPerson } from '../../persons/Merchant';
 
 export function Merchant() {
     return Location({
@@ -13,7 +14,7 @@ export function Merchant() {
             }        
         ],
         persons: [
-            Merchant()
+            MerchantPerson()
         ]                
     });
 }

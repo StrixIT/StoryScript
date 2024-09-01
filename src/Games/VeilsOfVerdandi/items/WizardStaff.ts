@@ -1,6 +1,6 @@
 import { Item } from '../types';
 import { TargetType } from 'storyScript/Interfaces/storyScript';
-import description from './Staff.html?raw';
+import description from './WizardStaff.html?raw';
 import { ClassType } from '../classType';
 import { Constants } from '../constants';
 

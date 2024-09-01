@@ -1,5 +1,5 @@
 ﻿import {ICharacter} from 'storyScript/Interfaces/storyScript';
-import {IItem} from './types';
+import {IEquipment, IItem} from './types';
 import {CharacterClass} from './characterClass';
 
 export class Character implements ICharacter {
@@ -18,17 +18,10 @@ export class Character implements ICharacter {
     frightened?: boolean;
     confused?: boolean;
 
-    equipment: {
-        primaryWeapon?: IItem,
-        secondaryWeapon?: IItem,
-        bow?: IItem,
-        body?: IItem,
-        amulet?: IItem,
-        rightRing?: IItem
-    };
+    equipment: IEquipment = {};
 
     constructor() {
-        this.equipment = {
+        this.equipment = <IEquipment>{
             primaryWeapon: null,
             secondaryWeapon: null,
             bow: null,

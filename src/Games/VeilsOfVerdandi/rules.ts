@@ -3,6 +3,7 @@ import { IGame, IEnemy, Character, ICompiledLocation, IItem, IDestination, IPart
 import { CharacterClasses } from './characterClass';
 import { ClassType } from './classType';
 import { TargetType } from '../../Engine/Interfaces/enumerations/targetType';
+import { getEquipmentType } from '../../Engine/utilityFunctions';
 
 export function Rules(): IRules {
     return {
@@ -83,11 +84,28 @@ export function Rules(): IRules {
                 const selectedClass = characterData.steps[1].questions[0].selectedEntry.value;
                 const characterClass = CharacterClasses[selectedClass];
                 character.hitpoints = characterClass.hitpoints;
-                character.items = characterClass.inventory.map(i => i());
+
+                characterClass.inventory.forEach(i => {
+                    const item = i();
+                    const type = getEquipmentType(<string>item.equipmentType);
+
+                    if (Object.keys(character.equipment).find(k => k === type) && !character.equipment[type]
+                    ) {
+                        character.equipment[type] = item;
+                    } else {
+                        character.items.push(item);
+                    }
+                });
+
                 character.class = characterClass;
                 character.portraitFileName = characterClass.picture;
                 return character;
-            }
+            },
+            isSlotUsed(character: Character, slot) {
+                return !(slot === 'bow' && character.class.name !== ClassType.Rogue);
+                
+                
+            },
         },
 
         combat: {

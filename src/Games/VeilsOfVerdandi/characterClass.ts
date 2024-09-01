@@ -10,7 +10,7 @@ import { LeatherArmor } from "./items/Leatherarmour";
 import { LongSword } from "./items/LongSword";
 import { Magicshield } from "./items/Magicshield";
 import { ShortBow } from "./items/ShortBow";
-import { Staff } from "./items/WizardStaff";
+import { WizardStaff } from "./items/WizardStaff";
 import { WizardCloak } from "./items/Wizardcloak";
 import { IAction, IItem } from "./types";
 
@@ -41,5 +41,5 @@ export class CharacterClass {
 export const CharacterClasses: Record<string, CharacterClass> = {
     [ClassType.Warrior]: new CharacterClass(ClassType.Warrior, 14, [LongSword, Dagger, Chainmail, Healthpotion], PowerAttack()),
     [ClassType.Rogue]: new CharacterClass(ClassType.Rogue, 10, [Dagger, Dagger, ShortBow, LeatherArmor], Dodge()),
-    [ClassType.Wizard]: new CharacterClass(ClassType.Wizard, 8, [Staff, WizardCloak, Fireball, Frostbite, Magicshield])
+    [ClassType.Wizard]: new CharacterClass(ClassType.Wizard, 8, [WizardStaff, WizardCloak, Fireball, Frostbite, Magicshield])
 }
