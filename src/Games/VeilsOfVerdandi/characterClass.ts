@@ -6,11 +6,11 @@ import { Dagger } from "./items/Dagger";
 import { Fireball } from "./items/Fireball";
 import { Frostbite } from "./items/Frostbite";
 import { Healthpotion } from "./items/Healthpotion";
-import { LeatherArmor } from "./items/Leatherarmor";
+import { LeatherArmor } from "./items/Leatherarmour";
 import { LongSword } from "./items/LongSword";
 import { Magicshield } from "./items/Magicshield";
 import { ShortBow } from "./items/ShortBow";
-import { Staff } from "./items/Staff";
+import { Staff } from "./items/WizardStaff";
 import { WizardCloak } from "./items/Wizardcloak";
 import { IAction, IItem } from "./types";
 

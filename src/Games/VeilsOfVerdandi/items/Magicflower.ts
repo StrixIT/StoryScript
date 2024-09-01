@@ -1,13 +1,11 @@
-﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { ClassType } from '../classType';
+﻿import { EquipmentType } from 'storyScript/Interfaces/storyScript';
 import description from './Magicflower.html?raw';
+import { Item } from '../types';
 
 export function Magicflower() {
     return Item({
         name: 'Magic Flower',
         description: description,
-        damage: '0',
-        equipmentType: EquipmentType.Miscellaneous,
-        value: 0
+        equipmentType: EquipmentType.Miscellaneous
     });
 }

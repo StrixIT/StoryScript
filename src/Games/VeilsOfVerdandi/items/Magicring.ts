@@ -1,14 +1,14 @@
-﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
+﻿import { EquipmentType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Magicring.html?raw';
+import { Item } from '../types';
 
 export function Magicring() {
     return Item({
         name: 'Magic Ring',
         description: description,
-        damage: '0',
         equipmentType: EquipmentType.LeftRing,
-        value: 5,            
+        value: 40,            
         itemClass: ClassType.Wizard
     });
 }

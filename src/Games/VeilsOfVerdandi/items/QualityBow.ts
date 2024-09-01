@@ -6,15 +6,15 @@ import { Constants } from '../constants';
 
 export function ShortBow() {
 	return Item({
-		name: 'Short Bow',
+		name: 'Quality Bow',
 		description: description,
-		damage: '1d4',
+		damage: '1d4+1',
 		speed: 5,
 		equipmentType: Constants.Bow,
 		targetType: TargetType.Enemy,
 		ranged: true,
-		value: 15,
-        attackText: '{0} shoots the Short Bow',
+		value: 35,
+        attackText: '{0} shoots the Quality Bow',
         itemClass: [ ClassType.Rogue]
 	});
 }

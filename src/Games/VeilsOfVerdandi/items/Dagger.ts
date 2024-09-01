@@ -1,7 +1,8 @@
-﻿import { Item, EquipmentType, TargetType } from 'storyScript/Interfaces/storyScript';
+﻿import { TargetType } from 'storyScript/Interfaces/storyScript';
 import { ClassType } from '../classType';
 import description from './Dagger.html?raw';
 import { Constants } from '../constants';
+import { Item } from '../types';
 
 export function Dagger() {
     return Item({
@@ -10,9 +11,9 @@ export function Dagger() {
         damage: '1d4',
         speed: 3,
         equipmentType: Constants.PrimaryWeapon,
-        targetType: TargetType.Enemy,
         value: 5,
-        attackText: '{0} thrust the dagger',
-        itemClass: [ClassType.Rogue, ClassType.Warrior]       
+        attackText: '{0} thrust the Dagger',
+        itemClass: [ClassType.Rogue, ClassType.Warrior],
+        targetType: TargetType.Enemy
     });
 }

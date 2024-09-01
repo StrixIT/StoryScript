@@ -3,9 +3,9 @@ import { ClassType } from '../classType';
 import description from './Magicshield.html?raw';
 import { Character, IGame, Item } from '../types';
 
-export function Magicshield() {
+export function ForceField() {
     return Item({
-        name: 'Magic Shield Spell',
+        name: 'Force Field Spell',
         description: description,
         equipmentType: EquipmentType.Miscellaneous,
         value: 15,
@@ -18,7 +18,7 @@ export function Magicshield() {
             return game.playState === PlayState.Combat;
         },
         use(game, character: Character, item, target) {
-            character.spellDefence += 2;
+            character.defense += 1;
         },
     });
 }

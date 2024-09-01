@@ -1,7 +1,8 @@
-﻿import { Item, EquipmentType } from 'storyScript/Interfaces/storyScript';
-import { ClassType } from '../classType';
+﻿import { EquipmentType } from 'storyScript/Interfaces/storyScript';
 import description from './Goldnecklace.html?raw';
 import { heal } from '../gameFunctions';
+import { ClassType } from '../classType';
+import { Item } from '../types';
 
 export function Goldnecklace() {
     return Item({
@@ -10,7 +11,8 @@ export function Goldnecklace() {
         equipmentType: EquipmentType.Amulet,
         speed: 7,
         arcane: true,
-        value: 5,
+        value: 65,
+        itemClass: [ClassType.Rogue, ClassType.Warrior, ClassType.Wizard],
         activeNight: true,
         useInCombat: true,
         use(game, character, item, target) {

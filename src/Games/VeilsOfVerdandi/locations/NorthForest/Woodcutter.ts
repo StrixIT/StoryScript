@@ -3,7 +3,7 @@ import description from './Woodcutter.html?raw';
 import { Start } from '../ForestEntry/start';
 import { Ghost } from '../../enemies/Ghost';
 import { Parchment } from '../../items/Parchment';
-import { Bow } from '../../items/Bow';
+import { Bow } from '../../items/LongBow';
 
 export function Woodcutter() {
     return Location({

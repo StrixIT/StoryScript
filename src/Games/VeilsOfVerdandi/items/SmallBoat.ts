@@ -1,4 +1,4 @@
-import { IGame, Item, Key } from '../types';
+import { Key } from '../types';
 import { EquipmentType } from 'storyScript/Interfaces/storyScript';
 import description from './SmallBoat.html?raw';
 
