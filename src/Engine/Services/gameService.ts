@@ -30,6 +30,7 @@ import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} fr
 import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
+import { compareString } from '../utilityFunctions.ts';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -632,11 +633,14 @@ export class GameService implements IGameService {
                     }
 
                     const equipmentType = k.substring(0, 1).toUpperCase() + k.substring(1);
+                    const itemType = Array.isArray(item.equipmentType) ? item.equipmentType : [item.equipmentType];
 
-                    if (item.equipmentType !== equipmentType) {
-                        c.equipment[k] = null;
-                        c.items.push(item);
-                    }
+                    itemType.forEach(t => {
+                        if (!compareString(t, equipmentType)) {
+                            c.equipment[k] = null;
+                            c.items.push(item);
+                        }
+                    });
                 });
             }
         })
