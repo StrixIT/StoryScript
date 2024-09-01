@@ -1,5 +1,5 @@
-﻿import { Enemy } from 'storyScript/Interfaces/storyScript';
-import { ClassType } from '../classType';
+﻿import { ClassType } from '../classType';
+import { Enemy } from '../types';
 
 export function Bandit() {
     return Enemy({

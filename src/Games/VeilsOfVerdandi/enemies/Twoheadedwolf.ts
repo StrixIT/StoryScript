@@ -1,5 +1,4 @@
-﻿import { Enemy } from 'storyScript/Interfaces/storyScript';
-import { IGame } from '../types';
+﻿import { Enemy, IGame } from '../types';
 
 export function Twoheadedwolf() {
     return Enemy({

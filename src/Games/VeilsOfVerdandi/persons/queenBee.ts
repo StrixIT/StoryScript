@@ -1,6 +1,6 @@
-﻿import { Person } from 'storyScript/Interfaces/storyScript';
-import { Beesting } from '../items/Beesting';
+﻿import { Beesting } from '../items/Beesting';
 import { Magicflower } from '../items/Magicflower';
+import { Person } from '../types';
 import description from './QueenBee.html?raw';
 
 export function QueenBee() {
@@ -30,9 +30,7 @@ export function QueenBee() {
             actions: [[
                 'GiveFlower', (game, person) => {
                     game.activeCharacter.items.add(Beesting);
-
-                    // Todo: should delete item from party.
-                    game.activeCharacter.items.delete(Magicflower);
+                    game.helpers.removeItemFromParty(Magicflower);
                 }
             ]]
         }

@@ -1,4 +1,4 @@
-﻿import { Enemy } from 'storyScript/Interfaces/storyScript';
+﻿import { Enemy } from "../types";
 
 export function Ghost() {
     return Enemy({
