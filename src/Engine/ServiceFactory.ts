@@ -57,7 +57,7 @@ export class ServiceFactory {
         this._characterService = new CharacterService(this._game, this._rules);
         const locationService = new LocationService(definitions, this._rules, this._game);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
-        this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, new HelperService(definitions), this._game, this._texts);
+        this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, new HelperService(this._game, definitions), this._game, this._texts);
         ServiceFactory._instance = this;
     }
 
