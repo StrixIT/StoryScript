@@ -3,7 +3,7 @@ import {InitEntityCollection} from "storyScript/EntityCreatorFunctions";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
-import {IdProperty, StartNodeProperty} from "../../../constants.ts";
+import {IdProperty} from "../../../constants.ts";
 import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSerializer implements IDataSerializer {
@@ -38,7 +38,7 @@ export class DataSerializer implements IDataSerializer {
         return loaded;
     }
 
-    private buildStructureForSerialization = (clone: any, original: any, pristine: any): any => {
+    private buildStructureForSerialization = (clone: any, original: any, pristine: any, parentKey?: string): any => {
         clone ??= this.createClone(original);
 
         if (clone == original) {
@@ -59,31 +59,21 @@ export class DataSerializer implements IDataSerializer {
 
             pristineValue = pristine?.[key];
 
-            // Do add NULL values to the clone, as these can be used as placeholders. This is used by the engine to determine
-            // which equipment slots are available.
+            // Do add NULL values to the clone for equipment, as these can be used as placeholders.
+            // This is used by the engine to determine which equipment slots are available.
             if (originalValue === null) {
-                clone[key] = null;
+                if (parentKey === 'equipment') {
+                    clone[key] = null;
+                }
+                
                 continue;
             }
 
-            if (this.skipProperty(original, originalValue, key)) {
+            if (this.skipProperty(original, originalValue, key, parentKey)) {
                 continue;
             }
             
-            let newValue: any = originalValue;
-
-            // Add deleted entries to the array. Create a new array for this to prevent changing
-            // the one used at runtime. Also copy over additional properties that may be there,
-            // except for the array of deleted entities. This is handled differently.
-            if (Array.isArray(originalValue)) {
-                const deletedEntries = originalValue.getDeleted();
-                newValue = [...originalValue];
-                deletedEntries.forEach(e => newValue.push(e));
-                const additionalProperties = Object.keys(originalValue).filter(k => k !== '_deleted' && !newValue[k]);
-                additionalProperties.forEach(p => {
-                    newValue[p] = originalValue[p];
-                });
-            }
+            let newValue = this.processArrayDeletedValuesAndProperties(originalValue);
 
             this.getClonedValue({
                 clone: clone, 
@@ -96,6 +86,25 @@ export class DataSerializer implements IDataSerializer {
         }
 
         return clone;
+    }
+    
+    private processArrayDeletedValuesAndProperties(originalValue: any, ): any {
+        let newValue: any = originalValue;
+        
+        // Add deleted entries to the array. Create a new array for this to prevent changing
+        // the one used at runtime. Also copy over additional properties that may be there,
+        // except for the array of deleted entities. This is handled differently.
+        if (Array.isArray(originalValue)) {
+            const deletedEntries = originalValue.getDeleted();
+            newValue = [...originalValue];
+            deletedEntries.forEach(e => newValue.push(e));
+            const additionalProperties = Object.keys(originalValue).filter(k => k !== '_deleted' && !newValue[k]);
+            additionalProperties.forEach(p => {
+                newValue[p] = originalValue[p];
+            });
+        }
+        
+        return newValue;
     }
 
     private restoreArray = (value: any, loaded: any, key: string): boolean => {
@@ -116,7 +125,9 @@ export class DataSerializer implements IDataSerializer {
 
         if (additionalArrayProperties) {
             Object.keys(additionalArrayProperties).forEach(k => {
-                value[k] = additionalArrayProperties[k];
+                // Use a cast to any to suppress the warning that named properties should be used
+                // with objects and numeric indexes with arrays.
+                (<any>value)[k] = additionalArrayProperties[k];
             });
 
             delete loaded[arrayPropertyKey];
@@ -154,7 +165,7 @@ export class DataSerializer implements IDataSerializer {
             }
 
             const createdObject = data.clone[data.key];
-            this.buildStructureForSerialization(createdObject, data.originalValue, data.pristineValue);
+            this.buildStructureForSerialization(createdObject, data.originalValue, data.pristineValue, data.key);
 
             // Do not include empty objects in the serialized data.
             if (!Array.isArray(data.clone) && typeof (createdObject) === 'object' && Object.keys(createdObject).length === 0) {
@@ -275,14 +286,14 @@ export class DataSerializer implements IDataSerializer {
         return true;
     }
 
-    private skipProperty = (original: any, originalValue: any, key: string): boolean => {
+    private skipProperty = (original: any, originalValue: any, key: string, parentKey: string): boolean => {
         return (
             originalValue === undefined
             || originalValue.isProxy
             // Exclude descriptions and conversation nodes from the save data, these are not present on the pristine data.
             // Use an additional property to identify them, as their names are quite generic.
             || (original[IdProperty] && (key === 'description' || key === 'descriptions'))
-            || original[StartNodeProperty] && key === 'nodes'
+            || (parentKey === "conversation" && key !== 'actions' && key !== 'startNode')
         );
     }
     

@@ -10,11 +10,11 @@ export class Character implements ICharacter {
 
     items: IItem[] = [];
 
-    equipment: {};
+    equipment: IEquipment = {};
 
     constructor() {
-        this.equipment = <IEquipment>{
-            // Remove the slots you don't want to use
+        this.equipment = {
+            // Remove the slots you don't want to use. Remove them from your IEquipment interface too!
             head: null,
             amulet: null,
             body: null,

@@ -133,6 +133,15 @@ export function addArrayExtensions() {
                 }
 
                 const collection = this;
+                const firstCollectionItem = collection[0];
+                
+                if (firstCollectionItem 
+                    && Array.isArray(firstCollectionItem) 
+                    && firstCollectionItem.length === 2 
+                    && typeof firstCollectionItem[0] === 'string') {
+                    item = collection.get(item);
+                }
+                
                 const index = findIndex(collection, item);
 
                 if (index === -1) {
@@ -231,7 +240,17 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
     id = getId(id);
 
     return Array.prototype.filter.call(array, (x: { id: string, target: Function | string } | Function) => {
-        const currentId = typeof x === 'function' ? x : x.target ?? x.id;
+        let currentId;
+        
+        if (typeof x === 'function') {
+            currentId = x;
+        } else if (Array.isArray(x) && x.length === 2) {
+            currentId = x[0];
+            
+        } else {
+            currentId = x.target ?? x.id;
+        }
+
         return compareString(getId(currentId), id);
     });
 }

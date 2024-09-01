@@ -92,8 +92,8 @@
 			"\t\tquests: [",
 			"\t\t],",
 			"\t\tconversation: {",
-			"\t\t\tactions: {",
-			"\t\t\t}",
+			"\t\t\tactions: [",
+			"\t\t\t]",
 			"\t\t},",
 			"\t});",
 			"}"
@@ -162,12 +162,13 @@
 		"prefix": "ssBarriers",
 		"body": [
 			"barriers: [",
-			"\t{"
-			"\t\tname: '$1',",
+			"\t[ '$1',",
+			"\t{",
+			"\t\tname: '$2',",
 			"\t\tactions: [",
-			"\t\t\t$2",
+			"\t\t\t$3",
 			"\t\t],",
-			"\t}"
+			"\t}]",
 			"],"
 		],
 		"description": "Add barriers to a destination"
@@ -177,12 +178,12 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssBarrier",
 		"body": [
-			"{",
-			"\tname: '$1',",
+			"[ '$1', {",
+			"\tname: '$2',",
 			"\tactions: [",
-			"\t\t$2",
+			"\t\t$3",
 			"\t],",
-			"},"
+			"}],"
 		],
 		"description": "Add a new destination barrier"
 	},
@@ -190,11 +191,11 @@
 	"Actions": {
 		"scope": "javascript,typescript",
 		"body": [
-			"import { ActionStatus, ActionType } from 'storyScript/Interfaces/storyScript';",
-			"import { Action, IGame } from '../types';",
+			"import { IAction, ActionStatus, ActionType } from 'storyScript/Interfaces/storyScript';",
+			"import { IGame } from '../types';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
-			"\treturn Action({",
+			"\treturn <IAction>({",
 			"\t\ttext: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\tactionType: ActionType.Regular,",
 			"\t\texecute(game: IGame) {",
@@ -213,12 +214,15 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssAction",
 		"body": [
-			"{",
-			"\ttext: '$1',",
-			"\texecute: (game: IGame) => {",
-			"\t\t$2",
-			"\t},",
-			"},"
+			"[",
+			"\t'$1',",
+			"\t\t{",
+			"\t\ttext: '$2',",
+			"\t\texecute: (game: IGame) => {",
+			"\t\t\t$3",
+			"\t\t},",
+			"\t}",
+			"],"
 		],
 		"description": "Add a new action"
 	},
@@ -270,9 +274,9 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssConversationAction",
 		"body": [
-			"'$1': (game: IGame, person: IPerson) => {",
+			"['$1', (game: IGame, person: IPerson) => {",
 			"\t$2",
-			"},"
+			"}],"
 		],
 		"description": "Add a new conversation action"
 	},
@@ -306,12 +310,12 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssFunction",
 		"body": [
-			"{",
-			"\t'$1':",
+			"[",
+			"\t'$1',",
 			"\t(game: IGame) => {",
 			"\t\t$2",
 			"\t}",
-			"}"
+			"]"
 		],
 		"description": "Add a new StoryScript function"
 	},

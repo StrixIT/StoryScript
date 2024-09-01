@@ -20,6 +20,9 @@ import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {Library} from "../../../Games/MyRolePlayingGame/locations/Library.ts";
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
+import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
+import {ConversationService} from "storyScript/Services/ConversationService.ts";
+import {ICharacter} from "storyScript/Interfaces/character.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -193,11 +196,12 @@ const partyWithCharacter = {
 
 describe("DataSerializer", () => {
 
+    let serviceFactory: ServiceFactory;
     let serializer: IDataSerializer;
 
     beforeAll(() => {
         RunGame();
-        const serviceFactory = ServiceFactory.GetInstance();
+        serviceFactory = ServiceFactory.GetInstance();
         serializer = serviceFactory.GetDataSerializer();
     });
 
@@ -385,6 +389,21 @@ describe("DataSerializer", () => {
         delete addedSword[StateProperties.Id];
         delete addedSword[StateProperties.Added];
         expect(addedSword).toEqual(Sword());
+    });
+
+    test("should not serialize conversation nodes", function () {
+        const person = Friend();
+        const game = serviceFactory.GetGame();
+        game.sounds = <any>{
+            playedAudio: []
+        };
+        game.activeCharacter = <ICharacter>{};
+        const conversationService = new ConversationService(game);
+        conversationService.talk(person);
+        const result = serializer.createSerializableClone(person);
+        const serializedConversationProperties = Object.keys(result.conversation);
+        expect(serializedConversationProperties).toHaveLength(1)
+        expect(serializedConversationProperties[0]).toBe("actions");
     });
 
 });

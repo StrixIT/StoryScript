@@ -16,7 +16,7 @@ export class ConversationService implements IConversationService {
     }
 
     talk = (person: IPerson): void => {
-        this.loadConversations();
+        this.loadConversation(person);
         this.initConversation(person);
         this._game.playState = PlayState.Conversation;
     }
@@ -41,14 +41,8 @@ export class ConversationService implements IConversationService {
         }
     }
 
-    private loadConversations = (): void => {
-        const persons = this._game.currentLocation?.persons;
-
-        if (!persons) {
-            return;
-        }
-
-        persons.filter(p => p.conversation && !p.conversation.nodes).forEach((person) => {
+    private loadConversation = (person: IPerson): void => {
+        if (person.conversation && !person.conversation.nodes) {
             person.conversation.actions ??= [];
             const conversationElement = getParsedDocument('conversation', person.description)[0];
             const defaultReply = this.getDefaultReply(conversationElement, person);
@@ -60,7 +54,7 @@ export class ConversationService implements IConversationService {
 
             const nodeToSelect = person.conversation.nodes.filter(n => person.conversation.activeNode && n.node === person.conversation.activeNode.node);
             person.conversation.activeNode = nodeToSelect.length === 1 ? nodeToSelect[0] : null;
-        });
+        }
     }
 
     private initConversation(person: IPerson): void {
