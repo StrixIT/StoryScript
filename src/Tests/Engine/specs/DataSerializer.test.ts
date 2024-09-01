@@ -246,7 +246,7 @@ describe("DataSerializer", () => {
     test("should create and save a JSON clone with items added at runtime", function () {
         const game = <IGame>{};
         const definitions = <IDefinitions><unknown>{items: [BasementKey]};
-        game.helpers = new HelperService(definitions);
+        game.helpers = new HelperService(<IGame>{}, definitions);
         game.party = <IParty>{};
         game.party.characters = [];
         const locationService = new LocationService(definitions, <IRules>{}, game);
