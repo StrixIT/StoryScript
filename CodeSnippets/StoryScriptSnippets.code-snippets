@@ -191,11 +191,11 @@
 	"Actions": {
 		"scope": "javascript,typescript",
 		"body": [
-			"import { ActionStatus, ActionType } from 'storyScript/Interfaces/storyScript';",
-			"import { Action, IGame } from '../types';",
+			"import { IAction, ActionStatus, ActionType } from 'storyScript/Interfaces/storyScript';",
+			"import { IGame } from '../types';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
-			"\treturn Action({",
+			"\treturn <IAction>({",
 			"\t\ttext: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
 			"\t\tactionType: ActionType.Regular,",
 			"\t\texecute(game: IGame) {",
@@ -274,9 +274,9 @@
 		"scope": "javascript,typescript",
 		"prefix": "ssConversationAction",
 		"body": [
-			"'$1': (game: IGame, person: IPerson) => {",
+			"['$1', (game: IGame, person: IPerson) => {",
 			"\t$2",
-			"},"
+			"}],"
 		],
 		"description": "Add a new conversation action"
 	},
