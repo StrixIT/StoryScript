@@ -1,19 +1,17 @@
-<div id="combat" *ngIf="game.playState == 'Combat'">
-    <div *ngIf="enemiesPresent()">
-        <h3>{{ texts.format(texts.combatRound, game.combat.round) }}</h3>
+<div id="combat" *ngIf="game.playState == 'Combat'" class="row">
+    <div *ngIf="enemiesPresent()" class="col-12">
+        <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
         <div *ngFor="let enemyRow of enemyRows" class="row enemy-row">
             <div *ngFor="let enemy of enemyRow" class="col-4">
-                <div>
-                    <h4>{{getTargetName(enemy)}}</h4>
-                    <p class="enemy-health">
-                        {{ texts.format(texts.enemyHitpoints, [enemy.currentHitpoints, enemy.hitpoints]) }}
-                    </p>
-                    <img src="{{ enemy.picture }}" *ngIf="enemy.picture" />
-                </div>
+                <h4>{{getTargetName(enemy)}}</h4>
+                <p class="enemy-health">
+                    {{ texts.format(texts.enemyHitpoints, [enemy.currentHitpoints, enemy.hitpoints]) }}
+                </p>
+                <img src="{{ enemy.picture }}" *ngIf="enemy.picture" />
             </div>
         </div>
         <div *ngFor="let characterRow of characterRows" class="row character-row">
-            <div *ngFor="let turn of characterRow" class="col-4">
+            <div *ngFor="let turn of characterRow" [ngClass]="['col-' + (12 / characterRow.length)]">
                 <h4>{{turn.character.name}}</h4>
                 <p class="character-health">
                     {{ texts.format(texts.characterHitpoints, [turn.character.currentHitpoints, turn.character.hitpoints]) }}
@@ -31,7 +29,7 @@
                         <select *ngIf="turn.itemsAvailable.length > 1" class="custom-select" (ngModelChange)="itemChange($event, turn)" [(ngModel)]="turn.item">
                             <option *ngFor="let item of turn.itemsAvailable" [ngValue]="item" >{{ item.name }}</option>
                         </select>
-                        <input *ngIf="turn.itemsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.item.name" />
+                        <input class="single-item" *ngIf="turn.itemsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.item.name" />
                     </div>
                 </div>
                 <div *ngIf="!turn.item">
