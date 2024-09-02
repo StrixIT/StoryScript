@@ -22,7 +22,7 @@
                         <select *ngIf="multiCharacter && turn.target" class="custom-select" [(ngModel)]="turn.target">
                             <option *ngFor="let target of filteredTargets(turn)" [ngValue]="target" >{{ getTargetName(target) }}</option>
                         </select>
-                        <input *ngIf="turn.targetsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.target.name" />
+                        <input class="single-item" *ngIf="turn.targetsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.target.name" />
                     </div>
                     <div *ngIf="turn.itemsAvailable.length">
                         <span>{{ turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType === 'Ally' ? texts.aidWith : texts.useCombatItem }}</span>
