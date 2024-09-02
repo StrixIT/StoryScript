@@ -20,7 +20,10 @@ export function Fireball() {
             return game.playState === PlayState.Combat;
         },
         use(game, character, item, target) {
-            target.currentHitpoints -= game.helpers.rollDice('1d6');
+            const damage = game.helpers.rollDice('1d6');
+            target.currentHitpoints -= damage;
+            game.logToCombatLog(`${character.name} casts Fireball.`);
+            game.logToCombatLog(`${character.name} does ${damage} damage to ${target.name}!`);
         },
     });
 }

@@ -2,7 +2,7 @@
 
 export function CustomTexts(): IInterfaceTexts {
     return {
-        gameName: 'Quests for the King',
+        gameName: 'Veils of Verdandi',
         bow: 'Bow',
         rightRing: 'Ring',
         primaryWeapon: 'Primary weapon',

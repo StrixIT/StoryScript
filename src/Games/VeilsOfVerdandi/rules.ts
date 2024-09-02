@@ -116,8 +116,9 @@ export function Rules(): IRules {
                 } else {
                     filterBows(combat, i => !i.ranged)
                 }
+                
+                combat.roundHeader = combat.round === 1 ? 'Archery round' : combat.roundHeader;
             },
-
             fight: (game: IGame, combatSetup: ICombatSetup): void => {
                 game.combatLog = [];
 
@@ -140,19 +141,24 @@ export function Rules(): IRules {
                     let totalDamage = 0;
                     
                     if (s.item.targetType === TargetType.Enemy) {
-                        const weaponDamage = game.helpers.rollDice(s.item.damage);
-                        totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (enemy.defence ?? 0));
-                        enemy.currentHitpoints -= totalDamage;
-
-                        if (combatText) {
-                            game.logToCombatLog(combatText + '.');
+                        if (s.item.use) {
+                            s.item.use(game, character, s.item, enemy);
                         }
+                        else {
+                            const weaponDamage = game.helpers.rollDice(s.item.damage);
+                            totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (enemy.defence ?? 0));
+                            enemy.currentHitpoints -= totalDamage;
 
-                        game.logToCombatLog(`${character.name} does ${totalDamage} damage to the ${enemy.name}!`);
+                            if (combatText) {
+                                game.logToCombatLog(combatText + '.');
+                            }
+
+                            game.logToCombatLog(`${character.name} does ${totalDamage} damage to ${enemy.name}!`);
+                        }
                     }
 
                     if (enemy.currentHitpoints <= 0) {
-                        game.logToCombatLog(`${character.name} defeats the ${enemy.name}!`);
+                        game.logToCombatLog(`${character.name} defeats ${enemy.name}!`);
 
                         if (!game.currentLocation.activeEnemies.some(enemy => enemy.currentHitpoints > 0)) {
                             const currentSelector = descriptionSelector(game);
@@ -167,7 +173,7 @@ export function Rules(): IRules {
                 if (!useBows(combatSetup)) {
                     game.currentLocation.activeEnemies.filter(enemy => { return enemy.currentHitpoints > 0; }).forEach(function (enemy: IEnemy) {
                         const enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
-                        game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage!');
+                        game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage to ' + '' +  '!');
                         game.activeCharacter.currentHitpoints -= enemyDamage;
                     });
                 }
