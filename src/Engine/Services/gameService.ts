@@ -415,7 +415,8 @@ export class GameService implements IGameService {
         }
 
         this._game.combat.round++;
-
+        this._game.combat.roundHeader = this._texts.format(this._texts.combatRound, [this._game.combat.round.toString()]);
+        
         this._game.party.characters.forEach((c, i) => {
             const allies = this._game.party.characters.filter(a => a != c);
             const items = c.combatItems ?? [];
