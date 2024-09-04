@@ -406,19 +406,22 @@ export class GameService implements IGameService {
     }
 
     private initCombatRound = (newFight: boolean) => {
-        const enemies = this._game.currentLocation.activeEnemies;
-
+        this._game.combat ??= <ICombatSetup<ICombatTurn>>[];
+        const enemies = this._game.combat.enemies = this._game.currentLocation.activeEnemies;
+        const characters = this._game.combat.characters = this._game.party.characters;
+        
         if (newFight) {
-            this._game.combat = <ICombatSetup<ICombatTurn>>[];
             enemies.forEach(e => e.currentHitpoints = e.hitpoints);
             this._game.combat.round = 0;
         }
 
         this._game.combat.round++;
         this._game.combat.roundHeader = this._texts.format(this._texts.combatRound, [this._game.combat.round.toString()]);
-        
-        this._game.party.characters.forEach((c, i) => {
-            const allies = this._game.party.characters.filter(a => a != c);
+        this._game.combat.noActionText = this._texts.noCombatAction;
+
+        // Todo: remember last-used item
+        characters.forEach((c, i) => {
+            const allies = characters.filter(a => a != c);
             const items = c.combatItems ?? [];
 
             Object.keys(c.equipment).forEach(k => {
@@ -475,16 +478,21 @@ export class GameService implements IGameService {
         Object.defineProperty(this._game, 'activeCharacter', {
             configurable: true,
             get: () => {
-                const result = this._game.party.characters.filter(c => c.isActiveCharacter)[0] ?? this._game.party.characters[0];
+                const characters = this._game.party.characters;
+                let character = characters.filter(c => c.isActiveCharacter)[0] ?? characters.filter(c => c.currentHitpoints > 0)[0];
 
-                if (!result.isActiveCharacter) {
-                    result.isActiveCharacter = true;
+                if (!character.isActiveCharacter) {
+                    character.isActiveCharacter = true;
                 }
 
-                return result;
+                return character;
 
             },
             set: value => {
+                if (value.currentHitpoints <= 0) {
+                    return;
+                }
+                
                 this._game.party.characters.forEach(c => c.isActiveCharacter = false);
                 value.isActiveCharacter = true;
             }
