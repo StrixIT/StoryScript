@@ -367,3 +367,7 @@ feature {
 .unavailable {
     opacity: .5;
 }
+
+.hitpoint-editor {
+    display: inline;
+}
