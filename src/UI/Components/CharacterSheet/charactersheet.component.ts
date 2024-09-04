@@ -1,4 +1,10 @@
-import { IInterfaceTexts, IGame, ICharacter } from 'storyScript/Interfaces/storyScript';
+import {
+    IInterfaceTexts,
+    IGame,
+    ICharacter,
+    ICreateCharacterAttribute,
+    ICreateCharacterAttributeEntry
+} from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { CharacterService } from 'storyScript/Services/characterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
@@ -17,13 +23,24 @@ export class CharacterSheetComponent {
         const characterService = inject(CharacterService);
         const sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
+        this.isDevelopment = process.env.NODE_ENV !== 'production';
         this.party = objectFactory.GetGame().party;
         this.texts = objectFactory.GetTexts();
         this.displayCharacterAttributes = characterService.getSheetAttributes();
         sharedMethodService.useCharacterSheet = true;
     }
 
+    isDevelopment: boolean;
     party: IParty;
     texts: IInterfaceTexts;
     displayCharacterAttributes: string[];
+
+    limitInput = (event: any, character: ICharacter): void => {
+        if (character.currentHitpoints > character.hitpoints) {
+            character.currentHitpoints = character.hitpoints;
+        }
+        else if (character.currentHitpoints <= 0) {
+            character.currentHitpoints = 1;
+        }
+    }
 }
