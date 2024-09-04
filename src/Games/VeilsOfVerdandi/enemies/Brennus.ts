@@ -10,8 +10,8 @@ export function Brennus() {
         hitpoints: 18,
         reward: 5,
         attackPriority: [
-            { [ClassType.Warrior]: [1,2,3,4] },
-            { [ClassType.Wizard]: [5,6] }
+            [ClassType.Warrior, [1,2,3,4]],
+            [ClassType.Wizard, [5,6]]
         ]
     });
 }

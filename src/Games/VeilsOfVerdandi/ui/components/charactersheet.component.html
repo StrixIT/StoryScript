@@ -10,7 +10,13 @@
                     <li *ngFor="let attribute of displayCharacterAttributes">
                         {{ texts.titleCase(texts.format(attribute)) }} {{ character[attribute] }}
                     </li>
-                    <li>{{ texts.hitpoints }} {{ character.currentHitpoints }} / {{ character.hitpoints }}</li>
+                    <li>{{ texts.hitpoints }}
+                        <div class="hitpoint-editor">
+                            <span *ngIf="!isDevelopment">{{ character.currentHitpoints }}</span>
+                            <input *ngIf="isDevelopment" type="number" min="{{ 1 }}" max="{{ character.hitpoints }}" [(ngModel)]="character.currentHitpoints" (blur)="limitInput($event, character)">
+                        </div>
+                        &nbsp;/ {{ character.hitpoints }}
+                    </li>
                     <li *ngIf="party.characters.length === 1 && party.currency !== undefined">{{ texts.currency }} {{ party.currency }}</li>
                 </ul>
             </div>

@@ -10,8 +10,8 @@ export function Bandit() {
         hitpoints: 10,
         reward: 4,
         attackPriority: [
-            { [ClassType.Warrior]: [1,2,3,4] },
-            { [ClassType.Wizard]: [5,6] }
+            [ClassType.Warrior, [1,2,3,4]],
+            [ClassType.Wizard, [5,6]]
         ],
         activeDay: true
     });

@@ -122,61 +122,86 @@ export function Rules(): IRules {
             fight: (game: IGame, combatSetup: ICombatSetup): void => {
                 game.combatLog = [];
 
-                combatSetup.forEach((s, i) => {
-                    const character = game.party.characters[i];
-                    const enemy = s.target;
-
-                    if (!s.item) {
-                        return;
-                    }
-                    // var leftHandWeapon = character.equipment.leftHand;
-                    // var rightHandWeapon = character.equipment.rightHand;
-
-                    // // For two-handed weapons, calculate only one damage.
-                    // if (leftHandWeapon === rightHandWeapon) {
-                    //     rightHandWeapon = null;
-                    // }
-
-                    let combatText = format(s.item.attackText, [character.name]);
-                    let totalDamage = 0;
-                    
-                    if (s.item.targetType === TargetType.Enemy) {
-                        if (s.item.use) {
-                            s.item.use(game, character, s.item, enemy);
-                        }
-                        else {
-                            const weaponDamage = game.helpers.rollDice(s.item.damage);
-                            totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (enemy.defence ?? 0));
-                            enemy.currentHitpoints -= totalDamage;
-
-                            if (combatText) {
-                                game.logToCombatLog(combatText + '.');
-                            }
-
-                            game.logToCombatLog(`${character.name} does ${totalDamage} damage to ${enemy.name}!`);
-                        }
-                    }
-
-                    if (enemy.currentHitpoints <= 0) {
-                        game.logToCombatLog(`${character.name} defeats ${enemy.name}!`);
-
-                        if (!game.currentLocation.activeEnemies.some(enemy => enemy.currentHitpoints > 0)) {
-                            const currentSelector = descriptionSelector(game);
-                            let selector = currentSelector ? currentSelector + 'after' : 'after';
-                            selector = game.currentLocation.descriptions[selector] ? selector : 'after';
-                            game.currentLocation.descriptionSelector = selector;
-                            game.playState = null;
-                        }
-                    }
+                // First, determine the order of the round.
+                const participants = <any>game.party.characters.concat(<any>game.currentLocation.activeEnemies);
+                const orderedParticipants = participants.sort((a, b) => {
+                    const a_speed = getCombatSpeed(a, combatSetup);
+                    const b_speed = getCombatSpeed(b, combatSetup);
+                    return a_speed - b_speed;
                 });
 
-                if (!useBows(combatSetup)) {
-                    game.currentLocation.activeEnemies.filter(enemy => { return enemy.currentHitpoints > 0; }).forEach(function (enemy: IEnemy) {
-                        const enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
-                        game.logToCombatLog('The ' + enemy.name + ' does ' + enemyDamage + ' damage to ' + '' +  '!');
-                        game.activeCharacter.currentHitpoints -= enemyDamage;
-                    });
-                }
+                orderedParticipants.forEach(p => {
+                    const enemy = p.type === 'enemy' ? <IEnemy>p : undefined;
+                    const character = typeof enemy === 'undefined' ? <Character>p : undefined;
+
+                    if (character) {
+                        const setupEntry = combatSetup.find(e => e.character === character);
+                        const combatItem = setupEntry.item;
+                        const target = setupEntry.target;
+
+                        if (!combatItem) {
+                            return;
+                        }
+                        
+                        let combatText = format(combatItem.attackText, [character.name]);
+                        let totalDamage = 0;
+                        
+                        if (combatItem.targetType === TargetType.Enemy) {
+                            if (combatItem.use) {
+                                combatItem.use(game, character, combatItem, target);
+                            }
+                            else {
+                                const weaponDamage = game.helpers.rollDice(combatItem.damage);
+                                totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (target.defence ?? 0));
+                                target.currentHitpoints -= totalDamage;
+    
+                                if (combatText) {
+                                    game.logToCombatLog(combatText + '.');
+                                }
+    
+                                game.logToCombatLog(`${character.name} does ${totalDamage} damage to ${target.name}!`);
+                            }
+                        }
+    
+                        if (target.currentHitpoints <= 0) {
+                            game.logToCombatLog(`${character.name} defeats ${target.name}!`);
+    
+                            if (!game.currentLocation.activeEnemies.some(target => target.currentHitpoints > 0)) {
+                                const currentSelector = descriptionSelector(game);
+                                let selector = currentSelector ? currentSelector + 'after' : 'after';
+                                selector = game.currentLocation.descriptions[selector] ? selector : 'after';
+                                game.currentLocation.descriptionSelector = selector;
+                                game.playState = null;
+                            }
+                        }
+
+                        return;
+                    }
+
+                    if (useBows(combatSetup)) {
+                        return;
+                    }
+
+                    // Determine the enemy target using the enemy's attack priority.
+                    const potentialTargets = game.party.characters.filter(c => c.currentHitpoints > 0);
+                    const enemyAttackPriorityRoll = game.helpers.rollDice('1d6');
+                    let enemyTargetType = enemy.attackPriority.find(a => a[1].indexOf(enemyAttackPriorityRoll) > -1)[0];
+                    let enemyTarget: Character;
+
+                    // If no target is found using the attack priority, pick one at random.
+                    if (!enemyTargetType) {
+                        const targetDie = `1d${potentialTargets.length}`;
+                        enemyTarget ??=  potentialTargets[game.helpers.rollDice(targetDie) - 1];
+                    } else {
+                        enemyTarget = potentialTargets.find(t => t.class.name === enemyTargetType);
+                    }
+
+                    const characterDefense = game.helpers.calculateBonus(enemyTarget, 'defense');
+                    const enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
+                    const totalDamage = Math.max(0, enemyDamage - characterDefense);
+                    game.logToCombatLog(`${enemy.name} does ${totalDamage} damage to ${enemyTarget.name}!`);
+                    enemyTarget.currentHitpoints -= totalDamage;
+                })
             }
         },
 
@@ -269,4 +294,13 @@ function filterBows(combat: ICombatSetup, filter: any): void {
             c.target = null;
         }
     });
+}
+
+function getCombatSpeed(entry: any, combatSetup: ICombatSetup): number {
+    if (entry.type === 'enemy') {
+        return entry.speed;
+    } else {
+        const setupEntry = combatSetup.find(e => e.character === entry);
+        return setupEntry.item?.speed;
+    }
 }

@@ -13,8 +13,8 @@ export function GhostBandit() {
         hitpoints: 15,
         reward: 4,
         attackPriority: [
-            { [ClassType.Wizard]: [1,2,3,4] },
-            { [ClassType.Rogue]: [5,6] }
+            [ClassType.Wizard, [1,2,3,4]],
+            [ClassType.Rogue, [5,6]]
         ],
 		activeNight: true
 	});
