@@ -10,7 +10,7 @@ export function Rules(): IRules {
         setup: {
             numberOfCharacters: 3,
             setupGame: (game: IGame): void => {
-                game.worldProperties = {
+                game.worldProperties ??= {
                     currentDay: 0,
                     isDay: true,
                     isNight: false,
@@ -111,10 +111,11 @@ export function Rules(): IRules {
         combat: {
             initCombatRound: (game: IGame, combat: ICombatSetup): void => {
                 if (useBows(combat)) {
-                    filterBows(combat, i => i.ranged)
+                    filterBows(combat, i => i.ranged);
+                    combat.noActionText = 'No bow';
                     
                 } else {
-                    filterBows(combat, i => !i.ranged)
+                    filterBows(combat, i => !i.ranged);
                 }
                 
                 combat.roundHeader = combat.round === 1 ? 'Archery round' : combat.roundHeader;
@@ -130,9 +131,10 @@ export function Rules(): IRules {
                     return a_speed - b_speed;
                 });
 
-                orderedParticipants.forEach(p => {
-                    const enemy = p.type === 'enemy' ? <IEnemy>p : undefined;
-                    const character = typeof enemy === 'undefined' ? <Character>p : undefined;
+                for (let i in orderedParticipants) {
+                    const participant = orderedParticipants[i];
+                    const enemy = participant.type === 'enemy' ? <IEnemy>participant : undefined;
+                    const character = typeof enemy === 'undefined' ? <Character>participant : undefined;
 
                     if (character) {
                         const setupEntry = combatSetup.find(e => e.character === character);
@@ -172,14 +174,15 @@ export function Rules(): IRules {
                                 selector = game.currentLocation.descriptions[selector] ? selector : 'after';
                                 game.currentLocation.descriptionSelector = selector;
                                 game.playState = null;
+                                return;
                             }
                         }
 
-                        return;
+                        continue;
                     }
 
                     if (useBows(combatSetup)) {
-                        return;
+                        continue;
                     }
 
                     // Determine the enemy target using the enemy's attack priority.
@@ -191,7 +194,7 @@ export function Rules(): IRules {
                     // If no target is found using the attack priority, pick one at random.
                     if (!enemyTargetType) {
                         const targetDie = `1d${potentialTargets.length}`;
-                        enemyTarget ??=  potentialTargets[game.helpers.rollDice(targetDie) - 1];
+                        enemyTarget = potentialTargets[game.helpers.rollDice(targetDie) - 1];
                     } else {
                         enemyTarget = potentialTargets.find(t => t.class.name === enemyTargetType);
                     }
@@ -201,7 +204,7 @@ export function Rules(): IRules {
                     const totalDamage = Math.max(0, enemyDamage - characterDefense);
                     game.logToCombatLog(`${enemy.name} does ${totalDamage} damage to ${enemyTarget.name}!`);
                     enemyTarget.currentHitpoints -= totalDamage;
-                })
+                }
             }
         },
 
