@@ -359,5 +359,21 @@ describe("DataSynchronizer", () => {
         expect(skeleton.enterEvents.length).toBe(2);
         expect(skeleton.enterEvents[1][1]).toBeTypeOf('function');
     });
+    
+    test("should restore tuples with arrays as second elements correctly", function() {
+        const expected = {
+            attackPriority: [
+                ["Warrior", [1,2,3,4]],
+                ["Wizard", [5,6]]
+            ]
+        }
+        
+        const input = {
+            attackPriority: [["Warrior"], ["Wizard"]]
+        }
+        
+        dataSynchronizer.synchronizeEntityData(input, expected);
+        expect(Array.isArray(input.attackPriority[1][1])).toBeTruthy();
+    });
 
 });
