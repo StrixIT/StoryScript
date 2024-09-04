@@ -106,7 +106,7 @@ export class DataSynchronizer implements IDataSynchronizer {
                 match[1] = p[1];
             } else {
                 if (!match[1]) {
-                    match.push({});
+                    match.push(p?.[1] && Array.isArray(p[1]) ? [] : {});
                 }
 
                 this.synchronizeEntityData(match[1], p[1], entity, pristineEntity, '1');
