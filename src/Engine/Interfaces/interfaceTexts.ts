@@ -74,6 +74,7 @@ export interface IInterfaceTexts {
     combatWin?: string;
     enemiesToFight?: string;
     useInCombat?: string;
+    noCombatAction?: string;
     view?: string;
     quests?: string;
     currentQuests?: string;

@@ -11,12 +11,12 @@
             </div>
         </div>
         <div *ngFor="let characterRow of characterRows" class="row character-row">
-            <div *ngFor="let turn of characterRow" [ngClass]="['col-' + (12 / characterRow.length)]">
+            <div *ngFor="let turn of characterRow" class="col-4" [ngClass]="{ 'unavailable': turn.character.currentHitpoints <= 0 }">
                 <h4>{{turn.character.name}}</h4>
                 <p class="character-health">
                     {{ texts.format(texts.characterHitpoints, [turn.character.currentHitpoints, turn.character.hitpoints]) }}
                 </p>
-                <div *ngIf="turn.item">
+                <div *ngIf="turn.item && turn.character.currentHitpoints > 0">
                     <div [ngClass]="{ 'not-appliccable': !turn.item.targetType }">
                         <span>{{ turn.item.targetType === 'Enemy' ? texts.attack : texts.aid }}</span>
                         <select *ngIf="multiCharacter && turn.target" class="custom-select" [(ngModel)]="turn.target">
@@ -32,8 +32,8 @@
                         <input class="single-item" *ngIf="turn.itemsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.item.name" />
                     </div>
                 </div>
-                <div *ngIf="!turn.item">
-                    <span>No item</span>
+                <div *ngIf="!turn.item && turn.character.currentHitpoints > 0">
+                    <span>{{ game.combat.noActionText }}</span>
                 </div>
             </div>
         </div>
