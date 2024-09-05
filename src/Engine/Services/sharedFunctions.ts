@@ -188,7 +188,7 @@ export function checkAutoplay(game: IGame, value: string) {
     return value;
 }
 
-export function removeItemFromParty(party: IParty, item: IItem) {
+export function removeItemFromParty(party: IParty, item: IItem | (() => IItem)) {
     let deleted = false;
 
     party.characters.forEach(c => {
@@ -200,7 +200,7 @@ export function removeItemFromParty(party: IParty, item: IItem) {
     });
 }
 
-export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem): boolean {
+export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem | (() => IItem)): boolean {
     let deleted = false;
 
     if (character.items.get(item)) {

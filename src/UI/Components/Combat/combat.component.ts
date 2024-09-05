@@ -1,9 +1,18 @@
-import { IInterfaceTexts, IGame, IAction, IEnemy, IItem, ICharacter, TargetType, ICombatTurn } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { GameService } from 'storyScript/Services/gameService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {
+    IAction,
+    ICharacter,
+    ICombatTurn,
+    IEnemy,
+    IGame,
+    IInterfaceTexts,
+    IItem,
+    TargetType
+} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {GameService} from 'storyScript/Services/gameService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'combat',
@@ -12,7 +21,7 @@ import { getTemplate } from '../../helpers';
 export class CombatComponent {
     private _gameService: GameService;
     private _sharedMethodService: SharedMethodService;
-    
+
     constructor() {
         this._gameService = inject(GameService);
         this._sharedMethodService = inject(SharedMethodService);
@@ -45,7 +54,7 @@ export class CombatComponent {
 
     itemChange = (item: IItem, turn: ICombatTurn) => {
         const targets = turn.targetsAvailable.filter(t => {
-            var type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
+            const type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
             return item.targetType === type;
         });
 
@@ -53,32 +62,32 @@ export class CombatComponent {
     }
 
     filteredTargets = (turn: ICombatTurn): IEnemy[] | ICharacter[] => turn.targetsAvailable.filter(t => {
-        var type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
+        const type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
         return turn.item.targetType === type;
     });
 
-    fight = (): void => { 
+    fight = (): void => {
         this.actionsEnabled = false;
 
         Promise.resolve(this._gameService.fight(this.game.combat)).then(() => {
             this.actionsEnabled = true;
             this.characterRows = this.split(this.game.combat, 3);
-        }); 
+        });
     }
-    
+
     useItem = (character: ICharacter, item: IItem, target?: IEnemy): void => {
         this.actionsEnabled = false;
 
         Promise.resolve(this._gameService.useItem(character, item, target)).then(() => {
             this.actionsEnabled = true;
-        }); 
+        });
     }
 
     canUseItem = (character: ICharacter, item: IItem): boolean => item.use ? this._sharedMethodService.canUseItem(character, item) : true;
 
     private split = (array, size) => {
         const result = [];
-        
+
         if (!array) {
             return result;
         }

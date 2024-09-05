@@ -70,6 +70,7 @@ export class DefaultTexts {
         combatWin: 'You are victorious!',
         enemiesToFight: 'You face these foes: ',
         useInCombat: 'Use {0}',
+        noCombatAction: 'No Combat Actions',
         view: 'View',
         quests: 'Quests',
         currentQuests: 'Current',

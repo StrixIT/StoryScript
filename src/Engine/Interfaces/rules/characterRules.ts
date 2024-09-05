@@ -11,6 +11,14 @@ export interface ICharacterRules {
     getSheetAttributes?(): string[];
 
     /**
+     * Use this function to use custom logic whether or not to show an equipment slot. Returns true if the slot
+     * should be shown, false otherwise.
+     * @param character The character to show the slot for
+     * @param slot The slot to show.
+     */
+    isSlotUsed?(character: ICharacter, slot: string): boolean;
+
+    /**
      * Use this function to specify the steps in your character creation process. Return the character creation sheet.
      */
     getCreateCharacterSheet?(): ICreateCharacter;

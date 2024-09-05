@@ -10,6 +10,7 @@ import {ICreateCharacterAttributeEntry} from '../Interfaces/createCharacter/crea
 import {ICreateCharacterStep} from '../Interfaces/createCharacter/createCharacterStep';
 import {GameState} from '../Interfaces/enumerations/gameState';
 import {EquipmentType} from '../Interfaces/enumerations/equipmentType';
+import { getEquipmentType } from '../utilityFunctions';
 
 export class CharacterService implements ICharacterService {
     constructor(private _game: IGame, private _rules: IRules) {
@@ -142,7 +143,7 @@ export class CharacterService implements ICharacterService {
         const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
         for (const n in equipmentTypes) {
-            const type = this.getEquipmentType(equipmentTypes[n]);
+            const type = getEquipmentType(equipmentTypes[n]);
             const unequipped = this.unequip(character, type);
 
             if (!unequipped) {
@@ -163,7 +164,7 @@ export class CharacterService implements ICharacterService {
         }
 
         for (const n in equipmentTypes) {
-            const type = this.getEquipmentType(equipmentTypes[n]);
+            const type = getEquipmentType(equipmentTypes[n]);
             character.equipment[type] = item;
         }
 
@@ -175,7 +176,7 @@ export class CharacterService implements ICharacterService {
         const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
         for (const n in equipmentTypes) {
-            const type = this.getEquipmentType(equipmentTypes[n]);
+            const type = getEquipmentType(equipmentTypes[n]);
             const unequipped = this.unequip(character, type);
 
             if (!unequipped) {
@@ -188,7 +189,11 @@ export class CharacterService implements ICharacterService {
 
     isSlotUsed = (character: ICharacter, slot: string): boolean => {
         if (character?.equipment) {
-            return character.equipment[slot] !== undefined;
+            if (character.equipment[slot] === undefined) {
+                return false;
+            }
+
+            return this._rules.character?.isSlotUsed ? this._rules.character.isSlotUsed(character, slot) : true;
         }
 
         return false;
@@ -337,7 +342,7 @@ export class CharacterService implements ICharacterService {
         if (equippedItem) {
             if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
                 for (const n in equippedItem.equipmentType) {
-                    const type = this.getEquipmentType(equippedItem.equipmentType[n]);
+                    const type = getEquipmentType(equippedItem.equipmentType[n]);
                     const unEquipped = this.unequip(character, type, equippedItem);
 
                     if (!unEquipped) {
@@ -368,11 +373,6 @@ export class CharacterService implements ICharacterService {
         }
 
         return true;
-    }
-
-    private getEquipmentType = (slot: EquipmentType | string): string => {
-        const type = EquipmentType[slot] ?? slot;
-        return type.substring(0, 1).toLowerCase() + type.substring(1);
     }
 
     private setFinish = (data: ICreateCharacter): void => {

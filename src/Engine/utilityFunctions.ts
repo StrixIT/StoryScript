@@ -1,4 +1,6 @@
-﻿export function compareString(left: string, right: string): boolean {
+﻿import { EquipmentType } from "./Interfaces/storyScript";
+
+export function compareString(left: string, right: string): boolean {
     if ((left === undefined && right === undefined) || (left === null && right === null)) {
         return true;
     } else if ((left === null || left === undefined) || (right === null || right === undefined)) {
@@ -187,6 +189,11 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
     }, intervalTimeInMs);
 
     return promise;
+}
+
+export function getEquipmentType(slot: EquipmentType | string): string {
+    const type = EquipmentType[slot] ?? slot;
+    return type.substring(0, 1).toLowerCase() + type.substring(1);
 }
 
 function getKeyProperties(pristine: any, current: any): { first?: string, second?: string } {
