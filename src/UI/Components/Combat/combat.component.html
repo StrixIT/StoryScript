@@ -42,8 +42,8 @@
                 <button type="button" class="btn btn-danger" (click)="fight()" [disabled]="!actionsEnabled">{{ texts.fight }}</button>
             </div>
         </div>
-        <div>
-            <ul class="list-unstyled">
+        <div class="row">
+            <ul class="list-unstyled combat-actions">
                 <li *ngFor="let action of game.currentLocation.combatActions">
                     <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="!actionsEnabled">{{ action[1].text }}</button>
                 </li>
