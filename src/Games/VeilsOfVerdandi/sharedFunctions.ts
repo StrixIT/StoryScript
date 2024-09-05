@@ -1,4 +1,16 @@
-﻿import { IGame, ICompiledLocation, Character } from './types';
+import {IGame} from "./interfaces/game.ts";
+import {ICompiledLocation} from "./interfaces/location.ts";
+import {Character} from "./character.ts";
+
+export function descriptionSelector (game: IGame): string {
+    return game.worldProperties.travelCounter ?
+        game.worldProperties.isNight ?
+            game.currentLocation.completedNight ? 'completednight' :
+                'night' :
+            game.currentLocation.completedDay ? 'completedday' :
+                'day' :
+        null;
+}
 
 export function nightFall(game: IGame): boolean {
     // Todo: one text for night in all forest locations?

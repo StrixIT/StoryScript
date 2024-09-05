@@ -1,8 +1,8 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {IGame, Location} from '../../types';
 import description from './Brennus.html?raw';
-import { Brennus as BrennusEnemy } from '../../enemies/Brennus';
-import { Start } from './start';
-import { locationComplete } from '../../gameFunctions';
+import {Brennus as BrennusEnemy} from '../../enemies/Brennus';
+import {Start} from './start';
+import {locationComplete} from "../../sharedFunctions.ts";
 
 export function Brennus() {
     return Location({
@@ -15,7 +15,7 @@ export function Brennus() {
             }
         ],
         enemies: [
-            BrennusEnemy()  
+            BrennusEnemy()
         ],
         enterEvents:
             [[
@@ -37,14 +37,14 @@ export function Brennus() {
         actions:
             [[
                 'Approach',
-                    {
-                        text: 'Approach the Tent',
-                        execute: (game: IGame) => {
-                            game.currentLocation.descriptionSelector = 'approach';
-                            game.currentLocation.enemies.map(e => e.inactive = false);
-                        },
-                        activeNight: true
-                    }
+                {
+                    text: 'Approach the Tent',
+                    execute: (game: IGame) => {
+                        game.currentLocation.descriptionSelector = 'approach';
+                        game.currentLocation.enemies.map(e => e.inactive = false);
+                    },
+                    activeNight: true
+                }
             ]]
     });
 }

@@ -1,9 +1,9 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {IGame, Location} from '../../types';
 import description from './ForestLake.html?raw';
-import { Bandit } from '../../enemies/Bandit';
-import { Goldnecklace } from '../../items/Goldnecklace';
-import { heal, locationComplete } from '../../gameFunctions';
-import { Start } from './start';
+import {Bandit} from '../../enemies/Bandit';
+import {Goldnecklace} from '../../items/Goldnecklace';
+import {Start} from './start';
+import {heal, locationComplete} from "../../sharedFunctions.ts";
 
 export function ForestLake() {
     return Location({
@@ -22,7 +22,7 @@ export function ForestLake() {
         items: [
             Goldnecklace()
         ],
-        enterEvents: 
+        enterEvents:
             [[
                 'HealingWater',
                 (game: IGame) => {

@@ -1,8 +1,8 @@
-﻿import { EquipmentType } from 'storyScript/Interfaces/storyScript';
+﻿import {EquipmentType} from 'storyScript/Interfaces/storyScript';
 import description from './Goldnecklace.html?raw';
-import { heal } from '../gameFunctions';
-import { ClassType } from '../classType';
-import { Item } from '../types';
+import {ClassType} from '../classType';
+import {Item} from '../types';
+import {heal} from "../sharedFunctions.ts";
 
 export function Goldnecklace() {
     return Item({
@@ -17,6 +17,6 @@ export function Goldnecklace() {
         useInCombat: true,
         use(game, character, item, target) {
             heal(character, 3);
-        },   
+        },
     });
 }

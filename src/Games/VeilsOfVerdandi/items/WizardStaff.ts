@@ -12,7 +12,7 @@ export function WizardStaff() {
 		equipmentType: Constants.PrimaryWeapon,
 		value: 10,
 		speed: 5,
-        attackText: '{0}} swings the Wizard\'s Staff',
+        attackText: '{0} swings the Wizard\'s Staff',
         itemClass: [ ClassType.Wizard ],
 		targetType: TargetType.Enemy,
 	});
