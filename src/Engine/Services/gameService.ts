@@ -30,7 +30,7 @@ import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} fr
 import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
-import { compareString } from '../utilityFunctions.ts';
+import {compareString} from '../utilityFunctions.ts';
 
 export class GameService implements IGameService {
     private _parsedDescriptions = new Map<string, boolean>();
@@ -45,7 +45,6 @@ export class GameService implements IGameService {
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
         this._game.party = gameState?.party;
-        this.setReadOnlyPartyProperties(this._game.party);
         this._game.locations = gameState?.world;
         this._game.worldProperties = gameState?.worldProperties ?? {};
         this._game.statistics = gameState?.statistics ?? this._game.statistics ?? {};
@@ -56,8 +55,8 @@ export class GameService implements IGameService {
             this._game.worldProperties = {};
         }
 
-        this._rules.setup?.setupGame?.(this._game);
-        this.setupGame(playedAudio);
+        this._rules.setup?.initGame?.(this._game);
+        this.initGame(playedAudio);
         this.initTexts();
 
         // Use the afterSave hook here to combine the initialized world with other saved data.
@@ -122,7 +121,6 @@ export class GameService implements IGameService {
             return;
         }
 
-        this.setReadOnlyPartyProperties(this._game.party);
         this._game.party.characters[0].isActiveCharacter = true;
         this._rules.setup.gameStart?.(this._game);
 
@@ -130,13 +128,13 @@ export class GameService implements IGameService {
             this._game.changeLocation('Start');
         }
 
-        this.initSetInterceptors();
+        this.setInterceptors();
         this._game.state = GameState.Play;
         this.saveGame();
     }
 
     resume = (locationName: string): void => {
-        this.initSetInterceptors();
+        this.setInterceptors();
         this.checkEquipment();
         const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
         const previousLocationName = this._game.party.previousLocationId;
@@ -174,16 +172,14 @@ export class GameService implements IGameService {
             this._game.currentLocation = this._game.locations.get(saveGame.party.currentLocationId);
 
             // Use the afterSave hook here combine the loaded world with other saved data.
-            if (this._rules.general?.afterSave) {
-                this._rules.general.afterSave(this._game);
-            }
+            this._rules.general?.afterSave?.(this._game);
 
             if (saveGame.party.previousLocationId) {
                 this._game.previousLocation = this._game.locations.get(saveGame.party.previousLocationId);
             }
 
             this._game.actionLog = [];
-            this.initSetInterceptors();
+            this.setInterceptors();
 
             if (this._game.playState === PlayState.Menu) {
                 this._game.playState = null;
@@ -191,10 +187,7 @@ export class GameService implements IGameService {
 
             this._game.combinations.combinationResult.reset();
             this._locationService.loadLocationDescriptions(this._game);
-
-            if (this._rules.setup.continueGame) {
-                this._rules.setup.continueGame(this._game);
-            }
+            this._rules.setup.continueGame?.(this._game);
 
             // Use a timeout here to allow the UI to respond to the loading flag set.
             setTimeout(() => {
@@ -351,37 +344,6 @@ export class GameService implements IGameService {
         this._rules.general.afterSave?.(this._game);
     }
 
-    private setReadOnlyPartyProperties = (party: IParty) => {
-        if (!party) {
-            return;
-        }
-
-        InitEntityCollection(party, Quests);
-        InitEntityCollection(party, Characters);
-
-        party.characters.forEach(c => {
-            InitEntityCollection(c, Items);
-
-            Object.defineProperty(c, 'combatItems', {
-                get: function () {
-                    const result = c.items.filter(i => {
-                        return canUseInCombat(i.useInCombat, i, c.equipment);
-                    });
-
-                    for (const n in c.equipment) {
-                        const item = <IItem>c.equipment[n];
-
-                        if (item && canUseInCombat(item.useInCombat, item, c.equipment)) {
-                            result.push(item);
-                        }
-                    }
-
-                    return result;
-                }
-            });
-        });
-    }
-
     private initTexts = (): void => {
         const defaultTexts = new DefaultTexts();
 
@@ -409,7 +371,7 @@ export class GameService implements IGameService {
         this._game.combat ??= <ICombatSetup<ICombatTurn>>[];
         const enemies = this._game.combat.enemies = this._game.currentLocation.activeEnemies;
         const characters = this._game.combat.characters = this._game.party.characters;
-        
+
         if (newFight) {
             enemies.forEach(e => e.currentHitpoints = e.hitpoints);
             this._game.combat.round = 0;
@@ -472,7 +434,7 @@ export class GameService implements IGameService {
         enemy.onDefeat?.(this._game);
     }
 
-    private setupGame = (playedAudio: string[]): void => {
+    private initGame = (playedAudio: string[]): void => {
         this.initLogs();
 
         Object.defineProperty(this._game, 'activeCharacter', {
@@ -492,7 +454,7 @@ export class GameService implements IGameService {
                 if (value.currentHitpoints <= 0) {
                     return;
                 }
-                
+
                 this._game.party.characters.forEach(c => c.isActiveCharacter = false);
                 value.isActiveCharacter = true;
             }
@@ -507,7 +469,7 @@ export class GameService implements IGameService {
             playedAudio: playedAudio
         };
 
-        this.setupCombinations();
+        this.initCombinations();
         this._locationService.init();
 
         this._game.changeLocation = (location, travel) => {
@@ -527,12 +489,15 @@ export class GameService implements IGameService {
         }
     }
 
-    private initSetInterceptors = (): void => {
+    private setInterceptors = (): void => {
         const defaultPartyName = this._game.party.name ?? '';
         let score = this._game.party.score || 0;
         let gameState = this._game.state;
         let currentDescription = this._game.currentDescription;
         let currentHitpoints: Map<string, number> = new Map<string, number>();
+
+        InitEntityCollection(this._game.party, Quests);
+        InitEntityCollection(this._game.party, Characters);
 
         Object.defineProperty(this._game.party, 'name', {
             configurable: true,
@@ -557,6 +522,7 @@ export class GameService implements IGameService {
         });
 
         this._game.party.characters.forEach(c => {
+            InitEntityCollection(c, Items);
             currentHitpoints[c.name] = c.currentHitpoints || c.hitpoints;
 
             Object.defineProperty(c, 'currentHitpoints', {
@@ -568,6 +534,24 @@ export class GameService implements IGameService {
                     const change = value - currentHitpoints[c.name];
                     currentHitpoints[c.name] = value;
                     this._rules.character.hitpointsChange?.(this._game, c, change);
+                }
+            });
+
+            Object.defineProperty(c, 'combatItems', {
+                get: function () {
+                    const result = c.items.filter(i => {
+                        return canUseInCombat(i.useInCombat, i, c.equipment);
+                    });
+
+                    for (const n in c.equipment) {
+                        const item = <IItem>c.equipment[n];
+
+                        if (item && canUseInCombat(item.useInCombat, item, c.equipment)) {
+                            result.push(item);
+                        }
+                    }
+
+                    return result;
                 }
             });
         });
@@ -673,7 +657,7 @@ export class GameService implements IGameService {
         }
     }
 
-    private setupCombinations = (): void => {
+    private initCombinations = (): void => {
         this._game.combinations = {
             combinationResult: {
                 done: false,
