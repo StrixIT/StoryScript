@@ -11,7 +11,6 @@ export interface IEnemy extends IFeature, StoryScriptIEnemy {
     damage?: string;
     defence?: number;
     speed?: number;
-    reward?: number;
     attackPriority?: [ClassType, number[]][];
     activeNight?: boolean;
     activeDay?: boolean;

@@ -11,7 +11,7 @@ export function GhostBandit() {
         defence: 4,
         speed: 3,
         hitpoints: 15,
-        reward: 4,
+        currency: 4,
         attackPriority: [
             [ClassType.Wizard, [1,2,3,4]],
             [ClassType.Rogue, [5,6]]

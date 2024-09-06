@@ -5,4 +5,6 @@
     isNight: boolean;
     timeOfDay: string;
     freedFaeries: boolean;
+    hasRestedDuringDay: boolean;
+    hasRestedDuringNight: boolean;
 }

@@ -9,11 +9,10 @@ export function QueenBee() {
         description: description,
         hitpoints: 10,
         damage: '1d6',
-        reward: 5,
+        currency: 5,
         items: [
             Beesting()
         ],
-        currency: 10,
         conversation: {
             showUnavailableReplies: false,
             selectActiveNode: (game, person) => {

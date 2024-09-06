@@ -5,6 +5,6 @@ export function Enchantress() {
         name: 'The Enchantress',
         hitpoints: 20,
         damage: '1d8',
-        reward: 5
+        currency: 5
     });
 }

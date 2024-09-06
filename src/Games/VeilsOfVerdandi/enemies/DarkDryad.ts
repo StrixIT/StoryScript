@@ -5,6 +5,6 @@ export function DarkDryad() {
         name: 'The Dark Dryad',
         hitpoints: 20,
         damage: '1d6',
-        reward: 3
+        currency: 3
     });
 }

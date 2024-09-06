@@ -8,7 +8,7 @@ export function Bandit() {
         defence: 2,
         speed: 5,
         hitpoints: 10,
-        reward: 4,
+        currency: 4,
         attackPriority: [
             [ClassType.Warrior, [1,2,3,4]],
             [ClassType.Wizard, [5,6]]

@@ -16,7 +16,9 @@ export function Rules(): IRules {
                     isNight: false,
                     timeOfDay: 'day',
                     freedFaeries: false,
-                    travelCounter: 0
+                    travelCounter: 0,
+                    hasRestedDuringDay: false,
+                    hasRestedDuringNight: false
                 };
             }
         },

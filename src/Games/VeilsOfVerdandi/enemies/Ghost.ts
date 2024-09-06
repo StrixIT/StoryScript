@@ -5,7 +5,7 @@ export function Ghost() {
         name: 'Wraith',
         hitpoints: 14,
         damage: '1d4',
-        reward: 1,
+        currency: 1,
         activeNight: true
     });
 }

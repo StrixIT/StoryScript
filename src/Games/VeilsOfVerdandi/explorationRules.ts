@@ -8,6 +8,8 @@ import {IDestination} from "./interfaces/destination.ts";
 import {IAction} from "./interfaces/action.ts";
 import {IExplorationRules} from "storyScript/Interfaces/rules/explorationRules.ts";
 
+const dayPartLength = 4;
+
 export const explorationRules = <IExplorationRules>{
     enterLocation: (game: IGame, location: ICompiledLocation, travel: boolean): void => {
         if (travel) {
@@ -18,7 +20,7 @@ export const explorationRules = <IExplorationRules>{
 
             game.worldProperties.travelCounter ??= 0;
             game.worldProperties.travelCounter++;
-            const duskDawn = game.worldProperties.travelCounter % 4 === 0;
+            const duskDawn = game.worldProperties.travelCounter % dayPartLength === 0;
 
             if (duskDawn) {
                 game.worldProperties.isDay = !game.worldProperties.isDay;
@@ -27,22 +29,11 @@ export const explorationRules = <IExplorationRules>{
 
             game.worldProperties.timeOfDay = game.worldProperties.isDay ? 'day' : 'night';
         }
-
-        if (location.enemies?.length > 0) {
-            location.enemies.forEach(enemy => enemy.inactive = !isEntityActive(game, enemy));
-        }
-
-        if (location.items?.length > 0) {
-            location.items.forEach(item => item.inactive = !isEntityActive(game, item));
-        }
-
-        if (location.destinations?.length > 0) {
-            location.destinations.forEach(destination => destination.inactive = !isEntityActive(game, destination));
-        }
-
-        if (location.actions?.length > 0) {
-            location.actions.forEach(([k, v]) => v.status = !isEntityActive(game, v) ? ActionStatus.Unavailable : v.status);
-        }
+        
+        location.enemies?.forEach(enemy => enemy.inactive = !isEntityActive(game, enemy));
+        location.items?.forEach(item => item.inactive = !isEntityActive(game, item));
+        location.destinations?.forEach(destination => destination.inactive = !isEntityActive(game, destination));
+        location.actions?.forEach(([k, v]) => v.status = !isEntityActive(game, v) ? ActionStatus.Unavailable : v.status);
 
         if (game.worldProperties.isNight) {
             const element = <HTMLElement>game.UIRootElement?.querySelector('location-container');

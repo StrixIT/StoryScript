@@ -5,6 +5,6 @@ export function Necromancer() {
         name: 'The Necromancer',
         hitpoints: 16,
         damage: '1d8',
-        reward: 3
+        currency: 3
     });
 }

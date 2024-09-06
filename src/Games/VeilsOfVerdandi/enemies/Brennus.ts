@@ -8,7 +8,7 @@ export function Brennus() {
         defence: 3,
         speed: 5,
         hitpoints: 18,
-        reward: 5,
+        currency: 5,
         attackPriority: [
             [ClassType.Warrior, [1,2,3,4]],
             [ClassType.Wizard, [5,6]]

@@ -5,6 +5,6 @@ export function Troll() {
         name: 'Troll',
         hitpoints: 22,
         damage: '1d8',
-        reward: 4
+        currency: 4
     });
 }

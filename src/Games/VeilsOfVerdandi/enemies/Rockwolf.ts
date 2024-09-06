@@ -5,6 +5,6 @@ export function Rockwolf() {
         name: 'Rockwolf',
         hitpoints: 18,
         damage: '1d6',
-        reward: 2
+        currency: 2
     });
 }

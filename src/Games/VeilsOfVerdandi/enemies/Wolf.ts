@@ -5,7 +5,7 @@ export function Wolf() {
         name: 'Wolf',
         hitpoints: 10,
         damage: '1d4',
-        reward: 1,
+        currency: 1,
         activeDay: true
     });
 }

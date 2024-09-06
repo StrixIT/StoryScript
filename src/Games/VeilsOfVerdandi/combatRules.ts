@@ -7,6 +7,7 @@ import {TargetType} from "storyScript/Interfaces/enumerations/targetType.ts";
 import {descriptionSelector} from "./sharedFunctions.ts";
 import {ICombatRules} from "storyScript/Interfaces/rules/combatRules.ts";
 import {IItem} from "./interfaces/item.ts";
+import {ICombatTurn} from "./interfaces/combatTurn.ts";
 
 export const combatRules = <ICombatRules>{
     initCombatRound: (game: IGame, combatSetup: ICombatSetup): void => {
@@ -35,16 +36,14 @@ export const combatRules = <ICombatRules>{
 
             if (character) {
                 const setupEntry = combatSetup.find(e => e.character === character);
-                const combatItem = setupEntry.item;
-                const target = setupEntry.target;
 
-                if (!combatItem) {
+                if (!setupEntry.item) {
                     continue;
                 }
 
-                executeCharacterTurn(game, character, target, combatItem);
+                executeCharacterTurn(game, setupEntry);
 
-                if (checkCombatWin(game, combatSetup, character, target)) {
+                if (checkCombatWin(game, combatSetup, setupEntry)) {
                     return;
                 }
 
@@ -117,22 +116,22 @@ function getEnemyTargets(game: IGame, combatSetup: ICombatSetup) {
     combatSetup.enemyTargets = enemyTargets;
 }
 
-function executeCharacterTurn(game: IGame, character: Character, target: any, combatItem: IItem) {
-    let combatText = format(combatItem.attackText, [character.name]);
+function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
+    let combatText = format(turn.item.attackText, [turn.character.name]);
     let totalDamage = 0;
 
-    if (combatItem.use) {
-        combatItem.use(game, character, combatItem, target);
-    } else if (combatItem.targetType === TargetType.Enemy) {
-        const weaponDamage = game.helpers.rollDice(combatItem.damage);
-        totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(character, 'damageBonus') - (target.defence ?? 0));
-        target.currentHitpoints -= totalDamage;
+    if (turn.item.use) {
+        turn.item.use(game, turn.character, turn.item, turn.target);
+    } else if (turn.item.targetType === TargetType.Enemy) {
+        const weaponDamage = game.helpers.rollDice(turn.item.damage);
+        totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(turn.character, 'damageBonus') - (turn.target.defence ?? 0));
+        turn.target.currentHitpoints -= totalDamage;
 
         if (combatText) {
             game.logToCombatLog(combatText + '.');
         }
 
-        game.logToCombatLog(`${character.name} does ${totalDamage} damage to ${target.name}!`);
+        game.logToCombatLog(`${turn.character.name} does ${totalDamage} damage to ${turn.target.name}!`);
     }
 }
 
@@ -144,9 +143,11 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
     target.currentHitpoints -= totalDamage;
 }
 
-function checkCombatWin(game: IGame, combatSetup: ICombatSetup, character: Character, target: any): boolean {
-    if (target.currentHitpoints <= 0) {
-        game.logToCombatLog(`${character.name} defeats ${target.name}!`);
+function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTurn): boolean {
+    if (turn.target.currentHitpoints <= 0) {
+        turn.targetDefeated = true;
+        
+        game.logToCombatLog(`${turn.character.name} defeats ${turn.target.name}!`);
 
         if (!combatSetup.enemies.some(e => e.currentHitpoints > 0)) {
             const currentSelector = descriptionSelector(game);
@@ -178,8 +179,9 @@ function useBows(combat: ICombatSetup): boolean {
 
 function filterBows(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetup, character: Character, item: IItem) => boolean): void {
     combatSetup.forEach(c => {
+        const selectedItem = c.item;
         c.itemsAvailable = c.itemsAvailable.filter(i => filter(combatSetup, c.character, i));
-        c.item = c.itemsAvailable[0];
+        c.item = c.itemsAvailable.find(i => i === selectedItem) ?? c.itemsAvailable[0];
 
         if (!c.item) {
             c.targetsAvailable = null;
