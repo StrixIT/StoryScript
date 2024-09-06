@@ -227,7 +227,7 @@ export class GameService implements IGameService {
 
         return Promise.resolve(promise).then(() => {
             combatRound.forEach((s, i) => {
-                if (s.target?.currentHitpoints <= 0) {
+                if (s.target?.currentHitpoints <= 0 && s.targetDefeated) {
                     this.enemyDefeated(this._game.party.characters[i], s.target);
                 }
             });
@@ -397,13 +397,14 @@ export class GameService implements IGameService {
             items.sort((a: IItem, b: IItem) => b.targetType?.localeCompare(a.targetType) || a.name.localeCompare(b.name));
 
             const targetType = items[0]?.targetType ?? TargetType.Enemy;
+            const previousItem = this._game.combat[i]?.item;
 
             this._game.combat[i] = <ICombatTurn>{
                 character: c,
                 targetsAvailable: enemies.concat(allies),
                 target: targetType === TargetType.Enemy ? enemies[0] : allies[0],
                 itemsAvailable: items,
-                item: items[0]
+                item: (previousItem && items.find(i => i === previousItem)) ?? items[0]
             };
         });
 
