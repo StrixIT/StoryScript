@@ -371,3 +371,8 @@ feature {
 .hitpoint-editor {
     display: inline;
 }
+
+.combat-actions > li {
+    display: grid;
+    justify-content: center;
+}
