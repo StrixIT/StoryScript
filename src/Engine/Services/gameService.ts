@@ -214,7 +214,7 @@ export class GameService implements IGameService {
     initCombat = (): void => {
         this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
         this.initCombatRound(true);
-        this._game.currentLocation.activeEnemies.forEach(enemy => enemy.onAttack?.(this._game));
+        this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game));
         this._game.playState = PlayState.Combat;
     }
 
@@ -369,19 +369,33 @@ export class GameService implements IGameService {
 
     private initCombatRound = (newFight: boolean) => {
         this._game.combat ??= <ICombatSetup<ICombatTurn>>[];
-        const enemies = this._game.combat.enemies = this._game.currentLocation.activeEnemies;
-        const characters = this._game.combat.characters = this._game.party.characters;
+        
+        if (!this._game.combat.enemies) {
+            this._game.combat.enemies = [];
 
-        if (newFight) {
-            enemies.forEach(e => e.currentHitpoints = e.hitpoints);
-            this._game.combat.round = 0;
+            const enemiesPerType = <Record<string, number[]>>{};
+
+            this._game.currentLocation.activeEnemies.forEach((e: any, i) => {
+                enemiesPerType[e.id] ??= [];
+                e.index = enemiesPerType[e.id].length + 1;
+                enemiesPerType[e.id].push(i);
+            });
+            
+            this._game.currentLocation.activeEnemies.forEach((e, i) =>{
+                const name = this.getTargetName(enemiesPerType, e);
+                const copy = {...e};
+                copy.name = name;
+                copy.currentHitpoints = copy.hitpoints;
+                this._game.combat.enemies.push(copy);
+            });
         }
-
-        this._game.combat.round++;
+        
+        this._game.combat.round = newFight ? 1 : ++this._game.combat.round;
         this._game.combat.roundHeader = this._texts.format(this._texts.combatRound, [this._game.combat.round.toString()]);
         this._game.combat.noActionText = this._texts.noCombatAction;
-
-        // Todo: remember last-used item
+        const enemies = this._game.combat.enemies = this._game.combat.enemies.filter(e => e.currentHitpoints > 0);
+        const characters = this._game.combat.characters = this._game.party.characters;
+        
         characters.forEach((c, i) => {
             const allies = characters.filter(a => a != c);
             const items = c.combatItems ?? [];
@@ -395,20 +409,37 @@ export class GameService implements IGameService {
             });
 
             items.sort((a: IItem, b: IItem) => b.targetType?.localeCompare(a.targetType) || a.name.localeCompare(b.name));
-
-            const targetType = items[0]?.targetType ?? TargetType.Enemy;
+            
+            // Remember the last item used and enemy attacked and select them when they
+            // are still valid.
             const previousItem = this._game.combat[i]?.item;
+            const newItem = (previousItem && items.find(i => i === previousItem)) ?? items[0];
+            const targetType = newItem?.targetType ?? TargetType.Enemy;
+            const targets = targetType === TargetType.Enemy ? enemies : allies;
+            const previousTarget = this._game.combat[i]?.target;
+            let newTarget = newItem === previousItem && previousTarget ? targets.find(i => i === previousTarget) : undefined;
+            newTarget ??= targets[0];
 
             this._game.combat[i] = <ICombatTurn>{
                 character: c,
                 targetsAvailable: enemies.concat(allies),
-                target: targetType === TargetType.Enemy ? enemies[0] : allies[0],
+                target: newTarget,
                 itemsAvailable: items,
-                item: (previousItem && items.find(i => i === previousItem)) ?? items[0]
+                item: newItem
             };
         });
 
         this._rules.combat?.initCombatRound?.(this._game, this._game.combat);
+    }
+    
+    private getTargetName = (enemiesPerType: Record<string, number[]>, target: any): string => {
+        const ofSameType = enemiesPerType[target.id];
+        
+        if (ofSameType.length === 1) {
+            return target.name;
+        }
+        
+        return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
     }
 
     private enemyDefeated = (character: ICharacter, enemy: IEnemy): void => {
@@ -430,7 +461,7 @@ export class GameService implements IGameService {
 
         this._game.statistics.enemiesDefeated ??= 0;
         this._game.statistics.enemiesDefeated += 1;
-        this._game.currentLocation.enemies.delete(enemy);
+        this._game.currentLocation.enemies.delete(enemy.id);
         this._rules.combat?.enemyDefeated?.(this._game, character, enemy);
         enemy.onDefeat?.(this._game);
     }

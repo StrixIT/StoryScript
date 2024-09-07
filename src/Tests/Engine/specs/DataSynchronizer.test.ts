@@ -376,4 +376,39 @@ describe("DataSynchronizer", () => {
         expect(Array.isArray(input.attackPriority[1][1])).toBeTruthy();
     });
 
+    test("should restore objects of same type as separate objects", function() {
+        const pristine = {
+            locations: {
+                start: {
+                    enemies: [
+                        Bandit(),
+                        Bandit()
+                    ]   
+                }
+            },
+            enemies: {
+                bandit: Bandit(),
+            }
+        }
+        
+        const input = {
+            world: {
+                start: {
+                    type: 'location',
+                    id: 'start',
+                    enemies: [
+                        { type: 'enemy', id: 'bandit' },
+                        { type: 'enemy', id: 'bandit' }
+                    ]
+                }
+            }
+        };
+
+        const serializer = new DataSerializer(pristine);
+        const synchronizer = new DataSynchronizer(pristine);
+        serializer.restoreObjects(input);
+        synchronizer.synchronizeEntityData(input);
+        expect(input.world.start.enemies[0] !== input.world.start.enemies[1]).toBeTruthy();
+    });
+
 });
