@@ -54,6 +54,7 @@ export const combatRules = <ICombatRules>{
                 continue;
             }
 
+            // Todo: retarget enemy when a character is down?
             const enemyTarget = combatSetup.enemyTargets.find(e => e[0] === enemy)[1];
             executeEnemyTurn(game, combatSetup, enemy, enemyTarget);
         }
@@ -117,6 +118,10 @@ function getEnemyTargets(game: IGame, combatSetup: ICombatSetup) {
 }
 
 function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
+    if (!turn.target) {
+        return;
+    }
+    
     let combatText = format(turn.item.attackText, [turn.character.name]);
     let totalDamage = 0;
 
@@ -146,6 +151,9 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
 function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTurn): boolean {
     if (turn.target.currentHitpoints <= 0) {
         turn.targetDefeated = true;
+        
+        // Todo: retarget remaining characters?
+        combatSetup.filter(t => t.target === turn.target && t !== turn).forEach(t => t.target = undefined);
         
         game.logToCombatLog(`${turn.character.name} defeats ${turn.target.name}!`);
 
