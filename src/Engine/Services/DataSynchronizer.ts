@@ -154,14 +154,14 @@ export class DataSynchronizer implements IDataSynchronizer {
         // matched and existing items need to be recursively checked. Added items aren't in the stored data yet, so they
         // can be added straight away. The order is very important! Matched items are in both and need to go first. Added 
         // items second, as these are now part of the design. Existing items have been added at runtime and should go last.
-        matchedItems.forEach(i => {
-            finalItems.push(this.updateArrayElement(i, entity, parentEntity, pristineParentEntity, parentProperty));
+        matchedItems.forEach((e, i) => {
+            finalItems.push(this.updateArrayElement(e, i, entity, parentEntity, pristineParentEntity, parentProperty));
         })
 
         itemsToAdd.forEach(i => finalItems.push(i));
 
-        existingItems.forEach(i => {
-            finalItems.push(this.updateArrayElement(i, entity, parentEntity, pristineParentEntity, parentProperty));
+        existingItems.forEach((e, i) => {
+            finalItems.push(this.updateArrayElement(e, i, entity, parentEntity, pristineParentEntity, parentProperty));
         })
 
         entity.length = 0;
@@ -174,8 +174,10 @@ export class DataSynchronizer implements IDataSynchronizer {
         return true;
     }
 
-    private updateArrayElement = (element: any, entity: any, parentEntity, pristineParentEntity, parentProperty) => {
-        const currentValue: any = entity.find(p => propertyMatch(element, p));
+    private updateArrayElement = (element: any, index: number, entity: any, parentEntity, pristineParentEntity, parentProperty) => {
+        const currentValues = entity.filter(p => propertyMatch(element, p));
+        const currentValue = currentValues[index] ?? currentValues[0];
+        
 
         // In case of an entity with the 'added' flag, 'i' is a skeleton value. Set the pristine entity to 'undefined' 
         // so it will be looked up again later on.

@@ -29,7 +29,7 @@ export class CombatComponent {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.multiCharacter = this.game.party.characters.length > 1;
-        this.enemyRows = this.split(this.game.currentLocation.activeEnemies, 3);
+        this.enemyRows = this.split(this.game.combat.enemies, 3);
         this.characterRows = this.split(this.game.combat, 3);
     }
 
@@ -45,12 +45,6 @@ export class CombatComponent {
     getButtonClass = (action: [string, IAction]): string => this._sharedMethodService.getButtonClass(action);
 
     executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
-
-    getTargetName = (target: IEnemy | ICharacter): string => {
-        const type = (<any>target).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
-        const ofSameType = this.game.currentLocation.activeEnemies.filter(e => e.name === target.name);
-        return type === TargetType.Enemy && ofSameType.length > 1 ? this.texts.format(this.texts.enemyCombatName, [target.name, (ofSameType.indexOf(target) + 1).toString()]) : target.name;
-    }
 
     itemChange = (item: IItem, turn: ICombatTurn) => {
         const targets = turn.targetsAvailable.filter(t => {
