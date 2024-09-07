@@ -147,6 +147,12 @@ export function addArrayExtensions() {
                 if (index === -1) {
                     return;
                 }
+                
+                // When an id was passed in, replace the item with the actual entity so we 
+                // have the information we need to create the deletion record.
+                if (typeof item === 'string') {
+                    item = collection[index];
+                }
 
                 Array.prototype.splice.call(this, index, 1);
                 collection[deletedCollection] = collection[deletedCollection] || [];
