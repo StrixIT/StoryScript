@@ -232,12 +232,17 @@ export class GameService implements IGameService {
                 }
             });
 
+            this.saveGame();
+            
             if (this._game.party.characters.filter(c => c.currentHitpoints >= 0).length == 0) {
                 this._game.playState = null;
                 this._game.state = GameState.GameOver;
             }
 
-            this.saveGame();
+            if (combatRound.enemies.filter(c => c.currentHitpoints >= 0).length == 0) {
+                return;
+            }
+            
             this.initCombatRound(false);
         });
     }
@@ -368,7 +373,7 @@ export class GameService implements IGameService {
     }
 
     private initCombatRound = (newFight: boolean) => {
-        this._game.combat ??= <ICombatSetup<ICombatTurn>>[];
+        this._game.combat = newFight ? <ICombatSetup<ICombatTurn>>[] : this._game.combat;
         
         if (!this._game.combat.enemies) {
             this._game.combat.enemies = [];
