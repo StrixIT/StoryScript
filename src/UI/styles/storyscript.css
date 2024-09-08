@@ -368,6 +368,10 @@ feature {
     opacity: .5;
 }
 
+.unselectable {
+    color: rgba(0, 0, 0, 0.25);
+}
+
 .hitpoint-editor {
     display: inline;
 }
