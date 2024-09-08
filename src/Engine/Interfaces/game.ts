@@ -214,13 +214,6 @@ export interface IGame {
     logToCombatLog(message: string): void;
 
     /**
-     * The function executed when the player attacks an enemy.
-     * @param combatRound The setup for this combat round
-     * @param retaliate True if the enemy can retaliate (default), false otherwise
-     */
-    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
-
-    /**
      * The setup for the next combat round. This object is used to track
      * which character attacks which enemy using what item or weapon.
      */

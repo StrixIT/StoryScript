@@ -11,22 +11,6 @@ describe("GameService", function() {
     beforeAll(() => {
         addArrayExtensions();
     });
-    
-    test("should call the use function on an item", function() {
-        let used = false;
-        const character = <ICharacter>{};
-        
-        const item = <IItem>{
-            use: (game: IGame, character: ICharacter, item: IItem) => {
-                used = true;
-            }
-        };
-
-        const service = getService();
-        service.useItem(character, item);
-
-        expect(used).toBeTruthy();
-    });
 
     test("resume should move invalid equipment back to backpack", function() {
         const amulet = <IItem>{

@@ -14,12 +14,10 @@ export class BackpackComponent {
     @Input() character!: ICharacter;
     private _characterService: CharacterService;
     private _sharedMethodService: SharedMethodService;
-    private _gameService: GameService;
 
     constructor() {
         this._characterService = inject(CharacterService);
         this._sharedMethodService = inject(SharedMethodService);
-        this._gameService = inject(GameService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
@@ -47,7 +45,7 @@ export class BackpackComponent {
 
     canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(this.character, item);
 
-    useItem = (item: IItem): Promise<void> | void => this._gameService.useItem(this.character, item);
+    useItem = (item: IItem): Promise<void> | void => this._characterService.useItem(this.character, item);
 
     canDropItems = (): boolean => this._sharedMethodService.useGround;
 

@@ -11,6 +11,8 @@ import {ICreateCharacterStep} from '../Interfaces/createCharacter/createCharacte
 import {GameState} from '../Interfaces/enumerations/gameState';
 import {EquipmentType} from '../Interfaces/enumerations/equipmentType';
 import { getEquipmentType } from '../utilityFunctions';
+import {IEnemy} from "storyScript/Interfaces/enemy.ts";
+import {removeItemFromItemsAndEquipment} from "storyScript/Services/sharedFunctions.ts";
 
 export class CharacterService implements ICharacterService {
     constructor(private _game: IGame, private _rules: IRules) {
@@ -213,6 +215,26 @@ export class CharacterService implements ICharacterService {
         if (drop) {
             character.items.delete(item);
             this._game.currentLocation.items.add(item);
+        }
+    }
+
+    useItem = (character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void => {
+        const useItem = (this._rules.exploration?.onUseItem?.(this._game, character, item) && item.use) ?? item.use;
+
+        if (useItem) {
+            const promise = item.use(this._game, character, item, target);
+
+            return Promise.resolve(promise).then(() => {
+                if (item.charges !== undefined) {
+                    if (!isNaN(item.charges)) {
+                        item.charges--;
+                    }
+
+                    if (item.charges <= 0) {
+                        removeItemFromItemsAndEquipment(character, item);
+                    }
+                }
+            });
         }
     }
 
