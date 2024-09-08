@@ -20,8 +20,11 @@ export function Frostbite() {
             return game.playState === PlayState.Combat;
         },
         use(game, character, item, target: IEnemy) {
-            target.currentHitpoints -= game.helpers.rollDice('1d4');
+            const damage = game.helpers.rollDice('1d4');
+            target.currentHitpoints -= damage;
             target.frozen = true;
+            game.logToCombatLog(`${character.name} casts Frostbite.`);
+            game.logToCombatLog(`${character.name} does ${damage} damage to ${target.name}. ${target.name} is frozen!`);
         },
     });
 }

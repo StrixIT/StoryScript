@@ -22,6 +22,13 @@ export const combatRules = <ICombatRules>{
         }
 
         combatSetup.roundHeader = combatSetup.round === 1 ? 'Archery round' : combatSetup.roundHeader;
+        
+        combatSetup.forEach(t => t.itemsAvailable.forEach((i: any) => {
+            if (i.recharging) {
+                i.recharging = i.recharging > 1 ? --i.recharging : undefined;
+                i.selectable = !i.recharging;
+            }
+        }))
     },
     fight: (game: IGame, combatSetup: ICombatSetup): void => {
         game.combatLog = [];
@@ -53,8 +60,7 @@ export const combatRules = <ICombatRules>{
             if (useBows(combatSetup)) {
                 continue;
             }
-
-            // Todo: retarget enemy when a character is down?
+            
             const enemyTarget = combatSetup.enemyTargets.find(e => e[0] === enemy)[1];
             executeEnemyTurn(game, combatSetup, enemy, enemyTarget);
         }
@@ -80,6 +86,8 @@ function getOrderedParticipants(game: IGame, combatSetup: ICombatSetup) {
         b.combatSpeed = getCombatSpeed(b, combatSetup) ?? 0;
         return a.combatSpeed - b.combatSpeed;
     });
+    
+    participants.forEach(p => delete p.frozen);
 
     if (combatSetup.round > 1) {
         game.logToCombatLog('Combat order: ' + participants.reduce((c: string, p, i: number, a) => {
@@ -118,7 +126,7 @@ function getEnemyTargets(game: IGame, combatSetup: ICombatSetup) {
 }
 
 function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
-    if (!turn.target) {
+    if (!turn.target || turn.character.currentHitpoints <= 0) {
         return;
     }
     
@@ -127,9 +135,20 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
 
     if (turn.item.use) {
         turn.item.use(game, turn.character, turn.item, turn.target);
+        
+        if (turn.item.recharge) {
+            (<any>turn.item).recharging = turn.item.recharge;
+            turn.item.selectable = false;
+        }
     } else if (turn.item.targetType === TargetType.Enemy) {
         const weaponDamage = game.helpers.rollDice(turn.item.damage);
         totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(turn.character, 'damageBonus') - (turn.target.defence ?? 0));
+        
+        if (!totalDamage) {
+            game.logToCombatLog(`${turn.character.name} misses ${turn.target.name}!`);
+            return;
+        }
+        
         turn.target.currentHitpoints -= totalDamage;
 
         if (combatText) {
@@ -141,18 +160,31 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
 }
 
 function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy, target: Character) {
+    if (enemy.currentHitpoints <= 0 || target.currentHitpoints <= 0) {
+        return;
+    }
+    
     const characterDefense = game.helpers.calculateBonus(target, 'defense');
     const enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
     const totalDamage = Math.max(0, enemyDamage - characterDefense);
+
+    if (!totalDamage) {
+        game.logToCombatLog(`${enemy.name} misses ${target.name}!`);
+        return;
+    }
+    
     game.logToCombatLog(`${enemy.name} does ${totalDamage} damage to ${target.name}!`);
     target.currentHitpoints -= totalDamage;
 }
 
 function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTurn): boolean {
+    if (!turn.target) {
+        return false;
+    }
+    
     if (turn.target.currentHitpoints <= 0) {
         turn.targetDefeated = true;
         
-        // Todo: retarget remaining characters?
         combatSetup.filter(t => t.target === turn.target && t !== turn).forEach(t => t.target = undefined);
         
         game.logToCombatLog(`${turn.character.name} defeats ${turn.target.name}!`);
@@ -162,7 +194,6 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
             let selector = currentSelector ? currentSelector + 'after' : 'after';
             selector = game.currentLocation.descriptions[selector] ? selector : 'after';
             game.currentLocation.descriptionSelector = selector;
-            game.playState = null;
             return true;
         }
     }
@@ -199,10 +230,12 @@ function filterBows(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetu
 }
 
 function getCombatSpeed(entry: any, combatSetup: ICombatSetup): number {
+    const baseSpeed = entry.frozen ? 3 : 0;
+    
     if (entry.type === 'enemy') {
-        return entry.speed;
+        return baseSpeed + entry.speed;
     } else {
         const setupEntry = combatSetup.find(e => e.character === entry);
-        return setupEntry.item?.speed;
+        return setupEntry.item ? baseSpeed + setupEntry.item.speed : 0;
     }
 }

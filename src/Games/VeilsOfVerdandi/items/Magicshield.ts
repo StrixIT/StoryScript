@@ -1,7 +1,7 @@
-﻿import { EquipmentType, PlayState } from 'storyScript/Interfaces/storyScript';
-import { ClassType } from '../classType';
+﻿import {EquipmentType, PlayState, TargetType} from 'storyScript/Interfaces/storyScript';
+import {ClassType} from '../classType';
 import description from './Magicshield.html?raw';
-import { Character, IGame, Item } from '../types';
+import {Character, Item} from '../types';
 
 export function Magicshield() {
     return Item({
@@ -11,6 +11,8 @@ export function Magicshield() {
         value: 15,
         speed: 5,
         recharge: 1,
+        arcane: true,
+        targetType: TargetType.AllyOrSelf,
         itemClass: ClassType.Wizard,
         canDrop: false,
         useInCombat: true,
