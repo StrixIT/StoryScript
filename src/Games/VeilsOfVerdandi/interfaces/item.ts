@@ -19,4 +19,5 @@ export interface IItem extends IFeature, StoryScriptIItem {
     attackText?: string;
     activeNight?: boolean;
     activeDay?: boolean;
+    power?: string;
 }

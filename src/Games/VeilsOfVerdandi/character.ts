@@ -27,7 +27,8 @@ export class Character implements ICharacter {
             bow: null,
             body: null,
             amulet: null,
-            rightRing: null
+            rightRing: null,
+            special: null
         }
     }
 }

@@ -1,8 +1,9 @@
 import {IGame} from "./interfaces/game.ts";
 import {ICompiledLocation} from "./interfaces/location.ts";
 import {Character} from "./character.ts";
+import {IItem} from "./interfaces/item.ts";
 
-export function descriptionSelector (game: IGame): string {
+export function descriptionSelector(game: IGame): string {
     return game.worldProperties.travelCounter ?
         game.worldProperties.isNight ?
             game.currentLocation.completedNight ? 'completednight' :
@@ -25,8 +26,7 @@ export function locationComplete(game: IGame, location: ICompiledLocation, compl
         }
 
         return location.completedDay;
-    }
-    else {
+    } else {
         if (!location.completedNight) {
             location.completedNight = completeNight();
         }
@@ -36,5 +36,22 @@ export function locationComplete(game: IGame, location: ICompiledLocation, compl
 }
 
 export function heal(character: Character, amount: number) {
-    character.currentHitpoints = Math.min(character.hitpoints, character.currentHitpoints += amount);
+    character.currentHitpoints += amount;
+    character.currentHitpoints = Math.min(character.hitpoints, character.currentHitpoints);
+}
+
+export function getTopWeapon(character: Character): IItem {
+    let weapon = character.items
+        .filter(i => i.damage)
+        .sort((a, b) => parseInt(a.damage.substring(2)) - parseInt(b.damage.substring(2)))[0];
+
+    Object.keys(character.equipment).forEach(k => {
+        const item = <IItem>character.equipment[k];
+
+        if (item?.damage && parseInt(item.damage.substring(2)) > parseInt(weapon.damage.substring(2))) {
+            weapon = item;
+        }
+    });
+
+    return weapon;
 }

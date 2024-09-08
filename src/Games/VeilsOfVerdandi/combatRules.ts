@@ -4,12 +4,27 @@ import {IEnemy} from "./interfaces/enemy.ts";
 import {Character} from "./character.ts";
 import {format} from "storyScript/defaultTexts.ts";
 import {TargetType} from "storyScript/Interfaces/enumerations/targetType.ts";
-import {descriptionSelector} from "./sharedFunctions.ts";
+import {descriptionSelector, getTopWeapon} from "./sharedFunctions.ts";
 import {ICombatRules} from "storyScript/Interfaces/rules/combatRules.ts";
 import {IItem} from "./interfaces/item.ts";
 import {ICombatTurn} from "./interfaces/combatTurn.ts";
+import {ClassType} from "./classType.ts";
 
 export const combatRules = <ICombatRules>{
+    initCombat(game: IGame) {
+        game.party.characters.forEach(c => {
+            c.items.forEach(i => delete i.selectable);
+
+            Object.keys(c.equipment).forEach(k => {
+                const item = <IItem>c.equipment[k];
+
+                if (item?.selectable !== undefined) {
+                    delete item.selectable;
+                }
+            });
+        });
+    },
+
     initCombatRound: (game: IGame, combatSetup: ICombatSetup): void => {
         getEnemyTargets(game, combatSetup);
         
@@ -23,12 +38,17 @@ export const combatRules = <ICombatRules>{
 
         combatSetup.roundHeader = combatSetup.round === 1 ? 'Archery round' : combatSetup.roundHeader;
         
-        combatSetup.forEach(t => t.itemsAvailable.forEach((i: any) => {
-            if (i.recharging) {
-                i.recharging = i.recharging > 1 ? --i.recharging : undefined;
-                i.selectable = !i.recharging;
-            }
-        }))
+        combatSetup.forEach(t => {
+            t.itemsAvailable.forEach((i: any) => {
+                if (i.recharging) {
+                    i.recharging = i.recharging > 1 ? --i.recharging : undefined;
+                    i.selectable = !i.recharging;
+                }
+                if (i.id.indexOf('powerattack') > -1) {
+                    i.speed = getTopWeapon(t.character)?.speed || 0;
+                }
+            })
+        });
     },
     fight: (game: IGame, combatSetup: ICombatSetup): void => {
         game.combatLog = [];
@@ -166,7 +186,19 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
     
     const characterDefense = game.helpers.calculateBonus(target, 'defense');
     const enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
-    const totalDamage = Math.max(0, enemyDamage - characterDefense);
+    let totalDamage = Math.max(0, enemyDamage - characterDefense);
+    
+    if (target.class.name === ClassType.Rogue && target.currentHitpoints / 2 <= totalDamage) {
+        const character = combatSetup.find(t => t.character === target).character;
+        const special = character.equipment.special;
+        
+        if ((special.selectable || typeof special.selectable === 'undefined') && special.id.indexOf('dodge') > -1) {
+            const avoidedDamage = Math.ceil(totalDamage * parseFloat(special.power));
+            totalDamage = totalDamage - avoidedDamage;
+            special.selectable = false;
+            game.logToCombatLog(`${character.name} dodges ${avoidedDamage} damage!`);
+        }
+    }
 
     if (!totalDamage) {
         game.logToCombatLog(`${enemy.name} misses ${target.name}!`);

@@ -15,4 +15,5 @@ export interface IEquipment extends Omit<
     primaryWeapon?: IItem,
     secondaryWeapon?: IItem
     bow?: IItem;
+    special?: IItem;
 }

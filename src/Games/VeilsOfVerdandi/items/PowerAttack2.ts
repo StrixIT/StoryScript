@@ -1,11 +1,7 @@
-import { IGame, Item } from '../types';
-import { EquipmentType } from 'storyScript/Interfaces/storyScript';
 import description from './PowerAttack2.html?raw';
+import {customEntity} from "storyScript/EntityCreatorFunctions.ts";
+import {PowerAttack1} from "./PowerAttack1.ts";
 
 export function PowerAttack2() {
-	return Item({
-		name: 'PowerAttack2',
-		description: description,
-		equipmentType: EquipmentType.Miscellaneous,
-	});
+	return customEntity(PowerAttack1, { name: 'Power Attack 2', power: '1d6', description: description });
 }

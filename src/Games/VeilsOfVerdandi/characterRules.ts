@@ -80,6 +80,16 @@ export const characterRules = <ICharacterRules>{
     },
     
     isSlotUsed(character: Character, slot) {
-        return !(slot === 'bow' && character.class.name !== ClassType.Rogue);
+        if (slot === 'bow') {
+            return character.class.name === ClassType.Rogue;
+        }
+        else if (slot === 'special' || slot === 'secondaryWeapon') {
+            return character.class.name !== ClassType.Wizard;
+        }
+        else if (slot === 'rightRing') {
+            return character.class.name === ClassType.Wizard;
+        }
+        
+        return true;
     },
 }
