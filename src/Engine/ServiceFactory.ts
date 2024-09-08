@@ -17,10 +17,11 @@ import { IConversationService } from './Interfaces/services/conversationService'
 import { ICombinationService } from './Interfaces/services/combinationService';
 import { DataSerializer } from './Services/DataSerializer';
 import { DataSynchronizer } from './Services/DataSynchronizer';
-import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
+import {ICombatService} from "storyScript/Interfaces/services/combatService.ts";
+import {CombatService} from "storyScript/Services/CombatService.ts";
 
 export class ServiceFactory {
     private readonly _game: IGame = <IGame>{};
@@ -35,6 +36,7 @@ export class ServiceFactory {
     private readonly _tradeService: ITradeService;
     private readonly _conversationService: IConversationService;
     private readonly _combinationService: ICombinationService;
+    private readonly _combatService: ICombatService;
 
     private static _instance: ServiceFactory;
 
@@ -58,6 +60,7 @@ export class ServiceFactory {
         const locationService = new LocationService(definitions, this._rules, this._game);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
         this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, new HelperService(this._game, definitions), this._game, this._texts);
+        this._combatService = new CombatService(this._game, this._rules, this._texts);
         ServiceFactory._instance = this;
     }
 
@@ -87,5 +90,7 @@ export class ServiceFactory {
 
     GetDataSynchronizer = (): IDataSynchronizer => this._dataSynchronizer;
 
+    GetCombatService = (): ICombatService => this._combatService;
+    
     static readonly GetInstance = () => ServiceFactory._instance;
 }

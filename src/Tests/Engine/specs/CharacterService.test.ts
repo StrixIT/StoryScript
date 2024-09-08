@@ -589,6 +589,21 @@ describe("CharacterService", function() {
 
     });
 
+    test("should call the use function on an item", function() {
+        let used = false;
+        const character = <ICharacter>{};
+
+        const item = <IItem>{
+            use: (game: IGame, character: ICharacter, item: IItem) => {
+                used = true;
+            }
+        };
+
+        const service = getService();
+        service.useItem(character, item);
+
+        expect(used).toBeTruthy();
+    });
 });
 
 function getAttributes(): ICreateCharacterAttribute {

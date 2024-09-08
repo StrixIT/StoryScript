@@ -6,6 +6,7 @@ import { ICreateCharacter } from '../createCharacter/createCharacter';
 import { ICreateCharacterAttribute } from '../createCharacter/createCharacterAttribute';
 import { ICreateCharacterAttributeEntry } from '../createCharacter/createCharacterAttributeEntry';
 import { ICreateCharacterStep } from '../createCharacter/createCharacterStep';
+import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 
 export interface ICharacterService {
     getSheetAttributes(): string[];
@@ -21,5 +22,6 @@ export interface ICharacterService {
     unequipItem(character: ICharacter, item: IItem): boolean;
     isSlotUsed(character: ICharacter, slot: string): boolean;
     dropItem(character: ICharacter, item: IItem): void;
+    useItem(character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void;
     questStatus(quest: IQuest): string;
 }

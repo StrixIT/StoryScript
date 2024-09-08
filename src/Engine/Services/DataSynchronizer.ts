@@ -31,7 +31,7 @@ export class DataSynchronizer implements IDataSynchronizer {
                 setReadOnlyLocationProperties(entity);
             }
         }
-        
+
         if (parentProperty === 'world') {
             // When the game world is synchronized for a save game, get the pristine location entities now.
             pristineEntity = this._pristineEntities[getPlural(entity['start'].type)];
@@ -154,31 +154,29 @@ export class DataSynchronizer implements IDataSynchronizer {
         // matched and existing items need to be recursively checked. Added items aren't in the stored data yet, so they
         // can be added straight away. The order is very important! Matched items are in both and need to go first. Added 
         // items second, as these are now part of the design. Existing items have been added at runtime and should go last.
-        matchedItems.forEach((e, i) => {
-            finalItems.push(this.updateArrayElement(e, i, entity, parentEntity, pristineParentEntity, parentProperty));
-        })
+        matchedItems.forEach(e => {
+            finalItems.push(this.updateArrayElement(e, entity, parentEntity, pristineParentEntity, parentProperty));
+        });
 
         itemsToAdd.forEach(i => finalItems.push(i));
 
-        existingItems.forEach((e, i) => {
-            finalItems.push(this.updateArrayElement(e, i, entity, parentEntity, pristineParentEntity, parentProperty));
-        })
+        existingItems.forEach(e => {
+            finalItems.push(this.updateArrayElement(e, entity, parentEntity, pristineParentEntity, parentProperty));
+        });
 
         entity.length = 0;
 
         finalItems.forEach(i => {
-            entity.push(i);
+            entity.push(typeof i === 'object' ? {...i} : i);
         });
 
         this.markEntriesAsDeleted(entity);
         return true;
     }
 
-    private updateArrayElement = (element: any, index: number, entity: any, parentEntity, pristineParentEntity, parentProperty) => {
-        const currentValues = entity.filter(p => propertyMatch(element, p));
-        const currentValue = currentValues[index] ?? currentValues[0];
+    private updateArrayElement = (element: any, entity: any, parentEntity, pristineParentEntity, parentProperty) => {
+        const currentValue = entity.filter(p => propertyMatch(element, p))[0];
         
-
         // In case of an entity with the 'added' flag, 'i' is a skeleton value. Set the pristine entity to 'undefined' 
         // so it will be looked up again later on.
         const pristineValue = element[StateProperties.Added] && this.isEntity(element) ? undefined : element;
@@ -189,7 +187,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         return currentValue;
     }
-    
+
     private isEntity = (entity: any): boolean => {
         return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
     }

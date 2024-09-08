@@ -9,21 +9,24 @@ import {
     TargetType
 } from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
-import {GameService} from 'storyScript/Services/gameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {CombatService} from "storyScript/Services/CombatService.ts";
+import {CharacterService} from "storyScript/Services/characterService.ts";
 
 @Component({
     selector: 'combat',
     template: getTemplate('combat', await import('./combat.component.html?raw'))
 })
 export class CombatComponent {
-    private _gameService: GameService;
+    private _characterService: CharacterService;
+    private _combatService: CombatService;
     private _sharedMethodService: SharedMethodService;
 
     constructor() {
-        this._gameService = inject(GameService);
+        this._characterService = inject(CharacterService);
+        this._combatService = inject(CombatService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
@@ -63,21 +66,13 @@ export class CombatComponent {
     fight = (): void => {
         this.actionsEnabled = false;
 
-        Promise.resolve(this._gameService.fight(this.game.combat)).then(() => {
+        Promise.resolve(this._combatService.fight(this.game.combat)).then(() => {
             this.actionsEnabled = true;
             this.characterRows = this.split(this.game.combat, 3);
         });
     }
 
-    useItem = (character: ICharacter, item: IItem, target?: IEnemy): void => {
-        this.actionsEnabled = false;
-
-        Promise.resolve(this._gameService.useItem(character, item, target)).then(() => {
-            this.actionsEnabled = true;
-        });
-    }
-
-    canUseItem = (character: ICharacter, item: IItem): boolean => item.use ? this._sharedMethodService.canUseItem(character, item) : true;
+    itemSelectable = (item: IItem) => this._combatService.isSelectable(item);
 
     private split = (array, size) => {
         const result = [];

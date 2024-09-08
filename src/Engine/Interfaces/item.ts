@@ -41,6 +41,12 @@ export interface IItem extends IFeature {
     useInCombat?: boolean | ((item: IItem, equipment: IEquipment) => boolean);
 
     /**
+     * When this flag is set to false, the item is not selectable. This is used to allow items to be unselectable during combat,
+     * for example when you want items to be available only during certain rounds.
+     */
+    selectable?: boolean;
+
+    /**
      * The value of the item in whatever credits are used in the game.
      */
     value?: number;

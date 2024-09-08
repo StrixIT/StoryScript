@@ -7,10 +7,12 @@ import {IGame} from 'storyScript/Interfaces/game';
 import {Subject} from 'rxjs';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {ModalService} from './ModalService';
+import {CombatService} from "storyScript/Services/CombatService.ts";
 
 @Injectable()
 export class SharedMethodService {
     private _gameService: GameService;
+    private _combatService: CombatService;
     private _conversationService: ConversationService;
     private _tradeService: TradeService;
 
@@ -21,6 +23,7 @@ export class SharedMethodService {
         inject(ModalService);
         const objectFactory = inject(ServiceFactory);
         this._gameService = inject(GameService);
+        this._combatService = inject(CombatService);
         this._conversationService = inject(ConversationService);
         this._tradeService = inject(TradeService);
         this.game = objectFactory.GetGame();
@@ -79,7 +82,7 @@ export class SharedMethodService {
         }
 
         this.game.combatLog = [];
-        this._gameService.initCombat();
+        this._combatService.initCombat();
     }
 
     getButtonClass = (action: [string, IAction]): string => {
