@@ -4,7 +4,7 @@ import description from './GhostBandit.html?raw';
 
 export function GhostBandit() {
 	return Enemy({
-		name: 'GhostBandit',
+		name: 'Ghost bandit',
 		description: description,
 		// Todo: damage is magic damage and also does freeze.
         damage: '1d4',

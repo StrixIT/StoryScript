@@ -1,9 +1,11 @@
 ﻿import { ClassType } from '../classType';
 import { Enemy } from '../types';
+import description from './Bandit.html?raw';
 
 export function Bandit() {
     return Enemy({
         name: 'Bandit',
+        description: description,
         damage: '1d6',
         defence: 2,
         speed: 5,
