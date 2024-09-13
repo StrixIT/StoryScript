@@ -1,9 +1,14 @@
-import { IGame, IInterfaceTexts, ICreateCharacter, ICreateCharacterStep, ICharacter } from 'storyScript/Interfaces/storyScript';
-import { GameService } from 'storyScript/Services/gameService';
-import { CharacterService } from 'storyScript/Services/characterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, Input, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {
+    ICharacter,
+    ICreateCharacter,
+    ICreateCharacterStep,
+    IGame,
+    IInterfaceTexts
+} from 'storyScript/Interfaces/storyScript';
+import {CharacterService} from 'storyScript/Services/CharacterService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject, Input} from '@angular/core';
+import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'level-up',
@@ -11,12 +16,10 @@ import { getTemplate } from '../../helpers';
 })
 export class LevelUpComponent {
     @Input() character!: ICharacter;
-    private _gameService: GameService;
     private _characterService: CharacterService;
 
     constructor() {
         this._characterService = inject(CharacterService);
-        this._gameService = inject(GameService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
@@ -28,5 +31,5 @@ export class LevelUpComponent {
 
     distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.sheet, step);
 
-    levelUp = (): ICharacter => this._gameService.levelUp(this.character);
+    levelUp = (): ICharacter => this._characterService.levelUp(this.character);
 }

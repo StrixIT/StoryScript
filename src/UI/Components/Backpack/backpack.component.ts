@@ -1,10 +1,9 @@
-import { ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { GameService } from 'storyScript/Services/gameService';
-import { CharacterService } from 'storyScript/Services/characterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, Input, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {ICharacter, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {CharacterService} from 'storyScript/Services/CharacterService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject, Input} from '@angular/core';
+import {getTemplate} from '../../helpers';
 
 @Component({
     selector: 'backpack',
@@ -40,7 +39,7 @@ export class BackpackComponent {
     canEquip = (item: IItem): boolean => this._characterService.isEquippable(item);
 
     canDrop = (item: IItem): boolean => this._characterService.canDrop(item);
-    
+
     equipItem = (item: IItem): boolean => this._characterService.equipItem(this.character, item);
 
     canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(this.character, item);

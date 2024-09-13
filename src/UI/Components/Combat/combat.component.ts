@@ -13,7 +13,7 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CombatService} from "storyScript/Services/CombatService.ts";
-import {CharacterService} from "storyScript/Services/characterService.ts";
+import {CharacterService} from "storyScript/Services/CharacterService.ts";
 
 @Component({
     selector: 'combat',

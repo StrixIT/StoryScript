@@ -1,42 +1,31 @@
 ﻿import {IRules} from '../Interfaces/rules/rules';
 import {IGame} from '../Interfaces/game';
 import {IInterfaceTexts} from '../Interfaces/interfaceTexts';
-import {ICharacter} from '../Interfaces/character';
 import {ISaveGame} from '../Interfaces/saveGame';
-import {IEnemy} from '../Interfaces/enemy';
 import {IItem} from '../Interfaces/item';
-import {IBarrier} from '../Interfaces/barrier';
-import {IDestination} from '../Interfaces/destination';
 import {ScoreEntry} from '../Interfaces/scoreEntry';
-import {checkAutoplay, removeItemFromItemsAndEquipment, selectStateListEntry} from './sharedFunctions';
+import {checkAutoplay} from './sharedFunctions';
 import {DefaultTexts} from '../defaultTexts';
 import {IGameService} from '../Interfaces/services//gameService';
 import {IDataService} from '../Interfaces/services//dataService';
 import {ILocationService} from '../Interfaces/services/locationService';
 import {ICharacterService} from '../Interfaces/services/characterService';
 import {ICombinationService} from '../Interfaces/services/combinationService';
-import {IBarrierAction} from '../Interfaces/barrierAction';
 import {GameState} from '../Interfaces/enumerations/gameState';
 import {PlayState} from '../Interfaces/enumerations/playState';
 import {ICombinable} from '../Interfaces/combinations/combinable';
 import {IFeature} from '../Interfaces/feature';
 import {IParty} from '../Interfaces/party';
 import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
-import {ICombatSetup} from '../Interfaces/combatSetup';
-import {ICombatTurn} from '../Interfaces/combatTurn';
-import {TargetType} from '../Interfaces/enumerations/targetType';
 import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} from "../../../constants.ts";
 import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
-import {compareString} from '../utilityFunctions.ts';
+import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
 
 export class GameService implements IGameService {
-    private _parsedDescriptions = new Map<string, boolean>();
-    private _musicStopped: boolean = false;
-
-    constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _rules: IRules, private _helperService: IHelpers, private _game: IGame, private _texts: IInterfaceTexts) {
+    constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _soundService: ISoundService, private _rules: IRules, private _helperService: IHelpers, private _game: IGame, private _texts: IInterfaceTexts) {
     }
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
@@ -105,7 +94,7 @@ export class GameService implements IGameService {
         // Save here to use the before and after save hooks after refreshing the world,
         // if there is a beforeSave hook defined.
         if (this._rules.general?.beforeSave) {
-            this.saveGame();
+            this._dataService.saveGame(this._game);
         }
 
         if (this._game.party?.currentLocationId) {
@@ -130,12 +119,12 @@ export class GameService implements IGameService {
 
         this.setInterceptors();
         this._game.state = GameState.Play;
-        this.saveGame();
+        this._dataService.saveGame(this._game);
     }
 
     resume = (locationName: string): void => {
         this.setInterceptors();
-        this.checkEquipment();
+        this._characterService.checkEquipment();
         const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
         const previousLocationName = this._game.party.previousLocationId;
 
@@ -145,12 +134,6 @@ export class GameService implements IGameService {
 
         this._locationService.changeLocation(lastLocation.id, false, this._game);
         this._game.state = GameState.Play;
-    }
-
-    levelUp = (character: ICharacter): ICharacter => {
-        const levelUpResult = this._characterService.levelUp(character);
-        this.saveGame();
-        return levelUpResult;
     }
 
     restart = (skipIntro?: boolean): void => {
@@ -196,56 +179,11 @@ export class GameService implements IGameService {
         }
     }
 
-    getSaveGames = (): string[] => this._dataService.getSaveKeys();
-
-    hasDescription = (entity: { id?: string, description?: string }): boolean => {
-        if (!entity.description) {
-            return false;
-        }
-
-        if (!this._parsedDescriptions.get(entity.id)) {
-            const descriptionNode = getParsedDocument('description', entity.description)[0];
-            this._parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
-        }
-
-        return this._parsedDescriptions.get(entity.id);
-    }
-
-    executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): void => {
-        action[1].execute(this._game, barrier, destination);
-        barrier[1].actions.delete(barrier[1].actions.find(([k, _]) => k === action[0]));
-        this.saveGame();
-    }
-
-    getCurrentMusic = (): string => {
-        if (this._musicStopped || !this._rules.setup?.playList || Object.keys(this._rules.setup.playList).length === undefined) {
-            return null;
-        }
-
-        return selectStateListEntry(this._game, this._rules.setup.playList);
-    }
-
-    startMusic = (): boolean => this._musicStopped = false;
-
-    stopMusic = (): boolean => this._musicStopped = true;
-
-    playSound = (fileName: string, completeCallBack?: () => void): void => {
-        this._game.sounds.soundQueue.set(this.createHash(fileName + Math.floor(Math.random() * 1000)), {
-            value: fileName,
-            playing: false,
-            completeCallBack: completeCallBack
-        });
-    }
-
-    watchGameState(callBack: (game: IGame, newGameState: GameState, oldGameState: GameState) => void): void {
-        this.watchState<GameState>('state', callBack);
-    }
-
     watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void {
         this.watchState<PlayState>('playState', callBack);
     }
-
-    watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
+    
+    private watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
         const watcherNames = `_${stateName}Watchers`;
         const watchers = this[watcherNames] ?? [];
         this[watcherNames] = watchers;
@@ -270,27 +208,6 @@ export class GameService implements IGameService {
         if (watchers.indexOf(callBack) < 0) {
             watchers.push(callBack);
         }
-    }
-
-    saveGame = (name?: string): void => {
-        name = name ? SaveGamePrefix + name : GameStateSave;
-        this._rules.general?.beforeSave?.(this._game);
-
-        const saveGame = <ISaveGame>{
-            party: this._game.party,
-            world: this._game.locations,
-            worldProperties: this._game.worldProperties,
-            statistics: this._game.statistics,
-            playedAudio: this._game.sounds.playedAudio
-        };
-
-        this._dataService.save(name, saveGame);
-
-        if (this._game.playState === PlayState.Menu) {
-            this._game.playState = null;
-        }
-
-        this._rules.general.afterSave?.(this._game);
     }
 
     private initTexts = (): void => {
@@ -341,14 +258,9 @@ export class GameService implements IGameService {
                 value.isActiveCharacter = true;
             }
         });
-        
-        this._game.sounds = {
-            startMusic: this.startMusic,
-            stopMusic: this.stopMusic,
-            playSound: this.playSound,
-            soundQueue: new Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>,
-            playedAudio: playedAudio
-        };
+
+        this._game.sounds = this._soundService.getSounds();
+        this._game.sounds.playedAudio = playedAudio;
 
         this.initCombinations();
         this._locationService.init();
@@ -357,7 +269,7 @@ export class GameService implements IGameService {
             this._locationService.changeLocation(location, travel, this._game);
 
             if (travel) {
-                this.saveGame();
+                this._dataService.saveGame(this._game);
             }
         };
 
@@ -494,32 +406,6 @@ export class GameService implements IGameService {
         });
     }
 
-    // Check whether all the equipment on the characters is in valid equipment slots. The equipment
-    // type may change during editing, leaving items previously equipped in invalid slots
-    private checkEquipment = () => {
-        this._game.party.characters.forEach(c => {
-            if (c.equipment) {
-                Object.keys(c.equipment).forEach(k => {
-                    const item = <IItem>c.equipment[k];
-
-                    if (!item?.equipmentType) {
-                        return;
-                    }
-
-                    const equipmentType = k.substring(0, 1).toUpperCase() + k.substring(1);
-                    const itemType = Array.isArray(item.equipmentType) ? item.equipmentType : [item.equipmentType];
-
-                    itemType.forEach(t => {
-                        if (!compareString(t, equipmentType)) {
-                            c.equipment[k] = null;
-                            c.items.push(item);
-                        }
-                    });
-                });
-            }
-        })
-    }
-
     private initLogs = (): void => {
         this._game.actionLog = [];
         this._game.combatLog = [];
@@ -569,7 +455,7 @@ export class GameService implements IGameService {
                         }
 
                         this._game.combinations.combinationResult.featuresToRemove = featuresToRemove;
-                        this.saveGame();
+                        this._dataService.saveGame(this._game);
                     }
                 }
 
@@ -605,22 +491,6 @@ export class GameService implements IGameService {
         }
 
         this._dataService.save(HighScores, this._game.highScores);
-    }
-
-    private createHash(value: string): number {
-        let hash = 0;
-
-        if (!value || value.length == 0) {
-            return hash;
-        }
-
-        for (let i = 0; i < value.length; i++) {
-            const char = value.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-
-        return hash;
     }
 }
 

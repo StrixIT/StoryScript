@@ -3,7 +3,7 @@ import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {RunGame} from "../../../Games/MyRolePlayingGame/run";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IGame} from "../../../Games/MyRolePlayingGame/interfaces/game.ts";
-import {HelperService} from "storyScript/Services/helperService.ts";
+import {HelperService} from "storyScript/Services/HelperService.ts";
 import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
 import {ICompiledLocation} from "../../../Games/MyAdventureGame/interfaces/location.ts";

@@ -12,12 +12,14 @@ import {
 import {SharedMethodService} from './Services/SharedMethodService';
 import {ModalService} from './Services/ModalService';
 
-import {GameService} from 'storyScript/Services/gameService';
+import {DataService} from 'storyScript/Services/DataService';
+import {GameService} from 'storyScript/Services/GameService';
 import {TradeService} from 'storyScript/Services/TradeService';
-import {CharacterService} from 'storyScript/Services/characterService';
+import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ConversationService} from 'storyScript/Services/ConversationService';
 import {CombinationService} from 'storyScript/Services/CombinationService';
 import {CombatService} from "storyScript/Services/CombatService.ts";
+import {SoundService} from "storyScript/Services/SoundService.ts";
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 
 import {EncounterComponent} from './Components/Encounter/encounter.component';
@@ -108,12 +110,14 @@ const serviceFactory = ServiceFactory.GetInstance();
         SharedMethodService,
         ModalService,
         {provide: ServiceFactory, useValue: serviceFactory},
+        {provide: DataService, useValue: serviceFactory.GetDataService()},
         {provide: TradeService, useValue: serviceFactory.GetTradeService()},
         {provide: ConversationService, useValue: serviceFactory.GetConversationService()},
         {provide: GameService, useValue: serviceFactory.GetGameService()},
         {provide: CharacterService, useValue: serviceFactory.GetCharacterService()},
         {provide: CombinationService, useValue: serviceFactory.GetCombinationService()},
-        {provide: CombatService, useValue: serviceFactory.GetCombatService()}
+        {provide: CombatService, useValue: serviceFactory.GetCombatService()},
+        {provide: SoundService, useValue: serviceFactory.GetSoundService()},
     ]
 })
 

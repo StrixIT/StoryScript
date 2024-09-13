@@ -1,21 +1,24 @@
 import {inject, Injectable} from '@angular/core';
 import {NgbModal, NgbModalOptions, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {GameService} from 'storyScript/Services/gameService';
+import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {IGame, IInterfaceTexts, PlayState} from 'storyScript/Interfaces/storyScript';
 import {MenuModalComponent} from '../Components/MenuModal/menumodal.component';
 import {EncounterModalComponent} from '../Components/EncounterModal/encountermodal.component';
 import {IModalSettings} from '../Components/modalSettings';
+import {DataService} from "storyScript/Services/DataService.ts";
 
 @Injectable()
 export class ModalService {
     private _modalService: NgbModal;
+    private _dataService: DataService;
     private _gameService: GameService;
     private _activeModal = <NgbModalRef>null;
     private _previousModalState = <PlayState>null;
 
     constructor() {
         this._modalService = inject(NgbModal);
+        this._dataService = inject(DataService);
         this._gameService = inject(GameService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
@@ -80,7 +83,7 @@ export class ModalService {
                 this._activeModal.componentInstance.closeAction(this.game);
             }
 
-            this._gameService.saveGame();
+            this._dataService.saveGame(this.game);
         }
 
         if (dismiss) {

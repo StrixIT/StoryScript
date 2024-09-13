@@ -8,6 +8,22 @@ import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {compareString, parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
+import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
+
+const parsedDescriptions = new Map<string, boolean>();
+
+export function hasDescription(entity: { id?: string, description?: string }): boolean {
+    if (!entity.description) {
+        return false;
+    }
+
+    if (!parsedDescriptions.get(entity.id)) {
+        const descriptionNode = getParsedDocument('description', entity.description)[0];
+        parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
+    }
+
+    return parsedDescriptions.get(entity.id);
+}
 
 export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
     const collection = definitions[type];

@@ -1,7 +1,7 @@
 import {IFeature, IGame, PlayState} from 'storyScript/Interfaces/storyScript';
 import {addHtmlSpaces, compareString} from 'storyScript/utilityFunctions';
 import {CombinationService} from 'storyScript/Services/CombinationService';
-import {GameService} from 'storyScript/Services/gameService';
+import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Directive, ElementRef, HostListener, inject, OnDestroy, Renderer2} from '@angular/core';
 import {Subscription} from 'rxjs';

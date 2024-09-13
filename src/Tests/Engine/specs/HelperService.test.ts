@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest';
-import {HelperService} from 'storyScript/Services/helperService';
+import {HelperService} from 'storyScript/Services/HelperService';
 import {ICharacter, IDefinitions, IEnemy, IGame, IHelpers, IItem} from 'storyScript/Interfaces/storyScript';
 
 describe("HelperService", function () {

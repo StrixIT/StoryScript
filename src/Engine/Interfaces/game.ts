@@ -16,6 +16,7 @@ import {IParty} from './party';
 import {ICombatSetup} from './combatSetup';
 import {ICombatTurn} from './combatTurn';
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
+import {ISoundPlayer} from "storyScript/Interfaces/soundPlayer.ts";
 
 /**
  * The StoryScript main game object.
@@ -180,13 +181,10 @@ export interface IGame {
      */
     helpers: IHelpers;
 
-    sounds: {
-        startMusic(): void;
-        stopMusic(): void;
-        playSound(fileName: string, completeCallBack?: () => void): void;
-        soundQueue: Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>;
-        playedAudio: string[];
-    }
+    /**
+     * The sound player for the game.
+     */
+    sounds: ISoundPlayer,
 
     /**
      * The function executed to change from one location to the next.

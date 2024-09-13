@@ -2,14 +2,14 @@ import { IGame } from './Interfaces/game';
 import { IInterfaceTexts } from './Interfaces/interfaceTexts';
 import { IRules } from './Interfaces/rules/rules';
 import { LocalStorageService } from './Services/LocalStorageService';
-import { HelperService } from './Services/helperService';
+import { HelperService } from './Services/HelperService';
 import { TradeService } from './Services/TradeService';
 import { DataService } from './Services/DataService';
 import { ConversationService } from './Services/ConversationService';
 import { LocationService } from './Services/LocationService';
 import { CombinationService } from './Services/CombinationService';
-import { CharacterService } from './Services/characterService';
-import { GameService } from './Services/gameService';
+import { CharacterService } from './Services/CharacterService';
+import { GameService } from './Services/GameService';
 import { ICharacterService } from './Interfaces/services/characterService';
 import { IGameService } from './Interfaces/services//gameService';
 import { ITradeService } from './Interfaces/services/tradeService';
@@ -22,6 +22,9 @@ import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
 import {ICombatService} from "storyScript/Interfaces/services/combatService.ts";
 import {CombatService} from "storyScript/Services/CombatService.ts";
+import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
+import {SoundService} from "storyScript/Services/SoundService.ts";
+import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 
 export class ServiceFactory {
     private readonly _game: IGame = <IGame>{};
@@ -31,12 +34,14 @@ export class ServiceFactory {
     
     private readonly _dataSerializer: IDataSerializer;
     private readonly _dataSynchronizer: IDataSynchronizer;
+    private readonly _dataService: IDataService;
     private readonly _characterService: ICharacterService;
     private readonly _gameService: IGameService;
     private readonly _tradeService: ITradeService;
     private readonly _conversationService: IConversationService;
     private readonly _combinationService: ICombinationService;
     private readonly _combatService: ICombatService;
+    private readonly _soundService: ISoundService;
 
     private static _instance: ServiceFactory;
 
@@ -53,13 +58,14 @@ export class ServiceFactory {
         const localStorageService = new LocalStorageService();
         this._dataSerializer = new DataSerializer(this._registeredEntities);
         this._dataSynchronizer = new DataSynchronizer(this._registeredEntities);
-        const dataService = new DataService(localStorageService, this._dataSerializer, this._dataSynchronizer, nameSpace);
+        this._soundService = new SoundService(this._game, this._rules);
+        this._dataService = new DataService(localStorageService, this._dataSerializer, this._dataSynchronizer, this._rules, nameSpace);
         this._tradeService = new TradeService(this._game, this._texts,definitions);
         this._conversationService = new ConversationService(this._game);
-        this._characterService = new CharacterService(this._game, this._rules);
+        this._characterService = new CharacterService(this._dataService, this._game, this._rules);
         const locationService = new LocationService(definitions, this._rules, this._game);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
-        this._gameService = new GameService(dataService, locationService, this._characterService, this._combinationService, this._rules, new HelperService(this._game, definitions), this._game, this._texts);
+        this._gameService = new GameService(this._dataService, locationService, this._characterService, this._combinationService, this._soundService, this._rules, new HelperService(this._game, definitions), this._game, this._texts);
         this._combatService = new CombatService(this._game, this._rules, this._texts);
         ServiceFactory._instance = this;
     }
@@ -86,11 +92,15 @@ export class ServiceFactory {
 
     GetCombinationService = (): ICombinationService => this._combinationService;
 
+    GetDataService = (): IDataService => this._dataService;
+    
     GetDataSerializer = (): IDataSerializer => this._dataSerializer;
 
     GetDataSynchronizer = (): IDataSynchronizer => this._dataSynchronizer;
 
     GetCombatService = (): ICombatService => this._combatService;
+
+    GetSoundService = (): ISoundService => this._soundService;
     
     static readonly GetInstance = () => ServiceFactory._instance;
 }
