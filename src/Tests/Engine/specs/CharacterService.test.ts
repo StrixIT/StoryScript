@@ -2,7 +2,7 @@ import {beforeAll, describe, expect, test} from 'vitest';
 import {
     EquipmentType,
     GameState,
-    ICharacter, ICompiledLocation,
+    ICharacter,
     ICreateCharacter,
     ICreateCharacterAttribute,
     IGame,
@@ -281,7 +281,7 @@ describe("CharacterService", function () {
             character.items.push(boots);
             service.equipItem(character, boots);
 
-            expect(character.equipment.feet).not.toBeUndefined();
+            expect(character.equipment.feet).not.toBeNull();
             expect(character.equipment.feet).toBe(boots);
             expect(character.items.length).toBe(0);
         });
@@ -297,12 +297,13 @@ describe("CharacterService", function () {
                 equipmentType: [
                     EquipmentType.RightHand,
                     EquipmentType.LeftHand
-                ]
+                ],
+                usesMultipleSlots: true
             };
             service.equipItem(character, twoHandedSword);
 
-            expect(character.equipment.rightHand).not.toBeUndefined();
-            expect(character.equipment.leftHand).not.toBeUndefined();
+            expect(character.equipment.rightHand).not.toBeNull();
+            expect(character.equipment.leftHand).not.toBeNull();
         });
 
         test("should block equipping a new item when an existing item cannot be unequipped", function () {
@@ -331,7 +332,8 @@ describe("CharacterService", function () {
         test("should block equipping a new two-handed item when an existing item cannot be unequipped", function () {
             const character = <ICharacter>{
                 equipment: {
-                    rightHand: null
+                    rightHand: null,
+                    leftHand: null
                 },
                 items: []
             };
@@ -349,14 +351,15 @@ describe("CharacterService", function () {
                 equipmentType: [
                     EquipmentType.RightHand,
                     EquipmentType.LeftHand
-                ]
+                ],
+                usesMultipleSlots: true
             };
 
             const result = service.equipItem(character, twoHandedSword);
 
             expect(result).toBeFalsy();
             expect(character.equipment.rightHand).toBe(sword);
-            expect(character.equipment.leftHand).toBeUndefined();
+            expect(character.equipment.leftHand).toBeNull();
         });
 
         test("should block equipping a new item when an existing two-handed item cannot be unequipped", function () {
@@ -393,7 +396,9 @@ describe("CharacterService", function () {
 
         test("should block equipping an item which disallows equipping", function () {
             const character = <ICharacter>{
-                equipment: <any>{}
+                equipment: {
+                    rightHand: null
+                }
             };
 
             const service = getService();
@@ -406,7 +411,7 @@ describe("CharacterService", function () {
             const result = service.equipItem(character, sword);
 
             expect(result).toBeFalsy();
-            expect(character.equipment.rightHand).toBeUndefined();
+            expect(character.equipment.rightHand).toBeNull();
         });
 
         test("should move an equipped item back to the backpack when equipping an item of the same type", function () {
@@ -422,16 +427,105 @@ describe("CharacterService", function () {
             character.items.push(backPackBoots);
             service.equipItem(character, backPackBoots);
 
-            expect(character.equipment.feet).not.toBeUndefined();
+            expect(character.equipment.feet).not.toBeNull();
             expect(character.equipment.feet).toBe(backPackBoots);
 
             expect(character.items.length).toBe(1);
             expect(character.items[0]).toBe(equippedBoots);
         });
 
-        test("should block equipping an item when game rules disallow it", function () {
+        test("should equip an item that can use multiple slots to it's preferred slot when available", function () {
             const character = <ICharacter>{
                 equipment: <any>{},
+                items: []
+            };
+
+            const service = getService();
+            const backPackDagger = daggerFunc();
+            character.items.push(backPackDagger);
+            service.equipItem(character, backPackDagger);
+
+            expect(character.equipment.rightHand).not.toBeNull();
+            expect(character.equipment.rightHand).toBe(backPackDagger);
+
+            expect(character.items.length).toBe(0);
+        });
+        
+        test("should equip an item that can use multiple slots to a free slot when one slot is taken", function () {
+            const character = <ICharacter>{
+                equipment: <any>{},
+                items: []
+            };
+            
+            const service = getService();
+            const equippedSword = Sword();
+            const backPackDagger = daggerFunc();
+            character.equipment.rightHand = equippedSword;
+            character.items.push(backPackDagger);
+            service.equipItem(character, backPackDagger);
+
+            expect(character.equipment.rightHand).not.toBeNull();
+            expect(character.equipment.rightHand).toBe(equippedSword);
+
+            expect(character.equipment.leftHand).not.toBeNull();
+            expect(character.equipment.leftHand).toBe(backPackDagger);
+
+            expect(character.items.length).toBe(0);
+        });
+
+        test("should move an equipped item back to the backpack when equipping an item that can use the" +
+            "same slot and no other slots are available", function () {
+            const character = <ICharacter>{
+                equipment: <any>{},
+                items: []
+            };
+
+            const service = getService();
+            const equippedSword = Sword();
+            const equippedDagger = daggerFunc();
+            const backPackDagger = daggerFunc();
+            character.equipment.rightHand = equippedSword;
+            character.equipment.leftHand = equippedDagger;
+            character.items.push(backPackDagger);
+            service.equipItem(character, backPackDagger);
+
+            expect(character.equipment.rightHand).not.toBeNull();
+            expect(character.equipment.rightHand).toBe(equippedSword);
+
+            expect(character.equipment.leftHand).not.toBeNull();
+            expect(character.equipment.leftHand).toBe(backPackDagger);
+
+            expect(character.items.length).toBe(1);
+            expect(character.items[0]).toBe(equippedDagger);
+        });
+
+        test("should unequip only the slot that an item that can use multiple slots is actually occupying", function () {
+            const character = <ICharacter>{
+                equipment: <any>{},
+                items: []
+            };
+
+            const service = getService();
+            const equippedSword = Sword();
+            const equippedDagger = daggerFunc();
+            character.equipment.rightHand = equippedSword;
+            character.equipment.leftHand = equippedDagger;
+            service.unequipItem(character, equippedDagger);
+
+            expect(character.equipment.rightHand).not.toBeNull();
+            expect(character.equipment.rightHand).toBe(equippedSword);
+
+            expect(character.equipment.leftHand).toBeNull();
+
+            expect(character.items.length).toBe(1);
+            expect(character.items[0]).toBe(equippedDagger);
+        });
+        
+        test("should block equipping an item when game rules disallow it", function () {
+            const character = <ICharacter>{
+                equipment: {
+                    rightHand: null
+                },
                 items: []
             };
 
@@ -449,7 +543,7 @@ describe("CharacterService", function () {
             const result = service.equipItem(character, sword);
 
             expect(result).toBeFalsy();
-            expect(character.equipment.rightHand).toBeUndefined();
+            expect(character.equipment.rightHand).toBeNull();
         });
 
         test("should block unequipping an item when game rules disallow it", function () {
@@ -505,6 +599,9 @@ describe("CharacterService", function () {
 
             expect(result).toBeTruthy();
         });
+    });
+
+    describe("backpack", function () {
 
         test("should drop an item the character has in his backpack", function () {
             const sword = Sword();
@@ -528,7 +625,10 @@ describe("CharacterService", function () {
             expect(game.currentLocation.items.length).toBe(1);
             expect(game.currentLocation.items[0]).toBe(sword);
         });
+    });
 
+    describe("quest status", function () {
+        
         test("should return the status of a quest when it is a string", function () {
             const quest = <IQuest>{
                 status: 'Started'
@@ -706,6 +806,13 @@ const levelUpSheet = <ICreateCharacter>{
         }
     ]
 };
+
+const daggerFunc = (): IItem => {
+    return {
+        name: 'Dagger',
+        equipmentType: [EquipmentType.RightHand, EquipmentType.LeftHand]
+    }
+}
 
 function getService(dataService?: any, game?: any, rules?: any) {
     return new CharacterService(dataService || {}, game || {}, rules || Rules());

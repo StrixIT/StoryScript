@@ -17,6 +17,11 @@ export interface IItem extends IFeature {
     equipmentType: EquipmentType | EquipmentType[] | string | string[];
 
     /**
+     * True if the item uses all the slots specified by the equipment type array, false if it occupies only one.
+     */
+    usesMultipleSlots?: boolean;
+
+    /**
      * Set the target type for the item if the item needs to be used on a target. For example, a weapon targets
      * an enemy, while a healing spell will target an ally. If the target type is not specified, the item cannot
      * be used on enemies or allies.

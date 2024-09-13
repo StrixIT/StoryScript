@@ -146,13 +146,10 @@ export class CharacterService implements ICharacterService {
     equipItem = (character: ICharacter, item: IItem): boolean => {
         const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
-        for (const n in equipmentTypes) {
-            const type = getEquipmentType(equipmentTypes[n]);
-            const unequipped = this.unequip(character, type);
+        const slotsAvailable = this.makeSlotAvailable(character, item, equipmentTypes);
 
-            if (!unequipped) {
-                return false;
-            }
+        if (slotsAvailable.length === 0) {
+            return false;
         }
 
         if (this._rules.character.beforeEquip) {
@@ -167,9 +164,8 @@ export class CharacterService implements ICharacterService {
             }
         }
 
-        for (const n in equipmentTypes) {
-            const type = getEquipmentType(equipmentTypes[n]);
-            character.equipment[type] = item;
+        for (const n in slotsAvailable) {
+            character.equipment[slotsAvailable[n]] = item;
         }
 
         character.items.splice(character.items.indexOf(item), 1);
@@ -177,18 +173,7 @@ export class CharacterService implements ICharacterService {
     }
 
     unequipItem = (character: ICharacter, item: IItem): boolean => {
-        const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
-
-        for (const n in equipmentTypes) {
-            const type = getEquipmentType(equipmentTypes[n]);
-            const unequipped = this.unequip(character, type);
-
-            if (!unequipped) {
-                return false;
-            }
-        }
-
-        return true;
+        return this.unequip(character, item);
     }
 
     isSlotUsed = (character: ICharacter, slot: string): boolean => {
@@ -241,7 +226,7 @@ export class CharacterService implements ICharacterService {
     }
 
     questStatus = (quest: IQuest): string => typeof quest.status === 'function' ? (<any>quest).status(this._game, quest, quest.checkDone(this._game, quest)) : quest.status;
-    
+
     checkEquipment = (): void => {
         this._game.party.characters.forEach(c => {
             if (c.equipment) {
@@ -265,7 +250,7 @@ export class CharacterService implements ICharacterService {
             }
         })
     }
-    
+
     private prepareSheet = (sheet: ICreateCharacter): void => {
         if (sheet.steps.length == 0) {
             return;
@@ -384,41 +369,85 @@ export class CharacterService implements ICharacterService {
         });
     }
 
-    private unequip = (character: ICharacter, type: string, currentItem?: IItem): boolean => {
-        const equippedItem = <IItem>character.equipment[type];
-
-        if (equippedItem) {
-            if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
-                for (const n in equippedItem.equipmentType) {
-                    const type = getEquipmentType(equippedItem.equipmentType[n]);
-                    const unEquipped = this.unequip(character, type, equippedItem);
-
-                    if (!unEquipped) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            if (this._rules.character.beforeUnequip) {
-                if (!this._rules.character.beforeUnequip(this._game, character, equippedItem)) {
-                    return false;
-                }
-            }
-
-            if (equippedItem.unequip) {
-                if (!equippedItem.unequip(character, equippedItem, this._game)) {
-                    return false;
-                }
-            }
-
-            if (equippedItem?.equipmentType && character.items.indexOf(equippedItem) < 0) {
-                character.items.push(equippedItem);
-            }
-
-            character.equipment[type] = null;
+    private makeSlotAvailable(character: ICharacter, item: IItem, equipmentTypes: EquipmentType[]): string[] {
+        if (!item.usesMultipleSlots) {
+            return this.findAvailableSlot(character, equipmentTypes);
         }
+
+        const availableSlots: string[] = [];
+
+        for (const n in equipmentTypes) {
+            const type = getEquipmentType(equipmentTypes[n]);
+            const slotItem = character.equipment[type];
+
+            if (slotItem) {
+                const unequipped = this.unequip(character, slotItem);
+
+                if (!unequipped) {
+                    return [];
+                }
+            }
+
+            availableSlots.push(type);
+        }
+
+        return availableSlots;
+    }
+
+    private findAvailableSlot(character: ICharacter, equipmentTypes: EquipmentType[]) {
+        // If the item uses only one of the slots specified, see if a slot is available first.
+        const occupiedSlots: string[] = [];
+        const emptySlots: string[] = [];
+
+        for (const n in equipmentTypes) {
+            const type = getEquipmentType(equipmentTypes[n]);
+
+            if (character.equipment[type]) {
+                occupiedSlots.push(type);
+            } else {
+                emptySlots.push(type);
+            }
+        }
+
+        if (emptySlots.length === 0) {
+            const slotToUnequip = occupiedSlots[occupiedSlots.length - 1];
+            const unequipped = this.unequip(character, character.equipment[slotToUnequip]);
+            return !unequipped ? [] : [slotToUnequip];
+        }
+
+        return [emptySlots[0]];
+    }
+
+    private unequip = (character: ICharacter, equippedItem: IItem): boolean => {
+        if (!equippedItem) {
+            return true;
+        }
+
+        if (this._rules.character.beforeUnequip) {
+            if (!this._rules.character.beforeUnequip(this._game, character, equippedItem)) {
+                return false;
+            }
+        }
+
+        if (equippedItem.unequip) {
+            if (!equippedItem.unequip(character, equippedItem, this._game)) {
+                return false;
+            }
+        }
+
+        if (equippedItem?.equipmentType && character.items.indexOf(equippedItem) < 0) {
+            character.items.push(equippedItem);
+        }
+
+        const slotsToUnEquip = Array.isArray(equippedItem.equipmentType)
+            ? equippedItem.equipmentType
+            : [equippedItem.equipmentType];
+
+        slotsToUnEquip.forEach(t => {
+            const itemType = getEquipmentType(t);
+            const slotItem = character.equipment[itemType];
+            character.equipment[itemType] = slotItem === equippedItem ? null : slotItem;
+        });
 
         return true;
     }
