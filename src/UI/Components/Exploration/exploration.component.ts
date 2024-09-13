@@ -10,22 +10,22 @@ import {
     ITrade
 } from 'storyScript/Interfaces/storyScript';
 import {isEmpty} from 'storyScript/utilityFunctions';
-import {GameService} from 'storyScript/Services/gameService';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {DataService} from "storyScript/Services/DataService.ts";
 
 @Component({
     selector: 'exploration',
     template: getTemplate('exploration', await import('./exploration.component.html?raw'))
 })
 export class ExplorationComponent {
-    private _gameService: GameService;
+    private _dataService: DataService;
     private _sharedMethodService: SharedMethodService;
 
     constructor() {
-        this._gameService = inject(GameService);
+        this._dataService = inject(DataService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
@@ -59,7 +59,9 @@ export class ExplorationComponent {
             return;
         }
 
-        this._gameService.executeBarrierAction(barrier, action, destination);
+        action[1].execute(this.game, barrier, destination);
+        barrier[1].actions.delete(barrier[1].actions.find(([k, _]) => k === action[0]));
+        this._dataService.saveGame(this.game);
     }
 
     isPreviousLocation = (destination: IDestination): boolean => {

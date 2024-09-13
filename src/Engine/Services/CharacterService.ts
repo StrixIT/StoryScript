@@ -10,12 +10,13 @@ import {ICreateCharacterAttributeEntry} from '../Interfaces/createCharacter/crea
 import {ICreateCharacterStep} from '../Interfaces/createCharacter/createCharacterStep';
 import {GameState} from '../Interfaces/enumerations/gameState';
 import {EquipmentType} from '../Interfaces/enumerations/equipmentType';
-import { getEquipmentType } from '../utilityFunctions';
+import {compareString, getEquipmentType} from '../utilityFunctions';
 import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 import {removeItemFromItemsAndEquipment} from "storyScript/Services/sharedFunctions.ts";
+import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 
 export class CharacterService implements ICharacterService {
-    constructor(private _game: IGame, private _rules: IRules) {
+    constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
     }
 
     getSheetAttributes = (): string[] => this._rules.character.getSheetAttributes?.() || [];
@@ -101,6 +102,7 @@ export class CharacterService implements ICharacterService {
 
         if (this._rules.character.levelUp?.(character, sheet)) {
             this.processDefaultSettings(character, sheet);
+            this._dataService.saveGame(this._game);
         }
 
         this._game.state = GameState.Play;
@@ -239,7 +241,31 @@ export class CharacterService implements ICharacterService {
     }
 
     questStatus = (quest: IQuest): string => typeof quest.status === 'function' ? (<any>quest).status(this._game, quest, quest.checkDone(this._game, quest)) : quest.status;
+    
+    checkEquipment = (): void => {
+        this._game.party.characters.forEach(c => {
+            if (c.equipment) {
+                Object.keys(c.equipment).forEach(k => {
+                    const item = <IItem>c.equipment[k];
 
+                    if (!item?.equipmentType) {
+                        return;
+                    }
+
+                    const equipmentType = k.substring(0, 1).toUpperCase() + k.substring(1);
+                    const itemType = Array.isArray(item.equipmentType) ? item.equipmentType : [item.equipmentType];
+
+                    itemType.forEach(t => {
+                        if (!compareString(t, equipmentType)) {
+                            c.equipment[k] = null;
+                            c.items.push(item);
+                        }
+                    });
+                });
+            }
+        })
+    }
+    
     private prepareSheet = (sheet: ICreateCharacter): void => {
         if (sheet.steps.length == 0) {
             return;

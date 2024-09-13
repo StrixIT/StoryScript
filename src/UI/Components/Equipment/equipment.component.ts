@@ -1,6 +1,6 @@
 import { DefaultEquipment, ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { CharacterService } from 'storyScript/Services/characterService';
+import { CharacterService } from 'storyScript/Services/CharacterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';

@@ -1,6 +1,6 @@
 import { IGame, IInterfaceTexts, ICreateCharacterStep, IRules } from 'storyScript/Interfaces/storyScript';
-import { GameService } from 'storyScript/Services/gameService';
-import { CharacterService } from 'storyScript/Services/characterService';
+import { GameService } from 'storyScript/Services/GameService';
+import { CharacterService } from 'storyScript/Services/CharacterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';

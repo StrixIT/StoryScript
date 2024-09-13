@@ -1,6 +1,6 @@
 import { IInterfaceTexts, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
 import type { ICreateCharacter } from 'storyScript/Interfaces/storyScript';
-import { CharacterService } from 'storyScript/Services/characterService';
+import { CharacterService } from 'storyScript/Services/CharacterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';

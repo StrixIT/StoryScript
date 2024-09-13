@@ -1,16 +1,16 @@
-import {GameService} from 'storyScript/Services/gameService';
 import {Component, inject} from '@angular/core';
 import {IGame} from 'storyScript/Interfaces/game';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {getTemplate} from '../../helpers';
 import {IRules} from 'storyScript/Interfaces/storyScript';
+import {SoundService} from "storyScript/Services/SoundService.ts";
 
 @Component({
     selector: 'sound',
     template: getTemplate('sound', await import('./sound.component.html?raw'))
 })
 export class SoundComponent {
-    private _gameService: GameService;
+    private _soundService: SoundService;
 
     private _game: IGame;
     private _rules: IRules;
@@ -22,7 +22,7 @@ export class SoundComponent {
     private _soundQueue: [number, string][] = [];
 
     constructor() {
-        this._gameService = inject(GameService);
+        this._soundService = inject(SoundService);
         const objectFactory = inject(ServiceFactory);
         this._game = objectFactory.GetGame();
         this._rules = objectFactory.GetRules();
@@ -30,7 +30,7 @@ export class SoundComponent {
     }
 
     getCurrentMusic = (): string => {
-        const music = this._gameService.getCurrentMusic();
+        const music = this._soundService.getCurrentMusic();
 
         if (this._rules.setup.fadeMusicInterval) {
 

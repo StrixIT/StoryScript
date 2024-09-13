@@ -24,4 +24,10 @@ export interface ICharacterService {
     dropItem(character: ICharacter, item: IItem): void;
     useItem(character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void;
     questStatus(quest: IQuest): string;
+
+    /**
+     * Check whether all the equipment on the characters is in valid equipment slots. The equipment type may change
+     * during editing, leaving items previously equipped in invalid slots.
+     */
+    checkEquipment(): void;
 }
