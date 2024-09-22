@@ -18,23 +18,25 @@ export class EquipmentComponent {
         this._characterService = inject(CharacterService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
+        this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this._sharedMethodService.useEquipment = true;
     }
 
+    game: IGame;
     texts: IInterfaceTexts;
 
     showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
     unequipItem = (item: IItem): boolean => this._characterService.unequipItem(this.character, item);
 
-    isSlotUsed = (slot: string): boolean => {
-        return this._characterService.isSlotUsed(this.character, slot);
+    isSlotUsed = (slot: string | string[]): boolean => {
+        const slots = Array.isArray(slot) ? slot : [slot];
+        return slots.find(s => this._characterService.isSlotUsed(this.character, s)) !== undefined;
     }
 
     customSlots = () => {
         const defaultSlots = Object.keys(new DefaultEquipment());
-        const customSlots = Object.keys(this.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
-        return customSlots;
+        return Object.keys(this.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
     }
 }

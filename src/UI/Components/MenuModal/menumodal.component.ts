@@ -25,8 +25,8 @@ export class MenuModalComponent {
         this.state = PlayState.Menu;
     }
 
-    texts: IInterfaceTexts;
     game: IGame;
+    texts: IInterfaceTexts;
     saveKeys: string[];
     selectedGame: string;
     state: string;

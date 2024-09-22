@@ -24,14 +24,14 @@ export class CharacterSheetComponent {
         const sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.isDevelopment = process.env.NODE_ENV !== 'production';
-        this.party = objectFactory.GetGame().party;
+        this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.displayCharacterAttributes = characterService.getSheetAttributes();
         sharedMethodService.useCharacterSheet = true;
     }
 
     isDevelopment: boolean;
-    party: IParty;
+    game: IGame;
     texts: IInterfaceTexts;
     displayCharacterAttributes: string[];
 

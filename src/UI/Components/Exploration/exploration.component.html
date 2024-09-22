@@ -12,9 +12,10 @@
         <ul class="list-unstyled">
             <li class="inline" *ngFor="let destination of game.currentLocation.activeDestinations">
                 <div class="barrier" *ngFor="let barrier of destination.barriers">
-                    <button *ngIf="!barrier[1].actions?.length" class="btn btn-outline-primary">{{ barrier[1].name }}</button>
-                    <div *ngIf="barrier[1].actions?.length" ngbDropdown class="d-inline-block" class="action-select">
-                        <button class="btn btn-outline-primary" id="barrierdropdown" ngbDropdownToggle>{{ barrier[1].name }}</button>
+                    @let barrierEntry = barrier[1];
+                    <button *ngIf="!barrierEntry.actions?.length" class="btn btn-outline-primary">{{ barrierEntry.name }}</button>
+                    <div *ngIf="barrierEntry.actions?.length" ngbDropdown class="d-inline-block" class="action-select">
+                        <button class="btn btn-outline-primary" id="barrierdropdown" ngbDropdownToggle>{{ barrierEntry.name }}</button>
                         <div ngbDropdownMenu aria-labelledby="barrierdropdown">
                             <button ngbDropdownItem *ngFor="let action of barrier[1].actions" (click)="executeBarrierAction(barrier, action, destination)">{{ action[1].text }}</button>
                         </div>
