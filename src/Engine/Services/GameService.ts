@@ -30,6 +30,7 @@ export class GameService implements IGameService {
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
         this._game.helpers = this._helperService;
+        this._game.isDevelopment = process.env.NODE_ENV !== 'production';
 
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);

@@ -11,8 +11,8 @@
             </li>
             <li>{{ texts.hitpoints }} 
                 <div class="hitpoint-editor">
-                    <span *ngIf="!isDevelopment">{{ character.currentHitpoints }}</span>
-                    <input *ngIf="isDevelopment" type="number" min="{{ 1 }}" max="{{ character.hitpoints }}" [(ngModel)]="character.currentHitpoints" (blur)="limitInput($event, character)">
+                    <span *ngIf="!game.isDevelopment">{{ character.currentHitpoints }}</span>
+                    <input *ngIf="game.isDevelopment" type="number" min="{{ 1 }}" max="{{ character.hitpoints }}" [(ngModel)]="character.currentHitpoints" (blur)="limitInput($event, character)">
                 </div> 
                 &nbsp;/ {{ character.hitpoints }}
             </li>
