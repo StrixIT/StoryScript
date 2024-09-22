@@ -111,3 +111,11 @@ blockquote {
 #enemies li {
     display: inline-block;
 }
+
+.time-editor {
+    display: inline;
+}
+
+.time-editor select {
+    max-width: 80px;
+}

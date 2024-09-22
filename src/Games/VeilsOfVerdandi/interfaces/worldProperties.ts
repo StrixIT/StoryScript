@@ -7,4 +7,5 @@
     freedFaeries: boolean;
     hasRestedDuringDay: boolean;
     hasRestedDuringNight: boolean;
+    changeTime?: (e: string) => void;
 }

@@ -20,6 +20,21 @@ export function Rules(): IRules {
                     hasRestedDuringDay: false,
                     hasRestedDuringNight: false
                 };
+            },
+            initGame(game: IGame) {
+                game.worldProperties.changeTime = (e: string) => {
+                    game.worldProperties.timeOfDay = e;
+                    
+                    if (e === 'day') {
+                        game.worldProperties.isDay = true;
+                        game.worldProperties.isNight = false;
+                    } else {
+                        game.worldProperties.isDay = false;
+                        game.worldProperties.isNight = true;
+                    }
+                    
+                    explorationRules.enterLocation(game, game.currentLocation, false);
+                }
             }
         },
 
