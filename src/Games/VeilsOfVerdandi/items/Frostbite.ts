@@ -21,7 +21,7 @@ export function Frostbite() {
         },
         use(game, character, item, target: IEnemy) {
             const damage = game.helpers.rollDice('1d4');
-            target.currentHitpoints -= damage;
+            target.currentHitpoints = Math.max(0, target.currentHitpoints - damage);
             target.frozen = true;
             game.logToCombatLog(`${character.name} casts Frostbite.`);
             game.logToCombatLog(`${character.name} does ${damage} damage to ${target.name}. ${target.name} is frozen!`);

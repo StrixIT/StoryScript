@@ -47,7 +47,17 @@ export const combatRules = <ICombatRules>{
                 if (i.id.indexOf('powerattack') > -1) {
                     i.speed = getTopWeapon(t.character)?.speed || 0;
                 }
-            })
+            });
+
+            if (combatSetup.round == 2 && t.character.class.name === ClassType.Warrior) {
+                t.itemsAvailable = t.itemsAvailable.sort((a, b) => {
+                    const aValue = (a.damage && parseInt(a.damage.substring(2))) ?? 0;
+                    const bValue = (b.damage && parseInt(b.damage.substring(2))) ?? 0;
+                    return bValue - aValue;
+                });
+                
+                t.item = t.itemsAvailable[0];
+            }
         });
     },
     fight: (game: IGame, combatSetup: ICombatSetup): void => {
@@ -146,7 +156,7 @@ function getEnemyTargets(game: IGame, combatSetup: ICombatSetup) {
 }
 
 function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
-    if (!turn.target || turn.character.currentHitpoints <= 0) {
+    if (!turn.target || turn.character.currentHitpoints <= 0 || (turn.item.targetType === TargetType.Enemy && turn.target.currentHitpoints <= 0)) {
         return;
     }
     
@@ -168,8 +178,8 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
             game.logToCombatLog(`${turn.character.name} misses ${turn.target.name}!`);
             return;
         }
-        
-        turn.target.currentHitpoints -= totalDamage;
+
+        turn.target.currentHitpoints = Math.max(0, turn.target.currentHitpoints - totalDamage);
 
         if (combatText) {
             game.logToCombatLog(combatText + '.');
@@ -206,7 +216,7 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
     }
     
     game.logToCombatLog(`${enemy.name} does ${totalDamage} damage to ${target.name}!`);
-    target.currentHitpoints -= totalDamage;
+    target.currentHitpoints = Math.max(0, target.currentHitpoints -  totalDamage);
 }
 
 function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTurn): boolean {

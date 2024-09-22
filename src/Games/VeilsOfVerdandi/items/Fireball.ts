@@ -21,7 +21,7 @@ export function Fireball() {
         },
         use(game, character, item, target) {
             const damage = game.helpers.rollDice('1d6');
-            target.currentHitpoints -= damage;
+            target.currentHitpoints = Math.max(0, target.currentHitpoints - damage);
             game.logToCombatLog(`${character.name} casts Fireball.`);
             game.logToCombatLog(`${character.name} does ${damage} damage to ${target.name}!`);
         },

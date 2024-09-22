@@ -48,8 +48,10 @@ export function getTopWeapon(character: Character): IItem {
     Object.keys(character.equipment).forEach(k => {
         const item = <IItem>character.equipment[k];
 
-        if (item?.damage && parseInt(item.damage.substring(2)) > parseInt(weapon.damage.substring(2))) {
-            weapon = item;
+        if (item?.damage) {
+            if (!weapon || parseInt(item.damage.substring(2)) > parseInt(weapon.damage.substring(2))) {
+                weapon = item;
+            }
         }
     });
 

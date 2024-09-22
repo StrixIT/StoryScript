@@ -64,12 +64,20 @@ export const characterRules = <ICharacterRules>{
 
         characterClass.inventory.forEach(i => {
             const item = i();
-            const type = getEquipmentType(<string>item.equipmentType);
-
-            if (Object.keys(character.equipment).find(k => k === type) && !character.equipment[type]
-            ) {
-                character.equipment[type] = item;
-            } else {
+            const types = Array.isArray(item.equipmentType) ? item.equipmentType : [item.equipmentType];
+            let equipped = false;
+            
+            for (const t in types) {
+                const type = getEquipmentType(types[t]);
+    
+                if (Object.keys(character.equipment).find(k => k === type) && !character.equipment[type]) {
+                    character.equipment[type] = item;
+                    equipped = true;
+                    break;
+                }
+            }
+            
+            if (!equipped) {
                 character.items.push(item);
             }
         });
