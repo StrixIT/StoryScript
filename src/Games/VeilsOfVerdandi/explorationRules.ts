@@ -42,6 +42,10 @@ export const explorationRules = <IExplorationRules>{
                 element.style.cssText = 'filter: brightness(50%);';
             }
         }
+        
+        if (!travel) {
+            game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)];
+        }
     },
 
     descriptionSelector: descriptionSelector

@@ -22,19 +22,10 @@ export function Rules(): IRules {
                 };
             },
             initGame(game: IGame) {
-                game.worldProperties.changeTime = (e: string) => {
-                    game.worldProperties.timeOfDay = e;
-                    
-                    if (e === 'day') {
-                        game.worldProperties.isDay = true;
-                        game.worldProperties.isNight = false;
-                    } else {
-                        game.worldProperties.isDay = false;
-                        game.worldProperties.isNight = true;
-                    }
-                    
-                    explorationRules.enterLocation(game, game.currentLocation, false);
-                }
+                game.worldProperties.changeTime = s => changeTime(game, s);
+            },
+            continueGame(game: IGame) {
+                game.worldProperties.changeTime = s => changeTime(game, s);
             }
         },
 
@@ -49,4 +40,18 @@ export function Rules(): IRules {
         combat: combatRules,
         exploration: explorationRules
     };
+}
+
+function changeTime(game: IGame, e: string) {
+    game.worldProperties.timeOfDay = e;
+
+    if (e === 'day') {
+        game.worldProperties.isDay = true;
+        game.worldProperties.isNight = false;
+    } else {
+        game.worldProperties.isDay = false;
+        game.worldProperties.isNight = true;
+    }
+
+    explorationRules.enterLocation(game, game.currentLocation, false);
 }

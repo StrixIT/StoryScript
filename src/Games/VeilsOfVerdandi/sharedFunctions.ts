@@ -4,13 +4,17 @@ import {Character} from "./character.ts";
 import {IItem} from "./interfaces/item.ts";
 
 export function descriptionSelector(game: IGame): string {
-    return game.worldProperties.travelCounter ?
-        game.worldProperties.isNight ?
-            game.currentLocation.completedNight ? 'completednight' :
-                'night' :
-            game.currentLocation.completedDay ? 'completedday' :
-                'day' :
-        null;
+    if (game.worldProperties.isNight) {
+        return game.currentLocation.completedNight ? 'completednight' :
+            game.currentLocation.encounterWonDay ? 'nightafter' :
+                'night';
+
+
+    } else {
+        return game.currentLocation.completedDay ? 'completedday' :
+            game.currentLocation.encounterWonNight ? 'dayafter' :
+                'day';
+    }
 }
 
 export function nightFall(game: IGame): boolean {

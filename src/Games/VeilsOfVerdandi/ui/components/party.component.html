@@ -6,8 +6,8 @@
             <li>Day: {{ game.worldProperties.currentDay }}</li>
             <li>Time:
                 <div class="time-editor">
-                    <span *ngIf="!isDevelopment">{{ game.worldProperties.timeOfDay }}</span>
-                    <select *ngIf="isDevelopment" class="custom-select" (ngModelChange)="game.worldProperties.changeTime($event)" [(ngModel)]="game.worldProperties.timeOfDay">
+                    <span *ngIf="!game.isDevelopment">{{ game.worldProperties.timeOfDay }}</span>
+                    <select *ngIf="game.isDevelopment" class="custom-select" (ngModelChange)="game.worldProperties.changeTime($event)" [(ngModel)]="game.worldProperties.timeOfDay">
                         <option *ngFor="let item of ['day', 'night']" [ngValue]="item">{{ item }}</option>
                     </select>
                 </div>

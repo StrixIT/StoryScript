@@ -23,6 +23,8 @@ export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocati
     enemies?: IEnemy[];
     items?: IItem[];
     persons?: IPerson[];
+    encounterWonDay?: boolean;
+    encounterWonNight?: boolean;
     completedDay?: boolean;
     completedNight?: boolean;
 }
