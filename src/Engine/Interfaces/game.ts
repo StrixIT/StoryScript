@@ -216,4 +216,10 @@ export interface IGame {
      * which character attacks which enemy using what item or weapon.
      */
     combat: ICombatSetup<ICombatTurn>;
+
+    /**
+     * True if the game is running in development mode, false otherwise. This is used for showing development
+     * tools like the location selector and the health editor.
+     */
+    isDevelopment: boolean;
 }

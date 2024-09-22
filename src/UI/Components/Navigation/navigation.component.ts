@@ -19,10 +19,8 @@ export class NavigationComponent {
         this.game = serviceFactory.GetGame();
         this.texts = serviceFactory.GetTexts();
         this.locations = serviceFactory.AvailableLocations;
-        this.isDevelopment = process.env.NODE_ENV !== 'production';
     }
-
-    isDevelopment: boolean;
+    
     game: IGame;
     texts: IInterfaceTexts;
     locations: { id: string, name: string }[];
