@@ -18,6 +18,8 @@ import {Sword} from '../../../Games/MyRolePlayingGame/items/sword';
 import {ICharacterRules} from 'storyScript/Interfaces/rules/characterRules';
 import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions';
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
+import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
+import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
 
 describe("CharacterService", function () {
 
@@ -450,13 +452,13 @@ describe("CharacterService", function () {
 
             expect(character.items.length).toBe(0);
         });
-        
+
         test("should equip an item that can use multiple slots to a free slot when one slot is taken", function () {
             const character = <ICharacter>{
                 equipment: <any>{},
                 items: []
             };
-            
+
             const service = getService();
             const equippedSword = Sword();
             const backPackDagger = daggerFunc();
@@ -520,7 +522,7 @@ describe("CharacterService", function () {
             expect(character.items.length).toBe(1);
             expect(character.items[0]).toBe(equippedDagger);
         });
-        
+
         test("should block equipping an item when game rules disallow it", function () {
             const character = <ICharacter>{
                 equipment: {
@@ -628,7 +630,7 @@ describe("CharacterService", function () {
     });
 
     describe("quest status", function () {
-        
+
         test("should return the status of a quest when it is a string", function () {
             const quest = <IQuest>{
                 status: 'Started'
@@ -681,7 +683,10 @@ describe("CharacterService", function () {
             levelUpSheet.steps[0].questions[0].selectedEntry = levelUpSheet.steps[0].questions[0].entries[0];
             game.createCharacterSheet = sheet;
 
-            const service = new CharacterService(<IDataService>{ saveGame(game: IGame, name?: string) {}}, game, rules);
+            const service = new CharacterService(<IDataService>{
+                saveGame(game: IGame, name?: string) {
+                }
+            }, game, rules);
             let result = <any>service.levelUp(character);
 
             expect(result).not.toBeNull();
@@ -718,32 +723,165 @@ describe("CharacterService", function () {
         expect(used).toBeTruthy();
     });
 
-    test("resume should move invalid equipment back to backpack", function () {
-        const amulet = <IItem>{
-            name: 'Amulet',
-            equipmentType: EquipmentType.Amulet
-        };
+    describe("Check equipment", function () {
 
-        const character = <ICharacter>{
-            equipment: {
-                leftHand: amulet
-            },
-            items: []
-        };
+        test("resume should move invalid equipment back to backpack", function () {
+            const amulet = <IItem>{
+                name: 'Amulet',
+                equipmentType: EquipmentType.Amulet
+            };
 
-        const game = <IGame>{
-            party: {
-                characters: [
-                    character
+            const character = <ICharacter>{
+                equipment: {
+                    leftHand: amulet
+                },
+                items: []
+            };
+
+            const game = <IGame>{
+                party: {
+                    characters: [
+                        character
+                    ]
+                }
+            };
+
+            const service = getService({}, game, {});
+            service.checkEquipment();
+            expect(character.equipment.leftHand).toBeNull();
+            expect(character.items[0]).toEqual(amulet);
+        });
+
+        test("resume should not unequip an item that can use multiple slots", function () {
+            const dagger = <IItem>{
+                name: 'Dagger',
+                equipmentType: [EquipmentType.RightHand, EquipmentType.LeftHand]
+            };
+
+            const character = <ICharacter>{
+                equipment: {
+                    leftHand: dagger
+                },
+                items: []
+            };
+
+            const game = <IGame>{
+                party: {
+                    characters: [
+                        character
+                    ]
+                }
+            };
+
+            const service = getService({}, game, {});
+            service.checkEquipment();
+            expect(character.equipment.leftHand).toEqual(dagger);
+            expect(character.items[0]).toBeUndefined();
+        });
+
+        test("resume should move invalid equipment using multiple slots back to the backpack", function () {
+            const twoHandedSword = <IItem>{
+                name: 'Two-handed Sword',
+                equipmentType: [EquipmentType.RightHand, EquipmentType.LeftHand],
+                usesMultipleSlots: true
+            };
+
+            const character = <ICharacter>{
+                equipment: {
+                    rightHand: twoHandedSword
+                },
+                items: []
+            };
+
+            const game = <IGame>{
+                party: {
+                    characters: [
+                        character
+                    ]
+                }
+            };
+
+            const service = getService({}, game, {});
+            service.checkEquipment();
+            expect(character.equipment.leftHand).toBeUndefined();
+            expect(character.items[0]).toEqual(twoHandedSword);
+        });
+
+        test("resume should not unequip a correctly equipped multi-slot item", function () {
+            const twoHandedSword = <IItem>{
+                name: 'Two-handed Sword',
+                equipmentType: [EquipmentType.RightHand, EquipmentType.LeftHand],
+                usesMultipleSlots: true
+            };
+
+            const character = <ICharacter>{
+                equipment: {
+                    rightHand: twoHandedSword,
+                    leftHand: twoHandedSword
+                },
+                items: []
+            };
+
+            const game = <IGame>{
+                party: {
+                    characters: [
+                        character
+                    ]
+                }
+            };
+
+            const service = getService({}, game, {});
+            service.checkEquipment();
+            expect(character.equipment.rightHand).toEqual(twoHandedSword);
+            expect(character.equipment.leftHand).toEqual(twoHandedSword);
+            expect(character.items[0]).toBeUndefined();
+        });
+
+        test("resume should remove duplicated equipped multi-slot items", function () {
+            const itemId = 'twohandedsword';
+
+            const twoHandedSword = <IItem>{
+                name: 'Two-handed Sword',
+                type: 'item',
+                id: itemId,
+                equipmentType: [EquipmentType.RightHand, EquipmentType.LeftHand],
+                usesMultipleSlots: true
+            };
+
+            const pristineEntities = {
+                items: [
+                    {[itemId]: twoHandedSword}
                 ]
             }
-        };
 
-        const service = getService({}, game, {});
-        service.checkEquipment();
-        expect(character.equipment.leftHand).toBeNull();
-        expect(character.items[0]).toEqual(amulet);
+            const character = <ICharacter>{
+                equipment: {
+                    rightHand: twoHandedSword,
+                    leftHand: twoHandedSword
+                }
+            };
+
+            const serializer = new DataSerializer(pristineEntities);
+            const synchronizer = new DataSynchronizer(pristineEntities);
+            const restoredCharacter = serializer.restoreObjects(serializer.createSerializableClone(character));
+            synchronizer.synchronizeEntityData(restoredCharacter);
+
+            const game = <IGame>{
+                party: {
+                    characters: [
+                        restoredCharacter
+                    ]
+                }
+            };
+
+            const service = getService({}, game, {});
+            service.checkEquipment();
+            expect(restoredCharacter.equipment.rightHand).toEqual(twoHandedSword);
+            expect(restoredCharacter.equipment.leftHand).toEqual(twoHandedSword);
+            expect(restoredCharacter.equipment.rightHand).toBe(restoredCharacter.equipment.leftHand);
+        });
     });
+
 });
 
 function getAttributes(): ICreateCharacterAttribute {

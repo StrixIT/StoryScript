@@ -32,7 +32,7 @@ export class CombatComponent {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.multiCharacter = this.game.party.characters.length > 1;
-        this.enemyRows = this.split(this.game.combat.enemies, 3);
+        this.enemyRows = this.split(this.game.combat?.enemies, 3);
         this.characterRows = this.split(this.game.combat, 3);
     }
 

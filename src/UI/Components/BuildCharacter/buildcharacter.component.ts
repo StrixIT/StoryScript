@@ -23,7 +23,7 @@ export class BuildCharacterComponent {
     texts: IInterfaceTexts;
 
     limitInput = (event: any, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
-        var value = parseInt((<any>event).target.value);
+        const value = parseInt(event.target.value);
         this._characterService.limitSheetInput(value, attribute, entry);
     }
 

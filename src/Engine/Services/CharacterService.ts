@@ -236,16 +236,35 @@ export class CharacterService implements ICharacterService {
                     if (!item?.equipmentType) {
                         return;
                     }
-
-                    const equipmentType = k.substring(0, 1).toUpperCase() + k.substring(1);
+                    
                     const itemType = Array.isArray(item.equipmentType) ? item.equipmentType : [item.equipmentType];
-
-                    itemType.forEach(t => {
-                        if (!compareString(t, equipmentType)) {
-                            c.equipment[k] = null;
-                            c.items.push(item);
+                    let valid = true;
+                    
+                    if (!item.usesMultipleSlots)
+                    {
+                        valid = itemType.find(t => getEquipmentType(t) === k) !== undefined;
+                    }
+                    else {
+                        for (const i in itemType) {
+                            const slot = getEquipmentType(itemType[i]);
+                            const slotItem = c.equipment[slot];
+                            
+                            if (slotItem !== item) {
+                                // When restoring data, a single item occupying multiple slots will be duplicated,
+                                // so each slot contains a separate item of the same kind. Remove the duplicates here.
+                                if (slotItem.id === item.id) {
+                                    c.equipment[slot] = item;
+                                } else {
+                                    valid = false;
+                                }
+                            }
                         }
-                    });
+                    }
+                    
+                    if (!valid) {
+                        c.equipment[k] = null;
+                        c.items.push(item);
+                    }
                 });
             }
         })
