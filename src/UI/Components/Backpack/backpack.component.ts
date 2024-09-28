@@ -1,4 +1,4 @@
-import {ICharacter, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
+import {ICharacter, IGame, IGroupableItem, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
@@ -25,6 +25,7 @@ export class BackpackComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
+    joinItem: IGroupableItem<IItem>;
 
     hasDescription = (item: IItem): boolean => this._sharedMethodService.hasDescription(item);
 
@@ -49,4 +50,38 @@ export class BackpackComponent {
     canDropItems = (): boolean => this._sharedMethodService.useGround;
 
     dropItem = (item: IItem): void => this._characterService.dropItem(this.character, item);
+    
+    canGroupItem = (item: IGroupableItem<IItem>): boolean => {
+        if (!item.isGroupable || item.members?.length) {
+            return false;
+        }
+        
+        if ((item.members?.length ?? 0) >= item.maxSize - 1) {
+            return false;
+        }
+        
+        if (this.joinItem && (this.joinItem.id === item.id || this.joinItem.groupTypes?.indexOf(item.id) > 0)) {
+            return true;
+        }
+        
+        return this.character.items.find(i => {
+            if (i === item) {
+                return false;
+            }
+            
+            const groupable = i as IGroupableItem<IItem>;
+            return groupable.isGroupable && ((groupable.members?.length ?? 0) < groupable.maxSize - 1)
+        }) !== undefined;
+    };
+    
+    groupItem = (item: IGroupableItem<IItem>): void => {
+        if (this.joinItem && this.joinItem !== item) {
+            this.joinItem.members ??= [];
+            this.joinItem.members.add(item);
+            this.character.items.delete(item);
+            this.joinItem = null;
+        } else {
+            this.joinItem = item;
+        }
+    }
 }

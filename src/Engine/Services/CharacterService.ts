@@ -249,14 +249,12 @@ export class CharacterService implements ICharacterService {
                             const slot = getEquipmentType(itemType[i]);
                             const slotItem = c.equipment[slot];
                             
-                            if (slotItem !== item) {
+                            if (slotItem && (slotItem === item || slotItem.id === item.id)) {
                                 // When restoring data, a single item occupying multiple slots will be duplicated,
                                 // so each slot contains a separate item of the same kind. Remove the duplicates here.
-                                if (slotItem.id === item.id) {
                                     c.equipment[slot] = item;
-                                } else {
-                                    valid = false;
-                                }
+                            } else {
+                                valid = false;
                             }
                         }
                     }

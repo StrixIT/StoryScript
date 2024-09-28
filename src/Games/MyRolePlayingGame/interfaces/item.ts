@@ -1,4 +1,8 @@
-﻿import { IItem as StoryScriptIItem, Item as StoryScriptItem } from 'storyScript/Interfaces/storyScript';
+﻿import {
+    IGroupableItem as StoryScriptIGroupableItem,
+    IItem as StoryScriptIItem,
+    Item as StoryScriptItem
+} from 'storyScript/Interfaces/storyScript';
 import { IFeature } from '../types';
 
 export function Item(entity: IItem): IItem {
@@ -8,4 +12,8 @@ export function Item(entity: IItem): IItem {
 export interface IItem extends IFeature, StoryScriptIItem {
     damage?: number;
     defense?: number;
+}
+
+export interface IGroupableItem extends StoryScriptIGroupableItem<IItem> {
+    // Add game-specific item properties here
 }
