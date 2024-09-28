@@ -21,6 +21,7 @@ import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {Journal} from "../../../Games/MyRolePlayingGame/quests/journal.ts";
+import {IGroupableItem} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
 
 const startLocationSkeleton = {
     "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
@@ -89,6 +90,21 @@ const partyData = {
         "id": "journal",
         "type": "quest",
     }], "score": 0
+}
+
+const partyDataWithGroupedItem = {
+    "characters": [{
+        "name": "Test",
+        "items": [{
+            "type": "item",
+            "id": "dagger",
+            "members": [{
+                "type": "item",
+                "id": "dagger",
+                "ss_added": true
+            }]
+        }]
+    }]
 }
 
 const libraryWithTrader = {
@@ -326,6 +342,31 @@ describe("DataSynchronizer", () => {
         expect(skeleton.characters[0].items.length).toBe(0);
         expect(skeleton.quests.length).toBe(1);
         expect(skeleton.quests[0].name).toBe(Journal().name);
+    });
+
+    test("should restore Party data with grouped items", function () {
+        const dagger = <IGroupableItem><any>{
+            id: 'dagger',
+            type: 'item',
+            name: "Dagger",
+            isGroupable: true
+        };
+        
+        const pristineEntities = {
+            'items': {
+                'dagger': {...dagger}
+            }
+        };
+        
+        const serializer = new DataSerializer(pristineEntities);
+        const synchronizer = new DataSynchronizer(pristineEntities);
+        
+        const skeleton = <IParty>serializer.restoreObjects(partyDataWithGroupedItem);
+        synchronizer.synchronizeEntityData(skeleton);
+        expect(skeleton.characters[0].name).toBe('Test');
+        expect(skeleton.characters[0].items.length).toBe(1);
+        const item = skeleton.characters[0].items[0] as IGroupableItem;
+        expect(item.members.length).toBe(1);
     });
 
     test("should restore added actions", function () {

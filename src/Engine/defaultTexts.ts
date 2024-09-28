@@ -13,6 +13,7 @@ export class DefaultTexts {
         backpack: 'Backpack',
         equip: 'Equip',
         use: 'Use',
+        groupItem: 'Group',
         drop: 'Drop',
         enemies: 'Enemies',
         enemyHitpoints: 'Health: {0} / {1}',
