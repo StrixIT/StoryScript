@@ -84,10 +84,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             }
 
             // Either the property is the same on the entity and the pristine entity (a key value)
-            // or the value was changed at runtime. Either way, do nothing to the data. But as this
-            // is the last spot that each entity will pass before the game starts, this is a good
-            // point to add property overrides that should apply to all entities (of a specific type).
-            this.applyPropertyOverrides(entity);
+            // or the value was changed at runtime. Either way, do nothing.
         });
     }
 
@@ -198,17 +195,5 @@ export class DataSynchronizer implements IDataSynchronizer {
     private markEntriesAsDeleted = (item: any[]) => {
         const itemsToDelete = item.filter(i => i[StateProperties.Deleted]);
         itemsToDelete.forEach(i => item.delete(i));
-    }
-    
-    private applyPropertyOverrides = (entity: any) => {
-        if (entity.type === 'item' && (entity.groupName || entity.getName)) {
-            const itemName = entity.name;
-
-            Object.defineProperty(entity, 'name', {
-                get: function () {
-                    return entity?.members?.length ? entity.getName?.() ?? entity.groupName : itemName;
-                }
-            });
-        }
     }
 }

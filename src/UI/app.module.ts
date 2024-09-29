@@ -20,6 +20,7 @@ import {ConversationService} from 'storyScript/Services/ConversationService';
 import {CombinationService} from 'storyScript/Services/CombinationService';
 import {CombatService} from "storyScript/Services/CombatService.ts";
 import {SoundService} from "storyScript/Services/SoundService.ts";
+import {ItemService} from "storyScript/Services/ItemService.ts";
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 
 import {EncounterComponent} from './Components/Encounter/encounter.component';
@@ -118,6 +119,7 @@ const serviceFactory = ServiceFactory.GetInstance();
         {provide: CombinationService, useValue: serviceFactory.GetCombinationService()},
         {provide: CombatService, useValue: serviceFactory.GetCombatService()},
         {provide: SoundService, useValue: serviceFactory.GetSoundService()},
+        {provide: ItemService, useValue: serviceFactory.GetItemService()},
     ]
 })
 

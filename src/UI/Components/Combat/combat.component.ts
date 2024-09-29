@@ -14,24 +14,24 @@ import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CombatService} from "storyScript/Services/CombatService.ts";
 import {CharacterService} from "storyScript/Services/CharacterService.ts";
+import {ItemService} from "storyScript/Services/ItemService.ts";
 
 @Component({
     selector: 'combat',
     template: getTemplate('combat', await import('./combat.component.html?raw'))
 })
 export class CombatComponent {
-    private _characterService: CharacterService;
+    private _itemService: ItemService;
     private _combatService: CombatService;
     private _sharedMethodService: SharedMethodService;
 
     constructor() {
-        this._characterService = inject(CharacterService);
+        this._itemService = inject(ItemService);
         this._combatService = inject(CombatService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
-        this.multiCharacter = this.game.party.characters.length > 1;
         this.enemyRows = this.split(this.game.combat?.enemies, 3);
         this.characterRows = this.split(this.game.combat, 3);
     }
@@ -39,7 +39,6 @@ export class CombatComponent {
     game: IGame;
     texts: IInterfaceTexts;
     actionsEnabled: boolean = true;
-    multiCharacter: boolean;
     enemyRows: IEnemy[];
     characterRows: ICharacter[];
 
@@ -49,6 +48,8 @@ export class CombatComponent {
 
     executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
 
+    getItemName = (item: IItem): string => this._itemService.getItemName(item);
+    
     itemChange = (item: IItem, turn: ICombatTurn) => {
         const targets = turn.targetsAvailable.filter(t => {
             const type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;

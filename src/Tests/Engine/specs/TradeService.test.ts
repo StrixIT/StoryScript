@@ -10,6 +10,7 @@ import {
     IDefinitions
 } from 'storyScript/Interfaces/storyScript';
 import { IStock } from 'storyScript/Interfaces/stock';
+import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
 
 describe("TradeService", function() {
 
@@ -35,7 +36,7 @@ describe("TradeService", function() {
             trade: trade
         };
 
-        var service = getService(game);
+        var service = getService(<IItemService>{}, game);
         service.trade(trade[0]);
         expect(game.playState).toBe(PlayState.Trade);
     });
@@ -80,7 +81,7 @@ describe("TradeService", function() {
             persons: [trader]
         };
 
-        const service = getService(game, texts, <IDefinitions>{ items: [] });
+        const service = getService(<IItemService>{}, game, texts, <IDefinitions>{ items: [] });
 
         service.trade(trader);
         const activeTrade = game.trade;
@@ -94,10 +95,10 @@ describe("TradeService", function() {
 
 });
 
-function getService(game: IGame, texts?, definitions?: IDefinitions) {
+function getService(itemService: IItemService, game: IGame, texts?, definitions?: IDefinitions) {
     game.activeCharacter = game.activeCharacter || <ICharacter>{
         items: []
     };
 
-    return new TradeService(game, texts || {}, definitions ?? <IDefinitions>{});
+    return new TradeService(itemService || <IItemService>{}, game, texts || {}, definitions ?? <IDefinitions>{});
 }

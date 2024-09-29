@@ -4,6 +4,9 @@ import { CharacterService } from 'storyScript/Services/CharacterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import {ItemService} from "storyScript/Services/ItemService.ts";
+import {it} from "vitest";
+import {Items} from "../../../../constants.ts";
 
 @Component({
     selector: 'equipment',
@@ -12,10 +15,12 @@ import { getTemplate } from '../../helpers';
 export class EquipmentComponent {
     @Input() character!: ICharacter;
     private _characterService: CharacterService;
+    private _itemService: ItemService;
     private _sharedMethodService: SharedMethodService;
     
     constructor() {
         this._characterService = inject(CharacterService);
+        this._itemService = inject(ItemService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
@@ -28,7 +33,9 @@ export class EquipmentComponent {
 
     showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
-    unequipItem = (item: IItem): boolean => this._characterService.unequipItem(this.character, item);
+    getItemName = (item: IItem): string => this._itemService.getItemName(item);
+
+    unequipItem = (item: IItem): boolean => this._itemService.unequipItem(this.character, item);
 
     isSlotUsed = (slot: string | string[]): boolean => {
         const slots = Array.isArray(slot) ? slot : [slot];

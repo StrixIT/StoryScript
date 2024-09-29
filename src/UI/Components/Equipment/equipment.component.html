@@ -8,7 +8,7 @@
                     {{ texts.head }}
                 </div>
                 <div class="item-box" (click)="unequipItem(equipment.head)">
-                    {{ equipment.head?.name }}
+                    {{ getItemName(equipment.head) }}
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
                     {{ texts.amulet }}
                 </div>
                 <div class="item-box" (click)="unequipItem(equipment.amulet)">
-                    {{ equipment.amulet?.name }}
+                    {{ getItemName(equipment.amulet) }}
                 </div>
             </div>
         </div>
@@ -33,18 +33,18 @@
                 <span *ngIf="isSlotUsed(['hands', 'leftHand', 'leftRing'])">{{ texts.leftHand }}</span>
             </div>
             <div class="col-3">
-                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(equipment.hands)">{{ equipment.hands?.name }}</div>
-                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'rightRing']) }" *ngIf="isSlotUsed('rightHand')" (click)="unequipItem(equipment.rightHand)">{{ equipment.rightHand?.name }}</div>
-                <div class="item-box" *ngIf="isSlotUsed('rightRing')" (click)="unequipItem(equipment.rightRing)">{{ equipment.rightRing?.name }}</div>
+                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(equipment.hands)">{{ getItemName(equipment.hands) }}</div>
+                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'rightRing']) }" *ngIf="isSlotUsed('rightHand')" (click)="unequipItem(equipment.rightHand)">{{ getItemName(equipment.rightHand) }}</div>
+                <div class="item-box" *ngIf="isSlotUsed('rightRing')" (click)="unequipItem(equipment.rightRing)">{{ getItemName(equipment.rightRing) }}</div>
             </div>
             <div class="col-6">
                 <div class="item-box no-border" *ngIf="(isSlotUsed(['rightHand', 'leftHand'])) && isSlotUsed('hands')"></div>
-                <div class="item-box" *ngIf="isSlotUsed('body')" (click)="unequipItem(equipment.body)">{{ equipment.body?.name }}</div>
+                <div class="item-box" *ngIf="isSlotUsed('body')" (click)="unequipItem(equipment.body)">{{ getItemName(equipment.body) }}</div>
             </div>
             <div class="col-3">
-                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(equipment.hands)">{{ equipment.hands?.name }}</div>
-                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'leftRing']) }" *ngIf="isSlotUsed('leftHand')" (click)="unequipItem(equipment.leftHand)">{{ equipment.leftHand?.name }}</div>
-                <div class="item-box" *ngIf="isSlotUsed('leftRing')" (click)="unequipItem(equipment.leftRing)">{{ equipment.leftRing?.name }}</div>
+                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(equipment.hands)">{{ getItemName(equipment.hands) }}</div>
+                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'leftRing']) }" *ngIf="isSlotUsed('leftHand')" (click)="unequipItem(equipment.leftHand)">{{getItemName(equipment.leftHand) }}</div>
+                <div class="item-box" *ngIf="isSlotUsed('leftRing')" (click)="unequipItem(equipment.leftRing)">{{ getItemName(equipment.leftRing) }}</div>
             </div>
         </div>
         <div class="row" *ngIf="isSlotUsed('legs')">
@@ -53,7 +53,7 @@
                     {{ texts.legs }}
                 </div>
                 <div class="item-box" (click)="unequipItem(equipment.legs)">
-                    {{ equipment.legs?.name }}
+                    {{ getItemName(equipment.legs) }}
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                     {{ texts.feet }}
                 </div>
                 <div class="item-box" (click)="unequipItem(equipment.feet)">
-                    {{ equipment.feet?.name }}
+                    {{ getItemName(equipment.feet) }}
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                     {{ texts[slot] }}
                 </div>
                 <div class="item-box" (click)="unequipItem(equipment[slot])">
-                    {{ equipment[slot]?.name }}
+                    {{ getItemName(equipment[slot]) }}
                 </div>
             </div>
         </div>

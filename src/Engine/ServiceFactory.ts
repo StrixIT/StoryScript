@@ -25,6 +25,8 @@ import {CombatService} from "storyScript/Services/CombatService.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
 import {SoundService} from "storyScript/Services/SoundService.ts";
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
+import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
+import {ItemService} from "storyScript/Services/ItemService.ts";
 
 export class ServiceFactory {
     private readonly _game: IGame = <IGame>{};
@@ -42,6 +44,7 @@ export class ServiceFactory {
     private readonly _combinationService: ICombinationService;
     private readonly _combatService: ICombatService;
     private readonly _soundService: ISoundService;
+    private readonly _itemService: IItemService;
 
     private static _instance: ServiceFactory;
 
@@ -58,9 +61,10 @@ export class ServiceFactory {
         const localStorageService = new LocalStorageService();
         this._dataSerializer = new DataSerializer(this._registeredEntities);
         this._dataSynchronizer = new DataSynchronizer(this._registeredEntities);
+        this._itemService = new ItemService(this._game, this._rules, this._texts);
         this._soundService = new SoundService(this._game, this._rules);
         this._dataService = new DataService(localStorageService, this._dataSerializer, this._dataSynchronizer, this._rules, nameSpace);
-        this._tradeService = new TradeService(this._game, this._texts,definitions);
+        this._tradeService = new TradeService(this._itemService, this._game, this._texts,definitions);
         this._conversationService = new ConversationService(this._game);
         this._characterService = new CharacterService(this._dataService, this._game, this._rules);
         const locationService = new LocationService(definitions, this._rules, this._game);
@@ -101,6 +105,8 @@ export class ServiceFactory {
     GetCombatService = (): ICombatService => this._combatService;
 
     GetSoundService = (): ISoundService => this._soundService;
+    
+    GetItemService = () : IItemService => this._itemService;
     
     static readonly GetInstance = () => ServiceFactory._instance;
 }

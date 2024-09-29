@@ -1,9 +1,9 @@
 import {ICharacter, IGame, IGroupableItem, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
-import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {ItemService} from "storyScript/Services/ItemService.ts";
 
 @Component({
     selector: 'backpack',
@@ -11,11 +11,11 @@ import {getTemplate} from '../../helpers';
 })
 export class BackpackComponent {
     @Input() character!: ICharacter;
-    private _characterService: CharacterService;
+    private _itemService: ItemService;
     private _sharedMethodService: SharedMethodService;
 
     constructor() {
-        this._characterService = inject(CharacterService);
+        this._itemService = inject(ItemService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
@@ -37,48 +37,26 @@ export class BackpackComponent {
 
     showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
-    canEquip = (item: IItem): boolean => this._characterService.isEquippable(item);
+    getItemName = (item: IItem): string => this._itemService.getItemName(item);
 
-    canDrop = (item: IItem): boolean => this._characterService.canDrop(item);
+    canEquip = (item: IItem): boolean => this._itemService.isEquippable(item);
 
-    equipItem = (item: IItem): boolean => this._characterService.equipItem(this.character, item);
+    canDrop = (item: IItem): boolean => this._itemService.canDrop(item);
+
+    equipItem = (item: IItem): boolean => this._itemService.equipItem(this.character, item);
 
     canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(this.character, item);
 
-    useItem = (item: IItem): Promise<void> | void => this._characterService.useItem(this.character, item);
+    useItem = (item: IItem): Promise<void> | void => this._itemService.useItem(this.character, item);
 
     canDropItems = (): boolean => this._sharedMethodService.useGround;
 
-    dropItem = (item: IItem): void => this._characterService.dropItem(this.character, item);
-    
-    canGroupItem = (item: IGroupableItem<IItem>): boolean => {
-        if (!item.isGroupable || item.members?.length) {
-            return false;
-        }
-        
-        if ((item.members?.length ?? 0) >= item.maxSize - 1) {
-            return false;
-        }
-        
-        if (this.joinItem && (this.joinItem.id === item.id || this.joinItem.groupTypes?.indexOf(item.id) > 0)) {
-            return true;
-        }
-        
-        return this.character.items.find(i => {
-            if (i === item) {
-                return false;
-            }
-            
-            const groupable = i as IGroupableItem<IItem>;
-            return groupable.isGroupable && ((groupable.members?.length ?? 0) < groupable.maxSize - 1)
-        }) !== undefined;
-    };
-    
+    dropItem = (item: IItem): void => this._itemService.dropItem(this.character, item);
+
+    canGroupItem = (item: IGroupableItem<IItem>): boolean => this._itemService.canGroupItem(this.character, this.joinItem, item)
+
     groupItem = (item: IGroupableItem<IItem>): void => {
-        if (this.joinItem && this.joinItem !== item) {
-            this.joinItem.members ??= [];
-            this.joinItem.members.add(item);
-            this.character.items.delete(item);
+        if (this.joinItem && this._itemService.groupItem(this.character, this.joinItem, item)) {
             this.joinItem = null;
         } else {
             this.joinItem = item;
