@@ -6,6 +6,7 @@ export function CustomTexts(): IInterfaceTexts {
         bow: 'Bow',
         rightRing: 'Ring',
         primaryWeapon: 'Primary weapon',
-        secondaryWeapon: 'Secondary weapon'
+        secondaryWeapon: 'Secondary weapon',
+        groupItem: 'Join'
     };
 }

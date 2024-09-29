@@ -39,6 +39,6 @@ export class CharacterClass {
 
 export const CharacterClasses: Record<string, CharacterClass> = {
     [ClassType.Warrior]: new CharacterClass(ClassType.Warrior, 14, [LongSword, Dagger, Chainmail, PowerAttack1]),
-    [ClassType.Rogue]: new CharacterClass(ClassType.Rogue, 10, [Dagger, Dagger, ShortBow, LeatherArmor, Dodge1]),
+    [ClassType.Rogue]: new CharacterClass(ClassType.Rogue, 10, [ShortBow, LeatherArmor, Dodge1]),
     [ClassType.Wizard]: new CharacterClass(ClassType.Wizard, 8, [WizardStaff, WizardCloak, Fireball, Frostbite, Magicshield])
 }

@@ -8,6 +8,7 @@ import {Character} from "./character.ts";
 import {CharacterClasses} from "./characterClass.ts";
 import {getEquipmentType} from "storyScript/utilityFunctions.ts";
 import {ICharacterRules} from "storyScript/Interfaces/rules/characterRules.ts";
+import {Dagger} from "./items/Dagger.ts";
 
 export const characterRules = <ICharacterRules>{
     getCreateCharacterSheet: (): ICreateCharacter => {
@@ -61,6 +62,15 @@ export const characterRules = <ICharacterRules>{
         const selectedClass = characterData.steps[1].questions[0].selectedEntry.value;
         const characterClass = CharacterClasses[selectedClass];
         character.hitpoints = characterClass.hitpoints;
+
+        if (characterClass.name === ClassType.Rogue) {
+            const dagger = Dagger();
+            const secondDagger = Dagger();
+            secondDagger['ss_added'] = true;
+            dagger.members = [secondDagger];
+            character.equipment['primaryWeapon'] = dagger;
+            characterClass.inventory = characterClass.inventory.filter((i: any) => i.id !== 'dagger');
+        }
 
         characterClass.inventory.forEach(i => {
             const item = i();

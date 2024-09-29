@@ -4,26 +4,26 @@
         <div class="row" *ngIf="isSlotUsed('amulet')">
             <div class="col-12">
                 <div class="item-box" (click)="unequipItem(character.equipment.amulet)" [ngClass]="character.equipment.amulet ? '' : 'unavailable'">
-                    {{ character.equipment.amulet?.name ?? texts.amulet }}
+                    {{ getItemName(character.equipment.amulet) ?? texts.amulet }}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
                 <div class="item-box" *ngIf="isSlotUsed('body')" (click)="unequipItem(character.equipment.body)" [ngClass]="character.equipment.body ? '' : 'unavailable'">
-                    {{ character.equipment.body?.name ?? texts.body }}
+                    {{ getItemName(character.equipment.body) ?? texts.body }}
                 </div>
             </div>
             <div class="col-12">
                 <div class="item-box" *ngIf="isSlotUsed('rightRing')" (click)="unequipItem(character.equipment.rightRing)" [ngClass]="character.equipment.rightRing ? '' : 'unavailable'">
-                    {{ character.equipment.rightRing?.name ?? texts.rightRing }}
+                    {{ getItemName(character.equipment.rightRing) ?? texts.rightRing }}
                 </div>
             </div>
         </div>
         <div class="row" *ngFor="let slot of customSlots()">
             <div class="col-12" *ngIf="isSlotUsed(slot)">
                 <div class="item-box" (click)="unequipItem(character.equipment[slot])" [ngClass]="character.equipment[slot] ? '' : 'unavailable'">
-                    {{ character.equipment[slot]?.name ?? texts[slot] }}
+                    {{ getItemName(character.equipment[slot]) ?? texts[slot] }}
                 </div>
             </div>
         </div>

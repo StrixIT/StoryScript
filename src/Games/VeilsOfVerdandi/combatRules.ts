@@ -6,7 +6,7 @@ import {format} from "storyScript/defaultTexts.ts";
 import {TargetType} from "storyScript/Interfaces/enumerations/targetType.ts";
 import {descriptionSelector, getTopWeapon} from "./sharedFunctions.ts";
 import {ICombatRules} from "storyScript/Interfaces/rules/combatRules.ts";
-import {IItem} from "./interfaces/item.ts";
+import {IGroupableItem, IItem} from "./interfaces/item.ts";
 import {ICombatTurn} from "./interfaces/combatTurn.ts";
 import {ClassType} from "./classType.ts";
 
@@ -26,7 +26,12 @@ export const combatRules = <ICombatRules>{
     },
 
     initCombatRound: (game: IGame, combatSetup: ICombatSetup): void => {
+        if (!combatSetup.enemies.length) {
+            return;
+        }
+        
         getEnemyTargets(game, combatSetup);
+        logAttackPriority(game, combatSetup);
         
         if (useBows(combatSetup)) {
             filterBows(combatSetup, (s, c, i) => i.ranged);
@@ -62,8 +67,6 @@ export const combatRules = <ICombatRules>{
     },
     fight: (game: IGame, combatSetup: ICombatSetup): void => {
         game.combatLog = [];
-        logAttackPriority(game, combatSetup);
-
         const orderedParticipants = getOrderedParticipants(game, combatSetup);
 
         for (let i in orderedParticipants) {
@@ -77,7 +80,7 @@ export const combatRules = <ICombatRules>{
                 if (!setupEntry.item) {
                     continue;
                 }
-
+                
                 executeCharacterTurn(game, setupEntry);
 
                 if (checkCombatWin(game, combatSetup, setupEntry)) {
@@ -101,6 +104,9 @@ export const combatRules = <ICombatRules>{
 
 function logAttackPriority(game: IGame, combatSetup: ICombatSetup) {
     if (combatSetup.round > 1) {
+        game.logToCombatLog('--------------------------------------------------');
+        game.logToCombatLog(`Round ${combatSetup.round}`);
+        game.logToCombatLog('--------------------------------------------------');
         game.logToCombatLog('Attack priority: ' + combatSetup.enemyTargets.reduce((c: string, p, i: number, a) => {
             const separator = a.length === i + 1 ? '.' : ', ';
             return c + p[0].name + ' - ' + p[1].name + separator;
@@ -171,21 +177,27 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
             turn.item.selectable = false;
         }
     } else if (turn.item.targetType === TargetType.Enemy) {
-        const weaponDamage = game.helpers.rollDice(turn.item.damage);
-        totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(turn.character, 'damageBonus') - (turn.target.defence ?? 0));
+        const groupable = <IGroupableItem>turn.item;
+        const attacks = groupable?.members?.length > 0 ? 2 : 1;
         
-        if (!totalDamage) {
-            game.logToCombatLog(`${turn.character.name} misses ${turn.target.name}!`);
-            return;
+        for (let a = 0; a < attacks; a++) {
+            const item = a === 0 ? turn.item : groupable.members[0] as IItem;
+            const weaponDamage = game.helpers.rollDice(item.damage);
+            totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(turn.character, 'damageBonus') - (turn.target.defence ?? 0));
+
+            if (!totalDamage) {
+                game.logToCombatLog(`${turn.character.name} misses ${turn.target.name}!`);
+                continue;
+            }
+
+            turn.target.currentHitpoints = Math.max(0, turn.target.currentHitpoints - totalDamage);
+
+            if (combatText) {
+                game.logToCombatLog(combatText + '.');
+            }
+
+            game.logToCombatLog(`${turn.character.name} does ${totalDamage} damage to ${turn.target.name}!`);
         }
-
-        turn.target.currentHitpoints = Math.max(0, turn.target.currentHitpoints - totalDamage);
-
-        if (combatText) {
-            game.logToCombatLog(combatText + '.');
-        }
-
-        game.logToCombatLog(`${turn.character.name} does ${totalDamage} damage to ${turn.target.name}!`);
     }
 }
 
@@ -275,12 +287,18 @@ function filterBows(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetu
 }
 
 function getCombatSpeed(entry: any, combatSetup: ICombatSetup): number {
-    const baseSpeed = entry.frozen ? 3 : 0;
+    let baseSpeed = entry.frozen ? 3 : 0;
     
     if (entry.type === 'enemy') {
         return baseSpeed + entry.speed;
     } else {
         const setupEntry = combatSetup.find(e => e.character === entry);
+        
+        // When using double daggers, the attack speed is 5 instead of three.
+        if ((<IGroupableItem>setupEntry.item)?.members?.length > 0) {
+            baseSpeed += 2;
+        }
+        
         return setupEntry.item ? baseSpeed + setupEntry.item.speed : 0;
     }
 }
