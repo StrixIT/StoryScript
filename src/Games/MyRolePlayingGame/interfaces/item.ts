@@ -14,6 +14,6 @@ export interface IItem extends IFeature, StoryScriptIItem {
     defense?: number;
 }
 
-export interface IGroupableItem extends StoryScriptIGroupableItem<IItem> {
+export interface IGroupableItem extends IItem, StoryScriptIGroupableItem<IItem> {
     // Add game-specific item properties here
 }

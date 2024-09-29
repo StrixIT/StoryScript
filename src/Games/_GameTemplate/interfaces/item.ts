@@ -13,6 +13,6 @@ export interface IItem extends IFeature, StoryScriptIItem {
     // Add game-specific item properties here
 }
 
-export interface IGroupableItem extends StoryScriptIGroupableItem<IItem> {
+export interface IGroupableItem extends IItem, StoryScriptIGroupableItem<IItem> {
     // Add game-specific item properties here
 }
