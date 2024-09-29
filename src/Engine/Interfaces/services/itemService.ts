@@ -8,6 +8,7 @@ export interface IItemService {
     pickupItem(character: ICharacter, item: IItem): boolean;
     canGroupItem(character: ICharacter, group: IGroupableItem<IItem>, item: IGroupableItem<IItem>): boolean;
     groupItem (character: ICharacter, group: IGroupableItem<IItem>, item: IGroupableItem<IItem>): boolean;
+    splitItemGroup(character: ICharacter, item: IGroupableItem<IItem>): void;
     useItem(character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void;
     isEquippable(item: IItem): boolean;
     equipItem(character: ICharacter, item: IItem): boolean;

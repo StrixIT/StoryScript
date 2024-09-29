@@ -101,6 +101,16 @@ export class ItemService implements IItemService {
         return false;
     }
 
+    splitItemGroup = (character: ICharacter, item: IGroupableItem<IItem>): void => {
+        if (item?.members?.length > 0) {
+            item.members.forEach((item: IItem) => {
+                character.items.add(item);
+            });
+            
+            item.members = undefined;
+        }
+    }
+
     useItem = (character: ICharacter, item: IItem, target?: IEnemy): Promise<void> | void => {
         const useItem = (this._rules.exploration?.onUseItem?.(this._game, character, item) && item.use) ?? item.use;
 
