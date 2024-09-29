@@ -99,6 +99,7 @@ export interface IInterfaceTexts {
     restartConfirmed?: string;
     cancel?: string;
     groupItem?: string;
+    splitItemGroup?: string;
     worldProperties?: any;
 
     /**

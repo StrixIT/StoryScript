@@ -62,4 +62,6 @@ export class BackpackComponent {
             this.joinItem = item;
         }
     }
+
+    splitItemGroup = (item: IGroupableItem<IItem>): void => this._itemService.splitItemGroup(this.character, item);
 }
