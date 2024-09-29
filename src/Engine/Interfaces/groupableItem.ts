@@ -34,9 +34,4 @@ export interface IGroupableItem<T extends IItem> extends IItem {
      * The items that belong to this group.
      */
     members?: IGroupableItem<T>[];
-
-    /**
-     * Use this function to run custom code to determine the name of the group parent.
-     */
-    getName?(): string;
 }

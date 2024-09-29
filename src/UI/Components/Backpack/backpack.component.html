@@ -3,12 +3,12 @@
         <ul id="backpack-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
             <li *ngFor="let item of character.items">
                 <div (click)="tryCombine(item)" [ngClass]="getCombineClass(item)">
-                    <span>{{ item.name }}</span>
+                    <span>{{ getItemName(item) }}</span>
                     <div id="backpack-button-row" class="inline" [ngClass]="getCombineClass()">
                         <button type="button" class="btn btn-info btn-sm" *ngIf="canEquip(item) && showEquipment()" (click)="equipItem(item)">{{ texts.equip }}</button>
-                        <button type="button" class="btn btn-info btn-sm" *ngIf="hasDescription(item)" (click)="showDescription(item, item.name)">{{ texts.view }}</button>
+                        <button type="button" class="btn btn-info btn-sm" *ngIf="hasDescription(item)" (click)="showDescription(item, getItemName(item))">{{ texts.view }}</button>
                         <button type="button" class="btn btn-info btn-sm" *ngIf="canUseItem(item)" (click)="useItem(item)">{{ texts.use }}</button>
-                        <button type="button" class="btn btn-info btn-sm" *ngIf="canGroupItem(item)" (click)="groupItem(item)">{{ texts.groupItem }}</button>
+                        <button type="button" class="btn btn-sm" [ngClass]="{ 'btn-primary': item === joinItem, 'btn-outline-secondary': joinItem && item !== joinItem, 'btn-info': !joinItem  }" *ngIf="canGroupItem(item)" (click)="groupItem(item)">{{ texts.groupItem }}</button>
                         <button type="button" class="btn btn-info btn-sm" *ngIf="canDropItems() && canDrop(item)" (click)="dropItem(item)">{{ texts.drop }}</button>
                     </div>
                 </div>

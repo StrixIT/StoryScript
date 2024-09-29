@@ -2,7 +2,7 @@
     <div class="box-title">{{ texts.onTheGround }}</div>
     <ul class="list-unstyled">
         <li *ngFor="let item of game.currentLocation.activeItems" (click)="pickupItem(item)" [ngClass]="getCombineClass(item)">
-            {{ item.name }}
+            {{ getItemName(item) }}
         </li>
     </ul>
 </div>

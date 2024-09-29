@@ -10,9 +10,10 @@ import {IParty} from '../Interfaces/party';
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {randomList} from "storyScript/Services/sharedFunctions.ts";
+import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
 
 export class TradeService implements ITradeService {
-    constructor(private _game: IGame, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {
+    constructor(private _itemService: IItemService, private _game: IGame, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {
     }
 
     trade = (trade: IPerson | ITrade): void => {
@@ -53,7 +54,7 @@ export class TradeService implements ITradeService {
         return Math.round(item.value * resolvedModifier);
     }
 
-    displayPrice = (item: IItem, actualPrice: number): string => actualPrice > 0 ? (`${item.name}: '${actualPrice} ${this._texts.currency}`) : item.name;
+    displayPrice = (item: IItem, actualPrice: number): string => actualPrice > 0 ? (`${this._itemService.getItemName(item)}: '${actualPrice} ${this._texts.currency}`) : this._itemService.getItemName(item);
 
     buy = (item: IItem, trade: ITrade): boolean => {
         if (!this.pay(item, trade, trade.buy, this._game.party, false)) {
