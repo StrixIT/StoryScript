@@ -9,11 +9,11 @@ import {ICreateCharacterAttribute} from '../Interfaces/createCharacter/createCha
 import {ICreateCharacterAttributeEntry} from '../Interfaces/createCharacter/createCharacterAttributeEntry';
 import {ICreateCharacterStep} from '../Interfaces/createCharacter/createCharacterStep';
 import {GameState} from '../Interfaces/enumerations/gameState';
-import {EquipmentType} from '../Interfaces/enumerations/equipmentType';
-import { getEquipmentType } from '../utilityFunctions';
+import {getEquipmentType} from '../utilityFunctions';
+import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 
 export class CharacterService implements ICharacterService {
-    constructor(private _game: IGame, private _rules: IRules) {
+    constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
     }
 
     getSheetAttributes = (): string[] => this._rules.character.getSheetAttributes?.() || [];
@@ -99,92 +99,11 @@ export class CharacterService implements ICharacterService {
 
         if (this._rules.character.levelUp?.(character, sheet)) {
             this.processDefaultSettings(character, sheet);
+            this._dataService.saveGame(this._game);
         }
 
         this._game.state = GameState.Play;
         return character;
-    }
-
-    pickupItem = (character: ICharacter, item: IItem): boolean => {
-        const isCombining = this._game.combinations?.activeCombination;
-
-        if (isCombining) {
-            this._game.combinations.tryCombine(item)
-            return false;
-        }
-
-        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, character, item)) {
-            return false;
-        }
-
-        this._game.currentLocation.items.delete(item);
-        character.items.add(item);
-
-        return true;
-    }
-
-    isEquippable = (item: IItem): boolean => item.equipmentType != EquipmentType.Miscellaneous;
-
-    canDrop = (item: IItem): boolean => {
-        let canDrop: boolean;
-
-        if (typeof item.canDrop === 'function') {
-            canDrop = item.canDrop(this._game, item);
-        } else if (typeof item.canDrop === 'undefined') {
-            canDrop = true;
-        } else {
-            canDrop = item.canDrop;
-        }
-
-        return canDrop
-    };
-
-    equipItem = (character: ICharacter, item: IItem): boolean => {
-        const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
-
-        for (const n in equipmentTypes) {
-            const type = getEquipmentType(equipmentTypes[n]);
-            const unequipped = this.unequip(character, type);
-
-            if (!unequipped) {
-                return false;
-            }
-        }
-
-        if (this._rules.character.beforeEquip) {
-            if (!this._rules.character.beforeEquip(this._game, character, item)) {
-                return false;
-            }
-        }
-
-        if (item.equip) {
-            if (!item.equip(character, item, this._game)) {
-                return false;
-            }
-        }
-
-        for (const n in equipmentTypes) {
-            const type = getEquipmentType(equipmentTypes[n]);
-            character.equipment[type] = item;
-        }
-
-        character.items.splice(character.items.indexOf(item), 1);
-        return true;
-    }
-
-    unequipItem = (character: ICharacter, item: IItem): boolean => {
-        const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
-
-        for (const n in equipmentTypes) {
-            const type = getEquipmentType(equipmentTypes[n]);
-            const unequipped = this.unequip(character, type);
-
-            if (!unequipped) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     isSlotUsed = (character: ICharacter, slot: string): boolean => {
@@ -199,24 +118,48 @@ export class CharacterService implements ICharacterService {
         return false;
     }
 
-    dropItem = (character: ICharacter, item: IItem): void => {
-        if (!item) {
-            return;
-        }
-
-        let drop = true;
-
-        if (this._rules.character.beforeDrop) {
-            drop = this._rules.character.beforeDrop(this._game, character, item);
-        }
-
-        if (drop) {
-            character.items.delete(item);
-            this._game.currentLocation.items.add(item);
-        }
-    }
-
     questStatus = (quest: IQuest): string => typeof quest.status === 'function' ? (<any>quest).status(this._game, quest, quest.checkDone(this._game, quest)) : quest.status;
+
+    checkEquipment = (): void => {
+        this._game.party.characters.forEach(c => {
+            if (c.equipment) {
+                Object.keys(c.equipment).forEach(k => {
+                    const item = <IItem>c.equipment[k];
+
+                    if (!item?.equipmentType) {
+                        return;
+                    }
+                    
+                    const itemType = Array.isArray(item.equipmentType) ? item.equipmentType : [item.equipmentType];
+                    let valid = true;
+                    
+                    if (!item.usesMultipleSlots)
+                    {
+                        valid = itemType.find(t => getEquipmentType(t) === k) !== undefined;
+                    }
+                    else {
+                        for (const i in itemType) {
+                            const slot = getEquipmentType(itemType[i]);
+                            const slotItem = c.equipment[slot];
+                            
+                            if (slotItem && (slotItem === item || slotItem.id === item.id)) {
+                                // When restoring data, a single item occupying multiple slots will be duplicated,
+                                // so each slot contains a separate item of the same kind. Remove the duplicates here.
+                                    c.equipment[slot] = item;
+                            } else {
+                                valid = false;
+                            }
+                        }
+                    }
+                    
+                    if (!valid) {
+                        c.equipment[k] = null;
+                        c.items.push(item);
+                    }
+                });
+            }
+        })
+    }
 
     private prepareSheet = (sheet: ICreateCharacter): void => {
         if (sheet.steps.length == 0) {
@@ -334,45 +277,6 @@ export class CharacterService implements ICharacterService {
                 });
             }
         });
-    }
-
-    private unequip = (character: ICharacter, type: string, currentItem?: IItem): boolean => {
-        const equippedItem = <IItem>character.equipment[type];
-
-        if (equippedItem) {
-            if (Array.isArray(equippedItem.equipmentType) && !currentItem) {
-                for (const n in equippedItem.equipmentType) {
-                    const type = getEquipmentType(equippedItem.equipmentType[n]);
-                    const unEquipped = this.unequip(character, type, equippedItem);
-
-                    if (!unEquipped) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            if (this._rules.character.beforeUnequip) {
-                if (!this._rules.character.beforeUnequip(this._game, character, equippedItem)) {
-                    return false;
-                }
-            }
-
-            if (equippedItem.unequip) {
-                if (!equippedItem.unequip(character, equippedItem, this._game)) {
-                    return false;
-                }
-            }
-
-            if (equippedItem?.equipmentType && character.items.indexOf(equippedItem) < 0) {
-                character.items.push(equippedItem);
-            }
-
-            character.equipment[type] = null;
-        }
-
-        return true;
     }
 
     private setFinish = (data: ICreateCharacter): void => {

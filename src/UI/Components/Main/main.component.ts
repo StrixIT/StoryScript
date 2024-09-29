@@ -1,7 +1,7 @@
 import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { GameService } from 'storyScript/Services/gameService';
+import { GameService } from 'storyScript/Services/GameService';
 import { Component, ElementRef, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 

@@ -1,5 +1,5 @@
 import {IGame, IInterfaceTexts, PlayState} from 'storyScript/Interfaces/storyScript';
-import {GameService} from 'storyScript/Services/gameService';
+import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject, ViewChild} from '@angular/core';
 import {getTemplate} from '../../helpers';
@@ -19,10 +19,8 @@ export class NavigationComponent {
         this.game = serviceFactory.GetGame();
         this.texts = serviceFactory.GetTexts();
         this.locations = serviceFactory.AvailableLocations;
-        this.isDevelopment = process.env.NODE_ENV !== 'production';
     }
-
-    isDevelopment: boolean;
+    
     game: IGame;
     texts: IInterfaceTexts;
     locations: { id: string, name: string }[];

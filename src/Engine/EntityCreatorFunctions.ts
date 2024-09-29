@@ -9,7 +9,7 @@ import {IQuest} from './Interfaces/quest';
 import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './utilityFunctions';
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
-import {ActionStatus, ICompiledLocation, IDestination} from './Interfaces/storyScript';
+import {ActionStatus, ICompiledLocation, IDestination, IGroupableItem} from './Interfaces/storyScript';
 import {Enemies, Features, Items, Locations, Persons, Quests} from "../../constants.ts";
 
 const _entityCollections: string[] = [
@@ -312,6 +312,13 @@ function createPerson(entity: IPerson, id?: string) {
 function createItem(entity: IItem, id?: string) {
     const item = CreateObject(entity, 'item', id);
     compileCombinations(item);
+    
+    const groupableItem = item as IGroupableItem<IItem>;
+    
+    if (groupableItem.groupTypes) {
+        groupableItem.groupTypes = groupableItem.groupTypes.map(t => getId(t));
+    }
+    
     return item;
 }
 

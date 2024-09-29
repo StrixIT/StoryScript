@@ -1,16 +1,19 @@
 import {inject, Injectable} from '@angular/core';
 import {ActionType, IAction, ICharacter, ICombinable, IItem, IPerson, ITrade} from 'storyScript/Interfaces/storyScript';
-import {GameService} from 'storyScript/Services/gameService';
 import {TradeService} from 'storyScript/Services/TradeService';
 import {ConversationService} from 'storyScript/Services/ConversationService';
 import {IGame} from 'storyScript/Interfaces/game';
 import {Subject} from 'rxjs';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {ModalService} from './ModalService';
+import {CombatService} from "storyScript/Services/CombatService.ts";
+import {hasDescription} from 'storyScript/Services/sharedFunctions';
+import {DataService} from "storyScript/Services/DataService.ts";
 
 @Injectable()
 export class SharedMethodService {
-    private _gameService: GameService;
+    private _dataService: DataService;
+    private _combatService: CombatService;
     private _conversationService: ConversationService;
     private _tradeService: TradeService;
 
@@ -20,7 +23,8 @@ export class SharedMethodService {
         // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
         inject(ModalService);
         const objectFactory = inject(ServiceFactory);
-        this._gameService = inject(GameService);
+        this._dataService = inject(DataService);
+        this._combatService = inject(CombatService);
         this._conversationService = inject(ConversationService);
         this._tradeService = inject(TradeService);
         this.game = objectFactory.GetGame();
@@ -65,7 +69,7 @@ export class SharedMethodService {
     hasDescription = (entity: {
         id?: string,
         description?: string
-    }): boolean => this._gameService.hasDescription(entity);
+    }): boolean => hasDescription(entity);
 
     showDescription = (type: string, item: any, title: string): void => {
         this.game.currentDescription = {title: title, type: type, item: item};
@@ -79,7 +83,7 @@ export class SharedMethodService {
         }
 
         this.game.combatLog = [];
-        this._gameService.initCombat();
+        this._combatService.initCombat();
     }
 
     getButtonClass = (action: [string, IAction]): string => {
@@ -128,7 +132,7 @@ export class SharedMethodService {
             }
 
             // After each action, save the game.
-            this._gameService.saveGame();
+            this._dataService.saveGame(this.game);
         }
     }
 

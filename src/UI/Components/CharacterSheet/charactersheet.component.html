@@ -1,3 +1,4 @@
+@let party = game.party;
 <div class="box-container" id="character-attributes">
     <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ character.name || texts.characterSheet }}</div>
     <div class="character-info" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
@@ -10,8 +11,8 @@
             </li>
             <li>{{ texts.hitpoints }} 
                 <div class="hitpoint-editor">
-                    <span *ngIf="!isDevelopment">{{ character.currentHitpoints }}</span>
-                    <input *ngIf="isDevelopment" type="number" min="{{ 1 }}" max="{{ character.hitpoints }}" [(ngModel)]="character.currentHitpoints" (blur)="limitInput($event, character)">
+                    <span *ngIf="!game.isDevelopment">{{ character.currentHitpoints }}</span>
+                    <input *ngIf="game.isDevelopment" type="number" min="{{ 1 }}" max="{{ character.hitpoints }}" [(ngModel)]="character.currentHitpoints" (blur)="limitInput($event, character)">
                 </div> 
                 &nbsp;/ {{ character.hitpoints }}
             </li>

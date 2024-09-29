@@ -1,9 +1,9 @@
-import { IGame, IInterfaceTexts, IItem, IBarrier } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { CharacterService } from 'storyScript/Services/characterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {IBarrier, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {ItemService} from "storyScript/Services/ItemService.ts";
 
 @Component({
     selector: 'ground',
@@ -11,11 +11,11 @@ import { getTemplate } from '../../helpers';
 })
 export class GroundComponent {
     private _sharedMethodService: SharedMethodService;
-    private _characterService: CharacterService;
+    private _itemService: ItemService;
 
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);
-        this._characterService = inject(CharacterService);
+        this._itemService = inject(ItemService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
@@ -29,5 +29,7 @@ export class GroundComponent {
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    pickupItem = (item: IItem): boolean => this._characterService.pickupItem(this.game.activeCharacter, item);
+    getItemName = (item: IItem): string => this._itemService.getItemName(item);
+
+    pickupItem = (item: IItem): boolean => this._itemService.pickupItem(this.game.activeCharacter, item);
 }

@@ -16,6 +16,7 @@ import {IParty} from './party';
 import {ICombatSetup} from './combatSetup';
 import {ICombatTurn} from './combatTurn';
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
+import {ISoundPlayer} from "storyScript/Interfaces/soundPlayer.ts";
 
 /**
  * The StoryScript main game object.
@@ -180,13 +181,10 @@ export interface IGame {
      */
     helpers: IHelpers;
 
-    sounds: {
-        startMusic(): void;
-        stopMusic(): void;
-        playSound(fileName: string, completeCallBack?: () => void): void;
-        soundQueue: Map<number, { value: string, playing: boolean, completeCallBack?: () => void }>;
-        playedAudio: string[];
-    }
+    /**
+     * The sound player for the game.
+     */
+    sounds: ISoundPlayer,
 
     /**
      * The function executed to change from one location to the next.
@@ -214,15 +212,14 @@ export interface IGame {
     logToCombatLog(message: string): void;
 
     /**
-     * The function executed when the player attacks an enemy.
-     * @param combatRound The setup for this combat round
-     * @param retaliate True if the enemy can retaliate (default), false otherwise
-     */
-    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
-
-    /**
      * The setup for the next combat round. This object is used to track
      * which character attacks which enemy using what item or weapon.
      */
     combat: ICombatSetup<ICombatTurn>;
+
+    /**
+     * True if the game is running in development mode, false otherwise. This is used for showing development
+     * tools like the location selector and the health editor.
+     */
+    isDevelopment: boolean;
 }

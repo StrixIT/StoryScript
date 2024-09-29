@@ -17,6 +17,11 @@ export interface IItem extends IFeature {
     equipmentType: EquipmentType | EquipmentType[] | string | string[];
 
     /**
+     * True if the item uses all the slots specified by the equipment type array, false if it occupies only one.
+     */
+    usesMultipleSlots?: boolean;
+
+    /**
      * Set the target type for the item if the item needs to be used on a target. For example, a weapon targets
      * an enemy, while a healing spell will target an ally. If the target type is not specified, the item cannot
      * be used on enemies or allies.
@@ -39,6 +44,12 @@ export interface IItem extends IFeature {
      * available during combat.
      */
     useInCombat?: boolean | ((item: IItem, equipment: IEquipment) => boolean);
+
+    /**
+     * When this flag is set to false, the item is not selectable. This is used to allow items to be unselectable during combat,
+     * for example when you want items to be available only during certain rounds.
+     */
+    selectable?: boolean;
 
     /**
      * The value of the item in whatever credits are used in the game.

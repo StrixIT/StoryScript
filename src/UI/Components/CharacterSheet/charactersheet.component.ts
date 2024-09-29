@@ -6,7 +6,7 @@ import {
     ICreateCharacterAttributeEntry
 } from 'storyScript/Interfaces/storyScript';
 import { SharedMethodService } from '../../Services/SharedMethodService';
-import { CharacterService } from 'storyScript/Services/characterService';
+import { CharacterService } from 'storyScript/Services/CharacterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
@@ -23,15 +23,13 @@ export class CharacterSheetComponent {
         const characterService = inject(CharacterService);
         const sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
-        this.isDevelopment = process.env.NODE_ENV !== 'production';
-        this.party = objectFactory.GetGame().party;
+        this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.displayCharacterAttributes = characterService.getSheetAttributes();
         sharedMethodService.useCharacterSheet = true;
     }
-
-    isDevelopment: boolean;
-    party: IParty;
+    
+    game: IGame;
     texts: IInterfaceTexts;
     displayCharacterAttributes: string[];
 

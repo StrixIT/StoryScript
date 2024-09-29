@@ -1,10 +1,9 @@
-import { ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { GameService } from 'storyScript/Services/gameService';
-import { CharacterService } from 'storyScript/Services/characterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, Input, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {ICharacter, IGame, IGroupableItem, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject, Input} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {ItemService} from "storyScript/Services/ItemService.ts";
 
 @Component({
     selector: 'backpack',
@@ -12,14 +11,12 @@ import { getTemplate } from '../../helpers';
 })
 export class BackpackComponent {
     @Input() character!: ICharacter;
-    private _characterService: CharacterService;
+    private _itemService: ItemService;
     private _sharedMethodService: SharedMethodService;
-    private _gameService: GameService;
 
     constructor() {
-        this._characterService = inject(CharacterService);
+        this._itemService = inject(ItemService);
         this._sharedMethodService = inject(SharedMethodService);
-        this._gameService = inject(GameService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
@@ -28,6 +25,7 @@ export class BackpackComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
+    joinItem: IGroupableItem<IItem>;
 
     hasDescription = (item: IItem): boolean => this._sharedMethodService.hasDescription(item);
 
@@ -39,17 +37,31 @@ export class BackpackComponent {
 
     showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
-    canEquip = (item: IItem): boolean => this._characterService.isEquippable(item);
+    getItemName = (item: IItem): string => this._itemService.getItemName(item);
 
-    canDrop = (item: IItem): boolean => this._characterService.canDrop(item);
-    
-    equipItem = (item: IItem): boolean => this._characterService.equipItem(this.character, item);
+    canEquip = (item: IItem): boolean => this._itemService.isEquippable(item);
+
+    canDrop = (item: IItem): boolean => this._itemService.canDrop(item);
+
+    equipItem = (item: IItem): boolean => this._itemService.equipItem(this.character, item);
 
     canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(this.character, item);
 
-    useItem = (item: IItem): Promise<void> | void => this._gameService.useItem(this.character, item);
+    useItem = (item: IItem): Promise<void> | void => this._itemService.useItem(this.character, item);
 
     canDropItems = (): boolean => this._sharedMethodService.useGround;
 
-    dropItem = (item: IItem): void => this._characterService.dropItem(this.character, item);
+    dropItem = (item: IItem): void => this._itemService.dropItem(this.character, item);
+
+    canGroupItem = (item: IGroupableItem<IItem>): boolean => this._itemService.canGroupItem(this.character, this.joinItem, item)
+
+    groupItem = (item: IGroupableItem<IItem>): void => {
+        if (this.joinItem && this._itemService.groupItem(this.character, this.joinItem, item)) {
+            this.joinItem = null;
+        } else {
+            this.joinItem = item;
+        }
+    }
+
+    splitItemGroup = (item: IGroupableItem<IItem>): void => this._itemService.splitItemGroup(this.character, item);
 }

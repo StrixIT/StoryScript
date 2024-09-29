@@ -98,6 +98,8 @@ export interface IInterfaceTexts {
     restartCancelled?: string;
     restartConfirmed?: string;
     cancel?: string;
+    groupItem?: string;
+    splitItemGroup?: string;
     worldProperties?: any;
 
     /**

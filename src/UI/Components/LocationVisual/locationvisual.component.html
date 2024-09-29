@@ -1,12 +1,14 @@
-<div class="box-container" id="location-visual" *ngIf="game.currentLocation.features?.collectionPicture">
-    <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
+@let location = game.currentLocation;
+@let features = location.features;
+<div class="box-container" id="location-visual" *ngIf="features?.collectionPicture">
+    <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [location.name]) | safe: 'html'"></div>
     <div id="visual-features">
-        <img src="{{ 'resources/' + game.currentLocation.features.collectionPicture }}" [attr.usemap]="'#' + game.currentLocation.id">
-        <map name="{{ game.currentLocation.id }}">
-            <area *ngFor="let feature of game.currentLocation.features" href="#0" shape="{{feature.shape}}" coords="{{feature.coords}}" (click)="tryCombine(feature)" />
+        <img src="{{ 'resources/' + features.collectionPicture }}" [attr.usemap]="'#' + location.id" alt="{{ location.name }}">
+        <map name="{{ location.id }}">
+            <area *ngFor="let feature of features" href="#0" shape="{{feature.shape}}" coords="{{feature.coords}}" (click)="tryCombine(feature)" alt="{{ feature.name }}" />
         </map>
-        <div *ngFor="let feature of game.currentLocation.features">
-            <img *ngIf="feature.picture" class="feature-picture" name="{{ 'feature-' + feature.id }}" src="{{ 'resources/' + feature.picture }}" [ngStyle]="getFeatureCoordinates(feature)" (click)="tryCombine(feature)" />
+        <div *ngFor="let feature of features">
+            <img *ngIf="feature.picture" class="feature-picture" name="{{ 'feature-' + feature.id }}" src="{{ 'resources/' + feature.picture }}" [ngStyle]="getFeatureCoordinates(feature)" (click)="tryCombine(feature)" alt="{{ feature.name }}" />
         </div>
     </div>
 </div>

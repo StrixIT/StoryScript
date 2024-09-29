@@ -9,7 +9,7 @@
                 <button type="button" class="btn btn-info examine" *ngIf="hasDescription(person)" (click)="showDescription(person, person.name)">{{ texts.format(texts.examine, [person.name]) }}</button>
                 <button type="button" class="btn btn-danger" *ngIf="person.canAttack === undefined || person.canAttack === true" (click)="startCombat(person)">{{ texts.format(texts.attack, [person.name]) }}</button>
             </div>
-            <img class="person-picture" src="{{ person.picture }}" *ngIf="person.picture" />
+            <img class="person-picture" src="{{ person.picture }}" *ngIf="person.picture" alt="{{ person.name }}" />
         </li>
     </ul>
 </div>

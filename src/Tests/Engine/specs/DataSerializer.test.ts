@@ -3,14 +3,14 @@ import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {RunGame} from "../../../Games/MyRolePlayingGame/run";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IGame} from "../../../Games/MyRolePlayingGame/interfaces/game.ts";
-import {HelperService} from "storyScript/Services/helperService.ts";
+import {HelperService} from "storyScript/Services/HelperService.ts";
 import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
 import {ICompiledLocation} from "../../../Games/MyAdventureGame/interfaces/location.ts";
 import {LocationService} from "storyScript/Services/LocationService.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {Character} from "../../../Games/MyRolePlayingGame/types.ts";
+import {Character, IGroupableItem} from "../../../Games/MyRolePlayingGame/types.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
@@ -124,6 +124,38 @@ const partyDataEmptyArrays = {
             "agility": 1,
             "intelligence": 1,
             "items": [],
+            "equipment": {
+                "head": null,
+                "body": null,
+                "leftHand": null,
+                "rightHand": null,
+                "feet": null
+            }
+        }
+    ]
+};
+
+const partyDataGroupedItem = {
+    "name": "Test Party",
+    "currency": 10,
+    "characters": [
+        {
+            "name": "Test",
+            "level": 1,
+            "hitpoints": 10,
+            "strength": 1,
+            "agility": 1,
+            "intelligence": 1,
+            "items": [
+                {
+                    "type": "item",
+                    "id": "dagger",
+                    "members": [{
+                        "type": "item",
+                        "id": "dagger"
+                    }]
+                }
+            ],
             "equipment": {
                 "head": null,
                 "body": null,
@@ -302,6 +334,38 @@ describe("DataSerializer", () => {
         };
         const result = serializer.createSerializableClone(characterData);
         expect(result).toEqual(partyDataEmptyArrays);
+    });
+
+    test("should serialize character data with grouped items present", function () {
+        const dagger = <IGroupableItem><any>{
+            id: 'dagger',
+            type: 'item',
+            name: "Dagger",
+            isGroupable: true
+        };
+
+        dagger.members = [{...dagger}];
+
+        const character = new Character();
+        character.name = "Test";
+        character.items = [dagger];
+
+        const characterData = <IParty>{
+            name: "Test Party",
+            currency: 10,
+            characters: [
+                character
+            ]
+        };
+
+        const dataSerializer = new DataSerializer({
+            'items': {
+                'dagger': {...dagger}
+            }
+        });
+
+        const result = dataSerializer.createSerializableClone(characterData);
+        expect(result).toEqual(partyDataGroupedItem);
     });
 
     test("should serialize deleted actions with deleted flag", function () {

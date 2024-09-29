@@ -4,6 +4,10 @@ import {ILocalStorageService} from '../Interfaces/services/localStorageService';
 import {IDataSerializer} from 'storyScript/Interfaces/services/dataSerializer';
 import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronizer';
 import {GameStateSave, SaveGamePrefix} from "../../../constants.ts";
+import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
+import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {IRules} from "storyScript/Interfaces/rules/rules.ts";
+import {IGame} from "storyScript/Interfaces/game.ts";
 
 export class DataService implements IDataService {
 
@@ -11,6 +15,7 @@ export class DataService implements IDataService {
         private _localStorageService: ILocalStorageService,
         private serializer: IDataSerializer,
         private synchronizer: IDataSynchronizer,
+        private _rules: IRules,
         private _gameNameSpace: string) {
     }
 
@@ -45,6 +50,27 @@ export class DataService implements IDataService {
 
     remove = (key: string): void => {
         this._localStorageService.remove(this.getKey(key));
+    }
+
+    saveGame = (game: IGame, name?: string): void => {
+        name = name ? SaveGamePrefix + name : GameStateSave;
+        this._rules.general?.beforeSave?.(game);
+
+        const saveGame = <ISaveGame>{
+            party: game.party,
+            world: game.locations,
+            worldProperties: game.worldProperties,
+            statistics: game.statistics,
+            playedAudio: game.sounds.playedAudio
+        };
+
+        this.save(name, saveGame);
+
+        if (game.playState === PlayState.Menu) {
+            game.playState = null;
+        }
+
+        this._rules.general.afterSave?.(game);
     }
 
     getSaveKeys = (): string[] => this._localStorageService.getKeys(this.getKey(SaveGamePrefix));

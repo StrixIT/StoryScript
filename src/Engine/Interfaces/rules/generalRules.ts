@@ -1,6 +1,6 @@
 import { IGame } from '../game';
 import { PlayState } from '../enumerations/playState';
-import { GameState } from '../storyScript';
+import {GameState, ICharacter, IGroupableItem, IItem} from '../storyScript';
 
 export interface IGeneralRules {
     /**
@@ -46,4 +46,19 @@ export interface IGeneralRules {
      * @param game The game about to be saved.
      */
     afterSave?(game: IGame): void;
+
+    /**
+     * Use this function to override the standard way of naming items. This is useful if you want to use a
+     * different naming for items that are grouped.
+     * @param item The item to get the name for.
+     */
+    getItemName?(item: IItem): string;
+
+    /**
+     * Use this function if you want to use special rules for grouping items.
+     * @param character The character grouping the items.
+     * @param group The item that is the parent for the group.
+     * @param item The item to add as a member to the parent.
+     */
+    canGroupItem?(character: ICharacter, group: IGroupableItem<IItem>, item: IGroupableItem<IItem>): boolean;
 }

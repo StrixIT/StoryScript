@@ -19,6 +19,11 @@ export interface ICombatTurn {
     target: IEnemy | ICharacter;
 
     /**
+     * True when the target was defeated this turn, false otherwise.
+     */
+    targetDefeated: boolean;
+
+    /**
      * The items available to the character this turn.
      */
     itemsAvailable?: IItem[];

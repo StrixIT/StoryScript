@@ -348,7 +348,7 @@ feature {
     border: solid 5px;
 }
 
-.not-appliccable {
+.not-applicable {
     line-height: normal;
     visibility: hidden;
 }
@@ -366,6 +366,10 @@ feature {
 
 .unavailable {
     opacity: .5;
+}
+
+.unselectable {
+    color: rgba(0, 0, 0, 0.25);
 }
 
 .hitpoint-editor {

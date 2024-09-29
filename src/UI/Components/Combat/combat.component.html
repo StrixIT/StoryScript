@@ -3,7 +3,7 @@
         <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
         <div *ngFor="let enemyRow of enemyRows" class="row enemy-row">
             <div *ngFor="let enemy of enemyRow" class="col-4">
-                <h4>{{getTargetName(enemy)}}</h4>
+                <h4>{{ enemy.name }}</h4>
                 <p class="enemy-health">
                     {{ texts.format(texts.enemyHitpoints, [enemy.currentHitpoints, enemy.hitpoints]) }}
                 </p>
@@ -17,19 +17,19 @@
                     {{ texts.format(texts.characterHitpoints, [turn.character.currentHitpoints, turn.character.hitpoints]) }}
                 </p>
                 <div *ngIf="turn.item && turn.character.currentHitpoints > 0">
-                    <div [ngClass]="{ 'not-appliccable': !turn.item.targetType }">
+                    <div [ngClass]="{ 'not-applicable': !turn.item.targetType }">
                         <span>{{ turn.item.targetType === 'Enemy' ? texts.attack : texts.aid }}</span>
-                        <select *ngIf="multiCharacter && turn.target" class="custom-select" [(ngModel)]="turn.target">
-                            <option *ngFor="let target of filteredTargets(turn)" [ngValue]="target" >{{ getTargetName(target) }}</option>
+                        <select *ngIf="filteredTargets(turn).length > 1" class="custom-select" [(ngModel)]="turn.target">
+                            <option *ngFor="let target of filteredTargets(turn)" [ngValue]="target" >{{ target.name }}</option>
                         </select>
-                        <input class="single-item" *ngIf="turn.targetsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.target.name" />
+                        <input class="single-item" *ngIf="filteredTargets(turn).length === 1" type="text" disabled="disabled" [ngModel]="turn.target.name" />
                     </div>
                     <div *ngIf="turn.itemsAvailable.length">
                         <span>{{ turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType === 'Ally' ? texts.aidWith : texts.useCombatItem }}</span>
                         <select *ngIf="turn.itemsAvailable.length > 1" class="custom-select" (ngModelChange)="itemChange($event, turn)" [(ngModel)]="turn.item">
-                            <option *ngFor="let item of turn.itemsAvailable" [ngValue]="item" >{{ item.name }}</option>
+                            <option *ngFor="let item of turn.itemsAvailable" [ngValue]="item" disabled="{{ itemSelectable(item) ? '' : 'true' }}" [ngClass]="{'unselectable': !itemSelectable(item)}" >{{ getItemName(item) }}</option>
                         </select>
-                        <input class="single-item" *ngIf="turn.itemsAvailable.length === 1" type="text" disabled="disabled" [(ngModel)]="turn.item.name" />
+                        <input class="single-item" *ngIf="turn.itemsAvailable.length === 1" type="text" disabled="disabled" [ngModel]="getItemName(turn.item)" />
                     </div>
                 </div>
                 <div *ngIf="!turn.item && turn.character.currentHitpoints > 0">
