@@ -51,6 +51,36 @@ export class CombatService implements ICombatService {
 
     isSelectable = (item: IItem): boolean => item?.selectable || typeof item?.selectable === 'undefined';
 
+    canTarget = (item: IItem, target: IEnemy | ICharacter, character: ICharacter) => {
+        const type = (<any>target).type;
+        let canTarget = false;
+
+        if (type === 'enemy') {
+            canTarget = item.targetType === TargetType.Enemy;
+        } else {
+            switch (item.targetType) {
+                case TargetType.Ally: {
+                    canTarget = target !== character;
+                }
+                    break;
+                case TargetType.Self: {
+                    canTarget = target === character;
+                }
+                    break;
+                case TargetType.AllyOrSelf: {
+                    canTarget = true;
+                }
+                    break;
+            }
+        }
+
+        if (!canTarget || !item.canTarget) {
+            return canTarget;
+        }
+
+        return item.canTarget(this._game, item, target);
+    }
+    
     private initCombatRound = (newFight: boolean) => {
         this._game.combat = newFight ? <ICombatSetup<ICombatTurn>>[] : this._game.combat;
 
