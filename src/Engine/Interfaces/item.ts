@@ -100,4 +100,12 @@ export interface IItem extends IFeature {
      * @param item The item to show the use action for
      */
     canUse?(game: IGame, character: ICharacter, item: IItem): boolean;
+
+    /**
+     * When specified, this action determines whether the item can be used on the requested target.
+     * @param game The game object
+     * @param item The item to check the target for
+     * @param target The target on which the item would be used
+     */
+    canTarget?(game: IGame, item: IItem, target: IEnemy | ICharacter): boolean;
 }

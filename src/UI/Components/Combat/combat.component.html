@@ -25,7 +25,7 @@
                         <input class="single-item" *ngIf="filteredTargets(turn).length === 1" type="text" disabled="disabled" [ngModel]="turn.target.name" />
                     </div>
                     <div *ngIf="turn.itemsAvailable.length">
-                        <span>{{ turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType === 'Ally' ? texts.aidWith : texts.useCombatItem }}</span>
+                        <span>{{ turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType ? texts.aidWith : texts.useCombatItem }}</span>
                         <select *ngIf="turn.itemsAvailable.length > 1" class="custom-select" (ngModelChange)="itemChange($event, turn)" [(ngModel)]="turn.item">
                             <option *ngFor="let item of turn.itemsAvailable" [ngValue]="item" disabled="{{ itemSelectable(item) ? '' : 'true' }}" [ngClass]="{'unselectable': !itemSelectable(item)}" >{{ getItemName(item) }}</option>
                         </select>

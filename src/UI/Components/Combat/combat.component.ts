@@ -5,15 +5,13 @@ import {
     IEnemy,
     IGame,
     IInterfaceTexts,
-    IItem,
-    TargetType
+    IItem
 } from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CombatService} from "storyScript/Services/CombatService.ts";
-import {CharacterService} from "storyScript/Services/CharacterService.ts";
 import {ItemService} from "storyScript/Services/ItemService.ts";
 
 @Component({
@@ -49,20 +47,13 @@ export class CombatComponent {
     executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
 
     getItemName = (item: IItem): string => this._itemService.getItemName(item);
-    
-    itemChange = (item: IItem, turn: ICombatTurn) => {
-        const targets = turn.targetsAvailable.filter(t => {
-            const type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
-            return item.targetType === type;
-        });
 
+    itemChange = (item: IItem, turn: ICombatTurn) => {
+        const targets = turn.targetsAvailable.concat(turn.character).filter(t => this._combatService.canTarget(item, t, turn.character));
         turn.target = targets[0];
     }
 
-    filteredTargets = (turn: ICombatTurn): IEnemy[] | ICharacter[] => turn.targetsAvailable.filter(t => {
-        const type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
-        return turn.item.targetType === type;
-    });
+    filteredTargets = (turn: ICombatTurn): IEnemy[] | ICharacter[] => turn.targetsAvailable.concat(turn.character).filter(t => this._combatService.canTarget(turn.item, t, turn.character));
 
     fight = (): void => {
         this.actionsEnabled = false;
