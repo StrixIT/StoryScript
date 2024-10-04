@@ -8,12 +8,14 @@ export class Character implements ICharacter {
     hitpoints: number = 0;
     currentHitpoints: number = 0;
     currency?: number = 3;
-    spellDefence?: number;
 
     class?: CharacterClass;
 
     items: IItem[] = [];
 
+    // Combat states
+    defenseBonus?: number = 0;
+    spellDefence?: number;
     frozen?: boolean;
     frightened?: boolean;
     confused?: boolean;

@@ -10,6 +10,7 @@ export function CentralForest() {
 	return Location({
 		name: 'CentralForest',
 		description: description,
+        isHotspot: true,
 		destinations: [
 			{
                 name: 'The Tree Stump',

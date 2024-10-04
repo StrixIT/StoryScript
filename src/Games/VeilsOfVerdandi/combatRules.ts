@@ -13,6 +13,12 @@ import {ClassType} from "./classType.ts";
 export const combatRules = <ICombatRules>{
     initCombat(game: IGame) {
         game.party.characters.forEach(c => {
+            // Reset all combat-specific states.
+            c.defenseBonus = 0;
+            c.spellDefence = 0;
+            c.frightened = false;
+            c.frozen = false;
+            c.confused = false;
             c.items.forEach(i => delete i.selectable);
 
             Object.keys(c.equipment).forEach(k => {
@@ -146,7 +152,7 @@ function getEnemyTargets(game: IGame, combatSetup: ICombatSetup) {
         // Determine the enemy target using the enemy's attack priority.
         const potentialTargets = combatSetup.characters.filter(c => c.currentHitpoints > 0);
         const enemyAttackPriorityRoll = game.helpers.rollDice('1d6');
-        let enemyTargetType = e.attackPriority.find(a => a[1].indexOf(enemyAttackPriorityRoll) > -1)[0];
+        let enemyTargetType = e.attackPriority?.find(a => a[1].indexOf(enemyAttackPriorityRoll) > -1)[0];
         let enemyTarget = enemyTargetType ? potentialTargets.find(t => t.class.name === enemyTargetType) : null;
 
         // If no target is found using the attack priority, pick one at random.
@@ -248,6 +254,10 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
                 game.currentLocation.encounterWonDay = true;
             } else {
                 game.currentLocation.encounterWonNight = true;
+            }
+            
+            if (game.currentLocation.isHotspot) {
+                game.currentLocation.hotSpotCleared = true;
             }
             
             game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)]

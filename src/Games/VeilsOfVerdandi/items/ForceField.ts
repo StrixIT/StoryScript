@@ -1,7 +1,7 @@
-﻿import { EquipmentType, PlayState } from 'storyScript/Interfaces/storyScript';
-import { ClassType } from '../classType';
+﻿import {EquipmentType, ICharacter, PlayState, TargetType} from 'storyScript/Interfaces/storyScript';
+import {ClassType} from '../classType';
 import description from './Magicshield.html?raw';
-import { Character, IGame, Item } from '../types';
+import {Character, IEnemy, IGame, IItem, Item} from '../types';
 
 export function ForceField() {
     return Item({
@@ -14,12 +14,15 @@ export function ForceField() {
         itemClass: ClassType.Wizard,
         canDrop: false,
         useInCombat: true,
+        targetType: TargetType.AllyOrSelf,
         canUse(game, item) {
             return game.playState === PlayState.Combat;
         },
+        canTarget(game: IGame, item: IItem, target: Character): boolean {
+            return target.defenseBonus === 0;
+        },
         use(game, character: Character, item, target) {
-            // Todo: character defense should be boosted until the end of combat
-            //character.defense += 1;
+            character.defenseBonus = 1;
         },
     });
 }

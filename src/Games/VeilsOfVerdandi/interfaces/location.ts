@@ -15,6 +15,7 @@ export interface ILocation extends StoryScriptILocation {
     enemies?: IEnemy[];
     items?: IItem[];
     persons?: IPerson[];
+    isHotspot?: boolean;
 }
 
 export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocation {
@@ -27,4 +28,5 @@ export interface ICompiledLocation extends ILocation, StoryScriptICompiledLocati
     encounterWonNight?: boolean;
     completedDay?: boolean;
     completedNight?: boolean;
+    hotSpotCleared?: boolean;
 }

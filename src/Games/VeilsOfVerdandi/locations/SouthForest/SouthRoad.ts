@@ -9,6 +9,7 @@ export function SouthRoad() {
 	return Location({
 		name: 'SouthRoad',
 		description: description,
+		isHotspot: true,
 		destinations: [
 			{
                 name: 'The Merchant',

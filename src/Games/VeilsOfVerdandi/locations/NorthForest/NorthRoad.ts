@@ -10,6 +10,7 @@ export function NorthRoad() {
 	return Location({
 		name: 'NorthRoad',
 		description: description,
+        isHotspot: true,
 		destinations: [
 			{
                 name: 'The Woodcutters Lodge',
