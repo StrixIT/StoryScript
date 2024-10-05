@@ -69,7 +69,8 @@ const serviceFactory = ServiceFactory.GetInstance();
         NgbCollapseModule,
         NgbModalModule,
         NgbDropdownModule,
-        NgbTypeaheadModule
+        NgbTypeaheadModule,
+        CombatComponent
     ],
     bootstrap: [
         MainComponent
@@ -83,7 +84,6 @@ const serviceFactory = ServiceFactory.GetInstance();
         BackpackComponent,
         ActionLogComponent,
         CharacterSheetComponent,
-        CombatComponent,
         LocationTextComponent,
         LocationVisualComponent,
         GroundComponent,
