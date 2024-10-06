@@ -119,3 +119,16 @@ blockquote {
 .time-editor select {
     max-width: 80px;
 }
+
+.enemy-health {
+    margin-bottom: 0;
+}
+
+.effects {
+    list-style: none;
+    padding-left: 0;
+}
+
+.Frozen {
+    color: #0b5ed7;
+}

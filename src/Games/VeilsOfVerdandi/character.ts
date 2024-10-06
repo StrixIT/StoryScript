@@ -14,11 +14,13 @@ export class Character implements ICharacter {
     items: IItem[] = [];
 
     // Combat states
-    defenseBonus?: number = 0;
-    spellDefence?: number;
-    frozen?: boolean;
-    frightened?: boolean;
-    confused?: boolean;
+    defenseBonus? = 0;
+    spellDefence? = 0;
+    frozen? = false;
+    frightened? = false;
+    confused? = false;
+    
+    effects?: string[];
 
     equipment: IEquipment = {};
 

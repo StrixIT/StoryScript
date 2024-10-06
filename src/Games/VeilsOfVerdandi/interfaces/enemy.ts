@@ -17,4 +17,6 @@ export interface IEnemy extends IFeature, StoryScriptIEnemy {
     frozen?: boolean;
     frightened?: boolean;
     confused?: boolean;
+
+    effects?: string[];
 }

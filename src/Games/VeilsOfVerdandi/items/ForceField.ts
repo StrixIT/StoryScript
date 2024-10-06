@@ -21,8 +21,8 @@ export function ForceField() {
         canTarget(game: IGame, item: IItem, target: Character): boolean {
             return target.defenseBonus === 0;
         },
-        use(game, character: Character, item, target) {
-            character.defenseBonus = 1;
+        use(game, character, item, target: Character) {
+            target.defenseBonus = 1;
         },
     });
 }

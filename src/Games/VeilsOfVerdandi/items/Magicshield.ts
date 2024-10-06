@@ -22,8 +22,8 @@ export function Magicshield() {
         canTarget(game: IGame, item: IItem, target: Character): boolean {
             return target.spellDefence === 0;
         },
-        use(game, character: Character, item, target) {
-            character.spellDefence = 2;
+        use(game, character, item, target: Character) {
+            target.spellDefence = 2;
         },
     });
 }
