@@ -23,11 +23,11 @@ export function PowerAttack1() {
 			
 			if (!totalDamage) {
 				game.logToCombatLog(`${character.name} misses ${target.name}!`);
-				return;
+			} else {
+				target.currentHitpoints -= totalDamage;
+				game.logToCombatLog(`${character.name} does ${totalDamage} damage to ${target.name}!`);
 			}
-
-			target.currentHitpoints -= totalDamage;
-			game.logToCombatLog(`${character.name} does ${totalDamage} damage to ${target.name}!`);
+			
 			item.selectable = false;
 		},
 		unequip(character: ICharacter, item: IItem, game: IGame): boolean {

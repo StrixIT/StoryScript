@@ -11,6 +11,18 @@ import {ICombatTurn} from "./interfaces/combatTurn.ts";
 import {ClassType} from "./classType.ts";
 
 export const combatRules = <ICombatRules>{
+    isTargeted(game: IGame, participant: Character) {
+        const enemyNames = (<ICombatSetup>game.combat).enemyTargets.filter(t => t.length === 2 && t[1] === participant);
+        let result = '';
+        
+        if (enemyNames.length > 0) {
+            enemyNames.forEach((t, i) => result += i > 0 ? ` and ${t[0].name}` : t[0].name);
+            result = `${participant.name} is targeted by ${result}!`;
+        }
+        
+        return result;
+    },
+    
     initCombat(game: IGame) {
         game.party.characters.forEach(c => {
             // Reset all combat-specific states.
@@ -37,9 +49,7 @@ export const combatRules = <ICombatRules>{
         }
 
         setEffects(combatSetup);
-
         getEnemyTargets(game, combatSetup);
-        logAttackPriority(game, combatSetup);
 
         if (useBows(combatSetup)) {
             filterBows(combatSetup, (s, c, i) => i.ranged);
@@ -141,18 +151,6 @@ function buildEffectArray(participant: IEnemy | Character): string[] {
     }
 
     return effects;
-}
-
-function logAttackPriority(game: IGame, combatSetup: ICombatSetup) {
-    if (combatSetup.round > 1) {
-        game.logToCombatLog('--------------------------------------------------');
-        game.logToCombatLog(`Round ${combatSetup.round}`);
-        game.logToCombatLog('--------------------------------------------------');
-        game.logToCombatLog('Attack priority: ' + combatSetup.enemyTargets.reduce((c: string, p, i: number, a) => {
-            const separator = a.length === i + 1 ? '.' : ', ';
-            return c + p[0].name + ' - ' + p[1].name + separator;
-        }, ''));
-    }
 }
 
 function getOrderedParticipants(game: IGame, combatSetup: ICombatSetup) {

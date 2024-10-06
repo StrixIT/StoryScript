@@ -132,3 +132,13 @@ blockquote {
 .Frozen {
     color: #0b5ed7;
 }
+
+combat-participant > div {
+    border: 2px solid white;
+    padding-top: 5px;
+    margin-bottom: 5px;
+}
+
+combat-participant > div.targeted {
+    border: 2px solid red;
+}

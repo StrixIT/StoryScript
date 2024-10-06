@@ -4,7 +4,7 @@ import description from './SilverDagger.html?raw';
 import { Constants } from '../constants';
 import { ClassType } from '../classType';
 import { equals } from 'storyScript/utilityFunctions.ts';
-import { Ghost } from '../enemies/Ghost';
+import { Spectre } from '../enemies/Spectre';
 import {IGroupableItem} from "../interfaces/item.ts";
 import {Dagger} from "./Dagger.ts";
 
@@ -14,7 +14,7 @@ export function SilverDagger() {
         description: description,
         damage: '1d4',
 		damageBonus: (game: IGame, enemy: IEnemy) => {
-            if (equals(enemy, Ghost)) {
+            if (equals(enemy, Spectre)) {
 				return game.helpers.rollDice('1d4');
 			}
 
