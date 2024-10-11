@@ -56,9 +56,8 @@ export function addArrayExtensions() {
                 } else {
                     result = this[0];
                 }
-
-                // Don't return deleted properties.
-                return result?.[StateProperties.Deleted] ? undefined : result;
+                
+                return result;
             }
         });
     }

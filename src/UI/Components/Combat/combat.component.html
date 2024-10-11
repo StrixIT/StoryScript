@@ -2,7 +2,7 @@
     <div *ngIf="enemiesPresent()" class="col-12">
         <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
         <div *ngFor="let enemyRow of enemyRows" class="row enemy-row">
-            <div *ngFor="let enemy of enemyRow" class="col-4">
+            <div *ngFor="let enemy of enemyRow" class="col-4" [ngClass]="{ 'unavailable': enemy.currentHitpoints <= 0 }">
                 <combat-participant [participant]="enemy"></combat-participant>
             </div>
         </div>
