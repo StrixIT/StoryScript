@@ -4,7 +4,7 @@ import description from './ShortBow.html?raw';
 import { ClassType } from '../classType';
 import { Constants } from '../constants';
 
-export function ShortBow() {
+export function QualityBow() {
 	return Item({
 		name: 'Quality Bow',
 		description: description,

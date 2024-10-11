@@ -1,7 +1,7 @@
-﻿import {EquipmentType, ICharacter, PlayState, TargetType} from 'storyScript/Interfaces/storyScript';
+﻿import {EquipmentType, PlayState, TargetType} from 'storyScript/Interfaces/storyScript';
 import {ClassType} from '../classType';
 import description from './Magicshield.html?raw';
-import {Character, IEnemy, IGame, IItem, Item} from '../types';
+import {Character, IGame, IItem, Item} from '../types';
 
 export function ForceField() {
     return Item({

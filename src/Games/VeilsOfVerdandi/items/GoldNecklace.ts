@@ -1,10 +1,10 @@
 ﻿import {EquipmentType} from 'storyScript/Interfaces/storyScript';
-import description from './Goldnecklace.html?raw';
+import description from './GoldNecklace.html?raw';
 import {ClassType} from '../classType';
 import {Item} from '../types';
 import {heal} from "../sharedFunctions.ts";
 
-export function Goldnecklace() {
+export function GoldNecklace() {
     return Item({
         name: 'Necklace',
         description: description,

@@ -2,9 +2,9 @@
 import description from './Woodcutter.html?raw';
 import {Spectre} from '../../enemies/Spectre';
 import {Parchment} from '../../items/Parchment';
-import {LongBow} from '../../items/LongBow';
 import {backToForestText} from "../../explorationRules.ts";
 import {NorthRoad} from "./NorthRoad.ts";
+import {QualityBow} from "../../items/QualityBow.ts";
 
 export function Woodcutter() {
     return Location({
@@ -21,7 +21,10 @@ export function Woodcutter() {
         ],
         items: [
             Parchment(),
-            LongBow(),
-        ]
+            QualityBow(),
+        ],
+        enterEvents: [[ 'FindGold', game => {
+            game.party.currency += 10;
+        }]]
     });
 }

@@ -1,7 +1,7 @@
 ﻿import { Location, IGame } from '../../types';
 import description from './Magicflowers.html?raw';
 import { Brownbear } from '../../enemies/Brownbear';
-import { Magicflower } from '../../items/Magicflower';
+import { MagicFlower } from '../../items/MagicFlower.ts';
 import { NorthRoad } from './NorthRoad';
 import {backToForestText} from "../../explorationRules.ts";
 
@@ -20,7 +20,7 @@ export function Magicflowers() {
 
         ],
         items: [
-            Magicflower(),                
+            MagicFlower(),                
         ]
     });
 }

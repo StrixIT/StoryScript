@@ -1,8 +1,8 @@
-﻿import { TargetType } from 'storyScript/Interfaces/storyScript';
-import { ClassType } from '../classType';
+﻿import {TargetType} from 'storyScript/Interfaces/storyScript';
+import {ClassType} from '../classType';
 import description from './Cutlass.html?raw';
-import { Constants } from '../constants';
-import { Item } from '../types';
+import {Constants} from '../constants';
+import {Item} from '../types';
 
 export function Cutlass() {
     return Item({

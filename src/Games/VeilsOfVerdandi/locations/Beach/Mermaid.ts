@@ -1,7 +1,7 @@
 import {IGame, Location} from '../../types';
 import description from './Mermaid.html?raw';
 import {Pearl} from '../../items/Pearl';
-import {Magicflower} from '../../items/Magicflower';
+import {MagicFlower} from '../../items/MagicFlower.ts';
 import {Beach} from "./Beach.ts";
 
 export function Mermaid() {
@@ -32,7 +32,7 @@ export function Mermaid() {
                     {
                         text: 'Give the Magic Flower to the Mermaid',
                         execute: (game: IGame) => {
-                            game.helpers.removeItemFromParty(Magicflower);
+                            game.helpers.removeItemFromParty(MagicFlower);
                             game.activeCharacter.items.add(Pearl);
                             setCompleted(game, 'giveflower');
                         },

@@ -13,7 +13,7 @@ export function Item(entity: IItem): IItem {
 
 export interface IItem extends IFeature, StoryScriptIItem {
     damage?: string;
-    damageBonus?: (game: IGame, enemy: IEnemy) => number;
+    damageSpecial?: (game: IGame, enemy: IEnemy) => void;
     defense?: number;
     speed?: number;
     arcane?: boolean;

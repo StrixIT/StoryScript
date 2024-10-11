@@ -1,7 +1,7 @@
-﻿import { EquipmentType, PlayState, TargetType } from 'storyScript/Interfaces/storyScript';
-import { ClassType } from '../classType';
+﻿import {EquipmentType, PlayState, TargetType} from 'storyScript/Interfaces/storyScript';
+import {ClassType} from '../classType';
 import description from './Frostbite.html?raw';
-import { IEnemy, Item } from '../types';
+import {IEnemy, Item} from '../types';
 
 export function Frostbite() {
     return Item({

@@ -254,12 +254,13 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
             }
             
             turn.target.currentHitpoints = Math.max(0, turn.target.currentHitpoints - totalDamage);
-
+            
             if (combatText) {
                 game.logToCombatLog(combatText + '.');
             }
 
             game.logToCombatLog(`${turn.character.name} does ${totalDamage} damage to ${turn.target.name}!`);
+            item.damageSpecial?.(game, turn.target);
         }
 
         // Confusion lasts only one turn.

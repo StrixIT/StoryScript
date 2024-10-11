@@ -1,7 +1,7 @@
 ﻿import {IGame, Location} from '../../types';
 import description from './ForestLake.html?raw';
 import {Bandit} from '../../enemies/Bandit';
-import {Goldnecklace} from '../../items/Goldnecklace';
+import {GoldNecklace} from '../../items/GoldNecklace.ts';
 import {Start} from './start';
 import {heal, locationComplete} from "../../sharedFunctions.ts";
 import {backToForestText} from "../../explorationRules.ts";
@@ -21,7 +21,7 @@ export function ForestLake() {
             Bandit()
         ],
         items: [
-            Goldnecklace()
+            GoldNecklace()
         ],
         enterEvents:
             [[
