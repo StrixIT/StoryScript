@@ -1,5 +1,5 @@
 import {IGame} from "./interfaces/game.ts";
-import {ICompiledLocation} from "./interfaces/location.ts";
+import {ICompiledLocation, ILocation} from "./interfaces/location.ts";
 import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
 import {descriptionSelector} from "./sharedFunctions.ts";
 import {IItem} from "./interfaces/item.ts";
@@ -12,7 +12,7 @@ import {Bandit} from "./enemies/Bandit.ts";
 import {Brownbear} from "./enemies/Brownbear.ts";
 import {ShadowDog} from "./enemies/ShadowDog.ts";
 import {Wolf} from "./enemies/Wolf.ts";
-import {Rest} from "./actions/Rest.ts";
+import {Rest, RestDay, RestNight} from "./actions/Rest.ts";
 
 const dayPartLength = 4;
 
@@ -60,6 +60,40 @@ function shuffle(encounters: [() => IEnemy][]): [() => IEnemy][] {
     return array;
 }
 
+export const backToForestText = 'To the forest';
+
+export const hotSpotProperties = <ILocation>{ 
+    isHotspot: true, 
+    actions: <[string, IAction][]>[
+        [ RestDay, {
+            ...Rest(),
+            activeDay: true,
+            
+        }],
+        [ RestNight, {
+            ...Rest(),
+            activeNight: true
+        }],
+    ],
+    enterEvents: [[
+        'Night', (game: IGame): boolean => {
+        // Todo: one text for night in all forest locations?
+        console.log(game.worldProperties.timeOfDay);
+        
+        Object.keys(game.locations).forEach(k => {
+            const location = game.locations[k];
+            const event = location.enterEvents?.find(a => a[0] === 'Night')?.[0];
+
+            if (event) {
+                location.enterEvents.delete(event);
+            }
+        });
+        
+        // Return true to prevent the event from being deleted twice.
+        return true;
+    }]]
+};
+
 export const explorationRules = <IExplorationRules>{
     enterLocation: (game: IGame, location: ICompiledLocation, travel: boolean): void => {
         if (!dayEncounterPile.length) {
@@ -81,17 +115,6 @@ export const explorationRules = <IExplorationRules>{
                 const encounterPile = game.worldProperties.isDay ? dayEncounterPile : nightEncounterPile;
                 const hotSpotEncounter = encounterPile.pop();
                 hotSpotEncounter.forEach(e => location.enemies.add(e));
-            }
-
-            const restDay = game.worldProperties.isDay && !game.worldProperties.hasRestedDuringDay;
-            const restNight = game.worldProperties.isNight && !game.worldProperties.hasRestedDuringNight;
-            const actionKey = game.worldProperties.isDay ? 'RestDay' : 'RestNight';
-
-            if (restDay || restNight && !location.activeActions.find(a => a[0] === actionKey)) {
-                const restAction = Rest();
-                restAction.activeDay = game.worldProperties.isDay;
-                restAction.activeNight = game.worldProperties.isNight;
-                location.actions.add([actionKey, restAction]);
             }
         }
 

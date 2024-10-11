@@ -1,7 +1,8 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {Location} from '../../types';
 import description from './Merchant.html?raw';
-import { SouthRoad } from './SouthRoad';
-import { Merchant as MerchantPerson } from '../../persons/Merchant';
+import {SouthRoad} from './SouthRoad';
+import {Merchant as MerchantPerson} from '../../persons/Merchant';
+import {backToForestText} from "../../explorationRules.ts";
 
 export function Merchant() {
     return Location({
@@ -9,12 +10,12 @@ export function Merchant() {
         description: description,
         destinations: [
             {
-                name: 'The South Road',
+                name: backToForestText,
                 target: SouthRoad
-            }        
+            }
         ],
         persons: [
             MerchantPerson()
-        ]                
+        ]
     });
 }

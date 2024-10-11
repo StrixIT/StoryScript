@@ -3,6 +3,7 @@ import description from './Magicflowers.html?raw';
 import { Brownbear } from '../../enemies/Brownbear';
 import { Magicflower } from '../../items/Magicflower';
 import { NorthRoad } from './NorthRoad';
+import {backToForestText} from "../../explorationRules.ts";
 
 export function Magicflowers() {
     return Location({
@@ -10,7 +11,7 @@ export function Magicflowers() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
+                name: backToForestText,
                 target: NorthRoad
             }              
         ],            

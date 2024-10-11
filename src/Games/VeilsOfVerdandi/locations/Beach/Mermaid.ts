@@ -2,7 +2,7 @@ import {IGame, Location} from '../../types';
 import description from './Mermaid.html?raw';
 import {Pearl} from '../../items/Pearl';
 import {Magicflower} from '../../items/Magicflower';
-import {Fisherman} from '../NorthForest/Fisherman';
+import {Beach} from "./Beach.ts";
 
 export function Mermaid() {
     return Location({
@@ -10,8 +10,8 @@ export function Mermaid() {
         description: description,
         destinations: [
             {
-                name: 'The Fisherman\'s cottage',
-                target: Fisherman,
+                name: 'To the beach',
+                target: Beach,
                 style: 'location-danger'
             },
         ],

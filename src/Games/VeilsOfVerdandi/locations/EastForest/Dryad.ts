@@ -1,7 +1,8 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {IGame, Location} from '../../types';
 import description from './Dryad.html?raw';
-import { CentralForest } from './CentralForest';
-import { ForestPond } from './ForestPond';
+import {ForestPond} from './ForestPond';
+import {backToForestText} from "../../explorationRules.ts";
+import {EastRoad} from "./EastRoad.ts";
 
 export function Dryad() {
     return Location({
@@ -11,12 +12,12 @@ export function Dryad() {
             {
                 name: 'The Forest Pond',
                 target: ForestPond,
-				style: 'location-danger'
+                style: 'location-danger'
             },
             {
-                name: 'The Central Forest',
-                target: CentralForest
-            }           
+                name: backToForestText,
+                target: EastRoad
+            }
         ],
         leaveEvents:
             [[

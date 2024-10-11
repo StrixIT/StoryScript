@@ -2,6 +2,9 @@ import {IAction} from "../interfaces/action.ts";
 import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
 import {IGame} from "../interfaces/game.ts";
 
+export const RestDay = 'RestDay';
+export const RestNight = 'RestNight';
+
 export function Rest() {
     return <IAction>({
         text: 'Rest',
@@ -11,10 +14,10 @@ export function Rest() {
             
             if (game.worldProperties.isDay) {
                 game.worldProperties.hasRestedDuringDay = true;
-                removeAction(game.locations, 'RestDay');
+                removeAction(game.locations, RestDay);
             } else {
                 game.worldProperties.hasRestedDuringNight = true;
-                removeAction(game.locations, 'RestNight');
+                removeAction(game.locations, RestDay);
             }
         }
     });
@@ -23,7 +26,7 @@ export function Rest() {
 function removeAction(locations, key) {
     Object.keys(locations).forEach(k => {
         const location = locations[k];
-        const restDay = location.actions.find(a => a[0] === key)[0];
+        const restDay = location.actions?.find(a => a[0] === key)?.[0];
 
         if (restDay) {
             location.actions.delete(restDay);

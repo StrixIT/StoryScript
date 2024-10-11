@@ -12,10 +12,10 @@ import {ClassType} from "./classType.ts";
 
 export const combatRules = <ICombatRules>{
     isTargeted(game: IGame, participant: Character) {
-        const enemyNames = (<ICombatSetup>game.combat).enemyTargets.filter(t => t.length === 2 && t[1] === participant);
+        const enemyNames = (<ICombatSetup>game.combat).enemyTargets?.filter(t => t.length === 2 && t[1] === participant);
         let result = '';
         
-        if (enemyNames.length > 0) {
+        if (enemyNames?.length > 0) {
             enemyNames.forEach((t, i) => result += i > 0 ? ` and ${t[0].name}` : t[0].name);
             result = `${participant.name} is targeted by ${result}!`;
         }
@@ -49,7 +49,10 @@ export const combatRules = <ICombatRules>{
         }
 
         setEffects(combatSetup);
-        getEnemyTargets(game, combatSetup);
+        
+        if (combatSetup.round > 1) {
+            getEnemyTargets(game, combatSetup);
+        }
 
         if (useBows(combatSetup)) {
             filterBows(combatSetup, (s, c, i) => i.ranged);

@@ -1,34 +1,35 @@
-import { IGame, Location } from '../../types';
-import { Guardians } from './Guardians';
-import { Merchant } from './Merchant';
-import { CentralForest } from '../CentralForest/CentralForest';
+import {Location} from '../../types';
 import description from './SouthRoad.html?raw';
-import { Start } from '../ForestEntry/start';
+import {Stonemount} from "./Stonemount.ts";
+import {Merchant} from "./Merchant.ts";
+import {Start} from "../ForestEntry/start.ts";
+import {EastRoad} from "../EastForest/EastRoad";
+import {hotSpotProperties} from "../../explorationRules.ts";
 
 export function SouthRoad() {
-	return Location({
-		name: 'SouthRoad',
-		description: description,
-		isHotspot: true,
-		destinations: [
+    return Location({
+        name: 'South Road',
+        description: description,
+		...hotSpotProperties,
+        destinations: [
 			{
+				name: 'The Forest Entry',
+				target: Start
+			},
+            {
+                name: 'The Stone Mount',
+                target: Stonemount,
+                style: 'location-danger'
+            },
+            {
                 name: 'The Merchant',
                 target: Merchant,
-				style: 'location-danger'
+                style: 'location-danger'
             },
-			{                          
-				name: 'The Strange Trees',
-				target: Guardians,
-				style: 'location-danger'
+			{
+				name: 'The East Road',
+				target: EastRoad
 			},
-			{
-                name: 'The Forest Entry',
-                target: Start,
-            },
-			{
-                name: 'The Central Forest',
-                target: CentralForest,
-            }
-		]
-	});
+        ]
+    });
 }

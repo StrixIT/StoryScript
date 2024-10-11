@@ -1,8 +1,9 @@
 ﻿import {Location} from '../../types';
 import description from './Guardians.html?raw';
-import {Cliffwall} from './Cliffwall';
+import {CliffWall} from './CliffWall.ts';
 import {Parchment} from '../../items/Parchment';
-import {SouthRoad} from './SouthRoad';
+import {EastRoad} from "./EastRoad.ts";
+import {backToForestText} from "../../explorationRules.ts";
 
 export function Guardians() {
     return Location({
@@ -10,12 +11,12 @@ export function Guardians() {
         description: description,
         destinations: [
             {
-                name: 'The Southern Road',
-                target: SouthRoad
+                name: backToForestText,
+                target: EastRoad
             },
             {
-                name: 'To the Cliffwall',
-                target: Cliffwall,
+                name: 'To the CliffWall',
+                target: CliffWall,
                 barriers: [
                     ['WallOfBranches', {
                         name: 'Wall of branches',

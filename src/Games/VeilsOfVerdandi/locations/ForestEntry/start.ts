@@ -2,16 +2,18 @@
 import description from './start.html?raw';
 import {Brennus} from './Brennus';
 import {ForestLake} from './ForestLake';
-import {Stonemount} from './Stonemount';
 import {NorthRoad} from '../NorthForest/NorthRoad';
-import {SouthRoad} from '../SouthForest/SouthRoad';
-import {nightFall} from "../../sharedFunctions.ts";
+import {SouthRoad} from "../SouthForest/SouthRoad.ts";
 
 export function Start() {
     return Location({
         name: 'The Forest of Myrr',
         description: description,
         destinations: [
+            {
+                name: 'The Northern Road',
+                target: NorthRoad,
+            },
             {
                 name: 'The Tent',
                 target: Brennus,
@@ -23,21 +25,9 @@ export function Start() {
                 style: 'location-danger'
             },
             {
-                name: 'The Stone Mount',
-                target: Stonemount,
-                style: 'location-danger'
-            },
-            {
-                name: 'The Northern Road',
-                target: NorthRoad,
-            },
-            {
-                name: 'The Southern Road',
+                name: 'The South Road',
                 target: SouthRoad,
             }
-        ],
-        enterEvents: [[
-            'Night', nightFall
-        ]]
+        ]
     });
 }

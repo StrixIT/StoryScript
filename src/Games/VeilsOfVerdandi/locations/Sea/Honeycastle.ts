@@ -1,8 +1,6 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {Location} from '../../types';
 import description from './Honeycastle.html?raw';
-import { Castleapproach } from './Castleapproach';
-import { Fisherman } from '../NorthForest/Fisherman';
-import { Octopus } from './Octopus';
+import {CastleInside} from "./CastleInside.ts";
 
 export function Honeycastle() {
     return Location({
@@ -10,20 +8,10 @@ export function Honeycastle() {
         description: description,
         destinations: [
             {
-                name: 'Approach the Castle',
-                target: Castleapproach
-            },            
-            {
-                name: 'The Fisherman\'s cottage',
-                target: Fisherman,
-                style: 'location-water'
-            },
-            {                          
-                name: 'The Octopus',
-                target: Octopus,
-                style: 'location-water'
-            },
-                 
-        ],             
+                name: 'Enter the Castle',
+                target: CastleInside,
+                style: 'location-danger'
+            }
+        ],
     });
 }

@@ -1,27 +1,31 @@
 ﻿import {SmallBoat} from '../../items/SmallBoat';
 import {Location} from '../../types';
 import description from './Fisherman.html?raw';
-import {NorthRoad} from './NorthRoad';
-import {Honeycastle} from '../Sea/Honeycastle';
-import {Mermaid} from '../Sea/Mermaid';
+import {Beach} from './Beach';
+import {Castleapproach} from "../Sea/Castleapproach.ts";
+import {Octopus} from "../Sea/Octopus.ts";
+import {Fisherman as FisherManPerson} from '../../persons/Fisherman'
 
 export function Fisherman() {
     return Location({
         name: 'The Fishermans Cottage',
         description: description,
+        persons: [
+            FisherManPerson()
+        ],
         destinations: [
             {
-                name: 'The Northern Road',
-                target: NorthRoad
+                name: 'To the Beach',
+                target: Beach
             },
             {
-                name: 'The Mermaid',
-                target: Mermaid,
-                style: 'location-danger'
+                name: 'The Octopus',
+                target: Octopus,
+                style: 'location-water'
             },
             {
-                name: 'The Honeycom Castle',
-                target: Honeycastle,
+                name: 'The Honeycomb Castle',
+                target: Castleapproach,
                 style: 'location-water',
                 barriers: [
                     ['BlueSea', {

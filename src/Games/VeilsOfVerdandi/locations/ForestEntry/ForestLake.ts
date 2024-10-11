@@ -4,6 +4,7 @@ import {Bandit} from '../../enemies/Bandit';
 import {Goldnecklace} from '../../items/Goldnecklace';
 import {Start} from './start';
 import {heal, locationComplete} from "../../sharedFunctions.ts";
+import {backToForestText} from "../../explorationRules.ts";
 
 export function ForestLake() {
     return Location({
@@ -11,7 +12,7 @@ export function ForestLake() {
         description: description,
         destinations: [
             {
-                name: 'The Forest Entry',
+                name: backToForestText,
                 target: Start
             }
         ],
@@ -26,9 +27,16 @@ export function ForestLake() {
             [[
                 'HealingWater',
                 (game: IGame) => {
+                    // Only trigger and remove this event during the day.
+                    if (game.worldProperties.isNight) {
+                        return true;
+                    }
+                    
                     game.party.characters.forEach(c => {
                         heal(c, 3);
                     });
+                    
+                    return false;
                 }
             ]],
         leaveEvents:

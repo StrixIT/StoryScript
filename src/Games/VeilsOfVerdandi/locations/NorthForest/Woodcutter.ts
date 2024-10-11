@@ -1,9 +1,10 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {Location} from '../../types';
 import description from './Woodcutter.html?raw';
-import { Start } from '../ForestEntry/start';
-import { Ghost } from '../../enemies/Ghost';
-import { Parchment } from '../../items/Parchment';
-import { LongBow } from '../../items/LongBow';
+import {Spectre} from '../../enemies/Spectre';
+import {Parchment} from '../../items/Parchment';
+import {LongBow} from '../../items/LongBow';
+import {backToForestText} from "../../explorationRules.ts";
+import {NorthRoad} from "./NorthRoad.ts";
 
 export function Woodcutter() {
     return Location({
@@ -11,12 +12,12 @@ export function Woodcutter() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Start                       
+                name: backToForestText,
+                target: NorthRoad
             }
         ],
         enemies: [
-            Ghost()
+            Spectre()
         ],
         items: [
             Parchment(),

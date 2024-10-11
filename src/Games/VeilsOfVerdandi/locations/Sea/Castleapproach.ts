@@ -1,7 +1,6 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {Location} from '../../types';
 import description from './Castleapproach.html?raw';
-import { CastleInside } from './CastleInside';
-import { Honeycastle } from './Honeycastle';
+import {Honeycastle} from "./Honeycastle.ts";
 
 export function Castleapproach() {
     return Location({
@@ -9,13 +8,9 @@ export function Castleapproach() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Honeycastle
-            },     
-            {
                 name: 'Enter the Castle',
-                target: CastleInside
-            }          
-        ],             
+                target: Honeycastle
+            }
+        ]
     });
 }

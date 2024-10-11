@@ -20,7 +20,7 @@ export function ColdIronAxe() {
         },
         speed: 6,
         equipmentType: Constants.PrimaryWeapon,
-        value: 35,
+        value: 30,
         attackText: '{0}} swings the Cold Iron Axe',
         itemClass: ClassType.Warrior,
         targetType: TargetType.Enemy,

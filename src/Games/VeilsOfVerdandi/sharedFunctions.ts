@@ -17,12 +17,6 @@ export function descriptionSelector(game: IGame): string {
     }
 }
 
-export function nightFall(game: IGame): boolean {
-    // Todo: one text for night in all forest locations?
-    console.log(game.worldProperties.timeOfDay);
-    return true;
-}
-
 export function locationComplete(game: IGame, location: ICompiledLocation, completeDay: (() => boolean), completeNight: (() => boolean)) {
     if (game.worldProperties.isDay) {
         if (!location.completedDay) {

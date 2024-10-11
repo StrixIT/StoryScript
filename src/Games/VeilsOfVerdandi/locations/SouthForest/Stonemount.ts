@@ -1,9 +1,10 @@
 ﻿import {IGame, Location} from '../../types';
 import description from './Stonemount.html?raw';
 import {Wolf} from '../../enemies/Wolf';
-import {Start} from './start';
 import {GhostBandit} from '../../enemies/GhostBandit';
 import {locationComplete} from "../../sharedFunctions.ts";
+import {backToForestText} from "../../explorationRules.ts";
+import {SouthRoad} from "./SouthRoad.ts";
 
 export function Stonemount() {
     return Location({
@@ -11,8 +12,8 @@ export function Stonemount() {
         description: description,
         destinations: [
             {
-                name: 'Back to the Map',
-                target: Start
+                name: backToForestText,
+                target: SouthRoad
             },
         ],
         enemies: [

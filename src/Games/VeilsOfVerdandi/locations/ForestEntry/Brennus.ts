@@ -3,6 +3,7 @@ import description from './Brennus.html?raw';
 import {Brennus as BrennusEnemy} from '../../enemies/Brennus';
 import {Start} from './start';
 import {locationComplete} from "../../sharedFunctions.ts";
+import {backToForestText} from "../../explorationRules.ts";
 
 export function Brennus() {
     return Location({
@@ -10,7 +11,7 @@ export function Brennus() {
         description: description,
         destinations: [
             {
-                name: 'To the Forest Entry',
+                name: backToForestText,
                 target: Start
             }
         ],
