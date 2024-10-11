@@ -1,5 +1,5 @@
-﻿import {Enemy as StoryScriptEnemy, IEnemy as StoryScriptIEnemy} from 'storyScript/Interfaces/storyScript';
-import {IFeature, IItem} from '../types';
+﻿import {Enemy as StoryScriptEnemy, ICharacter, IEnemy as StoryScriptIEnemy} from 'storyScript/Interfaces/storyScript';
+import {IFeature, IGame, IItem} from '../types';
 import { ClassType } from '../classType';
 
 export function Enemy(entity: IEnemy): IEnemy {
@@ -8,10 +8,8 @@ export function Enemy(entity: IEnemy): IEnemy {
 
 export interface IEnemy extends IFeature, StoryScriptIEnemy {
     items?: IItem[];
-    damage?: string;
+    attacks?: EnemyAttack[];
     defence?: number;
-    speed?: number;
-    attackPriority?: [ClassType, number[]][];
     activeNight?: boolean;
     activeDay?: boolean;
     frozen?: boolean;
@@ -19,4 +17,12 @@ export interface IEnemy extends IFeature, StoryScriptIEnemy {
     confused?: boolean;
 
     effects?: string[];
+}
+
+export interface EnemyAttack {
+    isMagic?: boolean;
+    damage: string;
+    damageSpecial?: (game: IGame, character: ICharacter) => void;
+    speed: number;
+    attackPriority: [ClassType, number[]][]
 }

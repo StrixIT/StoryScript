@@ -1,13 +1,13 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {Location} from '../../types';
 import description from './Darkcave.html?raw';
-import { Enchantress } from '../../enemies/Enchantress';
+import {KoboldWizard} from "../../enemies/KoboldWizard.ts";
 
 export function Darkcave() {
     return Location({
         name: 'The Dark Cave',
-        description: description,       
+        description: description,
         enemies: [
-            Enchantress()
+            KoboldWizard()
         ]
     });
 }

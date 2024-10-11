@@ -165,6 +165,7 @@ function getOrderedParticipants(game: IGame, combatSetup: ICombatSetup) {
         return a.combatSpeed - b.combatSpeed;
     });
 
+    // Frozen lasts only one turn, delete it after determining the combat order.
     participants.forEach(p => delete p.frozen);
 
     if (combatSetup.round > 1) {
@@ -226,12 +227,13 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
             const item = a === 0 ? turn.item : groupable.members[0] as IItem;
             const weaponDamage = game.helpers.rollDice(item.damage);
             totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(turn.character, 'damageBonus') - (turn.target.defence ?? 0));
+            totalDamage = turn.character.confused ? Math.ceil(totalDamage / 2) : totalDamage;
 
             if (!totalDamage) {
                 game.logToCombatLog(`${turn.character.name} misses ${turn.target.name}!`);
                 continue;
             }
-
+            
             turn.target.currentHitpoints = Math.max(0, turn.target.currentHitpoints - totalDamage);
 
             if (combatText) {
@@ -240,6 +242,9 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
 
             game.logToCombatLog(`${turn.character.name} does ${totalDamage} damage to ${turn.target.name}!`);
         }
+
+        // Confusion lasts only one turn.
+        turn.character.confused = false;
     }
 }
 
@@ -248,7 +253,9 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
         return;
     }
 
-    const characterDefense = game.helpers.calculateBonus(target, 'defense') + target.defenseBonus;
+    let characterDefense = game.helpers.calculateBonus(target, 'defense') + target.defenseBonus;
+    characterDefense = target.frightened ? Math.min(1, characterDefense - 1) : characterDefense;
+    
     const enemyDamage = game.helpers.rollDice(enemy.damage) + game.helpers.calculateBonus(enemy, 'damageBonus');
     let totalDamage = Math.max(0, enemyDamage - characterDefense);
 
@@ -269,6 +276,10 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
         return;
     }
 
+    if (enemy.damageSpecial) {
+        enemy.damageSpecial(game, target);
+    }
+    
     game.logToCombatLog(`${enemy.name} does ${totalDamage} damage to ${target.name}!`);
     target.currentHitpoints = Math.max(0, target.currentHitpoints - totalDamage);
 }

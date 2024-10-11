@@ -1,13 +1,18 @@
-﻿import { Enemy } from "../types";
+﻿import {Character, Enemy, IGame} from "../types";
 import description from './Spectre.html?raw';
 import {ClassType} from "../classType.ts";
+import {check} from "../sharedFunctions.ts";
 
 export function Spectre() {
     return Enemy({
         name: 'Spectre',
         description: description,
-        // Todo: damage is magical, add fright
-        damage: '1d4',
+        damage: '1d4M',
+        damageSpecial(game: IGame, character: Character) {
+            if (!check(game, 4)) {
+                character.frightened = true;
+            }
+        },
         defence: 4,
         speed: 5,
         hitpoints: 15,

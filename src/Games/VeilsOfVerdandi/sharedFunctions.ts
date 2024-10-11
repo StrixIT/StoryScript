@@ -3,6 +3,11 @@ import {ICompiledLocation} from "./interfaces/location.ts";
 import {Character} from "./character.ts";
 import {IItem} from "./interfaces/item.ts";
 
+export function check(game: IGame, challenge: number): boolean {
+    const check = game.helpers.rollDice('1d6');
+    return check <= challenge;
+}
+
 export function descriptionSelector(game: IGame): string {
     if (game.worldProperties.isNight) {
         return game.currentLocation.completedNight ? 'completednight' :

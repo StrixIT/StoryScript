@@ -13,7 +13,7 @@ export function LongBow() {
         equipmentType: Constants.Bow,
         ranged: true,
         value: 35,
-        attackText: '{0}} shoots the Long Bow',
+        attackText: '{0} shoots the Long Bow',
         itemClass: [ClassType.Rogue],
         targetType: TargetType.Enemy
     });

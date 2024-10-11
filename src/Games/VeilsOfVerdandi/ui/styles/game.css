@@ -133,6 +133,10 @@ blockquote {
     color: #0b5ed7;
 }
 
+.Frightened {
+    color: #ffca2c;
+}
+
 combat-participant > div {
     border: 2px solid white;
     padding-top: 5px;
