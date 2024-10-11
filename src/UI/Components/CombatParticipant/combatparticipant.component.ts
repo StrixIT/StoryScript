@@ -6,6 +6,7 @@ import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {CommonModule} from "@angular/common";
+import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 
 @Component({
     standalone: true,
@@ -19,9 +20,11 @@ export class CombatParticipantComponent {
     constructor() {
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
+        this.rules = objectFactory.GetRules();
         this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;
+    rules: IRules;
     texts: IInterfaceTexts;
 }
