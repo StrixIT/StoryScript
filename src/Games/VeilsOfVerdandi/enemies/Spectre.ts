@@ -7,19 +7,23 @@ export function Spectre() {
     return Enemy({
         name: 'Spectre',
         description: description,
-        damage: '1d4M',
-        damageSpecial(game: IGame, character: Character) {
-            if (!check(game, 4)) {
-                character.frightened = true;
-            }
-        },
-        defence: 4,
-        speed: 5,
         hitpoints: 15,
+        defence: 4,
         currency: 4,
-        attackPriority: [
-            [ClassType.Wizard, [1,2,3,4]],
-            [ClassType.Warrior, [5,6]]
+        attacks: [
+            {
+                damage: '1d4',
+                damageSpecial(game: IGame, character: Character) {
+                    if (!check(game, 4)) {
+                        character.frightened = true;
+                    }
+                },
+                speed: 5,
+                attackPriority: [
+                    [ClassType.Wizard, [1, 2, 3, 4]],
+                    [ClassType.Warrior, [5, 6]]
+                ]
+            }
         ],
         activeNight: true
     });

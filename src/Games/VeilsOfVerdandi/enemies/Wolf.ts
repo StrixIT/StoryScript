@@ -5,6 +5,9 @@ import {ClassType} from "../classType.ts";
 export function Wolf() {
     return Enemy({
         name: 'Wolf',
+        hitpoints: 10,
+        defence: 2,
+        currency: 1,
         description: description,
         attacks: [{
             damage: '1d6',
@@ -13,9 +16,6 @@ export function Wolf() {
                 [ClassType.Rogue, [4,5,6]]
             ],
         }],
-        defence: 2,
-        hitpoints: 10,
-        currency: 1,
         activeDay: true
     });
 }

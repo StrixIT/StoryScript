@@ -6,5 +6,5 @@ import {IEnemy} from "./enemy.ts";
 export interface ICombatSetup extends StoryScriptCombatSetup<ICombatTurn> {
     characters: Character[],
     enemies: IEnemy[],
-    enemyTargets: [IEnemy, Character][];
+    enemyTargets: [IEnemy, Character[]][];
 }

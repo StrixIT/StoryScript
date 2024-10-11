@@ -13,6 +13,7 @@ import {Brownbear} from "./enemies/Brownbear.ts";
 import {ShadowDog} from "./enemies/ShadowDog.ts";
 import {Wolf} from "./enemies/Wolf.ts";
 import {Rest, RestDay, RestNight} from "./actions/Rest.ts";
+import nightDescription from './locations/NightDescription.html?raw';
 
 const dayPartLength = 4;
 
@@ -77,19 +78,22 @@ export const hotSpotProperties = <ILocation>{
     ],
     enterEvents: [[
         'Night', (game: IGame): boolean => {
-        // Todo: one text for night in all forest locations?
-        console.log(game.worldProperties.timeOfDay);
-        
-        Object.keys(game.locations).forEach(k => {
-            const location = game.locations[k];
-            const event = location.enterEvents?.find(a => a[0] === 'Night')?.[0];
+        if (game.worldProperties.isNight) {
+            game.currentLocation.descriptions.nightfall = nightDescription;
+            game.currentLocation.descriptionSelector = 'nightfall';
 
-            if (event) {
-                location.enterEvents.delete(event);
-            }
-        });
-        
-        // Return true to prevent the event from being deleted twice.
+            Object.keys(game.locations).forEach(k => {
+                const location = game.locations[k];
+                const event = location.enterEvents?.find(a => a[0] === 'Night')?.[0];
+
+                if (event) {
+                    location.enterEvents.delete(event);
+                }
+            });
+        }
+
+        // Don't delete the event when the location is visited during the day. Return true
+        // at night too, as the event is deleted by the code already.
         return true;
     }]]
 };
