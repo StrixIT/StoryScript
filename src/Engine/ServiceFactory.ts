@@ -64,7 +64,7 @@ export class ServiceFactory {
         this._itemService = new ItemService(this._game, this._rules, this._texts);
         this._soundService = new SoundService(this._game, this._rules);
         this._dataService = new DataService(localStorageService, this._dataSerializer, this._dataSynchronizer, this._rules, nameSpace);
-        this._tradeService = new TradeService(this._itemService, this._game, this._texts,definitions);
+        this._tradeService = new TradeService(this._itemService, this._game, this._rules, this._texts,definitions);
         this._conversationService = new ConversationService(this._game);
         this._characterService = new CharacterService(this._dataService, this._game, this._rules);
         const locationService = new LocationService(definitions, this._rules, this._game);

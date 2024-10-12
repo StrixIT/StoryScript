@@ -131,7 +131,17 @@ export class ItemService implements IItemService {
         }
     }
 
-    isEquippable = (item: IItem): boolean => item.equipmentType != EquipmentType.Miscellaneous;
+    isEquippable = (item: IItem, character?: ICharacter): boolean => {
+        if (item.equipmentType === EquipmentType.Miscellaneous) {
+            return false;
+        }
+        
+        if (this._rules.character.canEquip) {
+            return this._rules.character.canEquip(item, character);
+        }
+        
+        return true;
+    };
 
     equipItem = (character: ICharacter, item: IItem): boolean => {
         const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];

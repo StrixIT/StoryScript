@@ -46,6 +46,14 @@ export interface ICharacterRules {
     levelUp?(character: ICharacter, characterData: ICreateCharacter): boolean;
 
     /**
+     * Specify this function if you want to apply custom rules to check whether a character can equip an item.
+     * If the player is not allowed to equip the item, return false.
+     * @param item The item about to be equipped
+     * @param character The player character
+     */
+    canEquip?(item: IItem, character: ICharacter): boolean;
+    
+    /**
      * Specify this function if you want to apply custom rules before allowing a player to equip an item. If the player
      * is not allowed to equip the item, return false.
      * @param game The active game

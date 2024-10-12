@@ -39,7 +39,7 @@ export class BackpackComponent {
 
     getItemName = (item: IItem): string => this._itemService.getItemName(item);
 
-    canEquip = (item: IItem): boolean => this._itemService.isEquippable(item);
+    canEquip = (item: IItem): boolean => this._itemService.isEquippable(item, this.character);
 
     canDrop = (item: IItem): boolean => this._itemService.canDrop(item);
 

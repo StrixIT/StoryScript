@@ -1,6 +1,6 @@
 import { IGame } from '../game';
 import { PlayState } from '../enumerations/playState';
-import {GameState, ICharacter, IGroupableItem, IItem} from '../storyScript';
+import {GameState, ICharacter, IGroupableItem, IItem, ITrade} from '../storyScript';
 
 export interface IGeneralRules {
     /**
@@ -61,4 +61,12 @@ export interface IGeneralRules {
      * @param item The item to add as a member to the parent.
      */
     canGroupItem?(character: ICharacter, group: IGroupableItem<IItem>, item: IGroupableItem<IItem>): boolean;
+
+    /**
+     * Use this function if you want to run code to determine whether an item can be sold to a buyer.
+     * @param game The game object
+     * @param item The item to sell
+     * @param buyer The potential buyer
+     */
+    canBuyItem?(game: IGame, item: IItem, buyer: ITrade | ICharacter): boolean;
 }
