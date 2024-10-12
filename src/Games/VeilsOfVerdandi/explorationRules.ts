@@ -68,11 +68,13 @@ export const hotSpotProperties = <ILocation>{
     actions: <[string, IAction][]>[
         [ RestDay, {
             ...Rest(),
+            confirmationText: 'Are you sure you want to rest now? You can only rest once during the day!',
             activeDay: true,
             
         }],
         [ RestNight, {
             ...Rest(),
+            confirmationText: 'Are you sure you want to rest now? You can only rest once during the night!',
             activeNight: true
         }],
     ],
@@ -139,7 +141,7 @@ export const explorationRules = <IExplorationRules>{
 }
 
 function updateTime(game: IGame, travel: boolean): void {
-    if (travel) {
+    if (travel && game.currentLocation.isHotspot) {
         if (typeof game.worldProperties.isDay === 'undefined') {
             game.worldProperties.isDay = true;
             game.worldProperties.isNight = false;

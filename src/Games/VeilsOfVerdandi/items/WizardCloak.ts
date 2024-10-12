@@ -1,15 +1,15 @@
 ﻿import {EquipmentType} from 'storyScript/Interfaces/storyScript';
 import {ClassType} from '../classType';
-import description from './Leatherarmour.html?raw';
+import description from './WizardCloak.html?raw';
 import {Item} from '../types';
 
-export function LeatherArmor() {
+export function WizardCloak() {
     return Item({
-        name: 'Leather Armor',
+        name: 'Wizard Cloak',
         description: description,
         defense: 1,
         equipmentType: EquipmentType.Body,
-        value: 10,
-        itemClass: [ClassType.Rogue, ClassType.Warrior]
+        value: 15,
+        itemClass: ClassType.Wizard
     });
 }

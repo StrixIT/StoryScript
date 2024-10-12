@@ -27,7 +27,8 @@ export function Rules(): IRules {
             },
             continueGame(game: IGame) {
                 game.worldProperties.changeTime = s => changeTime(game, s);
-            }
+            },
+            intro: true
         },
 
         general: {

@@ -14,22 +14,26 @@ export function Rest() {
             
             if (game.worldProperties.isDay) {
                 game.worldProperties.hasRestedDuringDay = true;
-                removeAction(game.locations, RestDay);
+                removeActionAndResetHotspots(game.locations, RestDay);
             } else {
                 game.worldProperties.hasRestedDuringNight = true;
-                removeAction(game.locations, RestDay);
+                removeActionAndResetHotspots(game.locations, RestDay);
             }
         }
     });
 }
 
-function removeAction(locations, key) {
+function removeActionAndResetHotspots(locations, key) {
     Object.keys(locations).forEach(k => {
         const location = locations[k];
-        const restDay = location.actions?.find(a => a[0] === key)?.[0];
+        const rest = location.actions?.find(a => a[0] === key)?.[0];
 
-        if (restDay) {
-            location.actions.delete(restDay);
+        if (rest) {
+            location.actions.delete(rest);
+        }
+        
+        if (location.isHotspot) {
+            location.hotSpotCleared = false;
         }
     });
 }

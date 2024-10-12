@@ -7,6 +7,7 @@ export function CustomTexts(): IInterfaceTexts {
         rightRing: 'Ring',
         primaryWeapon: 'Primary weapon',
         secondaryWeapon: 'Secondary weapon',
-        groupItem: 'Join'
+        groupItem: 'Join',
+        skipIntro: 'Start your adventure!'
     };
 }
