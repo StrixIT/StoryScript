@@ -99,7 +99,9 @@ export class DefaultTexts {
         confirmRestart: 'Really restart?',
         restartCancelled: 'No',
         restartConfirmed: 'Yes',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
+        confirmAction: 'Ok',
+        cancelAction: 'Cancel'
     }
 
     format = format;

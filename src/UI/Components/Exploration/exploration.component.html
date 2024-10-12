@@ -1,11 +1,20 @@
 <div id="exploration">
     <div class="box-container" id="exploration-actions" *ngIf="actionsPresent()">
         <div class="box-title">{{ texts.actions }}</div>
-        <ul class="list-unstyled">
+        <ul class="list-unstyled" *ngIf="!confirmAction">
             <li class="inline" *ngFor="let action of game.currentLocation.activeActions">
                 <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="disableActionButton(action)" *ngIf="!hideActionButton(action)">{{ action[1].text }}</button>
             </li>
         </ul>
+        <div *ngIf="confirmAction">
+            <p [innerHTML]="confirmAction[1].confirmationText | safe: 'html'"></p>
+            <ul class="list-unstyled">
+                <li class="inline">
+                    <button type="button" class="btn btn-primary" (click)="cancelAction(confirmAction)">{{ texts.cancelAction }}</button>
+                    <button type="button" class="btn btn-warning" (click)="executeAction(confirmAction)">{{ texts.confirmAction }}</button>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class="box-container" id="exploration-destinations" *ngIf="!enemiesPresent()">
         <div class="box-title">{{ texts.destinations }}</div>
