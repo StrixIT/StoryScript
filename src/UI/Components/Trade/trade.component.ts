@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, IItem, ITrade } from 'storyScript/Interfaces/storyScript';
+import {ICharacter, IGame, IInterfaceTexts, IItem, ITrade} from 'storyScript/Interfaces/storyScript';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
@@ -21,9 +21,7 @@ export class TradeComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    canPay = (currency: number, value: number): boolean => {
-        return this._tradeService.canPay(currency, value);
-    }
+    canPay = (item: IItem, buyer: ITrade | ICharacter, currency: number, value: number): boolean => this._tradeService.canPay(item, buyer, currency, value);
 
     actualPrice = (item: IItem, modifier: number | (() => number)): number => this._tradeService.actualPrice(item, modifier);
 

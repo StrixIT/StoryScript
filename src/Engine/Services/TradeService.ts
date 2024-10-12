@@ -11,9 +11,11 @@ import {StateProperties} from "storyScript/stateProperties.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {randomList} from "storyScript/Services/sharedFunctions.ts";
 import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
+import {ICharacter} from "storyScript/Interfaces/character.ts";
+import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 
 export class TradeService implements ITradeService {
-    constructor(private _itemService: IItemService, private _game: IGame, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {
+    constructor(private _itemService: IItemService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {
     }
 
     trade = (trade: IPerson | ITrade): void => {
@@ -38,7 +40,13 @@ export class TradeService implements ITradeService {
         this._game.playState = PlayState.Trade;
     }
 
-    canPay = (currency: number, value: number): boolean => (value != undefined && currency != undefined && currency >= value) || value == 0;
+    canPay = (item: IItem, buyer: ITrade | ICharacter, currency: number, value: number): boolean => {
+        if (this._rules.general.canBuyItem && !this._rules.general.canBuyItem(this._game, item, buyer)) {
+            return false;
+        }
+
+        return (value != undefined && currency != undefined && currency >= value) || value == 0;
+    };
 
     actualPrice = (item: IItem, modifier: number | (() => number)): number => {
         let resolvedModifier: number;
