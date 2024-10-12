@@ -3,6 +3,7 @@ import description from './Dryad.html?raw';
 import {ForestPond} from './ForestPond';
 import {backToForestText} from "../../explorationRules.ts";
 import {EastRoad} from "./EastRoad.ts";
+import {SmallDiamond} from "../../items/SmallDiamond.ts";
 
 export function Dryad() {
     return Location({
@@ -19,6 +20,19 @@ export function Dryad() {
                 target: EastRoad
             }
         ],
+        enterEvents: [[
+            'ClaimReward', 
+            (game: IGame) => {
+                if (game.currentLocation.descriptionSelector === 'return') {
+                    game.party.currency += 20;
+                    game.activeCharacter.items.add(SmallDiamond);
+                    game.activeCharacter.items.add(SmallDiamond);
+                    return false;
+                }
+                
+                return true;
+            }
+        ]],
         leaveEvents:
             [[
                 'LeaveDryad',

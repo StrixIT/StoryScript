@@ -10,7 +10,6 @@ export function GoldNecklace() {
         description: description,
         equipmentType: EquipmentType.Amulet,
         speed: 7,
-        value: 65,
         itemClass: [ClassType.Rogue, ClassType.Warrior, ClassType.Wizard],
         targetType: TargetType.AllyOrSelf,
         activeNight: true,

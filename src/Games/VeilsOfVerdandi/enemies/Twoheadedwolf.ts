@@ -1,4 +1,4 @@
-﻿import {Character, Enemy, IGame} from '../types';
+﻿import {Character, Enemy, IEnemy, IGame} from '../types';
 import {ClassType} from "../classType.ts";
 
 export function Twoheadedwolf() {
@@ -35,7 +35,7 @@ export function Twoheadedwolf() {
     });
 }
 
-function fireDamage(game: IGame, character: Character) {
+function fireDamage(game: IGame, enemy: IEnemy, character: Character) {
     const fireDamage = 1 - (character.spellDefence ?? 0);
     
     if (fireDamage > 0) {

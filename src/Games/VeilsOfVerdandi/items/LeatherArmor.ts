@@ -9,7 +9,6 @@ export function LeatherArmor() {
         description: description,
         defense: 1,
         equipmentType: EquipmentType.Body,
-        value: 10,
         itemClass: [ClassType.Rogue, ClassType.Warrior]
     });
 }

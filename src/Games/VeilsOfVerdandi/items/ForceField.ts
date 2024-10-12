@@ -8,7 +8,6 @@ export function ForceField() {
         name: 'Force Field Spell',
         description: description,
         equipmentType: EquipmentType.Miscellaneous,
-        value: 15,
         speed: 5,
         recharge: 1,
         itemClass: ClassType.Wizard,

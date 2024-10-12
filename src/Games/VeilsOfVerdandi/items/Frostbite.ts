@@ -8,7 +8,6 @@ export function Frostbite() {
         name: 'Frostbite Spell',
         description: description,
         equipmentType: EquipmentType.Miscellaneous,
-        value: 25,
         speed: 6,
         recharge: 2,
         targetType: TargetType.Enemy,

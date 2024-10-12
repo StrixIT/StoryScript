@@ -1,7 +1,8 @@
-import {Character, Enemy, IGame} from '../types';
+import {Character, Enemy, IEnemy, IGame} from '../types';
 import description from './ShadowDog.html?raw';
 import {ClassType} from "../classType.ts";
 import {check} from "../sharedFunctions.ts";
+import {damageSpecial} from "../combatRules.ts";
 
 export function ShadowDog() {
     return Enemy({
@@ -13,11 +14,7 @@ export function ShadowDog() {
         attacks: [
             {
                 damage: '1d8',
-                damageSpecial(game: IGame, character: Character) {
-                    if (!check(game, 3)) {
-                        character.frightened = true;
-                    }
-                },
+                damageSpecial: (game: IGame, enemy: IEnemy, character: Character) => damageSpecial(game, enemy, character, 'frightened', 3),
                 speed: 4,
                 attackPriority: [
                     [ClassType.Warrior, [1, 2, 3, 4]],

@@ -113,7 +113,15 @@ export const explorationRules = <IExplorationRules>{
         location.enemies?.forEach(enemy => enemy.inactive = !isEntityActive(game, enemy));
         location.items?.forEach(item => item.inactive = !isEntityActive(game, item));
         location.destinations?.forEach(destination => destination.inactive = !isEntityActive(game, destination));
-        location.actions?.forEach(([k, v]) => v.status = !isEntityActive(game, v) ? ActionStatus.Unavailable : v.status);
+        location.actions?.forEach(([k, v]) => {
+            const isActive = isEntityActive(game, v);
+            
+            if (!isActive) {
+                v.status = ActionStatus.Unavailable;
+            } else {
+                v.status = v.status !== ActionStatus.Unavailable ? v.status : ActionStatus.Available;
+            }
+        });
 
         if (location.isHotspot) {
             if (!location.hotSpotCleared && !location.enemies.length) {

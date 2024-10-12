@@ -1,6 +1,7 @@
-﻿import {Character, Enemy, IGame} from "../types";
+﻿import {Character, Enemy, IEnemy, IGame} from "../types";
 import {check} from "../sharedFunctions.ts";
 import {ClassType} from "../classType.ts";
+import {damageSpecial} from "../combatRules.ts";
 
 export function KoboldWizard() {
     return Enemy({
@@ -21,11 +22,7 @@ export function KoboldWizard() {
                 damage: '1d4',
                 isMagic: true,
                 speed: 7,
-                damageSpecial(game: IGame, character: Character) {
-                    if (!check(game, 4)) {
-                        character.confused = true;
-                    }
-                },
+                damageSpecial: (game: IGame, enemy: IEnemy, character: Character) => damageSpecial(game, enemy, character, 'confused', 4),
                 attackPriority: [
                     [ClassType.Wizard, [1, 2, 3, 4]],
                     [ClassType.Wizard, [5, 6]]

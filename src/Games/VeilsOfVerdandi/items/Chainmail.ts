@@ -9,7 +9,6 @@ export function Chainmail() {
         description: description,
         defense: 2,
         equipmentType: EquipmentType.Body,
-        value: 20,
         itemClass: [ClassType.Warrior, ClassType.Rogue]
     });
 }

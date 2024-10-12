@@ -1,5 +1,6 @@
-﻿import {Character, Enemy, IGame} from "../types";
+﻿import {Character, Enemy, IEnemy, IGame} from "../types";
 import {ClassType} from "../classType.ts";
+import {damageSpecial} from "../combatRules.ts";
 
 export function DarkDryad() {
     return Enemy({
@@ -11,9 +12,7 @@ export function DarkDryad() {
             {
                 damage: '1d6',
                 isMagic: true,
-                damageSpecial(game: IGame, character: Character) {
-                    character.frozen = true;
-                },
+                damageSpecial: (game: IGame, enemy: IEnemy, character: Character) => damageSpecial(game, enemy, character, 'frozen'),
                 speed: 7,
                 attackPriority: [
                     [ClassType.Wizard, [1, 2, 3, 4]],

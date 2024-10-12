@@ -4,13 +4,19 @@ import {IEnemy, IEnemyAttack} from "./interfaces/enemy.ts";
 import {Character} from "./character.ts";
 import {format} from "storyScript/defaultTexts.ts";
 import {TargetType} from "storyScript/Interfaces/enumerations/targetType.ts";
-import {descriptionSelector, getTopWeapon} from "./sharedFunctions.ts";
+import {check, descriptionSelector, getTopWeapon} from "./sharedFunctions.ts";
 import {ICombatRules} from "storyScript/Interfaces/rules/combatRules.ts";
 import {IGroupableItem, IItem} from "./interfaces/item.ts";
 import {ICombatTurn} from "./interfaces/combatTurn.ts";
 import {ClassType} from "./classType.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {CombatParticipant} from "./interfaces/combatParticipant.ts";
+
+export const damageSpecial = (game: IGame, enemy: IEnemy, character: Character, property: string, checkDifficulty?: number) => {
+    if (!checkDifficulty || !check(game, checkDifficulty)) {
+        character[property] = true;
+        game.logToCombatLog(`${character.name} is ${property} by the ${enemy.name}\`s attack!`)
+    }
+};
 
 export const combatRules = <ICombatRules>{
     isTargeted(game: IGame, participant: Character) {
@@ -303,7 +309,7 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
     }
 
     if (enemyAttack.damageSpecial) {
-        enemyAttack.damageSpecial(game, target);
+        enemyAttack.damageSpecial(game, enemy, target);
     }
 
     game.logToCombatLog(`${enemy.name} does ${totalDamage} damage to ${target.name}!`);

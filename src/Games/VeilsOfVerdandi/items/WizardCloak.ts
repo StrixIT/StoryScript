@@ -9,7 +9,6 @@ export function WizardCloak() {
         description: description,
         defense: 1,
         equipmentType: EquipmentType.Body,
-        value: 15,
         itemClass: ClassType.Wizard
     });
 }

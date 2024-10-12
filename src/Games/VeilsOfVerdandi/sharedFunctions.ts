@@ -15,7 +15,7 @@ export function descriptionSelector(game: IGame): string {
         if (game.currentLocation.completedDay) {
             selector = 'daycompleted'
         } else {
-            selector = game.currentLocation.encounterWonNight ? 'dayafter' : 'day';
+            selector = game.currentLocation.encounterWonDay ? 'dayafter' : 'day';
         }
     }
 

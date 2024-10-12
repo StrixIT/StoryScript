@@ -1,9 +1,10 @@
-﻿import {IRules} from 'storyScript/Interfaces/storyScript';
-import {IGame} from './types';
+﻿import {ICharacter, IRules} from 'storyScript/Interfaces/storyScript';
+import {Character, IGame, IItem} from './types';
 import {combatRules} from "./combatRules.ts";
-import {characterRules} from "./characterRules.ts";
+import {canEquip, characterRules} from "./characterRules.ts";
 import {explorationRules} from "./explorationRules.ts";
 import {IGroupableItem} from "./interfaces/item.ts";
+import {ITrade} from "./interfaces/trade.ts";
 
 export function Rules(): IRules {
     return {
@@ -42,6 +43,17 @@ export function Rules(): IRules {
                 }
 
                 return `${item.name} / ${item.members[0].name}`;
+            },
+            canBuyItem(game: IGame, item: IItem, buyer: ITrade | ICharacter): boolean {
+                if (!item.itemClass) {
+                    return true;
+                }
+                
+                if ((<Character>buyer).class) {
+                    return canEquip(item, buyer as Character);
+                }
+                
+                return true;
             }
         },
 

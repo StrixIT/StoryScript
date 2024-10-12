@@ -13,7 +13,6 @@ export function ShortBow() {
         equipmentType: Constants.Bow,
         targetType: TargetType.Enemy,
         ranged: true,
-        value: 15,
         attackText: '{0} shoots the Short Bow',
         itemClass: [ClassType.Rogue]
     });

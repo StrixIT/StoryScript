@@ -10,7 +10,6 @@ export function Fireball() {
         equipmentType: EquipmentType.Miscellaneous,
         speed: 7,
         recharge: 2,
-        value: 50,
         targetType: TargetType.Enemy,
         attackText: '{0}} casts Fireball',
         itemClass: ClassType.Wizard,

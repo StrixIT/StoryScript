@@ -9,6 +9,12 @@ import {CharacterClasses} from "./characterClass.ts";
 import {getEquipmentType} from "storyScript/utilityFunctions.ts";
 import {ICharacterRules} from "storyScript/Interfaces/rules/characterRules.ts";
 import {Dagger} from "./items/Dagger.ts";
+import {IItem} from "./interfaces/item.ts";
+
+export const canEquip = (item: IItem, character: Character): boolean => {
+    const classesToCheck = Array.isArray(item.itemClass) ? item.itemClass : [item.itemClass];
+    return classesToCheck.indexOf(character.class.name) > -1;
+}
 
 export const characterRules = <ICharacterRules>{
     getCreateCharacterSheet: (): ICreateCharacter => {
@@ -110,4 +116,6 @@ export const characterRules = <ICharacterRules>{
         
         return true;
     },
+    
+    canEquip: canEquip
 }

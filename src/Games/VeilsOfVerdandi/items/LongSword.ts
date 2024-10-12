@@ -11,7 +11,6 @@ export function LongSword() {
         speed: 4,
         damage: '1D6',
         equipmentType: Constants.PrimaryWeapon,
-        value: 15,
         targetType: TargetType.Enemy,
         attackText: '{0} swings the Long Sword',
         itemClass: ClassType.Warrior

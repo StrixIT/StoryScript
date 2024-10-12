@@ -3,9 +3,7 @@ import description from './Fisherman.html?raw';
 import {ColdIronAxe} from "../items/ColdIronAxe.ts";
 import {Cutlass} from "../items/Cutlass.ts";
 import {getId} from "storyScript/utilityFunctions.ts";
-import {Pearl} from "../items/Pearl.ts";
 import {PowerAttack2} from "../items/PowerAttack2.ts";
-import {Ruby} from "../items/Ruby.ts";
 
 export function Fisherman() {
     return Person({
@@ -32,7 +30,16 @@ export function Fisherman() {
                 text: 'Sell to the fisherman',
                 emptyText: 'I\'m sorry, there is nothing that you have that interests me.',
                 itemSelector(game: IGame, item: IItem): boolean {
-                    return item.id === getId(Pearl) || item.id == getId(Ruby);
+                    return item.value > 0;
+                },
+                priceModifier: (game: IGame): number => {
+                    return 0.6;
+                }
+            },
+            onBuy(game: IGame, item: IItem): void {
+                if (item.id === getId(PowerAttack2)) {
+                    game.activeCharacter.items.delete(item);
+                    game.activeCharacter.equipment.special = item;
                 }
             }
         },

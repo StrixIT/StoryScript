@@ -13,7 +13,6 @@ export function Dagger() {
         damage: '1d4',
         speed: 3,
         equipmentType: [Constants.PrimaryWeapon, Constants.SecondaryWeapon],
-        value: 5,
         attackText: '{0} thrusts the Dagger',
         itemClass: [ClassType.Rogue, ClassType.Warrior],
         targetType: TargetType.Enemy,

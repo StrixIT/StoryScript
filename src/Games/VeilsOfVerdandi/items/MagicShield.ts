@@ -8,7 +8,6 @@ export function MagicShield() {
         name: 'Magic Shield Spell',
         description: description,
         equipmentType: EquipmentType.Miscellaneous,
-        value: 15,
         speed: 5,
         recharge: 1,
         targetType: TargetType.AllyOrSelf,
@@ -22,6 +21,7 @@ export function MagicShield() {
             return target.spellDefence === 0;
         },
         use(game, character, item, target: Character) {
+            game.logToCombatLog(`${character.name} casts Magic Shield on ${target.name}.`);
             target.spellDefence = 2;
         },
     });

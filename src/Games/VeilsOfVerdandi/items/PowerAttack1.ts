@@ -2,12 +2,14 @@ import {IEnemy, IGame, IItem, Item} from '../types';
 import {ICharacter, TargetType} from 'storyScript/Interfaces/storyScript';
 import description from './PowerAttack1.html?raw';
 import {getTopWeapon} from "../sharedFunctions.ts";
+import {ClassType} from "../classType.ts";
 
 export function PowerAttack1() {
     return Item({
         name: 'Power Attack 1',
         description: description,
         equipmentType: 'Special',
+        itemClass: ClassType.Warrior,
         // This special uses the speed of the weapon it is applied to.
         speed: 0,
         targetType: TargetType.Enemy,

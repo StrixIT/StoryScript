@@ -22,7 +22,7 @@ export interface IEnemy extends IFeature, StoryScriptIEnemy {
 export interface IEnemyAttack {
     isMagic?: boolean;
     damage: string;
-    damageSpecial?: (game: IGame, character: ICharacter) => void;
+    damageSpecial?: (game: IGame, enemy: IEnemy, character: ICharacter) => void;
     speed: number;
     attackPriority: [ClassType, number[]][]
 }

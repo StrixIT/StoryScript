@@ -15,7 +15,6 @@ export function BeeSting() {
             game.combatLog.push(`${enemy.name} takes 2 poison damage!`);
         },
         equipmentType: Constants.PrimaryWeapon,
-        value: 20,
         attackText: '{0} swings Bee\'s Sting',
         itemClass: ClassType.Warrior,
         targetType: TargetType.Enemy,

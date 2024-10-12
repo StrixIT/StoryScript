@@ -5,6 +5,8 @@ import {GhostBandit} from '../../enemies/GhostBandit';
 import {locationComplete} from "../../sharedFunctions.ts";
 import {backToForestText} from "../../explorationRules.ts";
 import {SouthRoad} from "./SouthRoad.ts";
+import {Pearl} from "../../items/Pearl.ts";
+import {Ruby} from "../../items/Ruby.ts";
 
 export function Stonemount() {
     return Location({
@@ -27,7 +29,8 @@ export function Stonemount() {
                 {
                     text: 'Search the stone mount',
                     execute: (game: IGame) => {
-                        game.activeCharacter.currency += 35;
+                        game.party.currency += 10;
+                        game.currentLocation.items.add(Ruby);
                         game.logToLocationLog(game.currentLocation.descriptions['search']);
                     },
                     activeNight: true
@@ -37,7 +40,7 @@ export function Stonemount() {
             [[
                 'Leave',
                 (game: IGame) => {
-                    locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length == 0, () => Object.keys(game.currentLocation.actions).length == 0);
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length == 0, () => game.currentLocation.actions.length == 0);
                     return true;
                 }
             ]]

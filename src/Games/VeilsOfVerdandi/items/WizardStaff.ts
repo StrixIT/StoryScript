@@ -10,7 +10,6 @@ export function WizardStaff() {
         damage: '1d4',
         description: description,
         equipmentType: Constants.PrimaryWeapon,
-        value: 10,
         speed: 5,
         attackText: '{0} swings the Wizard\'s Staff',
         itemClass: [ClassType.Wizard],
