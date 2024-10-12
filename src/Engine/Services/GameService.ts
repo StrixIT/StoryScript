@@ -176,6 +176,7 @@ export class GameService implements IGameService {
             // Use a timeout here to allow the UI to respond to the loading flag set.
             setTimeout(() => {
                 this._game.loading = false;
+                this._game.state = GameState.Play;
             }, 0);
         }
     }
