@@ -26,4 +26,11 @@ export interface IAction {
      * be allowed to execute more than once.
      */
     execute: string | ((game: IGame) => boolean | void);
+
+    /**
+     * If the player should confirm executing the action, specify a text to ask for confirmation here.
+     * The player will then be asked to confirm before the action is executed, and he'll have the
+     * option to cancel.
+     */
+    confirmationText?: string;
 }
