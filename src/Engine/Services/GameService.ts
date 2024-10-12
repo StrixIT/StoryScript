@@ -252,7 +252,7 @@ export class GameService implements IGameService {
 
             },
             set: value => {
-                if (value.currentHitpoints <= 0) {
+                if (!value || value.currentHitpoints <= 0) {
                     return;
                 }
 
@@ -329,6 +329,10 @@ export class GameService implements IGameService {
                     const change = value - currentHitpoints[c.name];
                     currentHitpoints[c.name] = value;
                     this._rules.character.hitpointsChange?.(this._game, c, change);
+
+                    if (currentHitpoints[c.name] <= 0) {
+                        this._game.activeCharacter = this._game.party.characters.find(c => c.currentHitpoints > 0);
+                    }
                 }
             });
 

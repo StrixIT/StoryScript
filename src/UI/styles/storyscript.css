@@ -30,7 +30,6 @@ button {
 
 .modal-header {
     display: grid;
-    justify-content: center;
 }
 
 .close {
