@@ -13,5 +13,10 @@ export function CustomTexts(): IInterfaceTexts {
         questFailed: 'You fall to the ground and the world fades before your eyes. The forest has defeated you, and you' +
             'have failed the king. There is no hope now for Prince Ture...',
         tryAgain: 'Face the forest once more!',
+        confirmBuy: 'Yes',
+        cancelBuy: 'No',
+        confirmSell: 'Yes',
+        cancelSell: 'No',
+        currency: 'Gold'
     };
 }
