@@ -10,7 +10,7 @@
             <p [innerHTML]="confirmAction[1].confirmationText | safe: 'html'"></p>
             <ul class="list-unstyled">
                 <li class="inline">
-                    <button type="button" class="btn btn-primary" (click)="cancelAction(confirmAction)">{{ texts.cancelAction }}</button>
+                    <button type="button" class="btn btn-primary" (click)="cancelAction()">{{ texts.cancelAction }}</button>
                     <button type="button" class="btn btn-warning" (click)="executeAction(confirmAction)">{{ texts.confirmAction }}</button>
                 </li>
             </ul>

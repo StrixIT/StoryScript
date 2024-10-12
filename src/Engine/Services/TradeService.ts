@@ -137,6 +137,9 @@ export class TradeService implements ITradeService {
         trader.sell.items ??= [];
         trader.sell.items.length = 0;
         itemsToSell.forEach(i => trader.sell.items.push(i));
+        
+        trader.buy.confirmationText ??= this._texts.buyConfirmationText;
+        trader.sell.confirmationText ??= this._texts.sellConfirmationText;
 
         return trader;
     }

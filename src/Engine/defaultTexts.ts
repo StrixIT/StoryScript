@@ -101,7 +101,13 @@ export class DefaultTexts {
         restartConfirmed: 'Yes',
         cancel: 'Cancel',
         confirmAction: 'Ok',
-        cancelAction: 'Cancel'
+        cancelAction: 'Cancel',
+        buyConfirmationText: 'Are you sure you want to buy the {0} for {1} {2}?',
+        confirmBuy: 'Ok',
+        cancelBuy: 'Cancel',
+        sellConfirmationText: 'Are you sure you want to sell the {0} for {1} {2}?',
+        confirmSell: 'Ok',
+        cancelSell: 'Cancel'
     }
 
     format = format;
