@@ -43,7 +43,7 @@ export function ForestLake() {
             [[
                 'Leave',
                 (game: IGame) => {
-                    locationComplete(game, game.currentLocation, () => game.currentLocation.activeEnemies.length == 0, () => game.currentLocation.items.length == 0);
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length == 0, () => game.currentLocation.items.length == 0);
                     return true;
                 }
             ]]

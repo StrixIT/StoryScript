@@ -22,6 +22,7 @@ export function ForceField() {
             return target.defenseBonus === 0;
         },
         use(game, character, item, target: Character) {
+            game.logToCombatLog(`${character.name} casts Force Field on ${target.name}.`);
             target.defenseBonus = 1;
         },
     });

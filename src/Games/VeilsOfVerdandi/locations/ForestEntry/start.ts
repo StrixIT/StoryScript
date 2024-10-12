@@ -4,11 +4,13 @@ import {Brennus} from './Brennus';
 import {ForestLake} from './ForestLake';
 import {NorthRoad} from '../NorthForest/NorthRoad';
 import {SouthRoad} from "../SouthForest/SouthRoad.ts";
+import {hotSpotProperties} from "../../explorationRules.ts";
 
 export function Start() {
     return Location({
         name: 'The Forest of Myrr',
         description: description,
+        ...hotSpotProperties,
         destinations: [
             {
                 name: 'The Northern Road',

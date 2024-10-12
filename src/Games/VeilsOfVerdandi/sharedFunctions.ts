@@ -9,38 +9,40 @@ export function check(game: IGame, challenge: number): boolean {
 }
 
 export function descriptionSelector(game: IGame): string {
-    if (game.worldProperties.isNight) {
-        return game.currentLocation.completedNight ? 'completednight' :
-            game.currentLocation.encounterWonDay ? 'nightafter' :
-                'night';
+    let selector: string;
 
-
-    } else {
-        return game.currentLocation.completedDay ? 'completedday' :
-            game.currentLocation.encounterWonNight ? 'dayafter' :
-                'day';
+    if (game.worldProperties.isDay) {
+        if (game.currentLocation.completedDay) {
+            selector = 'daycompleted'
+        } else {
+            selector = game.currentLocation.encounterWonNight ? 'dayafter' : 'day';
+        }
     }
+
+    if (game.worldProperties.isNight) {
+        if (game.currentLocation.completedNight) {
+            selector = 'nightcompleted'
+        } else {
+            selector = game.currentLocation.encounterWonNight ? 'nightafter' : 'night';
+        }
+    }
+
+    return game.currentLocation.descriptions[selector] ? selector : null;
 }
 
 export function locationComplete(game: IGame, location: ICompiledLocation, completeDay: (() => boolean), completeNight: (() => boolean)) {
-    if (game.worldProperties.isDay) {
-        if (!location.completedDay) {
-            location.completedDay = completeDay();
-        }
+    if (!location.completedDay) {
+        location.completedDay = completeDay();
+    }
 
-        return location.completedDay;
-    } else {
-        if (!location.completedNight) {
-            location.completedNight = completeNight();
-        }
-
-        return location.completedNight;
+    if (!location.completedNight) {
+        location.completedNight = completeNight();
     }
 }
 
 export function heal(character: Character, amount: number) {
-    character.currentHitpoints += amount;
-    character.currentHitpoints = Math.min(character.hitpoints, character.currentHitpoints);
+    const newHitpoints = character.currentHitpoints + amount;
+    character.currentHitpoints = newHitpoints > character.hitpoints ? character.hitpoints : newHitpoints;
 }
 
 export function getTopWeapon(character: Character): IItem {

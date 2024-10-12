@@ -21,13 +21,11 @@ export function Rules(): IRules {
                     hasRestedDuringDay: false,
                     hasRestedDuringNight: false
                 };
+                
+                init(game);
             },
-            initGame(game: IGame) {
-                game.worldProperties.changeTime = s => changeTime(game, s);
-            },
-            continueGame(game: IGame) {
-                game.worldProperties.changeTime = s => changeTime(game, s);
-            },
+            initGame: init,
+            continueGame: init,
             intro: true
         },
 
@@ -53,6 +51,14 @@ export function Rules(): IRules {
     };
 }
 
+function init(game: IGame) {
+    if (game.locations?.start) {
+        game.locations.start.hotSpotCleared = true;
+        addDescriptions(game);
+    }
+    game.worldProperties.changeTime = s => changeTime(game, s);
+}
+
 function changeTime(game: IGame, e: string) {
     game.worldProperties.timeOfDay = e;
 
@@ -65,4 +71,22 @@ function changeTime(game: IGame, e: string) {
     }
 
     explorationRules.enterLocation(game, game.currentLocation, false);
+}
+
+function addDescriptions(game: IGame) {
+    Object.keys(game.locations).forEach(k => {
+        const location = game.locations[k];
+
+        if (location.isHotspot) {
+            return;
+        }
+
+        if (!location.descriptions['daycompleted']) {
+            location.descriptions['daycompleted'] = 'It is day. There is nothing left for you to do here';
+        }
+
+        if (!location.descriptions['nightcompleted']) {
+            location.descriptions['nightcompleted'] = 'It is night. There is nothing left for you to do here';
+        }
+    });
 }

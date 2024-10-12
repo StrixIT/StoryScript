@@ -81,8 +81,7 @@ export const hotSpotProperties = <ILocation>{
     enterEvents: [[
         'Night', (game: IGame): boolean => {
         if (game.worldProperties.isNight) {
-            game.currentLocation.descriptions.nightfall = nightDescription;
-            game.currentLocation.descriptionSelector = 'nightfall';
+            game.currentLocation.description = nightDescription;
 
             Object.keys(game.locations).forEach(k => {
                 const location = game.locations[k];
@@ -130,10 +129,6 @@ export const explorationRules = <IExplorationRules>{
             if (element) {
                 element.style.cssText = 'filter: brightness(50%);';
             }
-        }
-
-        if (!travel) {
-            game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)];
         }
     },
 

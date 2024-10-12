@@ -11,7 +11,6 @@ export function MagicShield() {
         value: 15,
         speed: 5,
         recharge: 1,
-        arcane: true,
         targetType: TargetType.AllyOrSelf,
         itemClass: ClassType.Wizard,
         canDrop: false,
