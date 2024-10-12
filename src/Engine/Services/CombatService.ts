@@ -117,7 +117,7 @@ export class CombatService implements ICombatService {
             Object.keys(c.equipment).forEach(k => {
                 const item = <IItem>c.equipment[k];
 
-                if (item?.useInCombat || item?.targetType) {
+                if ((item?.useInCombat || item?.targetType) && items.indexOf(item) === -1) {
                     items.push(item)
                 }
             });
