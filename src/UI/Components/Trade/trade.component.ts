@@ -20,6 +20,8 @@ export class TradeComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
+    confirmBuyItem: IItem;
+    confirmSellItem: IItem;
 
     canPay = (item: IItem, buyer: ITrade | ICharacter, currency: number, value: number): boolean => this._tradeService.canPay(item, buyer, currency, value);
 
@@ -27,7 +29,27 @@ export class TradeComponent {
 
     displayPrice = (item: IItem, actualPrice: number): string  => this._tradeService.displayPrice(item, actualPrice);
 
-    buy = (item: IItem, trade: ITrade): boolean => this._tradeService.buy(item, trade);
+    cancelBuy = (): void => this.confirmBuyItem = undefined;
     
-    sell = (item: IItem, trade: ITrade): boolean => this._tradeService.sell(item, trade);
+    buy = (item: IItem, trade: ITrade): boolean => {
+        if (item.value > 0 && !this.confirmBuyItem) {
+            this.confirmBuyItem = item;
+            return true;
+        }
+
+        this.confirmBuyItem = undefined;
+        return this._tradeService.buy(item, trade); 
+    }
+
+    cancelSell = (): void => this.confirmSellItem = undefined;
+    
+    sell = (item: IItem, trade: ITrade): boolean => {
+        if (item.value > 0 && !this.confirmSellItem) {
+            this.confirmSellItem = item;
+            return true;
+        }
+
+        this.confirmSellItem = undefined;
+        return this._tradeService.sell(item, trade);
+    }
 }

@@ -53,7 +53,7 @@ export class ExplorationComponent {
 
     hideActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action[1].status == undefined ? false : action[1].status == ActionStatus.Unavailable;
 
-    cancelAction = (action: [string, IAction]): void => this.confirmAction = undefined;
+    cancelAction = (): void => this.confirmAction = undefined;
     
     executeAction = (action: [string, IAction]): void => {
         if (action[1].confirmationText && !this.confirmAction) {
