@@ -36,7 +36,7 @@ export class CombatService implements ICombatService {
                 }
             });
 
-            if (this._game.party.characters.filter(c => c.currentHitpoints >= 0).length == 0) {
+            if (this._game.party.characters.filter(c => c.currentHitpoints > 0).length == 0) {
                 this._game.playState = null;
                 this._game.state = GameState.GameOver;
             }
