@@ -145,7 +145,7 @@ export function setReadOnlyLocationProperties(location: ILocation) {
         get: function () {
             return location.actions
                 .filter(([_, v]) => {
-                    return v.status !== ActionStatus.Unavailable && !(<any>v).inactive;
+                    return !v.inactive;
                 });
         }
     });

@@ -33,4 +33,10 @@ export interface IAction {
      * option to cancel.
      */
     confirmationText?: string;
+
+    /**
+     * When this flag is set to true, the action is not shown to the player. Useful to only conditionally
+     * make actions present on a location.
+     */
+    inactive?: boolean;
 }
