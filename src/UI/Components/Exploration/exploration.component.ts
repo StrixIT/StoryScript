@@ -49,9 +49,9 @@ export class ExplorationComponent {
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    disableActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action[1].status == undefined ? false : action[1].status == ActionStatus.Disabled;
+    disableActionButton = (action: [string, IAction]): boolean => this.checkStatus(action, ActionStatus.Disabled);
 
-    hideActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action[1].status == undefined ? false : action[1].status == ActionStatus.Unavailable;
+    hideActionButton = (action: [string, IAction]): boolean => this.checkStatus(action, ActionStatus.Unavailable);
 
     cancelAction = (): void => this.confirmAction = undefined;
     
@@ -81,4 +81,8 @@ export class ExplorationComponent {
     isPreviousLocation = (destination: IDestination): boolean => {
         return (<any>destination).isPreviousLocation
     };
+    
+    private checkStatus = (action: [string, IAction], status: ActionStatus) => {
+        return typeof action[1].status === 'function' ? (<any>action[1]).status(this.game) == status : action[1].status == undefined ? false : action[1].status == status;
+    }
 }
