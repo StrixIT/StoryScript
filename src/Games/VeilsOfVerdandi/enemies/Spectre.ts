@@ -13,6 +13,7 @@ export function Spectre() {
         attacks: [
             {
                 damage: '1d4',
+                isMagic: true,
                 damageSpecial: (game: IGame, enemy: IEnemy, character: Character) => damageSpecial(game, enemy, character, 'frightened', 4),
                 speed: 5,
                 attackPriority: [

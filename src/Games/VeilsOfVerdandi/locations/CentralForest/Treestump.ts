@@ -8,7 +8,7 @@ import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts"
 
 export function Treestump() {
     return Location({
-        name: 'The Satyr',
+        name: 'The Tree Stump',
         description: description,
         destinations: [
             {

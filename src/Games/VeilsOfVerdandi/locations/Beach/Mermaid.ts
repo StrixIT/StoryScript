@@ -11,8 +11,7 @@ export function Mermaid() {
         destinations: [
             {
                 name: 'To the beach',
-                target: Beach,
-                style: 'location-danger'
+                target: Beach
             },
         ],
         actions:

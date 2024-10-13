@@ -28,13 +28,12 @@ export function Woodcutter() {
             game.party.currency += 10;
         }]],
         leaveEvents:
-            [[
-                'Leave',
-                (game: IGame) => {
-                    game.currentLocation.descriptionSelector = undefined;
-                    locationComplete(game, game.currentLocation, () => game.currentLocation.items.length === 0, () => game.currentLocation.items.length === 0);
-                    return true;
-                }
-            ]],
+        [[
+            'Leave',
+            (game: IGame) => {
+                locationComplete(game, game.currentLocation, () => game.currentLocation.items.length === 0, () => game.currentLocation.items.length === 0);
+                return true;
+            }
+        ]]
     });
 }

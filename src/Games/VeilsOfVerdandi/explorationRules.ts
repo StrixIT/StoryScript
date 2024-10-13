@@ -113,15 +113,7 @@ export const explorationRules = <IExplorationRules>{
         location.enemies?.forEach(enemy => enemy.inactive = !isEntityActive(game, enemy));
         location.items?.forEach(item => item.inactive = !isEntityActive(game, item));
         location.destinations?.forEach(destination => destination.inactive = !isEntityActive(game, destination));
-        location.actions?.forEach(([k, v]) => {
-            const isActive = isEntityActive(game, v);
-            
-            if (isActive === false) {
-                v.status = ActionStatus.Unavailable;
-            } else if (isActive) {
-                v.status = v.status !== ActionStatus.Unavailable ? v.status : ActionStatus.Available;
-            }
-        });
+        location.actions?.forEach(([k, v]) => v.inactive = !isEntityActive(game, v));
 
         if (location.isHotspot) {
             if (!location.hotSpotCleared && !location.enemies.length) {
@@ -138,6 +130,8 @@ export const explorationRules = <IExplorationRules>{
                 element.style.cssText = 'filter: brightness(50%);';
             }
         }
+        
+        game.currentLocation.descriptionSelector = undefined;
     },
 
     descriptionSelector: descriptionSelector
@@ -165,8 +159,8 @@ function updateTime(game: IGame, travel: boolean): void {
 
 function isEntityActive(game: IGame, entity: IItem | IEnemy | IDestination | IAction): boolean {
     if (!entity.activeNight && !entity.activeDay) {
-        return (entity as IAction).status ? undefined : true;
+        return true;
     }
     
-    return (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay);
+    return (entity.activeNight && game.worldProperties.isNight) ||  (entity.activeDay && game.worldProperties.isDay);
 }
