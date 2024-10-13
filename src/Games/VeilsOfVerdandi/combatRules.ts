@@ -329,14 +329,15 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
         game.logToCombatLog(`${turn.character.name} defeats ${turn.target.name}!`);
 
         if (!combatSetup.enemies.some(e => e.currentHitpoints > 0)) {
+            if (game.currentLocation.isHotspot) {
+                game.currentLocation.hotSpotCleared = true;
+                return true;
+            }
+            
             if (game.worldProperties.isDay) {
                 game.currentLocation.encounterWonDay = true;
             } else {
                 game.currentLocation.encounterWonNight = true;
-            }
-
-            if (game.currentLocation.isHotspot) {
-                game.currentLocation.hotSpotCleared = true;
             }
 
             game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)]

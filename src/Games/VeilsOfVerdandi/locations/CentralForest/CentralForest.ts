@@ -8,7 +8,7 @@ import {hotSpotProperties} from "../../explorationRules.ts";
 
 export function CentralForest() {
     return Location({
-        name: 'CentralForest',
+        name: 'Central Forest',
         description: description,
         ...hotSpotProperties,
         destinations: [

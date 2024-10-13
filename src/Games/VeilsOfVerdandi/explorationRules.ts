@@ -116,9 +116,9 @@ export const explorationRules = <IExplorationRules>{
         location.actions?.forEach(([k, v]) => {
             const isActive = isEntityActive(game, v);
             
-            if (!isActive) {
+            if (isActive === false) {
                 v.status = ActionStatus.Unavailable;
-            } else {
+            } else if (isActive) {
                 v.status = v.status !== ActionStatus.Unavailable ? v.status : ActionStatus.Available;
             }
         });
@@ -164,5 +164,9 @@ function updateTime(game: IGame, travel: boolean): void {
 }
 
 function isEntityActive(game: IGame, entity: IItem | IEnemy | IDestination | IAction): boolean {
-    return (!entity.activeNight && !entity.activeDay) || (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay)
+    if (!entity.activeNight && !entity.activeDay) {
+        return (entity as IAction).status ? undefined : true;
+    }
+    
+    return (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay);
 }
