@@ -7,7 +7,7 @@ import {IslandMeadow} from "./IslandMeadow.ts";
 
 export function CastleInside() {
     return Location({
-        name: 'Entering the Castle',
+        name: 'Honeycomb Castle',
         description: description,
         destinations: [
             {

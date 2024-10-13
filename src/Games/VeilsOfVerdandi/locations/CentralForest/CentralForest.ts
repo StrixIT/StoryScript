@@ -3,8 +3,8 @@ import {Treestump} from './Treestump';
 import {Troll} from './Troll';
 import description from './CentralForest.html?raw';
 import {NorthRoad} from '../NorthForest/NorthRoad';
-import {SouthRoad} from '../SouthForest/SouthRoad';
 import {hotSpotProperties} from "../../explorationRules.ts";
+import {EastRoad} from "../EastForest/EastRoad.ts";
 
 export function CentralForest() {
     return Location({
@@ -27,8 +27,8 @@ export function CentralForest() {
                 style: 'location-danger'
             },
             {
-                name: 'The Southern Road',
-                target: SouthRoad,
+                name: 'The Eastern Road',
+                target: EastRoad,
             },
         ]
     });

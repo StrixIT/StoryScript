@@ -24,7 +24,7 @@ export function Troll() {
                 {
                     text: 'Open the cage',
                     execute: (game: IGame) => {
-                        game.logToLocationLog(game.currentLocation.descriptions['opencage']);
+                        game.currentLocation.descriptionSelector = 'opencage';
                         game.worldProperties.freedFaeries = true;
                     }
                 }
