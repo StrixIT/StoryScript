@@ -7,7 +7,7 @@ import {PowerAttack2} from "../items/PowerAttack2.ts";
 
 export function Fisherman() {
     return Person({
-        name: 'FisherMan',
+        name: 'The Fisherman',
         description: description,
         hitpoints: 10,
         currency: 20,
@@ -26,6 +26,9 @@ export function Fisherman() {
             buy: {
                 text: 'Buy from the fisherman',
                 emptyText: 'I have nothing left to offer you!',
+                itemSelector(game: IGame, item: IItem): boolean {
+                    return true;
+                }
             },
             sell: {
                 text: 'Sell to the fisherman',

@@ -1,6 +1,5 @@
 import {IGame} from "./interfaces/game.ts";
 import {ICompiledLocation, ILocation} from "./interfaces/location.ts";
-import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
 import {descriptionSelector} from "./sharedFunctions.ts";
 import {IItem} from "./interfaces/item.ts";
 import {IEnemy} from "./interfaces/enemy.ts";
@@ -63,16 +62,16 @@ function shuffle(encounters: [() => IEnemy][]): [() => IEnemy][] {
 
 export const backToForestText = 'To the forest';
 
-export const hotSpotProperties = <ILocation>{ 
-    isHotspot: true, 
+export const hotSpotProperties = <ILocation>{
+    isHotspot: true,
     actions: <[string, IAction][]>[
-        [ RestDay, {
+        [RestDay, {
             ...Rest(),
             confirmationText: 'Are you sure you want to rest now? You can only rest once during the day!',
             activeDay: true,
-            
+
         }],
-        [ RestNight, {
+        [RestNight, {
             ...Rest(),
             confirmationText: 'Are you sure you want to rest now? You can only rest once during the night!',
             activeNight: true
@@ -80,23 +79,23 @@ export const hotSpotProperties = <ILocation>{
     ],
     enterEvents: [[
         'Night', (game: IGame): boolean => {
-        if (game.worldProperties.isNight) {
-            game.currentLocation.description = nightDescription;
+            if (game.worldProperties.isNight) {
+                game.currentLocation.description = nightDescription;
 
-            Object.keys(game.locations).forEach(k => {
-                const location = game.locations[k];
-                const event = location.enterEvents?.find(a => a[0] === 'Night')?.[0];
+                Object.keys(game.locations).forEach(k => {
+                    const location = game.locations[k];
+                    const event = location.enterEvents?.find(a => a[0] === 'Night')?.[0];
 
-                if (event) {
-                    location.enterEvents.delete(event);
-                }
-            });
-        }
+                    if (event) {
+                        location.enterEvents.delete(event);
+                    }
+                });
+            }
 
-        // Don't delete the event when the location is visited during the day. Return true
-        // at night too, as the event is deleted by the code already.
-        return true;
-    }]]
+            // Don't delete the event when the location is visited during the day. Return true
+            // at night too, as the event is deleted by the code already.
+            return true;
+        }]]
 };
 
 export const explorationRules = <IExplorationRules>{
@@ -113,7 +112,7 @@ export const explorationRules = <IExplorationRules>{
         location.enemies?.forEach(enemy => enemy.inactive = !isEntityActive(game, enemy));
         location.items?.forEach(item => item.inactive = !isEntityActive(game, item));
         location.destinations?.forEach(destination => destination.inactive = !isEntityActive(game, destination));
-        location.actions?.forEach(([k, v]) => v.inactive = !isEntityActive(game, v));
+        location.actions?.forEach(([_, v]) => v.inactive = !isEntityActive(game, v));
 
         if (location.isHotspot) {
             if (!location.hotSpotCleared && !location.enemies.length) {
@@ -130,7 +129,7 @@ export const explorationRules = <IExplorationRules>{
                 element.style.cssText = 'filter: brightness(50%);';
             }
         }
-        
+
         game.currentLocation.descriptionSelector = undefined;
     },
 
@@ -161,6 +160,6 @@ function isEntityActive(game: IGame, entity: IItem | IEnemy | IDestination | IAc
     if (!entity.activeNight && !entity.activeDay) {
         return true;
     }
-    
-    return (entity.activeNight && game.worldProperties.isNight) ||  (entity.activeDay && game.worldProperties.isDay);
+
+    return (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay);
 }
