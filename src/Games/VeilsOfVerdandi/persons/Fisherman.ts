@@ -10,6 +10,7 @@ export function Fisherman() {
         name: 'FisherMan',
         description: description,
         hitpoints: 10,
+        currency: 20,
         canAttack: false,
         items: [
             ColdIronAxe(),

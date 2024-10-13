@@ -1,5 +1,5 @@
 ﻿import {ICharacter, IRules} from 'storyScript/Interfaces/storyScript';
-import {Character, IGame, IItem} from './types';
+import {Character, IGame, IInterfaceTexts, IItem} from './types';
 import {combatRules} from "./combatRules.ts";
 import {canEquip, characterRules} from "./characterRules.ts";
 import {explorationRules} from "./explorationRules.ts";
@@ -35,11 +35,11 @@ export function Rules(): IRules {
                 // Implement logic to occur when the score changes. Return true when the character gains a level.
                 return false;
             },
-            getItemName(item: IGroupableItem): string {
+            getItemName(item: IGroupableItem, texts: IInterfaceTexts): string {
                 if (!item.members?.length) {
                     return item.name;
                 } else if (item.members && item.id === item.members[0].id) {
-                    return item.groupName;
+                    return texts.format(item.groupName, [(item.members.length + 1).toString()]);
                 }
 
                 return `${item.name} / ${item.members[0].name}`;

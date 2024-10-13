@@ -12,6 +12,7 @@ export function Merchant() {
         name: 'Merchant',
         description: description,
         hitpoints: 10,
+        currency: 30,
         canAttack: false,
         items: [
             BroadSword(),
