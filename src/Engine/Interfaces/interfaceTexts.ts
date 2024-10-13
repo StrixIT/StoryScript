@@ -103,6 +103,7 @@ export interface IInterfaceTexts {
     worldProperties?: any;
     confirmAction?: string;
     cancelAction?: string;
+    stockItemDisplayText?: string,
     buyConfirmationText?: string;
     confirmBuy?: string;
     cancelBuy?: string;

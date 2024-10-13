@@ -21,7 +21,7 @@ export class ItemService implements IItemService {
         }
         
         if (this._rules.general.getItemName) {
-            return this._rules.general.getItemName(item);
+            return this._rules.general.getItemName(item, this._texts);
         }
         
         const groupableItem = item as IGroupableItem<IItem>
