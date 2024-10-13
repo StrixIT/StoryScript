@@ -2,6 +2,7 @@
 import { MagicFlower } from '../items/MagicFlower.ts';
 import { Person } from '../types';
 import description from './QueenBee.html?raw';
+import {FlowerForTheQueen} from "../quests/FlowerForTheQueen.ts";
 
 export function QueenBee() {
     return Person({
@@ -13,24 +14,10 @@ export function QueenBee() {
             BeeSting()
         ],
         conversation: {
-            showUnavailableReplies: false,
-            selectActiveNode: (game, person) => {
-                let hasFlower = false;
-
-                game.party.characters.forEach(c => hasFlower ?? c.items.get(MagicFlower));
-
-                if (hasFlower) {
-                    return person.conversation.nodes.filter(n => { return n.node == 'alreadyhaveflower' })[0];
-                }
-
-                return person.conversation.nodes[0];
-            },
-            actions: [[
-                'GiveFlower', (game, person) => {
-                    game.activeCharacter.items.add(BeeSting);
-                    game.helpers.removeItemFromParty(MagicFlower);
-                }
-            ]]
-        }
+            showUnavailableReplies: false
+        },
+        quests: [
+            FlowerForTheQueen()
+        ]
     });
 }

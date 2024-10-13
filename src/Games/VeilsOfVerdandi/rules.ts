@@ -20,7 +20,8 @@ export function Rules(): IRules {
                     freedFaeries: false,
                     travelCounter: 0,
                     hasRestedDuringDay: false,
-                    hasRestedDuringNight: false
+                    hasRestedDuringNight: false,
+                    helpedBees: false
                 };
                 
                 init(game);

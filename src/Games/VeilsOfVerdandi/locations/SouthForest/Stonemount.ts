@@ -31,7 +31,7 @@ export function Stonemount() {
                     execute: (game: IGame) => {
                         game.party.currency += 10;
                         game.currentLocation.items.add(Ruby);
-                        game.logToLocationLog(game.currentLocation.descriptions['search']);
+                        game.currentLocation.descriptionSelector = 'search';
                     },
                     activeNight: true
                 }

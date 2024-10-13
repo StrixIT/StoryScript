@@ -2,6 +2,13 @@ import {IGame} from "./interfaces/game.ts";
 import {ICompiledLocation} from "./interfaces/location.ts";
 import {Character} from "./character.ts";
 import {IItem} from "./interfaces/item.ts";
+import {equals} from "storyScript/utilityFunctions.ts";
+import {SmallBoat} from "./items/SmallBoat.ts";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+
+export function haveItem(game: IGame, item: (() => IItem)): boolean {
+    return game.party.characters.find(c => c.items.find(i => equals(i, item))) !== undefined;
+}
 
 export function check(game: IGame, challenge: number): boolean {
     const check = game.helpers.rollDice('1d6');
@@ -38,6 +45,8 @@ export function locationComplete(game: IGame, location: ICompiledLocation, compl
     if (!location.completedNight) {
         location.completedNight = completeNight();
     }
+
+    game.currentLocation.descriptionSelector = undefined;
 }
 
 export function heal(character: Character, amount: number) {

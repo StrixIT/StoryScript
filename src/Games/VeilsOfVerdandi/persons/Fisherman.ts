@@ -12,6 +12,7 @@ export function Fisherman() {
         hitpoints: 10,
         currency: 20,
         canAttack: false,
+        activeDay: true,
         items: [
             ColdIronAxe(),
             Cutlass(),

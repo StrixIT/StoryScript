@@ -109,6 +109,7 @@ export const explorationRules = <IExplorationRules>{
         }
 
         updateTime(game, travel);
+        location.persons?.forEach(person => person.inactive = !isEntityActive(game, person));
         location.enemies?.forEach(enemy => enemy.inactive = !isEntityActive(game, enemy));
         location.items?.forEach(item => item.inactive = !isEntityActive(game, item));
         location.destinations?.forEach(destination => destination.inactive = !isEntityActive(game, destination));
@@ -157,8 +158,10 @@ function updateTime(game: IGame, travel: boolean): void {
 }
 
 function isEntityActive(game: IGame, entity: IItem | IEnemy | IDestination | IAction): boolean {
-    if (!entity.activeNight && !entity.activeDay) {
+    if (entity.activeNight === undefined && entity.activeDay === undefined) {
         return true;
+    } else if (!entity.activeNight && !entity.activeDay) {
+        return false;
     }
 
     return (entity.activeNight && game.worldProperties.isNight) || (entity.activeDay && game.worldProperties.isDay);

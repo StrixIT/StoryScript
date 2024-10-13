@@ -1,17 +1,16 @@
 ﻿import {Location} from '../../types';
-import description from './Honeycastle.html?raw';
+import description from './CastleApproach.html?raw';
 import {CastleInside} from "./CastleInside.ts";
 
-export function Honeycastle() {
+export function CastleApproach() {
     return Location({
-        name: 'The Honeycomb Castle',
+        name: 'Honeycomb Castle Approach',
         description: description,
         destinations: [
             {
                 name: 'Enter the Castle',
-                target: CastleInside,
-                style: 'location-danger'
+                target: CastleInside
             }
-        ],
+        ]
     });
 }

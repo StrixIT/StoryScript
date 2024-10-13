@@ -2,8 +2,8 @@
 import description from './CastleInside.html?raw';
 import {QueenBee} from '../../persons/queenBee';
 import {Fisherman} from "../Beach/Fisherman.ts";
-import {Castleapproach} from "./Castleapproach.ts";
 import {getId} from "storyScript/utilityFunctions.ts";
+import {IslandMeadow} from "./IslandMeadow.ts";
 
 export function CastleInside() {
     return Location({
@@ -22,7 +22,7 @@ export function CastleInside() {
         leaveEvents: [[
             'Leave', game => {
                 const fisherman = game.locations['fisherman'];
-                fisherman.destinations.find(d => d.target === getId(Castleapproach)).target = getId(CastleInside);
+                fisherman.destinations.find(d => d.target === getId(IslandMeadow)).target = getId(CastleInside);
             }
         ]]
     });

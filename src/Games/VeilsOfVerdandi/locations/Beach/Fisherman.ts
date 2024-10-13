@@ -2,7 +2,6 @@
 import {IGame, Location} from '../../types';
 import description from './Fisherman.html?raw';
 import {Beach} from './Beach';
-import {Castleapproach} from "../Sea/Castleapproach.ts";
 import {Octopus} from "../Sea/Octopus.ts";
 import {Fisherman as FisherManPerson} from '../../persons/Fisherman'
 import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
@@ -10,6 +9,8 @@ import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts"
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IBarrierAction} from "storyScript/Interfaces/barrierAction.ts";
 import {equals} from "storyScript/utilityFunctions.ts";
+import {IslandMeadow} from "../Sea/IslandMeadow.ts";
+import {haveItem} from "../../sharedFunctions.ts";
 
 export function Fisherman() {
     return Location({
@@ -28,25 +29,25 @@ export function Fisherman() {
                 target: Octopus,
                 style: 'location-water',
                 barriers: getSeaBarrier([
-                    'LookAtCastle',
+                    'LookAcrossTheOcean',
                     {
-                        text: 'Look at the castle',
+                        text: 'Look across the ocean',
                         execute(game, barrier, destination) {
-                            game.logToLocationLog('In the distance across the waves, you can see a castle!')
+                            game.logToLocationLog('The sea seems to stretch on forever...');
                         },
                     }
                 ])
             },
             {
-                name: 'The Honeycomb Castle',
-                target: Castleapproach,
+                name: 'The distant Island',
+                target: IslandMeadow,
                 style: 'location-water',
                 barriers: getSeaBarrier([
-                    'LookAcrossTheOcean',
+                    'LookAtTheIsland',
                     {
-                        text: 'Look across the ocean',
+                        text: 'Look at the distant island',
                         execute(game, barrier, destination) {
-                            game.logToLocationLog('The sea seems to stretch on forever...')
+                            game.logToLocationLog('In the distance across the waves, you can see an island!');
                         },
                     }
                 ])
@@ -60,10 +61,11 @@ export function Fisherman() {
                     game.activeCharacter.items.add(SmallBoat);
                     game.party.currency -= 20;
                     game.logToLocationLog('You rent the boat for 20 gold coins.');
-                    return true;
                 },
                 status: (game: IGame) => {
-                    if (game.party.characters.find(c => c.items.find(i => equals(i, SmallBoat)))) {
+                    if (game.worldProperties.isNight) {
+                        return ActionStatus.Unavailable;
+                    } else if (haveItem(game, SmallBoat)) {
                         return ActionStatus.Unavailable;
                     } else if (game.party.currency < 20) {
                         return ActionStatus.Disabled;
@@ -81,11 +83,14 @@ export function Fisherman() {
                 execute: (game: IGame) => {
                     game.activeCharacter.items.delete(SmallBoat);
                     game.party.currency += 10;
-                    game.logToLocationLog('You return the small boat. "Not too bad, here\'s your refund." The fisherman hands you 10 gold coins.');
+                    game.logToLocationLog('You return the small boat. "Not too bad, here\'s your refund." The fisherman hands you 10 gold coins.' +
+                        '"You\'ve proven worthy of my trust. If you ever need it again, you can use my boat for free."');
                     return true;
                 },
                 status: (game: IGame) => {
-                    if (game.party.characters.find(c => c.items.find(i => equals(i, SmallBoat)))) {
+                    if (!game.locations.get(IslandMeadow).hasVisited && !game.locations.get(Octopus).hasVisited) {
+                        return ActionStatus.Unavailable;
+                    } else if (haveItem(game, SmallBoat)) {
                         return ActionStatus.Available;
                     }
 

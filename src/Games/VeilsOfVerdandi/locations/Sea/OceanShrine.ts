@@ -1,19 +1,18 @@
-﻿import {Character, IGame, Location} from '../../types';
-import description from './Oceanshrine.html?raw';
+﻿import {IGame, Location} from '../../types';
+import description from './OceanShrine.html?raw';
 import {CentralForest} from '../CentralForest/CentralForest';
 import {Octopus} from './Octopus';
-import {ClassType} from "../../classType.ts";
-import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
-import {ActionType} from "storyScript/Interfaces/storyScript.ts";
+import {locationComplete} from "../../sharedFunctions.ts";
 
-export function Oceanshrine() {
+export function OceanShrine() {
     return Location({
         name: 'The Ocean Shrine',
         description: description,
         destinations: [
             {
                 name: 'The Octopus',
-                target: Octopus
+                target: Octopus,
+                style: 'location-water'
             },
             {
                 name: 'The Eastern Road',
@@ -26,8 +25,7 @@ export function Oceanshrine() {
                 {
                     text: 'Touch the Altar',
                     execute: (game: IGame) => {
-                        const key = game.worldProperties.isDay ? 'touchday' : 'touchnight';
-                        game.logToLocationLog(game.currentLocation.descriptions[key]);
+                        game.currentLocation.descriptionSelector = game.worldProperties.isDay ? 'touchday' : 'touchnight';
 
                         // Fully heal the party.
                         game.party.characters.forEach(c => {
@@ -37,6 +35,14 @@ export function Oceanshrine() {
                         game.currentLocation.items.map(i => i.inactive = false);
                     }
                 },
+            ]],
+        leaveEvents:
+            [[
+                'Leave',
+                (game: IGame) => {
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.actions.length == 0, () => game.currentLocation.actions.length == 0);
+                    return true;
+                }
             ]]
     });
 }

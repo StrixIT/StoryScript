@@ -58,7 +58,6 @@ export function Treestump() {
         [[
             'Leave',
             (game: IGame) => {
-                game.currentLocation.descriptionSelector = undefined;
                 locationComplete(game, game.currentLocation, () => game.currentLocation.actions.length === 0, () => true);
                 return true;
             }

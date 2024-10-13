@@ -30,7 +30,8 @@ export function Octopus() {
                     [ClassType.Rogue, [5, 6]]]
             }
         ],
-        activeDay: true,
+        activeDay: false,
+        activeNight: false,
         onDefeat: (game: IGame) => {
             game.currentLocation.actions.clear();
         }

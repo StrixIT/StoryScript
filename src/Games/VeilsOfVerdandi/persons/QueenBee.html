@@ -2,6 +2,9 @@
     
 </description>
 <conversation>
+    <default-reply>
+        We shall return!
+    </default-reply>
     <node name="welcome">
         <p>
             "Welcome adventurers".
@@ -13,24 +16,36 @@
             to heal the most grievous of wounds. Help us. Retrieve the flower and bring it here, and we will reward you well."
         </p>
         <replies>
-            <reply>
-                I'll be back.
+            <reply node="acceptquest" quest-start="FlowerForTheQueen" set-start="foundflower">
+                Of course. we'll find and return this flower to you!
             </reply>
             <reply node="giveflower" requires="item=magicflower" action="giveflower">
-                I found the magic flower.
+                We already found this flower!
             </reply>
         </replies>
     </node>
-    <node name="alreadyhaveflower">
+    <node name="acceptquest" trigger="">
         <p>
-            'You already have the flower!'
+            We are pleased! Please hurry, the lives of our warriors are in your hands!
+        </p>
+    </node>
+    <node name="" trigger="">
+        <p>
+            You have returned. Are you ready to find the flower for us? We are in dire need!
         </p>
         <replies>
-            <reply>
-                I'll be back.
+            <reply node="acceptquest" quest-start="FlowerForTheQueen" set-start="foundflower">
+                Of course. we'll find and return this flower to you!
             </reply>
-            <reply node="giveflower" requires="item=magicflower">
-                I found the magic flower.
+        </replies>
+    </node>
+    <node name="foundflower" trigger="">
+        <p>
+            You have returned. Did you bring the flower? Our people are suffering!
+        </p>
+        <replies>
+            <reply node="giveflower" requires="item=magicflower" action="giveflower">
+                Yes we have! Here it is!
             </reply>
         </replies>
     </node>
@@ -47,8 +62,18 @@
             Your browser does not support the audio element.
         </audio>  
         <replies>
-            <reply>
+            <reply set-start="done">
                 Farewell.
+            </reply>
+        </replies>
+    </node>
+    <node name="done" trigger="">
+        <p>
+            You have returned! We always welcome you back to our home!
+        </p>
+        <replies default-reply="">
+            <reply>
+                Thank you, your highness. We'll take our leave.
             </reply>
         </replies>
     </node>

@@ -3,6 +3,8 @@ import description from './Mermaid.html?raw';
 import {Pearl} from '../../items/Pearl';
 import {MagicFlower} from '../../items/MagicFlower.ts';
 import {Beach} from "./Beach.ts";
+import {equals} from "storyScript/utilityFunctions.ts";
+import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
 
 export function Mermaid() {
     return Location({
@@ -35,7 +37,8 @@ export function Mermaid() {
                             game.activeCharacter.items.add(Pearl);
                             setCompleted(game, 'giveflower');
                         },
-                        activeNight: true
+                        activeNight: true,
+                        status: hasFlower
                     }],
                 [
                     'KeepFlower',
@@ -45,7 +48,8 @@ export function Mermaid() {
                             setCompleted(game, 'refuseflower');
 
                         },
-                        activeNight: true
+                        activeNight: true,
+                        status: hasFlower
                     }
                 ]],
         leaveEvents: [[
@@ -61,4 +65,8 @@ export function Mermaid() {
         game.currentLocation.completedDay = true;
         game.currentLocation.completedNight = true;
     }
+}
+
+function hasFlower(game: IGame) {
+    return game.party.characters.find(c => c.items.find(i => equals(i, MagicFlower))) ? ActionStatus.Available : ActionStatus.Unavailable;
 }

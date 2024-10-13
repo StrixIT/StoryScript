@@ -2,8 +2,9 @@
 import description from './Octopus.html?raw';
 import {Octopus as OctopusEnemy} from '../../enemies/Octopus';
 import {ActionStatus, ActionType} from 'storyScript/Interfaces/storyScript';
-import {Oceanshrine} from './Oceanshrine';
+import {OceanShrine} from './OceanShrine';
 import {Fisherman} from "../Beach/Fisherman.ts";
+import {locationComplete} from "../../sharedFunctions.ts";
 
 export function Octopus() {
     return Location({
@@ -12,7 +13,8 @@ export function Octopus() {
         destinations: [
             {
                 name: 'The Ocean Shrine',
-                target: Oceanshrine
+                target: OceanShrine,
+                style: 'location-water'
             },
             {
                 name: 'The Fisherman\'s cottage',
@@ -34,7 +36,7 @@ export function Octopus() {
                     ActionType.Check,
                     execute:
                         (game: IGame) => {
-                            game.logToLocationLog(game.currentLocation.descriptions['attacknight']);
+                            game.currentLocation.descriptionSelector = 'attack';
                             game.currentLocation.enemies.map(e => e.inactive = false);
                         }
                 }
@@ -52,9 +54,17 @@ export function Octopus() {
                                 // Remove the octopus and the attack action when chosing to sail past.
                                 game.currentLocation.enemies.clear();
                                 game.currentLocation.actions.clear();
-                                game.logToLocationLog(game.currentLocation.descriptions['floatby']);
+                                game.currentLocation.descriptionSelector = 'floatby';
                             }
                     }]
-            ]
+            ],
+        leaveEvents:
+            [[
+                'Leave',
+                (game: IGame) => {
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length == 0, () => game.currentLocation.enemies.length == 0);
+                    return true;
+                }
+            ]]
     });
 }
