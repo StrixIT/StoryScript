@@ -23,9 +23,9 @@ export class TradeComponent {
     confirmBuyItem: IItem;
     confirmSellItem: IItem;
 
-    canPay = (item: IItem, buyer: ITrade | ICharacter, currency: number, value: number): boolean => this._tradeService.canPay(item, buyer, currency, value);
+    canPay = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => this._tradeService.canPay(item, buyer, seller);
 
-    actualPrice = (item: IItem, modifier: number | (() => number)): number => this._tradeService.actualPrice(item, modifier);
+    actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): number => this._tradeService.actualPrice(item, buyer, seller);
 
     displayPrice = (item: IItem, actualPrice: number): string  => this._tradeService.displayPrice(item, actualPrice);
 

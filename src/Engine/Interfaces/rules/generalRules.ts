@@ -1,6 +1,6 @@
 import { IGame } from '../game';
 import { PlayState } from '../enumerations/playState';
-import {GameState, ICharacter, IGroupableItem, IItem, ITrade} from '../storyScript';
+import {GameState, ICharacter, IGroupableItem, IInterfaceTexts, IItem, ITrade} from '../storyScript';
 
 export interface IGeneralRules {
     /**
@@ -51,8 +51,9 @@ export interface IGeneralRules {
      * Use this function to override the standard way of naming items. This is useful if you want to use a
      * different naming for items that are grouped.
      * @param item The item to get the name for.
+     * @param texts The interface texts.
      */
-    getItemName?(item: IItem): string;
+    getItemName?(item: IItem, texts: IInterfaceTexts): string;
 
     /**
      * Use this function if you want to use special rules for grouping items.

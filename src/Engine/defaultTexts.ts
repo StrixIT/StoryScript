@@ -102,6 +102,7 @@ export class DefaultTexts {
         cancel: 'Cancel',
         confirmAction: 'Ok',
         cancelAction: 'Cancel',
+        stockItemDisplayText: '{0}: {1} {2}',
         buyConfirmationText: 'Are you sure you want to buy the {0} for {1} {2}?',
         confirmBuy: 'Ok',
         cancelBuy: 'Cancel',

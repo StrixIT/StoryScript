@@ -3,18 +3,19 @@ import {IInterfaceTexts} from '../Interfaces/interfaceTexts';
 import {IPerson} from '../Interfaces/person';
 import {ITrade} from '../Interfaces/trade';
 import {IItem} from '../Interfaces/item';
-import {IStock} from '../Interfaces/stock';
 import {ITradeService} from '../Interfaces/services/tradeService';
 import {PlayState} from '../Interfaces/enumerations/playState';
-import {IParty} from '../Interfaces/party';
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {randomList} from "storyScript/Services/sharedFunctions.ts";
 import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
+import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 
 export class TradeService implements ITradeService {
+    private _activeTrader: IPerson;
+    
     constructor(private _itemService: IItemService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {
     }
 
@@ -22,34 +23,39 @@ export class TradeService implements ITradeService {
         const isPerson = trade && trade['type'] === 'person';
         const person = <IPerson>trade;
 
-        this._game.trade = isPerson ? person.trade : trade;
-        const trader = this._game.trade;
-
         if (isPerson) {
-            trader.currency = person.currency;
-            this._game.person = person;
+            this._activeTrader = this._game.person = person;
+            this._game.trade = person.trade;
+            this._game.trade.currency = person.currency ?? 0;
 
-            if (!trader.name) {
-                trader.name = this._texts.format(this._texts.trade, [person.name]);
+            if (!this._game.trade.name) {
+                this._game.trade.name = this._texts.format(this._texts.trade, [person.name]);
             }
         } else {
-            trader.ownItemsOnly = false;
+            this._activeTrader = <IPerson>{ currency: trade.currency ?? 0 };
+            this._game.trade = trade;
+            this._game.trade.ownItemsOnly = false;
         }
 
         this.initTrade();
         this._game.playState = PlayState.Trade;
     }
 
-    canPay = (item: IItem, buyer: ITrade | ICharacter, currency: number, value: number): boolean => {
+    canPay = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
         if (this._rules.general.canBuyItem && !this._rules.general.canBuyItem(this._game, item, buyer)) {
             return false;
         }
 
-        return (value != undefined && currency != undefined && currency >= value) || value == 0;
+        const trader = buyer as ITrade;
+        const currency = trader.buy ? trader.currency : this._game.party.currency;
+        const price = this.actualPrice(item, buyer, seller);
+        return (price != undefined && currency != undefined && currency >= price) || price == 0;
     };
 
-    actualPrice = (item: IItem, modifier: number | (() => number)): number => {
+    actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): number => {
         let resolvedModifier: number;
+        const trader = buyer as ITrade;
+        const modifier = trader.buy ? trader.sell?.priceModifier ?? (seller as ITrade).buy?.priceModifier : undefined;
 
         if (modifier == undefined) {
             resolvedModifier = 1;
@@ -59,16 +65,23 @@ export class TradeService implements ITradeService {
             resolvedModifier = modifier;
         }
 
-        return Math.round(item.value * resolvedModifier);
+        const members = <IItem[]>(item as IGroupableItem<IItem>).members;
+        const values = members ? members.concat([item]).map(m => m.value) : [item.value];
+        const totalValue = values.reduce((t, c) => t + c, 0);
+        return Math.round(totalValue * resolvedModifier);
     }
 
-    displayPrice = (item: IItem, actualPrice: number): string => actualPrice > 0 ? (`${this._itemService.getItemName(item)}: '${actualPrice} ${this._texts.currency}`) : this._itemService.getItemName(item);
+    displayPrice = (item: IItem, actualPrice: number): string => actualPrice > 0 ? this._texts.format(this._texts.stockItemDisplayText, [this._itemService.getItemName(item), actualPrice.toString(), this._texts.currency]) : this._itemService.getItemName(item);
 
     buy = (item: IItem, trade: ITrade): boolean => {
-        if (!this.pay(item, trade, trade.buy, this._game.party, false)) {
+        if (!this.canPay(item, this._game.activeCharacter, trade)) {
             return false;
         }
 
+        const price = this.actualPrice(item, this._game.activeCharacter, trade);
+        trade.currency += price;
+        this._game.party.currency -= price;
+        this._activeTrader.currency = trade.currency;
         trade.buy.items.delete(item);
         this._game.activeCharacter.items.add(item);
 
@@ -80,10 +93,14 @@ export class TradeService implements ITradeService {
     }
 
     sell = (item: IItem, trade: ITrade): boolean => {
-        if (!this.pay(item, trade, trade.sell, this._game.party, true)) {
+        if (!this.canPay(item, trade, this._game.activeCharacter)) {
             return false;
         }
 
+        const price = this.actualPrice(item, trade, this._game.activeCharacter);
+        trade.currency -= price;
+        this._game.party.currency += price;
+        this._activeTrader.currency = trade.currency;
         this._game.activeCharacter.items.delete(item);
         trade.sell.items.delete(item);
         trade.buy.items.add(item);
@@ -137,39 +154,10 @@ export class TradeService implements ITradeService {
         trader.sell.items ??= [];
         trader.sell.items.length = 0;
         itemsToSell.forEach(i => trader.sell.items.push(i));
-        
+
         trader.buy.confirmationText ??= this._texts.buyConfirmationText;
         trader.sell.confirmationText ??= this._texts.sellConfirmationText;
 
         return trader;
-    }
-
-    private pay = (item: IItem, trader: ITrade, stock: IStock, party: IParty, characterSells: boolean): boolean => {
-        let price = item.value;
-
-        if (stock.priceModifier != undefined) {
-            const modifier = typeof stock.priceModifier === 'function' ? (<any>stock).priceModifier(this._game) : stock.priceModifier;
-            price = Math.round(item.value * modifier);
-        }
-
-        party.currency = party.currency || 0;
-        trader.currency = trader.currency || 0;
-
-        const canAfford = characterSells ? trader.currency - price >= 0 : party.currency - price >= 0;
-
-        if (canAfford) {
-            party.currency = characterSells ? party.currency + price : party.currency - price;
-
-            if (trader.currency != undefined) {
-                trader.currency = characterSells ? trader.currency - price : trader.currency + price;
-            }
-
-            if (this._game.person && this._game.person.trade === this._game.trade) {
-                this._game.person.currency = this._game.trade.currency;
-            }
-
-        }
-
-        return canAfford;
     }
 }
