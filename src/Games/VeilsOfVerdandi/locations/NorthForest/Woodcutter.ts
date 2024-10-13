@@ -1,10 +1,11 @@
-﻿import {Location} from '../../types';
+﻿import {IGame, Location} from '../../types';
 import description from './Woodcutter.html?raw';
 import {Spectre} from '../../enemies/Spectre';
 import {Parchment} from '../../items/Parchment';
 import {backToForestText} from "../../explorationRules.ts";
 import {NorthRoad} from "./NorthRoad.ts";
 import {QualityBow} from "../../items/QualityBow.ts";
+import {locationComplete} from "../../sharedFunctions.ts";
 
 export function Woodcutter() {
     return Location({
@@ -25,6 +26,15 @@ export function Woodcutter() {
         ],
         enterEvents: [[ 'FindGold', game => {
             game.party.currency += 10;
-        }]]
+        }]],
+        leaveEvents:
+            [[
+                'Leave',
+                (game: IGame) => {
+                    game.currentLocation.descriptionSelector = undefined;
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.items.length === 0, () => game.currentLocation.items.length === 0);
+                    return true;
+                }
+            ]],
     });
 }

@@ -10,9 +10,13 @@ export function BeeSting() {
         description: description,
         damage: '1D8',
         speed: 4,
-        damageSpecial: (game: IGame, enemy: IEnemy) => {
-            enemy.currentHitpoints = Math.max(enemy.currentHitpoints - 2, 0);
-            game.combatLog.push(`${enemy.name} takes 2 poison damage!`);
+        damageSpecial: (game: IGame, enemy: IEnemy, damage: number) => {
+            if (damage > 0) {
+                enemy.currentHitpoints = Math.max(enemy.currentHitpoints - 2, 0);
+                return { extraDamage: 2, text: `${enemy.name} takes 2 poison damage!` };
+            }
+            
+            return {};
         },
         equipmentType: Constants.PrimaryWeapon,
         attackText: '{0} swings Bee\'s Sting',

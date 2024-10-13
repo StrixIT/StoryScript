@@ -10,6 +10,7 @@ import {IGroupableItem, IItem} from "./interfaces/item.ts";
 import {ICombatTurn} from "./interfaces/combatTurn.ts";
 import {ClassType} from "./classType.ts";
 import {CombatParticipant} from "./interfaces/combatParticipant.ts";
+import {equals} from "storyScript/utilityFunctions.ts";
 
 export const damageSpecial = (game: IGame, enemy: IEnemy, character: Character, property: string, checkDifficulty?: number) => {
     if (!checkDifficulty || !check(game, checkDifficulty)) {
@@ -18,19 +19,37 @@ export const damageSpecial = (game: IGame, enemy: IEnemy, character: Character, 
     }
 };
 
+export const specialDamage = (game: IGame, enemy: IEnemy, damage: number, enemyType: (() => IEnemy), bonus: string, damageType: string) => {
+    if (equals(enemy, enemyType)) {
+        const additionalDamage = game.helpers.rollDice(bonus);
+        let extraDamage = damage < 0 ? Math.max(additionalDamage + damage, 0) : additionalDamage;
+
+        if (extraDamage > 0) {
+            enemy.currentHitpoints = Math.max(enemy.currentHitpoints - extraDamage, 0);
+        }
+
+        return {
+            extraDamage: extraDamage,
+            text: `The ${damageType} does an additional ${extraDamage} to the ${enemy.name}!`
+        };
+    }
+
+    return {};
+}
+
 export const combatRules = <ICombatRules>{
     isTargeted(game: IGame, participant: Character) {
         const enemyNames = (<ICombatSetup>game.combat).enemyTargets?.filter(t => t.length === 2 && t[1].find(e => e === participant));
         let result = '';
-        
+
         if (enemyNames?.length > 0) {
             enemyNames.forEach((t, i) => result += i > 0 ? ` and ${t[0].name}` : t[0].name);
             result = `${participant.name} is targeted by ${result}!`;
         }
-        
+
         return result;
     },
-    
+
     initCombat(game: IGame) {
         game.party.characters.forEach(c => {
             // Reset all combat-specific states.
@@ -57,7 +76,7 @@ export const combatRules = <ICombatRules>{
         }
 
         setEffects(combatSetup);
-        
+
         if (combatSetup.round > 1) {
             getEnemyTargets(game, combatSetup);
         }
@@ -78,7 +97,7 @@ export const combatRules = <ICombatRules>{
                     i.recharging = i.recharging > 1 ? --i.recharging : undefined;
                     i.selectable = !i.recharging;
                 }
-                
+
                 if (i.id.indexOf('powerattack') > -1) {
                     i.speed = getTopWeapon(t.character)?.speed || 0;
                 }
@@ -140,7 +159,7 @@ function setEffects(combatSetup: ICombatSetup): void {
 
 function buildEffectArray(participant: IEnemy | Character): string[] {
     const effects = [];
-    
+
     if (participant.frozen) {
         effects.push('Frozen');
     }
@@ -167,17 +186,17 @@ function buildEffectArray(participant: IEnemy | Character): string[] {
 function getOrderedParticipants(game: IGame, combatSetup: ICombatSetup): CombatParticipant[] {
     // First, determine the order of the round.
     const enemyTurns = <CombatParticipant[]>[];
-    
+
     combatSetup.enemies.forEach(e => {
         e.attacks.forEach((a, i) => {
-            enemyTurns.add({ participant: e, attack: a, attackIndex: i })
+            enemyTurns.add({participant: e, attack: a, attackIndex: i})
         });
     })
-    
-    const participants = combatSetup.characters.filter(c => c.currentHitpoints > 0).map(c => { 
-        return <CombatParticipant>{ participant: c, attack: undefined }; 
+
+    const participants = combatSetup.characters.filter(c => c.currentHitpoints > 0).map(c => {
+        return <CombatParticipant>{participant: c, attack: undefined};
     }).concat(enemyTurns);
-    
+
     participants.sort((a, b) => {
         a.combatSpeed = getCombatSpeed(a, combatSetup) ?? 0;
         b.combatSpeed = getCombatSpeed(b, combatSetup) ?? 0;
@@ -206,14 +225,14 @@ function getEnemyTargets(game: IGame, combatSetup: ICombatSetup) {
 
     combatSetup.enemies.forEach(e => {
         const targets = <Character[]>[];
-        
+
         e.attacks.forEach(a => {
             // Determine the enemy target using the enemy's attack priority.
             const potentialTargets = combatSetup.characters.filter(c => c.currentHitpoints > 0);
             const enemyAttackPriorityRoll = game.helpers.rollDice('1d6');
             let enemyTargetType = a.attackPriority?.find(a => a[1].indexOf(enemyAttackPriorityRoll) > -1)[0];
             let enemyTarget = enemyTargetType ? potentialTargets.find(t => t.class.name === enemyTargetType) : null;
-    
+
             // If no target is found using the attack priority, pick one at random.
             if (!enemyTarget) {
                 const targetDie = `1d${potentialTargets.length}`;
@@ -222,7 +241,7 @@ function getEnemyTargets(game: IGame, combatSetup: ICombatSetup) {
 
             targets.push(enemyTarget);
         });
-        
+
         enemyTargets.push([e, targets]);
     });
 
@@ -233,9 +252,6 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
     if (!turn.target || turn.character.currentHitpoints <= 0 || (turn.item.targetType === TargetType.Enemy && turn.target.currentHitpoints <= 0)) {
         return;
     }
-
-    let combatText = format(turn.item.attackText, [turn.character.name]);
-    let totalDamage = 0;
 
     if (turn.item.use) {
         turn.item.use(game, turn.character, turn.item, turn.target);
@@ -249,24 +265,30 @@ function executeCharacterTurn(game: IGame, turn: ICombatTurn) {
         const attacks = groupable?.members?.length > 0 ? 2 : 1;
 
         for (let a = 0; a < attacks; a++) {
-            const item = a === 0 ? turn.item : groupable.members[0] as IItem;
-            const weaponDamage = game.helpers.rollDice(item.damage);
-            totalDamage = Math.max(0, weaponDamage + game.helpers.calculateBonus(turn.character, 'damageBonus') - (turn.target.defence ?? 0));
-            totalDamage = turn.character.confused ? Math.ceil(totalDamage / 2) : totalDamage;
+            const item = a === 0 ? turn.item : groupable.members[a - 1] as IItem;
+            let totalDamage = 0;
+            let combatText = format(item.attackText, [turn.character.name]);
+            let weaponDamage = game.helpers.rollDice(item.damage) + game.helpers.calculateBonus(turn.character, 'damageBonus');
+            weaponDamage = turn.character.confused ? Math.ceil(weaponDamage / 2) : weaponDamage;
+            const damageAfterDefence = weaponDamage - (turn.target.defence ?? 0);
+            totalDamage = Math.max(0, damageAfterDefence);
+            const specialDamage = item.damageSpecial?.(game, turn.target, damageAfterDefence);
 
-            if (!totalDamage) {
-                game.logToCombatLog(`${turn.character.name} misses ${turn.target.name}!`);
-                continue;
-            }
-            
-            turn.target.currentHitpoints = Math.max(0, turn.target.currentHitpoints - totalDamage);
-            
             if (combatText) {
                 game.logToCombatLog(combatText + '.');
             }
 
+            if (totalDamage + (specialDamage?.extraDamage ?? 0) <= 0) {
+                game.logToCombatLog(`${turn.character.name} misses ${turn.target.name}!`);
+                continue;
+            }
+
+            turn.target.currentHitpoints = Math.max(0, turn.target.currentHitpoints - totalDamage);
             game.logToCombatLog(`${turn.character.name} does ${totalDamage} damage to ${turn.target.name}!`);
-            item.damageSpecial?.(game, turn.target);
+
+            if (specialDamage?.text) {
+                game.logToCombatLog(specialDamage.text);
+            }
         }
 
         // Confusion lasts only one turn.
@@ -333,7 +355,7 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
                 game.currentLocation.hotSpotCleared = true;
                 return true;
             }
-            
+
             if (game.worldProperties.isDay) {
                 game.currentLocation.encounterWonDay = true;
             } else {

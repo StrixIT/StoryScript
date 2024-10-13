@@ -55,13 +55,13 @@ export function Treestump() {
             }]
         ],
         leaveEvents:
-            [[
-                'Leave',
-                (game: IGame) => {
-                    game.currentLocation.descriptionSelector = undefined;
-                    locationComplete(game, game.currentLocation, () => game.currentLocation.actions.length === 0, () => true);
-                    return true;
-                }
-            ]],
+        [[
+            'Leave',
+            (game: IGame) => {
+                game.currentLocation.descriptionSelector = undefined;
+                locationComplete(game, game.currentLocation, () => game.currentLocation.actions.length === 0, () => true);
+                return true;
+            }
+        ]]
     });
 }
