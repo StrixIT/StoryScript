@@ -14,26 +14,24 @@ import {
     setReadOnlyLocationProperties
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
 import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
 
 export class LocationService implements ILocationService {
     constructor(
-        private _definitions: IDefinitions,
-        private _rules: IRules,
-        private _game: IGame,
-        private _gameEvents: IGameEvents,
+        private readonly _definitions: IDefinitions,
+        private readonly _rules: IRules,
+        private readonly _game: IGame,
+        private readonly _gameEvents: IGameEvents,
     ) {
-        // Todo: why can I not subscribe to the events in the constructor?
     }
 
     init = (): void => {
-        this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, eventArguments) => {
+        this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
             game.currentLocation.destinations.forEach(d => {
                 this.addKeyAction(game, d);
             })
         });
-        
+
         this._game.currentLocation = null;
         this._game.previousLocation = null;
 
@@ -89,8 +87,8 @@ export class LocationService implements ILocationService {
             }
         });
     }
-    
-    private setupLocations = () => {
+
+    private readonly setupLocations = () => {
         Object.values(this._game.locations).forEach(l => {
             const compiledLocation = <ICompiledLocation>l;
             this.initDestinations(compiledLocation);
@@ -109,7 +107,7 @@ export class LocationService implements ILocationService {
         this.addLocationGet(this._game.locations);
     }
 
-    private addLocationGet = (locations: Record<string, ICompiledLocation>) => {
+    private readonly addLocationGet = (locations: Record<string, ICompiledLocation>) => {
         Object.defineProperty(locations, 'get', {
             enumerable: false,
             value: function (id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation {
@@ -128,7 +126,7 @@ export class LocationService implements ILocationService {
         });
     }
 
-    private switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
+    private readonly switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
         let presentLocation: ICompiledLocation;
 
         // If no location is specified, go to the previous location.
@@ -152,7 +150,7 @@ export class LocationService implements ILocationService {
         return true;
     }
 
-    private processDestinations = (game: IGame) => {
+    private readonly processDestinations = (game: IGame) => {
         if (game.currentLocation.destinations) {
 
             // remove the return message from the current location destinations.
@@ -176,7 +174,7 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private markCurrentLocationAsVisited = (game: IGame): void => {
+    private readonly markCurrentLocationAsVisited = (game: IGame): void => {
         if (!game.currentLocation.hasVisited) {
             game.currentLocation.hasVisited = true;
             game.statistics.LocationsVisited = game.statistics.LocationsVisited || 0;
@@ -184,7 +182,7 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private initTrade = (game: IGame): void => {
+    private readonly initTrade = (game: IGame): void => {
         if (game.currentLocation.trade?.length > 0) {
             game.currentLocation.trade.forEach(t => {
                 if (!game.currentLocation.actions.find(([k, v]) => v.actionType === ActionType.Trade && k === t.id)) {
@@ -198,13 +196,13 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private addDestination = (originalScope, originalFunction, destination, game): void => {
+    private readonly addDestination = (originalScope: any, originalFunction: Function, destination: IDestination, game: IGame): void => {
         setDestination(destination);
         this.addKeyAction(game, destination);
         originalFunction.call(originalScope, destination);
     }
 
-    private playEvents = (game: IGame, eventProperty: string): void => {
+    private readonly playEvents = (game: IGame, eventProperty: string): void => {
         if (!game.currentLocation?.[eventProperty]) {
             return;
         }
@@ -223,11 +221,11 @@ export class LocationService implements ILocationService {
         });
     }
 
-    private processTextFeatures = (location: ICompiledLocation): void => {
+    private readonly processTextFeatures = (location: ICompiledLocation): void => {
         if (!location.description) {
             return;
         }
-        
+
         const htmlDoc = parseHtmlDocumentFromString(location.description);
         const featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
@@ -249,7 +247,7 @@ export class LocationService implements ILocationService {
     }
 
 
-    private selectLocationDescription = (game: IGame): boolean => {
+    private readonly selectLocationDescription = (game: IGame): boolean => {
         let selector = null;
 
         if (!game.currentLocation.descriptions) {
@@ -273,15 +271,15 @@ export class LocationService implements ILocationService {
         return true;
     }
 
-    private addKeyAction = (game: IGame, destination: IDestination) => {
-        destination.barriers?.forEach(([k, b]) => {
+    private readonly addKeyAction = (game: IGame, destination: IDestination) => {
+        destination.barriers?.forEach(([_, b]) => {
             if (b.key) {
                 const key = typeof b.key === 'function' ?
                     b.key()
                     : <IKey>this._definitions.items.get(b.key)();
-    
+
                 let existingAction = null;
-    
+
                 if (b.actions) {
                     b.actions.forEach(([k, v]) => {
                         if (k === key.id) {
@@ -291,19 +289,19 @@ export class LocationService implements ILocationService {
                 } else {
                     b.actions = [];
                 }
-    
+
                 if (existingAction) {
                     b.actions.splice(b.actions.indexOf(existingAction), 1);
                 }
-    
+
                 let partyKey = null;
-    
+
                 game.party.characters.forEach(c => {
                     partyKey = partyKey ?? c.items.get(key.id);
                 });
-    
+
                 const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(key.id));
-    
+
                 if (barrierKey) {
                     b.actions.push([barrierKey.id, barrierKey.open]);
                 }
