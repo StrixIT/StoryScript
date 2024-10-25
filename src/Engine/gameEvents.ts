@@ -1,0 +1,43 @@
+import {IGameEvents} from "./Interfaces/gameEvents.ts";
+import { IGame } from "./Interfaces/storyScript.ts";
+
+export class GameEvents implements IGameEvents {
+    private _eventHandlers = new Map<string, ((game: IGame, eventArguments: any) => void)[]>();
+    private _game: IGame;
+    
+    register = (eventName: string, throwWhenAlreadyRegistered: boolean = true): void => {
+        if (throwWhenAlreadyRegistered && this._eventHandlers.has(eventName)) {
+            throw new Error(`Event ${eventName} has already been registered!`);
+        }
+        
+        this._eventHandlers.set(eventName, []);
+    }
+    subscribe = (eventName: string | string[], handler: (game: IGame, eventArguments: {}) => void): void => {
+        const eventNames = Array.isArray(eventName) ? eventName : [eventName];
+        
+        eventNames.forEach(e => {
+            if (!this._eventHandlers.has(e)) {
+                throw new Error(`Event ${e} has not been registered!`);
+            }
+            
+            const handlers = this._eventHandlers.get(e);
+            handlers.add(handler);
+        });
+    }
+    
+    publish = (eventName: string, eventData: {}): void => {
+        if (!this._eventHandlers.has(eventName)) {
+            throw new Error(`Event ${eventName} has not been registered!`);
+        }
+
+        const handlers = this._eventHandlers.get(eventName);
+        
+        handlers.forEach(handler => handler(this._game, eventData));
+    }
+    
+    setGame = (game: IGame): void => {
+        this._game = game;
+    }
+}
+
+export const gameEvents = new GameEvents();
