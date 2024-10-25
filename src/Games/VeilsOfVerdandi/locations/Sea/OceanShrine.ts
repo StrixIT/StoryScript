@@ -3,6 +3,7 @@ import description from './OceanShrine.html?raw';
 import {CentralForest} from '../CentralForest/CentralForest';
 import {Octopus} from './Octopus';
 import {locationComplete} from "../../sharedFunctions.ts";
+import {SecretCove} from "../CentralForest/SecretCove.ts";
 
 export function OceanShrine() {
     return Location({
@@ -15,8 +16,8 @@ export function OceanShrine() {
                 style: 'location-water'
             },
             {
-                name: 'The Eastern Road',
-                target: CentralForest,
+                name: 'The Secret Cove',
+                target: SecretCove,
             },
         ],
         actions:

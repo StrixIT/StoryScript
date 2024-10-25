@@ -1,5 +1,6 @@
 ﻿import {Character, Enemy, IEnemy, IGame} from '../types';
 import {ClassType} from "../classType.ts";
+import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
 
 export function Twoheadedwolf() {
     return Enemy({
@@ -28,7 +29,7 @@ export function Twoheadedwolf() {
             }],
         onAttack: (game: IGame) => {
             if (game.worldProperties.freedFaeries) {
-                game.logToLocationLog(game.currentLocation.descriptions['freedfaeries']);
+                game.currentLocation.descriptionSelector = 'freedfaeries';
                 game.currentLocation.enemies.clear();
             }
         }

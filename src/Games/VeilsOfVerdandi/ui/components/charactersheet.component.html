@@ -18,7 +18,6 @@
                         </div>
                         &nbsp;/ {{ character.hitpoints }}
                     </li>
-                    <li *ngIf="party.characters.length === 1 && party.currency !== undefined">{{ texts.currency }} {{ party.currency }}</li>
                 </ul>
             </div>
             <equipment [character]="character" class="col-6"></equipment>

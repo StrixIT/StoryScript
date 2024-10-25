@@ -1,5 +1,5 @@
-@let participantType = participant.type ?? 'character';
-@let hitpointText = participant.type ? texts.enemyHitpoints : texts.characterHitpoints;
+@let participantType = participant.type;
+@let hitpointText = participant.type === 'enemy' ? texts.enemyHitpoints : texts.characterHitpoints;
 <div [ngClass]="{ 'targeted': rules.combat.isTargeted(game, participant) !== '' }" [title]="rules.combat.isTargeted(game, participant)">
     <h4>{{ participant.name }}</h4>
     <p [ngClass]="{ 'enemy-health': participantType === 'enemy', 'character-health': participantType === 'character' }">

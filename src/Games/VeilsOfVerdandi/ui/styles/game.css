@@ -112,11 +112,11 @@ blockquote {
     display: inline-block;
 }
 
-.time-editor {
+.time-editor, .currency-editor {
     display: inline;
 }
 
-.time-editor select {
+.time-editor select, .currency-editor input {
     max-width: 80px;
 }
 

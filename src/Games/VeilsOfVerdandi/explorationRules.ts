@@ -13,6 +13,12 @@ import {ShadowDog} from "./enemies/ShadowDog.ts";
 import {Wolf} from "./enemies/Wolf.ts";
 import {Rest, RestDay, RestNight} from "./actions/Rest.ts";
 import nightDescription from './locations/NightDescription.html?raw';
+import {equals} from "storyScript/utilityFunctions.ts";
+import {Fisherman} from "./locations/Beach/Fisherman.ts";
+import {SmallBoat} from "./items/SmallBoat.ts";
+import {Beach} from "./locations/Beach/Beach.ts";
+import {OceanShrine} from "./locations/Sea/OceanShrine.ts";
+import {SecretCove} from "./locations/CentralForest/SecretCove.ts";
 
 const dayPartLength = 4;
 
@@ -124,7 +130,7 @@ export const explorationRules = <IExplorationRules>{
         }
 
         if (game.worldProperties.isNight) {
-            const element = <HTMLElement>game.UIRootElement?.querySelector('location-container');
+            const element = game.UIRootElement?.querySelector<HTMLElement>('location-container');
 
             if (element) {
                 element.style.cssText = 'filter: brightness(50%);';
@@ -132,6 +138,30 @@ export const explorationRules = <IExplorationRules>{
         }
 
         game.currentLocation.descriptionSelector = undefined;
+    },
+
+    leaveLocation: (game: IGame, location: ICompiledLocation, newLocationId: string) => {
+        const character = game.party.characters.find(c => c.items.find(i => equals(i, SmallBoat)));
+        const boat = character?.items.find(i => equals(i, SmallBoat));
+
+        if (!boat) {
+            return;
+        }
+        
+        let drop = false;
+
+        if (equals(location, Fisherman) && equals(newLocationId, Beach)) {
+            drop = true;
+        }
+
+        if (equals(location, SecretCove) && !equals(newLocationId, OceanShrine)) {
+            drop = true;
+        }
+
+        if (drop) {
+            location.items.add(boat);
+            character.items.delete(boat);
+        }
     },
 
     descriptionSelector: descriptionSelector

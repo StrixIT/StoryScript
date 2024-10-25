@@ -2,7 +2,12 @@
     <div class="box-container">
         <div class="box-title">{{party.name}}</div>
         <ul class="list-unstyled">
-            <li>{{ texts.currency }} {{ party.currency }}</li>
+            <li>{{ texts.currency }}
+                <div class="currency-editor">
+                    <span *ngIf="!game.isDevelopment">{{ party.currency }}</span>
+                    <input *ngIf="game.isDevelopment" type="number" min="{{ 0 }}" max="1000" [(ngModel)]="party.currency">
+                </div>
+            </li>
             <li>Day: {{ game.worldProperties.currentDay }}</li>
             <li>Time:
                 <div class="time-editor">

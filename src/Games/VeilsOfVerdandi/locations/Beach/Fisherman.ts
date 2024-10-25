@@ -14,7 +14,7 @@ import {haveItem} from "../../sharedFunctions.ts";
 
 export function Fisherman() {
     return Location({
-        name: 'The Fishermans Cottage',
+        name: 'The Fisherman\'s Cottage',
         description: description,
         persons: [
             FisherManPerson()
@@ -25,7 +25,7 @@ export function Fisherman() {
                 target: Beach
             },
             {
-                name: 'The Octopus',
+                name: 'Open sea',
                 target: Octopus,
                 style: 'location-water',
                 barriers: getSeaBarrier([
@@ -82,6 +82,7 @@ export function Fisherman() {
                 actionType: ActionType.Regular,
                 execute: (game: IGame) => {
                     game.activeCharacter.items.delete(SmallBoat);
+                    game.currentLocation.items.add(SmallBoat);
                     game.party.currency += 10;
                     game.logToLocationLog('You return the small boat. "Not too bad, here\'s your refund." The fisherman hands you 10 gold coins.' +
                         '"You\'ve proven worthy of my trust. If you ever need it again, you can use my boat for free."');
