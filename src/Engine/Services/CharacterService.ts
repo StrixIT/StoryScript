@@ -13,7 +13,7 @@ import {getEquipmentType} from '../utilityFunctions';
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 
 export class CharacterService implements ICharacterService {
-    constructor(private _dataService: IDataService, private _game: IGame, private _rules: IRules) {
+    constructor(private readonly _dataService: IDataService, private readonly _game: IGame, private readonly _rules: IRules) {
     }
 
     getSheetAttributes = (): string[] => this._rules.character.getSheetAttributes?.() || [];
@@ -161,7 +161,7 @@ export class CharacterService implements ICharacterService {
         })
     }
 
-    private prepareSheet = (sheet: ICreateCharacter): void => {
+    private readonly prepareSheet = (sheet: ICreateCharacter): void => {
         if (sheet.steps.length == 0) {
             return;
         }
@@ -219,7 +219,7 @@ export class CharacterService implements ICharacterService {
         };
     }
 
-    private checkStep = (step: ICreateCharacterStep): boolean => {
+    private readonly checkStep = (step: ICreateCharacterStep): boolean => {
         let done = true;
 
         if (step.attributes) {
@@ -251,7 +251,7 @@ export class CharacterService implements ICharacterService {
         return done;
     }
 
-    private processDefaultSettings = (character: ICharacter, characterData: ICreateCharacter): void => {
+    private readonly processDefaultSettings = (character: ICharacter, characterData: ICreateCharacter): void => {
         if (!characterData.steps) {
             return;
         }
@@ -279,7 +279,7 @@ export class CharacterService implements ICharacterService {
         });
     }
 
-    private setFinish = (data: ICreateCharacter): void => {
+    private readonly setFinish = (data: ICreateCharacter): void => {
         if (data?.steps) {
             const activeStep = data.steps[data.currentStep];
 

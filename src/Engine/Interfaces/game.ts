@@ -15,8 +15,8 @@ import {ICombinable} from './combinations/combinable';
 import {IParty} from './party';
 import {ICombatSetup} from './combatSetup';
 import {ICombatTurn} from './combatTurn';
-import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
-import {ISoundPlayer} from "storyScript/Interfaces/soundPlayer.ts";
+import {ICombineResult} from "./combinations/combineResult.ts";
+import {ISoundPlayer} from "./soundPlayer.ts";
 
 /**
  * The StoryScript main game object.

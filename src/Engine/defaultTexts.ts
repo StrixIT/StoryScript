@@ -99,7 +99,16 @@ export class DefaultTexts {
         confirmRestart: 'Really restart?',
         restartCancelled: 'No',
         restartConfirmed: 'Yes',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
+        confirmAction: 'Ok',
+        cancelAction: 'Cancel',
+        stockItemDisplayText: '{0}: {1} {2}',
+        buyConfirmationText: 'Are you sure you want to buy the {0} for {1} {2}?',
+        confirmBuy: 'Ok',
+        cancelBuy: 'Cancel',
+        sellConfirmationText: 'Are you sure you want to sell the {0} for {1} {2}?',
+        confirmSell: 'Ok',
+        cancelSell: 'Cancel'
     }
 
     format = format;

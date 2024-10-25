@@ -7,6 +7,7 @@ import {
     IGame,
     IInterfaceTexts,
     IPerson,
+    IRules,
     ITrade
 } from 'storyScript/Interfaces/storyScript';
 import {isEmpty} from 'storyScript/utilityFunctions';
@@ -29,11 +30,14 @@ export class ExplorationComponent {
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
+        this.rules = objectFactory.GetRules();
         this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;
+    rules: IRules;
     texts: IInterfaceTexts;
+    confirmAction: [string, IAction];
 
     changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
@@ -45,11 +49,21 @@ export class ExplorationComponent {
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    disableActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action[1].status == undefined ? false : action[1].status == ActionStatus.Disabled;
+    disableActionButton = (action: [string, IAction]): boolean => this.checkStatus(action, ActionStatus.Disabled);
 
-    hideActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action[1].status == undefined ? false : action[1].status == ActionStatus.Unavailable;
+    hideActionButton = (action: [string, IAction]): boolean => this.checkStatus(action, ActionStatus.Unavailable);
 
-    executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
+    cancelAction = (): void => this.confirmAction = undefined;
+    
+    executeAction = (action: [string, IAction]): void => {
+        if (action[1].confirmationText && !this.confirmAction) {
+            this.confirmAction = action;
+            return;    
+        }
+
+        this.confirmAction = undefined;
+        this._sharedMethodService.executeAction(action, this);
+    };
 
     // Do not remove this method nor its arguments, it is called dynamically from the executeAction method of the SharedMethodService!
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
@@ -67,4 +81,8 @@ export class ExplorationComponent {
     isPreviousLocation = (destination: IDestination): boolean => {
         return (<any>destination).isPreviousLocation
     };
+    
+    private checkStatus = (action: [string, IAction], status: ActionStatus) => {
+        return typeof action[1].status === 'function' ? (<any>action[1]).status(this.game) == status : action[1].status == undefined ? false : action[1].status == status;
+    }
 }

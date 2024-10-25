@@ -18,7 +18,7 @@ export class NavigationComponent {
         const serviceFactory = inject(ServiceFactory);
         this.game = serviceFactory.GetGame();
         this.texts = serviceFactory.GetTexts();
-        this.locations = serviceFactory.AvailableLocations;
+        this.locations = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
     }
     
     game: IGame;

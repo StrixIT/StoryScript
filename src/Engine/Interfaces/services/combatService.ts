@@ -1,6 +1,8 @@
 import {ICombatSetup} from "storyScript/Interfaces/combatSetup.ts";
 import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
+import {IEnemy} from "storyScript/Interfaces/enemy.ts";
+import {ICharacter} from "storyScript/Interfaces/character.ts";
 
 export interface ICombatService {
     /**
@@ -20,4 +22,13 @@ export interface ICombatService {
      * @param item The item to check.
      */
     isSelectable(item: IItem): boolean;
+
+    /**
+     * Gets a value indicating whether an item can target the proposed target. True when so, false
+     * otherwise.
+     * @param item The item to check the target for.
+     * @param target The proposed target.
+     * @param character The character whom the item belongs to.
+     */
+    canTarget(item: IItem, target: IEnemy | ICharacter, character: ICharacter): boolean;
 }

@@ -101,7 +101,16 @@ export interface IInterfaceTexts {
     groupItem?: string;
     splitItemGroup?: string;
     worldProperties?: any;
-
+    confirmAction?: string;
+    cancelAction?: string;
+    stockItemDisplayText?: string,
+    buyConfirmationText?: string;
+    confirmBuy?: string;
+    cancelBuy?: string;
+    sellConfirmationText?: string;
+    confirmSell?: string;
+    cancelSell?: string;
+    
     /**
      * A function to build text replacing tokens in a template, e.g. 'it is {0}, {1}' with parameters 'day' and '12:00' becomes 'it is day, 12:00'.
      * If no function is specified, a default implementation is used.

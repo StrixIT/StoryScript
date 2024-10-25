@@ -1,6 +1,6 @@
 import { IGame } from '../game';
 import { PlayState } from '../enumerations/playState';
-import {GameState, ICharacter, IGroupableItem, IItem} from '../storyScript';
+import {GameState, ICharacter, IGroupableItem, IInterfaceTexts, IItem, ITrade} from '../storyScript';
 
 export interface IGeneralRules {
     /**
@@ -51,8 +51,9 @@ export interface IGeneralRules {
      * Use this function to override the standard way of naming items. This is useful if you want to use a
      * different naming for items that are grouped.
      * @param item The item to get the name for.
+     * @param texts The interface texts.
      */
-    getItemName?(item: IItem): string;
+    getItemName?(item: IItem, texts: IInterfaceTexts): string;
 
     /**
      * Use this function if you want to use special rules for grouping items.
@@ -61,4 +62,12 @@ export interface IGeneralRules {
      * @param item The item to add as a member to the parent.
      */
     canGroupItem?(character: ICharacter, group: IGroupableItem<IItem>, item: IGroupableItem<IItem>): boolean;
+
+    /**
+     * Use this function if you want to run code to determine whether an item can be sold to a buyer.
+     * @param game The game object
+     * @param item The item to sell
+     * @param buyer The potential buyer
+     */
+    canBuyItem?(game: IGame, item: IItem, buyer: ITrade | ICharacter): boolean;
 }

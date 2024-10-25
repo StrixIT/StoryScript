@@ -12,7 +12,7 @@ import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {ICombatService} from "storyScript/Interfaces/services/combatService.ts";
 
 export class CombatService implements ICombatService {
-    constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+    constructor(private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts) {
     }
     
     initCombat = (): void => {
@@ -36,7 +36,7 @@ export class CombatService implements ICombatService {
                 }
             });
 
-            if (this._game.party.characters.filter(c => c.currentHitpoints >= 0).length == 0) {
+            if (this._game.party.characters.filter(c => c.currentHitpoints > 0).length == 0) {
                 this._game.playState = null;
                 this._game.state = GameState.GameOver;
             }
@@ -51,7 +51,34 @@ export class CombatService implements ICombatService {
 
     isSelectable = (item: IItem): boolean => item?.selectable || typeof item?.selectable === 'undefined';
 
-    private initCombatRound = (newFight: boolean) => {
+    canTarget = (item: IItem, target: IEnemy | ICharacter, character: ICharacter) => {
+        const type = (<any>target).type;
+        let canTarget = false;
+
+        if (type === 'enemy') {
+            canTarget = item.targetType === TargetType.Enemy;
+        } else {
+            switch (item.targetType) {
+                case TargetType.Ally:
+                    canTarget = target !== character;
+                    break;
+                case TargetType.Self:
+                    canTarget = target === character;
+                    break;
+                case TargetType.AllyOrSelf:
+                    canTarget = true;
+                    break;
+            }
+        }
+
+        if (!canTarget || !item.canTarget) {
+            return canTarget;
+        }
+
+        return item.canTarget(this._game, item, target);
+    }
+    
+    private readonly initCombatRound = (newFight: boolean) => {
         this._game.combat = newFight ? <ICombatSetup<ICombatTurn>>[] : this._game.combat;
 
         if (!this._game.combat.enemies) {
@@ -87,7 +114,7 @@ export class CombatService implements ICombatService {
             Object.keys(c.equipment).forEach(k => {
                 const item = <IItem>c.equipment[k];
 
-                if (item?.useInCombat || item?.targetType) {
+                if ((item?.useInCombat || item?.targetType) && items.indexOf(item) === -1) {
                     items.push(item)
                 }
             });
@@ -116,7 +143,7 @@ export class CombatService implements ICombatService {
         this._rules.combat?.initCombatRound?.(this._game, this._game.combat);
     }
     
-    private getTargetName = (enemiesPerType: Record<string, number[]>, target: any): string => {
+    private readonly getTargetName = (enemiesPerType: Record<string, number[]>, target: any): string => {
         const ofSameType = enemiesPerType[target.id];
 
         if (ofSameType.length === 1) {
@@ -126,7 +153,7 @@ export class CombatService implements ICombatService {
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
     }
 
-    private enemyDefeated = (character: ICharacter, enemy: IEnemy): void => {
+    private readonly enemyDefeated = (character: ICharacter, enemy: IEnemy): void => {
         if (enemy.items) {
             const items = [...enemy.items];
 

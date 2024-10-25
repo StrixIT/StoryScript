@@ -1,4 +1,4 @@
-import { IGame, IInterfaceTexts, IItem, ITrade } from 'storyScript/Interfaces/storyScript';
+import {ICharacter, IGame, IInterfaceTexts, IItem, ITrade} from 'storyScript/Interfaces/storyScript';
 import { TradeService } from 'storyScript/Services/TradeService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
@@ -20,16 +20,36 @@ export class TradeComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
+    confirmBuyItem: IItem;
+    confirmSellItem: IItem;
 
-    canPay = (currency: number, value: number): boolean => {
-        return this._tradeService.canPay(currency, value);
-    }
+    canPay = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => this._tradeService.canPay(item, buyer, seller);
 
-    actualPrice = (item: IItem, modifier: number | (() => number)): number => this._tradeService.actualPrice(item, modifier);
+    actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): number => this._tradeService.actualPrice(item, buyer, seller);
 
     displayPrice = (item: IItem, actualPrice: number): string  => this._tradeService.displayPrice(item, actualPrice);
 
-    buy = (item: IItem, trade: ITrade): boolean => this._tradeService.buy(item, trade);
+    cancelBuy = (): void => this.confirmBuyItem = undefined;
     
-    sell = (item: IItem, trade: ITrade): boolean => this._tradeService.sell(item, trade);
+    buy = (item: IItem, trade: ITrade): boolean => {
+        if (item.value > 0 && !this.confirmBuyItem) {
+            this.confirmBuyItem = item;
+            return true;
+        }
+
+        this.confirmBuyItem = undefined;
+        return this._tradeService.buy(item, trade); 
+    }
+
+    cancelSell = (): void => this.confirmSellItem = undefined;
+    
+    sell = (item: IItem, trade: ITrade): boolean => {
+        if (item.value > 0 && !this.confirmSellItem) {
+            this.confirmSellItem = item;
+            return true;
+        }
+
+        this.confirmSellItem = undefined;
+        return this._tradeService.sell(item, trade);
+    }
 }

@@ -23,10 +23,22 @@ import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreator
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
+import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
 
 export class GameService implements IGameService {
-    constructor(private _dataService: IDataService, private _locationService: ILocationService, private _characterService: ICharacterService, private _combinationService: ICombinationService, private _soundService: ISoundService, private _rules: IRules, private _helperService: IHelpers, private _game: IGame, private _texts: IInterfaceTexts) {
-    }
+    constructor
+    (
+        private _dataService: IDataService, 
+        private _locationService: ILocationService, 
+        private _characterService: ICharacterService, 
+        private _combinationService: ICombinationService, 
+        private _soundService: ISoundService, 
+        private _rules: IRules, 
+        private _helperService: IHelpers, 
+        private _game: IGame, 
+        private _texts: IInterfaceTexts,
+        private _gameEvents: IGameEvents
+    ) {}
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
         this._game.helpers = this._helperService;
@@ -176,6 +188,7 @@ export class GameService implements IGameService {
             // Use a timeout here to allow the UI to respond to the loading flag set.
             setTimeout(() => {
                 this._game.loading = false;
+                this._game.state = GameState.Play;
             }, 0);
         }
     }
@@ -224,12 +237,14 @@ export class GameService implements IGameService {
 
     private createCharacter = (characterData: ICreateCharacter): void => {
         this._game.party = this._game.party ?? <IParty>{
+            type: 'party',
             characters: [],
             quests: [],
             score: 0
         };
 
         const character = this._characterService.createCharacter(this._game, characterData);
+        (<any>character).type = 'character';
         character.items = character.items || [];
         this._game.party.characters.push(character);
     }
@@ -251,7 +266,7 @@ export class GameService implements IGameService {
 
             },
             set: value => {
-                if (value.currentHitpoints <= 0) {
+                if (!value || value.currentHitpoints <= 0) {
                     return;
                 }
 
@@ -262,6 +277,7 @@ export class GameService implements IGameService {
 
         this._game.sounds = this._soundService.getSounds();
         this._game.sounds.playedAudio = playedAudio;
+        this._gameEvents.setGame(this._game);
 
         this.initCombinations();
         this._locationService.init();
@@ -328,6 +344,10 @@ export class GameService implements IGameService {
                     const change = value - currentHitpoints[c.name];
                     currentHitpoints[c.name] = value;
                     this._rules.character.hitpointsChange?.(this._game, c, change);
+
+                    if (currentHitpoints[c.name] <= 0) {
+                        this._game.activeCharacter = this._game.party.characters.find(c => c.currentHitpoints > 0);
+                    }
                 }
             });
 
