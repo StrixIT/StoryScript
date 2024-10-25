@@ -1,4 +1,4 @@
-﻿import { EquipmentType } from "./Interfaces/storyScript";
+﻿import {EquipmentType, ILocation} from "./Interfaces/storyScript";
 
 export function compareString(left: string, right: string): boolean {
     if ((left === undefined && right === undefined) || (left === null && right === null)) {
@@ -132,8 +132,9 @@ export function isEmpty(object: any, property?: string) {
     return true;
 }
 
-export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
-    return entity.id ? compareString(entity.id, definition.name) : false;
+export function equals<T extends { id?: string } | ILocation>(entity: T | string, definition: () => T): boolean {
+    const id = (entity as { id?: string }).id ?? getId(entity as Function);
+    return id ? compareString(id, definition.name) : false;
 }
 
 export function createPromiseForCallback<T>(callBack: Function): { promise: Promise<T>, promiseCallback: () => void } {

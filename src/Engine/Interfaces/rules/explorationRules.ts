@@ -17,8 +17,9 @@ export interface IExplorationRules {
      * When specified, this function will be called whenever the player enters a location.
      * @param game The active game
      * @param location The location the player leaves
+     * @param newLocationId The id of the location the player travels to
      */
-    leaveLocation?(game: IGame, location: ICompiledLocation): void;
+    leaveLocation?(game: IGame, location: ICompiledLocation, newLocationId: string): void;
 
     /**
      * Specify this function if you want to run custom logic to set the description selector when selecting the description when

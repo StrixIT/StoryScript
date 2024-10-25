@@ -14,16 +14,26 @@ import {
     setReadOnlyLocationProperties
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
+import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
 
 export class LocationService implements ILocationService {
     constructor(
         private _definitions: IDefinitions,
         private _rules: IRules,
-        private _game: IGame
+        private _game: IGame,
+        private _gameEvents: IGameEvents,
     ) {
+        // Todo: why can I not subscribe to the events in the constructor?
     }
 
     init = (): void => {
+        this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, eventArguments) => {
+            game.currentLocation.destinations.forEach(d => {
+                this.addKeyAction(game, d);
+            })
+        });
+        
         this._game.currentLocation = null;
         this._game.previousLocation = null;
 
@@ -41,7 +51,7 @@ export class LocationService implements ILocationService {
     changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
         // Clear the play state on travel.
         game.playState = null;
-        this._rules.exploration?.leaveLocation?.(game, game.currentLocation);
+        this._rules.exploration?.leaveLocation?.(game, game.currentLocation, getId(location));
         this.playEvents(game, 'leaveEvents');
 
         // If there is no location, we are starting a new game. We're done here.
