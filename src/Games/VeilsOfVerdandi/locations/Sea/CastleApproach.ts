@@ -9,7 +9,8 @@ export function CastleApproach() {
         destinations: [
             {
                 name: 'Enter the Castle',
-                target: CastleInside
+                target: CastleInside,
+                style: 'location-danger'
             }
         ]
     });
