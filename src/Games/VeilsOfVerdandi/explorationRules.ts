@@ -141,6 +141,10 @@ export const explorationRules = <IExplorationRules>{
     },
 
     leaveLocation: (game: IGame, location: ICompiledLocation, newLocationId: string) => {
+        if (!location) {
+            return;
+        }
+        
         const character = game.party.characters.find(c => c.items.find(i => equals(i, SmallBoat)));
         const boat = character?.items.find(i => equals(i, SmallBoat));
 
