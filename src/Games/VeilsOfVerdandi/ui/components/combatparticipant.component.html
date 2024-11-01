@@ -8,5 +8,5 @@
     <ul *ngIf="participant.effects.length > 0" class="effects">
         <li *ngFor="let effect of participant.effects" class="{{ effect }}">{{ effect }}</li>
     </ul>
-    <img src="{{ participant.picture }}" *ngIf="participant.picture" alt="participant.name" />
+    <img src="{{ participant.picture }}" *ngIf="participant.picture" alt="{{ participant.name }}" />
 </div>

@@ -8,6 +8,7 @@ export function ForestPond() {
     return Location({
         name: 'The Forest Pond',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: 'The Dryad Tree',

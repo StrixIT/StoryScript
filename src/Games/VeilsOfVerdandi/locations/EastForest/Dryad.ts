@@ -9,6 +9,7 @@ export function Dryad() {
     return Location({
         name: 'The Dryad Tree',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: 'The Forest Pond',

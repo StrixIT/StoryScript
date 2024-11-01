@@ -9,6 +9,7 @@ export function OceanShrine() {
     return Location({
         name: 'The Ocean Shrine',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: 'The Octopus',

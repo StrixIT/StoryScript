@@ -1,15 +1,16 @@
 ﻿import { Location, IGame } from '../../types';
-import description from './Magicflowers.html?raw';
+import description from './MagicFlower.html?raw';
 import { Brownbear } from '../../enemies/Brownbear';
-import { MagicFlower } from '../../items/MagicFlower.ts';
+import { MagicFlower as MagicFlowerItem } from '../../items/MagicFlower.ts';
 import { NorthRoad } from './NorthRoad';
 import {backToForestText} from "../../explorationRules.ts";
 import {locationComplete} from "../../sharedFunctions.ts";
 
-export function Magicflowers() {
+export function MagicFlower() {
     return Location({
         name: 'The Magic Flowers',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: backToForestText,
@@ -21,7 +22,7 @@ export function Magicflowers() {
 
         ],
         items: [
-            MagicFlower(),                
+            MagicFlowerItem(),                
         ],
         leaveEvents:
         [[

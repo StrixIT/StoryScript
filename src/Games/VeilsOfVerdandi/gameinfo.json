@@ -1,10 +1,10 @@
 {
     "name": "Veils of Verdandi",
-    "description": "",
+    "description": "Based on the board game 'Veils of Verdandi' by Fasold Games.",
     "picture": "",
     "sourcesIncluded": false,
     "author": {
-        "name": "",
+        "name": "Rutger Schurgers",
         "email": ""
     }
 }

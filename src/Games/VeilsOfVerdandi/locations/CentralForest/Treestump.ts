@@ -10,6 +10,7 @@ export function Treestump() {
     return Location({
         name: 'The Tree Stump',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: backToForestText,

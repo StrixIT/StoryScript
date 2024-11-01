@@ -11,6 +11,7 @@ export function Woodcutter() {
     return Location({
         name: 'The Woodcutters Cottage',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: backToForestText,

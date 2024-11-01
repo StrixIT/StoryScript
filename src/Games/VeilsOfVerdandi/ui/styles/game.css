@@ -150,3 +150,8 @@ combat-participant > div {
 combat-participant > div.targeted {
     border: 2px solid red;
 }
+
+.location-image {
+    float: left;
+    margin-right: 10px;
+}

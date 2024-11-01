@@ -6,6 +6,7 @@ export function CastleApproach() {
     return Location({
         name: 'Honeycomb Castle Approach',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: 'Enter the Castle',

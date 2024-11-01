@@ -10,6 +10,7 @@ export function Mermaid() {
     return Location({
         name: 'Mermaid',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: 'To the beach',

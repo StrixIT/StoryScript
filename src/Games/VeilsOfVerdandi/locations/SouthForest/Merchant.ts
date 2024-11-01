@@ -8,6 +8,7 @@ export function Merchant() {
     return Location({
         name: 'The Merchant',
         description: description,
+        picture: true,
         destinations: [
             {
                 name: backToForestText,

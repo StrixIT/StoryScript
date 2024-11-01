@@ -1,5 +1,5 @@
 import {Location} from '../../types';
-import {Magicflowers} from './Magicflowers';
+import {MagicFlower} from './MagicFlower';
 import {Woodcutter} from './Woodcutter';
 import {CentralForest} from '../CentralForest/CentralForest';
 import description from './NorthRoad.html?raw';
@@ -28,7 +28,7 @@ export function NorthRoad() {
             },
             {
                 name: 'The Magic Flower',
-                target: Magicflowers,
+                target: MagicFlower,
                 style: 'location-danger'
             },
             {
