@@ -23,15 +23,14 @@ export class LocationService implements ILocationService {
         private readonly _game: IGame,
         private readonly _gameEvents: IGameEvents,
     ) {
-    }
-
-    init = (): void => {
         this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
             game.currentLocation.destinations.forEach(d => {
                 this.addKeyAction(game, d);
             })
-        });
+        }, false);
+    }
 
+    init = (): void => {
         this._game.currentLocation = null;
         this._game.previousLocation = null;
 
