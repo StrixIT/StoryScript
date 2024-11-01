@@ -2,26 +2,35 @@ import {IGameEvents} from "./Interfaces/gameEvents.ts";
 import { IGame } from "./Interfaces/storyScript.ts";
 
 export class GameEvents implements IGameEvents {
-    private _eventHandlers = new Map<string, ((game: IGame, eventArguments: any) => void)[]>();
+    private readonly _eventHandlers = new Map<string, ((game: IGame, eventArguments: any) => void)[]>();
     private _game: IGame;
     
     register = (eventName: string, throwWhenAlreadyRegistered: boolean = true): void => {
-        if (throwWhenAlreadyRegistered && this._eventHandlers.has(eventName)) {
-            throw new Error(`Event ${eventName} has already been registered!`);
+        if (this._eventHandlers.has(eventName)) {
+            if (throwWhenAlreadyRegistered) {
+                throw new Error(`Event ${eventName} has already been registered!`);
+            }
+            
+            return;
         }
         
         this._eventHandlers.set(eventName, []);
     }
-    subscribe = (eventName: string | string[], handler: (game: IGame, eventArguments: {}) => void): void => {
+    subscribe = (eventName: string | string[], handler: (game: IGame, eventArguments: {}) => void, throwIfUnknown?: boolean): void => {
         const eventNames = Array.isArray(eventName) ? eventName : [eventName];
         
         eventNames.forEach(e => {
             if (!this._eventHandlers.has(e)) {
-                throw new Error(`Event ${e} has not been registered!`);
+                if (throwIfUnknown === undefined || throwIfUnknown) {
+                    throw new Error(`Event ${e} has not been registered!`);
+                }
+                else {
+                    this._eventHandlers.set(e, []);
+                }
             }
             
             const handlers = this._eventHandlers.get(e);
-            handlers.add(handler);
+            handlers.push(handler);
         });
     }
     
