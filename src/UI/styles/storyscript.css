@@ -105,7 +105,7 @@ button {
 }
 
 #exploration-destinations .btn, #combinations .btn, #trade .btn {
-    margin-right: 5px;
+    margin: 0 0 5px 5px;
 }
 
 #exploration-destinations button span {

@@ -1,14 +1,15 @@
-import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
-import { GameService } from 'storyScript/Services/GameService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
+import {GameService} from 'storyScript/Services/GameService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
 import {CommonModule} from "@angular/common";
+import {HighScoresComponent} from "ui/Components/HighScores/highscores.component.ts";
 
 @Component({
     standalone: true,
     selector: 'game-over',
-    imports: [CommonModule],
+    imports: [CommonModule, HighScoresComponent],
     template: getTemplate('gameover', await import('./gameover.component.html?raw'))
 })
 export class GameOverComponent {

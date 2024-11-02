@@ -84,6 +84,7 @@ export class ServiceFactory {
             gameEvents
         );
         this._combatService = new CombatService(this._game, this._rules, this._texts);
+        gameEvents.setGame(this._game);
         ServiceFactory._instance = this;
     }
 
