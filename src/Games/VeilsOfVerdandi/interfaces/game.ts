@@ -14,6 +14,7 @@ export interface IGame extends StoryScriptIGame {
     previousLocation: ICompiledLocation;
     worldProperties: IWorldProperties;
     helpers: IHelpers;
+    changeTime?: (time: string) => void;
 }
 
 export interface IHelpers extends StoryScriptIHelpers {

@@ -27,7 +27,7 @@ export function Rules(): IRules {
                 init(game);
             },
             initGame: init,
-            continueGame: init,
+            continueGame: continueGame,
             intro: true
         },
 
@@ -69,7 +69,13 @@ function init(game: IGame) {
         game.locations.start.hotSpotCleared = true;
         addDescriptions(game);
     }
-    game.worldProperties.changeTime = s => changeTime(game, s);
+    
+    game.changeTime = s => changeTime(game, s);
+}
+
+function continueGame(game: IGame) {
+    game.changeTime = s => changeTime(game, s);
+    explorationRules.enterLocation(game, game.currentLocation, false);
 }
 
 function changeTime(game: IGame, e: string) {
