@@ -149,26 +149,41 @@ export const explorationRules = <IExplorationRules>{
             return;
         }
         
-        const character = game.party.characters.find(c => c.items.find(i => equals(i, SmallBoat)));
-        const boat = character?.items.find(i => equals(i, SmallBoat));
+        const character = game.party.characters.get(c => c.items.get(SmallBoat)) || game.activeCharacter;
+        const boat = character?.items.get(SmallBoat) || location.items.get(SmallBoat);
 
         if (!boat) {
             return;
         }
         
         let drop = false;
+        let pickup = false;
 
-        if (equals(location, Fisherman) && equals(newLocationId, Beach)) {
-            drop = true;
+        if (equals(location, Fisherman)) {
+            if (equals(newLocationId, Beach)) {
+                drop = true;
+            }
+            else {
+                pickup = true;
+            }
         }
 
-        if (equals(location, SecretCove) && !equals(newLocationId, OceanShrine)) {
-            drop = true;
+        if (equals(location, SecretCove)) {
+            if (equals(newLocationId, OceanShrine))
+            {
+                pickup = true;
+            } else
+            {
+                drop = true;
+            }
         }
 
         if (drop) {
             location.items.add(boat);
             character.items.delete(boat);
+        } else if (pickup && location.items.get(boat)) {
+            character.items.add(boat);
+            location.items.delete(boat);
         }
     },
 

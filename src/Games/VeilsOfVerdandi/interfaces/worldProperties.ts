@@ -8,5 +8,4 @@
     hasRestedDuringDay: boolean;
     hasRestedDuringNight: boolean;
     helpedBees: boolean;
-    changeTime?: (e: string) => void;
 }

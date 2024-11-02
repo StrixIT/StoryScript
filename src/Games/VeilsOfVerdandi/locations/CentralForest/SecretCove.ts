@@ -6,7 +6,7 @@ import {getId} from "storyScript/utilityFunctions.ts";
 
 export function SecretCove() {
 	return Location({
-		name: 'SecretCove',
+		name: 'Secret Cove',
 		description: description,
 		destinations: [
 			{
