@@ -16,14 +16,18 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {DataService} from "storyScript/Services/DataService.ts";
+import {CommonModule} from "@angular/common";
+import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
+    standalone: true,
     selector: 'exploration',
+    imports: [CommonModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
     template: getTemplate('exploration', await import('./exploration.component.html?raw'))
 })
 export class ExplorationComponent {
-    private _dataService: DataService;
-    private _sharedMethodService: SharedMethodService;
+    private readonly _dataService: DataService;
+    private readonly _sharedMethodService: SharedMethodService;
 
     constructor() {
         this._dataService = inject(DataService);

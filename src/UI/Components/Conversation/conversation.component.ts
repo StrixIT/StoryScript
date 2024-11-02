@@ -3,13 +3,17 @@ import {ConversationService} from 'storyScript/Services/ConversationService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
+import {SafePipe} from "../../Pipes/sanitizationPipe.ts";
 
 @Component({
+    standalone: true,
     selector: 'conversation',
+    imports: [CommonModule, SafePipe],
     template: getTemplate('conversation', await import('./conversation.component.html?raw'))
 })
 export class ConversationComponent {
-    private _conversationService: ConversationService;
+    private readonly _conversationService: ConversationService;
 
     constructor() {
         this._conversationService = inject(ConversationService);

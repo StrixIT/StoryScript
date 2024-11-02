@@ -4,14 +4,17 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'ground',
+    imports: [CommonModule],
     template: getTemplate('ground', await import('./ground.component.html?raw'))
 })
 export class GroundComponent {
-    private _sharedMethodService: SharedMethodService;
-    private _itemService: ItemService;
+    private readonly _sharedMethodService: SharedMethodService;
+    private readonly _itemService: ItemService;
 
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);

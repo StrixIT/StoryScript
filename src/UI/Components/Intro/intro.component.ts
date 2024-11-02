@@ -1,16 +1,19 @@
-import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
-import { GameService } from 'storyScript/Services/GameService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
+import {GameService} from 'storyScript/Services/GameService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'intro',
+    imports: [CommonModule],
     template: getTemplate('intro', await import('./intro.component.html?raw'))
 })
 export class IntroComponent {
-    private _gameService: GameService;
-  
+    private readonly _gameService: GameService;
+
     constructor() {
         this._gameService = inject(GameService);
         const objectFactory = inject(ServiceFactory);

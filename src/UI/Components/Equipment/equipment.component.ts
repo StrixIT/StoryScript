@@ -1,23 +1,25 @@
-import { DefaultEquipment, ICharacter, IGame, IInterfaceTexts, IItem } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { CharacterService } from 'storyScript/Services/CharacterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, Input, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {DefaultEquipment, ICharacter, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {CharacterService} from 'storyScript/Services/CharacterService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject, Input} from '@angular/core';
+import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
-import {it} from "vitest";
-import {Items} from "../../../../constants.ts";
+import {CommonModule} from "@angular/common";
+import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
+    standalone: true,
     selector: 'equipment',
+    imports: [CommonModule, NgbCollapse],
     template: getTemplate('equipment', await import('./equipment.component.html?raw'))
 })
 export class EquipmentComponent {
     @Input() character!: ICharacter;
-    private _characterService: CharacterService;
-    private _itemService: ItemService;
-    private _sharedMethodService: SharedMethodService;
-    
+    private readonly _characterService: CharacterService;
+    private readonly _itemService: ItemService;
+    private readonly _sharedMethodService: SharedMethodService;
+
     constructor() {
         this._characterService = inject(CharacterService);
         this._itemService = inject(ItemService);
