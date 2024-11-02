@@ -98,7 +98,10 @@ export class LocationService implements ILocationService {
                 get: () => selector,
                 set: (value) => {
                     selector = value;
-                    this.selectLocationDescription(this._game);
+                    
+                    if (value) {
+                        this.selectLocationDescription(this._game);
+                    }
                 }
             });
         });
