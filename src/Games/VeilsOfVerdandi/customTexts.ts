@@ -10,7 +10,7 @@ export function CustomTexts(): IInterfaceTexts {
         groupItem: 'Join',
         skipIntro: 'Start your adventure!',
         youLost: 'You have been defeated',
-        questFailed: 'You fall to the ground and the world fades before your eyes. The forest has defeated you, and you' +
+        questFailed: 'You fall to the ground and the world fades before your eyes. The forest has defeated you, and you ' +
             'have failed the king. There is no hope now for Prince Ture...',
         tryAgain: 'Face the forest once more!',
         confirmBuy: 'Yes',

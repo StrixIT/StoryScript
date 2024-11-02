@@ -73,13 +73,13 @@ export const hotSpotProperties = <ILocation>{
     actions: <[string, IAction][]>[
         [RestDay, {
             ...Rest(),
-            confirmationText: 'Are you sure you want to rest now? You can only rest once during the day!',
+            confirmationText: 'Are you sure you want to rest now? You can only rest once during the day, and your enemies also have time to recover!',
             activeDay: true,
 
         }],
         [RestNight, {
             ...Rest(),
-            confirmationText: 'Are you sure you want to rest now? You can only rest once during the night!',
+            confirmationText: 'Are you sure you want to rest now? You can only rest once during the night, and your enemies also have time to recover!',
             activeNight: true
         }],
     ],
@@ -106,6 +106,10 @@ export const hotSpotProperties = <ILocation>{
 
 export const explorationRules = <IExplorationRules>{
     enterLocation: (game: IGame, location: ICompiledLocation, travel: boolean): void => {
+        if (!location) {
+            return;
+        }
+        
         if (!dayEncounterPile.length) {
             dayEncounterPile = shuffle(dayEncounters);
         }

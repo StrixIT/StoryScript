@@ -155,3 +155,7 @@ combat-participant > div.targeted {
     float: left;
     margin-right: 10px;
 }
+
+.location-text {
+    min-height: 250px;
+}
