@@ -10,9 +10,9 @@ import { getTemplate } from '../../helpers';
     template: getTemplate('main', await import('./main.component.html?raw'))
 })
 export class MainComponent {
-    private _sharedMethodService: SharedMethodService;
-    private _gameService: GameService;
-    private _hostElement: ElementRef;
+    private readonly _sharedMethodService: SharedMethodService;
+    private readonly _gameService: GameService;
+    private readonly _hostElement: ElementRef;
 
     constructor() {
         const objectFactory = inject(ServiceFactory);

@@ -4,13 +4,17 @@ import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 import {compareString} from "storyScript/utilityFunctions.ts";
+import {CommonModule} from "@angular/common";
+import {SafePipe} from "../../Pipes/sanitizationPipe.ts";
 
 @Component({
+    standalone: true,
     selector: 'location-visual',
+    imports: [CommonModule, SafePipe],
     template: getTemplate('locationvisual', await import('./locationvisual.component.html?raw'))
 })
 export class LocationVisualComponent {
-    private _sharedMethodService: SharedMethodService;
+    private readonly _sharedMethodService: SharedMethodService;
     
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);

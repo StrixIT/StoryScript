@@ -25,8 +25,6 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 
 import {EncounterComponent} from './Components/Encounter/encounter.component';
 import {NavigationComponent} from './Components/Navigation/navigation.component';
-import {BackpackComponent} from './Components/Backpack/backpack.component';
-import {ActionLogComponent} from './Components/ActionLog/actionlog.component';
 import {CharacterSheetComponent} from './Components/CharacterSheet/charactersheet.component';
 import {CombatComponent} from './Components/Combat/combat.component';
 import {LocationTextComponent} from './Components/LocationText/locationtext.component';
@@ -59,6 +57,8 @@ import './styles/storyscript.css';
 
 import 'game/ui/styles/game.css'
 import 'game/run';
+import {BackpackComponent} from "./Components/Backpack/backpack.component.ts";
+import {ActionLogComponent} from "./Components/ActionLog/actionlog.component.ts";
 
 const serviceFactory = ServiceFactory.GetInstance();
 
@@ -70,41 +70,41 @@ const serviceFactory = ServiceFactory.GetInstance();
         NgbModalModule,
         NgbDropdownModule,
         NgbTypeaheadModule,
-        CombatComponent
+        ActionLogComponent,
+        CombatComponent,
+        BackpackComponent,
+        EquipmentComponent,
+        BuildCharacterComponent,
+        CharacterSheetComponent,
+        ConversationComponent,
+        TradeComponent,
+        EncounterModalComponent,
+        ExplorationComponent,
+        GroundComponent,
+        LocationTextComponent,
+        LocationVisualComponent,
+        EncounterComponent,
+        EnemyComponent,
+        CombinationComponent,
+        GameOverComponent,
+        HighScoresComponent,
+        IntroComponent,
+        LevelUpComponent,
+        CreateCharacterComponent,
+        MenuModalComponent,
+        NavigationComponent,
+        PartyComponent,
+        QuestComponent,
+        SoundComponent,
+        VictoryComponent,
+        TextFeatures,
+        SafePipe
     ],
     bootstrap: [
         MainComponent
     ],
     declarations: [
-        MainComponent,
-        PartyComponent,
-        MenuModalComponent,
-        NavigationComponent,
-        EncounterComponent,
-        BackpackComponent,
-        ActionLogComponent,
-        CharacterSheetComponent,
-        LocationTextComponent,
-        LocationVisualComponent,
-        GroundComponent,
-        EquipmentComponent,
-        TradeComponent,
-        EnemyComponent,
-        ExplorationComponent,
-        CombinationComponent,
-        VictoryComponent,
-        HighScoresComponent,
-        EncounterModalComponent,
-        ConversationComponent,
-        CreateCharacterComponent,
-        BuildCharacterComponent,
-        GameOverComponent,
-        IntroComponent,
-        LevelUpComponent,
-        QuestComponent,
-        SoundComponent,
-        TextFeatures,
-        SafePipe
+        MainComponent
     ],
     providers: [
         NgbActiveModal,

@@ -4,15 +4,19 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
+import {CommonModule} from "@angular/common";
+import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
+    standalone: true,
     selector: 'backpack',
+    imports: [CommonModule, NgbCollapse],
     template: getTemplate('backpack', await import('./backpack.component.html?raw'))
 })
 export class BackpackComponent {
     @Input() character!: ICharacter;
-    private _itemService: ItemService;
-    private _sharedMethodService: SharedMethodService;
+    private readonly _itemService: ItemService;
+    private readonly _sharedMethodService: SharedMethodService;
 
     constructor() {
         this._itemService = inject(ItemService);

@@ -3,13 +3,16 @@ import { SharedMethodService } from '../../Services/SharedMethodService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'enemy',
+    imports: [CommonModule],
     template: getTemplate('enemy', await import('./enemy.component.html?raw'))
 })
 export class EnemyComponent {
-    private _sharedMethodService: SharedMethodService;
+    private readonly _sharedMethodService: SharedMethodService;
 
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);

@@ -1,16 +1,19 @@
 import {ICharacter, IGame, IInterfaceTexts, IItem, ITrade} from 'storyScript/Interfaces/storyScript';
-import { TradeService } from 'storyScript/Services/TradeService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {TradeService} from 'storyScript/Services/TradeService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'trade',
+    imports: [CommonModule],
     template: getTemplate('trade', await import('./trade.component.html?raw'))
 })
 export class TradeComponent {
-    private _tradeService: TradeService;
-    
+    private readonly _tradeService: TradeService;
+
     constructor() {
         this._tradeService = inject(TradeService);
         const objectFactory = inject(ServiceFactory);
@@ -27,10 +30,10 @@ export class TradeComponent {
 
     actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): number => this._tradeService.actualPrice(item, buyer, seller);
 
-    displayPrice = (item: IItem, actualPrice: number): string  => this._tradeService.displayPrice(item, actualPrice);
+    displayPrice = (item: IItem, actualPrice: number): string => this._tradeService.displayPrice(item, actualPrice);
 
     cancelBuy = (): void => this.confirmBuyItem = undefined;
-    
+
     buy = (item: IItem, trade: ITrade): boolean => {
         if (item.value > 0 && !this.confirmBuyItem) {
             this.confirmBuyItem = item;
@@ -38,11 +41,11 @@ export class TradeComponent {
         }
 
         this.confirmBuyItem = undefined;
-        return this._tradeService.buy(item, trade); 
+        return this._tradeService.buy(item, trade);
     }
 
     cancelSell = (): void => this.confirmSellItem = undefined;
-    
+
     sell = (item: IItem, trade: ITrade): boolean => {
         if (item.value > 0 && !this.confirmSellItem) {
             this.confirmSellItem = item;
