@@ -1,17 +1,21 @@
-import { IGame, IInterfaceTexts, IQuest } from 'storyScript/Interfaces/storyScript';
-import { isEmpty } from 'storyScript/utilityFunctions';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { CharacterService } from 'storyScript/Services/CharacterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {IGame, IInterfaceTexts, IQuest} from 'storyScript/Interfaces/storyScript';
+import {isEmpty} from 'storyScript/utilityFunctions';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {CharacterService} from 'storyScript/Services/CharacterService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
+import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
+    standalone: true,
     selector: 'quests',
+    imports: [CommonModule, NgbCollapse],
     template: getTemplate('quest', await import('./quest.component.html?raw'))
 })
 export class QuestComponent {
-    private _characterService: CharacterService;
+    private readonly _characterService: CharacterService;
 
     constructor() {
         this._characterService = inject(CharacterService);

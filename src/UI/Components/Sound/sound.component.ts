@@ -4,22 +4,25 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {getTemplate} from '../../helpers';
 import {IRules} from 'storyScript/Interfaces/storyScript';
 import {SoundService} from "storyScript/Services/SoundService.ts";
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'sound',
+    imports: [CommonModule],
     template: getTemplate('sound', await import('./sound.component.html?raw'))
 })
 export class SoundComponent {
-    private _soundService: SoundService;
+    private readonly _soundService: SoundService;
 
-    private _game: IGame;
-    private _rules: IRules;
+    private readonly _game: IGame;
+    private readonly _rules: IRules;
     private _isPlaying: boolean = false;
     private _fadeInterval: NodeJS.Timeout;
     private _fadingMusic: boolean = false;
     private _currentMusic: string;
     private _currentVolume: number = 1;
-    private _soundQueue: [number, string][] = [];
+    private readonly _soundQueue: [number, string][] = [];
 
     constructor() {
         this._soundService = inject(SoundService);
@@ -71,7 +74,7 @@ export class SoundComponent {
     }
 
     // This code is here to (re)start music playback as soon as the user interacts with the browser.
-    private checkMusicPlaying = () => {
+    private readonly checkMusicPlaying = () => {
         if (this._isPlaying) {
             return;
         }
@@ -90,7 +93,7 @@ export class SoundComponent {
         }
     }
 
-    private fade = (newMusic: string) => {
+    private readonly fade = (newMusic: string) => {
         const newVolume = this._currentVolume - 0.1;
 
         if (newVolume >= 0) {
@@ -106,7 +109,7 @@ export class SoundComponent {
         backgroundMusicElement.volume = this._currentVolume;
     }
 
-    private getMusicPlayer = () => {
+    private readonly getMusicPlayer = () => {
         return <HTMLAudioElement>this._game.UIRootElement.getElementsByClassName('backgroundmusic-player')[0];
     }
 }

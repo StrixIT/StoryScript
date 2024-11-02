@@ -5,15 +5,18 @@ import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {getTemplate} from '../../helpers';
 import {DataService} from "storyScript/Services/DataService.ts";
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'menu-modal',
+    imports: [CommonModule],
     template: getTemplate('menumodal', await import('./menumodal.component.html?raw'))
 })
 export class MenuModalComponent {
-    private _activeModal: NgbActiveModal;
-    private _gameService: GameService;
-    private _dataService: DataService;
+    private readonly _activeModal: NgbActiveModal;
+    private readonly _gameService: GameService;
+    private readonly _dataService: DataService;
 
     constructor() {
         this._activeModal = inject(NgbActiveModal);

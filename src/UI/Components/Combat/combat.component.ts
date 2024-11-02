@@ -24,9 +24,9 @@ import {FormsModule} from "@angular/forms";
     template: getTemplate('combat', await import('./combat.component.html?raw'))
 })
 export class CombatComponent {
-    private _itemService: ItemService;
-    private _combatService: CombatService;
-    private _sharedMethodService: SharedMethodService;
+    private readonly _itemService: ItemService;
+    private readonly _combatService: CombatService;
+    private readonly _sharedMethodService: SharedMethodService;
 
     constructor() {
         this._itemService = inject(ItemService);

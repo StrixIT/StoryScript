@@ -9,14 +9,18 @@ import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
+    standalone: true,
     selector: 'level-up',
+    imports: [CommonModule, FormsModule],
     template: getTemplate('levelup', await import('./levelup.component.html?raw'))
 })
 export class LevelUpComponent {
     @Input() character!: ICharacter;
-    private _characterService: CharacterService;
+    private readonly _characterService: CharacterService;
 
     constructor() {
         this._characterService = inject(CharacterService);

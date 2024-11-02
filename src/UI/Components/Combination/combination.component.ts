@@ -3,13 +3,16 @@ import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { CombinationService } from 'storyScript/Services/CombinationService';
 import { Component, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'combination',
+    imports: [CommonModule],
     template: getTemplate('combination', await import('./combination.component.html?raw'))
 })
 export class CombinationComponent {
-    private _combinationService: CombinationService
+    private readonly _combinationService: CombinationService
 
     constructor() {
         this._combinationService = inject(CombinationService);

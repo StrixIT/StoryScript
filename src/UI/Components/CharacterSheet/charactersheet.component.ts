@@ -11,9 +11,14 @@ import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 import { IParty } from '../../../Games/MyAdventureGame/types';
+import {CommonModule} from "@angular/common";
+import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
+import {FormsModule} from "@angular/forms";
 
 @Component({
+    standalone: true,
     selector: 'character-sheet',
+    imports: [CommonModule, FormsModule, NgbCollapse],
     template: getTemplate('charactersheet', await import('./charactersheet.component.html?raw'))
 })
 export class CharacterSheetComponent { 

@@ -41,7 +41,11 @@ export class GameEvents implements IGameEvents {
 
         const handlers = this._eventHandlers.get(eventName);
         
-        handlers.forEach(handler => handler(this._game, eventData));
+        if (this._game) {
+            handlers.forEach(handler => handler(this._game, eventData));
+        } else {
+            console.log(`setGame has not been called for gameEvents, or it was called without passing in a game object!`);
+        }
     }
     
     setGame = (game: IGame): void => {
