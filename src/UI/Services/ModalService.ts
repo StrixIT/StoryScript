@@ -10,9 +10,9 @@ import {DataService} from "storyScript/Services/DataService.ts";
 
 @Injectable()
 export class ModalService {
-    private _modalService: NgbModal;
-    private _dataService: DataService;
-    private _gameService: GameService;
+    private readonly _modalService: NgbModal;
+    private readonly _dataService: DataService;
+    private readonly _gameService: GameService;
     private _activeModal = <NgbModalRef>null;
     private _previousModalState = <PlayState>null;
 
@@ -27,9 +27,9 @@ export class ModalService {
     }
 
     private readonly game: IGame;
-    private texts: IInterfaceTexts;
+    private readonly texts: IInterfaceTexts;
 
-    private openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {
+    private readonly openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {
         if (this._previousModalState && newState === this._previousModalState) {
             return;
         }
@@ -76,7 +76,7 @@ export class ModalService {
         }
     }
 
-    private closeModal = (dismiss: boolean) => {
+    private readonly closeModal = (dismiss: boolean) => {
         // The menu modal doesn't have settings and we don't need to save when closing the menu.
         if (this._activeModal.componentInstance?.settings) {
             if (this._activeModal.componentInstance.settings.closeAction) {
@@ -94,7 +94,7 @@ export class ModalService {
         this._activeModal = null;
     }
 
-    private getStateSettings = (value: PlayState): IModalSettings => {
+    private readonly getStateSettings = (value: PlayState): IModalSettings => {
         const modalSettings: IModalSettings = {
             title: '',
             closeText: this.texts.closeModal

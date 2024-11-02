@@ -17,11 +17,12 @@ import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {DataService} from "storyScript/Services/DataService.ts";
 import {CommonModule} from "@angular/common";
+import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     standalone: true,
     selector: 'exploration',
-    imports: [CommonModule],
+    imports: [CommonModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
     template: getTemplate('exploration', await import('./exploration.component.html?raw'))
 })
 export class ExplorationComponent {

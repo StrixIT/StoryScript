@@ -6,11 +6,12 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CommonModule} from "@angular/common";
+import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     standalone: true,
     selector: 'quests',
-    imports: [CommonModule],
+    imports: [CommonModule, NgbCollapse],
     template: getTemplate('quest', await import('./quest.component.html?raw'))
 })
 export class QuestComponent {
