@@ -136,6 +136,11 @@ export class GameService implements IGameService {
     }
 
     resume = (locationName: string): void => {
+        if (!this._game.party.characters.some(c => c.currentHitpoints > 0)) {
+            this._game.state = GameState.GameOver;
+            return;
+        }
+        
         this.setInterceptors();
         this._characterService.checkEquipment();
         const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
@@ -224,7 +229,7 @@ export class GameService implements IGameService {
         }
     }
 
-    private initTexts = (): void => {
+    private readonly initTexts = (): void => {
         const defaultTexts = new DefaultTexts();
 
         for (const n in defaultTexts.texts) {
@@ -235,7 +240,7 @@ export class GameService implements IGameService {
         this._texts.titleCase = defaultTexts.titleCase;
     }
 
-    private createCharacter = (characterData: ICreateCharacter): void => {
+    private readonly createCharacter = (characterData: ICreateCharacter): void => {
         this._game.party = this._game.party ?? <IParty>{
             type: 'party',
             characters: [],
@@ -249,7 +254,7 @@ export class GameService implements IGameService {
         this._game.party.characters.push(character);
     }
 
-    private initGame = (playedAudio: string[]): void => {
+    private readonly initGame = (playedAudio: string[]): void => {
         this.initLogs();
 
         Object.defineProperty(this._game, 'activeCharacter', {
@@ -277,7 +282,6 @@ export class GameService implements IGameService {
 
         this._game.sounds = this._soundService.getSounds();
         this._game.sounds.playedAudio = playedAudio;
-        this._gameEvents.setGame(this._game);
 
         this.initCombinations();
         this._locationService.init();
@@ -299,7 +303,7 @@ export class GameService implements IGameService {
         }
     }
 
-    private setInterceptors = (): void => {
+    private readonly setInterceptors = (): void => {
         const defaultPartyName = this._game.party.name ?? '';
         let score = this._game.party.score || 0;
         let gameState = this._game.state;
@@ -333,7 +337,7 @@ export class GameService implements IGameService {
 
         this._game.party.characters.forEach(c => {
             InitEntityCollection(c, Items);
-            currentHitpoints[c.name] = c.currentHitpoints || c.hitpoints;
+            currentHitpoints[c.name] = c.currentHitpoints ?? c.hitpoints;
 
             Object.defineProperty(c, 'currentHitpoints', {
                 configurable: true,
@@ -427,7 +431,7 @@ export class GameService implements IGameService {
         });
     }
 
-    private initLogs = (): void => {
+    private readonly initLogs = (): void => {
         this._game.actionLog = [];
         this._game.combatLog = [];
 
@@ -445,7 +449,7 @@ export class GameService implements IGameService {
         }
     }
 
-    private initCombinations = (): void => {
+    private readonly initCombinations = (): void => {
         this._game.combinations = {
             combinationResult: {
                 done: false,
@@ -488,7 +492,7 @@ export class GameService implements IGameService {
         };
     }
 
-    private updateHighScore = (): void => {
+    private readonly updateHighScore = (): void => {
         const scoreEntry = {name: this._game.party.name, score: this._game.party.score};
         this._game.highScores ??= [];
         let scoreAdded = false;
