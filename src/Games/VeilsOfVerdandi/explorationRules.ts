@@ -90,6 +90,11 @@ export const hotSpotProperties = <ILocation>{
 
                 Object.keys(game.locations).forEach(k => {
                     const location = game.locations[k];
+                    
+                    if (!location.isHotspot) {
+                        return;
+                    }
+                    
                     const event = location.enterEvents?.find(a => a[0] === 'Night')?.[0];
 
                     if (event) {

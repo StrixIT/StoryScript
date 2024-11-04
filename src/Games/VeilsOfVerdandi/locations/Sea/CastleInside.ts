@@ -21,7 +21,7 @@ export function CastleInside() {
         ],
         leaveEvents: [[
             'Leave', game => {
-                const fisherman = game.locations['fisherman'];
+                const fisherman = game.locations.get(Fisherman);
                 fisherman.destinations.find(d => d.target === getId(IslandMeadow)).target = getId(CastleInside);
             }
         ]]
