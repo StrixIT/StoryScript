@@ -1,6 +1,6 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {GameService} from 'storyScript/Services/GameService';
-import {EquipmentType, ICharacter, ICompiledLocation, IGame, IItem, IRules} from 'storyScript/Interfaces/storyScript';
+import {ICharacter, ICompiledLocation, IGame, IRules} from 'storyScript/Interfaces/storyScript';
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
 import {ILocationService} from "storyScript/Interfaces/services/locationService.ts";
@@ -61,6 +61,6 @@ describe("GameService", function () {
     });
 });
 
-function getService(game?, dataService?, locationService?, characterService?, combinationService?, soundService?, rules?, helperService?, texts?, events?) {
-    return new GameService(dataService || {}, locationService || {}, characterService || {}, combinationService || {}, soundService || {}, rules || {}, helperService || {}, game || {}, texts || {}, events || {});
+function getService(game?, dataService?, locationService?, characterService?, combinationService?, soundService?, rules?, helperService?, texts?) {
+    return new GameService(dataService || {}, locationService || {}, characterService || {}, combinationService || {}, soundService || {}, rules || {}, helperService || {}, game || {}, texts || {});
 }
