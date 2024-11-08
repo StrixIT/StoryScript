@@ -67,7 +67,7 @@ export class LocationService implements ILocationService {
     }
 
     loadLocationDescriptions = (game: IGame): void => {
-        if (this.selectLocationDescription(game)) {
+        if (this.selectLocationDescription(game, true)) {
             parseGamePropertiesInTemplate(game.currentLocation.description, this._game);
             this.processTextFeatures(game.currentLocation);
         }
@@ -98,10 +98,7 @@ export class LocationService implements ILocationService {
                 get: () => selector,
                 set: (value) => {
                     selector = value;
-                    
-                    if (value) {
-                        this.selectLocationDescription(this._game);
-                    }
+                    this.selectLocationDescription(this._game, Boolean(value));
                 }
             });
         });
@@ -249,7 +246,7 @@ export class LocationService implements ILocationService {
     }
 
 
-    private readonly selectLocationDescription = (game: IGame): boolean => {
+    private readonly selectLocationDescription = (game: IGame, autoPlayCheck: boolean): boolean => {
         let selector = null;
 
         if (!game.currentLocation.descriptions) {
@@ -269,7 +266,7 @@ export class LocationService implements ILocationService {
             game.currentLocation.description = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
         }
 
-        game.currentLocation.description = checkAutoplay(game, game.currentLocation.description);
+        game.currentLocation.description = checkAutoplay(game, game.currentLocation.description, autoPlayCheck);
         return true;
     }
 

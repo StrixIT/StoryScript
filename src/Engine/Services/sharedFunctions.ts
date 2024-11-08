@@ -196,11 +196,16 @@ function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
         .sort((a, b) => a.order - b.order)[0];
 }
 
-export function checkAutoplay(game: IGame, value: string) {
+export function checkAutoplay(game: IGame, value: string, autoPlayCheck?: boolean) {
     // Check media with the autoplay property to play only once.
+    autoPlayCheck = Boolean(autoPlayCheck);
     const htmlDocumentFromString = parseHtmlDocumentFromString(value);
-    value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);
-    value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('video'), game.sounds.playedAudio);
+
+    if (autoPlayCheck) {
+        value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);
+        value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('video'), game.sounds.playedAudio);
+    }
+
     return value;
 }
 
