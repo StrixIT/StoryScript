@@ -3,4 +3,5 @@ import { IDestination as StoryScriptIDestination } from 'storyScript/Interfaces/
 export interface IDestination extends StoryScriptIDestination {
     activeNight?: boolean;
     activeDay?: boolean;
+    hidden?: boolean;
 }

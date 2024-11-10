@@ -20,7 +20,7 @@ export function SecretCove() {
 		],
 		leaveEvents: [['AddCoveDestinations', (game: IGame) => {
 			const inactiveDestination = game.locations[getId(CentralForest)].destinations.get(getId(SecretCove));
-			inactiveDestination.inactive = false;
+			inactiveDestination.hidden = false;
 		}]]
 	});
 }

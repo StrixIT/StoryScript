@@ -146,7 +146,7 @@ export const explorationRules = <IExplorationRules>{
             }
         }
 
-        game.currentLocation.descriptionSelector = undefined;
+        game.currentLocation.descriptionSelector = descriptionSelector;
     },
 
     leaveLocation: (game: IGame, location: ICompiledLocation, newLocationId: string) => {
@@ -216,6 +216,10 @@ function updateTime(game: IGame, travel: boolean): void {
 }
 
 function isEntityActive(game: IGame, entity: IItem | IEnemy | IDestination | IAction): boolean {
+    if ((entity as IDestination).hidden) {
+        return false;
+    }
+    
     if (entity.activeNight === undefined && entity.activeDay === undefined) {
         return true;
     } else if (!entity.activeNight && !entity.activeDay) {

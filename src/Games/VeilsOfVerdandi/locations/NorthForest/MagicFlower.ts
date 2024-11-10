@@ -1,8 +1,8 @@
-﻿import { Location, IGame } from '../../types';
+﻿import {IGame, Location} from '../../types';
 import description from './MagicFlower.html?raw';
-import { Brownbear } from '../../enemies/Brownbear';
-import { MagicFlower as MagicFlowerItem } from '../../items/MagicFlower.ts';
-import { NorthRoad } from './NorthRoad';
+import {Brownbear} from '../../enemies/Brownbear';
+import {MagicFlower as MagicFlowerItem} from '../../items/MagicFlower.ts';
+import {NorthRoad} from './NorthRoad';
 import {backToForestText} from "../../explorationRules.ts";
 import {locationComplete} from "../../sharedFunctions.ts";
 
@@ -15,26 +15,25 @@ export function MagicFlower() {
             {
                 name: backToForestText,
                 target: NorthRoad
-            }              
-        ],            
+            }
+        ],
         enemies: [
             Brownbear()
-
         ],
         items: [
-            MagicFlowerItem(),                
+            MagicFlowerItem()
         ],
         leaveEvents:
-        [[
-            'Leave',
-            (game: IGame) => {
-                if (game.currentLocation.items.length === 0 && game.currentLocation.enemies.length > 0) {
-                    game.currentLocation.enemies.delete(Brownbear);
+            [[
+                'Leave',
+                (game: IGame) => {
+                    if (game.currentLocation.items.length === 0 && game.currentLocation.enemies.length > 0) {
+                        game.currentLocation.enemies.delete(Brownbear);
+                    }
+
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.items.length === 0, () => game.currentLocation.items.length === 0);
+                    return true;
                 }
-                
-                locationComplete(game, game.currentLocation, () => game.currentLocation.items.length === 0, () => game.currentLocation.items.length === 0);
-                return true;
-            }
-        ]]
+            ]]
     });
 }

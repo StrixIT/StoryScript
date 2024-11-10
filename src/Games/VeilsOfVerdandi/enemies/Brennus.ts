@@ -7,6 +7,7 @@ export function Brennus() {
         hitpoints: 18,
         defence: 3,
         currency: 5,
+        activeDay: true,
         attacks: [
             {
                 damage: '1d8',

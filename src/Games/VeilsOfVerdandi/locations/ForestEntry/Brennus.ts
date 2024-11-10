@@ -19,15 +19,6 @@ export function Brennus() {
         enemies: [
             BrennusEnemy()
         ],
-        enterEvents:
-            [[
-                'Night',
-                (game: IGame) => {
-                    if (game.worldProperties.isNight) {
-                        game.currentLocation.enemies.map(e => e.inactive = true);
-                    }
-                }
-            ]],
         leaveEvents:
             [[
                 'Leave',
@@ -43,7 +34,7 @@ export function Brennus() {
                     text: 'Approach the Tent',
                     execute: (game: IGame) => {
                         game.currentLocation.descriptionSelector = 'approach';
-                        game.currentLocation.enemies.map(e => e.inactive = false);
+                        game.currentLocation.enemies.forEach(e => e.inactive = false);
                     },
                     activeNight: true
                 }

@@ -25,7 +25,7 @@ export function CentralForest() {
             {
                 name: 'The Secret Cove',
                 target: SecretCove,
-                inactive: true
+                hidden: true
             },
             {
                 name: 'The Troll',

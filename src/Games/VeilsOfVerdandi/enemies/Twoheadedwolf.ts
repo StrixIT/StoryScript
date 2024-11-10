@@ -31,6 +31,7 @@ export function Twoheadedwolf() {
             if (game.worldProperties.freedFaeries) {
                 game.currentLocation.descriptionSelector = 'freedfaeries';
                 game.currentLocation.enemies.clear();
+                game.playState = null;
             }
         }
     });
