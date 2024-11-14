@@ -24,7 +24,7 @@ export class LocationService implements ILocationService {
         private readonly _gameEvents: IGameEvents,
     ) {
         this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
-            game.currentLocation.destinations.forEach(d => {
+            game.currentLocation?.destinations.forEach(d => {
                 this.addKeyAction(game, d);
             })
         }, false);
@@ -98,10 +98,7 @@ export class LocationService implements ILocationService {
                 get: () => selector,
                 set: (value) => {
                     selector = value;
-                    
-                    if (value) {
-                        this.selectLocationDescription(this._game);
-                    }
+                    this.selectLocationDescription(this._game, Boolean(value));
                 }
             });
         });
@@ -249,10 +246,10 @@ export class LocationService implements ILocationService {
     }
 
 
-    private readonly selectLocationDescription = (game: IGame): boolean => {
+    private readonly selectLocationDescription = (game: IGame, autoPlayCheck: boolean): boolean => {
         let selector = null;
         const previousDescription = game.currentLocation.description;
-        
+
         if (!game.currentLocation.descriptions) {
             game.currentLocation.description = null;
             return false;
@@ -260,7 +257,7 @@ export class LocationService implements ILocationService {
 
         let description: string;
         const defaultDescription = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
-        
+
         // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
         // use the default description selector function.
         if (game.currentLocation.descriptionSelector) {
