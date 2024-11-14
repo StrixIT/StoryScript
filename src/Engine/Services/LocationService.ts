@@ -24,7 +24,7 @@ export class LocationService implements ILocationService {
         private readonly _gameEvents: IGameEvents,
     ) {
         this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
-            game.currentLocation.destinations.forEach(d => {
+            game.currentLocation?.destinations.forEach(d => {
                 this.addKeyAction(game, d);
             })
         }, false);
