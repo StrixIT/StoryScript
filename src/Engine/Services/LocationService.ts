@@ -67,7 +67,7 @@ export class LocationService implements ILocationService {
     }
 
     loadLocationDescriptions = (game: IGame): void => {
-        if (this.selectLocationDescription(game)) {
+        if (this.selectLocationDescription(game, true)) {
             parseGamePropertiesInTemplate(game.currentLocation.description, this._game);
             this.processTextFeatures(game.currentLocation);
         }
@@ -251,25 +251,29 @@ export class LocationService implements ILocationService {
 
     private readonly selectLocationDescription = (game: IGame): boolean => {
         let selector = null;
-
+        const previousDescription = game.currentLocation.description;
+        
         if (!game.currentLocation.descriptions) {
             game.currentLocation.description = null;
             return false;
         }
 
+        let description: string;
+        const defaultDescription = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
+        
         // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
         // use the default description selector function.
         if (game.currentLocation.descriptionSelector) {
-            // Use this casting to allow the description selector to be a function or a string.
-            selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
-            game.currentLocation.description = game.currentLocation.descriptions[selector];
-        } else if (this._rules.exploration?.descriptionSelector && (selector = this._rules.exploration.descriptionSelector(game))) {
-            game.currentLocation.description = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
-        } else {
-            game.currentLocation.description = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
+            selector = typeof game.currentLocation.descriptionSelector == 'function' ? game.currentLocation.descriptionSelector(game) : game.currentLocation.descriptionSelector;
+            description = game.currentLocation.descriptions[selector];
         }
 
-        game.currentLocation.description = checkAutoplay(game, game.currentLocation.description);
+        if (!description && this._rules.exploration?.descriptionSelector && (selector = this._rules.exploration.descriptionSelector(game))) {
+            description = game.currentLocation.descriptions[selector];
+        }
+
+        description ??= defaultDescription;
+        game.currentLocation.description = checkAutoplay(game, description, autoPlayCheck && previousDescription !== description);
         return true;
     }
 

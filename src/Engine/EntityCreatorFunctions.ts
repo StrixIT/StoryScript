@@ -404,6 +404,8 @@ function loadDescriptions(location: ICompiledLocation): void {
 
         location.descriptions[name] = element.innerHTML;
     }
+    
+    location.description = null;
 }
 
 function processVisualFeatures(location: ICompiledLocation): void {
