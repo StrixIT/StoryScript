@@ -6,11 +6,12 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {getTemplate} from '../../helpers';
 import {DataService} from "storyScript/Services/DataService.ts";
 import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
     standalone: true,
     selector: 'menu-modal',
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule],
     template: getTemplate('menumodal', await import('./menumodal.component.html?raw'))
 })
 export class MenuModalComponent {

@@ -80,10 +80,10 @@ export class ServiceFactory {
             this._rules,
             new HelperService(this._game, definitions),
             this._game,
-            this._texts,
-            gameEvents
+            this._texts
         );
         this._combatService = new CombatService(this._game, this._rules, this._texts);
+        gameEvents.setGame(this._game);
         ServiceFactory._instance = this;
     }
 
