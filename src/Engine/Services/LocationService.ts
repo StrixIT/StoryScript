@@ -249,7 +249,7 @@ export class LocationService implements ILocationService {
     private readonly selectLocationDescription = (game: IGame, autoPlayCheck: boolean): boolean => {
         let selector = null;
         const previousDescription = game.currentLocation.description;
-        
+
         if (!game.currentLocation.descriptions) {
             game.currentLocation.description = null;
             return false;
@@ -257,7 +257,7 @@ export class LocationService implements ILocationService {
 
         let description: string;
         const defaultDescription = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
-        
+
         // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
         // use the default description selector function.
         if (game.currentLocation.descriptionSelector) {
