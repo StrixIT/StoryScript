@@ -59,7 +59,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             if (typeof currentProperty === 'undefined') {
                 if (Array.isArray(pristineProperty)) {
                     entity[p] = [];
-                } else if (typeof pristineProperty === 'object') {
+                } else if (typeof pristineProperty === 'object' && pristineProperty !== null) {
                     entity[p] = {};
                 } else {
                     // If there is no value for this property on the object yet, 
