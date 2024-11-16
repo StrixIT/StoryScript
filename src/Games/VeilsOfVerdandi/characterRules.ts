@@ -120,6 +120,10 @@ export const characterRules = <ICharacterRules>{
     canEquip: canEquip,
     
     beforePickup(game: IGame, character: Character, item: IItem): boolean {
-        return !(item.itemClass && character.class.name !== item.itemClass);
+        if (!item.itemClass) {
+            return true;
+        }
+        
+        return Array.isArray(item.itemClass) ? item.itemClass.indexOf(character.class.name) > -1 : item.itemClass === character.class.name;
     }
 }

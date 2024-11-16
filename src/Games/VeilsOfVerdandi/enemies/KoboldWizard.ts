@@ -30,7 +30,7 @@ export function KoboldWizard() {
             }
         ],
         onDefeat(game: IGame) {
-            // Todo: won the game!
+            game.currentLocation.descriptionSelector = 'after';
         }
     });
 }
