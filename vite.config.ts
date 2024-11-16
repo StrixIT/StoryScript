@@ -60,6 +60,6 @@ export default defineConfig({
     build: {
         target: 'esNext',
         outDir: "./dist",
-        sourcemap: 'inline'
+        sourcemap: false
     }
 })
