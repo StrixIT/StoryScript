@@ -4,11 +4,13 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CommonModule} from "@angular/common";
+import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 
 @Component({
     standalone: true,
     selector: 'trade',
-    imports: [CommonModule],
+    // The SafePipe is used in the template, don't remove it.
+    imports: [CommonModule, SafePipe],
     template: getTemplate('trade', await import('./trade.component.html?raw'))
 })
 export class TradeComponent {
