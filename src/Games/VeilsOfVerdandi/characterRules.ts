@@ -117,5 +117,9 @@ export const characterRules = <ICharacterRules>{
         return true;
     },
     
-    canEquip: canEquip
+    canEquip: canEquip,
+    
+    beforePickup(game: IGame, character: Character, item: IItem): boolean {
+        return !(item.itemClass && character.class.name !== item.itemClass);
+    }
 }

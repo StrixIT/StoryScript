@@ -25,8 +25,7 @@ export function ForestPond() {
             [[
                 'LeavePond',
                 (game: IGame) => {
-                    const dryadLocation = game.locations.get(Dryad);
-                    dryadLocation.descriptionSelector = 'return';
+                    game.worldProperties.helpedDryad = true;
                     game.currentLocation.completedDay = true;
                     game.currentLocation.completedNight = true;
                 }

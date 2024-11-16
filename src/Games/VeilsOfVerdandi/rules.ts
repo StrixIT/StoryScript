@@ -21,7 +21,8 @@ export function Rules(): IRules {
                     travelCounter: 0,
                     hasRestedDuringDay: false,
                     hasRestedDuringNight: false,
-                    helpedBees: false
+                    helpedBees: false,
+                    helpedDryad: false
                 };
                 
                 init(game);

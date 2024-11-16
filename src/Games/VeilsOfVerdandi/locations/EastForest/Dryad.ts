@@ -24,7 +24,8 @@ export function Dryad() {
         enterEvents: [[
             'ClaimReward', 
             (game: IGame) => {
-                if (game.currentLocation.descriptionSelector === 'return') {
+                if (game.worldProperties.helpedDryad) {
+                    game.currentLocation.descriptionSelector = 'return';
                     game.party.currency += 20;
                     game.activeCharacter.items.add(SmallDiamond);
                     game.activeCharacter.items.add(SmallDiamond);
@@ -38,7 +39,7 @@ export function Dryad() {
             [[
                 'LeaveDryad',
                 (game: IGame) => {
-                    if (game.currentLocation.descriptionSelector === 'return') {
+                    if (game.worldProperties.helpedDryad) {
                         game.currentLocation.descriptionSelector = null;
                         game.currentLocation.completedDay = true;
                         game.currentLocation.completedNight = true;

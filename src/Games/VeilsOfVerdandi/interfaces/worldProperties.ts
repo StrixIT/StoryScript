@@ -8,4 +8,5 @@
     hasRestedDuringDay: boolean;
     hasRestedDuringNight: boolean;
     helpedBees: boolean;
+    helpedDryad: boolean;
 }
