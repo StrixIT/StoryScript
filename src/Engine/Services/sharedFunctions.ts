@@ -198,7 +198,7 @@ function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
 
 export function checkAutoplay(game: IGame, value: string, autoPlayCheck?: boolean) {
     // Check media with the autoplay property to play only once.
-    autoPlayCheck = Boolean(autoPlayCheck);
+    autoPlayCheck = autoPlayCheck ?? true;
     const htmlDocumentFromString = parseHtmlDocumentFromString(value);
 
     if (autoPlayCheck) {
