@@ -10,8 +10,7 @@ export function Parchment() {
         open: {
             text: 'Read the magic word',
             execute: OpenWithKey((game: IGame, barrier: [string, IBarrier], destination: IDestination) => {
-                // Add the read parchment html to the location. This will also trigger playing the audio element.
-                game.logToLocationLog(game.currentLocation.descriptions['readparchment']);
+                game.currentLocation.descriptionSelector = 'readparchment';
             })
         }
     });

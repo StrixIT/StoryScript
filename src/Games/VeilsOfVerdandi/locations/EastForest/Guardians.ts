@@ -1,9 +1,10 @@
-﻿import {Location} from '../../types';
+﻿import {IGame, Location} from '../../types';
 import description from './Guardians.html?raw';
 import {CliffWall} from './CliffWall.ts';
 import {Parchment} from '../../items/Parchment';
 import {EastRoad} from "./EastRoad.ts";
 import {backToForestText} from "../../explorationRules.ts";
+import {locationComplete} from "../../sharedFunctions.ts";
 
 export function Guardians() {
     return Location({
@@ -24,6 +25,15 @@ export function Guardians() {
                         key: Parchment
                     }]]
             }
-        ]
+        ],
+        leaveEvents:
+            [[
+                'Leave',
+                (game: IGame) => {
+                    const barrierRemoved = !game.currentLocation.destinations.find(d => d.barriers?.length > 0);
+                    locationComplete(game, game.currentLocation, () => barrierRemoved, () => barrierRemoved);
+                    return true;
+                }
+            ]]
     });
 }
