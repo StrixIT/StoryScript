@@ -36,25 +36,25 @@ export class TradeComponent {
 
     cancelBuy = (): void => this.confirmBuyItem = undefined;
 
-    buy = (item: IItem, trade: ITrade): boolean => {
-        if (item.value > 0 && !this.confirmBuyItem) {
+    buy = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
+        if (this.actualPrice(item, buyer, seller) > 0 && !this.confirmBuyItem) {
             this.confirmBuyItem = item;
             return true;
         }
 
         this.confirmBuyItem = undefined;
-        return this._tradeService.buy(item, trade);
+        return this._tradeService.buy(item, seller);
     }
 
     cancelSell = (): void => this.confirmSellItem = undefined;
 
-    sell = (item: IItem, trade: ITrade): boolean => {
-        if (item.value > 0 && !this.confirmSellItem) {
+    sell = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
+        if (this.actualPrice(item, buyer, seller) > 0 && !this.confirmSellItem) {
             this.confirmSellItem = item;
             return true;
         }
 
         this.confirmSellItem = undefined;
-        return this._tradeService.sell(item, trade);
+        return this._tradeService.sell(item, buyer);
     }
 }

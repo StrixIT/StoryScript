@@ -1,14 +1,14 @@
 import { describe, test, expect } from 'vitest';
-import { Character, IGame, Rules } from '../../../../Games/MyRolePlayingGame/types';
+import {Character, IGame, IItem, Rules} from '../../../../Games/MyRolePlayingGame/types';
 import { ICharacter, IEnemy, ICompiledLocation, IHelpers, ICreateCharacter, ICombatSetup, ICombatTurn } from 'storyScript/Interfaces/storyScript';
 
 describe("Rules", function() {
 
     test("should conduct combat", function() {
-        var service = Rules();
-        var character = new Character();
+        const service = Rules();
+        const character = new Character();
 
-        var game = <IGame>{
+        const game = <IGame>{
             activeCharacter: <ICharacter>character,
             currentLocation: <ICompiledLocation>{
                 activeEnemies: []
@@ -25,17 +25,23 @@ describe("Rules", function() {
 
             }
         };
-        var enemy = <IEnemy>{
+        const enemy = <IEnemy>{
             hitpoints: 10,
             currentHitpoints: 10
         };
+        
+        const sword = <IItem>{
+            attack: 'id6'
+        }
 
-        const setup = <ICombatSetup<ICombatTurn>>[{ character: character, target: enemy }];
+        const setup = <ICombatSetup<ICombatTurn>>[{ character: character, target: enemy, item: sword }];
+        setup.characters = [character];
+        setup.enemies = [enemy];
         setup.round = 1;
         service.combat.fight(game, setup);
 
         // Character default strength 1 + 6.
-        var expected = 3;
+        const expected = 3;
 
         expect(enemy.currentHitpoints).toEqual(expected);
     });
