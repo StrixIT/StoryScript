@@ -7,11 +7,12 @@ import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CommonModule} from "@angular/common";
 import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
+import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 
 @Component({
     standalone: true,
     selector: 'quests',
-    imports: [CommonModule, NgbCollapse],
+    imports: [CommonModule, NgbCollapse, SafePipe],
     template: getTemplate('quest', await import('./quest.component.html?raw'))
 })
 export class QuestComponent {

@@ -31,7 +31,7 @@ export class CombatService implements ICombatService {
 
         return Promise.resolve(promise).then(() => {
             combatRound.forEach((s, i) => {
-                if (s.target?.currentHitpoints <= 0 && s.targetDefeated) {
+                if (s.target?.currentHitpoints <= 0 && (s.targetDefeated === undefined || s.targetDefeated)) {
                     this.enemyDefeated(this._game.party.characters[i], s.target);
                 }
             });

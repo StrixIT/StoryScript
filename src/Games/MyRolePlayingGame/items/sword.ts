@@ -6,7 +6,7 @@ export function Sword() {
     return Item({
         name: 'Sword',
         description: description,
-        damage: 3,
+        attack: '1d6',
         equipmentType: EquipmentType.RightHand,
         value: 5,
         targetType: TargetType.Enemy

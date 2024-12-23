@@ -15,8 +15,8 @@ import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 
 export class TradeService implements ITradeService {
     private _activeTrader: IPerson;
-    
-    constructor(private _itemService: IItemService, private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts, private _definitions: IDefinitions) {
+
+    constructor(private readonly _itemService: IItemService, private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts, private readonly _definitions: IDefinitions) {
     }
 
     trade = (trade: IPerson | ITrade): void => {
@@ -32,7 +32,8 @@ export class TradeService implements ITradeService {
                 this._game.trade.name = this._texts.format(this._texts.trade, [person.name]);
             }
         } else {
-            this._activeTrader = <IPerson>{ currency: trade.currency ?? 0 };
+            trade.currency ??= 0;
+            this._activeTrader = <IPerson>{currency: trade.currency};
             this._game.trade = trade;
             this._game.trade.ownItemsOnly = false;
         }
@@ -54,8 +55,9 @@ export class TradeService implements ITradeService {
 
     actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): number => {
         let resolvedModifier: number;
-        const trader = buyer as ITrade;
-        const modifier = trader.buy ? trader.sell?.priceModifier ?? (seller as ITrade).buy?.priceModifier : undefined;
+        const buyerTrade = buyer as ITrade;
+        const sellerTrade = seller as ITrade;
+        const modifier = buyerTrade.sell?.priceModifier ?? sellerTrade.buy?.priceModifier;
 
         if (modifier == undefined) {
             resolvedModifier = 1;

@@ -5,7 +5,7 @@
     <p class="trade-empty" *ngIf="trade.buy.items?.length === 0">{{ trade.buy.emptyText }}</p>
     <ul class="list-unstyled" *ngIf="trade.buy.items?.length > 0 && !confirmBuyItem">
         <li class="inline" *ngFor="let item of trade.buy.items">
-            <button type="button" class="btn btn-success" (click)="buy(item, trade)" [disabled]="!canPay(item, game.activeCharacter, trade)">{{ displayPrice(item, actualPrice(item, game.activeCharacter, trade)) }}</button>
+            <button type="button" class="btn btn-success" (click)="buy(item, game.activeCharacter, trade)" [disabled]="!canPay(item, game.activeCharacter, trade)">{{ displayPrice(item, actualPrice(item, game.activeCharacter, trade)) }}</button>
         </li>
     </ul>
     <div *ngIf="confirmBuyItem">
@@ -21,7 +21,7 @@
     <p class="trade-empty" *ngIf="trade.sell.items?.length === 0">{{ trade.sell.emptyText }}</p>
     <ul class="list-unstyled" *ngIf="trade.sell.items?.length > 0 && !confirmSellItem">
         <li class="inline" *ngFor="let item of trade.sell.items">
-            <button type="button" class="btn btn-warning" (click)="sell(item, trade)" [disabled]="!canPay(item, trade, game.activeCharacter)">{{ displayPrice(item, actualPrice(item, trade, game.activeCharacter)) }}</button>
+            <button type="button" class="btn btn-warning" (click)="sell(item, trade, game.activeCharacter)" [disabled]="!canPay(item, trade, game.activeCharacter)">{{ displayPrice(item, actualPrice(item, trade, game.activeCharacter)) }}</button>
         </li>
     </ul>
     <div *ngIf="confirmSellItem">
