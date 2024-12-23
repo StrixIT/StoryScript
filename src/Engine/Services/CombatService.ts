@@ -16,9 +16,9 @@ export class CombatService implements ICombatService {
     }
     
     initCombat = (): void => {
-        this._game.playState = PlayState.Combat;
         this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
         this.initCombatRound(true);
+        this._game.playState = PlayState.Combat;
         this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game));
     }
 
@@ -31,7 +31,7 @@ export class CombatService implements ICombatService {
 
         return Promise.resolve(promise).then(() => {
             combatRound.forEach((s, i) => {
-                if (s.target?.currentHitpoints <= 0 && s.targetDefeated) {
+                if (s.target?.currentHitpoints <= 0 && (s.targetDefeated === undefined || s.targetDefeated)) {
                     this.enemyDefeated(this._game.party.characters[i], s.target);
                 }
             });

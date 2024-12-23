@@ -4,11 +4,13 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CommonModule} from "@angular/common";
+import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 
 @Component({
     standalone: true,
     selector: 'trade',
-    imports: [CommonModule],
+    // The SafePipe is used in the template, don't remove it.
+    imports: [CommonModule, SafePipe],
     template: getTemplate('trade', await import('./trade.component.html?raw'))
 })
 export class TradeComponent {
@@ -34,25 +36,25 @@ export class TradeComponent {
 
     cancelBuy = (): void => this.confirmBuyItem = undefined;
 
-    buy = (item: IItem, trade: ITrade): boolean => {
-        if (item.value > 0 && !this.confirmBuyItem) {
+    buy = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
+        if (this.actualPrice(item, buyer, seller) > 0 && !this.confirmBuyItem) {
             this.confirmBuyItem = item;
             return true;
         }
 
         this.confirmBuyItem = undefined;
-        return this._tradeService.buy(item, trade);
+        return this._tradeService.buy(item, seller);
     }
 
     cancelSell = (): void => this.confirmSellItem = undefined;
 
-    sell = (item: IItem, trade: ITrade): boolean => {
-        if (item.value > 0 && !this.confirmSellItem) {
+    sell = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
+        if (this.actualPrice(item, buyer, seller) > 0 && !this.confirmSellItem) {
             this.confirmSellItem = item;
             return true;
         }
 
         this.confirmSellItem = undefined;
-        return this._tradeService.sell(item, trade);
+        return this._tradeService.sell(item, buyer);
     }
 }
