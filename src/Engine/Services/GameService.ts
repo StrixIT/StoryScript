@@ -82,7 +82,7 @@ export class GameService implements IGameService {
         }
 
         if (this._game.party && locationName) {
-            this.resume(locationName);
+            this.resume(locationName, !isNewGame);
 
             if (!isNewGame && this._rules.setup.continueGame) {
                 this._rules.setup.continueGame(this._game);
@@ -134,25 +134,6 @@ export class GameService implements IGameService {
         this._dataService.saveGame(this._game);
     }
 
-    resume = (locationName: string): void => {
-        if (!this._game.party.characters.some(c => c.currentHitpoints > 0)) {
-            this._game.state = GameState.GameOver;
-            return;
-        }
-
-        this.setInterceptors();
-        this._characterService.checkEquipment();
-        const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
-        const previousLocationName = this._game.party.previousLocationId;
-
-        if (previousLocationName) {
-            this._game.previousLocation = this._game.locations.get(previousLocationName);
-        }
-
-        this._locationService.changeLocation(lastLocation.id, false, this._game);
-        this._game.state = GameState.Play;
-    }
-
     restart = (skipIntro?: boolean): void => {
         this._dataService.remove(GameStateSave);
         this.init(true, skipIntro);
@@ -199,6 +180,28 @@ export class GameService implements IGameService {
 
     watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void {
         this.watchState<PlayState>('playState', callBack);
+    }
+
+    private readonly resume = (locationName: string, setInterceptors: boolean): void => {
+        if (!this._game.party.characters.some(c => c.currentHitpoints > 0)) {
+            this._game.state = GameState.GameOver;
+            return;
+        }
+
+        if (setInterceptors) {
+            this.setInterceptors();
+        }
+
+        this._characterService.checkEquipment();
+        const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
+        const previousLocationName = this._game.party.previousLocationId;
+
+        if (previousLocationName) {
+            this._game.previousLocation = this._game.locations.get(previousLocationName);
+        }
+
+        this._locationService.changeLocation(lastLocation.id, false, this._game);
+        this._game.state = GameState.Play;
     }
 
     private watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
