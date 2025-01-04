@@ -17,7 +17,7 @@ export function Guardians() {
                 target: EastRoad
             },
             {
-                name: 'To the CliffWall',
+                name: 'To the Cliff Wall',
                 target: CliffWall,
                 barriers: [
                     ['WallOfBranches', {
