@@ -13,7 +13,7 @@
         <ul class="list-unstyled">
             <li class="inline">
                 <button type="button" class="btn btn-primary" (click)="cancelBuy()">{{ texts.cancelBuy }}</button>
-                <button type="button" class="btn btn-warning" (click)="buy(confirmBuyItem, trade)">{{ texts.confirmBuy }}</button>
+                <button type="button" class="btn btn-warning" (click)="buy(confirmBuyItem, game.activeCharacter, trade)">{{ texts.confirmBuy }}</button>
             </li>
         </ul>
     </div>
@@ -29,7 +29,7 @@
         <ul class="list-unstyled">
             <li class="inline">
                 <button type="button" class="btn btn-primary" (click)="cancelSell()">{{ texts.cancelSell }}</button>
-                <button type="button" class="btn btn-warning" (click)="sell(confirmSellItem, trade)">{{ texts.confirmSell }}</button>
+                <button type="button" class="btn btn-warning" (click)="sell(confirmSellItem, trade, game.activeCharacter)">{{ texts.confirmSell }}</button>
             </li>
         </ul>
     </div>

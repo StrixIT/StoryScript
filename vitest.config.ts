@@ -8,6 +8,7 @@ export default mergeConfig(viteConfig, defineConfig({
             ['**/Data*.test.ts', 'jsdom'],
             ['**/ServiceFactory.test.ts', 'jsdom'],
             ['**/EntityCreatorFunctions.test.ts', 'jsdom'],
+            ['**/Features.test.ts', 'jsdom'],
             ['**/LocalStorageService.test.ts', 'jsdom'],
             ['**/ConversationService.test.ts', 'jsdom'],
         ],
