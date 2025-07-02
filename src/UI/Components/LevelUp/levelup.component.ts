@@ -11,11 +11,12 @@ import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {BuildCharacterComponent} from "ui/Components/BuildCharacter/buildcharacter.component.ts";
 
 @Component({
     standalone: true,
     selector: 'level-up',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, BuildCharacterComponent],
     template: getTemplate('levelup', await import('./levelup.component.html?raw'))
 })
 export class LevelUpComponent {

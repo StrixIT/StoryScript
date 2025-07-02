@@ -19,7 +19,7 @@ export class CombatService implements ICombatService {
         this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
         this.initCombatRound(true);
         this._game.playState = PlayState.Combat;
-        this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game));
+        this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game, enemy));
     }
 
     fight = (combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
@@ -174,6 +174,6 @@ export class CombatService implements ICombatService {
         this._game.statistics.enemiesDefeated += 1;
         this._game.currentLocation.enemies.delete(enemy.id);
         this._rules.combat?.enemyDefeated?.(this._game, character, enemy);
-        enemy.onDefeat?.(this._game);
+        enemy.onDefeat?.(this._game, enemy);
     }
 }
