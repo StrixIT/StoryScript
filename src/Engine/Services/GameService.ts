@@ -146,7 +146,7 @@ export class GameService implements IGameService {
             this._game.loading = true;
             this._game.party = saveGame.party;
             this._game.locations = saveGame.world;
-            this._game.worldProperties = saveGame.worldProperties;
+            this._game.worldProperties = saveGame.worldProperties ?? {};
             this._game.statistics = saveGame.statistics;
             this._game.sounds.playedAudio = saveGame.playedAudio;
             this._locationService.init();

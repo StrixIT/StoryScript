@@ -217,12 +217,14 @@ export function getBasicFeatureData(location: ICompiledLocation, node: HTMLEleme
         throw new Error('There is no name attribute for a feature node for location ' + location.id + '.');
     }
 
-    const feature = location.features.get(nameAttribute);
+    // The second part of this line is a workaround for features that are initialized inline. When building locations 
+    // from the location definitions, their ids get set only after the location's visual features have been processed.
+    const feature = location.features.get(nameAttribute) ?? location.features.filter(f => getIdFromName(f) === nameAttribute)[0];
 
     // This is a workaround to restore the description for features that originally have only a placeholder in the 
     // location description and are added later to the location's feature collection. As descriptions are not saved,
     // the description is lost when the browser refreshes.
-    if (feature && !feature.description) {
+    if (feature && !feature.description && _registeredEntities.features) {
         const pristineFeature = Object.values(_registeredEntities.features).get(feature.id);
 
         if (pristineFeature?.description) {
