@@ -12,12 +12,12 @@ import {DataService} from "storyScript/Services/DataService.ts";
 
 @Injectable()
 export class SharedMethodService {
-    private _dataService: DataService;
-    private _combatService: CombatService;
-    private _conversationService: ConversationService;
-    private _tradeService: TradeService;
+    private readonly _dataService: DataService;
+    private readonly _combatService: CombatService;
+    private readonly _conversationService: ConversationService;
+    private readonly _tradeService: TradeService;
 
-    private combinationSource = new Subject<boolean>();
+    private readonly combinationSource = new Subject<boolean>();
 
     constructor() {
         // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
@@ -142,7 +142,7 @@ export class SharedMethodService {
 
     canUseItem = (character: ICharacter, item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, character, item));
 
-    private getActionIndex = (action: [string, IAction]): { type: ActionType, index: number } => {
+    private readonly getActionIndex = (action: [string, IAction]): { type: ActionType, index: number } => {
         let index = -1;
         let type = ActionType.Regular;
 
