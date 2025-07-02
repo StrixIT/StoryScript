@@ -61,6 +61,11 @@ h1 {
     height: 300px;
 }
 
+#combat {
+    border: solid 1px black;
+    background-color: white;
+}
+
 #combat .btn, .combat-actions ul, .combat-actions li, .combat-actions span, .combat-actions button {
     float: left;
 }

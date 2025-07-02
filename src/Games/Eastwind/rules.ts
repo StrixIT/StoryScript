@@ -553,7 +553,7 @@ function setAttackImage(equipment: IEquipment, game: IGame) {
 
     if (attackImage) {
         const attackElementSelector = '.attack-symbol';
-        const enemyPortrait = game.UIRootElement.querySelector('.enemy-portrait');
+        const enemyPortrait = game.UIRootElement.querySelector('combat-participant img');
         const portraitContainer = enemyPortrait.parentElement;
         let attackSymbol = portraitContainer.querySelector(attackElementSelector);
 
