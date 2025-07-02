@@ -6,6 +6,7 @@ import { ICreateCharacter } from '../createCharacter/createCharacter';
 import { ICreateCharacterAttribute } from '../createCharacter/createCharacterAttribute';
 import { ICreateCharacterAttributeEntry } from '../createCharacter/createCharacterAttributeEntry';
 import { ICreateCharacterStep } from '../createCharacter/createCharacterStep';
+import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 
 export interface ICharacterService {
     getSheetAttributes(): string[];
@@ -15,11 +16,12 @@ export interface ICharacterService {
     levelUp(character: ICharacter): ICharacter;
     limitSheetInput(value: number, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void;
     distributionDone(sheet: ICreateCharacter, step: ICreateCharacterStep): boolean;
-    pickupItem(character: ICharacter, item: IItem): boolean;
-    isEquippable(item: IItem): boolean;
-    equipItem(character: ICharacter, item: IItem): boolean;
-    unequipItem(character: ICharacter, item: IItem): boolean;
     isSlotUsed(character: ICharacter, slot: string): boolean;
-    dropItem(character: ICharacter, item: IItem): void;
     questStatus(quest: IQuest): string;
+
+    /**
+     * Check whether all the equipment on the characters is in valid equipment slots. The equipment type may change
+     * during editing, leaving items previously equipped in invalid slots.
+     */
+    checkEquipment(): void;
 }

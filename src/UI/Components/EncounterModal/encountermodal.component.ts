@@ -3,9 +3,16 @@ import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import type { IModalSettings } from '../modalSettings';
 import { getTemplate } from '../../helpers';
+import {CommonModule} from "@angular/common";
+import {CombatComponent} from "../Combat/combat.component.ts";
+import {TradeComponent} from "../Trade/trade.component.ts";
+import {ConversationComponent} from "../Conversation/conversation.component.ts";
+import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 
 @Component({
+    standalone: true,
     selector: 'encounter-modal',
+    imports: [CommonModule, SafePipe, ConversationComponent, TradeComponent, CombatComponent],
     template: getTemplate('encountermodal', await import('./encountermodal.component.html?raw'))
 })
 export class EncounterModalComponent {

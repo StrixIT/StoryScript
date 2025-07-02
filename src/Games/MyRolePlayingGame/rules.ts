@@ -106,9 +106,9 @@ export function Rules(): IRules {
 
         combat: {
             fight: (game: IGame, combatRound: ICombatSetup): void => {
-                const character = combatRound[0].character;
-                const enemy = combatRound[0].target;
-                const damage = game.helpers.rollDice('1d6') + character.strength + game.helpers.calculateBonus(character, 'damage');
+                const character = combatRound.characters[0] as Character;
+                const enemy = combatRound.enemies[0];
+                const damage = game.helpers.rollDice(combatRound[0].item.attack) + character.strength + game.helpers.calculateBonus(character, 'damage');
                 game.logToCombatLog('You do ' + damage + ' damage to the ' + enemy.name + '!');
                 enemy.currentHitpoints -= damage;
 
@@ -116,7 +116,7 @@ export function Rules(): IRules {
                     game.logToCombatLog('You defeat the ' + enemy.name + '!');
                 }
 
-                game.currentLocation.activeEnemies.filter(enemy => { return enemy.currentHitpoints > 0; }).forEach((enemy: IEnemy) => {
+                combatRound.enemies.filter(enemy => { return enemy.currentHitpoints > 0; }).forEach((enemy: IEnemy) => {
                     const damage = game.helpers.rollDice(enemy.attack) + game.helpers.calculateBonus(enemy, 'damage');
                     game.logToCombatLog('The ' + enemy.name + ' does ' + damage + ' damage!');
                     character.currentHitpoints -= damage;

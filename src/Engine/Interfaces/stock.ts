@@ -38,4 +38,9 @@ export interface IStock {
      * The items available for buying or selling.
      */
     items?: IItem[];
+
+    /**
+     * The text shown to ask the user to confirm the buy or sell.
+     */
+    confirmationText?: string;
 }

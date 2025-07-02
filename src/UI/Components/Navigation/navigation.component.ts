@@ -1,28 +1,30 @@
 import {IGame, IInterfaceTexts, PlayState} from 'storyScript/Interfaces/storyScript';
-import {GameService} from 'storyScript/Services/gameService';
+import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject, ViewChild} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject} from 'rxjs';
 import {NgbTypeahead} from '@ng-bootstrap/ng-bootstrap';
+import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
+    standalone: true,
     selector: 'navigation',
+    imports: [CommonModule, FormsModule, NgbTypeahead],
     template: getTemplate('navigation', await import('./navigation.component.html?raw'))
 })
 export class NavigationComponent {
-    private _gameService: GameService;
+    private readonly _gameService: GameService;
 
     constructor() {
         this._gameService = inject(GameService);
         const serviceFactory = inject(ServiceFactory);
         this.game = serviceFactory.GetGame();
         this.texts = serviceFactory.GetTexts();
-        this.locations = serviceFactory.AvailableLocations;
-        this.isDevelopment = process.env.NODE_ENV !== 'production';
+        this.locations = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
     }
-
-    isDevelopment: boolean;
+    
     game: IGame;
     texts: IInterfaceTexts;
     locations: { id: string, name: string }[];

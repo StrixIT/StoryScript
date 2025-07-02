@@ -1,13 +1,14 @@
-﻿import { Item } from '../types';
-import { EquipmentType } from 'storyScript/Interfaces/storyScript'
+﻿import {Item} from '../types';
+import {EquipmentType, TargetType} from 'storyScript/Interfaces/storyScript'
 import description from './sword.html?raw';
 
 export function Sword() {
     return Item({
         name: 'Sword',
         description: description,
-        damage: 3,
+        attack: '1d6',
         equipmentType: EquipmentType.RightHand,
-        value: 5
+        value: 5,
+        targetType: TargetType.Enemy
     });
 }

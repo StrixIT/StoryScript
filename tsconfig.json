@@ -30,14 +30,14 @@
         "allowImportingTsExtensions": true,
         "allowJs": true,
         "paths": {
-            "storyScript/*": ["./src/Engine/*"]
+            "storyScript/*": ["./src/Engine/*"],
+            "ui/*": ["./src/UI/*"]
         },
         "typeRoots": [
             "./node_modules/@types"
         ],
         "types": [
             "node",
-            "webpack-env",
             "vite/client"
         ]
     }

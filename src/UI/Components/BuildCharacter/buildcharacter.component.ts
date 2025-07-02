@@ -1,18 +1,22 @@
 import { IInterfaceTexts, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
 import type { ICreateCharacter } from 'storyScript/Interfaces/storyScript';
-import { CharacterService } from 'storyScript/Services/characterService';
+import { CharacterService } from 'storyScript/Services/CharacterService';
 import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
 import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
+import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
+    standalone: true,
     selector: 'build-character',
+    imports: [CommonModule, FormsModule],
     template: getTemplate('buildcharacter', await import('./buildcharacter.component.html?raw'))
 })
 export class BuildCharacterComponent {
     @Input() sheet: ICreateCharacter;
     
-    private _characterService: CharacterService;
+    private readonly _characterService: CharacterService;
 
     constructor() {
         this._characterService = inject(CharacterService);
@@ -23,7 +27,7 @@ export class BuildCharacterComponent {
     texts: IInterfaceTexts;
 
     limitInput = (event: any, attribute: ICreateCharacterAttribute, entry: ICreateCharacterAttributeEntry): void => {
-        var value = parseInt((<any>event).target.value);
+        const value = parseInt(event.target.value);
         this._characterService.limitSheetInput(value, attribute, entry);
     }
 

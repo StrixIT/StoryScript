@@ -31,14 +31,10 @@ export class DataSynchronizer implements IDataSynchronizer {
                 setReadOnlyLocationProperties(entity);
             }
         }
-        
-        // If the entity is a record and no pristine entity is found, try getting an entity record
-        // from the pristine entities. This is used to restore the locations when a save game is
-        // synchronized.
-        const firstRecordValue = entity && !Array.isArray(entity) && Object.values(entity)?.[0];
-        
-        if (firstRecordValue && typeof pristineEntity === 'undefined' && this.isEntity(firstRecordValue)) {
-            pristineEntity = this._pristineEntities[getPlural((<{ type: string }>firstRecordValue).type)];
+
+        if (parentProperty === 'world') {
+            // When the game world is synchronized for a save game, get the pristine location entities now.
+            pristineEntity = this._pristineEntities[getPlural(entity['start'].type)];
         }
 
         // Use the properties of both the entity and the pristine entity, but only
@@ -63,7 +59,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             if (typeof currentProperty === 'undefined') {
                 if (Array.isArray(pristineProperty)) {
                     entity[p] = [];
-                } else if (typeof pristineProperty === 'object') {
+                } else if (typeof pristineProperty === 'object' && pristineProperty !== null) {
                     entity[p] = {};
                 } else {
                     // If there is no value for this property on the object yet, 
@@ -110,7 +106,7 @@ export class DataSynchronizer implements IDataSynchronizer {
                 match[1] = p[1];
             } else {
                 if (!match[1]) {
-                    match.push({});
+                    match.push(p?.[1] && Array.isArray(p[1]) ? [] : {});
                 }
 
                 this.synchronizeEntityData(match[1], p[1], entity, pristineEntity, '1');
@@ -158,20 +154,20 @@ export class DataSynchronizer implements IDataSynchronizer {
         // matched and existing items need to be recursively checked. Added items aren't in the stored data yet, so they
         // can be added straight away. The order is very important! Matched items are in both and need to go first. Added 
         // items second, as these are now part of the design. Existing items have been added at runtime and should go last.
-        matchedItems.forEach(i => {
-            finalItems.push(this.updateArrayElement(i, entity, parentEntity, pristineParentEntity, parentProperty));
-        })
+        matchedItems.forEach(e => {
+            finalItems.push(this.updateArrayElement(e, entity, parentEntity, pristineParentEntity, parentProperty));
+        });
 
         itemsToAdd.forEach(i => finalItems.push(i));
 
-        existingItems.forEach(i => {
-            finalItems.push(this.updateArrayElement(i, entity, parentEntity, pristineParentEntity, parentProperty));
-        })
+        existingItems.forEach(e => {
+            finalItems.push(this.updateArrayElement(e, entity, parentEntity, pristineParentEntity, parentProperty));
+        });
 
         entity.length = 0;
 
         finalItems.forEach(i => {
-            entity.push(i);
+            entity.push(typeof i === 'object' ? {...i} : i);
         });
 
         this.markEntriesAsDeleted(entity);
@@ -179,8 +175,8 @@ export class DataSynchronizer implements IDataSynchronizer {
     }
 
     private updateArrayElement = (element: any, entity: any, parentEntity, pristineParentEntity, parentProperty) => {
-        const currentValue: any = entity.find(p => propertyMatch(element, p));
-
+        const currentValue = entity.filter(p => propertyMatch(element, p))[0];
+        
         // In case of an entity with the 'added' flag, 'i' is a skeleton value. Set the pristine entity to 'undefined' 
         // so it will be looked up again later on.
         const pristineValue = element[StateProperties.Added] && this.isEntity(element) ? undefined : element;
@@ -191,7 +187,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
         return currentValue;
     }
-    
+
     private isEntity = (entity: any): boolean => {
         return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
     }
