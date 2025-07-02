@@ -166,6 +166,8 @@ describe("arrayAndFunctionExtensions", function () {
 
         expect(testArray.length).toBe(1);
         expect(compareId(testArray[0].id, Sword)).toBeTruthy();
+        const deleted = testArray.getDeleted();
+        expect(deleted[0].id).toBe(getId(Journal.name));
     });
 
     test("should NOT remove an entity when passing it in as a new object", function () {

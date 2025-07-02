@@ -21,6 +21,7 @@ import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {Journal} from "../../../Games/MyRolePlayingGame/quests/journal.ts";
+import {IGroupableItem} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
 
 const startLocationSkeleton = {
     "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
@@ -89,6 +90,21 @@ const partyData = {
         "id": "journal",
         "type": "quest",
     }], "score": 0
+}
+
+const partyDataWithGroupedItem = {
+    "characters": [{
+        "name": "Test",
+        "items": [{
+            "type": "item",
+            "id": "dagger",
+            "members": [{
+                "type": "item",
+                "id": "dagger",
+                "ss_added": true
+            }]
+        }]
+    }]
 }
 
 const libraryWithTrader = {
@@ -328,6 +344,31 @@ describe("DataSynchronizer", () => {
         expect(skeleton.quests[0].name).toBe(Journal().name);
     });
 
+    test("should restore Party data with grouped items", function () {
+        const dagger = <IGroupableItem><any>{
+            id: 'dagger',
+            type: 'item',
+            name: "Dagger",
+            isGroupable: true
+        };
+        
+        const pristineEntities = {
+            'items': {
+                'dagger': {...dagger}
+            }
+        };
+        
+        const serializer = new DataSerializer(pristineEntities);
+        const synchronizer = new DataSynchronizer(pristineEntities);
+        
+        const skeleton = <IParty>serializer.restoreObjects(partyDataWithGroupedItem);
+        synchronizer.synchronizeEntityData(skeleton);
+        expect(skeleton.characters[0].name).toBe('Test');
+        expect(skeleton.characters[0].items.length).toBe(1);
+        const item = skeleton.characters[0].items[0] as IGroupableItem;
+        expect(item.members.length).toBe(1);
+    });
+
     test("should restore added actions", function () {
         const skeleton = <ICompiledLocation>dataSerializer.restoreObjects(libraryWithTrader);
         dataSynchronizer.synchronizeEntityData(skeleton);
@@ -358,6 +399,57 @@ describe("DataSynchronizer", () => {
         dataSynchronizer.synchronizeEntityData(skeleton);
         expect(skeleton.enterEvents.length).toBe(2);
         expect(skeleton.enterEvents[1][1]).toBeTypeOf('function');
+    });
+    
+    test("should restore tuples with arrays as second elements correctly", function() {
+        const expected = {
+            attackPriority: [
+                ["Warrior", [1,2,3,4]],
+                ["Wizard", [5,6]]
+            ]
+        }
+        
+        const input = {
+            attackPriority: [["Warrior"], ["Wizard"]]
+        }
+        
+        dataSynchronizer.synchronizeEntityData(input, expected);
+        expect(Array.isArray(input.attackPriority[1][1])).toBeTruthy();
+    });
+
+    test("should restore objects of same type as separate objects", function() {
+        const pristine = {
+            locations: {
+                start: {
+                    enemies: [
+                        Bandit(),
+                        Bandit()
+                    ]   
+                }
+            },
+            enemies: {
+                bandit: Bandit(),
+            }
+        }
+        
+        const input = {
+            world: {
+                start: {
+                    type: 'location',
+                    id: 'start',
+                    enemies: [
+                        { type: 'enemy', id: 'bandit' },
+                        { type: 'enemy', id: 'bandit' }
+                    ]
+                }
+            }
+        };
+
+        const serializer = new DataSerializer(pristine);
+        const synchronizer = new DataSynchronizer(pristine);
+        serializer.restoreObjects(input);
+        synchronizer.synchronizeEntityData(input);
+        expect(input.world.start.enemies[0] !== input.world.start.enemies[1]).toBeTruthy();
     });
 
 });

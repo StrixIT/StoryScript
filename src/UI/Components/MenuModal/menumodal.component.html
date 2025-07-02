@@ -19,7 +19,7 @@
         <button type="button" class="btn btn-outline-dark btn-lg" (click)="cancel()">{{ texts.restartCancelled }}</button>
         <button type="button" class="btn btn-outline-danger btn-lg" (click)="restartConfirmed()">{{ texts.restartConfirmed }}</button>
     </div>
-    <div id="save-game" *ngIf="state === 'Save' || state === 'Load'">
+    <div *ngIf="state === 'Save' || state === 'Load'">
         <div class="row">
             <div id="save-game" class="col-12">
                 <p>{{ texts.existingSaveGames }}</p>

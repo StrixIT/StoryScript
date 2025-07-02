@@ -1,33 +1,47 @@
-import { IInterfaceTexts, IGame, IAction, IEnemy, IItem, ICharacter, TargetType, ICombatTurn } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { GameService } from 'storyScript/Services/gameService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {
+    IAction,
+    ICharacter,
+    ICombatTurn,
+    IEnemy,
+    IGame,
+    IInterfaceTexts,
+    IItem
+} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {CombatService} from "storyScript/Services/CombatService.ts";
+import {ItemService} from "storyScript/Services/ItemService.ts";
+import {CombatParticipantComponent} from "../CombatParticipant/combatparticipant.component.ts";
+import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
+    standalone: true,
     selector: 'combat',
+    imports: [CommonModule, FormsModule, CombatParticipantComponent],
     template: getTemplate('combat', await import('./combat.component.html?raw'))
 })
 export class CombatComponent {
-    private _gameService: GameService;
-    private _sharedMethodService: SharedMethodService;
-    
+    private readonly _itemService: ItemService;
+    private readonly _combatService: CombatService;
+    private readonly _sharedMethodService: SharedMethodService;
+
     constructor() {
-        this._gameService = inject(GameService);
+        this._itemService = inject(ItemService);
+        this._combatService = inject(CombatService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
-        this.multiCharacter = this.game.party.characters.length > 1;
-        this.enemyRows = this.split(this.game.currentLocation.activeEnemies, 3);
+        this.enemyRows = this.split(this.game.combat?.enemies, 3);
         this.characterRows = this.split(this.game.combat, 3);
     }
 
     game: IGame;
     texts: IInterfaceTexts;
     actionsEnabled: boolean = true;
-    multiCharacter: boolean;
     enemyRows: IEnemy[];
     characterRows: ICharacter[];
 
@@ -37,48 +51,29 @@ export class CombatComponent {
 
     executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
 
-    getTargetName = (target: IEnemy | ICharacter): string => {
-        const type = (<any>target).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
-        const ofSameType = this.game.currentLocation.activeEnemies.filter(e => e.name === target.name);
-        return type === TargetType.Enemy && ofSameType.length > 1 ? this.texts.format(this.texts.enemyCombatName, [target.name, (ofSameType.indexOf(target) + 1).toString()]) : target.name;
-    }
+    getItemName = (item: IItem): string => this._itemService.getItemName(item);
 
     itemChange = (item: IItem, turn: ICombatTurn) => {
-        const targets = turn.targetsAvailable.filter(t => {
-            var type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
-            return item.targetType === type;
-        });
-
+        const targets = turn.targetsAvailable.concat(turn.character).filter(t => this._combatService.canTarget(item, t, turn.character));
         turn.target = targets[0];
     }
 
-    filteredTargets = (turn: ICombatTurn): IEnemy[] | ICharacter[] => turn.targetsAvailable.filter(t => {
-        var type = (<any>t).type === 'enemy' ? TargetType.Enemy : TargetType.Ally;
-        return turn.item.targetType === type;
-    });
+    filteredTargets = (turn: ICombatTurn): IEnemy[] | ICharacter[] => turn.targetsAvailable.concat(turn.character).filter(t => this._combatService.canTarget(turn.item, t, turn.character));
 
-    fight = (): void => { 
+    fight = (): void => {
         this.actionsEnabled = false;
 
-        Promise.resolve(this._gameService.fight(this.game.combat)).then(() => {
+        Promise.resolve(this._combatService.fight(this.game.combat)).then(() => {
             this.actionsEnabled = true;
             this.characterRows = this.split(this.game.combat, 3);
-        }); 
-    }
-    
-    useItem = (character: ICharacter, item: IItem, target?: IEnemy): void => {
-        this.actionsEnabled = false;
-
-        Promise.resolve(this._gameService.useItem(character, item, target)).then(() => {
-            this.actionsEnabled = true;
-        }); 
+        });
     }
 
-    canUseItem = (character: ICharacter, item: IItem): boolean => item.use ? this._sharedMethodService.canUseItem(character, item) : true;
+    itemSelectable = (item: IItem) => this._combatService.isSelectable(item);
 
     private split = (array, size) => {
         const result = [];
-        
+
         if (!array) {
             return result;
         }

@@ -14,13 +14,20 @@ import {
     setReadOnlyLocationProperties
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
+import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
 
 export class LocationService implements ILocationService {
     constructor(
-        private _definitions: IDefinitions,
-        private _rules: IRules,
-        private _game: IGame
+        private readonly _definitions: IDefinitions,
+        private readonly _rules: IRules,
+        private readonly _game: IGame,
+        private readonly _gameEvents: IGameEvents,
     ) {
+        this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
+            game.currentLocation?.destinations.forEach(d => {
+                this.addKeyAction(game, d);
+            })
+        }, false);
     }
 
     init = (): void => {
@@ -41,7 +48,7 @@ export class LocationService implements ILocationService {
     changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
         // Clear the play state on travel.
         game.playState = null;
-        this._rules.exploration?.leaveLocation?.(game, game.currentLocation);
+        this._rules.exploration?.leaveLocation?.(game, game.currentLocation, getId(location));
         this.playEvents(game, 'leaveEvents');
 
         // If there is no location, we are starting a new game. We're done here.
@@ -60,7 +67,7 @@ export class LocationService implements ILocationService {
     }
 
     loadLocationDescriptions = (game: IGame): void => {
-        if (this.selectLocationDescription(game)) {
+        if (this.selectLocationDescription(game, true)) {
             parseGamePropertiesInTemplate(game.currentLocation.description, this._game);
             this.processTextFeatures(game.currentLocation);
         }
@@ -79,8 +86,8 @@ export class LocationService implements ILocationService {
             }
         });
     }
-    
-    private setupLocations = () => {
+
+    private readonly setupLocations = () => {
         Object.values(this._game.locations).forEach(l => {
             const compiledLocation = <ICompiledLocation>l;
             this.initDestinations(compiledLocation);
@@ -91,7 +98,7 @@ export class LocationService implements ILocationService {
                 get: () => selector,
                 set: (value) => {
                     selector = value;
-                    this.selectLocationDescription(this._game);
+                    this.selectLocationDescription(this._game, Boolean(value));
                 }
             });
         });
@@ -99,7 +106,7 @@ export class LocationService implements ILocationService {
         this.addLocationGet(this._game.locations);
     }
 
-    private addLocationGet = (locations: Record<string, ICompiledLocation>) => {
+    private readonly addLocationGet = (locations: Record<string, ICompiledLocation>) => {
         Object.defineProperty(locations, 'get', {
             enumerable: false,
             value: function (id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation {
@@ -118,7 +125,7 @@ export class LocationService implements ILocationService {
         });
     }
 
-    private switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
+    private readonly switchLocation = (game: IGame, location: string | (() => ILocation)): boolean => {
         let presentLocation: ICompiledLocation;
 
         // If no location is specified, go to the previous location.
@@ -142,7 +149,7 @@ export class LocationService implements ILocationService {
         return true;
     }
 
-    private processDestinations = (game: IGame) => {
+    private readonly processDestinations = (game: IGame) => {
         if (game.currentLocation.destinations) {
 
             // remove the return message from the current location destinations.
@@ -166,7 +173,7 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private markCurrentLocationAsVisited = (game: IGame): void => {
+    private readonly markCurrentLocationAsVisited = (game: IGame): void => {
         if (!game.currentLocation.hasVisited) {
             game.currentLocation.hasVisited = true;
             game.statistics.LocationsVisited = game.statistics.LocationsVisited || 0;
@@ -174,7 +181,7 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private initTrade = (game: IGame): void => {
+    private readonly initTrade = (game: IGame): void => {
         if (game.currentLocation.trade?.length > 0) {
             game.currentLocation.trade.forEach(t => {
                 if (!game.currentLocation.actions.find(([k, v]) => v.actionType === ActionType.Trade && k === t.id)) {
@@ -188,13 +195,13 @@ export class LocationService implements ILocationService {
         }
     }
 
-    private addDestination = (originalScope, originalFunction, destination, game): void => {
+    private readonly addDestination = (originalScope: any, originalFunction: Function, destination: IDestination, game: IGame): void => {
         setDestination(destination);
         this.addKeyAction(game, destination);
         originalFunction.call(originalScope, destination);
     }
 
-    private playEvents = (game: IGame, eventProperty: string): void => {
+    private readonly playEvents = (game: IGame, eventProperty: string): void => {
         if (!game.currentLocation?.[eventProperty]) {
             return;
         }
@@ -213,11 +220,11 @@ export class LocationService implements ILocationService {
         });
     }
 
-    private processTextFeatures = (location: ICompiledLocation): void => {
+    private readonly processTextFeatures = (location: ICompiledLocation): void => {
         if (!location.description) {
             return;
         }
-        
+
         const htmlDoc = parseHtmlDocumentFromString(location.description);
         const featureNodes = <HTMLCollectionOf<HTMLElement>>htmlDoc.getElementsByTagName('feature');
 
@@ -239,39 +246,43 @@ export class LocationService implements ILocationService {
     }
 
 
-    private selectLocationDescription = (game: IGame): boolean => {
+    private readonly selectLocationDescription = (game: IGame, autoPlayCheck: boolean): boolean => {
         let selector = null;
+        const previousDescription = game.currentLocation.description;
 
         if (!game.currentLocation.descriptions) {
             game.currentLocation.description = null;
             return false;
         }
 
+        let description: string;
+        const defaultDescription = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
+
         // A location can specify how to select the proper selection using a descriptor selection function. If it is not specified,
         // use the default description selector function.
         if (game.currentLocation.descriptionSelector) {
-            // Use this casting to allow the description selector to be a function or a string.
-            selector = typeof game.currentLocation.descriptionSelector == 'function' ? (<any>game.currentLocation.descriptionSelector)(game) : game.currentLocation.descriptionSelector;
-            game.currentLocation.description = game.currentLocation.descriptions[selector];
-        } else if (this._rules.exploration?.descriptionSelector && (selector = this._rules.exploration.descriptionSelector(game))) {
-            game.currentLocation.description = game.currentLocation.descriptions[selector] || game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[0];
-        } else {
-            game.currentLocation.description = game.currentLocation.descriptions['default'] || game.currentLocation.descriptions[Object.keys(game.currentLocation.descriptions)[0]];
+            selector = typeof game.currentLocation.descriptionSelector == 'function' ? game.currentLocation.descriptionSelector(game) : game.currentLocation.descriptionSelector;
+            description = game.currentLocation.descriptions[selector];
         }
 
-        game.currentLocation.description = checkAutoplay(game, game.currentLocation.description);
+        if (!description && this._rules.exploration?.descriptionSelector && (selector = this._rules.exploration.descriptionSelector(game))) {
+            description = game.currentLocation.descriptions[selector];
+        }
+
+        description ??= defaultDescription;
+        game.currentLocation.description = checkAutoplay(game, description, autoPlayCheck && previousDescription !== description);
         return true;
     }
 
-    private addKeyAction = (game: IGame, destination: IDestination) => {
-        destination.barriers?.forEach(([k, b]) => {
+    private readonly addKeyAction = (game: IGame, destination: IDestination) => {
+        destination.barriers?.forEach(([_, b]) => {
             if (b.key) {
                 const key = typeof b.key === 'function' ?
                     b.key()
                     : <IKey>this._definitions.items.get(b.key)();
-    
+
                 let existingAction = null;
-    
+
                 if (b.actions) {
                     b.actions.forEach(([k, v]) => {
                         if (k === key.id) {
@@ -281,19 +292,19 @@ export class LocationService implements ILocationService {
                 } else {
                     b.actions = [];
                 }
-    
+
                 if (existingAction) {
                     b.actions.splice(b.actions.indexOf(existingAction), 1);
                 }
-    
+
                 let partyKey = null;
-    
+
                 game.party.characters.forEach(c => {
                     partyKey = partyKey ?? c.items.get(key.id);
                 });
-    
+
                 const barrierKey = <IKey>(partyKey || game.currentLocation.items.get(key.id));
-    
+
                 if (barrierKey) {
                     b.actions.push([barrierKey.id, barrierKey.open]);
                 }

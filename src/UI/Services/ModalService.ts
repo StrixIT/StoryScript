@@ -1,21 +1,24 @@
 import {inject, Injectable} from '@angular/core';
 import {NgbModal, NgbModalOptions, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {GameService} from 'storyScript/Services/gameService';
+import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {IGame, IInterfaceTexts, PlayState} from 'storyScript/Interfaces/storyScript';
 import {MenuModalComponent} from '../Components/MenuModal/menumodal.component';
 import {EncounterModalComponent} from '../Components/EncounterModal/encountermodal.component';
 import {IModalSettings} from '../Components/modalSettings';
+import {DataService} from "storyScript/Services/DataService.ts";
 
 @Injectable()
 export class ModalService {
-    private _modalService: NgbModal;
-    private _gameService: GameService;
+    private readonly _modalService: NgbModal;
+    private readonly _dataService: DataService;
+    private readonly _gameService: GameService;
     private _activeModal = <NgbModalRef>null;
     private _previousModalState = <PlayState>null;
 
     constructor() {
         this._modalService = inject(NgbModal);
+        this._dataService = inject(DataService);
         this._gameService = inject(GameService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
@@ -24,9 +27,9 @@ export class ModalService {
     }
 
     private readonly game: IGame;
-    private texts: IInterfaceTexts;
+    private readonly texts: IInterfaceTexts;
 
-    private openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {
+    private readonly openOrCloseModal = (game: IGame, newState: PlayState, oldState: PlayState): void => {
         if (this._previousModalState && newState === this._previousModalState) {
             return;
         }
@@ -73,14 +76,14 @@ export class ModalService {
         }
     }
 
-    private closeModal = (dismiss: boolean) => {
+    private readonly closeModal = (dismiss: boolean) => {
         // The menu modal doesn't have settings and we don't need to save when closing the menu.
         if (this._activeModal.componentInstance?.settings) {
             if (this._activeModal.componentInstance.settings.closeAction) {
                 this._activeModal.componentInstance.closeAction(this.game);
             }
 
-            this._gameService.saveGame();
+            this._dataService.saveGame(this.game);
         }
 
         if (dismiss) {
@@ -91,7 +94,7 @@ export class ModalService {
         this._activeModal = null;
     }
 
-    private getStateSettings = (value: PlayState): IModalSettings => {
+    private readonly getStateSettings = (value: PlayState): IModalSettings => {
         const modalSettings: IModalSettings = {
             title: '',
             closeText: this.texts.closeModal

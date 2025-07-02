@@ -12,7 +12,7 @@ import {compareString} from "storyScript/utilityFunctions.ts";
 import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
 
 export class ConversationService implements IConversationService {
-    constructor(private _game: IGame) {
+    constructor(private readonly _game: IGame) {
     }
 
     talk = (person: IPerson): void => {
@@ -41,7 +41,7 @@ export class ConversationService implements IConversationService {
         }
     }
 
-    private loadConversation = (person: IPerson): void => {
+    private readonly loadConversation = (person: IPerson): void => {
         if (person.conversation && !person.conversation.nodes) {
             person.conversation.actions ??= [];
             const conversationElement = getParsedDocument('conversation', person.description)[0];
@@ -57,7 +57,7 @@ export class ConversationService implements IConversationService {
         }
     }
 
-    private initConversation(person: IPerson): void {
+    private readonly initConversation = (person: IPerson): void => {
         this._game.person = person;
         const activeNode = this.getActiveNode(person);
 
@@ -73,7 +73,7 @@ export class ConversationService implements IConversationService {
         this.executeAction(activeNode.trigger, person);
     }
 
-    private getDefaultReply = (conversationElement: Element, person: IPerson): string => {
+    private readonly getDefaultReply = (conversationElement: Element, person: IPerson): string => {
         const defaultReplyNodes = conversationElement.getElementsByTagName('default-reply');
         let defaultReply: string = null;
 
@@ -86,7 +86,7 @@ export class ConversationService implements IConversationService {
         return defaultReply;
     }
 
-    private processConversationNodes = (conversationNodes: HTMLCollectionOf<Element>, person: IPerson, defaultReply: string) => {
+    private readonly processConversationNodes = (conversationNodes: HTMLCollectionOf<Element>, person: IPerson, defaultReply: string) => {
         for (const element of conversationNodes) {
             const newNode = this.getNewNode(person, element);
             this.processReplyNodes(person, element, newNode, defaultReply);
@@ -105,7 +105,7 @@ export class ConversationService implements IConversationService {
         }
     }
 
-    private getNewNode = (person: IPerson, node: Element): IConversationNode => {
+    private readonly getNewNode = (person: IPerson, node: Element): IConversationNode => {
         let nameAttribute = this.GetNodeValue(node, 'name');
 
         if (!nameAttribute && console) {
@@ -127,7 +127,7 @@ export class ConversationService implements IConversationService {
         };
     }
 
-    private processReplyNodes = (person: IPerson, node: Element, newNode: IConversationNode, defaultReply: string): void => {
+    private readonly processReplyNodes = (person: IPerson, node: Element, newNode: IConversationNode, defaultReply: string): void => {
         for (const replies of node.childNodes) {
             if (compareString(replies.nodeName, 'replies')) {
                 newNode.replies = [];
@@ -145,7 +145,7 @@ export class ConversationService implements IConversationService {
         }
     }
 
-    private buildReplies = (person: IPerson, newNode: IConversationNode, replies: ChildNode): void => {
+    private readonly buildReplies = (person: IPerson, newNode: IConversationNode, replies: ChildNode): void => {
         for (const replyNode of replies.childNodes) {
             if (compareString(replyNode.nodeName, 'reply')) {
                 const requires = this.GetNodeValue(replyNode, 'requires');
@@ -174,7 +174,7 @@ export class ConversationService implements IConversationService {
         }
     }
 
-    private checkNodes = (person: IPerson): void => {
+    private readonly checkNodes = (person: IPerson): void => {
         person.conversation.nodes.forEach(n => {
             if (n.replies) {
                 n.replies.forEach(r => {
@@ -190,9 +190,9 @@ export class ConversationService implements IConversationService {
         });
     }
 
-    private GetNodeValue = (node: Node, attribute: string): string => (<any>node).attributes[attribute]?.value
+    private readonly GetNodeValue = (node: Node, attribute: string): string => (<any>node).attributes[attribute]?.value
 
-    private getActiveNode = (person: IPerson): IConversationNode => {
+    private readonly getActiveNode = (person: IPerson): IConversationNode => {
         if (!person?.conversation) {
             return null;
         }
@@ -217,7 +217,7 @@ export class ConversationService implements IConversationService {
         return activeNode;
     }
 
-    private initReplies = (person: IPerson): void => {
+    private readonly initReplies = (person: IPerson): void => {
         const activeNode = person.conversation.activeNode;
 
         activeNode.replies.forEach(reply => {
@@ -235,7 +235,7 @@ export class ConversationService implements IConversationService {
         });
     }
 
-    private processReply = (person: IPerson, reply: IConversationReply) => {
+    private readonly processReply = (person: IPerson, reply: IConversationReply) => {
         this.executeAction(reply.trigger, person);
 
         if (reply.setStart) {
@@ -265,12 +265,12 @@ export class ConversationService implements IConversationService {
         activeNode!.lines = checkAutoplay(this._game, activeNode!.lines);
     }
 
-    private executeAction = (key: string, person: IPerson) => {
+    private readonly executeAction = (key: string, person: IPerson) => {
         const action = key ? person.conversation.actions.find(([k, _]) => k === key)?.[1] : null;
         action?.(this._game, person);
     }
 
-    private checkReplyAvailability = (activeNode: IConversationNode, reply: IConversationReply): boolean => {
+    private readonly checkReplyAvailability = (activeNode: IConversationNode, reply: IConversationReply): boolean => {
         let isAvailable = true;
         const requirements = reply.requires.split(',');
 
@@ -294,7 +294,7 @@ export class ConversationService implements IConversationService {
         return isAvailable;
     }
 
-    private checkReplyRequirements = (activeNode: IConversationNode, type: string, value: string): boolean => {
+    private readonly checkReplyRequirements = (activeNode: IConversationNode, type: string, value: string): boolean => {
         let isAvailable: boolean;
 
         switch (type) {
@@ -365,7 +365,7 @@ export class ConversationService implements IConversationService {
         return isAvailable;
     }
 
-    private setReplyStatus = (conversation: IConversation, node: IConversationNode): void => {
+    private readonly setReplyStatus = (conversation: IConversation, node: IConversationNode): void => {
         node.replies?.forEach(reply => {
             if (reply.available == undefined) {
                 reply.available = true;
@@ -376,7 +376,7 @@ export class ConversationService implements IConversationService {
         });
     }
 
-    private questProgress = (type: string, person: IPerson, reply: IConversationReply): void => {
+    private readonly questProgress = (type: string, person: IPerson, reply: IConversationReply): void => {
         let quest: IQuest;
         const start = type === 'questStart';
 

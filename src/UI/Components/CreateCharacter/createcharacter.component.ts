@@ -1,18 +1,22 @@
-import { IGame, IInterfaceTexts, ICreateCharacterStep, IRules } from 'storyScript/Interfaces/storyScript';
-import { GameService } from 'storyScript/Services/gameService';
-import { CharacterService } from 'storyScript/Services/characterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {ICreateCharacterStep, IGame, IInterfaceTexts, IRules} from 'storyScript/Interfaces/storyScript';
+import {GameService} from 'storyScript/Services/GameService';
+import {CharacterService} from 'storyScript/Services/CharacterService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
+import {BuildCharacterComponent} from "../BuildCharacter/buildcharacter.component.ts";
 
 @Component({
+    standalone: true,
     selector: 'create-character',
+    imports: [CommonModule, BuildCharacterComponent],
     template: getTemplate('createcharacter', await import('./createcharacter.component.html?raw'))
 })
 export class CreateCharacterComponent {
-    private _characterService: CharacterService;
-    private _gameService: GameService;
-    private _rules: IRules;
+    private readonly _characterService: CharacterService;
+    private readonly _gameService: GameService;
+    private readonly _rules: IRules;
 
     constructor() {
         this._characterService = inject(CharacterService);
@@ -37,17 +41,21 @@ export class CreateCharacterComponent {
     getTitleText = () => {
         if (this._rules.setup.numberOfCharacters > 1) {
             switch (this.game.party?.characters.length || 0) {
-                case 0: return this.texts.firstCharacter;
-                case 1: return this.texts.secondCharacter;
-                case 2: return this.texts.thirdCharacter;
-                default: return this.texts.format(this.texts.nthCharacter, [(this.game.party.characters.length + 1).toString()])
+                case 0:
+                    return this.texts.firstCharacter;
+                case 1:
+                    return this.texts.secondCharacter;
+                case 2:
+                    return this.texts.thirdCharacter;
+                default:
+                    return this.texts.format(this.texts.nthCharacter, [(this.game.party.characters.length + 1).toString()])
             }
         }
 
         return this.texts.newGame;
     }
 
-    getStartText = () => { 
+    getStartText = () => {
         if (this._rules.setup.numberOfCharacters > 1 && (!this.game.party || this.game.party?.characters.length < this._rules.setup.numberOfCharacters - 1)) {
             return this.texts.nextCharacter;
         }

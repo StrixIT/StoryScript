@@ -9,8 +9,9 @@ import {IQuest} from './Interfaces/quest';
 import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './utilityFunctions';
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
-import {ActionStatus, ICompiledLocation, IDestination} from './Interfaces/storyScript';
+import {ICompiledLocation, IDestination, IGroupableItem} from './Interfaces/storyScript';
 import {Enemies, Features, Items, Locations, Persons, Quests} from "../../constants.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
 
 const _entityCollections: string[] = [
     'features',
@@ -69,11 +70,11 @@ export function DynamicEntity<T>(entityFunction: () => T, id?: string): T {
     const compiledEntity = <any>entityFunction();
     const entityKey = getEntityKey(compiledEntity);
     id ??= getId(entityFunction);
-    
+
     if (!id) {
         throw new Error('A dynamic entity needs an id! Either use a named function or specify an id!');
     }
-    
+
     compiledEntity.id = id;
     _registeredIds.set(entityKey, compiledEntity.id);
     return compiledEntity;
@@ -113,7 +114,17 @@ export function buildEntities(definitions: IDefinitions): Record<string, Record<
         definitions[p]?.forEach((f: Function) => {
             const compiledEntity = f();
             const entityKey = getEntityKey(compiledEntity);
-            compiledEntity.id = getId(f);
+            
+            const actualId = getId(f);
+            
+            if (compiledEntity.id && compiledEntity.id !== actualId) {
+                throw new Error(`Entity type '${compiledEntity.type}' with id '${actualId}' and 
+                name '${compiledEntity.name}' has a non-unique entityKey! This means you have two or more 
+                entities of type '${compiledEntity.type}' that are too similar. The easiest way to avoid
+                this issue is to use unique names for your entities.`);
+            }
+            
+            compiledEntity.id = actualId;
             _registeredIds.set(entityKey, compiledEntity.id);
             parseDescriptionData(compiledEntity);
             registerEntity(compiledEntity);
@@ -145,7 +156,7 @@ export function setReadOnlyLocationProperties(location: ILocation) {
         get: function () {
             return location.actions
                 .filter(([_, v]) => {
-                    return v.status !== ActionStatus.Unavailable && !(<any>v).inactive;
+                    return !v.inactive;
                 });
         }
     });
@@ -169,11 +180,21 @@ export function InitEntityCollection(entity: any, property: string) {
         }
     });
 
-    if (_entityCollections.indexOf(property) > -1) {
+    if (_entityCollections.indexOf(property) > -1 && !collection.add.isProxy) {
         Object.defineProperty(collection, 'add', {
             writable: true,
-            value: collection.add.proxy(pushEntity)
+            value: collection.add.proxy((originalScope: any, originalFunction: any, addedEntity: any) =>
+                pushEntity(originalScope, originalFunction, entity, property, addedEntity))
         });
+
+        Object.defineProperty(collection, 'delete', {
+            writable: true,
+            value: collection.delete.proxy((originalScope: any, originalFunction: any, deletedEntity: any) =>
+                removeEntity(originalScope, originalFunction, entity, property, deletedEntity))
+        });
+
+        gameEvents.register(`add-${entity.type}-${property}`, false);
+        gameEvents.register(`delete-${entity.type}-${property}`, false);
     }
 }
 
@@ -206,12 +227,14 @@ export function getBasicFeatureData(location: ICompiledLocation, node: HTMLEleme
         throw new Error('There is no name attribute for a feature node for location ' + location.id + '.');
     }
 
-    const feature = location.features.get(nameAttribute);
+    // The second part of this line is a workaround for features that are initialized inline. When building locations 
+    // from the location definitions, their ids get set only after the location's visual features have been processed.
+    const feature = location.features.get(nameAttribute) ?? location.features.filter(f => getIdFromName(f) === nameAttribute)[0];
 
     // This is a workaround to restore the description for features that originally have only a placeholder in the 
     // location description and are added later to the location's feature collection. As descriptions are not saved,
     // the description is lost when the browser refreshes.
-    if (feature && !feature.description) {
+    if (feature && !feature.description && _registeredEntities.features) {
         const pristineFeature = Object.values(_registeredEntities.features).get(feature.id);
 
         if (pristineFeature?.description) {
@@ -312,6 +335,13 @@ function createPerson(entity: IPerson, id?: string) {
 function createItem(entity: IItem, id?: string) {
     const item = CreateObject(entity, 'item', id);
     compileCombinations(item);
+
+    const groupableItem = item as IGroupableItem<IItem>;
+
+    if (groupableItem.groupTypes) {
+        groupableItem.groupTypes = groupableItem.groupTypes.map(t => getId(t));
+    }
+
     return item;
 }
 
@@ -386,6 +416,8 @@ function loadDescriptions(location: ICompiledLocation): void {
 
         location.descriptions[name] = element.innerHTML;
     }
+    
+    location.description = null;
 }
 
 function processVisualFeatures(location: ICompiledLocation): void {
@@ -534,14 +566,20 @@ function compileCombinations(entry: ICombinable) {
     }
 }
 
-function pushEntity(originalScope: any, originalFunction: any, entity: any) {
-    entity = typeof entity === 'function' ? entity() : entity;
+function pushEntity(originalScope: any, originalFunction: any, entity: any, property: string, addedEntity: any) {
+    addedEntity = typeof addedEntity === 'function' ? addedEntity() : addedEntity;
 
-    if (!entity.id && entity.name) {
-        entity.id = getIdFromName(entity);
+    if (!addedEntity.id && addedEntity.name) {
+        addedEntity.id = getIdFromName(addedEntity);
     }
 
-    originalFunction.apply(originalScope, [entity]);
+    originalFunction.apply(originalScope, [addedEntity]);
+    gameEvents.publish(`add-${entity.type}-${property}`, {type: `add-${addedEntity.type}`, [entity.type]: entity, [addedEntity.type]: addedEntity});
+}
+
+function removeEntity(originalScope: any, originalFunction: any, entity: any, property: string, deletedEntity: any) {
+    originalFunction.apply(originalScope, [deletedEntity]);
+    gameEvents.publish(`delete-${entity.type}-${property}`, {type: `delete-${deletedEntity.type}`, [entity.type]: entity, [deletedEntity.type]: deletedEntity});
 }
 
 function getIdFromName<T extends { name: string, id?: string }>(entity: T): string {

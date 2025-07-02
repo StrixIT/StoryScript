@@ -1,23 +1,29 @@
-import {IConversationNode, IConversationReply, IGame} from 'storyScript/Interfaces/storyScript';
+import {IConversationNode, IConversationReply, IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
 import {ConversationService} from 'storyScript/Services/ConversationService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
+import {SafePipe} from "../../Pipes/sanitizationPipe.ts";
 
 @Component({
+    standalone: true,
     selector: 'conversation',
+    imports: [CommonModule, SafePipe],
     template: getTemplate('conversation', await import('./conversation.component.html?raw'))
 })
 export class ConversationComponent {
-    private _conversationService: ConversationService;
+    private readonly _conversationService: ConversationService;
 
     constructor() {
         this._conversationService = inject(ConversationService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
+        this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;
+    texts: IInterfaceTexts;
 
     answer = (node: IConversationNode, reply: IConversationReply): void => this._conversationService.answer(node, reply);
 

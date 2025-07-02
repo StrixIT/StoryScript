@@ -15,10 +15,12 @@ export interface ISetupRules {
     intro?: boolean;
 
     /**
-     * Run custom code to prepare the game before it begins, e.g. adding game-specific world properties to it.
+     * Run custom code to prepare the game before it begins. NOTE: this also runs when
+     * the browser reloads. If you want to run code only on the start of a new game, use
+     * gameStart instead.
      * @param game The game about to be started
      */
-    setupGame?(game: IGame): void;
+    initGame?(game: IGame): void;
 
     /**
      * If you want to use combinations in your game, use this function to return the combination actions that

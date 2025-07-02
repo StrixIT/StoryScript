@@ -1,17 +1,19 @@
-import { IGame, IInterfaceTexts, IItem, ITrade, IPerson } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core'
-import { getTemplate } from '../../helpers';
-import { TradeService } from 'storyScript/Services/TradeService';
+import {IGame, IInterfaceTexts, IItem, IPerson, ITrade} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core'
+import {getTemplate} from '../../helpers';
+import {CommonModule} from "@angular/common";
 
 @Component({
+    standalone: true,
     selector: 'encounter',
+    imports: [CommonModule],
     template: getTemplate('encounter', await import('./encounter.component.html?raw'))
 })
 export class EncounterComponent {
-    private _sharedMethodService: SharedMethodService;
-  
+    private readonly _sharedMethodService: SharedMethodService;
+
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
@@ -24,11 +26,11 @@ export class EncounterComponent {
 
     enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
-    personsPresent = (): boolean => this.game.currentLocation && this.game.currentLocation.activePersons && this.game.currentLocation.activePersons.length > 0;
+    personsPresent = (): boolean => this.game.currentLocation?.activePersons?.length > 0;
 
     hasDescription = (person: IPerson): boolean => this._sharedMethodService.hasDescription(person);
 
-    showDescription = (person: IPerson, title: string): void => this._sharedMethodService.showDescription('person', person, title);  
+    showDescription = (person: IPerson, title: string): void => this._sharedMethodService.showDescription('person', person, title);
 
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
@@ -37,6 +39,6 @@ export class EncounterComponent {
     talk = (person: IPerson): void => this._sharedMethodService.talk(person);
 
     trade = (trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
-    
+
     startCombat = (person: IPerson): void => this._sharedMethodService.startCombat(person);
 }

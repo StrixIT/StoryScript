@@ -14,7 +14,7 @@ import {IActiveCombination} from '../Interfaces/combinations/activeCombination';
 import {compareString, getId} from 'storyScript/utilityFunctions';
 
 export class CombinationService implements ICombinationService {
-    constructor(private _game: IGame, private _rules: IRules, private _texts: IInterfaceTexts) {
+    constructor(private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts) {
     }
 
     getCombinationActions = (): ICombinationAction[] => this._rules.setup.getCombinationActions ? this._rules.setup.getCombinationActions() : [];
@@ -108,7 +108,7 @@ export class CombinationService implements ICombinationService {
         return result;
     }
 
-    private performCombination = (target: ICombinable, combo: IActiveCombination): ICombineResult => {
+    private readonly performCombination = (target: ICombinable, combo: IActiveCombination): ICombineResult => {
         const tool = combo.selectedTool;
         const type = combo.selectedCombinationAction;
         const prepositionText = combo.selectedCombinationAction.preposition ? ' ' + combo.selectedCombinationAction.preposition + ' ' : ' '
@@ -162,12 +162,12 @@ export class CombinationService implements ICombinationService {
         return result;
     }
 
-    private isMatch = (combineTool: ICombinable, tool: ICombinable): boolean => {
+    private readonly isMatch = (combineTool: ICombinable, tool: ICombinable): boolean => {
         const combineId = getId(combineTool.id ?? <any>combineTool);
         return compareString(tool.id, combineId);
     }
 
-    private removeFeature = (feature: IFeature): void => {
+    private readonly removeFeature = (feature: IFeature): void => {
         // Remove the feature from all possible locations. As we use the object
         // reference, objects of the same type should be left alone.
         this._game.currentLocation.features?.delete(feature);

@@ -1,29 +1,36 @@
 import {Component, inject} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {IGame, IInterfaceTexts, PlayState} from 'storyScript/Interfaces/storyScript';
-import {GameService} from 'storyScript/Services/gameService';
+import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {getTemplate} from '../../helpers';
+import {DataService} from "storyScript/Services/DataService.ts";
+import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
+    standalone: true,
     selector: 'menu-modal',
+    imports: [CommonModule, FormsModule],
     template: getTemplate('menumodal', await import('./menumodal.component.html?raw'))
 })
 export class MenuModalComponent {
-    private _activeModal: NgbActiveModal;
-    private _gameService: GameService;
+    private readonly _activeModal: NgbActiveModal;
+    private readonly _gameService: GameService;
+    private readonly _dataService: DataService;
 
     constructor() {
         this._activeModal = inject(NgbActiveModal);
         this._gameService = inject(GameService);
+        this._dataService = inject(DataService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.state = PlayState.Menu;
     }
 
-    texts: IInterfaceTexts;
     game: IGame;
+    texts: IInterfaceTexts;
     saveKeys: string[];
     selectedGame: string;
     state: string;
@@ -48,21 +55,21 @@ export class MenuModalComponent {
     }
 
     save = (): void => {
-        this.saveKeys = this._gameService.getSaveGames();
+        this.saveKeys = this._dataService.getSaveKeys();
         this.state = 'Save';
     }
 
     load = (): void => {
-        this.saveKeys = this._gameService.getSaveGames();
+        this.saveKeys = this._dataService.getSaveKeys();
         this.state = 'Load';
     }
 
     setSelected = (name: string): string => this.selectedGame = name;
 
-    overwriteSelected = (): boolean => this._gameService.getSaveGames().indexOf(this.selectedGame) > -1;
+    overwriteSelected = (): boolean => this._dataService.getSaveKeys().indexOf(this.selectedGame) > -1;
 
     saveGame = (): void => {
-        this._gameService.saveGame(this.selectedGame);
+        this._dataService.saveGame(this.game, this.selectedGame);
         this.closeModal();
     }
 

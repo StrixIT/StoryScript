@@ -7,7 +7,7 @@ import {IdProperty} from "../../../constants.ts";
 import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSerializer implements IDataSerializer {
-    constructor(private _pristineEntities: Record<string, Record<string, any>>) {
+    constructor(private readonly _pristineEntities: Record<string, Record<string, any>>) {
     }
 
     createSerializableClone = (original: any): any => {
@@ -38,7 +38,7 @@ export class DataSerializer implements IDataSerializer {
         return loaded;
     }
 
-    private buildStructureForSerialization = (clone: any, original: any, pristine: any, parentKey?: string): any => {
+    private readonly buildStructureForSerialization = (clone: any, original: any, pristine: any, parentKey?: string): any => {
         clone ??= this.createClone(original);
 
         if (clone == original) {
@@ -107,7 +107,7 @@ export class DataSerializer implements IDataSerializer {
         return newValue;
     }
 
-    private restoreArray = (value: any, loaded: any, key: string): boolean => {
+    private readonly restoreArray = (value: any, loaded: any, key: string): boolean => {
         if (!Array.isArray(value)) {
             return false;
         }
@@ -136,7 +136,7 @@ export class DataSerializer implements IDataSerializer {
         return true;
     }
 
-    private createClone = (values: any): any => {
+    private readonly createClone = (values: any): any => {
         let clone: any;
 
         if (Array.isArray(values)) {
@@ -148,7 +148,7 @@ export class DataSerializer implements IDataSerializer {
         return clone;
     }
 
-    private getClonedValue = (data: SerializationData): void => {
+    private readonly getClonedValue = (data: SerializationData): void => {
         if (this.processDataRecord(data)) {
             return;
         }
@@ -189,7 +189,7 @@ export class DataSerializer implements IDataSerializer {
         }
     }
 
-    private processDataRecord = (data: SerializationData): boolean => {
+    private readonly processDataRecord = (data: SerializationData): boolean => {
         if (!isDataRecord(data.originalValue)) {
             return false;
         }
@@ -231,7 +231,7 @@ export class DataSerializer implements IDataSerializer {
         return true;
     }
 
-    private processArray = (data: SerializationData): boolean => {
+    private readonly processArray = (data: SerializationData): boolean => {
         if (!Array.isArray(data.originalValue)) {
             return false;
         }
@@ -286,7 +286,7 @@ export class DataSerializer implements IDataSerializer {
         return true;
     }
 
-    private skipProperty = (original: any, originalValue: any, key: string, parentKey: string): boolean => {
+    private readonly skipProperty = (original: any, originalValue: any, key: string, parentKey: string): boolean => {
         return (
             originalValue === undefined
             || originalValue.isProxy
@@ -297,7 +297,7 @@ export class DataSerializer implements IDataSerializer {
         );
     }
     
-    private isKeyProperty = (item: any, propertyName: string): boolean => {
+    private readonly isKeyProperty = (item: any, propertyName: string): boolean => {
         const keyProperties = getKeyPropertyNames(item);
         return keyProperties.first === propertyName || keyProperties.second === propertyName;
     }

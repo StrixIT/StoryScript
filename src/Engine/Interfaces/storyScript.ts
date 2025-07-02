@@ -11,6 +11,7 @@ import type { IAction } from './action'
 import type { IFeature } from './feature'
 import type { IFeatureCollection } from './featureCollection'
 import type { IItem } from './item'
+import type { IGroupableItem } from './groupableItem.ts';
 import type { IEnemy } from './enemy'
 import type { IPerson } from './person'
 import type { ITrade } from './trade'
@@ -58,7 +59,8 @@ export type {
     ICombatSetup,
     IEquipment,
     IAction,
-    IItem, 
+    IItem,
+    IGroupableItem,
     IFeature,
     IFeatureCollection, 
     IEnemy, 
