@@ -6,11 +6,12 @@ import { Component, Input, inject } from '@angular/core';
 import { getTemplate } from '../../helpers';
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 
 @Component({
     standalone: true,
     selector: 'build-character',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, SafePipe],
     template: getTemplate('buildcharacter', await import('./buildcharacter.component.html?raw'))
 })
 export class BuildCharacterComponent {

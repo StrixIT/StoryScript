@@ -114,7 +114,17 @@ export function buildEntities(definitions: IDefinitions): Record<string, Record<
         definitions[p]?.forEach((f: Function) => {
             const compiledEntity = f();
             const entityKey = getEntityKey(compiledEntity);
-            compiledEntity.id = getId(f);
+            
+            const actualId = getId(f);
+            
+            if (compiledEntity.id && compiledEntity.id !== actualId) {
+                throw new Error(`Entity type '${compiledEntity.type}' with id '${actualId}' and 
+                name '${compiledEntity.name}' has a non-unique entityKey! This means you have two or more 
+                entities of type '${compiledEntity.type}' that are too similar. The easiest way to avoid
+                this issue is to use unique names for your entities.`);
+            }
+            
+            compiledEntity.id = actualId;
             _registeredIds.set(entityKey, compiledEntity.id);
             parseDescriptionData(compiledEntity);
             registerEntity(compiledEntity);
@@ -217,12 +227,14 @@ export function getBasicFeatureData(location: ICompiledLocation, node: HTMLEleme
         throw new Error('There is no name attribute for a feature node for location ' + location.id + '.');
     }
 
-    const feature = location.features.get(nameAttribute);
+    // The second part of this line is a workaround for features that are initialized inline. When building locations 
+    // from the location definitions, their ids get set only after the location's visual features have been processed.
+    const feature = location.features.get(nameAttribute) ?? location.features.filter(f => getIdFromName(f) === nameAttribute)[0];
 
     // This is a workaround to restore the description for features that originally have only a placeholder in the 
     // location description and are added later to the location's feature collection. As descriptions are not saved,
     // the description is lost when the browser refreshes.
-    if (feature && !feature.description) {
+    if (feature && !feature.description && _registeredEntities.features) {
         const pristineFeature = Object.values(_registeredEntities.features).get(feature.id);
 
         if (pristineFeature?.description) {

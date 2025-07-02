@@ -28,6 +28,8 @@ export class LocationTextComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
+    
+    // This array can be used in the template to display translations for world properties.
     worldProperties: { name: string, value: string }[];
 
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);

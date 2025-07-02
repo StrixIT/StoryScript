@@ -41,12 +41,14 @@ export interface IEnemy extends IFeature {
     /**
      * When specified, this function will be called when the enemy is attacked by the player.
      * @param game The game object
+     * @param enemy The attacked enemy
      */
-    onAttack?(game: IGame): void;
+    onAttack?(game: IGame, enemy: IEnemy): void;
 
     /**
      * When specified, this function will be called when the enemy's health is reduced to 0 or less.
      * @param game The game object
+     * @param enemy The defeated enemy
      */
-    onDefeat?(game: IGame): void;
+    onDefeat?(game: IGame, enemy: IEnemy): void;
 }
