@@ -114,7 +114,17 @@ export function buildEntities(definitions: IDefinitions): Record<string, Record<
         definitions[p]?.forEach((f: Function) => {
             const compiledEntity = f();
             const entityKey = getEntityKey(compiledEntity);
-            compiledEntity.id = getId(f);
+            
+            const actualId = getId(f);
+            
+            if (compiledEntity.id && compiledEntity.id !== actualId) {
+                throw new Error(`Entity type '${compiledEntity.type}' with id '${actualId}' and 
+                name '${compiledEntity.name}' has a non-unique entityKey! This means you have two or more 
+                entities of type '${compiledEntity.type}' that are too similar. The easiest way to avoid
+                this issue is to use unique names for your entities.`);
+            }
+            
+            compiledEntity.id = actualId;
             _registeredIds.set(entityKey, compiledEntity.id);
             parseDescriptionData(compiledEntity);
             registerEntity(compiledEntity);
