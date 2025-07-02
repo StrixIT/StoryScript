@@ -11,6 +11,14 @@ export interface ICharacterRules {
     getSheetAttributes?(): string[];
 
     /**
+     * Use this function to use custom logic whether or not to show an equipment slot. Returns true if the slot
+     * should be shown, false otherwise.
+     * @param character The character to show the slot for
+     * @param slot The slot to show.
+     */
+    isSlotUsed?(character: ICharacter, slot: string): boolean;
+
+    /**
      * Use this function to specify the steps in your character creation process. Return the character creation sheet.
      */
     getCreateCharacterSheet?(): ICreateCharacter;
@@ -37,6 +45,14 @@ export interface ICharacterRules {
      */
     levelUp?(character: ICharacter, characterData: ICreateCharacter): boolean;
 
+    /**
+     * Specify this function if you want to apply custom rules to check whether a character can equip an item.
+     * If the player is not allowed to equip the item, return false.
+     * @param item The item about to be equipped
+     * @param character The player character
+     */
+    canEquip?(item: IItem, character: ICharacter): boolean;
+    
     /**
      * Specify this function if you want to apply custom rules before allowing a player to equip an item. If the player
      * is not allowed to equip the item, return false.

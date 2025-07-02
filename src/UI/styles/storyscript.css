@@ -105,7 +105,7 @@ button {
 }
 
 #exploration-destinations .btn, #combinations .btn, #trade .btn {
-    margin-right: 5px;
+    margin: 0 0 5px 5px;
 }
 
 #exploration-destinations button span {
@@ -137,12 +137,21 @@ button {
     margin: 5px 0 10px 10px;
 }
 
+#combat option, #combat input {
+    text-align: center;
+}
+
+#combat input {
+    height: 38px;
+}
+
 #combat .btn {
     margin: 5px 0;
 }
 
 .combat-win {
     font-weight: bold;
+    text-align: center;
 }
 
 #trade ul {
@@ -197,6 +206,21 @@ button {
 
 .combatlog {
     margin-top: 25px;
+    display: grid;
+    justify-content: center;
+}
+
+.combatlog legend {
+    text-align: center;
+}
+
+.combatlog li {
+    padding: 0 10px 0 10px;
+    text-align: center;
+}
+
+.single-item {
+    width: 100%;
 }
 
 #create-character {
@@ -323,16 +347,18 @@ feature {
     border: solid 5px;
 }
 
-.not-appliccable {
+.not-applicable {
     line-height: normal;
     visibility: hidden;
 }
 
-.enemy-row, .character-row, .fight-row {
-    margin-top: 25px;
+.enemy-row, .enemy-row > div, .character-row, .fight-row {
+    margin-top: 15px;
+    justify-content: center;
+    text-align: center;
 }
 
-.fight-row {
+.combat-header, .fight-row {
     display: flex;
     justify-content: center;
 }
@@ -341,6 +367,15 @@ feature {
     opacity: .5;
 }
 
-#modal-close-button {
-    
+.unselectable {
+    color: rgba(0, 0, 0, 0.25);
+}
+
+.hitpoint-editor {
+    display: inline;
+}
+
+.combat-actions > li {
+    display: grid;
+    justify-content: center;
 }

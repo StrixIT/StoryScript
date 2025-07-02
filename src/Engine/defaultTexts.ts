@@ -13,6 +13,8 @@ export class DefaultTexts {
         backpack: 'Backpack',
         equip: 'Equip',
         use: 'Use',
+        groupItem: 'Group',
+        splitItemGroup: 'Split',
         drop: 'Drop',
         enemies: 'Enemies',
         enemyHitpoints: 'Health: {0} / {1}',
@@ -70,6 +72,7 @@ export class DefaultTexts {
         combatWin: 'You are victorious!',
         enemiesToFight: 'You face these foes: ',
         useInCombat: 'Use {0}',
+        noCombatAction: 'No Combat Actions',
         view: 'View',
         quests: 'Quests',
         currentQuests: 'Current',
@@ -96,7 +99,16 @@ export class DefaultTexts {
         confirmRestart: 'Really restart?',
         restartCancelled: 'No',
         restartConfirmed: 'Yes',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
+        confirmAction: 'Ok',
+        cancelAction: 'Cancel',
+        stockItemDisplayText: '{0}: {1} {2}',
+        buyConfirmationText: 'Are you sure you want to buy the {0} for {1} {2}?',
+        confirmBuy: 'Ok',
+        cancelBuy: 'Cancel',
+        sellConfirmationText: 'Are you sure you want to sell the {0} for {1} {2}?',
+        confirmSell: 'Ok',
+        cancelSell: 'Cancel'
     }
 
     format = format;

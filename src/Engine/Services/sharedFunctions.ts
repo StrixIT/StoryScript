@@ -8,6 +8,22 @@ import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {compareString, parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
+import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
+
+const parsedDescriptions = new Map<string, boolean>();
+
+export function hasDescription(entity: { id?: string, description?: string }): boolean {
+    if (!entity.description) {
+        return false;
+    }
+
+    if (!parsedDescriptions.get(entity.id)) {
+        const descriptionNode = getParsedDocument('description', entity.description)[0];
+        parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
+    }
+
+    return parsedDescriptions.get(entity.id);
+}
 
 export function random<T>(type: string, definitions: IDefinitions, selector?: (item: T) => boolean): T {
     const collection = definitions[type];
@@ -180,15 +196,20 @@ function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
         .sort((a, b) => a.order - b.order)[0];
 }
 
-export function checkAutoplay(game: IGame, value: string) {
+export function checkAutoplay(game: IGame, value: string, autoPlayCheck?: boolean) {
     // Check media with the autoplay property to play only once.
+    autoPlayCheck = autoPlayCheck ?? true;
     const htmlDocumentFromString = parseHtmlDocumentFromString(value);
-    value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);
-    value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('video'), game.sounds.playedAudio);
+
+    if (autoPlayCheck) {
+        value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);
+        value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('video'), game.sounds.playedAudio);
+    }
+
     return value;
 }
 
-export function removeItemFromParty(party: IParty, item: IItem) {
+export function removeItemFromParty(party: IParty, item: IItem | (() => IItem)) {
     let deleted = false;
 
     party.characters.forEach(c => {
@@ -200,7 +221,7 @@ export function removeItemFromParty(party: IParty, item: IItem) {
     });
 }
 
-export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem): boolean {
+export function removeItemFromItemsAndEquipment(character: ICharacter, item: IItem | (() => IItem)): boolean {
     let deleted = false;
 
     if (character.items.get(item)) {

@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
-import {HelperService} from 'storyScript/Services/helperService';
-import {ICharacter, IDefinitions, IEnemy, IHelpers, IItem} from 'storyScript/Interfaces/storyScript';
+import {HelperService} from 'storyScript/Services/HelperService';
+import {ICharacter, IDefinitions, IEnemy, IGame, IHelpers, IItem} from 'storyScript/Interfaces/storyScript';
 
 describe("HelperService", function () {
 
@@ -158,7 +158,7 @@ function getService(): { service: IHelpers, definitions: IDefinitions } {
         quests: []
     }
 
-    return {service: new HelperService(definitions), definitions: definitions};
+    return {service: new HelperService(<IGame>{}, definitions), definitions: definitions};
 }
 
 function find(collection, name) {

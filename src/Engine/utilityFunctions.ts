@@ -1,4 +1,6 @@
-﻿export function compareString(left: string, right: string): boolean {
+﻿import {EquipmentType, ILocation} from "./Interfaces/storyScript";
+
+export function compareString(left: string, right: string): boolean {
     if ((left === undefined && right === undefined) || (left === null && right === null)) {
         return true;
     } else if ((left === null || left === undefined) || (right === null || right === undefined)) {
@@ -130,8 +132,9 @@ export function isEmpty(object: any, property?: string) {
     return true;
 }
 
-export function equals<T extends { id?: string }>(entity: T, definition: () => T): boolean {
-    return entity.id ? compareString(entity.id, definition.name) : false;
+export function equals<T extends { id?: string } | ILocation>(entity: T | string, definition: () => T): boolean {
+    const id = (entity as { id?: string }).id ?? getId(entity as Function);
+    return id ? compareString(id, definition.name) : false;
 }
 
 export function createPromiseForCallback<T>(callBack: Function): { promise: Promise<T>, promiseCallback: () => void } {
@@ -187,6 +190,11 @@ export function interval(intervalTimeInMs: number, repeat: number, intervalCallb
     }, intervalTimeInMs);
 
     return promise;
+}
+
+export function getEquipmentType(slot: EquipmentType | string): string {
+    const type = EquipmentType[slot] ?? slot;
+    return type.substring(0, 1).toLowerCase() + type.substring(1);
 }
 
 function getKeyProperties(pristine: any, current: any): { first?: string, second?: string } {

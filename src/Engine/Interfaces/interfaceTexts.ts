@@ -74,6 +74,7 @@ export interface IInterfaceTexts {
     combatWin?: string;
     enemiesToFight?: string;
     useInCombat?: string;
+    noCombatAction?: string;
     view?: string;
     quests?: string;
     currentQuests?: string;
@@ -97,8 +98,19 @@ export interface IInterfaceTexts {
     restartCancelled?: string;
     restartConfirmed?: string;
     cancel?: string;
+    groupItem?: string;
+    splitItemGroup?: string;
     worldProperties?: any;
-
+    confirmAction?: string;
+    cancelAction?: string;
+    stockItemDisplayText?: string,
+    buyConfirmationText?: string;
+    confirmBuy?: string;
+    cancelBuy?: string;
+    sellConfirmationText?: string;
+    confirmSell?: string;
+    cancelSell?: string;
+    
     /**
      * A function to build text replacing tokens in a template, e.g. 'it is {0}, {1}' with parameters 'day' and '12:00' becomes 'it is day, 12:00'.
      * If no function is specified, a default implementation is used.

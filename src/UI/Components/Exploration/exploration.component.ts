@@ -7,33 +7,42 @@ import {
     IGame,
     IInterfaceTexts,
     IPerson,
+    IRules,
     ITrade
 } from 'storyScript/Interfaces/storyScript';
 import {isEmpty} from 'storyScript/utilityFunctions';
-import {GameService} from 'storyScript/Services/gameService';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {DataService} from "storyScript/Services/DataService.ts";
+import {CommonModule} from "@angular/common";
+import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";
+import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 
 @Component({
+    standalone: true,
     selector: 'exploration',
+    imports: [CommonModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem, SafePipe],
     template: getTemplate('exploration', await import('./exploration.component.html?raw'))
 })
 export class ExplorationComponent {
-    private _gameService: GameService;
-    private _sharedMethodService: SharedMethodService;
+    private readonly _dataService: DataService;
+    private readonly _sharedMethodService: SharedMethodService;
 
     constructor() {
-        this._gameService = inject(GameService);
+        this._dataService = inject(DataService);
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
+        this.rules = objectFactory.GetRules();
         this.texts = objectFactory.GetTexts();
     }
 
     game: IGame;
+    rules: IRules;
     texts: IInterfaceTexts;
+    confirmAction: [string, IAction];
 
     changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
@@ -45,11 +54,21 @@ export class ExplorationComponent {
 
     getCombineClass = (barrier: IBarrier): string => this.game.combinations.getCombineClass(barrier);
 
-    disableActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Disabled : action[1].status == undefined ? false : action[1].status == ActionStatus.Disabled;
+    disableActionButton = (action: [string, IAction]): boolean => this.checkStatus(action, ActionStatus.Disabled);
 
-    hideActionButton = (action: [string, IAction]): boolean => typeof action[1].status === 'function' ? (<any>action).status(this.game) == ActionStatus.Unavailable : action[1].status == undefined ? false : action[1].status == ActionStatus.Unavailable;
+    hideActionButton = (action: [string, IAction]): boolean => this.checkStatus(action, ActionStatus.Unavailable);
 
-    executeAction = (action: [string, IAction]): void => this._sharedMethodService.executeAction(action, this);
+    cancelAction = (): void => this.confirmAction = undefined;
+    
+    executeAction = (action: [string, IAction]): void => {
+        if (action[1].confirmationText && !this.confirmAction) {
+            this.confirmAction = action;
+            return;    
+        }
+
+        this.confirmAction = undefined;
+        this._sharedMethodService.executeAction(action, this);
+    };
 
     // Do not remove this method nor its arguments, it is called dynamically from the executeAction method of the SharedMethodService!
     trade = (_: IGame, trade: IPerson | ITrade): boolean => this._sharedMethodService.trade(trade);
@@ -59,10 +78,16 @@ export class ExplorationComponent {
             return;
         }
 
-        this._gameService.executeBarrierAction(barrier, action, destination);
+        action[1].execute(this.game, barrier, destination);
+        barrier[1].actions.delete(barrier[1].actions.find(([k, _]) => k === action[0]));
+        this._dataService.saveGame(this.game);
     }
 
     isPreviousLocation = (destination: IDestination): boolean => {
         return (<any>destination).isPreviousLocation
     };
+    
+    private checkStatus = (action: [string, IAction], status: ActionStatus) => {
+        return typeof action[1].status === 'function' ? (<any>action[1]).status(this.game) == status : action[1].status == undefined ? false : action[1].status == status;
+    }
 }

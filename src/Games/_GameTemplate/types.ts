@@ -1,7 +1,7 @@
 import { IParty } from './interfaces/party';
 import { IDestination } from './interfaces/destination';
 import { IFeature, Feature } from './interfaces/feature';
-import { IItem, Item } from './interfaces/item';
+import { IItem, IGroupableItem, Item } from './interfaces/item';
 import { IKey, Key } from './interfaces/key';
 import { IEnemy, Enemy } from './interfaces/enemy';
 import { IPerson, Person } from './interfaces/person';
@@ -19,6 +19,7 @@ export type {
     IDestination,
     IFeature,
     IItem,
+    IGroupableItem,
     IKey,
     IEnemy,
     IPerson,

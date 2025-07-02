@@ -44,7 +44,7 @@ export interface ICombatRules {
      * @param game The active game
      * @param character The character defeating the enemy
      * @param enemy The enemy defeated
-     * @param item The item about to be unequipped
+     * @param item The item about to be dropped
      */
     beforeDrop?(game: IGame, character: ICharacter, enemy: IEnemy, item: IItem): boolean;
 }
