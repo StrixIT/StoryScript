@@ -1,5 +1,5 @@
 ﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction } from 'storyScript/Interfaces/storyScript';
-import { IGame, IEnemy, Character, ICombatSetup } from './types';
+import {IGame, IEnemy, Character, ICombatSetup, ICompiledLocation} from './types';
 
 export function Rules(): IRules {
     return {
@@ -40,7 +40,25 @@ export function Rules(): IRules {
         },
 
         exploration: {
-            
+            enterLocation(game: IGame, location: ICompiledLocation, travel?: boolean) {
+                const map = game.currentMap;
+                
+                setTimeout(() => {
+                    const coordString = map.locations.find(l => l.location === game.currentLocation.id)?.coords;
+
+                    if (coordString) {
+                        const coords = coordString.split(',');
+                        
+                        const avatar = <any>game.UIRootElement.getElementsByClassName('avatar-image')[0];
+                        const top = parseInt(coords[1]) - avatar.height / 2;
+                        const left = parseInt(coords[0]) - avatar.width / 2;
+                        
+                        avatar.style.top = `${top}px`;
+                        avatar.style.left = `${left}px`;
+                    }  
+                    // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
+                }, 250);
+            }
         },
 
         combat: {     

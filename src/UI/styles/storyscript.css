@@ -381,5 +381,13 @@ feature {
 }
 
 #map-container {
+    position: relative;
     overflow: hidden;
+}
+
+.avatar-image {
+    transition:all 1s ease 0s;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
