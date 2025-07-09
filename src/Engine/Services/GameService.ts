@@ -47,6 +47,7 @@ export class GameService implements IGameService {
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
         this._game.party = gameState?.party;
         this._game.locations = gameState?.world;
+        this._game.maps = gameState?.maps;
         this._game.worldProperties = gameState?.worldProperties ?? {};
         this._game.statistics = gameState?.statistics ?? this._game.statistics ?? {};
         const playedAudio = gameState?.playedAudio ?? [];
@@ -101,6 +102,7 @@ export class GameService implements IGameService {
 
         this._dataService.save(GameStateSave, emptySave);
         this._game.locations = null;
+        this._game.maps = null;
         this._locationService.init();
 
         // Save here to use the before and after save hooks after refreshing the world,
@@ -146,6 +148,7 @@ export class GameService implements IGameService {
             this._game.loading = true;
             this._game.party = saveGame.party;
             this._game.locations = saveGame.world;
+            this._game.maps = saveGame.maps;
             this._game.worldProperties = saveGame.worldProperties ?? {};
             this._game.statistics = saveGame.statistics;
             this._game.sounds.playedAudio = saveGame.playedAudio;
@@ -295,6 +298,28 @@ export class GameService implements IGameService {
                 this._dataService.saveGame(this._game);
             }
         };
+
+        Object.defineProperty(this._game, 'currentMap', {
+            configurable: true,
+            get: () => {
+                let result = null;
+                
+                if (this._game.maps) {
+                    for (const key in this._game.maps)
+                    {
+                        const map = this._game.maps[key];
+                        const location = map.locations.find(l => l.location === this._game.currentLocation.id);
+                        
+                        if (location) {
+                            result = map;
+                            break;
+                        }
+                    }
+                }
+                
+                return result;
+            }
+        });
 
         if (this._rules.general?.gameStateChange) {
             this.watchState<GameState>('state', this._rules.general.gameStateChange);

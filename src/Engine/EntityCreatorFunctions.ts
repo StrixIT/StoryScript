@@ -1,5 +1,6 @@
 import {IDefinitions} from './Interfaces/definitions';
 import {ILocation} from './Interfaces/location';
+import {IMap} from './Interfaces/maps/map';
 import {IEnemy} from './Interfaces/enemy';
 import {IPerson} from './Interfaces/person';
 import {IItem} from './Interfaces/item';
@@ -10,7 +11,7 @@ import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './util
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
 import {ICompiledLocation, IDestination, IGroupableItem} from './Interfaces/storyScript';
-import {Enemies, Features, Items, Locations, Persons, Quests} from "../../constants.ts";
+import {Enemies, Features, Items, Locations, Maps, Persons, Quests} from "../../constants.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
 
 const _entityCollections: string[] = [
@@ -40,6 +41,10 @@ const _registeredEntities: Record<string, Record<string, any>> = {};
 
 export function Location(entity: ILocation): ILocation {
     return Create('location', entity);
+}
+
+export function LocationMap(entity: IMap): IMap {
+    return Create('map', entity);
 }
 
 export function Enemy<T extends IEnemy>(entity: T): T {
@@ -107,7 +112,8 @@ export function buildEntities(definitions: IDefinitions): Record<string, Record<
         Items,
         Enemies,
         Persons,
-        Locations
+        Locations,
+        Maps
     ];
 
     allDefinitions.forEach(p => {
@@ -276,6 +282,8 @@ function Create(type: string, entity: any, id?: string) {
     switch (type) {
         case 'location':
             return createLocation(entity);
+        case 'map':
+            return createMap(entity);
         case 'enemy':
             return EnemyBase(entity, 'enemy', id);
         case 'person':
@@ -324,6 +332,16 @@ function createLocation(entity: ILocation) {
     setReadOnlyLocationProperties(location);
 
     return location;
+}
+
+function createMap(entity: IMap, id?: string) {
+    const map = CreateObject(entity, 'map', id);
+    
+    map.locations.forEach(l => {
+       l.location = getId(l.location); 
+    });
+
+    return map;
 }
 
 function createPerson(entity: IPerson, id?: string) {
@@ -424,6 +442,7 @@ function processVisualFeatures(location: ICompiledLocation): void {
     const visualFeatureNode = getParsedDocument('visual-features', location.description)[0]
 
     if (visualFeatureNode) {
+        location.features ??= [];
         location.features.collectionPicture = visualFeatureNode.attributes['img']?.nodeValue;
 
         if (location.features.length > 0) {

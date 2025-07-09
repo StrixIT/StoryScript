@@ -1,0 +1,4 @@
+@let map = game.currentMap;
+<div id="map-container">
+    <img src="{{ 'resources/' + map.mapImage }}" [attr.usemap]="'#' + map.id" alt="{{ map.name }}">
+</div>

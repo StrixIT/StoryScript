@@ -379,3 +379,7 @@ feature {
     display: grid;
     justify-content: center;
 }
+
+#map-container {
+    overflow: hidden;
+}

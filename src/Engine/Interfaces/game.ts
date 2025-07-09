@@ -17,6 +17,7 @@ import {ICombatSetup} from './combatSetup';
 import {ICombatTurn} from './combatTurn';
 import {ICombineResult} from "./combinations/combineResult.ts";
 import {ISoundPlayer} from "./soundPlayer.ts";
+import { IMap } from './maps/map.ts';
 
 /**
  * The StoryScript main game object.
@@ -45,6 +46,13 @@ export interface IGame {
     };
 
     /**
+     * All the maps of the game world.
+     */
+    maps: Record<string, IMap> & {
+        get?(id?: string | (() => IMap)): IMap;
+    };
+
+    /**
      * The location in the game world the player is currently at.
      */
     currentLocation: ICompiledLocation;
@@ -54,6 +62,11 @@ export interface IGame {
      */
     previousLocation: ICompiledLocation;
 
+    /**
+     * The map of the part of the world the player is currently at, if any.
+     */
+    currentMap?: IMap;
+    
     /**
      * The high score log for the game.
      */

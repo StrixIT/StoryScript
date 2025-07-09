@@ -154,6 +154,7 @@ function getService(): { service: IHelpers, definitions: IDefinitions } {
         ],
         features: [],
         locations: [],
+        maps: [],
         persons: [],
         quests: []
     }
