@@ -48,13 +48,18 @@ export function Rules(): IRules {
 
                     if (coordString) {
                         const coords = coordString.split(',');
-                        
+                        const coordLeft = parseInt(coords[0]);
+                        const coordTop = parseInt(coords[1]);
+                        const mapImage = <any>game.UIRootElement.getElementsByClassName('map-image')[0];
                         const avatar = <any>game.UIRootElement.getElementsByClassName('avatar-image')[0];
-                        const top = parseInt(coords[1]) - avatar.height / 2;
-                        const left = parseInt(coords[0]) - avatar.width / 2;
-                        
-                        avatar.style.top = `${top}px`;
-                        avatar.style.left = `${left}px`;
+                        const mapMarginLeft = getMapMargin(mapImage, coordLeft, 'width');
+                        const mapMarginTop = getMapMargin(mapImage, coordTop, 'height');
+                        mapImage.style.marginLeft = `-${mapMarginLeft}px`;
+                        mapImage.style.marginTop = `-${mapMarginTop}px`;
+                        const avatarLeft = coordLeft - mapMarginLeft - avatar.width / 2;
+                        const avatarTop = coordTop - mapMarginTop - avatar.height / 2;
+                        avatar.style.left = `${avatarLeft}px`;
+                        avatar.style.top = `${avatarTop}px`;
                     }  
                     // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
                 }, 250);
@@ -75,4 +80,15 @@ export function Rules(): IRules {
             }
         }
     };
+}
+
+function getMapMargin(mapImage: any, coord: number, dimension: string): number {
+    const mapContainer = mapImage.parentElement;
+    const clientDimension = 'client' + dimension.substring(0, 1).toUpperCase() + dimension.substring(1)
+    const mapDimension = mapContainer[clientDimension];
+    const viewPortCenter = mapDimension / 2;
+    const maxMargin = mapImage[dimension] - mapDimension;
+    let mapMargin = coord > viewPortCenter ? coord - viewPortCenter : 0;
+    mapMargin = mapMargin > maxMargin ? maxMargin : mapMargin;
+    return mapMargin;
 }

@@ -385,6 +385,10 @@ feature {
     overflow: hidden;
 }
 
+.map-image {
+    transition:all 1s ease 0s;
+}
+
 .avatar-image {
     transition:all 1s ease 0s;
     position: absolute;
