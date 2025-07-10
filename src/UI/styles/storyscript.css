@@ -386,11 +386,11 @@ feature {
 }
 
 .map-image {
-    transition:all 1s ease 0s;
+    transition: all 1s ease 0s;
 }
 
 .avatar-image {
-    transition:all 1s ease 0s;
+    transition: all 1s ease 0s;
     position: absolute;
     top: 0;
     left: 0;
