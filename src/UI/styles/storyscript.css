@@ -389,9 +389,17 @@ feature {
     transition: all 1s ease 0s;
 }
 
-.avatar-image {
+.avatar-image, .map-location-label {
     transition: all 1s ease 0s;
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 2;
+}
+
+.map-location-label {
+    background-color: white;
+    border: solid 1px black;
+    padding: 2px 5px;
+    z-index: 1;
 }

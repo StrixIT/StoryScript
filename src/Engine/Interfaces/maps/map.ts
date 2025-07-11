@@ -5,5 +5,6 @@ export interface IMap {
     mapImage: string;
     locations: IMapLocation[];
     avatarImage?: string;
-    locationMarkerPicture?: string;
+    textLabels: boolean;
+    locationMarkerImage?: string;
 }

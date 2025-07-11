@@ -8,9 +8,11 @@ export function HolyRomanEmpire() {
         name: 'Holy Roman Empire',
         mapImage: 'holy-roman-empire.jpg',
         avatarImage: 'avatar.png',
+        textLabels: true,
         locations: [
             {
                 location: Start,
+                textLabel: 'Franconia',
                 coords: '580,500'
             },
             {

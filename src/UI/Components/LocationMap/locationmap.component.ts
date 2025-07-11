@@ -18,42 +18,61 @@ export class LocationMapComponent {
         const objectFactory = inject(ServiceFactory);
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
+        this.map = this.game.currentMap;
         gameEvents.subscribe(GameEventNames.ChangeLocation, (game, args) => {
             this.navigateMap(game);
         });
+        
+        setTimeout(() => this.initMap());
     }
     
     private initialTravel: boolean = true;
+    private mapMarginLeft: number = 0;
+    private mapMarginTop: number = 0;
 
     game: IGame;
     texts: IInterfaceTexts;
     map: IMap;
-
+    
+    private initMap = () => {
+        const mapElement = this.getMapElement();
+        
+        this.map.locations.forEach(l => {
+            const coords = this.getCoords(l.coords);
+            const labelElement = document.createElement("div");
+            labelElement.setAttribute("class", "map-location-label");
+            labelElement.setAttribute("data-top", coords.x.toString());
+            labelElement.setAttribute("data-left", coords.y.toString());
+            const spanElement = document.createElement("span");
+            spanElement.innerText = l.textLabel ?? this.game.locations[l.location as string].name;
+            labelElement.appendChild(spanElement);
+            mapElement.parentElement.appendChild(labelElement);
+        });
+    }
+        
     private navigateMap = (game: IGame)=> {
         const map = game.currentMap;
+        const mapElement = this.getMapElement();
 
         setTimeout(() => {
             const coordString = map.locations.find(l => l.location === game.currentLocation.id)?.coords;
 
             if (coordString) {
-                const coords = coordString.split(',');
-                const coordLeft = parseInt(coords[0]);
-                const coordTop = parseInt(coords[1]);
-                const mapImage = <any>game.UIRootElement.getElementsByClassName('map-image')[0];
+                const coords = this.getCoords(coordString);
                 const avatar = <any>game.UIRootElement.getElementsByClassName('avatar-image')[0];
-                const mapMarginLeft = this.getMapMargin(mapImage, coordLeft, 'width');
-                const mapMarginTop = this.getMapMargin(mapImage, coordTop, 'height');
-                mapImage.style.marginLeft = `-${mapMarginLeft}px`;
-                mapImage.style.marginTop = `-${mapMarginTop}px`;
+                this.mapMarginLeft = this.getMapMargin(mapElement, coords.x, 'width');
+                this.mapMarginTop = this.getMapMargin(mapElement, coords.y, 'height');
+                mapElement.style.marginLeft = `-${this.mapMarginLeft}px`;
+                mapElement.style.marginTop = `-${this.mapMarginTop}px`;
                 
                 if (avatar) {
-                    const avatarLeft = coordLeft - mapMarginLeft - avatar.width / 2;
-                    const avatarTop = coordTop - mapMarginTop - avatar.height / 2;
+                    const avatarLeft = coords.x - this.mapMarginLeft - avatar.width / 2;
+                    const avatarTop = coords.y - this.mapMarginTop - avatar.height / 2;
                     avatar.style.left = `${avatarLeft}px`;
                     avatar.style.top = `${avatarTop}px`;
                     
                     if (this.initialTravel) {
-                        // Todo: get the configured timeout for the avatar here.
+                        // Todo: get the configured transition timeout for the avatar here.
                         const transitionTime = 1000;
                         
                         setTimeout(() => {
@@ -63,9 +82,29 @@ export class LocationMapComponent {
                     }
                 }
             }
+            
+            if (map.textLabels) {
+                const labelElements= mapElement.parentElement.getElementsByClassName('map-location-label');
+                
+                for (const n in Object.keys(labelElements)) {
+                    const labelElement = labelElements[n] as HTMLElement;
+                    const currentLeft = parseInt(labelElement.dataset.top) - labelElement.clientWidth / 2 - this.mapMarginLeft;
+                    const currentTop = parseInt(labelElement.dataset.left) - labelElement.clientHeight / 2 - this.mapMarginTop;
+                    labelElement.style.left = `${currentLeft}px`;
+                    labelElement.style.top = `${currentTop}px`;
+                }
+            }
+            
             // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
         }, 100);
     }
+    
+    private getCoords = (coordString: string) => {
+        const coords = coordString.split(',');
+        const coordLeft = parseInt(coords[0]);
+        const coordTop = parseInt(coords[1]);
+        return { x: coordLeft, y: coordTop };
+    } 
 
     private getMapMargin = (mapImage: any, coord: number, dimension: string): number => {
         const mapContainer = mapImage.parentElement;
@@ -76,5 +115,9 @@ export class LocationMapComponent {
         let mapMargin = coord > viewPortCenter ? coord - viewPortCenter : 0;
         mapMargin = mapMargin > maxMargin ? maxMargin : mapMargin;
         return mapMargin;
+    }
+    
+    private getMapElement = (): HTMLElement => {
+        return this.game.UIRootElement.getElementsByClassName('map-image')[0] as HTMLElement;
     }
 }
