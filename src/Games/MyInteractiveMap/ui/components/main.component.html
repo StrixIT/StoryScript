@@ -1,0 +1,32 @@
+<div>
+    <navigation></navigation>
+    <div class="container-fluid body-content">
+        <sound></sound>
+        <div class="row">
+            <div id="map-container" class="col-6">
+                <location-map></location-map>
+            </div>
+            <div id="location-container" class="col-6">
+                <div *ngIf="!game.state">
+                    {{ texts.loading }}
+                </div>
+                <div *ngIf="game.state == 'Play'">
+                    <encounter></encounter>
+                    <location-text></location-text>
+                    <action-log></action-log>
+                    <ground></ground>
+                    <exploration></exploration>
+                    <enemy></enemy>
+                </div>
+                <intro></intro>
+                <create-character></create-character>
+                <!-- TODO: how to make this work? -->
+                <div *ngFor="let character of game.party?.characters">
+                    <level-up [character]="character"></level-up>
+                </div>
+                <game-over></game-over>
+                <victory></victory>
+            </div>
+        </div>
+    </div>
+</div>

@@ -23,7 +23,7 @@ import type { IDestination } from './destination'
 import type { IBarrier } from './barrier'
 import type { IBarrierAction } from './barrierAction'
 import type { IHelpers } from './helpers'
-import { Feature, Item, Enemy, Person, Key, Location, Quest } from '../EntityCreatorFunctions'
+import { Feature, Item, Enemy, Person, Key, Location, Quest, LocationMap } from '../EntityCreatorFunctions'
 import { Open } from '../Actions/open';
 import { OpenWithKey } from '../Actions/openWithKey';
 import type { ICombinable } from './combinations/combinable';
@@ -48,6 +48,8 @@ import { ScoreEntry } from './scoreEntry'
 import type { IDynamicStyle } from './dynamicStyle'
 import type { IStatistics } from './statistics'
 import { format } from '../defaultTexts'
+import { IMap } from './maps/map.ts'
+import { IMapLocation } from './maps/mapLocation.ts'
 
 export type {
     IInterfaceTexts, 
@@ -87,7 +89,9 @@ export type {
     IConversationReply,
     IDefinitions,
     IDynamicStyle,
-    IStatistics
+    IStatistics,
+    IMap,
+    IMapLocation
 }
 
 export { 
@@ -96,7 +100,8 @@ export {
     Feature, 
     Enemy,  
     Key, 
-    Location, 
+    Location,
+    LocationMap,
     Person,
     Quest,
     Open,
