@@ -389,7 +389,7 @@ feature {
     transition: all 1s ease 0s;
 }
 
-.avatar-image, .map-location-label {
+.avatar-image, .map-location-label, .map-location-image {
     transition: all 1s ease 0s;
     position: absolute;
     top: 0;
@@ -397,9 +397,12 @@ feature {
     z-index: 2;
 }
 
+.map-location-label, .map-location-image {
+    z-index: 1;
+}
+
 .map-location-label {
     background-color: white;
     border: solid 1px black;
     padding: 2px 5px;
-    z-index: 1;
 }

@@ -18,7 +18,8 @@ export function HolyRomanEmpire() {
             },
             {
                 location: Westphalia,
-                coords: '430,330'
+                coords: '430,330',
+                markerImage: 'westphalia.png'
             },
             {
                 location: Carinthia,

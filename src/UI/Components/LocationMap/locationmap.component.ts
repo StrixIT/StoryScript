@@ -7,6 +7,11 @@ import {SafePipe} from "../../Pipes/sanitizationPipe.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
 import {GameEventNames} from "storyScript/GameEventNames.ts";
 
+const visible: string = 'visible';
+const reachable: string = 'reachable';
+const labelClass: string = 'map-location-label';
+const imageClass: string = 'map-location-image';
+
 @Component({
     standalone: true,
     selector: 'location-map',
@@ -19,7 +24,7 @@ export class LocationMapComponent {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.map = this.game.currentMap;
-        gameEvents.subscribe(GameEventNames.ChangeLocation, (game, args) => {
+        gameEvents.subscribe(GameEventNames.ChangeLocation, (game) => {
             this.navigateMap(game);
         });
         
@@ -40,20 +45,16 @@ export class LocationMapComponent {
         const mapElement = this.getMapElement();
         
         this.map.locations.forEach(l => {
-            const textLabel = l.textLabel ?? (this.map.locationNamesAsTextLabels ? this.game.locations[l.location as string].name : null);
+            const textLabel = l.markerImage ? null : l.textLabel ?? (this.map.locationNamesAsTextLabels ? this.game.locations[l.location as string].name : null);
             
             if (textLabel) {
-                const coords = this.getCoords(l.coords);
-                const labelElement = document.createElement("div");
-                labelElement.setAttribute("class", "map-location-label");
-                labelElement.style.visibility = "hidden";
-                labelElement.setAttribute("data-top", coords.x.toString());
-                labelElement.setAttribute("data-left", coords.y.toString());
-                labelElement.setAttribute("data-locationid", l.location as string);
-                const spanElement = document.createElement("span");
-                spanElement.innerText = textLabel;
-                labelElement.appendChild(spanElement);
-                mapElement.parentElement.appendChild(labelElement);
+                this.addElement(mapElement, l.coords, l.location as string, labelClass, 'span', textLabel);
+            }
+            
+            const markerImage = l.markerImage ?? this.map.locationMarkerImage;
+            
+            if (markerImage) {
+                this.addElement(mapElement, l.coords, l.location as string, imageClass, 'img', markerImage);
             }
         });
     }
@@ -64,10 +65,10 @@ export class LocationMapComponent {
 
         setTimeout(() => {
             const coordString = map.locations.find(l => l.location === game.currentLocation.id)?.coords;
+            const avatar = <any>game.UIRootElement.getElementsByClassName('avatar-image')[0];
 
             if (coordString) {
                 const coords = this.getCoords(coordString);
-                const avatar = <any>game.UIRootElement.getElementsByClassName('avatar-image')[0];
                 this.mapMarginLeft = this.getMapMargin(mapElement, coords.x, 'width');
                 this.mapMarginTop = this.getMapMargin(mapElement, coords.y, 'height');
                 mapElement.style.marginLeft = `-${this.mapMarginLeft}px`;
@@ -76,56 +77,89 @@ export class LocationMapComponent {
                 if (avatar) {
                     const avatarLeft = coords.x - this.mapMarginLeft - avatar.width / 2;
                     const avatarTop = coords.y - this.mapMarginTop - avatar.height / 2;
-                    avatar.style.left = `${avatarLeft}px`;
-                    avatar.style.top = `${avatarTop}px`;
-                    
-                    if (this.initialTravel) {
-                        setTimeout(() => {
-                            avatar.style.visibility = 'visible';
-                            this.initialTravel = false;
-                        }, this.map.transitionTime);
-                    }
+                    this.setCoordinates(avatar, avatarLeft, avatarTop);
                 }
             }
             
-            const labelElements= mapElement.parentElement.getElementsByClassName('map-location-label');
-            
-            for (const n in Object.keys(labelElements)) {
-                const labelElement = labelElements[n] as HTMLElement;
-                const currentLeft = parseInt(labelElement.dataset.top) - labelElement.clientWidth / 2 - this.mapMarginLeft;
-                const currentTop = parseInt(labelElement.dataset.left) - labelElement.clientHeight / 2 - this.mapMarginTop;
-                const locationId = labelElement.dataset.locationid;
-                labelElement.style.left = `${currentLeft}px`;
-                labelElement.style.top = `${currentTop}px`;
-                
-                if (this.map.clickable) {
-                    const isReachable = this.game.currentLocation.destinations.find(d => d.target === locationId);
-
-                    labelElement.onclick = null;
-                    labelElement.classList.remove('reachable');
-
-                    if (isReachable) {
-                        labelElement.classList.add('reachable');
-                        labelElement.onclick = () => {
-                            this.game.changeLocation(locationId);
-                        }
-                    }
-                }
-            }
-
-            if (this.initialTravel) {
-                setTimeout(() => {
-                    for (const n in Object.keys(labelElements)) {
-                        const labelElement = labelElements[n] as HTMLElement;
-                        labelElement.style.visibility = 'visible';
-                    }
-
-                    this.initialTravel = false;
-                }, this.map.transitionTime);
-            }
+            const labelElements= mapElement.parentElement.getElementsByClassName(labelClass);
+            const markerElements= mapElement.parentElement.getElementsByClassName(imageClass);
+            this.moveMarker(labelElements);
+            this.moveMarker(markerElements);
+            this.showElementsOnStart(avatar, labelElements, markerElements);
             
             // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
         }, 100);
+    }
+
+    private setCoordinates = (element: HTMLElement, left: number, top: number) => {
+        element.style.top = `${top}px`;
+        element.style.left = `${left}px`;
+    }
+    
+    private addElement(mapElement: HTMLElement, coordsString: string, location: string, className: string, elementType: string, elementValue: string) {
+        const coords = this.getCoords(coordsString);
+        const labelElement = document.createElement("div");
+        labelElement.setAttribute("class", className);
+        labelElement.style.visibility = "hidden";
+        labelElement.setAttribute("data-top", coords.x.toString());
+        labelElement.setAttribute("data-left", coords.y.toString());
+        labelElement.setAttribute("data-locationid", location);
+        const valueElement = document.createElement(elementType);
+        
+        if (elementType === 'span') {
+            (<HTMLSpanElement>valueElement).innerText = elementValue;
+        } else if (elementType === 'img') {
+            (<HTMLImageElement>valueElement).src = `resources/${elementValue}`;
+        }
+        
+        labelElement.appendChild(valueElement);
+        mapElement.parentElement.appendChild(labelElement);
+    }
+    
+    private moveMarker = (markerElements: HTMLCollection) => {
+        for (const n in Object.keys(markerElements)) {
+            const markerElement = markerElements[n] as HTMLElement;
+            const currentLeft = parseInt(markerElement.dataset.top) - markerElement.clientWidth / 2 - this.mapMarginLeft;
+            const currentTop = parseInt(markerElement.dataset.left) - markerElement.clientHeight / 2 - this.mapMarginTop;
+            const locationId = markerElement.dataset.locationid;
+            this.setCoordinates(markerElement, currentLeft, currentTop);
+
+            if (this.map.clickable) {
+                const isReachable = this.game.currentLocation.destinations.find(d => d.target === locationId);
+
+                markerElement.onclick = null;
+                markerElement.classList.remove(reachable);
+
+                if (isReachable) {
+                    markerElement.classList.add(reachable);
+                    markerElement.onclick = () => {
+                        this.game.changeLocation(locationId);
+                    }
+                }
+            }
+        }
+    }
+    
+    private showElementsOnStart = (avatar: HTMLElement, labelElements: HTMLCollection, markerElements: HTMLCollection) => {
+        if (this.initialTravel) {
+            setTimeout(() => {
+                if (avatar) {
+                    avatar.style.visibility = visible;
+                }
+
+                for (const n in Object.keys(labelElements)) {
+                    const labelElement = labelElements[n] as HTMLElement;
+                    labelElement.style.visibility = visible;
+                }
+
+                for (const n in Object.keys(markerElements)) {
+                    const markerElement = markerElements[n] as HTMLElement;
+                    markerElement.style.visibility = visible;
+                }
+
+                this.initialTravel = false;
+            }, this.map.transitionTime);
+        }
     }
     
     private getCoords = (coordString: string) => {
