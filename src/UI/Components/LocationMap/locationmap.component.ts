@@ -135,6 +135,8 @@ export class LocationMapComponent {
                     markerElement.onclick = () => {
                         this.game.changeLocation(locationId);
                     }
+                } else if (this.game.currentLocation.id === locationId) {
+                    markerElement.classList.add(reachable);
                 }
             }
         }

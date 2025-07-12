@@ -399,10 +399,23 @@ feature {
 
 .map-location-label, .map-location-image {
     z-index: 1;
+    cursor: default;
 }
 
 .map-location-label {
     background-color: white;
     border: solid 1px black;
     padding: 2px 5px;
+}
+
+.map-location-label.reachable, .map-location-image.reachable  {
+    cursor: pointer;
+}
+
+.map-location-label span {
+    opacity: 0.5;
+}
+
+.map-location-label.reachable span {
+    opacity: 1;
 }
