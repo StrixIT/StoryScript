@@ -1,3 +1,3 @@
-const gameName = 'MyInteractiveMap';
+const gameName = 'MyRolePlayingGame';
 
 export default gameName;
