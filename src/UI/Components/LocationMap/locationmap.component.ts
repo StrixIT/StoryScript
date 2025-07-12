@@ -36,6 +36,7 @@ export class LocationMapComponent {
     
     private initMap = () => {
         this.map.transitionTime ??= 1000;
+        this.map.clickable = this.map.clickable === true;
         const mapElement = this.getMapElement();
         
         this.map.locations.forEach(l => {
@@ -48,6 +49,7 @@ export class LocationMapComponent {
                 labelElement.style.visibility = "hidden";
                 labelElement.setAttribute("data-top", coords.x.toString());
                 labelElement.setAttribute("data-left", coords.y.toString());
+                labelElement.setAttribute("data-locationid", l.location as string);
                 const spanElement = document.createElement("span");
                 spanElement.innerText = textLabel;
                 labelElement.appendChild(spanElement);
@@ -79,7 +81,7 @@ export class LocationMapComponent {
                     
                     if (this.initialTravel) {
                         setTimeout(() => {
-                            avatar.style.display = 'block';
+                            avatar.style.visibility = 'visible';
                             this.initialTravel = false;
                         }, this.map.transitionTime);
                     }
@@ -92,8 +94,23 @@ export class LocationMapComponent {
                 const labelElement = labelElements[n] as HTMLElement;
                 const currentLeft = parseInt(labelElement.dataset.top) - labelElement.clientWidth / 2 - this.mapMarginLeft;
                 const currentTop = parseInt(labelElement.dataset.left) - labelElement.clientHeight / 2 - this.mapMarginTop;
+                const locationId = labelElement.dataset.locationid;
                 labelElement.style.left = `${currentLeft}px`;
                 labelElement.style.top = `${currentTop}px`;
+                
+                if (this.map.clickable) {
+                    const isReachable = this.game.currentLocation.destinations.find(d => d.target === locationId);
+
+                    labelElement.onclick = null;
+                    labelElement.classList.remove('reachable');
+
+                    if (isReachable) {
+                        labelElement.classList.add('reachable');
+                        labelElement.onclick = () => {
+                            this.game.changeLocation(locationId);
+                        }
+                    }
+                }
             }
 
             if (this.initialTravel) {

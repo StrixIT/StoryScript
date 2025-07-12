@@ -8,4 +8,5 @@ export interface IMap {
     locationNamesAsTextLabels: boolean;
     locationMarkerImage?: string;
     transitionTime?: number;
+    clickable?: boolean;
 }
