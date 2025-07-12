@@ -8,6 +8,7 @@ import {gameEvents} from "storyScript/gameEvents.ts";
 import {GameEventNames} from "storyScript/GameEventNames.ts";
 
 const visible: string = 'visible';
+const hidden: string = 'hidden';
 const reachable: string = 'reachable';
 const labelClass: string = 'map-location-label';
 const imageClass: string = 'map-location-image';
@@ -34,6 +35,8 @@ export class LocationMapComponent {
     private initialTravel: boolean = true;
     private mapMarginLeft: number = 0;
     private mapMarginTop: number = 0;
+    private labelElements: HTMLCollection;
+    private markerElements: HTMLCollection;
 
     game: IGame;
     texts: IInterfaceTexts;
@@ -43,9 +46,26 @@ export class LocationMapComponent {
         this.map.transitionTime ??= 1000;
         this.map.clickable = this.map.clickable === true;
         const mapElement = this.getMapElement();
+        mapElement.onkeydown = null;
+        mapElement.onkeyup = null;
+        
+        if (this.map.showMarkersOnKeyPress) {
+            const mapContainer = mapElement.parentElement;
+
+            mapContainer.onkeydown = e => {
+                if (e.key === this.map.showMarkersOnKeyPress) {
+                    this.setMarkerVisibility(this.labelElements, this.markerElements, visible);
+                }
+            };
+            mapContainer.onkeyup = e => {
+                if (e.key === this.map.showMarkersOnKeyPress) {
+                    this.setMarkerVisibility(this.labelElements, this.markerElements, hidden);
+                }
+            }
+        }
         
         this.map.locations.forEach(l => {
-            const textLabel = l.markerImage ? null : l.textLabel ?? (this.map.locationNamesAsTextLabels ? this.game.locations[l.location as string].name : null);
+            const textLabel = l.markerImage ? null : l.textLabel ?? (this.map.locationNamesAsTextMarkers ? this.game.locations[l.location as string].name : null);
             
             if (textLabel) {
                 this.addElement(mapElement, l.coords, l.location as string, labelClass, 'span', textLabel);
@@ -57,6 +77,12 @@ export class LocationMapComponent {
                 this.addElement(mapElement, l.coords, l.location as string, imageClass, 'img', markerImage);
             }
         });
+
+        this.labelElements= mapElement.parentElement.getElementsByClassName(labelClass);
+        this.markerElements= mapElement.parentElement.getElementsByClassName(imageClass);
+
+        // Call navigateMap now to arrange the map in its initial state.
+        this.navigateMap(this.game);
     }
         
     private navigateMap = (game: IGame)=> {
@@ -81,11 +107,9 @@ export class LocationMapComponent {
                 }
             }
             
-            const labelElements= mapElement.parentElement.getElementsByClassName(labelClass);
-            const markerElements= mapElement.parentElement.getElementsByClassName(imageClass);
-            this.moveMarker(labelElements);
-            this.moveMarker(markerElements);
-            this.showElementsOnStart(avatar, labelElements, markerElements);
+            this.moveMarker(this.labelElements);
+            this.moveMarker(this.markerElements);
+            this.showElementsOnStart(avatar, this.labelElements, this.markerElements);
             
             // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
         }, 100);
@@ -100,7 +124,7 @@ export class LocationMapComponent {
         const coords = this.getCoords(coordsString);
         const labelElement = document.createElement("div");
         labelElement.setAttribute("class", className);
-        labelElement.style.visibility = "hidden";
+        labelElement.style.visibility = hidden;
         labelElement.setAttribute("data-top", coords.x.toString());
         labelElement.setAttribute("data-left", coords.y.toString());
         labelElement.setAttribute("data-locationid", location);
@@ -149,18 +173,24 @@ export class LocationMapComponent {
                     avatar.style.visibility = visible;
                 }
 
-                for (const n in Object.keys(labelElements)) {
-                    const labelElement = labelElements[n] as HTMLElement;
-                    labelElement.style.visibility = visible;
-                }
-
-                for (const n in Object.keys(markerElements)) {
-                    const markerElement = markerElements[n] as HTMLElement;
-                    markerElement.style.visibility = visible;
+                if (!this.map.showMarkersOnKeyPress) {
+                    this.setMarkerVisibility(labelElements, markerElements, visible);
                 }
 
                 this.initialTravel = false;
             }, this.map.transitionTime);
+        }
+    }
+    
+    private setMarkerVisibility = (labelElements: HTMLCollection, markerElements: HTMLCollection, visibility: string) => {
+        for (const n in Object.keys(labelElements)) {
+            const labelElement = labelElements[n] as HTMLElement;
+            labelElement.style.visibility = visibility;
+        }
+
+        for (const n in Object.keys(markerElements)) {
+            const markerElement = markerElements[n] as HTMLElement;
+            markerElement.style.visibility = visibility;
         }
     }
     

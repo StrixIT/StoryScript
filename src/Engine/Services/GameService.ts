@@ -297,9 +297,7 @@ export class GameService implements IGameService {
         
         this._game.changeLocation = (location, travel) => {
             this._locationService.changeLocation(location, travel, this._game);
-            
-            // Use a timeout here to give the Map component time to initialize before publishing the event.
-            setTimeout(() => gameEvents.publish(GameEventNames.ChangeLocation, { location, travel }));
+            gameEvents.publish(GameEventNames.ChangeLocation, { location, travel });
 
             if (travel) {
                 this._dataService.saveGame(this._game);

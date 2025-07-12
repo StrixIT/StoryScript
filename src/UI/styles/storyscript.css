@@ -412,10 +412,10 @@ feature {
     cursor: pointer;
 }
 
-.map-location-label span {
+.map-location-label span, .map-location-image img {
     opacity: 0.5;
 }
 
-.map-location-label.reachable span {
+.map-location-label.reachable span, .map-location-image.reachable img {
     opacity: 1;
 }
