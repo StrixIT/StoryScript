@@ -35,18 +35,24 @@ export class LocationMapComponent {
     map: IMap;
     
     private initMap = () => {
+        this.map.transitionTime ??= 1000;
         const mapElement = this.getMapElement();
         
         this.map.locations.forEach(l => {
-            const coords = this.getCoords(l.coords);
-            const labelElement = document.createElement("div");
-            labelElement.setAttribute("class", "map-location-label");
-            labelElement.setAttribute("data-top", coords.x.toString());
-            labelElement.setAttribute("data-left", coords.y.toString());
-            const spanElement = document.createElement("span");
-            spanElement.innerText = l.textLabel ?? this.game.locations[l.location as string].name;
-            labelElement.appendChild(spanElement);
-            mapElement.parentElement.appendChild(labelElement);
+            const textLabel = l.textLabel ?? (this.map.locationNamesAsTextLabels ? this.game.locations[l.location as string].name : null);
+            
+            if (textLabel) {
+                const coords = this.getCoords(l.coords);
+                const labelElement = document.createElement("div");
+                labelElement.setAttribute("class", "map-location-label");
+                labelElement.style.visibility = "hidden";
+                labelElement.setAttribute("data-top", coords.x.toString());
+                labelElement.setAttribute("data-left", coords.y.toString());
+                const spanElement = document.createElement("span");
+                spanElement.innerText = textLabel;
+                labelElement.appendChild(spanElement);
+                mapElement.parentElement.appendChild(labelElement);
+            }
         });
     }
         
@@ -72,27 +78,33 @@ export class LocationMapComponent {
                     avatar.style.top = `${avatarTop}px`;
                     
                     if (this.initialTravel) {
-                        // Todo: get the configured transition timeout for the avatar here.
-                        const transitionTime = 1000;
-                        
                         setTimeout(() => {
                             avatar.style.display = 'block';
-                        }, transitionTime);
-                        this.initialTravel = false;
+                            this.initialTravel = false;
+                        }, this.map.transitionTime);
                     }
                 }
             }
             
-            if (map.textLabels) {
-                const labelElements= mapElement.parentElement.getElementsByClassName('map-location-label');
-                
-                for (const n in Object.keys(labelElements)) {
-                    const labelElement = labelElements[n] as HTMLElement;
-                    const currentLeft = parseInt(labelElement.dataset.top) - labelElement.clientWidth / 2 - this.mapMarginLeft;
-                    const currentTop = parseInt(labelElement.dataset.left) - labelElement.clientHeight / 2 - this.mapMarginTop;
-                    labelElement.style.left = `${currentLeft}px`;
-                    labelElement.style.top = `${currentTop}px`;
-                }
+            const labelElements= mapElement.parentElement.getElementsByClassName('map-location-label');
+            
+            for (const n in Object.keys(labelElements)) {
+                const labelElement = labelElements[n] as HTMLElement;
+                const currentLeft = parseInt(labelElement.dataset.top) - labelElement.clientWidth / 2 - this.mapMarginLeft;
+                const currentTop = parseInt(labelElement.dataset.left) - labelElement.clientHeight / 2 - this.mapMarginTop;
+                labelElement.style.left = `${currentLeft}px`;
+                labelElement.style.top = `${currentTop}px`;
+            }
+
+            if (this.initialTravel) {
+                setTimeout(() => {
+                    for (const n in Object.keys(labelElements)) {
+                        const labelElement = labelElements[n] as HTMLElement;
+                        labelElement.style.visibility = 'visible';
+                    }
+
+                    this.initialTravel = false;
+                }, this.map.transitionTime);
             }
             
             // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
