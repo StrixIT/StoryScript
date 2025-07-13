@@ -1,6 +1,17 @@
 @let map = game.currentMap;
-<div id="map-container" tabindex="0">
-    <p class="map-name">{{ map.name }}</p>
-    <img class="map-image" src="{{ 'resources/' + map.mapImage }}" [attr.usemap]="'#' + map.id" alt="{{ map.name }}">
-    <img class="avatar-image" *ngIf="map.avatarImage" src="{{ 'resources/' + map.avatarImage }}" [attr.usemap]="'#' + map.id" alt="{{ map.name }}" style="visibility: hidden;">
-</div>
+@if (map)
+{
+    <div class="box-container map-container" tabindex="0">
+        <p class="map-name">
+            {{ map.name }}
+            @if (map.toggleFullScreen)
+            {
+                <span class="map-full-screen-toggle" (click)="toggleFullScreen()">></span>
+            }
+        </p>
+        <img class="map-image" src="{{ 'resources/' + map.mapImage }}" alt="{{ map.name }}">
+        <img class="avatar-image" *ngIf="map.avatarImage" src="{{ 'resources/' + map.avatarImage }}" alt="{{ map.name }}" style="visibility: hidden;">
+    </div>
+    <dialog class="map-dialog">
+    </dialog>
+}
