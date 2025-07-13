@@ -20,6 +20,10 @@ button {
     margin-right: 10px;
 }
 
+.float-left {
+    float: left;
+}
+
 .float-right {
     float: right;
 }
@@ -412,7 +416,7 @@ feature {
     z-index: 2;
 }
 
-.map-location-label, .map-location-image {
+.map-location-label, .map-location-image, .map-name {
     z-index: 1;
     cursor: default;
 }
