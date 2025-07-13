@@ -44,7 +44,8 @@ function loadAssetsWithImport(): IDefinitions {
         'game/enemies/**/*.ts',
         'game/persons/**/*.ts',
         'game/quests/**/*.ts',
-        'game/locations/**/*.ts'
+        'game/locations/**/*.ts',
+        'game/maps/**/*.ts'
     ], {eager: true});
 
     // Loop over all found files to register the assets with the proper type.

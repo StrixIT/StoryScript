@@ -379,3 +379,53 @@ feature {
     display: grid;
     justify-content: center;
 }
+
+#map-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.map-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: x-large;
+    font-weight: bold;
+    background-color: white;
+    padding: 0 10px;
+}
+
+.map-image {
+    transition: all 1s ease 0s;
+}
+
+.avatar-image, .map-location-label, .map-location-image {
+    transition: all 1s ease 0s;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.map-location-label, .map-location-image {
+    z-index: 1;
+    cursor: default;
+}
+
+.map-location-label {
+    background-color: white;
+    border: solid 1px black;
+    padding: 2px 5px;
+}
+
+.map-location-label.reachable, .map-location-image.reachable  {
+    cursor: pointer;
+}
+
+.map-location-label span, .map-location-image img {
+    opacity: 0.5;
+}
+
+.map-location-label.reachable span, .map-location-image.reachable img {
+    opacity: 1;
+}

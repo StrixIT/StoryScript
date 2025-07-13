@@ -30,11 +30,11 @@ export type {
     IMap,
     IMapLocation,
     IEquipment,
-    IGame, 
+    IGame,
     ICombatSetup
 }
 
-export { 
+export {
     Feature,
     Item,
     Key,
@@ -43,7 +43,7 @@ export {
     Quest,
     Location,
     LocationMap,
-    CustomTexts, 
-    Rules, 
-    Character 
+    CustomTexts,
+    Rules,
+    Character
 }

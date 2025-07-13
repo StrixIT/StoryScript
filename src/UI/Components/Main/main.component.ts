@@ -22,6 +22,7 @@ import {GameOverComponent} from "../GameOver/gameover.component.ts";
 import {VictoryComponent} from "../Victory/victory.component.ts";
 import {CombinationComponent} from "../Combination/combination.component.ts";
 import {BackpackComponent} from "../Backpack/backpack.component.ts";
+import {LocationMapComponent} from "../LocationMap/locationmap.component.ts";
 
 @Component({
     standalone: true,
@@ -35,6 +36,7 @@ import {BackpackComponent} from "../Backpack/backpack.component.ts";
         EncounterComponent,
         LocationTextComponent,
         LocationVisualComponent,
+        LocationMapComponent,
         ActionLogComponent,
         GroundComponent,
         ExplorationComponent,

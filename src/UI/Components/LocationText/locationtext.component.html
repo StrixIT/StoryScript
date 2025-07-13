@@ -1,7 +1,8 @@
+@let location = game.currentLocation;
 <div class="box-container" id="location">
-    <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
+    <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [location.name]) | safe: 'html'"></div>
     <div textFeatures>
-        <div [innerHTML]="game.currentLocation.description | safe: 'html'"></div>
+        <div [innerHTML]="location.description | safe: 'html'"></div>
     </div>
     <ul id="location-log" class="list-unstyled">
         <li *ngFor="let message of log" [innerHTML]="message | safe: 'html'"></li>
