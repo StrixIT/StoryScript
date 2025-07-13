@@ -25,41 +25,91 @@ export class LocationMapComponent {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.map = this.game.currentMap;
+        
         gameEvents.subscribe(GameEventNames.ChangeLocation, (game) => {
-            this.navigateMap(game);
+            this.navigateMap(this.currentMap, game, false);
         });
         
-        setTimeout(() => this.initMap());
+        this.prepareMap();
     }
-    
-    private initialTravel: boolean = true;
-    private mapMarginLeft: number = 0;
-    private mapMarginTop: number = 0;
-    private labelElements: HTMLCollection;
-    private markerElements: HTMLCollection;
+
+    private fullScreen: boolean = false;
+    private firstShowFullScreen: boolean = true;
+    private currentMap: HTMLImageElement;
+    private currentFullScreenMap: HTMLImageElement;
 
     game: IGame;
     texts: IInterfaceTexts;
     map: IMap;
+
+    toggleFullScreen = () => {
+        const dialogElement = this.getDialogElement();
+        this.fullScreen = !this.fullScreen;
+
+        if (this.fullScreen) {
+            dialogElement.showModal();
+            this.navigateMap(this.currentFullScreenMap, this.game, this.firstShowFullScreen);
+            this.firstShowFullScreen = false;
+        } else {
+            dialogElement.close();
+        }
+    }
     
-    private initMap = () => {
+    private prepareMap = () => {
         this.map.transitionTime ??= 1000;
         this.map.clickable = this.map.clickable === true;
-        const mapElement = this.getMapElement();
+        this.map.toggleFullScreen = this.map.toggleFullScreen === true;
+        
+        setTimeout(() => {
+            if (this.map.toggleFullScreen) {
+                const dialogElement = this.getDialogElement();
+
+                if (!dialogElement.getElementsByClassName('map-image')[0]) {
+                    const mapContainer = this.getMapElement(this.game.UIRootElement).parentElement;
+
+                    for (const n in Object.keys(mapContainer.children)) {
+                        const child = mapContainer.children[n];
+                        dialogElement.appendChild(child.cloneNode(true));
+                    }
+
+                    const closeToggle = dialogElement.getElementsByClassName('map-full-screen-toggle')[0] as HTMLSpanElement;
+                    closeToggle.innerText = '<';
+                    closeToggle.onclick = () => this.toggleFullScreen();
+                }
+
+                this.currentFullScreenMap = this.getMapElement(dialogElement);
+                this.initMap(this.currentFullScreenMap);
+            }
+
+            this.currentMap = this.getMapElement(this.game.UIRootElement);
+            this.initMap(this.currentMap);
+            
+            // Call navigateMap now to arrange the map in its initial state.
+            this.navigateMap(this.currentMap, this.game, true);
+        });
+    }
+    
+    private initMap = (mapElement: HTMLElement) => {
+        if (!this.map) {
+            return;
+        }
+        
         mapElement.onkeydown = null;
         mapElement.onkeyup = null;
         
         if (this.map.showMarkersOnKeyPress) {
             const mapContainer = mapElement.parentElement;
+            const labelElements= mapElement.parentElement.getElementsByClassName(labelClass);
+            const markerElements= mapElement.parentElement.getElementsByClassName(imageClass);
 
             mapContainer.onkeydown = e => {
                 if (e.key === this.map.showMarkersOnKeyPress) {
-                    this.setMarkerVisibility(this.labelElements, this.markerElements, visible);
+                    this.setMarkerVisibility(labelElements, markerElements, visible);
                 }
             };
             mapContainer.onkeyup = e => {
                 if (e.key === this.map.showMarkersOnKeyPress) {
-                    this.setMarkerVisibility(this.labelElements, this.markerElements, hidden);
+                    this.setMarkerVisibility(labelElements, markerElements, hidden);
                 }
             }
         }
@@ -77,39 +127,42 @@ export class LocationMapComponent {
                 this.addElement(mapElement, l.coords, l.location as string, imageClass, 'img', markerImage);
             }
         });
-
-        this.labelElements= mapElement.parentElement.getElementsByClassName(labelClass);
-        this.markerElements= mapElement.parentElement.getElementsByClassName(imageClass);
-
-        // Call navigateMap now to arrange the map in its initial state.
-        this.navigateMap(this.game);
     }
         
-    private navigateMap = (game: IGame)=> {
+    private navigateMap = (mapElement: HTMLElement, game: IGame, showElements: boolean)=> {
+        if (!this.map) {
+            return;
+        }
+        
         const map = game.currentMap;
-        const mapElement = this.getMapElement();
 
         setTimeout(() => {
+            const parentElement = mapElement.parentElement;
             const coordString = map.locations.find(l => l.location === game.currentLocation.id)?.coords;
-            const avatar = <any>game.UIRootElement.getElementsByClassName('avatar-image')[0];
+            const avatar = parentElement.getElementsByClassName('avatar-image')[0] as HTMLImageElement;
+            let mapMargins: { x: number, y: number };
 
             if (coordString) {
                 const coords = this.getCoords(coordString);
-                this.mapMarginLeft = this.getMapMargin(mapElement, coords.x, 'width');
-                this.mapMarginTop = this.getMapMargin(mapElement, coords.y, 'height');
-                mapElement.style.marginLeft = `-${this.mapMarginLeft}px`;
-                mapElement.style.marginTop = `-${this.mapMarginTop}px`;
+                mapMargins = { x: this.getMapMargin(mapElement, coords.x, 'width'), y: this.getMapMargin(mapElement, coords.y, 'height') };
+                mapElement.style.marginLeft = `-${mapMargins.x}px`;
+                mapElement.style.marginTop = `-${mapMargins.y}px`;
                 
                 if (avatar) {
-                    const avatarLeft = coords.x - this.mapMarginLeft - avatar.width / 2;
-                    const avatarTop = coords.y - this.mapMarginTop - avatar.height / 2;
+                    const avatarLeft = coords.x - mapMargins.x - avatar.width / 2;
+                    const avatarTop = coords.y - mapMargins.y - avatar.height / 2;
                     this.setCoordinates(avatar, avatarLeft, avatarTop);
                 }
             }
+
+            const labelElements= parentElement.getElementsByClassName(labelClass);
+            const markerElements= parentElement.getElementsByClassName(imageClass);
+            this.moveMarker(labelElements, mapMargins);
+            this.moveMarker(markerElements, mapMargins);
             
-            this.moveMarker(this.labelElements);
-            this.moveMarker(this.markerElements);
-            this.showElementsOnStart(avatar, this.labelElements, this.markerElements);
+            if (showElements) {
+                this.showElements(avatar, labelElements, markerElements);
+            }
             
             // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
         }, 100);
@@ -140,11 +193,15 @@ export class LocationMapComponent {
         mapElement.parentElement.appendChild(labelElement);
     }
     
-    private moveMarker = (markerElements: HTMLCollection) => {
+    private moveMarker = (markerElements: HTMLCollection, mapMargins: { x: number, y: number }) => {
+        if (!mapMargins) {
+            return;
+        }
+        
         for (const n in Object.keys(markerElements)) {
             const markerElement = markerElements[n] as HTMLElement;
-            const currentLeft = parseInt(markerElement.dataset.top) - markerElement.clientWidth / 2 - this.mapMarginLeft;
-            const currentTop = parseInt(markerElement.dataset.left) - markerElement.clientHeight / 2 - this.mapMarginTop;
+            const currentLeft = parseInt(markerElement.dataset.top) - markerElement.clientWidth / 2 - mapMargins.x;
+            const currentTop = parseInt(markerElement.dataset.left) - markerElement.clientHeight / 2 - mapMargins.y;
             const locationId = markerElement.dataset.locationid;
             this.setCoordinates(markerElement, currentLeft, currentTop);
 
@@ -166,20 +223,17 @@ export class LocationMapComponent {
         }
     }
     
-    private showElementsOnStart = (avatar: HTMLElement, labelElements: HTMLCollection, markerElements: HTMLCollection) => {
-        if (this.initialTravel) {
-            setTimeout(() => {
-                if (avatar) {
-                    avatar.style.visibility = visible;
-                }
+    private showElements = (avatar: HTMLElement, labelElements: HTMLCollection, markerElements: HTMLCollection) => {
+        setTimeout(() => {
+            if (avatar) {
+                avatar.style.visibility = visible;
+            }
 
-                if (!this.map.showMarkersOnKeyPress) {
-                    this.setMarkerVisibility(labelElements, markerElements, visible);
-                }
-
-                this.initialTravel = false;
-            }, this.map.transitionTime);
-        }
+            if (!this.map.showMarkersOnKeyPress) {
+                this.setMarkerVisibility(labelElements, markerElements, visible);
+            }
+            
+        }, this.map.transitionTime);
     }
     
     private setMarkerVisibility = (labelElements: HTMLCollection, markerElements: HTMLCollection, visibility: string) => {
@@ -211,8 +265,12 @@ export class LocationMapComponent {
         mapMargin = mapMargin > maxMargin ? maxMargin : mapMargin;
         return mapMargin;
     }
+
+    private getDialogElement = (): HTMLDialogElement => {
+        return this.game.UIRootElement.getElementsByClassName('map-dialog')[0] as HTMLDialogElement
+    }
     
-    private getMapElement = (): HTMLElement => {
-        return this.game.UIRootElement.getElementsByClassName('map-image')[0] as HTMLElement;
+    private getMapElement = (parentElement: HTMLElement): HTMLImageElement => {
+        return parentElement.getElementsByClassName('map-image')[0] as HTMLImageElement;
     }
 }

@@ -47,4 +47,9 @@ export interface IMap {
      * will be shown all the time. If set, they will show only when the specified key is pressed.
      */
     showMarkersOnKeyPress?: string;
+
+    /**
+     * True if you want to show a toggle behind the map name to show the map full screen in a dialog, falsy otherwise.
+     */
+    toggleFullScreen?: boolean;
 }

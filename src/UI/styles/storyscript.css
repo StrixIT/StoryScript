@@ -380,9 +380,14 @@ feature {
     justify-content: center;
 }
 
-#map-container {
+.map-dialog {
+    padding: 0;
+}
+
+.map-container {
     position: relative;
     overflow: hidden;
+    padding: 0;
 }
 
 .map-name {
@@ -428,4 +433,10 @@ feature {
 
 .map-location-label.reachable span, .map-location-image.reachable img {
     opacity: 1;
+}
+
+.map-full-screen-toggle {
+    display: inline-block;
+    margin-left: 10px;
+    cursor: pointer;
 }

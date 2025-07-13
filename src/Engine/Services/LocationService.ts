@@ -40,7 +40,7 @@ export class LocationService implements ILocationService {
             this._game.locations = {};
             this._game.maps = {};
             this._definitions.locations.forEach(l => this._game.locations[getId(l)] = <ICompiledLocation>l());
-            this._definitions.maps.forEach(m => this._game.maps[getId(m)] = m());
+            this._definitions.maps?.forEach(m => this._game.maps[getId(m)] = m());
             Object.values(this._game.locations).forEach(l => setReadOnlyLocationProperties(<ICompiledLocation>l));
         }
 
