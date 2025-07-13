@@ -1,12 +1,12 @@
-<div>
+<div [ngClass]="{ 'day': game.worldProperties.isDay, 'night': game.worldProperties.isNight }">
     <navigation></navigation>
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
+            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-3': showCharacterPane() }">
                 <party [party]="game.party"></party>
             </div>
-            <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
+            <div id="location-container" [ngClass]="{ 'col-6': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
                 <div *ngIf="!game.state">
                     {{ texts.loading }}
                 </div>
@@ -14,8 +14,6 @@
                     <encounter></encounter>
                     <location-visual></location-visual>
                     <location-text></location-text>
-                    <!-- <action-log></action-log> -->
-                    <ground></ground>
                     <exploration></exploration>
                     <enemy></enemy>
                 </div>
@@ -24,6 +22,10 @@
                 <level-up></level-up>
                 <game-over></game-over>
                 <victory></victory>
+            </div>
+            <div *ngIf="game.state === 'Play'" [ngClass]="{ 'col-3': showCharacterPane() }">
+                <location-map></location-map>
+                <ground></ground>
             </div>
         </div>
         <div class="row" *ngIf="game.state === 'Play'">

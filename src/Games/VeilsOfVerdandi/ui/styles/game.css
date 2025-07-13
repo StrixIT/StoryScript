@@ -159,3 +159,23 @@ combat-participant > div.targeted {
 .location-text {
     min-height: 250px;
 }
+
+.map-container {
+    max-height: 500px;
+}
+
+.candle {
+    float: right;
+}
+
+.night, .day {
+    transition: background-color 1s;
+}
+
+.night {
+    background-color: #0005; background-blend-mode: darken;
+}
+
+.night img.map-image {
+    filter: brightness(50%);
+}

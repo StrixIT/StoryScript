@@ -1,5 +1,5 @@
 import {IGame} from "./interfaces/game.ts";
-import {ICombatSetup} from "./interfaces/combatRound.ts";
+import {ICombatSetup} from "./interfaces/combatSetup.ts";
 import {IEnemy, IEnemyAttack} from "./interfaces/enemy.ts";
 import {Character} from "./character.ts";
 import {format} from "storyScript/defaultTexts.ts";
