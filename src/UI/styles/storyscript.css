@@ -385,6 +385,16 @@ feature {
     overflow: hidden;
 }
 
+.map-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: x-large;
+    font-weight: bold;
+    background-color: white;
+    padding: 0 10px;
+}
+
 .map-image {
     transition: all 1s ease 0s;
 }
