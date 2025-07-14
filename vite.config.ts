@@ -55,7 +55,7 @@ export default defineConfig({
         port: 8080,
     },
     esbuild: {
-        keepNames: true,
+        keepNames: true
     },
     build: {
         target: 'esNext',

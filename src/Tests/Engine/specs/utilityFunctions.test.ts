@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest';
-import {addHtmlSpaces, compareString, equals, getPlural, getSingular, isEmpty} from 'storyScript/utilityFunctions';
+import {addHtmlSpaces, compareString, equals, getId, getPlural, getSingular, isEmpty} from 'storyScript/utilityFunctions';
 
 describe("UtilityFunctions", function () {
 
@@ -82,4 +82,21 @@ describe("UtilityFunctions", function () {
         expect(compareString('Test', 'TEST')).toBeTruthy();
     });
 
+    test("should return function name as id", function () {
+        function TestFunction() { return; }
+        const result = getId(TestFunction);
+        expect(result).toEqual('test');
+    });
+
+    test("should return function name as id when it contains _", function () {
+        function TestFunction_TestFunction() { return; }
+        const result = getId(TestFunction_TestFunction);
+        expect(result).toEqual('testfunction');
+    });
+
+    test("should return function name as id when it contains $", function () {
+        function TestFunction$2() { return; }
+        const result = getId(TestFunction$2);
+        expect(result).toEqual('testfunction');
+    });
 });
