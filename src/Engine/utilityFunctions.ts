@@ -1,5 +1,7 @@
 ﻿import {EquipmentType, ILocation} from "./Interfaces/storyScript";
 
+const functionRenameRegex =  /[$_].{1,}/i;
+
 export function compareString(left: string, right: string): boolean {
     if ((left === undefined && right === undefined) || (left === null && right === null)) {
         return true;
@@ -14,15 +16,10 @@ export function getId(id: Function | string) {
     let actualId: string;
 
     if (typeof id === 'function') {
-        actualId = id.name;
-        let nameParts = actualId.split('_');
-
         // This is a workaround with function names changing when building for production.
-        // E.g. Start becomes Start_Start.
+        // E.g. Start becomes Start_Start. Since Vite 7, we also get Start becoming Start$2.
         /* v8 ignore next 3 */
-        if (nameParts.length > 1) {
-            actualId = nameParts[0];
-        }
+        actualId = id.name.replace(functionRenameRegex, '');
     } else {
         actualId = id;
     }
