@@ -10,7 +10,6 @@ import {Merchant} from "../locations/SouthForest/Merchant.ts";
 import {Stonemount} from "../locations/SouthForest/Stonemount.ts";
 import {Dryad} from "../locations/EastForest/Dryad.ts";
 import {Guardians} from "../locations/EastForest/Guardians.ts";
-import {DarkDryad} from "../enemies/DarkDryad.ts";
 import {ForestPond} from "../locations/EastForest/ForestPond.ts";
 import {EastRoad} from "../locations/EastForest/EastRoad.ts";
 import {CliffWall} from "../locations/EastForest/CliffWall.ts";
