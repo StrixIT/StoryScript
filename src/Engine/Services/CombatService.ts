@@ -22,17 +22,17 @@ export class CombatService implements ICombatService {
         this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game, enemy));
     }
 
-    fight = (combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
+    fight = (combat: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
         if (!this._rules.combat?.fight) {
             return;
         }
 
-        const promise = this._rules.combat.fight(this._game, combatRound, retaliate);
+        const promise = this._rules.combat.fight(this._game, combat, retaliate);
 
         return Promise.resolve(promise).then(() => {
-            combatRound.forEach((s, i) => {
+            combat.forEach((s, i) => {
                 if (s.target?.currentHitpoints <= 0 && (s.targetDefeated === undefined || s.targetDefeated)) {
-                    this.enemyDefeated(this._game.party.characters[i], s.target);
+                    this.enemyDefeated(combat, this._game.party.characters[i], s.target);
                 }
             });
 
@@ -41,7 +41,7 @@ export class CombatService implements ICombatService {
                 this._game.state = GameState.GameOver;
             }
 
-            if (combatRound.enemies.filter(c => c.currentHitpoints >= 0).length == 0) {
+            if (combat.enemies.filter(c => c.currentHitpoints >= 0).length == 0) {
                 return;
             }
 
@@ -153,7 +153,13 @@ export class CombatService implements ICombatService {
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
     }
 
-    private readonly enemyDefeated = (character: ICharacter, enemy: IEnemy): void => {
+    private readonly enemyDefeated = (combat: ICombatSetup<ICombatTurn>, character: ICharacter, enemy: IEnemy): void => {
+        combat.winnings ??= {
+            currency: 0,
+            itemsWon: [],
+            enemiesDefeated: []
+        };
+        
         if (enemy.items) {
             const items = [...enemy.items];
 
@@ -161,6 +167,7 @@ export class CombatService implements ICombatService {
                 if (!this._rules.combat?.beforeDrop || this._rules.combat.beforeDrop(this._game, character, enemy, item)) {
                     enemy.items.delete(item);
                     this._game.currentLocation.items.add(item);
+                    combat.winnings.itemsWon.push(item);
                 }
             });
         }
@@ -168,10 +175,12 @@ export class CombatService implements ICombatService {
         if (enemy.currency) {
             this._game.party.currency ??= 0;
             this._game.party.currency += enemy.currency || 0;
+            combat.winnings.currency += enemy.currency || 0;
         }
 
         this._game.statistics.enemiesDefeated ??= 0;
         this._game.statistics.enemiesDefeated += 1;
+        combat.winnings.enemiesDefeated.push(enemy);
         this._game.currentLocation.enemies.delete(enemy.id);
         this._rules.combat?.enemyDefeated?.(this._game, character, enemy);
         enemy.onDefeat?.(this._game, enemy);

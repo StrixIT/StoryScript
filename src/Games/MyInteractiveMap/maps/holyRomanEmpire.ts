@@ -11,6 +11,7 @@ export function HolyRomanEmpire() {
         locationNamesAsTextMarkers: true,
         clickable: true,
         showMarkersOnKeyPress: ' ',
+        toggleFullScreen: true,
         locations: [
             {
                 location: Start,
