@@ -322,6 +322,7 @@ describe("DataSynchronizer", () => {
             playedAudio: [],
             statistics: {},
             world: {'start': <any>{ ...startLocationSkeleton } },
+            maps: {},
             worldProperties: {}
         };
 

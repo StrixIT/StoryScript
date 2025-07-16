@@ -59,6 +59,7 @@ export class DataService implements IDataService {
         const saveGame = <ISaveGame>{
             party: game.party,
             world: game.locations,
+            maps: game.maps,
             worldProperties: game.worldProperties,
             statistics: game.statistics,
             playedAudio: game.sounds.playedAudio

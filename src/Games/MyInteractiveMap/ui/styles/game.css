@@ -1,0 +1,7 @@
+.back-label {
+    display: none;
+}
+
+#map-container {
+    max-height: 800px;
+}
