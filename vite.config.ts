@@ -18,6 +18,7 @@ const plugins = [
         watch: {
             reloadPageOnChange: true
         },
+        silent: true,
         targets: [
             {
                 src: normalizePath(path.resolve(gamePath, 'resources/**/*.*')),
