@@ -153,9 +153,22 @@ button {
     margin: 5px 0;
 }
 
-.combat-win {
-    font-weight: bold;
+#combat-win {
     text-align: center;
+}
+
+.combat-win-header, .items-taken-header, .enemies-defeated-header {
+    font-weight: bold;
+}
+
+#combat-win ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.currency-won {
+    margin-bottom: 10px;
 }
 
 #trade ul {

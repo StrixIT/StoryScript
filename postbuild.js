@@ -25,40 +25,51 @@ if (gameInfo.sourcesIncluded) {
 // 3. Optimize jpg and png images using sharp.
 const imageFiles = getImageFiles(resourcePath);
 
-console.log('Optimize images')
+if (imageFiles?.length) {
+    await optimizeImages(imageFiles);
+}
 
-await Promise.all(imageFiles.map(async (file) => {
-    const subdirectory = path.join(resourcePath, '_tmp', file.subdirectory);
+async function optimizeImages(imageFiles) {
+    console.log('Optimize images')
 
-    if (!fs.existsSync(subdirectory)){
-        fs.mkdirSync(subdirectory, { recursive: true });
-    }
-    
-    const filePath = path.join(resourcePath, file.subdirectory, file.filepath);
-    const tempPath = path.join(tempResourcePath, file.subdirectory, file.filepath);
+    await Promise.all(imageFiles.map(async (file) => {
+        const subdirectory = path.join(resourcePath, '_tmp', file.subdirectory);
 
-    const sharpStream = sharp(filePath);
+        if (!fs.existsSync(subdirectory)){
+            fs.mkdirSync(subdirectory, { recursive: true });
+        }
+
+        const filePath = path.join(resourcePath, file.subdirectory, file.filepath);
+        const tempPath = path.join(tempResourcePath, file.subdirectory, file.filepath);
+
+        const sharpStream = sharp(filePath);
         if (filePath.indexOf('.png') > -1) {
-        await sharpStream.png({ quality: 80 }).toFile(tempPath);
-    } else if (filePath.indexOf('.jpg') > -1) {
-        await sharpStream.jpeg({ quality: 80 }).toFile(tempPath);
+            await sharpStream.png({ quality: 80 }).toFile(tempPath);
+        } else if (filePath.indexOf('.jpg') > -1) {
+            await sharpStream.jpeg({ quality: 80 }).toFile(tempPath);
+        }
+    }));
+
+    console.log('Replace images with optimized versions');
+
+    await Promise.all(imageFiles.map(async (file) => {
+        const filePath = path.join(resourcePath, file.subdirectory, file.filepath);
+        const tempPath = path.join(tempResourcePath, file.subdirectory, file.filepath);
+        await fs.promises.rename(tempPath, filePath);
+    }));
+
+    if (fs.existsSync(tempResourcePath)){
+        fs.rmSync(tempResourcePath, { recursive: true });
     }
-}));
-
-console.log('Replace images with optimized versions');
-
-await Promise.all(imageFiles.map(async (file) => {
-    const filePath = path.join(resourcePath, file.subdirectory, file.filepath);
-    const tempPath = path.join(tempResourcePath, file.subdirectory, file.filepath);
-    await fs.promises.rename(tempPath, filePath);
-}));
-
-if (fs.existsSync(tempResourcePath)){
-    fs.rmSync(tempResourcePath, { recursive: true });
 }
 
 function getImageFiles(dirPath, arrayOfFiles) {
     arrayOfFiles = arrayOfFiles || [];
+    
+    if (!fs.existsSync(dirPath)) {
+        return;
+    }
+    
     const files = fs.readdirSync(dirPath);
 
     files.forEach(function(file) {

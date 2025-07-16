@@ -108,7 +108,10 @@ export class DefaultTexts {
         cancelBuy: 'Cancel',
         sellConfirmationText: 'Are you sure you want to sell the {0} for {1} {2}?',
         confirmSell: 'Ok',
-        cancelSell: 'Cancel'
+        cancelSell: 'Cancel',
+        currencyWon: 'Currency gained: {0}',
+        itemsTaken: 'Items taken',
+        enemiesDefeated: 'Enemies defeated'
     }
 
     format = format;

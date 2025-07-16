@@ -1,3 +1,4 @@
+@let combat = game.combat;
 <div id="combat" *ngIf="game.playState == 'Combat'" class="row">
     <div *ngIf="enemiesPresent()" class="col-12">
         <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
@@ -43,9 +44,36 @@
             </ul>
         </div>
     </div>
-    <div *ngIf="!enemiesPresent()" class="combat-win">
-        {{ texts.combatWin }}
-    </div>
+    @if (!enemiesPresent())
+    {
+        <div id="combat-win">
+            <h2 class="combat-win-header">{{ texts.combatWin }}</h2>
+            <ul class="combat-winnings">
+                <li>
+                    <span class="enemies-defeated-header">{{ texts.enemiesDefeated }}</span>
+                    <ul>
+                        @for (enemy of combat.winnings.enemiesDefeated; track enemy.id)
+                        {
+                            <li>{{ enemy.name }}</li>
+                        }
+                    </ul>
+                </li>
+                @if (combat.winnings.currency)
+                {
+                    <li class="currency-won">{{ texts.format(texts.currencyWon, [combat.winnings.currency]) }}</li>
+                }
+                <li>
+                    <span class="items-taken-header">{{ texts.itemsTaken }}</span>
+                    <ul>
+                        @for (item of combat.winnings.itemsWon; track item.id)
+                        {
+                            <li>{{ item.name }}</li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    }
     <fieldset class="combatlog">
         <legend>{{ texts.messages }}</legend>
         <ul class="list-unstyled action-log">
