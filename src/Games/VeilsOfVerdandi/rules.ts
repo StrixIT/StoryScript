@@ -1,4 +1,4 @@
-﻿import {ICharacter, IRules} from 'storyScript/Interfaces/storyScript';
+﻿import {ICharacter, IRules, PlayState} from 'storyScript/Interfaces/storyScript';
 import {Character, IGame, IInterfaceTexts, IItem} from './types';
 import {combatRules} from "./combatRules.ts";
 import {canEquip, characterRules} from "./characterRules.ts";
@@ -22,7 +22,8 @@ export function Rules(): IRules {
                     hasRestedDuringDay: false,
                     hasRestedDuringNight: false,
                     helpedBees: false,
-                    helpedDryad: false
+                    helpedDryad: false,
+                    delayedDescriptionChanges: []
                 };
                 
                 init(game);
@@ -56,6 +57,14 @@ export function Rules(): IRules {
                 }
                 
                 return true;
+            },
+            playStateChange(game: IGame, newPlayState: PlayState, oldPlayState: PlayState) {
+                game.worldProperties.delayedDescriptionChanges ??= [];
+                
+                if (!newPlayState && oldPlayState && game.worldProperties.delayedDescriptionChanges.length) {
+                    game.worldProperties.delayedDescriptionChanges.forEach(f => f());
+                    game.worldProperties.delayedDescriptionChanges.length = 0;
+                }
             }
         },
 

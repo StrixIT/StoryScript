@@ -16,6 +16,7 @@
                     <location-text></location-text>
                     <exploration></exploration>
                     <enemy></enemy>
+                    <ground></ground>
                 </div>
                 <intro></intro>
                 <create-character></create-character>
@@ -24,8 +25,30 @@
                 <victory></victory>
             </div>
             <div *ngIf="game.state === 'Play'" [ngClass]="{ 'col-3': showCharacterPane() }">
+                <div class="box-container">
+                    <div class="box-title">{{game.party.name}}</div>
+                    <ul class="list-unstyled float-left">
+                        <li>{{ texts.currency }}
+                            <div class="currency-editor">
+                                <span *ngIf="!game.isDevelopment">{{ game.party.currency }}</span>
+                                <input *ngIf="game.isDevelopment" type="number" min="{{ 0 }}" max="1000" [(ngModel)]="game.party.currency">
+                            </div>
+                        </li>
+                        <li>Day: {{ game.worldProperties.currentDay }}</li>
+                        @if (game.isDevelopment) {
+                            <li>Time:
+                                <div class="time-editor pull-right">
+                                    <select class="custom-select" (ngModelChange)="game.changeTime($event)" [(ngModel)]="game.worldProperties.timeOfDay">
+                                        <option *ngFor="let item of ['day', 'night']" [ngValue]="item">{{ item }}</option>
+                                    </select>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <img class="candle pull-right" src="{{`resources/candle-${(game.worldProperties.isDay ? 'day' : 'night')}-small.png`}}" />
+                    <div class="clearfix"></div>
+                </div>
                 <location-map></location-map>
-                <ground></ground>
             </div>
         </div>
         <div class="row" *ngIf="game.state === 'Play'">

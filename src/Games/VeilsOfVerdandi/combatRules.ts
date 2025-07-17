@@ -362,7 +362,10 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
                 game.currentLocation.encounterWonNight = true;
             }
 
-            game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)]
+            game.worldProperties.delayedDescriptionChanges.push(() => {
+                game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)];  
+            })
+            
             return true;
         }
     }

@@ -30,118 +30,118 @@ import {Mermaid} from "../locations/Beach/Mermaid.ts";
 export function ForestOfMyrr() {
     return LocationMap({
         name: 'Forest of Myrr',
-        mapImage: 'forest-of-myrr.jpg',
+        mapImage: 'gameboard.jpg',
         avatarImage: 'hero.png',
         locationNamesAsTextMarkers: false,
         toggleFullScreen: true,
         locations: [
             {
                 location: Start,
-                coords: '190,1070'
+                coords: '220,1105'
             },
             {
                 location: NorthRoad,
-                coords: '470,585'
+                coords: '590,635'
             },
             {
                 location: SouthRoad,
-                coords: '700,1155'
+                coords: '805,1200'
             },
             {
                 location: ForestLake,
-                coords: '560,885'
+                coords: '645,915'
             },
             {
                 location: Brennus,
-                coords: '235,860'
+                coords: '275,885'
             },
             {
                 location: MagicFlower,
-                coords: '745,770'
+                coords: '855,795'
             },
             {
                 location: Woodcutter,
-                coords: '280,650'
+                coords: '325,665'
             },
             {
                 location: Merchant,
-                coords: '280,650'
+                coords: '1075,1165'
             },
             {
                 location: Stonemount,
-                coords: '280,650'
+                coords: '645,1230'
             },
             {
                 location: EastRoad,
-                coords: '840,650'
+                coords: '1070,730'
             },
             {
                 location: Dryad,
-                coords: '795,495'
+                coords: '910,510'
             },
             {
                 location: ForestPond,
-                coords: '655,530'
+                coords: '755,545'
             },
             {
                 location: Guardians,
-                coords: '1025,830'
+                coords: '1180,855'
             },
             {
                 location: CliffWall,
-                coords: '1120,890'
+                coords: '1285,920'
             },
             {
                 location: Darkcave,
-                coords: '1165,925'
+                coords: '1335,950'
             },
             {
                 location: CentralForest,
-                coords: '1075,500'
+                coords: '1230,390'
             },
             {
                 location: Troll,
-                coords: '935,530'
+                coords: '1070,545'
             },
             {
                 location: Treestump,
-                coords: '1175,375'
+                coords: '1335,390'
             },
             {
                 location: SecretCove,
-                coords: '985,250'
+                coords: '1070,230'
             },
             {
                 location: OceanShrine,
-                coords: '750,160'
+                coords: '860,165'
             },
             {
                 location: Octopus,
-                coords: '465,155'
+                coords: '540,165'
             },
             {
                 location: IslandMeadow,
-                coords: '280,220'
+                coords: '325,230'
             },
             {
                 location: CastleApproach,
-                coords: '235,190'
+                coords: '375,200'
             },
             {
                 location: CastleInside,
-                coords: '235,190'
+                coords: '375,200'
             },
             {
                 location: Beach,
-                coords: '420,375'
+                coords: '435,415'
             },
             {
                 location: Fisherman,
-                coords: '325,435'
+                coords: '380,450'
             },
             {
                 location: Mermaid,
-                coords: '515,310'
+                coords: '595,325'
             }
         ]
     });

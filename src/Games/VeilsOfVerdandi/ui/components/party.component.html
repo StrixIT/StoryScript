@@ -1,27 +1,4 @@
 <div>
-    <div class="box-container">
-        <div class="box-title">{{party.name}}</div>
-        <ul class="list-unstyled float-left">
-            <li>{{ texts.currency }}
-                <div class="currency-editor">
-                    <span *ngIf="!game.isDevelopment">{{ party.currency }}</span>
-                    <input *ngIf="game.isDevelopment" type="number" min="{{ 0 }}" max="1000" [(ngModel)]="party.currency">
-                </div>
-            </li>
-            <li>Day: {{ game.worldProperties.currentDay }}</li>
-            @if (game.isDevelopment) {
-                <li>Time:
-                    <div class="time-editor pull-right">
-                        <select class="custom-select" (ngModelChange)="game.changeTime($event)" [(ngModel)]="game.worldProperties.timeOfDay">
-                            <option *ngFor="let item of ['day', 'night']" [ngValue]="item">{{ item }}</option>
-                        </select>
-                    </div>
-                </li>
-            }
-        </ul>
-        <img class="candle pull-right" src="{{`resources/candle-${(game.worldProperties.isDay ? 'day' : 'night')}-small.png`}}" />
-        <div class="clearfix"></div>
-    </div>
     <div class="character-container" *ngFor="let character of party.characters" (click)="setActive(character)" [ngClass]="{ 'is-active': character.isActive, 'unavailable': character.currentHitpoints <= 0 }">
         <character-sheet [character]="character"></character-sheet>
     </div>
