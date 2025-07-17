@@ -23,12 +23,14 @@ import {VictoryComponent} from "../Victory/victory.component.ts";
 import {CombinationComponent} from "../Combination/combination.component.ts";
 import {BackpackComponent} from "../Backpack/backpack.component.ts";
 import {LocationMapComponent} from "../LocationMap/locationmap.component.ts";
+import {FormsModule} from "@angular/forms";
 
 @Component({
     standalone: true,
     selector: 'main',
     imports: [
         CommonModule,
+        FormsModule,
         NavigationComponent,
         SoundComponent,
         BackpackComponent,

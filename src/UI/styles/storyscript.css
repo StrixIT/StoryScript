@@ -399,6 +399,8 @@ feature {
 
 .map-dialog {
     padding: 0;
+    max-height: 95%;
+    overflow: hidden;
 }
 
 .map-container {
