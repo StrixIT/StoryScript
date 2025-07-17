@@ -62,15 +62,18 @@
                 {
                     <li class="currency-won">{{ texts.format(texts.currencyWon, [combat.winnings.currency]) }}</li>
                 }
+                @if (combat.winnings.itemsWon.length)
+                {
                 <li>
-                    <span class="items-taken-header">{{ texts.itemsTaken }}</span>
-                    <ul>
-                        @for (item of combat.winnings.itemsWon; track item.id)
-                        {
-                            <li>{{ item.name }}</li>
-                        }
-                    </ul>
+                        <span class="items-taken-header">{{ texts.itemsTaken }}</span>
+                        <ul>
+                            @for (item of combat.winnings.itemsWon; track item.id)
+                            {
+                                <li>{{ item.name }}</li>
+                            }
+                        </ul>
                 </li>
+                }
             </ul>
         </div>
     }
