@@ -157,7 +157,7 @@ export class GameService implements IGameService {
             this._locationService.init();
             this._game.currentLocation = this._game.locations.get(saveGame.party.currentLocationId);
 
-            // Use the afterSave hook here combine the loaded world with other saved data.
+            // Use the afterSave hook here to combine the loaded world with other saved data.
             this._rules.general?.afterSave?.(this._game);
 
             if (saveGame.party.previousLocationId) {
@@ -179,6 +179,7 @@ export class GameService implements IGameService {
             setTimeout(() => {
                 this._game.loading = false;
                 this._game.state = GameState.Play;
+                gameEvents.publish(GameEventNames.ChangeLocation, { location: this._game.currentLocation });
             }, 0);
         }
     }
