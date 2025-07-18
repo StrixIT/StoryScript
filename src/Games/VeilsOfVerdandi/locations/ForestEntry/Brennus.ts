@@ -34,7 +34,10 @@ export function Brennus() {
                     text: 'Approach the Tent',
                     execute: (game: IGame) => {
                         game.currentLocation.descriptionSelector = 'approach';
-                        game.currentLocation.enemies.forEach(e => e.inactive = false);
+                        game.currentLocation.enemies.forEach(e => {
+                            e.activeNight = true;
+                            e.inactive = false;
+                        });
                     },
                     activeNight: true
                 }
