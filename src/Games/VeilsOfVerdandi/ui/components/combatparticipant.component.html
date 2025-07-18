@@ -1,12 +1,17 @@
 @let participantType = participant.type;
 @let hitpointText = participant.type === 'enemy' ? texts.enemyHitpoints : texts.characterHitpoints;
-<div [ngClass]="{ 'targeted': rules.combat.isTargeted(game, participant) !== '' }" [title]="rules.combat.isTargeted(game, participant)">
-    <h4>{{ participant.name }}</h4>
-    <p [ngClass]="{ 'enemy-health': participantType === 'enemy', 'character-health': participantType === 'character' }">
-        {{ texts.format(hitpointText, [participant.currentHitpoints, participant.hitpoints]) }}
-    </p>
-    <ul *ngIf="participant.effects.length > 0" class="effects">
-        <li *ngFor="let effect of participant.effects" class="{{ effect }}">{{ effect }}</li>
-    </ul>
-    <img src="{{ participant.picture }}" *ngIf="participant.picture" alt="{{ participant.name }}" />
+<div class="participant" [ngClass]="{ 'targeted': rules.combat.isTargeted(game, participant) !== '', 'single-column': !participant.picture }" [title]="rules.combat.isTargeted(game, participant)">
+    <div [ngClass]="{ 'participant-data': participant.picture }">
+        <h4>{{ participant.name }}</h4>
+        <p [ngClass]="{ 'enemy-health': participantType === 'enemy', 'character-health': participantType === 'character' }">
+            {{ texts.format(hitpointText, [participant.currentHitpoints, participant.hitpoints]) }}
+        </p>
+        <ul *ngIf="participant.effects.length > 0" class="effects">
+            <li *ngFor="let effect of participant.effects" class="{{ effect }}">{{ effect }}</li>
+        </ul>
+    </div>
+    @if (participant.picture) {
+        <img class="participant-image" src="{{ participant.picture }}" *ngIf="participant.picture" alt="{{ participant.name }}" />
+    }
+    <div class="clearfix"></div>
 </div>

@@ -186,7 +186,7 @@ combat-participant > div.targeted {
 
 #location {
     max-height: 450px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #backpack-panel li {
@@ -204,4 +204,47 @@ combat-participant > div.targeted {
 
 .character-hitpoints {
     font-size: 1.1rem;
+}
+
+.modal-dialog {
+    height: 100%;
+}
+
+.modal-dialog .modal-content {
+    max-height: 95%;
+    overflow-y: auto;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+}
+
+.participant.single-column {
+    display: inline-block;
+    width: 100%;
+}
+
+.participant-data {
+    display: inline;
+    float: left;
+    vertical-align: middle;
+}
+
+.participant-image {
+    float: right;
+}
+
+.combatlog {
+    margin-top: 0;
+    padding-top: 5px;
+    max-height: 250px;
+}
+
+.combatlog legend {
+    display: none;
+}
+
+.combat-header {
+    margin-top: -68px;
 }
