@@ -78,21 +78,33 @@ function init(game: IGame) {
         game.locations.start.hotSpotCleared = true;
         addDescriptions(game);
     }
-    
-    game.changeTime = s => changeTime(game, s);
+
+    initTime(game);
 }
 
 function continueGame(game: IGame) {
-    game.changeTime = s => changeTime(game, s);
     explorationRules.enterLocation(game, game.currentLocation, false);
+    initTime(game);
+}
+
+function initTime(game: IGame) {
+    game.changeTime = s => changeTime(game, s);
+    setTimeout(() => {
+        setTime(game);
+    });
 }
 
 function changeTime(game: IGame, e: string) {
     game.worldProperties.timeOfDay = e;
+    setTime(game);
+    explorationRules.enterLocation(game, game.currentLocation, false);
+}
+
+function setTime(game: IGame) {
     game.UIRootElement.classList.remove('day');
     game.UIRootElement.classList.remove('night');
 
-    if (e === 'day') {
+    if (game.worldProperties.timeOfDay === 'day') {
         game.worldProperties.isDay = true;
         game.worldProperties.isNight = false;
         game.UIRootElement.classList.add('day');
@@ -101,8 +113,6 @@ function changeTime(game: IGame, e: string) {
         game.worldProperties.isNight = true;
         game.UIRootElement.classList.add('night');
     }
-
-    explorationRules.enterLocation(game, game.currentLocation, false);
 }
 
 function addDescriptions(game: IGame) {

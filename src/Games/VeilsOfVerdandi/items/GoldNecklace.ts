@@ -1,4 +1,4 @@
-﻿import {EquipmentType, ICharacter, TargetType} from 'storyScript/Interfaces/storyScript';
+﻿import {EquipmentType, ICharacter, PlayState, TargetType} from 'storyScript/Interfaces/storyScript';
 import description from './GoldNecklace.html?raw';
 import {ClassType} from '../classType';
 import {Character, IGame, IItem, Item} from '../types';
@@ -16,6 +16,9 @@ export function GoldNecklace() {
         useInCombat: true,
         canTarget(game: IGame, item: IItem, target: ICharacter): boolean {
             return target.currentHitpoints < target.hitpoints;
+        },
+        canUse(game: IGame, character: ICharacter, item: IItem): boolean {
+            return game.playState === PlayState.Combat;
         },
         use(game, character, item, target: Character) {
             game.logToCombatLog(`${character.name} uses the Golden Necklace to heal ${target.name}.`);
