@@ -51,6 +51,7 @@ export class LocationMapComponent {
             dialogElement.showModal();
             this.navigateMap(this.currentFullScreenMap, this.game, this.firstShowFullScreen);
             this.firstShowFullScreen = false;
+            this.currentFullScreenMap.focus();
         } else {
             dialogElement.close();
         }
