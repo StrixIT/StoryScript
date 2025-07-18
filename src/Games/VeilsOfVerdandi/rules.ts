@@ -22,8 +22,7 @@ export function Rules(): IRules {
                     hasRestedDuringDay: false,
                     hasRestedDuringNight: false,
                     helpedBees: false,
-                    helpedDryad: false,
-                    delayedDescriptionChanges: []
+                    helpedDryad: false
                 };
                 
                 init(game);
@@ -59,11 +58,11 @@ export function Rules(): IRules {
                 return true;
             },
             playStateChange(game: IGame, newPlayState: PlayState, oldPlayState: PlayState) {
-                game.worldProperties.delayedDescriptionChanges ??= [];
+                game.delayedDescriptionChanges ??= [];
                 
-                if (!newPlayState && oldPlayState && game.worldProperties.delayedDescriptionChanges.length) {
-                    game.worldProperties.delayedDescriptionChanges.forEach(f => f());
-                    game.worldProperties.delayedDescriptionChanges.length = 0;
+                if (!newPlayState && oldPlayState && game.delayedDescriptionChanges.length) {
+                    game.delayedDescriptionChanges.forEach(f => f());
+                    game.delayedDescriptionChanges.length = 0;
                 }
             }
         },
@@ -90,13 +89,17 @@ function continueGame(game: IGame) {
 
 function changeTime(game: IGame, e: string) {
     game.worldProperties.timeOfDay = e;
+    game.UIRootElement.classList.remove('day');
+    game.UIRootElement.classList.remove('night');
 
     if (e === 'day') {
         game.worldProperties.isDay = true;
         game.worldProperties.isNight = false;
+        game.UIRootElement.classList.add('day');
     } else {
         game.worldProperties.isDay = false;
         game.worldProperties.isNight = true;
+        game.UIRootElement.classList.add('night');
     }
 
     explorationRules.enterLocation(game, game.currentLocation, false);

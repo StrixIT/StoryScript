@@ -94,10 +94,6 @@ blockquote {
     display: none;
 }
 
-.character-equipment .item-box {
-    margin-top: 10px;
-}
-
 #character-attributes {
     vertical-align: top;
 }
@@ -186,4 +182,26 @@ combat-participant > div.targeted {
 
 .map-location-label.visited {
     opacity: 1;
+}
+
+#location {
+    max-height: 450px;
+    overflow-y: scroll;
+}
+
+#backpack-panel li {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.character-name, .character-hitpoints {
+    display: inline-block;
+}
+
+.character-hitpoints {
+    float: right;
+}
+
+.character-hitpoints {
+    font-size: 1.1rem;
 }

@@ -15,6 +15,7 @@ export interface IGame extends StoryScriptIGame {
     worldProperties: IWorldProperties;
     helpers: IHelpers;
     changeTime?: (time: string) => void;
+    delayedDescriptionChanges?: (() => void)[];
 }
 
 export interface IHelpers extends StoryScriptIHelpers {

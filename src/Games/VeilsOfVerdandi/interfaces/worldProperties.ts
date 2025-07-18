@@ -9,5 +9,4 @@
     hasRestedDuringNight: boolean;
     helpedBees: boolean;
     helpedDryad: boolean;
-    delayedDescriptionChanges: (() => void)[];
 }

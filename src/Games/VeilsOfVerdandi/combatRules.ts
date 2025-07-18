@@ -362,7 +362,7 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
                 game.currentLocation.encounterWonNight = true;
             }
 
-            game.worldProperties.delayedDescriptionChanges.push(() => {
+            game.delayedDescriptionChanges.push(() => {
                 game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)];  
             })
             
