@@ -440,6 +440,7 @@ feature {
     background-color: white;
     border: solid 1px black;
     padding: 2px 5px;
+    white-space: nowrap;
 }
 
 .map-location-label.reachable, .map-location-image.reachable  {

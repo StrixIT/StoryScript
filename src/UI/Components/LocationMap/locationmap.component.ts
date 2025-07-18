@@ -10,6 +10,7 @@ import {GameEventNames} from "storyScript/GameEventNames.ts";
 const visible: string = 'visible';
 const hidden: string = 'hidden';
 const reachable: string = 'reachable';
+const visited: string = 'visited';
 const labelClass: string = 'map-location-label';
 const imageClass: string = 'map-location-image';
 
@@ -205,12 +206,19 @@ export class LocationMapComponent {
             const locationId = markerElement.dataset.locationid;
             this.setCoordinates(markerElement, currentLeft, currentTop);
 
+            const isVisited = this.game.locations.get(locationId)?.hasVisited;
+            markerElement.classList.remove(visited);
+
+            if (isVisited) {
+                markerElement.classList.add(visited);
+            }
+            
             if (this.map.clickable) {
                 const isReachable = this.game.currentLocation.destinations.find(d => d.target === locationId);
 
                 markerElement.onclick = null;
                 markerElement.classList.remove(reachable);
-
+                
                 if (isReachable) {
                     markerElement.classList.add(reachable);
                     markerElement.onclick = () => {
