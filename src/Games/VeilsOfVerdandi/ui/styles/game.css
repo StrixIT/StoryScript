@@ -179,3 +179,11 @@ combat-participant > div.targeted {
 .night img.map-image {
     filter: brightness(50%);
 }
+
+.map-location-label {
+    opacity: .5;
+}
+
+.map-location-label.visited {
+    opacity: 1;
+}

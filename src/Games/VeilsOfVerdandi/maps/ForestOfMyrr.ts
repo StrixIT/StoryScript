@@ -32,8 +32,9 @@ export function ForestOfMyrr() {
         name: 'Forest of Myrr',
         mapImage: 'gameboard.jpg',
         avatarImage: 'hero.png',
-        locationNamesAsTextMarkers: false,
+        locationNamesAsTextMarkers: true,
         toggleFullScreen: true,
+        showMarkersOnKeyPress: ' ',
         locations: [
             {
                 location: Start,
