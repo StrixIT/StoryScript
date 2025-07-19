@@ -1,13 +1,13 @@
-import { IGame, IInterfaceTexts } from 'storyScript/Interfaces/storyScript';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
-import {CommonModule} from "@angular/common";
+import {IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'action-log',
-    imports: [CommonModule],
+    imports: [SharedModule],
     template: getTemplate('actionlog', await import('./actionlog.component.html?raw'))
 })
 export class ActionLogComponent {

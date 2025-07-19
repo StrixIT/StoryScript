@@ -3,25 +3,42 @@
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
-                <div *ngFor="let character of game.party.characters">
-                    <backpack [character]="character"></backpack>
+            @if (game.state === 'Play')
+            {
+                <div id="party-container" [ngClass]="{ 'col-4': showCharacterPane() }">
+                    @for (character of game.party.characters; track character.name)
+                    {
+                        <div>
+                            <backpack [character]="character"></backpack>
+                        </div>
+                    }
                 </div>
-            </div>
+            }
             <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">
-                <div *ngIf="!game.state">
-                    {{ texts.loading }}
-                </div>
-                <div *ngIf="game.state == 'Play'">
-                    <location-visual></location-visual>
-<!--                    <location-text></location-text>-->
-                </div>
+                @if (!game.state)
+                {
+                    <div>
+                        {{ texts.loading }}
+                    </div>
+                }
+                @if (game.state === 'Play')
+                {
+                    @if (game.worldProperties.type === 'Visual')
+                    {
+                        <location-visual></location-visual>
+                    } @else {
+                        <location-text></location-text>   
+                    }
+                }
             </div>
         </div>
-        <div class="row" *ngIf="game.state === 'Play'">
-            <div class="col-12">
-                <combination></combination>
+        @if (game.state === 'Play')
+        {
+            <div class="row">
+                <div class="col-12">
+                    <combination></combination>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </div>

@@ -5,13 +5,12 @@ import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {getTemplate} from '../../helpers';
 import {DataService} from "storyScript/Services/DataService.ts";
-import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'menu-modal',
-    imports: [CommonModule, FormsModule],
+    imports: [SharedModule],
     template: getTemplate('menumodal', await import('./menumodal.component.html?raw'))
 })
 export class MenuModalComponent {

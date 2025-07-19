@@ -1,24 +1,41 @@
-<div id="conversation" *ngIf="game.playState === 'Conversation'">
-    <div id="conversation-options" *ngIf="activeNode">
-        <div [innerHTML]="getLines(activeNode) | safe: 'html'"></div>
-        <div *ngFor="let reply of activeNode.replies">
-            <div *ngIf="reply.available || reply.showWhenUnavailable" [ngClass]="{ 'unavailable': !reply.available }">
-                <input type="radio" [disabled]="!reply.available" (click)="answer(activeNode, reply)" />
-                <span [innerHTML]="getLines(reply) | safe: 'html'"></span>
+@let activeNode = game.person.conversation.activeNode;
+@if (game.playState === 'Conversation')
+{
+    <div id="conversation">
+        @if (activeNode)
+        {
+            <div id="conversation-options">
+                <div [innerHTML]="getLines(activeNode) | safe: 'html'"></div>
+                @for (reply of activeNode.replies; track reply)
+                {
+                    @if (reply.available || reply.showWhenUnavailable)
+                    {
+                        <div [ngClass]="{ 'unavailable': !reply.available }">
+                            <input type="radio" [disabled]="!reply.available" (click)="answer(activeNode, reply)" />
+                            <span [innerHTML]="getLines(reply) | safe: 'html'"></span>
+                        </div>
+                    }
+                }
             </div>
+        }
+        @if (!activeNode || !activeNode.replies.length)
+        {
+            <div>
+                Your conversation has ended.
+            </div>
+        }
+        <div id="conversation-history">
+            <hr />
+            <p id="conversation-history-title">Conversation history</p>
+            <ul class="list-unstyled">
+                @for (entry of game.person.conversation.conversationLog; track entry)
+                {
+                    <li>
+                        <div class="conversation-lines" [innerHTML]="entry.lines | safe: 'html'"></div>
+                        <div class="conversation-option" [innerHTML]="entry.reply | safe: 'html'"></div>
+                    </li>
+                }
+            </ul>
         </div>
     </div>
-    <div *ngIf="!activeNode || !activeNode.replies.length">
-        Your conversation has ended.
-    </div>
-    <div id="conversation-history">
-        <hr />
-        <p id="conversation-history-title">Conversation history</p>
-        <ul class="list-unstyled">
-            <li *ngFor="let entry of conversationLog">
-                <div class="conversation-lines" [innerHTML]="entry.lines | safe: 'html'"></div>
-                <div class="conversation-option" [innerHTML]="entry.reply | safe: 'html'"></div>
-            </li>
-        </ul>
-    </div>
-</div>
+}

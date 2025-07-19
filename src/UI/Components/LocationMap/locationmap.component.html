@@ -10,7 +10,10 @@
             }
         </p>
         <img class="map-image" src="{{ 'resources/' + map.mapImage }}" alt="{{ map.name }}">
-        <img class="avatar-image" *ngIf="map.avatarImage" src="{{ 'resources/' + map.avatarImage }}" alt="{{ map.name }}" style="visibility: hidden;">
+        @if (map.avatarImage)
+        {
+            <img class="avatar-image" src="{{ 'resources/' + map.avatarImage }}" alt="{{ map.name }}" style="visibility: hidden;">
+        }
     </div>
     <dialog class="map-dialog">
     </dialog>

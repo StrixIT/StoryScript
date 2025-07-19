@@ -5,14 +5,13 @@ import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {CommonModule} from "@angular/common";
 import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
-import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'quests',
-    imports: [CommonModule, NgbCollapse, SafePipe],
+    imports: [SharedModule, NgbCollapse],
     template: getTemplate('quest', await import('./quest.component.html?raw'))
 })
 export class QuestComponent {

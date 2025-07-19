@@ -1,21 +1,20 @@
-import { IGame, IInterfaceTexts, IFeature } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
+import {IFeature, IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
 import {compareString} from "storyScript/utilityFunctions.ts";
-import {CommonModule} from "@angular/common";
-import {SafePipe} from "../../Pipes/sanitizationPipe.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'location-visual',
-    imports: [CommonModule, SafePipe],
+    imports: [SharedModule],
     template: getTemplate('locationvisual', await import('./locationvisual.component.html?raw'))
 })
 export class LocationVisualComponent {
     private readonly _sharedMethodService: SharedMethodService;
-    
+
     constructor() {
         this._sharedMethodService = inject(SharedMethodService);
         const objectFactory = inject(ServiceFactory);
@@ -28,7 +27,7 @@ export class LocationVisualComponent {
 
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 
-    getFeatureCoordinates = (feature: IFeature): { top: string, left: string} => {
+    getFeatureCoordinates = (feature: IFeature): { top: string, left: string } => {
         const coords = feature.coords.split(',');
         let top = null, left = null;
 
@@ -39,8 +38,7 @@ export class LocationVisualComponent {
                 const value = coords[i];
                 if (i % 2 === 0) {
                     x.push(value);
-                }
-                else {
+                } else {
                     y.push(value);
                 }
             }
@@ -48,19 +46,18 @@ export class LocationVisualComponent {
             left = x.reduce(function (p, v) {
                 return (p < v ? p : v);
             });
-            
+
             top = y.reduce(function (p, v) {
                 return (p < v ? p : v);
             });
-        }
-        else {
+        } else {
             left = coords[0];
             top = coords[1];
         }
 
-        return { 
+        return {
             top: `${top}px`,
-            left: `${left}px` 
+            left: `${left}px`
         };
     }
 }

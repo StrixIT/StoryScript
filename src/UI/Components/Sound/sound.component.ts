@@ -4,12 +4,12 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {getTemplate} from '../../helpers';
 import {IRules} from 'storyScript/Interfaces/storyScript';
 import {SoundService} from "storyScript/Services/SoundService.ts";
-import {CommonModule} from "@angular/common";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'sound',
-    imports: [CommonModule],
+    imports: [SharedModule],
     template: getTemplate('sound', await import('./sound.component.html?raw'))
 })
 export class SoundComponent {
