@@ -1,22 +1,21 @@
-import { IInterfaceTexts, ICreateCharacterStep, ICreateCharacterAttribute, ICreateCharacterAttributeEntry } from 'storyScript/Interfaces/storyScript';
-import type { ICreateCharacter } from 'storyScript/Interfaces/storyScript';
-import { CharacterService } from 'storyScript/Services/CharacterService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, Input, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
-import {CommonModule} from "@angular/common";
+import type {ICreateCharacter} from 'storyScript/Interfaces/storyScript';
+import {ICreateCharacterAttribute, ICreateCharacterAttributeEntry, ICreateCharacterStep, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
+import {CharacterService} from 'storyScript/Services/CharacterService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject, Input} from '@angular/core';
+import {getTemplate} from '../../helpers';
 import {FormsModule} from "@angular/forms";
 import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 
 @Component({
     standalone: true,
     selector: 'build-character',
-    imports: [CommonModule, FormsModule, SafePipe],
+    imports: [FormsModule, SafePipe],
     template: getTemplate('buildcharacter', await import('./buildcharacter.component.html?raw'))
 })
 export class BuildCharacterComponent {
     @Input() sheet: ICreateCharacter;
-    
+
     private readonly _characterService: CharacterService;
 
     constructor() {

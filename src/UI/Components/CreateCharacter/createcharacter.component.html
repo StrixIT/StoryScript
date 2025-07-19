@@ -1,6 +1,12 @@
 @let sheet = game.createCharacterSheet;
-<div class="box-container" id="create-character" *ngIf="game.state === 'CreateCharacter'">
-    <div class="box-title">{{ getTitleText() }}</div>
-    <build-character [sheet]="sheet"></build-character>
-    <button type="button" id="start-adventure" class="btn btn-primary" [disabled]="!distributionDone()" (click)="startNewGame()" *ngIf="sheet.currentStep >= sheet.steps.length - 1 || sheet.steps[sheet.currentStep].finish">{{ getStartText() }}</button>
-</div>
+@if (game.state === 'CreateCharacter')
+{
+    <div class="box-container" id="create-character">
+        <div class="box-title">{{ getTitleText() }}</div>
+        <build-character [sheet]="sheet"></build-character>
+        @if (sheet.currentStep >= sheet.steps.length - 1 || sheet.steps[sheet.currentStep].finish)
+        {
+            <button type="button" id="start-adventure" class="btn btn-primary" [disabled]="!distributionDone()" (click)="startNewGame()">{{ getStartText() }}</button>
+        }
+    </div>
+}
