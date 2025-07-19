@@ -23,16 +23,8 @@ export class ConversationComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
-
+    
     answer = (node: IConversationNode, reply: IConversationReply): void => this._conversationService.answer(node, reply);
 
     getLines = (nodeOrReply: IConversationNode | IConversationReply): string => nodeOrReply?.lines || null;
-
-    get activeNode() {
-        return this.game.person.conversation.activeNode
-    };
-
-    get conversationLog() {
-        return this.game.person.conversation.conversationLog
-    };
 }

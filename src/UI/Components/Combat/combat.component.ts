@@ -1,7 +1,7 @@
 import {IAction, ICharacter, ICombatTurn, IEnemy, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {Component, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CombatService} from "storyScript/Services/CombatService.ts";
 import {ItemService} from "storyScript/Services/ItemService.ts";
@@ -36,7 +36,7 @@ export class CombatComponent {
     enemyRows: IEnemy[];
     characterRows: ICharacter[];
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+    enemiesPresent = computed((): boolean => this._sharedMethodService.enemiesPresent());
 
     getButtonClass = (action: [string, IAction]): string => this._sharedMethodService.getButtonClass(action);
 

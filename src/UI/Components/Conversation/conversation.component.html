@@ -1,3 +1,4 @@
+@let activeNode = game.person.conversation.activeNode;
 @if (game.playState === 'Conversation')
 {
     <div id="conversation">
@@ -27,7 +28,7 @@
             <hr />
             <p id="conversation-history-title">Conversation history</p>
             <ul class="list-unstyled">
-                @for (entry of conversationLog; track entry)
+                @for (entry of game.person.conversation.conversationLog; track entry)
                 {
                     <li>
                         <div class="conversation-lines" [innerHTML]="entry.lines | safe: 'html'"></div>

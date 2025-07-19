@@ -1,7 +1,7 @@
 import {IGame, IInterfaceTexts, IItem, IPerson, ITrade} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {Component, inject} from '@angular/core'
+import {Component, computed, inject} from '@angular/core'
 import {getTemplate} from '../../helpers';
 import {SharedModule} from "ui/Modules/sharedModule.ts";
 
@@ -24,9 +24,9 @@ export class EncounterComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+    enemiesPresent = computed((): boolean => this._sharedMethodService.enemiesPresent());
 
-    personsPresent = (): boolean => this.game.currentLocation?.activePersons?.length > 0;
+    personsPresent = computed((): boolean => this.game.currentLocation?.activePersons?.length > 0);
 
     hasDescription = (person: IPerson): boolean => this._sharedMethodService.hasDescription(person);
 

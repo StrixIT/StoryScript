@@ -2,7 +2,7 @@ import {ICreateCharacterStep, IGame, IInterfaceTexts, IRules} from 'storyScript/
 import {GameService} from 'storyScript/Services/GameService';
 import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {Component, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {BuildCharacterComponent} from "../BuildCharacter/buildcharacter.component.ts";
 import {SharedModule} from "ui/Modules/sharedModule.ts";
@@ -27,18 +27,10 @@ export class CreateCharacterComponent {
         this.texts = objectFactory.GetTexts();
     }
 
-    titleText: string;
-    startText: string;
     game: IGame;
     texts: IInterfaceTexts;
-
-    startNewGame = () => {
-        this._gameService.startNewGame(this.game.createCharacterSheet);
-    }
-
-    distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.game.createCharacterSheet, step);
-
-    getTitleText = () => {
+    
+    titleText = computed((): string => {
         if (this._rules.setup.numberOfCharacters > 1) {
             switch (this.game.party?.characters.length || 0) {
                 case 0:
@@ -53,13 +45,17 @@ export class CreateCharacterComponent {
         }
 
         return this.texts.newGame;
-    }
+    });
 
-    getStartText = () => {
+    startText = computed((): string => {
         if (this._rules.setup.numberOfCharacters > 1 && (!this.game.party || this.game.party?.characters.length < this._rules.setup.numberOfCharacters - 1)) {
             return this.texts.nextCharacter;
         }
 
         return this.texts.startAdventure;
-    }
+    });
+
+    distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.game.createCharacterSheet, step);
+
+    startNewGame = () => this._gameService.startNewGame(this.game.createCharacterSheet);
 }
