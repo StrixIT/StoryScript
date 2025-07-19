@@ -3,58 +3,82 @@
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-3': showCharacterPane() }">
-                <party [party]="game.party"></party>
-            </div>
+            @if (game.state === 'Play')
+            {
+                <div id="party-container" [ngClass]="{ 'col-3': showCharacterPane() }">
+                    <party [party]="game.party"></party>
+                </div>
+            }
             <div id="location-container" [ngClass]="{ 'col-6': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
-                <div *ngIf="!game.state">
-                    {{ texts.loading }}
-                </div>
-                <div *ngIf="game.state == 'Play'">
-                    <encounter></encounter>
-                    <location-visual></location-visual>
-                    <location-text></location-text>
-                    <exploration></exploration>
-                    <enemy></enemy>
-                    <ground></ground>
-                </div>
+                @if (!game.state)
+                {
+                    <div>
+                        {{ texts.loading }}
+                    </div>
+                }
+                @if (game.state === 'Play')
+                {
+                    <div>
+                        <encounter></encounter>
+                        <location-visual></location-visual>
+                        <location-text></location-text>
+                        <exploration></exploration>
+                        <enemy></enemy>
+                        <ground></ground>
+                    </div>
+                }
                 <intro></intro>
                 <create-character></create-character>
                 <level-up></level-up>
                 <game-over></game-over>
                 <victory></victory>
             </div>
-            <div *ngIf="game.state === 'Play'" [ngClass]="{ 'col-3': showCharacterPane() }">
-                <div class="box-container">
-                    <div class="box-title">{{game.party.name}}</div>
-                    <ul class="list-unstyled float-left">
-                        <li>{{ texts.currency }}
-                            <div class="currency-editor">
-                                <span *ngIf="!game.isDevelopment">{{ game.party.currency }}</span>
-                                <input *ngIf="game.isDevelopment" type="number" min="{{ 0 }}" max="1000" [(ngModel)]="game.party.currency">
-                            </div>
-                        </li>
-                        <li>Day: {{ game.worldProperties.currentDay }}</li>
-                        @if (game.isDevelopment) {
-                            <li>Time:
-                                <div class="time-editor pull-right">
-                                    <select class="custom-select" (ngModelChange)="game.changeTime($event)" [(ngModel)]="game.worldProperties.timeOfDay">
-                                        <option *ngFor="let item of ['day', 'night']" [ngValue]="item">{{ item }}</option>
-                                    </select>
+            @if (game.state === 'Play')
+            {
+                <div [ngClass]="{ 'col-3': showCharacterPane() }">
+                    <div class="box-container">
+                        <div class="box-title">{{game.party.name}}</div>
+                        <ul class="list-unstyled float-left">
+                            <li>{{ texts.currency }}
+                                <div class="currency-editor">
+                                    @if (!game.isDevelopment)
+                                    {
+                                        <span>{{ game.party.currency }}</span>
+                                    }
+                                    @if (game.isDevelopment)
+                                    {
+                                        <input type="number" min="{{ 0 }}" max="1000" [(ngModel)]="game.party.currency">
+                                    }
                                 </div>
                             </li>
-                        }
-                    </ul>
-                    <img class="candle pull-right" src="{{`resources/candle-${(game.worldProperties.isDay ? 'day' : 'night')}-small.png`}}" />
-                    <div class="clearfix"></div>
+                            <li>Day: {{ game.worldProperties.currentDay }}</li>
+                            @if (game.isDevelopment) {
+                                <li>Time:
+                                    <div class="time-editor pull-right">
+                                        <select class="custom-select" (ngModelChange)="game.changeTime($event)" [(ngModel)]="game.worldProperties.timeOfDay">
+                                            @for (item of ['day', 'night']; track item)
+                                            {
+                                                <option [ngValue]="item">{{ item }}</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                        <img class="candle pull-right" src="{{`resources/candle-${(game.worldProperties.isDay ? 'day' : 'night')}-small.png`}}" />
+                        <div class="clearfix"></div>
+                    </div>
+                    <location-map></location-map>
                 </div>
-                <location-map></location-map>
-            </div>
+            }
         </div>
-        <div class="row" *ngIf="game.state === 'Play'">
-            <div class="col-12">
-                <combination></combination>
+        @if (game.state === 'Play')
+        {
+            <div class="row">
+                <div class="col-12">
+                    <combination></combination>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </div>

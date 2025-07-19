@@ -1,10 +1,19 @@
-<div class="box-container" id="location" *ngIf="game.currentLocation?.description">
-    <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
-    <div textFeatures>
-        <img class="location-image" src="{{ 'resources/locations/' + game.currentLocation.id + '.png' }}" *ngIf="game.currentLocation.picture" alt="{{ game.currentLocation.name }}" />
-        <div class="location-text" [innerHTML]="game.currentLocation.description | safe: 'html'"></div>
+@if (game.currentLocation?.description)
+{
+    <div class="box-container" id="location">
+        <div class="box-title" [innerHTML]="texts.format(texts.youAreHere, [game.currentLocation.name]) | safe: 'html'"></div>
+        <div textFeatures>
+            @if (game.currentLocation.picture) 
+            {
+                <img class="location-image" src="{{ 'resources/locations/' + game.currentLocation.id + '.png' }}" alt="{{ game.currentLocation.name }}" />
+            }
+            <div class="location-text" [innerHTML]="game.currentLocation.description | safe: 'html'"></div>
+        </div>
+        <ul id="location-log" class="list-unstyled">
+            @for (message of game.currentLocation.log; track message)
+            {
+                <li [innerHTML]="message | safe: 'html'"></li>
+            }
+        </ul>
     </div>
-    <ul id="location-log" class="list-unstyled">
-        <li *ngFor="let message of log" [innerHTML]="message | safe: 'html'"></li>
-    </ul>
-</div>
+}

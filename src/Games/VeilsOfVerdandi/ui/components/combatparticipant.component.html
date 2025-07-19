@@ -6,12 +6,18 @@
         <p [ngClass]="{ 'enemy-health': participantType === 'enemy', 'character-health': participantType === 'character' }">
             {{ texts.format(hitpointText, [participant.currentHitpoints, participant.hitpoints]) }}
         </p>
-        <ul *ngIf="participant.effects.length > 0" class="effects">
-            <li *ngFor="let effect of participant.effects" class="{{ effect }}">{{ effect }}</li>
-        </ul>
+        @if (participant.effects.length > 0)
+        {
+            <ul class="effects">
+                @for (effect of participant.effects; track effect)
+                {
+                    <li class="{{ effect }}">{{ effect }}</li>
+                }
+            </ul>
+        }
     </div>
     @if (participant.picture) {
-        <img class="participant-image" src="{{ participant.picture }}" *ngIf="participant.picture" alt="{{ participant.name }}" />
+        <img class="participant-image" src="{{ participant.picture }}" alt="{{ participant.name }}" />
     }
     <div class="clearfix"></div>
 </div>

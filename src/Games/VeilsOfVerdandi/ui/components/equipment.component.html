@@ -1,31 +1,49 @@
-<div class="box-container" class="character-equipment" *ngIf="showEquipment()">
-    <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
-    <div class="equipment-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
-        <div class="row" *ngIf="isSlotUsed('amulet')">
-            <div class="col-12">
-                <div class="item-box" (click)="unequipItem(character.equipment.amulet)" [ngClass]="character.equipment.amulet ? '' : 'unavailable'">
-                    {{ getItemName(character.equipment.amulet) ?? texts.amulet }}
+@if (showEquipment())
+{
+    <div class="box-container" class="character-equipment">
+        <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
+        <div class="equipment-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
+            @if (isSlotUsed('amulet'))
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div class="item-box" (click)="unequipItem(character.equipment.amulet)" [ngClass]="character.equipment.amulet ? '' : 'unavailable'">
+                            {{ getItemName(character.equipment.amulet) ?? texts.amulet }}
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-12">
+                    @if (isSlotUsed('body'))
+                    {
+                        <div class="item-box" (click)="unequipItem(character.equipment.body)" [ngClass]="character.equipment.body ? '' : 'unavailable'">
+                            {{ getItemName(character.equipment.body) ?? texts.body }}
+                        </div>
+                    }
+                </div>
+                <div class="col-12">
+                    @if (isSlotUsed('rightRing'))
+                    {
+                        <div class="item-box" (click)="unequipItem(character.equipment.rightRing)" [ngClass]="character.equipment.rightRing ? '' : 'unavailable'">
+                            {{ getItemName(character.equipment.rightRing) ?? texts.rightRing }}
+                        </div>
+                    }
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="item-box" *ngIf="isSlotUsed('body')" (click)="unequipItem(character.equipment.body)" [ngClass]="character.equipment.body ? '' : 'unavailable'">
-                    {{ getItemName(character.equipment.body) ?? texts.body }}
+            @for (slot of customSlots(); track slot)
+            {
+                <div class="row">
+                    @if (isSlotUsed(slot))
+                    {
+                        <div class="col-12">
+                            <div class="item-box" (click)="unequipItem(character.equipment[slot])" [ngClass]="character.equipment[slot] ? '' : 'unavailable'">
+                                {{ getItemName(character.equipment[slot]) ?? texts[slot] }}
+                            </div>
+                        </div>
+                    }
                 </div>
-            </div>
-            <div class="col-12">
-                <div class="item-box" *ngIf="isSlotUsed('rightRing')" (click)="unequipItem(character.equipment.rightRing)" [ngClass]="character.equipment.rightRing ? '' : 'unavailable'">
-                    {{ getItemName(character.equipment.rightRing) ?? texts.rightRing }}
-                </div>
-            </div>
-        </div>
-        <div class="row" *ngFor="let slot of customSlots()">
-            <div class="col-12" *ngIf="isSlotUsed(slot)">
-                <div class="item-box" (click)="unequipItem(character.equipment[slot])" [ngClass]="character.equipment[slot] ? '' : 'unavailable'">
-                    {{ getItemName(character.equipment[slot]) ?? texts[slot] }}
-                </div>
-            </div>
+            }
         </div>
     </div>
-</div>
+}

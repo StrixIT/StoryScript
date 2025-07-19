@@ -1,6 +1,9 @@
 <div>
-    <div class="character-container" *ngFor="let character of party.characters" (click)="setActive(character)" [ngClass]="{ 'is-active': character.isActive, 'unavailable': character.currentHitpoints <= 0 }">
-        <character-sheet [character]="character"></character-sheet>
-    </div>
+    @for (character of party.characters; track character.name)
+    {
+        <div class="character-container" (click)="setActive(character)" [ngClass]="{ 'is-active': character.isActive, 'unavailable': character.currentHitpoints <= 0 }">
+            <character-sheet [character]="character"></character-sheet>
+        </div>
+    }
     <quests></quests>
 </div>

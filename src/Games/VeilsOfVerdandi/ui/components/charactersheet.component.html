@@ -4,8 +4,14 @@
         <div class="character-name">{{ character.name || texts.characterSheet }}</div>
         <div class="character-hitpoints">{{ texts.hitpoints }}
             <div class="hitpoint-editor">
-                <span *ngIf="!game.isDevelopment">{{ character.currentHitpoints }}</span>
-                <input *ngIf="game.isDevelopment" type="number" min="{{ 1 }}" max="{{ character.hitpoints }}" [(ngModel)]="character.currentHitpoints" (blur)="limitInput($event, character)">
+                @if (!game.isDevelopment)
+                {
+                    <span>{{ character.currentHitpoints }}</span>
+                }
+                @if (game.isDevelopment)
+                {
+                    <input type="number" min="{{ 1 }}" max="{{ character.hitpoints }}" [(ngModel)]="character.currentHitpoints" (blur)="limitInput($event, character)">
+                }
             </div>
             &nbsp;/ {{ character.hitpoints }}
         </div>
@@ -18,9 +24,12 @@
                     <img class="portrait" src="{{character.portraitFileName}}" />
                 </div>
                 <ul id="attributes-panel" class="list-unstyled">
-                    <li *ngFor="let attribute of displayCharacterAttributes">
-                        {{ texts.titleCase(texts.format(attribute)) }} {{ character[attribute] }}
-                    </li>
+                    @for (attribute of displayCharacterAttributes; track attribute)
+                    {
+                        <li>
+                            {{ texts.titleCase(texts.format(attribute)) }} {{ character[attribute] }}
+                        </li>
+                    }
                 </ul>
             </div>
             <equipment [character]="character" class="col-6"></equipment>
