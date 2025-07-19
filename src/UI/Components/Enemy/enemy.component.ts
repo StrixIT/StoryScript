@@ -1,7 +1,7 @@
 import {IEnemy, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {Component, computed, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {SharedModule} from "ui/Modules/sharedModule.ts";
 
@@ -24,8 +24,8 @@ export class EnemyComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    enemiesPresent = computed((): boolean => this._sharedMethodService.enemiesPresent());
-    
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
     tryCombine = (enemy: IEnemy): boolean => this._sharedMethodService.tryCombine(enemy);

@@ -26,8 +26,5 @@ export class PartyComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    setActive(character: ICharacter) {
-        this.game.activeCharacter = character;
-    }
-
+    setActive = (character: ICharacter) => this.game.activeCharacter = character;
 }

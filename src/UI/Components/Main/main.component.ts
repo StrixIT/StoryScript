@@ -2,7 +2,7 @@ import {IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {GameService} from 'storyScript/Services/GameService';
-import {Component, ElementRef, inject} from '@angular/core';
+import {Component, computed, ElementRef, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {STORYSCRIPT_COMPONENTS} from "ui/storyScriptDirectives.ts";
 import {SharedModule} from "ui/Modules/sharedModule.ts";
@@ -34,8 +34,8 @@ export class MainComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
-
+    showCharacterPane = computed((): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests);
+    
     private readonly stopAutoplay = () => {
         const mediaElements = this._hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
         mediaElements.forEach((m: HTMLAudioElement) => m.pause());

@@ -32,11 +32,11 @@ export class ExplorationComponent {
     texts: IInterfaceTexts;
     confirmAction: [string, IAction];
 
-    changeLocation = (location: string): void => this.game.changeLocation(location, true);
+    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
 
     actionsPresent = (): boolean => this.game.currentLocation && !this.enemiesPresent() && !isEmpty(this.game.currentLocation.actions);
 
-    enemiesPresent = (): boolean => this._sharedMethodService.enemiesPresent();
+    changeLocation = (location: string): void => this.game.changeLocation(location, true);
 
     getButtonClass = (action: [string, IAction]): string => this._sharedMethodService.getButtonClass(action);
 

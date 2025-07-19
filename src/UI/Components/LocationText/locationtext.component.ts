@@ -33,10 +33,6 @@ export class LocationTextComponent {
 
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
 
-    get log() {
-        return this.game.currentLocation.log
-    };
-
     private readonly initWorldProperties = (): void => {
         for (const n in this.game.worldProperties) {
             if (this.game.worldProperties.hasOwnProperty(n) && this.texts.worldProperties?.hasOwnProperty(n)) {

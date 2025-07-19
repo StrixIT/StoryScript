@@ -1,4 +1,4 @@
-import {Component, computed, ElementRef, inject, Input} from '@angular/core';
+import {Component, ElementRef, inject, Input} from '@angular/core';
 import {IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import type {IModalSettings} from '../modalSettings';
@@ -38,7 +38,7 @@ export class EncounterModalComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    canClose = computed((): boolean => this.settings.canClose = this.game.currentLocation?.activeEnemies?.length === 0 || this.settings.description !== undefined);
+    canClose = (): boolean => this.settings.canClose = this.game.currentLocation?.activeEnemies?.length === 0 || this.settings.description !== undefined;
 
     closeModal = (): void => this.game.playState = null;
 }

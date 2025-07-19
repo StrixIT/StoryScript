@@ -2,7 +2,7 @@ import {ICreateCharacterStep, IGame, IInterfaceTexts, IRules} from 'storyScript/
 import {GameService} from 'storyScript/Services/GameService';
 import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {Component, computed, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {BuildCharacterComponent} from "../BuildCharacter/buildcharacter.component.ts";
 import {SharedModule} from "ui/Modules/sharedModule.ts";
@@ -29,8 +29,8 @@ export class CreateCharacterComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
-    
-    titleText = computed((): string => {
+
+    titleText = (): string => {
         if (this._rules.setup.numberOfCharacters > 1) {
             switch (this.game.party?.characters.length || 0) {
                 case 0:
@@ -45,15 +45,15 @@ export class CreateCharacterComponent {
         }
 
         return this.texts.newGame;
-    });
+    };
 
-    startText = computed((): string => {
+    startText = (): string => {
         if (this._rules.setup.numberOfCharacters > 1 && (!this.game.party || this.game.party?.characters.length < this._rules.setup.numberOfCharacters - 1)) {
             return this.texts.nextCharacter;
         }
 
         return this.texts.startAdventure;
-    });
+    };
 
     distributionDone = (step: ICreateCharacterStep): boolean => this._characterService.distributionDone(this.game.createCharacterSheet, step);
 
