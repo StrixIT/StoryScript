@@ -4,13 +4,12 @@ import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {FormsModule} from "@angular/forms";
-import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'build-character',
-    imports: [FormsModule, SafePipe],
+    imports: [SharedModule],
     template: getTemplate('buildcharacter', await import('./buildcharacter.component.html?raw'))
 })
 export class BuildCharacterComponent {

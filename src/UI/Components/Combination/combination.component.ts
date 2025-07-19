@@ -3,10 +3,12 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {CombinationService} from 'storyScript/Services/CombinationService';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'combination',
+    imports: [SharedModule],
     template: getTemplate('combination', await import('./combination.component.html?raw'))
 })
 export class CombinationComponent {

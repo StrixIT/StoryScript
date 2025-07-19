@@ -5,7 +5,7 @@
         <div class="box-title">{{ texts.combinations }}</div>
         <div class="row">
             <ul class="list-unstyled col-3">
-                @for (c of combineActions; track c)
+                @for (c of combineActions; track c.text)
                 {
                     <button type="button" class="btn" [ngClass]="getCombineClass(c)" (click)="selectCombinationAction(c)">{{c.text}}</button>
                 }

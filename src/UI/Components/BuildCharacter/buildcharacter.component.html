@@ -5,21 +5,21 @@
             @if (step.description) {
                 <div class="step-description" [innerHTML]="step.description | safe: 'html'"></div>
             }
-            @for (question of step.questions; track question)
+            @for (question of step.questions; track question.question)
             {
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <label class="input-group-text">{{ question.question }}</label>
                     </div>
                     <select class="custom-select" [(ngModel)]="question.selectedEntry" (ngModelChange)="sheet.nextStep(sheet, false)">
-                        @for (entry of question.entries; track entry)
+                        @for (entry of question.entries; track entry.text)
                         {
                             <option [ngValue]="entry" >{{ entry.text }}</option>
                         }
                     </select>
                 </div>
             }
-            @for (attribute of step.attributes; track attribute)
+            @for (attribute of step.attributes; track attribute.question)
             {
                 <div>
                     @if (attribute.entries.length > 1)
@@ -28,7 +28,7 @@
                             <span class="attribute-header">{{ attribute.question }}</span>
                         </div>
                     }
-                    @for (entry of attribute.entries; track entry)
+                    @for (entry of attribute.entries; track entry.attribute)
                     {
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">

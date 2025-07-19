@@ -1,14 +1,14 @@
-import { IGame, IInterfaceTexts, IItem, IEnemy } from 'storyScript/Interfaces/storyScript';
-import { SharedMethodService } from '../../Services/SharedMethodService';
-import { ServiceFactory } from 'storyScript/ServiceFactory.ts';
-import { Component, inject } from '@angular/core';
-import { getTemplate } from '../../helpers';
-import {CommonModule} from "@angular/common";
+import {IEnemy, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
+import {SharedMethodService} from '../../Services/SharedMethodService';
+import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
+import {Component, inject} from '@angular/core';
+import {getTemplate} from '../../helpers';
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'enemy',
-    imports: [CommonModule],
+    imports: [SharedModule],
     template: getTemplate('enemy', await import('./enemy.component.html?raw'))
 })
 export class EnemyComponent {
@@ -32,7 +32,7 @@ export class EnemyComponent {
 
     hasDescription = (enemy: IEnemy): boolean => this._sharedMethodService.hasDescription(enemy);
 
-    showDescription = (enemy: IEnemy, title: string): void => this._sharedMethodService.showDescription('enemy', enemy, title);  
+    showDescription = (enemy: IEnemy, title: string): void => this._sharedMethodService.showDescription('enemy', enemy, title);
 
     startCombat = (): void => this._sharedMethodService.startCombat();
 }

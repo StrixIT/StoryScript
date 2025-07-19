@@ -20,7 +20,7 @@
                 @for (characterRow of  characterRows; track characterRow)
                 {
                     <div class="row character-row">
-                        @for (turn of  characterRow; track turn)
+                        @for (turn of  characterRow; track turn.character.name)
                         {
                             <div class="col-4" [ngClass]="{ 'unavailable': turn.character.currentHitpoints <= 0 }">
                                 <combat-participant [participant]="turn.character"></combat-participant>

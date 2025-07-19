@@ -3,12 +3,12 @@ import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core'
 import {getTemplate} from '../../helpers';
-import {CommonModule} from "@angular/common";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'encounter',
-    imports: [CommonModule],
+    imports: [SharedModule],
     template: getTemplate('encounter', await import('./encounter.component.html?raw'))
 })
 export class EncounterComponent {

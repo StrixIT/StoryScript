@@ -8,6 +8,8 @@ import {CombinationComponent} from "ui/Components/Combination/combination.compon
 import {ConversationComponent} from "ui/Components/Conversation/conversation.component.ts";
 import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 import {CreateCharacterComponent} from "ui/Components/CreateCharacter/createcharacter.component.ts";
+import {EncounterComponent} from "ui/Components/Encounter/encounter.component.ts";
+import {EncounterModalComponent} from "ui/Components/EncounterModal/encountermodal.component.ts";
 
 export const STORYSCRIPT_COMPONENTS = [
     SafePipe,
@@ -19,5 +21,7 @@ export const STORYSCRIPT_COMPONENTS = [
     CombatParticipantComponent,
     CombinationComponent,
     ConversationComponent,
-    CreateCharacterComponent
+    CreateCharacterComponent,
+    EncounterComponent,
+    EncounterModalComponent
 ] as const;

@@ -5,11 +5,12 @@ import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
 import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'backpack',
-    imports: [NgbCollapse],
+    imports: [SharedModule, NgbCollapse],
     template: getTemplate('backpack', await import('./backpack.component.html?raw'))
 })
 export class BackpackComponent {

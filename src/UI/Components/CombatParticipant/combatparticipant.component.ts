@@ -6,10 +6,12 @@ import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'combat-participant',
+    imports: [SharedModule],
     template: getTemplate('combatparticipant', await import('./combatparticipant.component.html?raw'))
 })
 export class CombatParticipantComponent {

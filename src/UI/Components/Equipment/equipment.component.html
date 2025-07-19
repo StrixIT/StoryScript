@@ -1,81 +1,135 @@
 @let equipment = character.equipment;
-<div class="character-equipment box-container" *ngIf="showEquipment()">
-    <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
-    <div class="equipment-panel collapse navbar-collapse" [ngbCollapse]="isCollapsed">
-        <div class="row" *ngIf="isSlotUsed('head')">
-            <div class="col-12">
-                <div>
-                    {{ texts.head }}
+@if (showEquipment())
+{
+    <div class="character-equipment box-container">
+        <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
+        <div class="equipment-panel collapse navbar-collapse" [ngbCollapse]="isCollapsed">
+            @if (isSlotUsed('head'))
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            {{ texts.head }}
+                        </div>
+                        <div class="item-box" (click)="unequipItem(equipment.head)">
+                            {{ getItemName(equipment.head) }}
+                        </div>
+                    </div>
                 </div>
-                <div class="item-box" (click)="unequipItem(equipment.head)">
-                    {{ getItemName(equipment.head) }}
+            }
+            @if (isSlotUsed('amulet'))
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            {{ texts.amulet }}
+                        </div>
+                        <div class="item-box" (click)="unequipItem(equipment.amulet)">
+                            {{ getItemName(equipment.amulet) }}
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-3">
+                    @if (isSlotUsed(['hands', 'rightHand', 'rightRing']))
+                    {
+                        <span>{{ texts.rightHand }}</span>
+                    }
+                </div>
+                <div class="col-6">
+                    @if (isSlotUsed('body'))
+                    {
+                        <span>{{ texts.body }}</span>
+                    }
+                </div>
+                <div class="col-3">
+                    @if (isSlotUsed(['hands', 'leftHand', 'leftRing']))
+                    {
+                        <span>{{ texts.leftHand }}</span>
+                    }
+                </div>
+                <div class="col-3">
+                    @if (isSlotUsed('hands'))
+                    {
+                        <div class="item-box" (click)="unequipItem(equipment.hands)">{{ getItemName(equipment.hands) }}</div>
+                    }
+                    @if (isSlotUsed('rightHand'))
+                    {
+                        <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'rightRing']) }" (click)="unequipItem(equipment.rightHand)">{{ getItemName(equipment.rightHand) }}</div>
+                    }
+                    @if (isSlotUsed('rightRing'))
+                    {
+                        <div class="item-box" (click)="unequipItem(equipment.rightRing)">{{ getItemName(equipment.rightRing) }}</div>
+                    }
+                </div>
+                <div class="col-6">
+                    @if ((isSlotUsed(['rightHand', 'leftHand'])) && isSlotUsed('hands'))
+                    {
+                        <div class="item-box no-border"></div>
+                    }
+                    @if (isSlotUsed('body'))
+                    {
+                        <div class="item-box" (click)="unequipItem(equipment.body)">{{ getItemName(equipment.body) }}</div>
+                    }
+                </div>
+                <div class="col-3">
+                    @if (isSlotUsed('hands'))
+                    {
+                        <div class="item-box" (click)="unequipItem(equipment.hands)">{{ getItemName(equipment.hands) }}</div>
+                    }
+                    @if (isSlotUsed('leftHand'))
+                    {
+                        <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'leftRing']) }" (click)="unequipItem(equipment.leftHand)">{{getItemName(equipment.leftHand) }}</div>
+                    }
+                    @if (isSlotUsed('leftRing'))
+                    {
+                        <div class="item-box" (click)="unequipItem(equipment.leftRing)">{{ getItemName(equipment.leftRing) }}</div>
+                    }
                 </div>
             </div>
-        </div>
-        <div class="row" *ngIf="isSlotUsed('amulet')">
-            <div class="col-12">
-                <div>
-                    {{ texts.amulet }}
+            @if (isSlotUsed('legs'))
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            {{ texts.legs }}
+                        </div>
+                        <div class="item-box" (click)="unequipItem(equipment.legs)">
+                            {{ getItemName(equipment.legs) }}
+                        </div>
+                    </div>
                 </div>
-                <div class="item-box" (click)="unequipItem(equipment.amulet)">
-                    {{ getItemName(equipment.amulet) }}
+            }
+            @if (isSlotUsed('feet'))
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            {{ texts.feet }}
+                        </div>
+                        <div class="item-box" (click)="unequipItem(equipment.feet)">
+                            {{ getItemName(equipment.feet) }}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-3">
-                <span *ngIf="isSlotUsed(['hands', 'rightHand', 'rightRing'])">{{ texts.rightHand }}</span>
-            </div>
-            <div class="col-6">
-                <span *ngIf="isSlotUsed('body')">{{ texts.body }}</span>
-            </div>
-            <div class="col-3">
-                <span *ngIf="isSlotUsed(['hands', 'leftHand', 'leftRing'])">{{ texts.leftHand }}</span>
-            </div>
-            <div class="col-3">
-                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(equipment.hands)">{{ getItemName(equipment.hands) }}</div>
-                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'rightRing']) }" *ngIf="isSlotUsed('rightHand')" (click)="unequipItem(equipment.rightHand)">{{ getItemName(equipment.rightHand) }}</div>
-                <div class="item-box" *ngIf="isSlotUsed('rightRing')" (click)="unequipItem(equipment.rightRing)">{{ getItemName(equipment.rightRing) }}</div>
-            </div>
-            <div class="col-6">
-                <div class="item-box no-border" *ngIf="(isSlotUsed(['rightHand', 'leftHand'])) && isSlotUsed('hands')"></div>
-                <div class="item-box" *ngIf="isSlotUsed('body')" (click)="unequipItem(equipment.body)">{{ getItemName(equipment.body) }}</div>
-            </div>
-            <div class="col-3">
-                <div class="item-box" *ngIf="isSlotUsed('hands')" (click)="unequipItem(equipment.hands)">{{ getItemName(equipment.hands) }}</div>
-                <div class="item-box" [ngClass]="{ 'side-borders' : isSlotUsed(['hands', 'leftRing']) }" *ngIf="isSlotUsed('leftHand')" (click)="unequipItem(equipment.leftHand)">{{getItemName(equipment.leftHand) }}</div>
-                <div class="item-box" *ngIf="isSlotUsed('leftRing')" (click)="unequipItem(equipment.leftRing)">{{ getItemName(equipment.leftRing) }}</div>
-            </div>
-        </div>
-        <div class="row" *ngIf="isSlotUsed('legs')">
-            <div class="col-12">
-                <div>
-                    {{ texts.legs }}
-                </div>
-                <div class="item-box" (click)="unequipItem(equipment.legs)">
-                    {{ getItemName(equipment.legs) }}
-                </div>
-            </div>
-        </div>
-        <div class="row" *ngIf="isSlotUsed('feet')">
-            <div class="col-12">
-                <div>
-                    {{ texts.feet }}
-                </div>
-                <div class="item-box" (click)="unequipItem(equipment.feet)">
-                    {{ getItemName(equipment.feet) }}
-                </div>
-            </div>
-        </div>
-        <div class="row" *ngFor="let slot of customSlots()">
-            <div class="col-12" *ngIf="isSlotUsed(slot)">
-                <div>
-                    {{ texts[slot] }}
-                </div>
-                <div class="item-box" (click)="unequipItem(equipment[slot])">
-                    {{ getItemName(equipment[slot]) }}
-                </div>
-            </div>
+            }
+            @for (slot of customSlots(); track slot)
+            {
+                @if (isSlotUsed(slot))
+                {
+                    <div class="row">
+                        <div class="col-12">
+                            <div>
+                                {{ texts[slot] }}
+                            </div>
+                            <div class="item-box" (click)="unequipItem(equipment[slot])">
+                                {{ getItemName(equipment[slot]) }}
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
-</div>
+}
