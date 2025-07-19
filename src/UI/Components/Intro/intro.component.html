@@ -1,5 +1,8 @@
-<div class="box-container" id="intro" *ngIf="game.state === 'Intro'">
-    <h2>Game introduction</h2>
-    <p>Please copy the IntroComponent.html file to your game and add your introduction here.</p>
-    <button type="button" class="btn btn-primary" (click)="endIntro()">{{ texts.skipIntro }}</button>
-</div>
+@if (game.state === 'Intro')
+{
+    <div class="box-container" id="intro">
+        <h2>Game introduction</h2>
+        <p>Please copy the IntroComponent.html file to your game and add your introduction here.</p>
+        <button type="button" class="btn btn-primary" (click)="endIntro()">{{ texts.skipIntro }}</button>
+    </div>
+}

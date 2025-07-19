@@ -1,9 +1,15 @@
 @let items = game.currentLocation.activeItems;
-<div class="box-container" id="exploration-onground" *ngIf="!enemiesPresent() && items.length">
-    <div class="box-title">{{ texts.onTheGround }}</div>
-    <ul class="list-unstyled">
-        <li *ngFor="let item of items" (click)="pickupItem(item)" [ngClass]="getCombineClass(item)">
-            {{ getItemName(item) }}
-        </li>
-    </ul>
-</div>
+@if (!enemiesPresent() && items.length)
+{
+    <div class="box-container" id="exploration-onground">
+        <div class="box-title">{{ texts.onTheGround }}</div>
+        <ul class="list-unstyled">
+            @for (item of items; track item.id)
+            {
+                <li (click)="pickupItem(item)" [ngClass]="getCombineClass(item)">
+                    {{ getItemName(item) }}
+                </li>
+            }
+        </ul>
+    </div>
+}

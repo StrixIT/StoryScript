@@ -1,29 +1,17 @@
-import {
-    ActionStatus,
-    IAction,
-    IBarrier,
-    IBarrierAction,
-    IDestination,
-    IGame,
-    IInterfaceTexts,
-    IPerson,
-    IRules,
-    ITrade
-} from 'storyScript/Interfaces/storyScript';
+import {ActionStatus, IAction, IBarrier, IBarrierAction, IDestination, IGame, IInterfaceTexts, IPerson, IRules, ITrade} from 'storyScript/Interfaces/storyScript';
 import {isEmpty} from 'storyScript/utilityFunctions';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {DataService} from "storyScript/Services/DataService.ts";
-import {CommonModule} from "@angular/common";
 import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";
-import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'exploration',
-    imports: [CommonModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem, SafePipe],
+    imports: [SharedModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
     template: getTemplate('exploration', await import('./exploration.component.html?raw'))
 })
 export class ExplorationComponent {
@@ -59,11 +47,11 @@ export class ExplorationComponent {
     hideActionButton = (action: [string, IAction]): boolean => this.checkStatus(action, ActionStatus.Unavailable);
 
     cancelAction = (): void => this.confirmAction = undefined;
-    
+
     executeAction = (action: [string, IAction]): void => {
         if (action[1].confirmationText && !this.confirmAction) {
             this.confirmAction = action;
-            return;    
+            return;
         }
 
         this.confirmAction = undefined;
@@ -86,7 +74,7 @@ export class ExplorationComponent {
     isPreviousLocation = (destination: IDestination): boolean => {
         return (<any>destination).isPreviousLocation
     };
-    
+
     private checkStatus = (action: [string, IAction], status: ActionStatus) => {
         return typeof action[1].status === 'function' ? (<any>action[1]).status(this.game) == status : action[1].status == undefined ? false : action[1].status == status;
     }

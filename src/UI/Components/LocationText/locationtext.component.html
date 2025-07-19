@@ -7,7 +7,10 @@
             <div [innerHTML]="location.description | safe: 'html'"></div>
         </div>
         <ul id="location-log" class="list-unstyled">
-            <li *ngFor="let message of log" [innerHTML]="message | safe: 'html'"></li>
+            @for (message of log; track message)
+            {
+                <li [innerHTML]="message | safe: 'html'"></li>
+            }
         </ul>
     </div>
 }

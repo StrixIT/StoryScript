@@ -2,12 +2,12 @@ import {IGame, IInterfaceTexts} from 'storyScript/Interfaces/storyScript';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {CommonModule} from "@angular/common";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'highscores',
-    imports: [CommonModule],
+    imports: [SharedModule],
     template: getTemplate('highscores', await import('./highscores.component.html?raw'))
 })
 export class HighScoresComponent {
