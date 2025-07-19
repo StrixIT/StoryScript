@@ -2,16 +2,16 @@ import {DefaultEquipment, ICharacter, IGame, IInterfaceTexts, IItem} from 'story
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {Component, inject, Input} from '@angular/core';
+import {Component, computed, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
-import {CommonModule} from "@angular/common";
 import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'equipment',
-    imports: [CommonModule, NgbCollapse],
+    imports: [SharedModule, NgbCollapse],
     template: getTemplate('equipment', await import('./equipment.component.html?raw'))
 })
 export class EquipmentComponent {
@@ -33,7 +33,12 @@ export class EquipmentComponent {
     game: IGame;
     texts: IInterfaceTexts;
 
-    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
+    showEquipment = computed((): boolean => this._sharedMethodService.showEquipment(this.character));
+
+    customSlots = computed((): string[] => {
+        const defaultSlots = Object.keys(new DefaultEquipment());
+        return Object.keys(this.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
+    });
 
     getItemName = (item: IItem): string => this._itemService.getItemName(item);
 
@@ -42,10 +47,5 @@ export class EquipmentComponent {
     isSlotUsed = (slot: string | string[]): boolean => {
         const slots = Array.isArray(slot) ? slot : [slot];
         return slots.find(s => this._characterService.isSlotUsed(this.character, s)) !== undefined;
-    }
-
-    customSlots = () => {
-        const defaultSlots = Object.keys(new DefaultEquipment());
-        return Object.keys(this.character.equipment).filter(e => defaultSlots.indexOf(e) === -1)
     }
 }

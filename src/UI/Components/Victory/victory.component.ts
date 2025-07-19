@@ -4,12 +4,12 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {HighScoresComponent} from "../HighScores/highscores.component.ts";
-import {CommonModule} from "@angular/common";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'victory',
-    imports: [CommonModule, HighScoresComponent],
+    imports: [SharedModule, HighScoresComponent],
     template: getTemplate('victory', await import('./victory.component.html?raw'))
 })
 export class VictoryComponent {

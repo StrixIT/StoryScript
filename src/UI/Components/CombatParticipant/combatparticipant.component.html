@@ -4,4 +4,7 @@
 <p [ngClass]="{ 'enemy-health': participantType === 'enemy', 'character-health': participantType === 'character' }" class="">
     {{ texts.format(hitpointText, [participant.currentHitpoints, participant.hitpoints]) }}
 </p>
-<img src="{{ participant.picture }}" *ngIf="participant.picture" alt="participant.name" />
+@if (participant.picture)
+{
+    <img src="{{ participant.picture }}" alt="participant.name" />
+}

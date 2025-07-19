@@ -1,12 +1,4 @@
-import {
-    IAction,
-    ICharacter,
-    ICombatTurn,
-    IEnemy,
-    IGame,
-    IInterfaceTexts,
-    IItem
-} from 'storyScript/Interfaces/storyScript';
+import {IAction, ICharacter, ICombatTurn, IEnemy, IGame, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
@@ -14,13 +6,12 @@ import {getTemplate} from '../../helpers';
 import {CombatService} from "storyScript/Services/CombatService.ts";
 import {ItemService} from "storyScript/Services/ItemService.ts";
 import {CombatParticipantComponent} from "../CombatParticipant/combatparticipant.component.ts";
-import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'combat',
-    imports: [CommonModule, FormsModule, CombatParticipantComponent],
+    imports: [SharedModule, CombatParticipantComponent],
     template: getTemplate('combat', await import('./combat.component.html?raw'))
 })
 export class CombatComponent {

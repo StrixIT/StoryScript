@@ -10,6 +10,7 @@ export interface IGame extends StoryScriptIGame {
         get?(id?: string | (() => ILocation) | ICompiledLocation): ICompiledLocation;
     };
     worldProperties: {
+        type: string;
         takenFlask: boolean;
     },
     currentLocation: ICompiledLocation;

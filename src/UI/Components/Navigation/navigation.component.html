@@ -4,25 +4,30 @@
             <h1>{{ texts.gameName }}</h1>
         </div>
         <div class="col-4">
-            <input 
-                *ngIf="game.isDevelopment && locations.length > 1"
-                id="location-selector" 
-                type="text" 
-                class="form-control" 
-                [(ngModel)]="model" 
-                [ngbTypeahead]="search"
-                [inputFormatter]="formatter"
-                [resultFormatter]="formatter"
-                [editable]="false"
-                placeholder="Jump to location..."
-                (focus)="focus$.next($any($event).target.value)"
-                (click)="click$.next($any($event).target.value)"
-                (selectItem)="jumpToLocation($event)"
-                #instance="ngbTypeahead"
-            />
+            @if (game.isDevelopment && locations.length > 1)
+            {
+                <input
+                    id="location-selector" 
+                    type="text" 
+                    class="form-control" 
+                    [(ngModel)]="model" 
+                    [ngbTypeahead]="search"
+                    [inputFormatter]="formatter"
+                    [resultFormatter]="formatter"
+                    [editable]="false"
+                    placeholder="Jump to location..."
+                    (focus)="focus$.next($any($event).target.value)"
+                    (click)="click$.next($any($event).target.value)"
+                    (selectItem)="jumpToLocation($event)"
+                    #instance="ngbTypeahead"
+                />
+            }
             <div class="float-right">                           
                 <button type="button" class="btn btn-dark btn-sm" (click)="menu()">{{ texts.mainMenuShort }}</button>
-                <button *ngIf="game.isDevelopment" id="resetbutton" type="button" class="btn btn-danger btn-sm" (click)="reset()">{{ texts.resetWorld }}</button>
+                @if (game.isDevelopment)
+                {
+                    <button id="resetbutton" type="button" class="btn btn-danger btn-sm" (click)="reset()">{{ texts.resetWorld }}</button>
+                }
             </div>
             <div class="float-none"></div>
         </div>

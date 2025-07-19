@@ -7,43 +7,73 @@
     </button>
 </div>
 <div class="modal-body">
-    <div id="mainmenu" *ngIf="state === 'Menu'">
-        <button type="button" class="btn btn-outline-dark btn-lg" *ngIf="game.state !== 'CreateCharacter'" (click)="save()">{{ texts.saveGame }}</button>
-        <button type="button" class="btn btn-outline-dark btn-lg" (click)="load()">{{ texts.loadGame }}</button>
-        <button type="button" class="btn btn-outline-danger btn-lg" (click)="restart()">{{ texts.startOver }}</button>
-    </div>
-    <div id="confirmrestart" *ngIf="state === 'ConfirmRestart'">
-        <h4>
-            {{ texts.confirmRestart }}
-        </h4>
-        <button type="button" class="btn btn-outline-dark btn-lg" (click)="cancel()">{{ texts.restartCancelled }}</button>
-        <button type="button" class="btn btn-outline-danger btn-lg" (click)="restartConfirmed()">{{ texts.restartConfirmed }}</button>
-    </div>
-    <div *ngIf="state === 'Save' || state === 'Load'">
-        <div class="row">
-            <div id="save-game" class="col-12">
-                <p>{{ texts.existingSaveGames }}</p>
-                <ul class="list-unstyled">
-                    <li *ngFor="let key of saveKeys">
-                        <span (click)="setSelected(key)">{{ key }}</span>
-                    </li>
-                </ul>
-                <div *ngIf="state === 'Save'">
-                    <p>{{ texts.newSaveGame }}</p>
-                    <input class="col-md-8 question-input" type="text" [(ngModel)]="selectedGame" />
+    @if (state === 'Menu')
+    {
+        <div id="mainmenu">
+            @if (game.state !== 'CreateCharacter')
+            {
+                <button type="button" class="btn btn-outline-dark btn-lg" (click)="save()">{{ texts.saveGame }}</button>
+            }
+            <button type="button" class="btn btn-outline-dark btn-lg" (click)="load()">{{ texts.loadGame }}</button>
+            <button type="button" class="btn btn-outline-danger btn-lg" (click)="restart()">{{ texts.startOver }}</button>
+        </div>
+    }
+    @if (state === 'ConfirmRestart')
+    {
+        <div id="confirmrestart">
+            <h4>
+                {{ texts.confirmRestart }}
+            </h4>
+            <button type="button" class="btn btn-outline-dark btn-lg" (click)="cancel()">{{ texts.restartCancelled }}</button>
+            <button type="button" class="btn btn-outline-danger btn-lg" (click)="restartConfirmed()">{{ texts.restartConfirmed }}</button>
+        </div>
+    }
+    @if (state === 'Save' || state === 'Load')
+    {
+        <div>
+            <div class="row">
+                <div id="save-game" class="col-12">
+                    <p>{{ texts.existingSaveGames }}</p>
+                    <ul class="list-unstyled">
+                        @for (key of saveKeys; track key)
+                        {
+                            <li>
+                                <span (click)="setSelected(key)">{{ key }}</span>
+                            </li>
+                        }
+                    </ul>
+                    @if (state === 'Save')
+                    {
+                        <div>
+                            <p>{{ texts.newSaveGame }}</p>
+                            <input class="col-md-8 question-input" type="text" [(ngModel)]="selectedGame" />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    @if (state === 'Save' && overwriteSelected())
+                    {
+                        <p class="alert alert-danger" >{{ texts.format(texts.overwriteSaveGame, [selectedGame]) }}</p>
+                    }
+                    @if (state === 'Load' && selectedGame)
+                    {
+                        <p class="alert alert-success">{{ texts.format(texts.loadSaveGame, [selectedGame]) }}</p>
+                    }
+                    @if (state === 'Save')
+                    {
+                        <button type="button" class="btn btn-primary save-button" (click)="saveGame()" [disabled]="!selectedGame">{{ texts.save }}</button>
+                    }
+                    @if (state === 'Load')
+                    {
+                        <button type="button" class="btn btn-primary save-button" (click)="loadGame()" [disabled]="!selectedGame">{{ texts.load }}</button>
+                    }
+                    <button type="button" class="btn btn-primary save-button" (click)="cancel()">{{ texts.cancel }}</button>            
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <p class="alert alert-danger" *ngIf="state === 'Save' && overwriteSelected()">{{ texts.format(texts.overwriteSaveGame, [selectedGame]) }}</p>
-                <p class="alert alert-success" *ngIf="state === 'Load' && selectedGame">{{ texts.format(texts.loadSaveGame, [selectedGame]) }}</p>
-                <button *ngIf="state === 'Save'" type="button" class="btn btn-primary save-button" (click)="saveGame()" [disabled]="!selectedGame">{{ texts.save }}</button>
-                <button *ngIf="state === 'Load'" type="button" class="btn btn-primary save-button" (click)="loadGame()" [disabled]="!selectedGame">{{ texts.load }}</button>            
-                <button type="button" class="btn btn-primary save-button" (click)="cancel()">{{ texts.cancel }}</button>            
-            </div>
-        </div>
-    </div>
+    }
 </div>
 <div class="modal-footer">
 </div>

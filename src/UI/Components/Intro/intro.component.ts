@@ -3,13 +3,12 @@ import {GameService} from 'storyScript/Services/GameService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {CommonModule} from "@angular/common";
-import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'intro',
-    imports: [CommonModule, SafePipe],
+    imports: [SharedModule],
     template: getTemplate('intro', await import('./intro.component.html?raw'))
 })
 export class IntroComponent {
