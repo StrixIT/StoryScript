@@ -108,7 +108,7 @@ function setTime(game: IGame) {
         game.worldProperties.isDay = true;
         game.worldProperties.isNight = false;
         game.UIRootElement.classList.add('day');
-    } else {
+    } else if (game.worldProperties.timeOfDay === 'night') {
         game.worldProperties.isDay = false;
         game.worldProperties.isNight = true;
         game.UIRootElement.classList.add('night');
