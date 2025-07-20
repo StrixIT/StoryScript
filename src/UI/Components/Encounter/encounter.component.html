@@ -3,7 +3,7 @@
     <div class="box-container" id="encounters">
         <div class="box-title">{{ texts.encounters }}</div>
         <ul class="list-unstyled">
-            @for (person of game.currentLocation.activePersons; track person.id)
+            @for (person of game.currentLocation.activePersons; track person)
             {
                 <li (click)="tryCombine(person)" [ngClass]="getCombineClass(person)">
                     <span class="person-name">{{ person.name }}</span>

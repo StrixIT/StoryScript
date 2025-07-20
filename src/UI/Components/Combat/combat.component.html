@@ -20,7 +20,7 @@
                 @for (characterRow of  characterRows; track characterRow)
                 {
                     <div class="row character-row">
-                        @for (turn of  characterRow; track turn.character.name)
+                        @for (turn of  characterRow; track turn.character)
                         {
                             <div class="col-4" [ngClass]="{ 'unavailable': turn.character.currentHitpoints <= 0 }">
                                 <combat-participant [participant]="turn.character"></combat-participant>
@@ -32,7 +32,7 @@
                                             @if (filteredTargets(turn).length > 1)
                                             {
                                                 <select class="custom-select" [(ngModel)]="turn.target">
-                                                    @for (target of filteredTargets(turn); track target.id)
+                                                    @for (target of filteredTargets(turn); track target)
                                                     {
                                                         <option [ngValue]="target" >{{ target.name }}</option>
                                                     }
@@ -50,7 +50,7 @@
                                                 @if (turn.itemsAvailable.length > 1)
                                                 {
                                                     <select class="custom-select" (ngModelChange)="itemChange($event, turn)" [(ngModel)]="turn.item">
-                                                        @for (item of turn.itemsAvailable; track item.id)
+                                                        @for (item of turn.itemsAvailable; track item)
                                                         {
                                                             <option [ngValue]="item" disabled="{{ itemSelectable(item) ? '' : 'true' }}" [ngClass]="{'unselectable': !itemSelectable(item)}" >{{ getItemName(item) }}</option>
                                                         }
@@ -99,7 +99,7 @@
                     <li>
                         <span class="enemies-defeated-header">{{ texts.enemiesDefeated }}</span>
                         <ul>
-                            @for (enemy of combat.winnings.enemiesDefeated; track enemy.id)
+                            @for (enemy of combat.winnings.enemiesDefeated; track enemy)
                             {
                                 <li>{{ enemy.name }}</li>
                             }
@@ -114,7 +114,7 @@
                     <li>
                             <span class="items-taken-header">{{ texts.itemsTaken }}</span>
                             <ul>
-                                @for (item of combat.winnings.itemsWon; track item.id)
+                                @for (item of combat.winnings.itemsWon; track item)
                                 {
                                     <li>{{ item.name }}</li>
                                 }

@@ -6,7 +6,7 @@
             @if (game.state === 'Play')
             {
                 <div id="party-container" [ngClass]="{ 'col-4': showCharacterPane() }">
-                    @for (character of game.party.characters; track character.name)
+                    @for (character of game.party.characters; track character)
                     {
                         <div>
                             <backpack [character]="character"></backpack>
