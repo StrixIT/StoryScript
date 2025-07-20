@@ -9,7 +9,7 @@
                 @for (enemyRow of  enemyRows; track enemyRow)
                 {
                     <div class="row enemy-row">
-                    @for (enemy of  enemyRow; track enemy.id)
+                    @for (enemy of  enemyRow; track enemy)
                     {
                         <div class="col-4" [ngClass]="{ 'unavailable': enemy.currentHitpoints <= 0 }">
                             <combat-participant [participant]="enemy"></combat-participant>

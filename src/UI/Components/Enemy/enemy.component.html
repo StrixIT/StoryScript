@@ -3,8 +3,8 @@
     <div class="box-container">
         <div class="box-title">{{ texts.encounters }}</div>
         <p>{{ texts.enemiesToFight }}</p>
-        <ul class="list-unstyled">
-            @for (enemy of game.currentLocation.activeEnemies; track enemy.id)
+        <ul class="list-unstyled enemy-list">
+            @for (enemy of game.currentLocation.activeEnemies; track enemy)
             {
                 <li (click)="tryCombine(enemy)" [ngClass]="getCombineClass(enemy)">
                     <span class="enemy-name">{{ enemy.name }}</span>

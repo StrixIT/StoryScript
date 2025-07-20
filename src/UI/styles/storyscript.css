@@ -369,6 +369,11 @@ feature {
     visibility: hidden;
 }
 
+.enemy-list li {
+    display: inline-block;
+    margin-right: 25px;
+}
+
 .enemy-row, .enemy-row > div, .character-row, .fight-row {
     margin-top: 15px;
     justify-content: center;
