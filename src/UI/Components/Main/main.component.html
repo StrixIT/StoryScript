@@ -31,7 +31,7 @@
                 <intro></intro>
                 <create-character></create-character>
                 <!-- TODO: how to make this work? -->
-                @for (character of game.party?.characters; track character.name)
+                @for (character of game.party?.characters; track character)
                 {
                     <level-up [character]="character"></level-up>
                 }

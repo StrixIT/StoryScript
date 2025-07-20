@@ -4,7 +4,7 @@
     <div class="box-container" id="exploration-onground">
         <div class="box-title">{{ texts.onTheGround }}</div>
         <ul class="list-unstyled">
-            @for (item of items; track item.id)
+            @for (item of items; track item)
             {
                 <li (click)="pickupItem(item)" [ngClass]="getCombineClass(item)">
                     {{ getItemName(item) }}

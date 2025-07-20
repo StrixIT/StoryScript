@@ -14,7 +14,7 @@
         @if (trade.buy.items?.length > 0 && !confirmBuyItem)
         {
             <ul class="list-unstyled">
-                @for (item of trade.buy.items; track item.id)
+                @for (item of trade.buy.items; track item)
                 {
                     <li class="inline">
                         <button type="button" class="btn btn-success" (click)="buy(item, game.activeCharacter, trade)" [disabled]="!canPay(item, game.activeCharacter, trade)">{{ displayPrice(item, actualPrice(item, game.activeCharacter, trade)) }}</button>
@@ -45,7 +45,7 @@
         @if (trade.sell.items?.length > 0 && !confirmSellItem)
         {
             <ul class="list-unstyled">
-                @for (item of trade.sell.items; track item.id)
+                @for (item of trade.sell.items; track item)
                 {
                     <li class="inline">
                         <button type="button" class="btn btn-warning" (click)="sell(item, trade, game.activeCharacter)" [disabled]="!canPay(item, trade, game.activeCharacter)">{{ displayPrice(item, actualPrice(item, trade, game.activeCharacter)) }}</button>

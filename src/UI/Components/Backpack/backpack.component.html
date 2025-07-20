@@ -1,7 +1,7 @@
 <div class="box-container" id="character-backpack">
     <div class="box-title" (click)="isCollapsed = !isCollapsed">{{ texts.backpack }}</div>
     <ul id="backpack-panel" [ngbCollapse]="isCollapsed" class="collapse navbar-collapse list-unstyled">
-        @for (item of character.items; track item.id) {
+        @for (item of character.items; track item) {
             <li>
                 <div (click)="tryCombine(item)" [ngClass]="getCombineClass(item)">
                     <span>{{ getItemName(item) }}</span>
