@@ -71,3 +71,18 @@ export function getTopWeapon(character: Character): IItem {
 
     return weapon;
 }
+
+export function setTimeStyling(game: IGame): void {
+    game.UIRootElement.classList.remove('day');
+    game.UIRootElement.classList.remove('night');
+
+    if (game.worldProperties.timeOfDay === 'day') {
+        game.worldProperties.isDay = true;
+        game.worldProperties.isNight = false;
+        game.UIRootElement.classList.add('day');
+    } else if (game.worldProperties.timeOfDay === 'night') {
+        game.worldProperties.isDay = false;
+        game.worldProperties.isNight = true;
+        game.UIRootElement.classList.add('night');
+    }
+}

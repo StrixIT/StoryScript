@@ -1,6 +1,6 @@
 import {IGame} from "./interfaces/game.ts";
 import {ICompiledLocation, ILocation} from "./interfaces/location.ts";
-import {descriptionSelector} from "./sharedFunctions.ts";
+import {descriptionSelector, setTimeStyling} from "./sharedFunctions.ts";
 import {IItem} from "./interfaces/item.ts";
 import {IEnemy} from "./interfaces/enemy.ts";
 import {IDestination} from "./interfaces/destination.ts";
@@ -212,6 +212,7 @@ function updateTime(game: IGame, travel: boolean): void {
         }
 
         game.worldProperties.timeOfDay = game.worldProperties.isDay ? 'day' : 'night';
+        setTimeStyling(game);
     }
 }
 

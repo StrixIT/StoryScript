@@ -5,6 +5,7 @@ import {canEquip, characterRules} from "./characterRules.ts";
 import {explorationRules} from "./explorationRules.ts";
 import {IGroupableItem} from "./interfaces/item.ts";
 import {ITrade} from "./interfaces/trade.ts";
+import {setTimeStyling} from "./sharedFunctions.ts";
 
 export function Rules(): IRules {
     return {
@@ -90,29 +91,14 @@ function continueGame(game: IGame) {
 function initTime(game: IGame) {
     game.changeTime = s => changeTime(game, s);
     setTimeout(() => {
-        setTime(game);
+        setTimeStyling(game);
     });
 }
 
 function changeTime(game: IGame, e: string) {
     game.worldProperties.timeOfDay = e;
-    setTime(game);
+    setTimeStyling(game);
     explorationRules.enterLocation(game, game.currentLocation, false);
-}
-
-function setTime(game: IGame) {
-    game.UIRootElement.classList.remove('day');
-    game.UIRootElement.classList.remove('night');
-
-    if (game.worldProperties.timeOfDay === 'day') {
-        game.worldProperties.isDay = true;
-        game.worldProperties.isNight = false;
-        game.UIRootElement.classList.add('day');
-    } else if (game.worldProperties.timeOfDay === 'night') {
-        game.worldProperties.isDay = false;
-        game.worldProperties.isNight = true;
-        game.UIRootElement.classList.add('night');
-    }
 }
 
 function addDescriptions(game: IGame) {
