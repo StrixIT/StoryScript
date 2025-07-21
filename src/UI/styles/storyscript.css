@@ -465,3 +465,9 @@ feature {
     margin-left: 10px;
     cursor: pointer;
 }
+
+.participant {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
