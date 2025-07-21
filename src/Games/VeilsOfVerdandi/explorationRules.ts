@@ -207,6 +207,7 @@ function updateTime(game: IGame, travel: boolean): void {
         const duskDawn = game.worldProperties.travelCounter % dayPartLength === 0;
 
         if (duskDawn) {
+            game.worldProperties.currentDay++;
             game.worldProperties.isDay = !game.worldProperties.isDay;
             game.worldProperties.isNight = !game.worldProperties.isNight;
         }

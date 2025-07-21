@@ -126,11 +126,11 @@ export function ForestOfMyrr() {
             },
             {
                 location: CastleApproach,
-                coords: '375,200'
+                coords: '275,200'
             },
             {
                 location: CastleInside,
-                coords: '375,200'
+                coords: '275,200'
             },
             {
                 location: Beach,

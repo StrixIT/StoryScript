@@ -215,11 +215,6 @@ combat-participant > div.targeted {
     overflow-y: auto;
 }
 
-.participant {
-    display: flex;
-    align-items: center;
-}
-
 .participant.single-column {
     display: inline-block;
     width: 100%;
@@ -233,6 +228,7 @@ combat-participant > div.targeted {
 
 .participant-image {
     float: right;
+    margin-left: 20px;
 }
 
 .combatlog {
