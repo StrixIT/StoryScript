@@ -7,6 +7,11 @@ export function FlowerForTheQueen() {
     return Quest({
         name: 'Find the Magic Flower',
         status: (game: IGame, quest: IQuest, done: boolean) => {
+            if (done)
+            {
+                return 'You have found the flower and saved the bees!'
+            }
+            
             return haveItem(game, MagicFlower) ? 'You have the Magic Flower!' : 'You must find the Magic Flower!';
         },
         start: (game: IGame, quest: IQuest, person: IPerson) => {

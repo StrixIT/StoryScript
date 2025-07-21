@@ -7,7 +7,7 @@ export function MagicRing() {
     return Item({
         name: 'Magic Ring',
         description: description,
-        equipmentType: EquipmentType.LeftRing,
+        equipmentType: EquipmentType.RightRing,
         value: 40,
         itemClass: ClassType.Wizard
     });
