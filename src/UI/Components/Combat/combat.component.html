@@ -11,7 +11,7 @@
                     <div class="row enemy-row">
                     @for (enemy of  enemyRow; track enemy)
                     {
-                        <div class="col-4" [ngClass]="{ 'unavailable': enemy.currentHitpoints <= 0 }">
+                        <div [className]="'col-' + 12 / enemyRow.length" [ngClass]="{ 'unavailable': enemy.currentHitpoints <= 0 }">
                             <combat-participant [participant]="enemy"></combat-participant>
                         </div>
                     }
@@ -22,7 +22,7 @@
                     <div class="row character-row">
                         @for (turn of  characterRow; track turn.character)
                         {
-                            <div class="col-4" [ngClass]="{ 'unavailable': turn.character.currentHitpoints <= 0 }">
+                            <div [className]="'col-' + 12 / characterRow.length" [ngClass]="{ 'unavailable': turn.character.currentHitpoints <= 0 }">
                                 <combat-participant [participant]="turn.character"></combat-participant>
                                 @if (turn.item && turn.character.currentHitpoints > 0)
                                 {
