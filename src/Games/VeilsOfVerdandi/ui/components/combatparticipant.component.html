@@ -9,9 +9,9 @@
         @if (participant.effects.length > 0)
         {
             <ul class="effects">
-                @for (effect of participant.effects; track effect)
+                @for (effect of participant.effects; track effect.name)
                 {
-                    <li class="{{ effect }}">{{ effect }}</li>
+                    <li class="{{ effect.name }}" title="{{ effect.description }}">{{ effect.name }}</li>
                 }
             </ul>
         }

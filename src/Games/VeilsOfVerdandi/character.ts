@@ -19,7 +19,7 @@ export class Character implements ICharacter {
     frightened? = false;
     confused? = false;
     
-    effects?: string[];
+    effects?: { name: string, description: string }[];
 
     equipment: IEquipment = {};
 

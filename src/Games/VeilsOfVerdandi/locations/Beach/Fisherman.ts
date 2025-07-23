@@ -90,7 +90,7 @@ export function Fisherman() {
                     return true;
                 },
                 status: (game: IGame) => {
-                    if (!game.locations.get(IslandMeadow).hasVisited && !game.locations.get(Octopus).hasVisited) {
+                    if (game.worldProperties.isNight || (!game.locations.get(IslandMeadow).hasVisited && !game.locations.get(Octopus).hasVisited)) {
                         return ActionStatus.Unavailable;
                     } else if (haveItem(game, SmallBoat)) {
                         return ActionStatus.Available;

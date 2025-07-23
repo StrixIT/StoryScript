@@ -10,7 +10,7 @@
             <div class="location-text" [innerHTML]="game.currentLocation.description | safe: 'html'"></div>
         </div>
         <ul id="location-log" class="list-unstyled">
-            @for (message of game.currentLocation.log; track message)
+            @for (message of game.currentLocation.log; track $index)
             {
                 <li [innerHTML]="message | safe: 'html'"></li>
             }

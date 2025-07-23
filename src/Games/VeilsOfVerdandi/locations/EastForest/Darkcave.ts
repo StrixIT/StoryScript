@@ -1,6 +1,6 @@
 ﻿import {Location} from '../../types';
 import description from './Darkcave.html?raw';
-import {KoboldWizard} from "../../enemies/KoboldWizard.ts";
+import {Enchantress} from "../../enemies/Enchantress.ts";
 import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
 import {GameState} from "storyScript/Interfaces/storyScript.ts";
 
@@ -10,7 +10,7 @@ export function Darkcave() {
         description: description,
         picture: true,
         enemies: [
-            KoboldWizard()
+            Enchantress()
         ],
         actions: [[
             'FinalScore', {

@@ -11,6 +11,7 @@ import {ICombatTurn} from "./interfaces/combatTurn.ts";
 import {ClassType} from "./classType.ts";
 import {CombatParticipant} from "./interfaces/combatParticipant.ts";
 import {equals} from "storyScript/utilityFunctions.ts";
+import {Constants} from "./constants.ts";
 
 export const damageSpecial = (game: IGame, enemy: IEnemy, character: Character, property: string, checkDifficulty?: number) => {
     if (!checkDifficulty || !check(game, checkDifficulty)) {
@@ -157,27 +158,27 @@ function setEffects(combatSetup: ICombatSetup): void {
     combatSetup.characters.forEach(c => c.effects = buildEffectArray(c));
 }
 
-function buildEffectArray(participant: IEnemy | Character): string[] {
-    const effects = [];
+function buildEffectArray(participant: IEnemy | Character): { name: string, description: string }[] {
+    const effects: { name: string, description: string }[] = [];
 
     if (participant.frozen) {
-        effects.push('Frozen');
+        effects.push({ name: 'Frozen', description: Constants.CombatEffects['Frozen'] });
     }
 
     if (participant.frightened) {
-        effects.push('Frightened');
+        effects.push({ name: 'Frightened', description: Constants.CombatEffects['Frightened'] });
     }
 
     if (participant.confused) {
-        effects.push('Confused');
+        effects.push({ name: 'Confused', description: Constants.CombatEffects['Confused'] });
     }
 
     if ((participant as Character).defenseBonus) {
-        effects.push('Force Field');
+        effects.push({ name: 'Force Field', description: Constants.CombatEffects['Force Field'] });
     }
 
     if ((participant as Character).spellDefence) {
-        effects.push('Magic Shield');
+        effects.push({ name: 'Magic Shield', description: Constants.CombatEffects['Magic Shield'] });
     }
 
     return effects;
@@ -364,7 +365,7 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
 
             game.delayedDescriptionChanges.push(() => {
                 game.currentLocation.description = game.currentLocation.descriptions[descriptionSelector(game)];  
-            })
+            });
             
             return true;
         }

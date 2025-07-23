@@ -1,11 +1,11 @@
 ﻿import {Character, Enemy, IEnemy, IGame} from "../types";
-import {check} from "../sharedFunctions.ts";
+import {check, descriptionSelector} from "../sharedFunctions.ts";
 import {ClassType} from "../classType.ts";
 import {damageSpecial} from "../combatRules.ts";
 
-export function KoboldWizard() {
+export function Enchantress() {
     return Enemy({
-        name: 'Kobold Wizard',
+        name: 'Enchantress',
         hitpoints: 30,
         defence: 3,
         currency: 25,
@@ -30,7 +30,11 @@ export function KoboldWizard() {
             }
         ],
         onDefeat(game: IGame) {
-            game.currentLocation.descriptionSelector = 'after';
+            game.delayedDescriptionChanges.length = 0;
+            
+            game.delayedDescriptionChanges.push(() => {
+                game.currentLocation.descriptionSelector = 'after';
+            });
         }
     });
 }

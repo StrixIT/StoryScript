@@ -16,7 +16,7 @@ export interface IEnemy extends IFeature, StoryScriptIEnemy {
     frightened?: boolean;
     confused?: boolean;
 
-    effects?: string[];
+    effects?: { name: string, description: string }[];
 }
 
 export interface IEnemyAttack {
