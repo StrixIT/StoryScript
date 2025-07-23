@@ -7,7 +7,7 @@
             <div [innerHTML]="location.description | safe: 'html'"></div>
         </div>
         <ul id="location-log" class="list-unstyled">
-            @for (message of location.log; track message)
+            @for (message of location.log; track $index)
             {
                 <li [innerHTML]="message | safe: 'html'"></li>
             }

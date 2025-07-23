@@ -28,7 +28,7 @@
             <hr />
             <p id="conversation-history-title">Conversation history</p>
             <ul class="list-unstyled">
-                @for (entry of game.person.conversation.conversationLog; track entry)
+                @for (entry of game.person.conversation.conversationLog; track $index)
                 {
                     <li>
                         <div class="conversation-lines" [innerHTML]="entry.lines | safe: 'html'"></div>

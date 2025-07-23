@@ -1,7 +1,7 @@
 <div class="box-container" id="action-log">
     <div class="box-title">{{ texts.messages }}</div>
     <ul class="action-log list-unstyled">
-        @for (message of game.actionLog; track message)
+        @for (message of game.actionLog; track $index)
         {
             <li>{{ message }}</li>
         }

@@ -127,7 +127,7 @@
         <fieldset class="combatlog">
             <legend>{{ texts.messages }}</legend>
             <ul class="list-unstyled action-log">
-                @for (message of  game.combatLog; track message)
+                @for (message of  game.combatLog; track $index)
                 {
                     <li>{{ message }}</li>
                 }
