@@ -33,8 +33,8 @@ export class MainComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
-
-    showCharacterPane = computed((): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests);
+    
+    showCharacterPane = (): boolean => this._sharedMethodService.useCharacterSheet || this._sharedMethodService.useEquipment || this._sharedMethodService.useBackpack || this._sharedMethodService.useQuests;
     
     private readonly stopAutoplay = () => {
         const mediaElements = this._hostElement.nativeElement.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
