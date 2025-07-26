@@ -398,7 +398,7 @@ function filterWeapons(combatSetup: ICombatSetup, filter: (combatSetup: ICombatS
                 c.item = getTopWeapon(c.character);
             }
             else {
-                c.item = c.itemsAvailable.filter(i => i.selectable).sort((a, b) => a.name.localeCompare(b.name))[0];
+                c.item = c.itemsAvailable.filter((i: any) => !i.recharging).sort((a, b) => a.name.localeCompare(b.name))[0];
             }
         }
     });
