@@ -7,11 +7,18 @@
         <div id="visual-features">
             <img src="{{ 'resources/' + features.collectionPicture }}" [attr.usemap]="'#' + location.id" alt="{{ location.name }}">
             <map name="{{ location.id }}">
-                <area *ngFor="let feature of features" href="#0" shape="{{feature.shape}}" coords="{{feature.coords}}" (click)="tryCombine(feature)" alt="{{ feature.name }}" />
+                @for (feature of features; track feature.id)
+                {
+                    <area href="#0" shape="{{feature.shape}}" coords="{{feature.coords}}" (click)="tryCombine(feature)" alt="{{ feature.name }}" />
+                }
             </map>
-            <div *ngFor="let feature of features">
-                <img *ngIf="feature.picture" class="feature-picture" name="{{ 'feature-' + feature.id }}" src="{{ 'resources/' + feature.picture }}" [ngStyle]="getFeatureCoordinates(feature)" (click)="tryCombine(feature)" alt="{{ feature.name }}" />
-            </div>
+            @for (feature of features; track feature.id)
+            {
+                @if (feature.picture)
+                {
+                    <img class="feature-picture" name="{{ 'feature-' + feature.id }}" src="{{ 'resources/' + feature.picture }}" [ngStyle]="getFeatureCoordinates(feature)" (click)="tryCombine(feature)" alt="{{ feature.name }}" />
+                }
+            }
         </div>
     </div>
 }

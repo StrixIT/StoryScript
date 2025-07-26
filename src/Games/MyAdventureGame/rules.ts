@@ -5,6 +5,9 @@ import { IGame, Character, IEnemy, ICombatSetup } from './types';
 export function Rules(): IRules {
     return {
         setup: {
+            initGame(game: IGame) {
+                game.worldProperties.type = 'Visual'; // Set to 'Text' or 'Visual' to switch between modes.
+            },
             getCombinationActions: (): ICombinationAction[] => {
                 return [
                     {

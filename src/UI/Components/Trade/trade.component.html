@@ -1,37 +1,73 @@
 @let trade = game.trade;
-<div *ngIf="game.playState == 'Trade' && trade" id="trade">
-    <p class="trade-description">{{ trade.text }}</p>
-    <div *ngIf="trade.buy">{{ trade.buy.text }}</div>
-    <p class="trade-empty" *ngIf="trade.buy.items?.length === 0">{{ trade.buy.emptyText }}</p>
-    <ul class="list-unstyled" *ngIf="trade.buy.items?.length > 0 && !confirmBuyItem">
-        <li class="inline" *ngFor="let item of trade.buy.items">
-            <button type="button" class="btn btn-success" (click)="buy(item, game.activeCharacter, trade)" [disabled]="!canPay(item, game.activeCharacter, trade)">{{ displayPrice(item, actualPrice(item, game.activeCharacter, trade)) }}</button>
-        </li>
-    </ul>
-    <div *ngIf="confirmBuyItem">
-        <p [innerHTML]="texts.format(trade.buy.confirmationText, [confirmBuyItem.name, actualPrice(confirmBuyItem, game.activeCharacter, trade), texts.currency]) | safe: 'html'"></p>
-        <ul class="list-unstyled">
-            <li class="inline">
-                <button type="button" class="btn btn-primary" (click)="cancelBuy()">{{ texts.cancelBuy }}</button>
-                <button type="button" class="btn btn-warning" (click)="buy(confirmBuyItem, game.activeCharacter, trade)">{{ texts.confirmBuy }}</button>
-            </li>
-        </ul>
+@if (game.playState == 'Trade' && trade)
+{
+    <div id="trade">
+        <p class="trade-description">{{ trade.text }}</p>
+        @if (trade.buy)
+        {
+            <div>{{ trade.buy.text }}</div>
+        }
+        @if (trade.buy.items?.length === 0)
+        {
+            <p class="trade-empty">{{ trade.buy.emptyText }}</p>
+        }
+        @if (trade.buy.items?.length > 0 && !confirmBuyItem)
+        {
+            <ul class="list-unstyled">
+                @for (item of trade.buy.items; track item)
+                {
+                    <li class="inline">
+                        <button type="button" class="btn btn-success" (click)="buy(item, game.activeCharacter, trade)" [disabled]="!canPay(item, game.activeCharacter, trade)">{{ displayPrice(item, actualPrice(item, game.activeCharacter, trade)) }}</button>
+                    </li>
+                }
+            </ul>
+        }
+        @if (confirmBuyItem)
+        {
+            <div>
+                <p [innerHTML]="texts.format(trade.buy.confirmationText, [confirmBuyItem.name, actualPrice(confirmBuyItem, game.activeCharacter, trade), texts.currency]) | safe: 'html'"></p>
+                <ul class="list-unstyled">
+                    <li class="inline">
+                        <button type="button" class="btn btn-primary" (click)="cancelBuy()">{{ texts.cancelBuy }}</button>
+                        <button type="button" class="btn btn-warning" (click)="buy(confirmBuyItem, game.activeCharacter, trade)">{{ texts.confirmBuy }}</button>
+                    </li>
+                </ul>
+            </div>
+        }
+        @if (trade.sell)
+        {
+            <div>{{ trade.sell.text }}</div>
+        }
+        @if (trade.sell.items?.length === 0)
+        {
+            <p class="trade-empty">{{ trade.sell.emptyText }}</p>
+        }
+        @if (trade.sell.items?.length > 0 && !confirmSellItem)
+        {
+            <ul class="list-unstyled">
+                @for (item of trade.sell.items; track item)
+                {
+                    <li class="inline">
+                        <button type="button" class="btn btn-warning" (click)="sell(item, trade, game.activeCharacter)" [disabled]="!canPay(item, trade, game.activeCharacter)">{{ displayPrice(item, actualPrice(item, trade, game.activeCharacter)) }}</button>
+                    </li>
+                }
+            </ul>
+        }
+        @if (confirmSellItem)
+        {
+            <div>
+                <p [innerHTML]="texts.format(trade.sell.confirmationText, [confirmSellItem.name, actualPrice(confirmSellItem, trade, game.activeCharacter), texts.currency]) | safe: 'html'"></p>
+                <ul class="list-unstyled">
+                    <li class="inline">
+                        <button type="button" class="btn btn-primary" (click)="cancelSell()">{{ texts.cancelSell }}</button>
+                        <button type="button" class="btn btn-warning" (click)="sell(confirmSellItem, trade, game.activeCharacter)">{{ texts.confirmSell }}</button>
+                    </li>
+                </ul>
+            </div>
+        }
+        @if (trade.currency != undefined)
+        {
+            <p>{{ texts.format(texts.traderCurrency, [trade.currency, texts.currency]) }}</p>
+        }
     </div>
-    <div *ngIf="trade.sell">{{ trade.sell.text }}</div>
-    <p class="trade-empty" *ngIf="trade.sell.items?.length === 0">{{ trade.sell.emptyText }}</p>
-    <ul class="list-unstyled" *ngIf="trade.sell.items?.length > 0 && !confirmSellItem">
-        <li class="inline" *ngFor="let item of trade.sell.items">
-            <button type="button" class="btn btn-warning" (click)="sell(item, trade, game.activeCharacter)" [disabled]="!canPay(item, trade, game.activeCharacter)">{{ displayPrice(item, actualPrice(item, trade, game.activeCharacter)) }}</button>
-        </li>
-    </ul>
-    <div *ngIf="confirmSellItem">
-        <p [innerHTML]="texts.format(trade.sell.confirmationText, [confirmSellItem.name, actualPrice(confirmSellItem, trade, game.activeCharacter), texts.currency]) | safe: 'html'"></p>
-        <ul class="list-unstyled">
-            <li class="inline">
-                <button type="button" class="btn btn-primary" (click)="cancelSell()">{{ texts.cancelSell }}</button>
-                <button type="button" class="btn btn-warning" (click)="sell(confirmSellItem, trade, game.activeCharacter)">{{ texts.confirmSell }}</button>
-            </li>
-        </ul>
-    </div>
-    <p *ngIf="trade.currency != undefined">{{ texts.format(texts.traderCurrency, [trade.currency, texts.currency]) }}</p>
-</div>
+}

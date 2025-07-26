@@ -4,13 +4,13 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
-import {CommonModule} from "@angular/common";
 import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'backpack',
-    imports: [CommonModule, NgbCollapse],
+    imports: [SharedModule, NgbCollapse],
     template: getTemplate('backpack', await import('./backpack.component.html?raw'))
 })
 export class BackpackComponent {
@@ -31,6 +31,10 @@ export class BackpackComponent {
     texts: IInterfaceTexts;
     joinItem: IGroupableItem<IItem>;
 
+    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
+
+    canDropItems = (): boolean => this._sharedMethodService.useGround;
+
     hasDescription = (item: IItem): boolean => this._sharedMethodService.hasDescription(item);
 
     showDescription = (item: IItem, title: string): void => this._sharedMethodService.showDescription('item', item, title);
@@ -38,8 +42,6 @@ export class BackpackComponent {
     getCombineClass = (item: IItem): string => this.game.combinations.getCombineClass(item);
 
     tryCombine = (item: IItem): boolean => this._sharedMethodService.tryCombine(item);
-
-    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
     getItemName = (item: IItem): string => this._itemService.getItemName(item);
 
@@ -52,8 +54,6 @@ export class BackpackComponent {
     canUseItem = (item: IItem): boolean => this._sharedMethodService.canUseItem(this.character, item);
 
     useItem = (item: IItem): Promise<void> | void => this._itemService.useItem(this.character, item);
-
-    canDropItems = (): boolean => this._sharedMethodService.useGround;
 
     dropItem = (item: IItem): void => this._itemService.dropItem(this.character, item);
 

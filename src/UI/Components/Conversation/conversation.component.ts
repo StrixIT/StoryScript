@@ -3,13 +3,12 @@ import {ConversationService} from 'storyScript/Services/ConversationService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {CommonModule} from "@angular/common";
-import {SafePipe} from "../../Pipes/sanitizationPipe.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'conversation',
-    imports: [CommonModule, SafePipe],
+    imports: [SharedModule],
     template: getTemplate('conversation', await import('./conversation.component.html?raw'))
 })
 export class ConversationComponent {
@@ -24,16 +23,8 @@ export class ConversationComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
-
+    
     answer = (node: IConversationNode, reply: IConversationReply): void => this._conversationService.answer(node, reply);
 
     getLines = (nodeOrReply: IConversationNode | IConversationReply): string => nodeOrReply?.lines || null;
-
-    get activeNode() {
-        return this.game.person.conversation.activeNode
-    };
-
-    get conversationLog() {
-        return this.game.person.conversation.conversationLog
-    };
 }

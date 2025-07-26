@@ -5,13 +5,12 @@ import {Component, inject, ViewChild} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject} from 'rxjs';
 import {NgbTypeahead} from '@ng-bootstrap/ng-bootstrap';
-import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'navigation',
-    imports: [CommonModule, FormsModule, NgbTypeahead],
+    imports: [SharedModule, NgbTypeahead],
     template: getTemplate('navigation', await import('./navigation.component.html?raw'))
 })
 export class NavigationComponent {
@@ -24,7 +23,7 @@ export class NavigationComponent {
         this.texts = serviceFactory.GetTexts();
         this.locations = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
     }
-    
+
     game: IGame;
     texts: IInterfaceTexts;
     locations: { id: string, name: string }[];

@@ -1,9 +1,15 @@
-<div id="highscores" *ngIf="game.party.score > 0">
-    <h3>{{ texts.highScores }}</h3>
-    <table>
-        <tr *ngFor="let score of game.highScores">
-            <td>{{ score.name }}</td>
-            <td>{{ score.score }}</td>
-        </tr>
-    </table>
-</div>
+@if (game.party.score > 0)
+{
+    <div id="highscores">
+        <h3>{{ texts.highScores }}</h3>
+        <table>
+            @for (score of game.highScores; track score)
+            {
+                <tr>
+                    <td>{{ score.name }}</td>
+                    <td>{{ score.score }}</td>
+                </tr>
+            }
+        </table>
+    </div>
+}

@@ -3,16 +3,22 @@
     <div class="container-fluid body-content">
         <sound></sound>
         <div class="row">
-            <div id="party-container" *ngIf="game.state === 'Play'" [ngClass]="{ 'col-4': showCharacterPane() }">
-            </div>
+            @if (game.state === 'Play')
+            {
+                <div id="party-container" [ngClass]="{ 'col-4': showCharacterPane() }"></div>
+            }
             <div id="location-container" [ngClass]="{ 'col-8': game.state === 'Play' && showCharacterPane(), 'col-12': game.state !== 'Play' || !showCharacterPane() }">
-                <div *ngIf="!game.state">
+                @if (!game.state)
+                {
+                <div>
                     {{ texts.loading }}
                 </div>
-                <div *ngIf="game.state == 'Play'">
+                }
+                @if (game.state === 'Play')
+                {
                     <location-text></location-text>
                     <exploration></exploration>
-                </div>
+                }
             </div>
         </div>
     </div>

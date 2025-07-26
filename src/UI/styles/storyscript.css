@@ -369,6 +369,11 @@ feature {
     visibility: hidden;
 }
 
+.enemy-list li {
+    display: inline-block;
+    margin-right: 25px;
+}
+
 .enemy-row, .enemy-row > div, .character-row, .fight-row {
     margin-top: 15px;
     justify-content: center;
@@ -399,6 +404,8 @@ feature {
 
 .map-dialog {
     padding: 0;
+    max-height: 95%;
+    overflow: hidden;
 }
 
 .map-container {
@@ -438,6 +445,7 @@ feature {
     background-color: white;
     border: solid 1px black;
     padding: 2px 5px;
+    white-space: nowrap;
 }
 
 .map-location-label.reachable, .map-location-image.reachable  {
@@ -456,4 +464,10 @@ feature {
     display: inline-block;
     margin-left: 10px;
     cursor: pointer;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

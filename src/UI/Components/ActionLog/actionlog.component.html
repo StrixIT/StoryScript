@@ -1,6 +1,9 @@
 <div class="box-container" id="action-log">
     <div class="box-title">{{ texts.messages }}</div>
     <ul class="action-log list-unstyled">
-        <li *ngFor="let message of game.actionLog">{{ message }}</li>
+        @for (message of game.actionLog; track $index)
+        {
+            <li>{{ message }}</li>
+        }
     </ul>
 </div>

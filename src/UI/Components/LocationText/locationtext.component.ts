@@ -3,14 +3,13 @@ import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {CommonModule} from "@angular/common";
-import {SafePipe} from "../../Pipes/sanitizationPipe.ts";
 import {TextFeatures} from "../../Directives/TextFeatures.ts";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'location-text',
-    imports: [CommonModule, TextFeatures, SafePipe],
+    imports: [SharedModule, TextFeatures],
     template: getTemplate('locationtext', await import('./locationtext.component.html?raw'))
 })
 export class LocationTextComponent {
@@ -28,15 +27,11 @@ export class LocationTextComponent {
 
     game: IGame;
     texts: IInterfaceTexts;
-    
+
     // This array can be used in the template to display translations for world properties.
     worldProperties: { name: string, value: string }[];
 
     tryCombine = (feature: IFeature): boolean => this._sharedMethodService.tryCombine(feature);
-
-    get log() {
-        return this.game.currentLocation.log
-    };
 
     private readonly initWorldProperties = (): void => {
         for (const n in this.game.worldProperties) {

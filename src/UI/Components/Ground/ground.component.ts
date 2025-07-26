@@ -4,12 +4,12 @@ import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
-import {CommonModule} from "@angular/common";
+import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'ground',
-    imports: [CommonModule],
+    imports: [SharedModule],
     template: getTemplate('ground', await import('./ground.component.html?raw'))
 })
 export class GroundComponent {
