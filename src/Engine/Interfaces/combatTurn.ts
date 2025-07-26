@@ -14,6 +14,11 @@ export interface ICombatTurn {
     targetsAvailable?: (IEnemy | ICharacter)[];
 
     /**
+     * The target selected by the character during the previous turn.
+     */
+    previousTarget: IEnemy | ICharacter;
+    
+    /**
      * The target selected by the character this turn.
      */
     target: IEnemy | ICharacter;
@@ -28,6 +33,11 @@ export interface ICombatTurn {
      */
     itemsAvailable?: IItem[];
 
+    /**
+     * The item selected by the character during the previous turn.
+     */
+    previousItem?: IItem;
+    
     /**
      * The item selected by the character this turn.
      */
