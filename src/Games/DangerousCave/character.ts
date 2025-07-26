@@ -22,15 +22,9 @@ export class Character implements ICharacter {
     constructor() {
         this.equipment = {
             head: null,
-            amulet: null,
             body: null,
-            hands: null,
             leftHand: null,
-            leftRing: null,
             rightHand: null,
-            rightRing: null,
-            legs: null,
-            feet: null
         }
     }
 }

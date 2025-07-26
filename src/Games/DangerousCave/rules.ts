@@ -198,12 +198,12 @@ export function Rules(): IRules {
                     game.logToLocationLog('Er ligt hier een dode ' + enemy.name + ', door jou verslagen.');
                 }
 
-                game.currentLocation.activeEnemies.filter((enemy: IEnemy) => {
-                    return enemy.currentHitpoints > 0;
-                }).forEach(function (enemy) {
-                    var check = game.helpers.rollDice(enemy.attack);
-                    var enemyDamage = Math.max(0, (check - (character.vlugheid + game.helpers.calculateBonus(character, 'verdediging'))) + game.helpers.calculateBonus(enemy, 'schade'));
-                    game.logToCombatLog('De ' + enemy.name + ' doet ' + enemyDamage + ' schade!');
+                combatSetup.enemies.filter((e: IEnemy) => {
+                    return e.currentHitpoints > 0;
+                }).forEach(function (e: IEnemy) {
+                    var check = game.helpers.rollDice(e.attack);
+                    var enemyDamage = Math.max(0, (check - (character.vlugheid + game.helpers.calculateBonus(character, 'verdediging'))) + game.helpers.calculateBonus(e, 'schade'));
+                    game.logToCombatLog('De ' + e.name + ' doet ' + enemyDamage + ' schade!');
                     character.currentHitpoints -= enemyDamage;
                 });
             },

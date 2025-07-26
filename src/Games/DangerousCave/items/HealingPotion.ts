@@ -1,4 +1,4 @@
-﻿import { EquipmentType } from 'storyScript/Interfaces/storyScript';
+﻿import {EquipmentType, TargetType} from 'storyScript/Interfaces/storyScript';
 import { Item } from '../types';
 import { Heal } from '../actions/heal';
 
@@ -8,6 +8,7 @@ export function HealingPotion() {
         equipmentType: EquipmentType.Miscellaneous,
         use: Heal('1d8'),
         useInCombat: true,
-        charges: 1
+        charges: 1,
+        targetType: TargetType.Self
     });
 }

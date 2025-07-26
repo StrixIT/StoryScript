@@ -18,7 +18,7 @@ export function CustomTexts(): IInterfaceTexts {
         messages: "Gebeurtenissen",
         backpack: "Rugzak",
         back: "Terug: ",
-        attack: "Val {0} aan!",
+        attack: "Val",
         startOver: "Begin overnieuw",
         resetWorld: "Reset wereld",
         actions: "Acties",
@@ -57,6 +57,12 @@ export function CustomTexts(): IInterfaceTexts {
         view: "Bekijken",
         closeModal: "Sluiten",
         enemiesToFight: "Je ziet deze vijanden:",
-        startCombat: "Begin het gevecht"
+        startCombat: "Begin het gevecht",
+        attackWith: "aan met",
+        fight: "Vechten",
+        enemyHitpoints: "Gezondheid: {0} / {1}",
+        characterHitpoints: "Gezondheid: {0} / {1}",
+        enemiesDefeated: "Verslagen vijanden",
+        itemsTaken: "Veroverde voorwerpen"
     };
 }
