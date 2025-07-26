@@ -23,6 +23,6 @@ export function GoldNecklace() {
         use(game, character, item, target: Character) {
             game.logToCombatLog(`${character.name} uses the Golden Necklace to heal ${target.name}.`);
             heal(target, 3);
-        },
+        }
     });
 }

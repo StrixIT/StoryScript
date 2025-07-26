@@ -83,37 +83,14 @@ export const combatRules = <ICombatRules>{
         }
 
         if (useBows(combatSetup)) {
-            filterBows(combatSetup, (s, c, i) => i.ranged);
+            filterWeapons(combatSetup, (s, c, i) => i.ranged);
             combatSetup.noActionText = 'No bow';
 
         } else {
-            filterBows(combatSetup, (s, c, i) => !s.enemyTargets.find(t => t[1].find(e => e === c)) || !i.ranged);
+            filterWeapons(combatSetup, (s, c, i) => !s.enemyTargets.find(t => t[1].find(e => e === c)) || !i.ranged);
         }
 
         combatSetup.roundHeader = combatSetup.round === 1 ? 'Archery round' : combatSetup.roundHeader;
-
-        combatSetup.forEach(t => {
-            t.itemsAvailable.forEach((i: any) => {
-                if (i.recharging) {
-                    i.recharging = i.recharging > 1 ? --i.recharging : undefined;
-                    i.selectable = !i.recharging;
-                }
-
-                if (i.id.indexOf('powerattack') > -1) {
-                    i.speed = getTopWeapon(t.character)?.speed || 0;
-                }
-            });
-
-            if (combatSetup.round == 2 && t.character.class.name === ClassType.Warrior) {
-                t.itemsAvailable = t.itemsAvailable.sort((a, b) => {
-                    const aValue = (a.damage && parseInt(a.damage.substring(2))) ?? 0;
-                    const bValue = (b.damage && parseInt(b.damage.substring(2))) ?? 0;
-                    return bValue - aValue;
-                });
-
-                t.item = t.itemsAvailable[0];
-            }
-        });
     },
 
     fight: (game: IGame, combatSetup: ICombatSetup): void => {
@@ -389,8 +366,23 @@ function useBows(combat: ICombatSetup): boolean {
     return useBows;
 }
 
-function filterBows(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetup, character: Character, item: IItem) => boolean): void {
+function filterWeapons(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetup, character: Character, item: IItem) => boolean): void {
     combatSetup.forEach(c => {
+        c.itemsAvailable.forEach((i: any) => {
+            if (i.recharging) {
+                i.recharging = i.recharging > 1 ? --i.recharging : undefined;
+                i.selectable = !i.recharging;
+            }
+
+            if (i.id.indexOf('powerattack') > -1) {
+                i.speed = getTopWeapon(c.character)?.speed || 0;
+            }
+            
+            if (i.id === 'goldnecklace') {
+                i.selectable = combatSetup.find(s => s.character.currentHitpoints < s.character.hitpoints) !== undefined;
+            }
+        });
+        
         const selectedItem = c.item;
         c.itemsAvailable = c.itemsAvailable.filter(i => filter(combatSetup, c.character, i));
         c.item = c.itemsAvailable.find(i => i === selectedItem) ?? c.itemsAvailable[0];
@@ -398,6 +390,16 @@ function filterBows(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetu
         if (!c.item) {
             c.targetsAvailable = null;
             c.target = null;
+        }
+        
+        if (c.previousItem !== c.item) {
+            if (c.character.class.name !== ClassType.Wizard)
+            {
+                c.item = getTopWeapon(c.character);
+            }
+            else {
+                c.item = c.itemsAvailable.filter(i => i.selectable).sort((a, b) => a.name.localeCompare(b.name))[0];
+            }
         }
     });
 }
