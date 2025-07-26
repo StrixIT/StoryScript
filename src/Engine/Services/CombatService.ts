@@ -134,8 +134,10 @@ export class CombatService implements ICombatService {
             this._game.combat[i] = <ICombatTurn>{
                 character: c,
                 targetsAvailable: enemies.concat(allies),
+                previousTarget: previousTarget,
                 target: newTarget,
                 itemsAvailable: items,
+                previousItem: previousItem,
                 item: newItem
             };
         });
