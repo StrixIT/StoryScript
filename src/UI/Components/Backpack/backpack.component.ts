@@ -1,7 +1,7 @@
 import {ICharacter, IGame, IGroupableItem, IInterfaceTexts, IItem} from 'storyScript/Interfaces/storyScript';
 import {SharedMethodService} from '../../Services/SharedMethodService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {Component, computed, inject, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {ItemService} from "storyScript/Services/ItemService.ts";
 import {NgbCollapse} from "@ng-bootstrap/ng-bootstrap";
@@ -31,9 +31,9 @@ export class BackpackComponent {
     texts: IInterfaceTexts;
     joinItem: IGroupableItem<IItem>;
 
-    showEquipment = computed((): boolean => this._sharedMethodService.showEquipment(this.character));
+    showEquipment = (): boolean => this._sharedMethodService.showEquipment(this.character);
 
-    canDropItems = computed((): boolean => this._sharedMethodService.useGround);
+    canDropItems = (): boolean => this._sharedMethodService.useGround;
 
     hasDescription = (item: IItem): boolean => this._sharedMethodService.hasDescription(item);
 
