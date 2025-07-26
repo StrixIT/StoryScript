@@ -24,6 +24,11 @@ export function Brennus() {
                 'Leave',
                 (game: IGame) => {
                     locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length == 0, () => game.currentLocation.enemies.length == 0);
+                    
+                    if (!game.currentLocation.enemies.length) {
+                        game.currentLocation.actions.delete('Approach');
+                    }
+                    
                     return true;
                 }
             ]],

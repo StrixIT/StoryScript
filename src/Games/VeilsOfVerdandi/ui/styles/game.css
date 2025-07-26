@@ -248,3 +248,7 @@ combat-participant > div.targeted {
 #combat-win {
     margin-bottom: 50px;
 }
+
+.world-info li {
+    line-height: 30px;
+}

@@ -36,7 +36,7 @@
             @if (game.state === 'Play')
             {
                 <div [ngClass]="{ 'col-3': showCharacterPane() }">
-                    <div class="box-container">
+                    <div class="box-container world-info">
                         <div class="box-title">{{game.party.name}}</div>
                         <ul class="list-unstyled float-left">
                             <li>{{ texts.currency }}

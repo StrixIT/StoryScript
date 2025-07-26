@@ -84,6 +84,7 @@ function init(game: IGame) {
 }
 
 function continueGame(game: IGame) {
+    addDescriptions(game);
     explorationRules.enterLocation(game, game.currentLocation, false);
     initTime(game);
 }
