@@ -109,27 +109,20 @@ export class CombatService implements ICombatService {
 
         characters.forEach((c, i) => {
             const allies = characters.filter(a => a != c);
-            const items = c.combatItems ?? [];
-
-            Object.keys(c.equipment).forEach(k => {
-                const item = <IItem>c.equipment[k];
-
-                if ((item?.useInCombat || item?.targetType) && items.indexOf(item) === -1) {
-                    items.push(item)
-                }
-            });
-
-            items.sort((a: IItem, b: IItem) => b.targetType?.localeCompare(a.targetType) || a.name.localeCompare(b.name));
+            const items = this.getItems(c, enemies, allies);
 
             // Remember the last item used and enemy attacked and select them when they are still valid.
             let previousItem = this._game.combat[i]?.item;
             previousItem = this.isSelectable(previousItem) ? previousItem : undefined;
-            const newItem = (previousItem && items.find(i => i === previousItem)) ?? items.filter(i => this.isSelectable(i))[0];
-            const targetType = newItem?.targetType ?? TargetType.Enemy;
-            const targets = targetType === TargetType.Enemy ? enemies : allies;
-            const previousTarget = this._game.combat[i]?.target;
-            let newTarget = newItem === previousItem && previousTarget ? targets.find(i => i === previousTarget) : undefined;
-            newTarget ??= targets[0];
+            const previousTarget = this._game.combat[i]?.target; 
+            let newItem = (previousItem && items.find(i => i === previousItem)) ?? items.filter(i => this.isSelectable(i))[0];
+            let { targets, newTarget } = this.getTarget(newItem, enemies, allies, previousTarget, previousItem);
+            
+            if (!newTarget) {
+                newItem = items.filter(i => this.isSelectable(i) && (!i.canTarget || (newTarget && i.canTarget(this._game, newItem, newTarget))))[0];
+                ({ targets, newTarget } = this.getTarget(newItem, enemies, allies, this._game.combat[i]?.target, previousItem));
+                newTarget ??= targets[0];
+            }
 
             this._game.combat[i] = <ICombatTurn>{
                 character: c,
@@ -143,6 +136,49 @@ export class CombatService implements ICombatService {
         });
 
         this._rules.combat?.initCombatRound?.(this._game, this._game.combat);
+    }
+    
+    private readonly getItems = (character: ICharacter, enemies: IEnemy[], allies: ICharacter[]) => {
+        const items = character.combatItems ?? [];
+
+        Object.keys(character.equipment).forEach(k => {
+            const item = <IItem>character.equipment[k];
+
+            if ((item?.useInCombat || item?.targetType) && items.indexOf(item) === -1) {
+                items.push(item)
+            }
+        });
+
+        items.forEach(i => {
+            if (!i.canTarget) {
+                return;
+            }
+
+            i.selectable = false;
+            const targets = i.targetType === TargetType.Enemy ? enemies : allies;
+
+            for (let x = 0; x < targets.length; x++) {
+                const target = targets[x];
+                if (i.canTarget(this._game, i, target)) {
+                    i.selectable = true;
+                    return;
+                }
+            }
+        });
+
+        items.sort((a: IItem, b: IItem) => b.targetType?.localeCompare(a.targetType) || a.name.localeCompare(b.name));
+        return items;
+    }
+    
+    private readonly getTarget = 
+        (newItem: IItem, enemies: IEnemy[], allies: ICharacter[], previousTarget: IEnemy | ICharacter, previousItem?: IItem): 
+            { targets: IEnemy[] | ICharacter[], newTarget?: IEnemy | ICharacter } => {
+        let targetType = newItem?.targetType ?? TargetType.Enemy;
+        let targets = targetType === TargetType.Enemy ? enemies : allies;
+        let newTarget = newItem === previousItem && previousTarget ?
+            targets.find(i => i === previousTarget && (!newItem.canTarget || newItem.canTarget(this._game, newItem, i)))
+            : undefined;
+        return { targets, newTarget };
     }
     
     private readonly getTargetName = (enemiesPerType: Record<string, number[]>, target: any): string => {
