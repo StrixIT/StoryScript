@@ -2,6 +2,6 @@
     display: none;
 }
 
-#map-container {
+.map-container {
     max-height: 800px;
 }
