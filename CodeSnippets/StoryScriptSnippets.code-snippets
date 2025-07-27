@@ -145,6 +145,41 @@
 		"description": "Add a new key"
 	},
 
+	"Maps": {
+		"scope": "javascript,typescript",
+		"prefix": "ssMap",
+		"body": [
+			"import { IGame, LocationMap } from '../types';",
+			"",
+			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
+			"\treturn LocationMap({",
+			"\t\tname: '${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}',",
+			"\t\tmapImage: '$1',",
+			"\t\tlocationNamesAsTextMarkers: true,",
+			"\t\tlocations: [",
+			"\t\t\t{",
+			"\t\t\t\tlocation: $2,",
+			"\t\t\t\tcoords: '$3'",
+			"\t\t\t},",
+			"\t\t],",
+			"\t});",
+			"}"
+		],
+		"description": "Add a new map"
+	},
+
+	"MapLocations": {
+		"scope": "javascript,typescript",
+		"prefix": "ssMapLocation",
+		"body": [
+			"{",
+			"\tlocation: $1,",
+			"\tcoords: '$2'",
+			"},"
+		],
+		"description": "Add a new map location"
+	},
+
 	"Destinations": {
 		"scope": "javascript,typescript",
 		"prefix": "ssDestination",

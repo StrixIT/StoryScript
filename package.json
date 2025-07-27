@@ -27,6 +27,7 @@
         "sci": "node createAsset.js item",
         "sck": "node createAsset.js key",
         "scq": "node createAsset.js quest",
+        "scm": "node createAsset.js map",
         "start": "vite",
         "test": "vitest --ui",
         "publish": "vite build && node postbuild.js",
