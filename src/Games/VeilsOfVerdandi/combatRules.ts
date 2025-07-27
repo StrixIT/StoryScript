@@ -369,17 +369,13 @@ function useBows(combat: ICombatSetup): boolean {
 function filterWeapons(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetup, character: Character, item: IItem) => boolean): void {
     combatSetup.forEach(c => {
         c.itemsAvailable.forEach((i: any) => {
-            if (i.recharging) {
+            if (i.selectable && i.recharging) {
                 i.recharging = i.recharging > 1 ? --i.recharging : undefined;
                 i.selectable = !i.recharging;
             }
 
             if (i.id.indexOf('powerattack') > -1) {
                 i.speed = getTopWeapon(c.character)?.speed || 0;
-            }
-            
-            if (i.id === 'goldnecklace') {
-                i.selectable = combatSetup.find(s => s.character.currentHitpoints < s.character.hitpoints) !== undefined;
             }
         });
         
@@ -392,13 +388,13 @@ function filterWeapons(combatSetup: ICombatSetup, filter: (combatSetup: ICombatS
             c.target = null;
         }
         
-        if (c.previousItem !== c.item) {
+        if (combatSetup.round > 1 && c.previousItem !== c.item) {
             if (c.character.class.name !== ClassType.Wizard)
             {
                 c.item = getTopWeapon(c.character);
             }
             else {
-                c.item = c.itemsAvailable.filter((i: any) => !i.recharging).sort((a, b) => a.name.localeCompare(b.name))[0];
+                c.item = c.itemsAvailable.filter((i: any) => !i.recharging && i.targetType === TargetType.Enemy).sort((a, b) => a.name.localeCompare(b.name))[0];
             }
         }
     });
