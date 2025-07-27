@@ -57,12 +57,12 @@ export class LocationMapComponent {
     }
 
     private prepareMap = () => {
-        this.map.transitionTime ??= 1000;
-        this.map.clickable = this.map.clickable === true;
-        this.map.toggleFullScreen = this.map.toggleFullScreen === true;
+        if (!this.map) {
+            return;
+        }
 
         setTimeout(() => {
-            if (this.map.toggleFullScreen) {
+            if (this.map.toggleFullScreen === true) {
                 const dialogElement = this.getDialogElement();
 
                 if (!dialogElement.getElementsByClassName('map-image')[0]) {
@@ -213,7 +213,7 @@ export class LocationMapComponent {
                 markerElement.classList.add(visited);
             }
 
-            if (this.map.clickable) {
+            if (this.map.clickable === true) {
                 const isReachable = this.game.currentLocation.destinations.find(d => d.target === locationId);
 
                 markerElement.onclick = null;
@@ -241,7 +241,7 @@ export class LocationMapComponent {
                 this.setMarkerVisibility(labelElements, markerElements, visible);
             }
 
-        }, this.map.transitionTime);
+        }, this.map.transitionTime ?? 1000);
     }
 
     private setMarkerVisibility = (labelElements: HTMLCollection, markerElements: HTMLCollection, visibility: string) => {
