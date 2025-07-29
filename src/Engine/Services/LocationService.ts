@@ -38,10 +38,14 @@ export class LocationService implements ILocationService {
             // When we don't have any locations yet, we're starting a new game. Use the definitions to build
             // all the locations and set their readonly properties. Also build the maps, if present.
             this._game.locations = {};
-            this._game.maps = {};
             this._definitions.locations.forEach(l => this._game.locations[getId(l)] = <ICompiledLocation>l());
-            this._definitions.maps?.forEach(m => this._game.maps[getId(m)] = m());
             Object.values(this._game.locations).forEach(l => setReadOnlyLocationProperties(<ICompiledLocation>l));
+        }
+        
+        if (!this._game.maps && this._definitions.maps) {
+            // When we have no maps, it could be that maps were added later and that they are not in the saved
+            // data yet. Add the maps available now.
+            this._definitions.maps?.forEach(m => this._game.maps[getId(m)] = m());
         }
 
         this.setupLocations();

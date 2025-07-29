@@ -25,14 +25,26 @@ export class LocationMapComponent {
         this.game = objectFactory.GetGame();
         this.texts = objectFactory.GetTexts();
         this.map = this.game.currentMap;
+        this.currentMapId = this.getMapId(this.map);
 
         gameEvents.subscribe(GameEventNames.ChangeLocation, (game) => {
+            const map = this.game.currentMap;
+            const currentId = this.getMapId(map);
+            
+            if (currentId !== this.currentMapId) {
+                this.map = map;
+                this.currentMapId = currentId;
+                this.firstShowFullScreen = true;
+                this.prepareMap(true);
+            }
+            
             this.navigateMap(this.currentMap, game, false);
         });
 
-        this.prepareMap();
+        this.prepareMap(false);
     }
 
+    private currentMapId: string;
     private fullScreen: boolean = false;
     private firstShowFullScreen: boolean = true;
     private currentMap: HTMLImageElement;
@@ -55,19 +67,37 @@ export class LocationMapComponent {
             dialogElement.close();
         }
     }
+    
+    private getMapId = (map: IMap) => {
+        return map?.['id'];    
+    }
 
-    private prepareMap = () => {
+    private prepareMap = (cleanup: boolean) => {
         if (!this.map) {
             return;
         }
 
         setTimeout(() => {
+            const mapElement = this.getMapElement(this.game.UIRootElement);
+            const mapContainer = mapElement.parentElement;
+            const dialogElement = this.getDialogElement();
+
+            if (cleanup) {
+                mapContainer.onkeydown = null;
+                mapContainer.onkeyup = null;
+                const labelElements = Array.prototype.slice.call(mapContainer.getElementsByClassName(labelClass));
+                labelElements.forEach(l => l.remove());
+                const markerElements = Array.prototype.slice.call(mapContainer.getElementsByClassName(imageClass));
+                markerElements.forEach(l => l.remove());
+                dialogElement.onkeydown = null;
+                dialogElement.onkeyup = null;
+                dialogElement.replaceChildren();
+            }
+            
             if (this.map.toggleFullScreen === true) {
-                const dialogElement = this.getDialogElement();
-
-                if (!dialogElement.getElementsByClassName('map-image')[0]) {
-                    const mapContainer = this.getMapElement(this.game.UIRootElement).parentElement;
-
+                let fullScreenMap = this.getMapElement(dialogElement);
+                
+                if (!fullScreenMap) {
                     for (const n in Object.keys(mapContainer.children)) {
                         const child = mapContainer.children[n];
                         dialogElement.appendChild(child.cloneNode(true));
@@ -82,7 +112,7 @@ export class LocationMapComponent {
                 this.initMap(this.currentFullScreenMap);
             }
 
-            this.currentMap = this.getMapElement(this.game.UIRootElement);
+            this.currentMap = mapElement;
             this.initMap(this.currentMap);
 
             // Call navigateMap now to arrange the map in its initial state.
@@ -97,6 +127,20 @@ export class LocationMapComponent {
 
         mapElement.onkeydown = null;
         mapElement.onkeyup = null;
+
+        this.map.locations.forEach(l => {
+            const textLabel = l.markerImage ? null : l.textLabel ?? (this.map.locationNamesAsTextMarkers ? this.game.locations[l.location as string].name : null);
+
+            if (textLabel) {
+                this.addElement(mapElement, l.coords, l.location as string, labelClass, 'span', textLabel);
+            }
+
+            const markerImage = l.markerImage ?? this.map.locationMarkerImage;
+
+            if (markerImage) {
+                this.addElement(mapElement, l.coords, l.location as string, imageClass, 'img', markerImage);
+            }
+        });
 
         if (this.map.showMarkersOnKeyPress) {
             const mapContainer = mapElement.parentElement;
@@ -114,20 +158,6 @@ export class LocationMapComponent {
                 }
             }
         }
-
-        this.map.locations.forEach(l => {
-            const textLabel = l.markerImage ? null : l.textLabel ?? (this.map.locationNamesAsTextMarkers ? this.game.locations[l.location as string].name : null);
-
-            if (textLabel) {
-                this.addElement(mapElement, l.coords, l.location as string, labelClass, 'span', textLabel);
-            }
-
-            const markerImage = l.markerImage ?? this.map.locationMarkerImage;
-
-            if (markerImage) {
-                this.addElement(mapElement, l.coords, l.location as string, imageClass, 'img', markerImage);
-            }
-        });
     }
 
     private navigateMap = (mapElement: HTMLElement, game: IGame, showElements: boolean) => {
@@ -164,6 +194,8 @@ export class LocationMapComponent {
             if (showElements) {
                 this.showElements(avatar, labelElements, markerElements);
             }
+
+            parentElement.focus();
 
             // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
         }, 100);
