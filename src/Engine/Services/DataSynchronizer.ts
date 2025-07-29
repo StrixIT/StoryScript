@@ -32,15 +32,13 @@ export class DataSynchronizer implements IDataSynchronizer {
             }
         }
 
+        // We don't have pristine entities for the 'world' and 'maps' properties of saved games.
+        // Use the pristine collections for these.
         if (parentProperty === 'world') {
-            // When the game world is synchronized for a save game, get the pristine location entities now.
             pristineEntity = this._pristineEntities['locations'];
-            
-            // When there were no maps when the data was saved and there are now, add the pristine maps so
-            // they are available to the game.
-            if (!parentEntity.maps && this._pristineEntities['maps']) {
-                parentEntity.maps = this._pristineEntities['maps'];
-            }
+        }
+        else if (parentProperty === 'maps') {
+            pristineEntity = this._pristineEntities['maps'];
         }
 
         // Use the properties of both the entity and the pristine entity, but only
