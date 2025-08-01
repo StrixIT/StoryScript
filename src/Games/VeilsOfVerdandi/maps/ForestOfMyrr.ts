@@ -1,5 +1,4 @@
 import {LocationMap} from "../types";
-import {Start} from "../../MyInteractiveMap/locations/start.ts";
 import {NorthRoad} from "../locations/NorthForest/NorthRoad.ts";
 import {SouthRoad} from "../locations/SouthForest/SouthRoad.ts";
 import {ForestLake} from "../locations/ForestEntry/ForestLake.ts";
@@ -26,6 +25,7 @@ import {CastleInside} from "../locations/Sea/CastleInside.ts";
 import {Beach} from "../locations/Beach/Beach.ts";
 import {Fisherman} from "../locations/Beach/Fisherman.ts";
 import {Mermaid} from "../locations/Beach/Mermaid.ts";
+import {Start} from "../locations/ForestEntry/start.ts";
 
 export function ForestOfMyrr() {
     return LocationMap({

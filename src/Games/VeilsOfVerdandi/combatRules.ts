@@ -83,11 +83,11 @@ export const combatRules = <ICombatRules>{
         }
 
         if (useBows(combatSetup)) {
-            filterWeapons(combatSetup, (s, c, i) => i.ranged);
+            filterWeapons(game, combatSetup, (s, c, i) => i.ranged);
             combatSetup.noActionText = 'No bow';
 
         } else {
-            filterWeapons(combatSetup, (s, c, i) => !s.enemyTargets.find(t => t[1].find(e => e === c)) || !i.ranged);
+            filterWeapons(game, combatSetup, (s, c, i) => !s.enemyTargets.find(t => t[1].find(e => e === c)) || !i.ranged);
         }
 
         combatSetup.roundHeader = combatSetup.round === 1 ? 'Archery round' : combatSetup.roundHeader;
@@ -295,7 +295,7 @@ function executeEnemyTurn(game: IGame, combatSetup: ICombatSetup, enemy: IEnemy,
         const character = combatSetup.find(t => t.character === target).character;
         const special = character.equipment.special;
 
-        if ((special.selectable || typeof special.selectable === 'undefined') && special.id.indexOf('dodge') > -1) {
+        if ((special?.selectable || typeof special.selectable === 'undefined') && special.id.indexOf('dodge') > -1) {
             const avoidedDamage = Math.ceil(totalDamage * parseFloat(special.power));
             totalDamage = totalDamage - avoidedDamage;
             special.selectable = false;
@@ -321,7 +321,7 @@ function checkCombatWin(game: IGame, combatSetup: ICombatSetup, turn: ICombatTur
         return false;
     }
 
-    if (turn.target.currentHitpoints <= 0) {
+    if (turn.item.targetType == TargetType.Enemy && turn.target.currentHitpoints <= 0) {
         turn.targetDefeated = true;
 
         combatSetup.filter(t => t.target === turn.target && t !== turn).forEach(t => t.target = undefined);
@@ -366,12 +366,12 @@ function useBows(combat: ICombatSetup): boolean {
     return useBows;
 }
 
-function filterWeapons(combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetup, character: Character, item: IItem) => boolean): void {
+function filterWeapons(game: IGame, combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetup, character: Character, item: IItem) => boolean): void {
     combatSetup.forEach(c => {
         c.itemsAvailable.forEach((i: any) => {
-            if (i.selectable && i.recharging) {
+            if (i.recharging) {
                 i.recharging = i.recharging > 1 ? --i.recharging : undefined;
-                i.selectable = !i.recharging;
+                i.selectable = !i.recharging && (!i.canTarget || i.canTarget(game, i, c.target));
             }
 
             if (i.id.indexOf('powerattack') > -1) {
