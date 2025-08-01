@@ -30,15 +30,16 @@ export class ConversationService implements IConversationService {
             lines: checkAutoplay(this._game, node.lines),
             reply: reply.lines
         });
-
-        this.processReply(person, reply);
-
-        const questProgress = reply.questStart || reply.questComplete;
-
-        if (questProgress) {
-            const status = reply.questStart ? 'questStart' : 'questComplete';
-            this.questProgress(status, person, reply);
+        
+        if (reply.questStart) {
+            this.questProgress('questStart', person, reply);
         }
+
+        if (reply.questComplete) {
+            this.questProgress('questComplete', person, reply);
+        }
+        
+        this.processReply(person, reply);
     }
 
     private readonly loadConversation = (person: IPerson): void => {

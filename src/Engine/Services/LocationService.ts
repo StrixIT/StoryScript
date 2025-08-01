@@ -97,6 +97,30 @@ export class LocationService implements ILocationService {
         });
     }
 
+    processDestinations = (game: IGame) => {
+        if (game.currentLocation.destinations) {
+
+            // remove the return message from the current location destinations.
+            game.currentLocation.destinations.forEach(destination => {
+                if ((<any>destination).isPreviousLocation) {
+                    (<any>destination).isPreviousLocation = false;
+                }
+            });
+
+            // Mark the previous location in the current location's destinations to allow
+            // the player to more easily backtrack his last step. Also, check if the user
+            // has the key for one or more barriers at this location, and add the key actions
+            // if that is the case.
+            game.currentLocation.destinations.forEach(destination => {
+                if (game.previousLocation && destination.target && (<any>destination.target) == game.previousLocation.id) {
+                    (<any>destination).isPreviousLocation = true;
+                }
+
+                this.addKeyAction(game, destination);
+            });
+        }
+    }
+
     private readonly setupLocations = () => {
         Object.values(this._game.locations).forEach(l => {
             const compiledLocation = <ICompiledLocation>l;
@@ -157,30 +181,6 @@ export class LocationService implements ILocationService {
         const key = getId(location) ?? presentLocation.id;
         game.currentLocation = game.locations.get(key);
         return true;
-    }
-
-    private readonly processDestinations = (game: IGame) => {
-        if (game.currentLocation.destinations) {
-
-            // remove the return message from the current location destinations.
-            game.currentLocation.destinations.forEach(destination => {
-                if ((<any>destination).isPreviousLocation) {
-                    (<any>destination).isPreviousLocation = false;
-                }
-            });
-
-            // Mark the previous location in the current location's destinations to allow
-            // the player to more easily backtrack his last step. Also, check if the user
-            // has the key for one or more barriers at this location, and add the key actions
-            // if that is the case.
-            game.currentLocation.destinations.forEach(destination => {
-                if (game.previousLocation && destination.target && (<any>destination.target) == game.previousLocation.id) {
-                    (<any>destination).isPreviousLocation = true;
-                }
-
-                this.addKeyAction(game, destination);
-            });
-        }
     }
 
     private readonly markCurrentLocationAsVisited = (game: IGame): void => {
