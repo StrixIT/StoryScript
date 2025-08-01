@@ -19,7 +19,7 @@
             <reply node="acceptquest" quest-start="FlowerForTheQueen" set-start="foundflower">
                 Of course. we'll find and return this flower to you!
             </reply>
-            <reply node="giveflower" requires="item=magicflower" action="giveflower">
+            <reply node="giveflower" requires="item=magicflower" quest-start="FlowerForTheQueen" quest-complete="FlowerForTheQueen" action="giveflower">
                 We already found this flower!
             </reply>
         </replies>

@@ -106,7 +106,7 @@ export function ForestOfMyrr() {
             },
             {
                 location: Treestump,
-                coords: '1335,390'
+                coords: '1335,385'
             },
             {
                 location: SecretCove,

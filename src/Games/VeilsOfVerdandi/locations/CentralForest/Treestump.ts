@@ -41,7 +41,7 @@ export function Treestump() {
             ['Intercept', {
                 text: 'Intercept the strange man',
                 execute: (game: IGame) => {
-                    const interceptCheckSucceeded = check(game, 4);
+                    let interceptCheckSucceeded = check(game, 4);
 
                     if (interceptCheckSucceeded) {
                         game.currentLocation.descriptionSelector = 'intercept';
@@ -59,7 +59,7 @@ export function Treestump() {
         [[
             'Leave',
             (game: IGame) => {
-                locationComplete(game, game.currentLocation, () => true, () => true);
+                locationComplete(game, game.currentLocation, () => !game.currentLocation.actions.length, () => true);
                 return true;
             }
         ]]
