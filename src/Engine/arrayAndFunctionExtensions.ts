@@ -44,6 +44,12 @@ export function addFunctionExtensions() {
     /* v8 ignore stop  */
 }
 
+export function addUniqueId(entity: any) {
+    if (entity[TypeProperty] && !entity[StateProperties.Id]) {
+        entity[StateProperties.Id] = crypto.randomUUID();
+    }
+}
+
 export function addArrayExtensions() {
     if ((<any>Array.prototype).get === undefined) {
         Object.defineProperty(Array.prototype, 'get', {
@@ -193,6 +199,8 @@ export function addArrayExtensions() {
                         });
                     }
                 }
+
+                return item;
             }
         });
     }
@@ -245,7 +253,7 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
     id = getId(id);
 
     return Array.prototype.filter.call(array, (x: { id: string, target: Function | string } | Function) => {
-        let currentId;
+        let currentId: string | Function;
         
         if (typeof x === 'function') {
             currentId = x;
@@ -253,15 +261,9 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
             currentId = x[0];
             
         } else {
-            currentId = x.target ?? x.id;
+            currentId = x.target ?? x[StateProperties.Id] ?? x.id;
         }
 
         return compareString(getId(currentId), id);
     });
-}
-
-function addUniqueId(entity: any) {
-    if (entity[TypeProperty] && !entity[StateProperties.Id]) {
-        entity[StateProperties.Id] = crypto.randomUUID();
-    }
 }

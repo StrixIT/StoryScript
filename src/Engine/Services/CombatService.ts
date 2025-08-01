@@ -10,6 +10,8 @@ import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {ICombatService} from "storyScript/Interfaces/services/combatService.ts";
+import {StateProperties} from "storyScript/stateProperties.ts";
+import {addUniqueId} from "storyScript/arrayAndFunctionExtensions.ts";
 
 export class CombatService implements ICombatService {
     constructor(private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts) {
@@ -92,7 +94,11 @@ export class CombatService implements ICombatService {
                 enemiesPerType[e.id].push(i);
             });
 
-            this._game.currentLocation.activeEnemies.forEach(e =>{
+            this._game.currentLocation.activeEnemies.forEach(e => {
+                // Add a unique id here so we can track multiple enemies of the same type.
+                // Combat will end only when the enemies are defeated, at which point they will
+                // be assigned a unique id anyway.
+                addUniqueId(e);
                 const name = this.getTargetName(enemiesPerType, e);
                 const copy = {...e};
                 copy.name = name;
@@ -219,7 +225,7 @@ export class CombatService implements ICombatService {
         this._game.statistics.enemiesDefeated ??= 0;
         this._game.statistics.enemiesDefeated += 1;
         combat.winnings.enemiesDefeated.push(enemy);
-        this._game.currentLocation.enemies.delete(enemy.id);
+        this._game.currentLocation.enemies.delete(enemy[StateProperties.Id]);
         this._rules.combat?.enemyDefeated?.(this._game, character, enemy);
         enemy.onDefeat?.(this._game, enemy);
     }
