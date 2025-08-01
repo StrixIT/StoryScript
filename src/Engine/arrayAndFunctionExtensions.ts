@@ -165,7 +165,7 @@ export function addArrayExtensions() {
                 // If a deletion record is deleted, simply move it to the deleted collection.
                 if (item[StateProperties.Deleted]) {
                     collection[deletedCollection].push(item);
-                    return;
+                    return item;
                 }
 
                 // Only add a deletion record when the item is removed from the array and the
