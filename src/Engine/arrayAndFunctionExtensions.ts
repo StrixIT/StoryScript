@@ -261,9 +261,9 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
             currentId = x[0];
             
         } else {
-            currentId = x.target ?? x[StateProperties.Id] ?? x.id;
+            currentId = x.target ?? x.id;
         }
 
-        return compareString(getId(currentId), id);
+        return compareString(getId(currentId), id) || (x[StateProperties.Id] && compareString(x[StateProperties.Id], id));
     });
 }

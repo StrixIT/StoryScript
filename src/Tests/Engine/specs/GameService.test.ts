@@ -54,6 +54,8 @@ describe("GameService", function () {
             init: () => {
             },
             loadLocationDescriptions: (game) => {
+            },
+            processDestinations: (game: IGame) => {
             }
         }
 

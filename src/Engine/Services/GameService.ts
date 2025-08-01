@@ -172,6 +172,7 @@ export class GameService implements IGameService {
             }
 
             this._game.combinations.combinationResult.reset();
+            this._locationService.processDestinations(this._game);
             this._locationService.loadLocationDescriptions(this._game);
             this._rules.setup.continueGame?.(this._game);
 
