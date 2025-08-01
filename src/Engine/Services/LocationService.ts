@@ -15,6 +15,8 @@ import {
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
+import {GameEventNames} from "storyScript/GameEventNames.ts";
 
 export class LocationService implements ILocationService {
     constructor(
@@ -23,11 +25,6 @@ export class LocationService implements ILocationService {
         private readonly _game: IGame,
         private readonly _gameEvents: IGameEvents,
     ) {
-        this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
-            game.currentLocation?.destinations.forEach(d => {
-                this.addKeyAction(game, d);
-            })
-        }, false);
     }
 
     init = (): void => {
@@ -43,12 +40,19 @@ export class LocationService implements ILocationService {
         }
         
         if (!this._game.maps && this._definitions.maps) {
+            this._game.maps = {};
             // When we have no maps, it could be that maps were added later and that they are not in the saved
             // data yet. Add the maps available now.
             this._definitions.maps?.forEach(m => this._game.maps[getId(m)] = m());
         }
 
         this.setupLocations();
+        
+        this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
+            game.currentLocation?.destinations.forEach(d => {
+                this.addKeyAction(game, d);
+            })
+        }, false);
     }
 
     changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {

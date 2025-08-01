@@ -597,8 +597,8 @@ function pushEntity(originalScope: any, originalFunction: any, entity: any, prop
 }
 
 function removeEntity(originalScope: any, originalFunction: any, entity: any, property: string, deletedEntity: any) {
-    originalFunction.apply(originalScope, [deletedEntity]);
-    gameEvents.publish(`delete-${entity.type}-${property}`, {type: `delete-${deletedEntity.type}`, [entity.type]: entity, [deletedEntity.type]: deletedEntity});
+    const deleted = originalFunction.apply(originalScope, [deletedEntity]);
+    gameEvents.publish(`delete-${entity.type}-${property}`, {type: `delete-${deleted.type}`, [entity.type]: entity, [deleted.type]: deleted});
 }
 
 function getIdFromName<T extends { name: string, id?: string }>(entity: T): string {

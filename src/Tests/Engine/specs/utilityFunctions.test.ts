@@ -83,8 +83,8 @@ describe("UtilityFunctions", function () {
     });
 
     test("should return function name as id", function () {
-        function TestFunction() { return; }
-        const result = getId(TestFunction);
+        function Test() { return; }
+        const result = getId(Test);
         expect(result).toEqual('test');
     });
 

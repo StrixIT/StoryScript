@@ -5,6 +5,8 @@ import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
 import {ILocationService} from "storyScript/Interfaces/services/locationService.ts";
 import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
+import {GameEventNames} from "storyScript/GameEventNames.ts";
 
 describe("GameService", function () {
 
@@ -56,6 +58,7 @@ describe("GameService", function () {
         }
 
         const service = getService(game, dataService, locationService, null, null, null, rules);
+        gameEvents.register(GameEventNames.ChangeLocation, false);
         service.loadGame('');
         game.party.characters.forEach((c) => expect(c.combatItems).toBeDefined());
     });

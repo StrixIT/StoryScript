@@ -1,4 +1,5 @@
 ﻿import {EquipmentType, ILocation} from "./Interfaces/storyScript";
+import {StateProperties} from "storyScript/stateProperties.ts";
 
 const functionRenameRegex =  /[$_].{1,}/i;
 
@@ -32,7 +33,7 @@ export function isDataRecord(item: any[]): boolean {
     return item?.length && item.length === 2 && typeof (item[0]) === 'string' && (typeof (item[1]) === 'object' || typeof (item[1]) === 'function');
 }
 
-export function getKeyPropertyNames(item: any): { first: string, second: string } {
+export function getKeyPropertyNames(item: any, includeUniqueIds?: boolean): { first: string, second: string } {
     if (typeof item === 'undefined') {
         return {first: null, second: null};
     }
@@ -41,7 +42,8 @@ export function getKeyPropertyNames(item: any): { first: string, second: string 
         return {first: '0', second: null};
     }
 
-    let firstKeyProperty = item.id !== undefined ? 'id' : null;
+    let firstKeyProperty = includeUniqueIds && item[StateProperties.Id] !== undefined ? <string>StateProperties.Id : null;
+    firstKeyProperty ??= item.id !== undefined ? 'id' : null;
     firstKeyProperty ??= item.target !== undefined ? 'target' : null;
     firstKeyProperty ??= item.tool !== undefined ? 'tool' : null;
     let secondKeyProperty = item.type !== undefined ? 'type' : null;
@@ -195,8 +197,8 @@ export function getEquipmentType(slot: EquipmentType | string): string {
 }
 
 function getKeyProperties(pristine: any, current: any): { first?: string, second?: string } {
-    const {first: pristineFirst, second: pristineSecond} = getKeyPropertyNames(pristine);
-    const {first: currentFirst, second: currentSecond} = getKeyPropertyNames(current);
+    const {first: pristineFirst, second: pristineSecond} = getKeyPropertyNames(pristine, true);
+    const {first: currentFirst, second: currentSecond} = getKeyPropertyNames(current, true);
     return {
         first: pristineFirst && currentFirst ? pristineFirst : null,
         second: pristineSecond && currentSecond ? pristineSecond : null
