@@ -53,9 +53,7 @@ export function heal(character: Character, amount: number) {
 }
 
 export function getTopWeapon(character: Character): IItem {
-    let weapon = character.items
-        .filter(i => i.damage)
-        .sort((a, b) => parseInt(a.damage.substring(2)) - parseInt(b.damage.substring(2)))[0];
+    let weapon: IItem;
 
     Object.keys(character.equipment).forEach(k => {
         const item = <IItem>character.equipment[k];

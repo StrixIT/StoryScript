@@ -38,7 +38,11 @@ export function Octopus() {
                         (game: IGame) => {
                             game.currentLocation.descriptionSelector = 'attack';
                             game.currentLocation.picture = true;
-                            game.currentLocation.enemies.map(e => e.inactive = false);
+                            game.currentLocation.enemies.map(e => {
+                                e.inactive = false;
+                                e.activeDay = game.worldProperties.isDay;
+                                e.activeNight = game.worldProperties.isNight
+                            });
                         }
                 }
             ],
