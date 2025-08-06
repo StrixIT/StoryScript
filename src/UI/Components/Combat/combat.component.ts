@@ -45,8 +45,9 @@ export class CombatComponent {
     getItemName = (item: IItem): string => this._itemService.getItemName(item);
 
     itemChange = (item: IItem, turn: ICombatTurn) => {
+        const currentTarget = turn.target;
         const targets = turn.targetsAvailable.concat(turn.character).filter(t => this._combatService.canTarget(item, t, turn.character));
-        turn.target = targets[0];
+        turn.target = targets.filter(t => t === currentTarget)[0] ?? targets[0];
     }
 
     filteredTargets = (turn: ICombatTurn): IEnemy[] | ICharacter[] => turn.targetsAvailable.concat(turn.character).filter(t => this._combatService.canTarget(turn.item, t, turn.character));
