@@ -156,12 +156,35 @@ export class CombatService implements ICombatService {
         });
 
         items.forEach(i => {
+            if (this._rules.combat.itemIsSelectable) {
+                i.selectable = this._rules.combat.itemIsSelectable(this._game, i);
+            }
+            
             if (!i.canTarget) {
                 return;
             }
 
             i.selectable = false;
-            const targets = i.targetType === TargetType.Enemy ? enemies : allies;
+            let targets;
+            
+            switch (i.targetType) {
+                case TargetType.Enemy: {
+                    targets = enemies;
+                    break;
+                }
+                case TargetType.Ally: {
+                    targets = allies;
+                    break;
+                }
+                case TargetType.AllyOrSelf: {
+                    targets = allies.concat([character]);
+                    break;
+                }
+                case TargetType.Self: {
+                    targets = [character];
+                    break;
+                }
+            }
 
             for (let x = 0; x < targets.length; x++) {
                 const target = targets[x];

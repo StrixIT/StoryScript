@@ -31,6 +31,14 @@ export interface ICombatRules {
     fight?(game: IGame, combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void>| void;
 
     /**
+     * Use this function to run custom code to determine whether an item should be selectable for combat
+     * or not.
+     * @param game The active game
+     * @param item The item for which to determine whether it should be selectable
+     */
+    itemIsSelectable?(game: IGame, item: IItem): boolean;
+    
+    /**
      * This function will be called when an enemy is defeated.
      * @param game The active game
      * @param character The character defeating the enemy
