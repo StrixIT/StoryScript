@@ -1,5 +1,5 @@
 <div id="create-character" class="container-fluid">
-    @for (step of sheet.steps; track step)
+    @for (step of sheet.steps; track $index)
     {
         <div [hidden]="sheet.currentStep !== $index">
             @if (step.description) {

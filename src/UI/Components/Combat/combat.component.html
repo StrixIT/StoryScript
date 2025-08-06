@@ -17,7 +17,7 @@
                     }
                     </div>
                 }
-                @for (characterRow of  characterRows; track characterRow)
+                @for (characterRow of  characterRows; track $index)
                 {
                     <div class="row character-row">
                         @for (turn of  characterRow; track turn.character)
