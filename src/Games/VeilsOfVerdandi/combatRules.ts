@@ -10,8 +10,9 @@ import {IGroupableItem, IItem} from "./interfaces/item.ts";
 import {ICombatTurn} from "./interfaces/combatTurn.ts";
 import {ClassType} from "./classType.ts";
 import {CombatParticipant} from "./interfaces/combatParticipant.ts";
-import {equals} from "storyScript/utilityFunctions.ts";
+import {equals, getId} from "storyScript/utilityFunctions.ts";
 import {Constants} from "./constants.ts";
+import {MagicRing} from "./items/MagicRing.ts";
 
 export const damageSpecial = (game: IGame, enemy: IEnemy, character: Character, property: string, checkDifficulty?: number) => {
     if (!checkDifficulty || !check(game, checkDifficulty)) {
@@ -127,6 +128,15 @@ export const combatRules = <ICombatRules>{
         }
 
         game.combatLog.reverse();
+    },
+    
+    itemIsSelectable: (game: IGame, item: any)=> {
+        if (item.recharging) {
+            item.recharging = item.recharging > 1 ? --item.recharging : undefined;
+            return !item.recharging;
+        }
+        
+        return item.selectable;
     }
 }
 
@@ -369,11 +379,6 @@ function useBows(combat: ICombatSetup): boolean {
 function filterWeapons(game: IGame, combatSetup: ICombatSetup, filter: (combatSetup: ICombatSetup, character: Character, item: IItem) => boolean): void {
     combatSetup.forEach(c => {
         c.itemsAvailable.forEach((i: any) => {
-            if (i.recharging) {
-                i.recharging = i.recharging > 1 ? --i.recharging : undefined;
-                i.selectable = !i.recharging && (!i.canTarget || i.canTarget(game, i, c.target));
-            }
-
             if (i.id.indexOf('powerattack') > -1) {
                 i.speed = getTopWeapon(c.character)?.speed || 0;
             }
@@ -411,6 +416,13 @@ function getCombatSpeed(entry: CombatParticipant, combatSetup: ICombatSetup): nu
         // When using double daggers, the attack speed is 5 instead of three.
         if ((<IGroupableItem>setupEntry.item)?.members?.length > 0) {
             baseSpeed += 2;
+        }
+        
+        // When the Wizard has the magic ring, spell casting is faster
+        let wizard = (<Character>entry.participant).class?.name === ClassType.Wizard ? <Character>entry.participant : null;
+        
+        if (wizard && wizard.equipment.rightRing.id === getId(MagicRing)) {
+            baseSpeed -= 1;
         }
 
         return setupEntry.item ? baseSpeed + setupEntry.item.speed : 0;

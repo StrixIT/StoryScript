@@ -9,7 +9,7 @@ import {Beach} from "../Beach/Beach.ts";
 
 export function NorthRoad() {
     return Location({
-        name: 'NorthRoad',
+        name: 'North Road',
         description: description,
         ...hotSpotProperties,
         destinations: [
