@@ -32,7 +32,7 @@ export function Woodcutter() {
         [[
             'Leave',
             (game: IGame) => {
-                locationComplete(game, game.currentLocation, () => game.currentLocation.items.length === 0, () => game.currentLocation.items.length === 0);
+                locationComplete(game, game.currentLocation, () => !game.currentLocation.items.get(Parchment), () => !game.currentLocation.items.get(Parchment));
                 
                 // Remove the Spectre when the items are taken during the day.
                 if (game.currentLocation.completedDay) {

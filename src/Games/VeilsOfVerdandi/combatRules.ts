@@ -421,7 +421,7 @@ function getCombatSpeed(entry: CombatParticipant, combatSetup: ICombatSetup): nu
         // When the Wizard has the magic ring, spell casting is faster
         let wizard = (<Character>entry.participant).class?.name === ClassType.Wizard ? <Character>entry.participant : null;
         
-        if (wizard && wizard.equipment.rightRing.id === getId(MagicRing)) {
+        if (wizard && equals(wizard.equipment.rightRing, MagicRing)) {
             baseSpeed -= 1;
         }
 

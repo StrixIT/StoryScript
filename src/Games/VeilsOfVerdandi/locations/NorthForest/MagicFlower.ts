@@ -27,11 +27,11 @@ export function MagicFlower() {
             [[
                 'Leave',
                 (game: IGame) => {
-                    if (game.currentLocation.items.length === 0 && game.currentLocation.enemies.length > 0) {
+                    if (!game.currentLocation.items.get(MagicFlowerItem) && game.currentLocation.enemies.length > 0) {
                         game.currentLocation.enemies.delete(Brownbear);
                     }
 
-                    locationComplete(game, game.currentLocation, () => game.currentLocation.items.length === 0, () => game.currentLocation.items.length === 0);
+                    locationComplete(game, game.currentLocation, () => !game.currentLocation.items.get(MagicFlowerItem), () => !game.currentLocation.items.get(MagicFlowerItem));
                     return true;
                 }
             ]]
