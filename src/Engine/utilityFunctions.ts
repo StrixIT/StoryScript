@@ -1,4 +1,4 @@
-﻿import {EquipmentType, ILocation} from "./Interfaces/storyScript";
+﻿import {EquipmentType, IItem, ILocation, IParty} from "./Interfaces/storyScript";
 import {StateProperties} from "storyScript/stateProperties.ts";
 
 const functionRenameRegex =  /[$_].{1,}/i;
@@ -134,6 +134,34 @@ export function isEmpty(object: any, property?: string) {
 export function equals<T extends { id?: string } | ILocation>(entity: T | string, definition: () => T): boolean {
     const id = (entity as { id?: string })?.id ?? getId(entity as Function);
     return id ? compareString(id, definition.name) : false;
+}
+
+export function hasItem(party: IParty, item: IItem | string): boolean {
+    let hasItem = false;
+
+    // Check item available. Item list first, equipment second.
+    party.characters.forEach(c => {
+        if (hasItem) {
+            return;
+        }
+
+        hasItem = c.items.get(item) != undefined;
+
+        if (hasItem) {
+            return;
+        }
+        
+        for (const i in c.equipment) {
+            const slotItem = <IItem>c.equipment[i];
+            hasItem = slotItem && compareString(slotItem.id, (item as IItem)?.id ?? item as string);
+
+            if (hasItem) {
+                return;
+            }
+        }
+    });
+    
+    return hasItem;
 }
 
 export function createPromiseForCallback<T>(callBack: Function): { promise: Promise<T>, promiseCallback: () => void } {
