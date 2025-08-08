@@ -132,7 +132,7 @@ export function isEmpty(object: any, property?: string) {
 }
 
 export function equals<T extends { id?: string } | ILocation>(entity: T | string, definition: () => T): boolean {
-    const id = (entity as { id?: string }).id ?? getId(entity as Function);
+    const id = (entity as { id?: string })?.id ?? getId(entity as Function);
     return id ? compareString(id, definition.name) : false;
 }
 
