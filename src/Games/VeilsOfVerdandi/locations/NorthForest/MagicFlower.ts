@@ -5,6 +5,7 @@ import {MagicFlower as MagicFlowerItem} from '../../items/MagicFlower.ts';
 import {NorthRoad} from './NorthRoad';
 import {backToForestText} from "../../explorationRules.ts";
 import {locationComplete} from "../../sharedFunctions.ts";
+import {getId, hasItem} from "storyScript/utilityFunctions.ts";
 
 export function MagicFlower() {
     return Location({
@@ -27,11 +28,11 @@ export function MagicFlower() {
             [[
                 'Leave',
                 (game: IGame) => {
-                    if (!game.currentLocation.items.get(MagicFlowerItem) && game.currentLocation.enemies.length > 0) {
-                        game.currentLocation.enemies.delete(Brownbear);
+                    if (!game.currentLocation.items.get(MagicFlowerItem) && !hasItem(game.party, getId(MagicFlowerItem))) {
+                        game.currentLocation.items.add(MagicFlowerItem);
                     }
 
-                    locationComplete(game, game.currentLocation, () => !game.currentLocation.items.get(MagicFlowerItem), () => !game.currentLocation.items.get(MagicFlowerItem));
+                    locationComplete(game, game.currentLocation, () => game.currentLocation.enemies.length === 0, () => game.currentLocation.hasVisited);
                     return true;
                 }
             ]]

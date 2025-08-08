@@ -18,7 +18,6 @@ export function Merchant() {
             BroadSword(),
             SilverDagger(),
             RoundShield(),
-            MagicRing(),
             Dodge2()
         ],
         trade: {

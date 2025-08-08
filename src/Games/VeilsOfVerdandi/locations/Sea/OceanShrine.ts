@@ -1,9 +1,9 @@
 ﻿import {IGame, Location} from '../../types';
 import description from './OceanShrine.html?raw';
-import {CentralForest} from '../CentralForest/CentralForest';
 import {Octopus} from './Octopus';
 import {locationComplete} from "../../sharedFunctions.ts";
 import {SecretCove} from "../CentralForest/SecretCove.ts";
+import {MagicRing} from "../../items/MagicRing.ts";
 
 export function OceanShrine() {
     return Location({
@@ -21,6 +21,16 @@ export function OceanShrine() {
                 target: SecretCove,
             },
         ],
+        items: [
+            MagicRing()
+        ],
+        enterEvents:
+            [[
+                'Enter',
+                (game: IGame) => {
+                    game.currentLocation.items.map(i => i.inactive = true);
+                }
+            ]],
         actions:
             [[
                 'TouchAltar',
