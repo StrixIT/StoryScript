@@ -1,6 +1,5 @@
 import {IGame} from '../Interfaces/game';
 import {IPerson} from '../Interfaces/person';
-import {IItem} from '../Interfaces/item';
 import {IQuest} from '../Interfaces/quest';
 import {IConversationService} from '../Interfaces/services/conversationService';
 import {PlayState} from '../Interfaces/enumerations/playState';
@@ -8,7 +7,7 @@ import {IConversationNode} from '../Interfaces/conversations/conversationNode';
 import {IConversationReply} from '../Interfaces/conversations/conversationReply';
 import {IConversation} from '../Interfaces/conversations/conversation';
 import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
-import {compareString} from "storyScript/utilityFunctions.ts";
+import {compareString, hasItem} from "storyScript/utilityFunctions.ts";
 import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
 
 export class ConversationService implements IConversationService {
@@ -300,25 +299,7 @@ export class ConversationService implements IConversationService {
 
         switch (type) {
             case 'item': {
-                // Check item available. Item list first, equipment second.
-                let hasItem = false;
-
-                this._game.party.characters.forEach(c => {
-                    if (hasItem) {
-                        return;
-                    }
-
-                    hasItem = c.items.get(value) != undefined;
-
-                    if (!hasItem) {
-                        for (const i in c.equipment) {
-                            const slotItem = <IItem>c.equipment[i];
-                            hasItem = slotItem && compareString(slotItem.id, value);
-                        }
-                    }
-                });
-
-                isAvailable = !!hasItem;
+                isAvailable = !!hasItem(this._game.party, value);
             }
                 break;
             case 'location': {
