@@ -7,7 +7,7 @@ import gameName from './gameName.js';
 import path from 'path';
 
 const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
-const resourceRegex = /\\resources\\(.{1,}\.)/;
+const resourceRegex = process.platform === 'linux' ? /\/resources\/(.{1,}\.)/ : /\\resources\\(.{1,}\.)/;
 
 const plugins = [
     tsconfigPaths(),
