@@ -1,5 +1,5 @@
 ﻿import pkg from 'fs-extra';
-const { copySync, readFileSync, writeFileSync } = pkg;
+const { copy, readFile, writeFile } = pkg;
 
 const gameName = process.argv[2];
 
@@ -9,25 +9,28 @@ if (!gameName) {
 }
 
 // Set the game name to the new game.
-correctFile('gameName.js', /gameName\s{0,}=\s{0,}[\w\'-]{0,};/g, `gameName = \'${gameName}\';`);
+await correctFile('gameName.js', /gameName\s{0,}=\s{0,}[\w\'-]{0,};/g, `gameName = \'${gameName}\';`);
 
 const gameRoot = './src/Games/_GameTemplate/';
 const gameDestination = './src/Games/' + gameName;
 
+// Copy the code snippets so VS Code can use them.
+await copy('./CodeSnippets/StoryScriptSnippets.code-snippets', './.vscode/StoryScriptSnippets.code-snippets');
+
 // Copy the game template.
-copySync(gameRoot, gameDestination);
+await copy(gameRoot, gameDestination);
 
 // Correct the run file.
-correctFile(`${gameDestination}/run.ts`, 'Run(\'GameTemplate\',', `Run(\'${gameName}\',`);
+await correctFile(`${gameDestination}/run.ts`, 'Run(\'GameTemplate\',', `Run(\'${gameName}\',`);
 
 const testRoot = './src/Tests/Games/_GameTemplate';
 const testDestination = './src/Tests/Games/' + gameName;
 
 // Copy the test template.
-copySync(testRoot, testDestination);
+await copy(testRoot, testDestination);
 
-function correctFile(fileName, toReplace, replacement) {
-    let fileData = readFileSync(fileName, 'utf8');
+async function correctFile(fileName, toReplace, replacement) {
+    let fileData = await readFile(fileName, 'utf8');
     fileData = fileData.replace(toReplace, replacement);
-    writeFileSync(fileName, fileData);
+    await writeFile(fileName, fileData);
 }
