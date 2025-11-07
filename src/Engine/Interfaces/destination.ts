@@ -29,4 +29,9 @@ export interface IDestination {
      * The location that this destination leads to.
      */
     target: (() => ILocation) | string;
+
+    /**
+     * True if the location this destination leads to was visited before by the player, false otherwise.
+     */
+    visited?: boolean;
 }

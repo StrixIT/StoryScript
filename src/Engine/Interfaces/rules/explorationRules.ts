@@ -21,6 +21,8 @@ export interface IExplorationRules {
      */
     leaveLocation?(game: IGame, location: ICompiledLocation, newLocationId: string): void;
 
+    hasVisitedLocation?(game: IGame, location: ICompiledLocation): boolean;
+
     /**
      * Specify this function if you want to run custom logic to set the description selector when selecting the description when
      * entering a location. Return the selector string. This is useful if you for example want to show different descriptions at

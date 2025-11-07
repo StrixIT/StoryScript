@@ -98,25 +98,36 @@ export class LocationService implements ILocationService {
     }
 
     processDestinations = (game: IGame) => {
-        if (game.currentLocation.destinations) {
-
-            // remove the return message from the current location destinations.
-            game.currentLocation.destinations.forEach(destination => {
-                if ((<any>destination).isPreviousLocation) {
-                    (<any>destination).isPreviousLocation = false;
-                }
+        if (game.previousLocation?.destinations.length) {
+            // Remove the isPreviousLocation and visited markers from the previous location's destinations.
+            game.previousLocation.destinations.forEach((d: any) => {
+                delete d.isPreviousLocation;
+                delete d.visited;
             });
+        }
 
-            // Mark the previous location in the current location's destinations to allow
-            // the player to more easily backtrack his last step. Also, check if the user
-            // has the key for one or more barriers at this location, and add the key actions
+        if (game.currentLocation.destinations.length) {
+            // 1. Mark the previous location in the current location's destinations to allow
+            // the player to more easily backtrack his last step.
+            // 2. Mark the destination as visited when the player has already visited the location it leads to.
+            // 3. Check if the user has the key for one or more barriers at this location, and add the key actions
             // if that is the case.
-            game.currentLocation.destinations.forEach(destination => {
-                if (game.previousLocation && destination.target && (<any>destination.target) == game.previousLocation.id) {
-                    (<any>destination).isPreviousLocation = true;
+            game.currentLocation.destinations.forEach((d: any) => {
+                if (d.target == game.previousLocation?.id) {
+                    d.isPreviousLocation = true;
                 }
 
-                this.addKeyAction(game, destination);
+                const targetLocation = game.locations[d.target];
+                const visitedRule = this._rules.exploration?.hasVisitedLocation;
+
+                if (targetLocation && visitedRule) {
+                    d.visited = visitedRule(game, targetLocation);
+                }
+                else {
+                    d.visited = targetLocation?.hasVisited;
+                }
+
+                this.addKeyAction(game, d);
             });
         }
     }
