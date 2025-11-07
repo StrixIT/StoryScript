@@ -33,12 +33,15 @@ export class DataSynchronizer implements IDataSynchronizer {
         }
 
         // We don't have pristine entities for the 'world' and 'maps' properties of saved games.
-        // Use the pristine collections for these.
+        // Use the pristine collections for these. When location and map files are deleted from
+        // the game, we need to remove them from the stored data as well.
         if (parentProperty === 'world') {
             pristineEntity = this._pristineEntities['locations'];
+            this.deleteRemovedEntities(entity, pristineEntity);
         }
         else if (parentProperty === 'maps') {
             pristineEntity = this._pristineEntities['maps'];
+            this.deleteRemovedEntities(entity, pristineEntity);
         }
 
         // Use the properties of both the entity and the pristine entity, but only
@@ -199,5 +202,16 @@ export class DataSynchronizer implements IDataSynchronizer {
     private markEntriesAsDeleted = (item: any[]) => {
         const itemsToDelete = item.filter(i => i[StateProperties.Deleted]);
         itemsToDelete.forEach(i => item.delete(i));
+    }
+
+    private deleteRemovedEntities = (entity: any, pristineEntity: any): void => {
+        const entityKeys = Object.keys(entity);
+        const pristineKeys = Object.keys(pristineEntity);
+
+        entityKeys.forEach(k => {
+            if (pristineKeys.indexOf(k) < 0) {
+                delete entity[k];
+            }
+        });
     }
 }
