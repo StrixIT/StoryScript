@@ -38,7 +38,7 @@
             <ul class="list-unstyled">
                 @for (destination of game.currentLocation.activeDestinations; track destination.target)
                 {
-                    <li class="inline">
+                    <li [className]="`inline ${destination.visited ? '' : 'not-'}visited`">
                         @for (barrier of destination.barriers; track barrier)
                         {
                             <div class="barrier">
