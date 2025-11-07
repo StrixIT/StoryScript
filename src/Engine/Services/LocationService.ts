@@ -98,7 +98,7 @@ export class LocationService implements ILocationService {
     }
 
     processDestinations = (game: IGame) => {
-        if (game.previousLocation?.destinations) {
+        if (game.previousLocation?.destinations.length) {
             // Remove the isPreviousLocation and visited markers from the previous location's destinations.
             game.previousLocation.destinations.forEach((d: any) => {
                 delete d.isPreviousLocation;
@@ -106,7 +106,7 @@ export class LocationService implements ILocationService {
             });
         }
 
-        if (game.currentLocation.destinations) {
+        if (game.currentLocation.destinations.length) {
             // 1. Mark the previous location in the current location's destinations to allow
             // the player to more easily backtrack his last step.
             // 2. Mark the destination as visited when the player has already visited the location it leads to.

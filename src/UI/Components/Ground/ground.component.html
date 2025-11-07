@@ -1,5 +1,5 @@
 @let items = game.currentLocation.activeItems;
-@if (!enemiesPresent() && items.length)
+@if (!enemiesPresent() && items?.length)
 {
     <div class="box-container" id="exploration-onground">
         <div class="box-title">{{ texts.onTheGround }}</div>
