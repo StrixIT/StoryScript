@@ -4,9 +4,14 @@ import {IGame} from "storyScript/Interfaces/game.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
+import {IGameService} from "storyScript/Interfaces/services/gameService.ts";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
+    
+    let gameService: IGameService;
+    
+    const reloadKey = ref(0);
     const game = ref<IGame>(null);
     const texts = ref<IInterfaceTexts>(null);
     const rules = ref<IRules>(null);
@@ -16,12 +21,26 @@ export const useStateStore = defineStore('appState', () => {
         game.value = serviceFactory.GetGame();
         texts.value = serviceFactory.GetTexts();
         rules.value = serviceFactory.GetRules();
+        
+        gameService = serviceFactory.GetGameService();
+    }
+    
+    const update = (action: Function) => {
+        action();
+        ++reloadKey.value;
+    }
+    
+    const reset = (): void => {
+        gameService.reset();
     }
     
     return {
+        reloadKey,
         game,
         texts,
         rules,
-        setStoreData
+        setStoreData,
+        update,
+        reset
     }
 });

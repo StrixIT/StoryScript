@@ -9,16 +9,16 @@
       </div>
       <div id="location-container">
         <div v-if="!game?.state">
-          {{ texts?.loading }}
+          {{ texts.loading }}
         </div>
 
-        <div v-if="game?.state === 'Play'">
+        <div v-if="game.state === 'Play'">
 <!--          <encounter></encounter>-->
-<!--          <location-text></location-text>-->
+          <location-text :key="reloadKey"></location-text>
 <!--          <location-visual></location-visual>-->
 <!--          <action-log></action-log>-->
 <!--          <ground></ground>-->
-<!--          <exploration></exploration>-->
+          <exploration :key="reloadKey"></exploration>
 <!--          <enemy></enemy>-->
         </div>
         
@@ -33,7 +33,7 @@
 <!--        <victory></victory>-->
       </div>
     </div>
-    <div v-if="game?.state === 'Play'" class="row">
+    <div v-if="game.state === 'Play'" class="row">
       <div class="col-12">
 <!--        <combination></combination>-->
       </div>
@@ -47,6 +47,6 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {game, texts, reloadKey} = storeToRefs(store);
 
 </script>

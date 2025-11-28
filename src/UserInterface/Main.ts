@@ -31,14 +31,16 @@ logTime('Start Vue', () => {
 //app.config.errorHandler = (error: any) => errorRepo.logError(error.message, error.stack);
 
 const components = [
-    'Navigation'
+    'Navigation',
+    'LocationText',
+    'Exploration'
 ];
 
 logTime('Import components', () => {
     components.forEach(c => application.component(c, defineAsyncComponent(() => import(getTemplate('/src/UserInterface/Components', c)))));
 });
 
-application.use(pinia).mount('#app');
+application.use(pinia);
 
 let serviceFactory: ServiceFactory;
 
@@ -52,3 +54,5 @@ logTime('Init game', () => {
     const gameService = serviceFactory.GetGameService();
     gameService.init();
 });
+
+application.mount('#app')
