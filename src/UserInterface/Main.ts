@@ -1,7 +1,7 @@
 import {App, createApp, defineAsyncComponent} from 'vue';
 import {createPinia, Pinia} from 'pinia';
+import {router} from 'vue/Router.ts';
 import AppShell from 'vue/Components/AppShell.vue';
-import {getTemplate} from "vue/Helpers.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {logTime} from "../StartupLogger.ts";
 import {useStateStore} from "vue/StateStore.ts";
@@ -13,6 +13,7 @@ import 'game/run';
 
 let pinia: Pinia;
 let application: App<Element>
+let _templates = <Map<string, string>>null;
 
 logTime('Start Vue', () => {
     pinia = createPinia();
@@ -31,16 +32,34 @@ logTime('Start Vue', () => {
 //app.config.errorHandler = (error: any) => errorRepo.logError(error.message, error.stack);
 
 const components = [
+    'GameContainer',
     'Navigation',
     'LocationText',
     'Exploration'
 ];
 
+const getTemplate = (root: string, componentName: string): string => {
+    if (!_templates) {
+        _templates = new Map<string, string>();
+
+        if (import.meta.env?.VITE_BUILDER) {
+            const modules = import.meta.glob('game/ui/**/*.vue', {eager: true, query: 'raw'});
+
+            for (const path in modules) {
+                const capture = path.match(/([a-zA-Z]{1,}).vue$/);
+                _templates.set(capture[1], path);
+            }
+        }
+    }
+
+    return _templates.get(componentName) ?? import.meta.resolve(`${root}/${componentName}.vue`);
+}
+
 logTime('Import components', () => {
     components.forEach(c => application.component(c, defineAsyncComponent(() => import(getTemplate('/src/UserInterface/Components', c)))));
 });
 
-application.use(pinia);
+application.use(router).use(pinia);
 
 let serviceFactory: ServiceFactory;
 

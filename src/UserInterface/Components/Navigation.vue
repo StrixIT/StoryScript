@@ -37,11 +37,17 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {useRouter} from "vue-router";
+import {Routes} from "vue/Router.ts";
 
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
+const router = useRouter();
 
-const menu = () => game.value.playState = PlayState.Menu;
+const menu = () => {
+  game.value.playState = PlayState.Menu;
+  router.push(Routes.Menu);
+}
 
 const reset = () => store.reset();
 

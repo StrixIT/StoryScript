@@ -111,7 +111,8 @@ export class DefaultTexts {
         cancelSell: 'Cancel',
         currencyWon: 'Currency gained: {0}',
         itemsTaken: 'Items taken',
-        enemiesDefeated: 'Enemies defeated'
+        enemiesDefeated: 'Enemies defeated',
+        backToGame: 'Back to the game'
     }
 
     format = format;

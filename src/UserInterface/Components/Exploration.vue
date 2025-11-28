@@ -1,54 +1,29 @@
 <template>
   <div id="exploration">
-<!--    @if (actionsPresent())-->
-<!--    {-->
-<!--    <div class="box-container" id="exploration-actions">-->
-<!--      <div class="box-title">{{ texts.actions }}</div>-->
-<!--      @if (!confirmAction)-->
-<!--      {-->
-<!--      <ul class="list-unstyled">-->
-<!--        @for (action of game.currentLocation.activeActions; track action)-->
-<!--        {-->
-<!--        @if (!hideActionButton(action))-->
-<!--        {-->
-<!--        <li class="inline">-->
-<!--          <button type="button" class="btn" [ngClass]="getButtonClass(action)" (click)="executeAction(action)" [disabled]="disableActionButton(action)">{{ action[1].text }}</button>-->
-<!--        </li>-->
-<!--        }-->
-<!--        }-->
-<!--      </ul>-->
-<!--      }-->
-<!--      @if (confirmAction)-->
-<!--      {-->
-<!--      <div>-->
-<!--        <p [innerHTML]="confirmAction[1].confirmationText | safe: 'html'"></p>-->
-<!--        <ul class="list-unstyled">-->
-<!--          <li class="inline">-->
-<!--            <button type="button" class="btn btn-primary" (click)="cancelAction()">{{ texts.cancelAction }}</button>-->
-<!--            <button type="button" class="btn btn-warning" (click)="executeAction(confirmAction)">{{ texts.confirmAction }}</button>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--      </div>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
-<!--    @if (!enemiesPresent())-->
-<!--    {-->
-    <div class="box-container" id="exploration-destinations">
+    <div v-if="actionsPresent()" class="box-container" id="exploration-actions">
+      <div class="box-title">{{ texts.actions }}</div>
+      <ul v-if="!confirmAction" class="list-unstyled">
+        <li v-for="action of game.currentLocation.activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
+          <button type="button" class="btn" :class="getButtonClass(action)" @click="execute(action)" :disabled="disableActionButton(action)">{{ action[1].text }}</button>
+        </li>
+      </ul>
+      <div v-else>
+        <p v-html="confirmAction[1].confirmationText"></p>
+        <ul class="list-unstyled">
+          <li class="inline">
+            <button type="button" class="btn btn-primary" @click="cancelAction()">{{ texts.cancelAction }}</button>
+            <button type="button" class="btn btn-warning" @click="execute(confirmAction)">{{ texts.confirmAction }}</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div v-if="!enemiesPresent(game)" class="box-container" id="exploration-destinations">
       <div class="box-title">{{ texts.destinations }}</div>
       <ul class="list-unstyled">
         <li v-for="destination of game.currentLocation.activeDestinations" :class="`inline ${destination.visited ? '' : 'not-'}visited`">
-<!--          @for (barrier of destination.barriers; track barrier)-->
-<!--          {-->
-<!--          <div class="barrier">-->
-<!--            @let barrierEntry = barrier[1];-->
-<!--            @if (!barrierEntry.actions?.length)-->
-<!--            {-->
-<!--            <button class="btn btn-outline-primary">{{ barrierEntry.name }}</button>-->
-<!--            }-->
-<!--            @if (barrierEntry.actions?.length)-->
-<!--            {-->
-<!--            <div ngbDropdown class="d-inline-block" class="action-select">-->
+          <div v-for="barrier of destination.barriers?.map(b => b[1])" class="barrier">
+            <button v-if="!barrier.actions?.length" class="btn btn-outline-primary">{{ barrier.name }}</button>
+<!--            <div v-else ngbDropdown class="d-inline-block" class="action-select">-->
 <!--              <button class="btn btn-outline-primary" id="barrierdropdown" ngbDropdownToggle>{{ barrierEntry.name }}</button>-->
 <!--              <div ngbDropdownMenu aria-labelledby="barrierdropdown">-->
 <!--                @for (action of barrier[1].actions; track action)-->
@@ -57,28 +32,50 @@
 <!--                }-->
 <!--              </div>-->
 <!--            </div>-->
-<!--            }-->
-<!--          </div>-->
-<!--          }-->
+          </div>
           <button type="button" class="btn btn-info" :class="destination.style" @click="changeLocation(<string>destination.target)" :disabled="!destination.target || destination.barriers?.length > 0">
-<!--            @if (isPreviousLocation(destination))-->
-<!--            {-->
-<!--            <span class="back-label">{{ texts.back }}</span>-->
-<!--            }-->
+            <span v-if="(<any>destination).isPreviousLocation" class="back-label">{{ texts.back }}</span>
             {{ destination.name }}
           </button>
         </li>
       </ul>
     </div>
-<!--    }-->
   </div>
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
+import {enemiesPresent, getButtonClass, executeAction} from "vue/Helpers.ts";
+import {isEmpty} from "storyScript/utilityFunctions.ts";
+import {IAction} from "storyScript/Interfaces/action.ts";
+import {ref} from "vue";
+import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
 
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
+
+const confirmAction = ref<IAction>(null);
+
+const checkStatus = (action: IAction, status: ActionStatus) => 
+    typeof action[1].status === 'function' 
+        ? (<any>action[1]).status(game) == status 
+        : action[1].status == undefined ? false : action[1].status == status;
+
+const actionsPresent = () => game.value.currentLocation && !enemiesPresent(game.value) && !isEmpty(game.value.currentLocation.actions);
+
+const disableActionButton = (a) => checkStatus(a, ActionStatus.Disabled);
+
+const cancelAction = () => confirmAction.value = undefined;
+
+const execute = (action: IAction): void => {
+  if (action[1].confirmationText && !confirmAction) {
+    confirmAction.value = action;
+    return;
+  }
+
+  confirmAction.value = undefined;
+  executeAction(game.value, action, this, store.saveGame);
+}
 
 const changeLocation = (location: string) => store.update(() => game.value.changeLocation(location, true));
 
