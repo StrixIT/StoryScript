@@ -1,4 +1,5 @@
 <template>
+  <sound></sound>
   <game-container :key="reloadKey"></game-container>
 </template>
 <script lang="ts" setup>

@@ -35,7 +35,8 @@ const components = [
     'GameContainer',
     'Navigation',
     'LocationText',
-    'Exploration'
+    'Exploration',
+    'Sound'
 ];
 
 const getTemplate = (root: string, componentName: string): string => {

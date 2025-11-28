@@ -2,7 +2,6 @@
   <div>
     <navigation></navigation>
     <div class="container-fluid body-content">
-      <!--      <sound></sound>-->
       <div class="row">
         <div v-if="game?.state === 'Play'" id="party-container">
           <!--        <party [party]="game.party"></party>-->

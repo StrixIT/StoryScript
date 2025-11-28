@@ -33,23 +33,17 @@ export const useStateStore = defineStore('appState', () => {
         ++reloadKey.value;
     }
     
-    const reset = (): void => {
-        gameService.reset();
-    }
+    const reset = (): void => gameService.reset();
 
-    const restart = (): void => {
-        gameService.restart();
-    }
+    const restart = (): void => gameService.restart();
     
     const getSaveKeys = () => dataService.getSaveKeys();
     
-    const saveGame = (gameName?: string): void => {
-        dataService.saveGame(<IGame>game.value, gameName);
-    }
+    const saveGame = (gameName?: string): void => dataService.saveGame(<IGame>game.value, gameName);
 
-    const loadGame = (gameName: string): void => {
-        dataService.load(gameName);
-    }
+    const loadGame = (gameName: string): void => gameService.loadGame(gameName);
+    
+    const getSoundService = () => serviceFactory.GetSoundService();
     
     return {
         reloadKey,
@@ -62,6 +56,7 @@ export const useStateStore = defineStore('appState', () => {
         restart,
         getSaveKeys,
         saveGame,
-        loadGame
+        loadGame,
+        getSoundService
     }
 });
