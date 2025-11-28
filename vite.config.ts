@@ -5,14 +5,17 @@ import {viteStaticCopy} from 'vite-plugin-static-copy';
 import {visualizer} from "rollup-plugin-visualizer";
 import gameName from './gameName.js';
 import path from 'path';
+import vue from '@vitejs/plugin-vue';
 
 const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
 const resourceRegex = process.platform === 'linux' ? /\/resources\/(.{1,}\.)/ : /\\resources\\(.{1,}\.)/;
 
 const plugins = [
     tsconfigPaths(),
+    vue(),
     checker({
         typescript: true,
+        vueTsc: true
     }),
     viteStaticCopy({
         watch: {
@@ -32,7 +35,6 @@ const plugins = [
     }),
     visualizer() as Plugin
 ];
-
 
 // https://vitejs.dev/config/
 export default defineConfig({

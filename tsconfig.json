@@ -31,7 +31,8 @@
         "allowJs": true,
         "paths": {
             "storyScript/*": ["./src/Engine/*"],
-            "ui/*": ["./src/UI/*"]
+            "ui/*": ["./src/UI/*"],
+            "vue/*": ["./src/UserInterface/*"]
         },
         "typeRoots": [
             "./node_modules/@types"
