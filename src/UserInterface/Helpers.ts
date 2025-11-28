@@ -1,8 +1,30 @@
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
+import {ICharacter} from "storyScript/Interfaces/character.ts";
+import {IItem} from "storyScript/Interfaces/item.ts";
+import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
+
+let useEquipment: boolean;
 
 export const enemiesPresent = (game: IGame) => game.currentLocation?.activeEnemies?.length > 0;
+
+export const showEquipment = (character: ICharacter): boolean => 
+    useEquipment && character && Object.keys(character.equipment).some(k => (<any>character.equipment)[k] !== undefined);
+
+export const canUseItem = (game: IGame, character: ICharacter, item: IItem): boolean => 
+    item.use && (!item.canUse || item.canUse(game, character, item));
+
+export const tryCombine = (game, combinable: ICombinable): boolean => {
+    const result = game.combinations.tryCombine(combinable);
+    // Todo: how to replace this??
+    //this.combinationSource.next(result.success);
+    return result.success;
+}
+
+export const showDescription = (game: IGame, type: string, item: any, title: string): void => {
+    game.currentDescription = {title: title, type: type, item: item};
+}
 
 export const getButtonClass = (action: IAction): string => {
     const type = action[1].actionType || ActionType.Regular;

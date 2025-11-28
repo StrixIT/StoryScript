@@ -33,10 +33,16 @@ logTime('Start Vue', () => {
 
 const components = [
     'GameContainer',
+    'PartyContainer',
+    'CharacterSheet',
+    'Backpack',
+    'Equipment',
+    'ActionLog',
     'Navigation',
     'LocationText',
     'Exploration',
-    'Sound'
+    'Sound',
+    'Quests'
 ];
 
 const getTemplate = (root: string, componentName: string): string => {

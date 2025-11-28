@@ -18,6 +18,8 @@ export const useStateStore = defineStore('appState', () => {
     const texts = ref<IInterfaceTexts>(null);
     const rules = ref<IRules>(null);
     
+    const useGround = ref(false);
+    
     const setStoreData = (factory: ServiceFactory) => {
         serviceFactory = factory;
         game.value = serviceFactory.GetGame();
@@ -44,12 +46,17 @@ export const useStateStore = defineStore('appState', () => {
     const loadGame = (gameName: string): void => gameService.loadGame(gameName);
     
     const getSoundService = () => serviceFactory.GetSoundService();
+
+    const getItemService = () => serviceFactory.GetItemService();
+
+    const getCharacterService = () => serviceFactory.GetCharacterService();
     
     return {
         reloadKey,
         game,
         texts,
         rules,
+        useGround,
         setStoreData,
         update,
         reset,
@@ -57,6 +64,8 @@ export const useStateStore = defineStore('appState', () => {
         getSaveKeys,
         saveGame,
         loadGame,
-        getSoundService
+        getSoundService,
+        getItemService,
+        getCharacterService
     }
 });

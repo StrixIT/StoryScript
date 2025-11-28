@@ -1,0 +1,50 @@
+<template>
+  <div v-if="showQuests()" class="box-container" id="character-quests">
+    <div class="box-title" @click="isCollapsed = !isCollapsed">{{ texts.quests }}</div>
+<!-- TODO   [ngbCollapse]="isCollapsed"-->
+    <div id="quest-panel"  class="collapse navbar-collapse">
+      <div v-if="showActiveQuests()">
+        <h4>{{ texts.currentQuests }}</h4>
+        <ul>
+          <li v-for="quest of currentQuests()">
+            <span>{{ quest.name }}</span>
+            <div v-html="questStatus(quest)"></div>
+          </li>
+        </ul>
+      </div>
+      <div v-if="showCompletedQuests()">
+        <h4>{{ texts.completedQuests }}</h4>
+        <ul>
+          <li v-for="quest of completedQuests()">
+            <div v-html="questStatus(quest)"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+<script lang="ts" setup>
+import {useStateStore} from "vue/StateStore.ts";
+import {storeToRefs} from "pinia";
+import {isEmpty} from "storyScript/utilityFunctions.ts";
+import {IQuest} from "storyScript/Interfaces/quest.ts";
+import {ref} from "vue";
+
+const store = useStateStore();
+const {game, texts} = storeToRefs(store);
+const characterService = store.getCharacterService();
+const isCollapsed = ref(false);
+
+const showQuests = (): boolean => game.value.party && !isEmpty(game.value.party.quests);
+
+const showActiveQuests = (): boolean => game.value.party.quests.filter(q => !q.completed).length > 0;
+
+const showCompletedQuests = (): boolean => game.value.party.quests.filter(q => q.completed).length > 0;
+
+const currentQuests = (): IQuest[] => game.value.party.quests.filter(q => q.completed === false);
+
+const completedQuests = (): IQuest[] => game.value.party.quests.filter(q => q.completed === true);
+
+const questStatus = (quest: IQuest): string => characterService.questStatus(quest);
+
+</script>
