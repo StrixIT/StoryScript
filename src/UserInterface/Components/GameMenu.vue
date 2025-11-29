@@ -83,7 +83,7 @@ const cancel = (): void => {
 }
 
 const restartConfirmed = (): void => {
-  store.update(() => store.restart());
+  store.restart();
 }
 
 const save = (): void => {
@@ -105,7 +105,7 @@ const saveGame = (): void => {
 }
 
 const loadGame = (): void => {
-  store.update(() => store.loadGame(selectedGame.value));
+  store.loadGame(selectedGame.value);
 }
 
 </script>

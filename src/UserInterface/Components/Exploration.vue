@@ -82,6 +82,6 @@ const execute = (action: IAction): void => {
   executeAction(game.value, action, this, store.saveGame);
 }
 
-const changeLocation = (location: string) => store.update(() => game.value.changeLocation(location, true));
+const changeLocation = (location: string) => game.value.changeLocation(location, true);
 
 </script>

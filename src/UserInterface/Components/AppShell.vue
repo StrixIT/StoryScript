@@ -9,5 +9,5 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 
 const store = useStateStore();
-const {game, reloadKey} = storeToRefs(store);
+const {game} = storeToRefs(store);
 </script>
