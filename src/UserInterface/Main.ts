@@ -44,7 +44,9 @@ const components = [
     'Exploration',
     'Sound',
     'Quests',
-    'GameMenu'
+    'GameMenu',
+    'Combat',
+    'CombatParticipant'
 ];
 
 const getTemplate = (root: string, componentName: string): string => {

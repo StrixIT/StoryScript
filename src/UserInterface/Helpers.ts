@@ -50,7 +50,7 @@ export const getButtonClass = (action: IAction): string => {
     return buttonClass;
 }
 
-export const executeAction = (game, action: IAction, component: any, saveGame: () => void): void => {
+export const executeAction = (game: IGame, action: IAction, component: any, saveGame: () => void): void => {
     const execute = action?.[1]?.execute;
 
     if (execute) {
