@@ -1,10 +1,10 @@
 <template>
   <div>
-    <navigation></navigation>
+    <navigation :isDevelopment="game.isDevelopment"></navigation>
     <div class="container-fluid body-content">
       <div class="row">
         <div v-if="game?.state === 'Play'" id="party-container">
-          <party :party="game.party"></party>
+          <party :party="game.party" :isDevelopment="game.isDevelopment"></party>
         </div>
         <div id="location-container">
           <div v-if="!game.state">
@@ -13,11 +13,11 @@
 
           <div v-if="game.state === 'Play'">
             <!--          <encounter></encounter>-->
-            <location-text></location-text>
+            <location-text :location="game.currentLocation"></location-text>
             <!--          <location-visual></location-visual>-->
-            <!--          <action-log></action-log>-->
-            <!--          <ground></ground>-->
-            <exploration></exploration>
+            <action-log :log="game.actionLog"></action-log>
+            <ground :items="game.currentLocation.activeItems"></ground>
+            <exploration :location="game.currentLocation"></exploration>
             <!--          <enemy></enemy>-->
           </div>
 
@@ -46,6 +46,6 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 
 const store = useStateStore();
-const {game, texts, reloadKey} = storeToRefs(store);
+const {game, texts} = storeToRefs(store);
 
 </script>

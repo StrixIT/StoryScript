@@ -107,7 +107,7 @@ import {showEquipment} from "vue/Helpers.ts";
 import {ref} from "vue";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {texts} = storeToRefs(store);
 
 const {character} = defineProps<{
   character?: ICharacter

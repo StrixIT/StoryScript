@@ -5,7 +5,7 @@
         <h1>{{ texts.gameName }}</h1>
       </div>
       <div class="col-4">
-<!--        @if (game.isDevelopment && locations.length > 1)-->
+<!--        @if (isDevelopment && locations.length > 1)-->
 <!--        {-->
 <!--        <input-->
 <!--            id="location-selector"-->
@@ -25,7 +25,7 @@
 <!--        }-->
         <div class="float-right">
           <button type="button" class="btn btn-dark btn-sm" @click="menu()">{{ texts.mainMenuShort }}</button>
-          <button v-if="game.isDevelopment" id="resetbutton" type="button" class="btn btn-danger btn-sm" @click="reset()">{{ texts.resetWorld }}</button>
+          <button v-if="isDevelopment" id="resetbutton" type="button" class="btn btn-danger btn-sm" @click="reset()">{{ texts.resetWorld }}</button>
         </div>
         <div class="float-none"></div>
       </div>
@@ -37,16 +37,16 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {useRouter} from "vue-router";
-import {Routes} from "vue/Router.ts";
 
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
-const router = useRouter();
+
+const {isDevelopment} = defineProps<{
+  isDevelopment: boolean
+}>();
 
 const menu = () => {
   game.value.playState = PlayState.Menu;
-  router.push(Routes.Menu);
 }
 
 const reset = () => store.reset();

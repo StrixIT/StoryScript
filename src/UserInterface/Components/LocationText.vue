@@ -1,21 +1,26 @@
 <template>
-  <div v-if="show()" class="box-container" id="location">
-    <div class="box-title" v-html="texts.format(texts.youAreHere, [game.currentLocation.name])"></div>
+  <div v-if="show" class="box-container" id="location">
+    <div class="box-title" v-html="texts.format(texts.youAreHere, [location.name])"></div>
     <div textFeatures>
-      <div v-html="game.currentLocation.description"></div>
+      <div v-html="location.description"></div>
     </div>
     <ul id="location-log" class="list-unstyled">
-      <li v-for="message in game.currentLocation.log" v-html="message"></li>
+      <li v-for="message in location.log" v-html="message"></li>
     </ul>
   </div>
 </template>
 <script lang="ts" setup>
-  import {computed} from "@angular/core";
+  import {computed} from "vue";
   import {useStateStore} from "vue/StateStore.ts";
   import {storeToRefs} from "pinia";
+  import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 
   const store = useStateStore();
-  const {game, texts} = storeToRefs(store);
+  const {texts} = storeToRefs(store);
+
+  const { location } = defineProps<{
+    location?: ICompiledLocation
+  }>();
   
-  const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
+  const show = computed(() => location.description || !location.features?.collectionPicture);
 </script>

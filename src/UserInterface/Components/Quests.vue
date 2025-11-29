@@ -29,21 +29,26 @@ import {storeToRefs} from "pinia";
 import {isEmpty} from "storyScript/utilityFunctions.ts";
 import {IQuest} from "storyScript/Interfaces/quest.ts";
 import {ref} from "vue";
+import {IParty} from "storyScript/Interfaces/party.ts";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {texts} = storeToRefs(store);
 const characterService = store.getCharacterService();
 const isCollapsed = ref(false);
 
-const showQuests = (): boolean => game.value.party && !isEmpty(game.value.party.quests);
+const {quests} = defineProps<{
+  quests?: IQuest[]
+}>();
 
-const showActiveQuests = (): boolean => game.value.party.quests.filter(q => !q.completed).length > 0;
+const showQuests = (): boolean => !isEmpty(quests);
 
-const showCompletedQuests = (): boolean => game.value.party.quests.filter(q => q.completed).length > 0;
+const showActiveQuests = (): boolean => quests.filter(q => !q.completed).length > 0;
 
-const currentQuests = (): IQuest[] => game.value.party.quests.filter(q => q.completed === false);
+const showCompletedQuests = (): boolean => quests.filter(q => q.completed).length > 0;
 
-const completedQuests = (): IQuest[] => game.value.party.quests.filter(q => q.completed === true);
+const currentQuests = (): IQuest[] => quests.filter(q => q.completed === false);
+
+const completedQuests = (): IQuest[] =>quests.filter(q => q.completed === true);
 
 const questStatus = (quest: IQuest): string => characterService.questStatus(quest);
 

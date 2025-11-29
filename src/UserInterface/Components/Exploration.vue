@@ -3,7 +3,7 @@
     <div v-if="actionsPresent()" class="box-container" id="exploration-actions">
       <div class="box-title">{{ texts.actions }}</div>
       <ul v-if="!confirmAction" class="list-unstyled">
-        <li v-for="action of game.currentLocation.activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
+        <li v-for="action of location.activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
           <button type="button" class="btn" :class="getButtonClass(action)" @click="execute(action)" :disabled="disableActionButton(action)">{{ action[1].text }}</button>
         </li>
       </ul>
@@ -20,7 +20,7 @@
     <div v-if="!enemiesPresent(game)" class="box-container" id="exploration-destinations">
       <div class="box-title">{{ texts.destinations }}</div>
       <ul class="list-unstyled">
-        <li v-for="destination of game.currentLocation.activeDestinations" :class="`inline ${destination.visited ? '' : 'not-'}visited`">
+        <li v-for="destination of location.activeDestinations" :class="`inline ${destination.visited ? '' : 'not-'}visited`">
           <div v-for="barrier of destination.barriers?.map(b => b[1])" class="barrier">
             <button v-if="!barrier.actions?.length" class="btn btn-outline-primary">{{ barrier.name }}</button>
 <!--            <div v-else ngbDropdown class="d-inline-block" class="action-select">-->
@@ -50,18 +50,23 @@ import {isEmpty} from "storyScript/utilityFunctions.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {ref} from "vue";
 import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
+import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
 
 const confirmAction = ref<IAction>(null);
 
+const { location } = defineProps<{
+  location?: ICompiledLocation
+}>();
+
 const checkStatus = (action: IAction, status: ActionStatus) => 
     typeof action[1].status === 'function' 
         ? (<any>action[1]).status(game) == status 
         : action[1].status == undefined ? false : action[1].status == status;
 
-const actionsPresent = () => game.value.currentLocation && !enemiesPresent(game.value) && !isEmpty(game.value.currentLocation.actions);
+const actionsPresent = () => location && !enemiesPresent(game.value) && !isEmpty(location.actions);
 
 const disableActionButton = (a) => checkStatus(a, ActionStatus.Disabled);
 

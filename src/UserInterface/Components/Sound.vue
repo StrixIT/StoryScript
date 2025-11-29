@@ -1,6 +1,6 @@
 <template>
-  <audio v-if="getCurrentMusic()" autoplay
-         class="storyscript-player backgroundmusic-player" loop :src="`resources/${getCurrentMusic()}`"></audio>
+  <audio v-if="getCurrentMusic()" :src="`resources/${getCurrentMusic()}`"
+         autoplay class="storyscript-player backgroundmusic-player" loop></audio>
   <audio v-for="sound of getSoundQueue()" autoplay class="storyscript-player" src="resources/{{ sound[1] }}"
          @ended="soundCompleted(sound[0])"></audio>
 </template>
@@ -8,9 +8,10 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {ref} from "vue";
+import {ISoundPlayer} from "storyScript/Interfaces/soundPlayer.ts";
 
 const store = useStateStore();
-const {game, rules} = storeToRefs(store);
+const {rules} = storeToRefs(store);
 
 const isPlaying = ref(false);
 const fadeInterval = ref<NodeJS.Timeout>(null);
@@ -18,6 +19,11 @@ const fadingMusic = ref(false);
 const currentMusic = ref<string>(null);
 const currentVolume = ref(1);
 const soundQueue: [number, string][] = [];
+
+const {sounds, rootElement} = defineProps<{
+  sounds?: ISoundPlayer,
+  rootElement?: HTMLElement,
+}>();
 
 // This code is here to (re)start music playback as soon as the user interacts with the browser.
 const checkMusicPlaying = () => {
@@ -62,7 +68,7 @@ const getCurrentMusic = (): string => {
 }
 
 const getSoundQueue = (): [number, string][] => {
-  Array.from(game.value.sounds.soundQueue).forEach(e => {
+  Array.from(sounds.soundQueue).forEach(e => {
     if (!e[1].playing) {
       soundQueue.push([e[0], e[1].value]);
       e[1].playing = true;
@@ -73,8 +79,8 @@ const getSoundQueue = (): [number, string][] => {
 }
 
 const soundCompleted = (soundKey: number) => {
-  game.value.sounds.soundQueue.get(soundKey).completeCallBack?.();
-  game.value.sounds.soundQueue.delete(soundKey);
+  sounds.soundQueue.get(soundKey).completeCallBack?.();
+  sounds.soundQueue.delete(soundKey);
   const index = soundQueue.indexOf(soundQueue.find(([k, _]) => soundKey === k));
 
   if (index > -1) {
@@ -99,7 +105,7 @@ const fade = (newMusic: string) => {
 }
 
 const getMusicPlayer = () => {
-  return <HTMLAudioElement>game.value.UIRootElement.getElementsByClassName('backgroundmusic-player')[0];
+  return <HTMLAudioElement>rootElement.getElementsByClassName('backgroundmusic-player')[0];
 }
 
 </script>

@@ -1,6 +1,5 @@
 import {App, createApp, defineAsyncComponent} from 'vue';
 import {createPinia, Pinia} from 'pinia';
-import {router} from 'vue/Router.ts';
 import AppShell from 'vue/Components/AppShell.vue';
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {logTime} from "../StartupLogger.ts";
@@ -33,16 +32,19 @@ logTime('Start Vue', () => {
 
 const components = [
     'GameContainer',
-    'PartyContainer',
+    'Party',
     'CharacterSheet',
     'Backpack',
     'Equipment',
+    'Ground',
+    'BuildCharacter',
     'ActionLog',
     'Navigation',
     'LocationText',
     'Exploration',
     'Sound',
-    'Quests'
+    'Quests',
+    'GameMenu'
 ];
 
 const getTemplate = (root: string, componentName: string): string => {
@@ -66,7 +68,7 @@ logTime('Import components', () => {
     components.forEach(c => application.component(c, defineAsyncComponent(() => import(getTemplate('/src/UserInterface/Components', c)))));
 });
 
-application.use(router).use(pinia);
+application.use(pinia);
 
 let serviceFactory: ServiceFactory;
 

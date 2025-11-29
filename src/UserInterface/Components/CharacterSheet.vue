@@ -4,7 +4,7 @@
     <!-- TODO   [ngbCollapse]="isCollapsed"-->
     <div class="collapse navbar-collapse list-unstyled character-info">
       <div v-if="character.portraitFileName" class="portraitFrame">
-        <img alt="{{character.name}}" class="portrait" src="{{character.portraitFileName}}"/>
+        <img :alt="character.name" class="portrait" :src="character.portraitFileName"/>
       </div>
       <ul id="attributes-panel" class="list-unstyled">
         <li v-for="attribute of displayCharacterAttributes">
@@ -12,20 +12,14 @@
         </li>
         <li>{{ texts.hitpoints }}
           <div class="hitpoint-editor">
-            @if (!game.isDevelopment)
-            {
-            <span>{{ character.currentHitpoints }}</span>
-            }
-            @if (game.isDevelopment)
-            {
-            <input v-model="character.currentHitpoints" max="{{ character.hitpoints }}" min="{{ 1 }}" type="number"
+            <span v-if="!isDevelopment">{{ character.currentHitpoints }}</span>
+            <input v-else v-model="character.currentHitpoints" :max="character.hitpoints" :min="1" type="number"
                    @blur="limitInput($event, character)">
-            }
           </div>
           &nbsp;/ {{ character.hitpoints }}
         </li>
-        <li v-if="game.party.characters.length === 1 && game.party.currency !== undefined">{{ texts.currency }}
-          {{ game.party.currency }}
+        <li v-if="party.characters.length === 1 && party.currency !== undefined">{{ texts.currency }}
+          {{ party.currency }}
         </li>
       </ul>
       <div class="clearfix"></div>
@@ -37,12 +31,15 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {ref} from "vue";
+import {IParty} from "storyScript/Interfaces/party.ts";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {texts} = storeToRefs(store);
 
 const {character} = defineProps<{
-  character?: ICharacter
+  party: IParty,
+  character?: ICharacter,
+  isDevelopment: boolean
 }>();
 
 const isCollapsed = ref(false);
