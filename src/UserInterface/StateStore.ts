@@ -19,7 +19,11 @@ export const useStateStore = defineStore('appState', () => {
     const texts = ref<IInterfaceTexts>(null);
     const rules = ref<IRules>(null);
 
+    const useBackpack = ref(false);
     const useGround = ref(false);
+    const useEquipment = ref(false);
+    const useCharacterSheet = ref(false);
+    const useQuests = ref(false);
 
     const setStoreData = (factory: ServiceFactory) => {
         serviceFactory = factory;
@@ -64,6 +68,10 @@ export const useStateStore = defineStore('appState', () => {
         texts,
         rules,
         useGround,
+        useBackpack,
+        useEquipment,
+        useCharacterSheet,
+        useQuests,
         setStoreData,
         setActiveCharacter,
         reset,

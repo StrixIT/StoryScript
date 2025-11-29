@@ -35,12 +35,14 @@ import {IParty} from "storyScript/Interfaces/party.ts";
 import {isDevelopment} from "vue/Helpers.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {texts, useCharacterSheet} = storeToRefs(store);
 
 const {character} = defineProps<{
   party: IParty,
   character?: ICharacter
 }>();
+
+useCharacterSheet.value = true;
 
 const isCollapsed = ref(false);
 const displayCharacterAttributes = ref<string[]>([]);

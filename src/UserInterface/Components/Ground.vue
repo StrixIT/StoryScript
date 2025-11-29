@@ -17,12 +17,14 @@ import {IItem} from "storyScript/Interfaces/item.ts";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {game, texts, useGround} = storeToRefs(store);
 const itemService = store.getItemService();
 
 const { items } = defineProps<{
   items?: IItem[]
 }>();
+
+useGround.value = true;
 
 const getCombineClass = (barrier: IBarrier): string => game.value.combinations.getCombineClass(barrier);
 

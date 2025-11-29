@@ -33,7 +33,7 @@ import {canUseItem, showDescription, showEquipment, tryCombine} from "vue/Helper
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
 
 const store = useStateStore();
-const {game, texts, useGround} = storeToRefs(store);
+const {game, texts, useGround, useBackpack} = storeToRefs(store);
 const itemService = store.getItemService();
 
 const { character } = defineProps<{
@@ -42,6 +42,8 @@ const { character } = defineProps<{
 
 const isCollapsed = ref(false);
 const joinItem = ref<IGroupableItem<IItem>>(null);
+
+useBackpack.value = true;
 
 const getItemName = (item: IItem): string => itemService.getItemName(item);
 

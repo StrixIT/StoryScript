@@ -107,11 +107,13 @@ import {showEquipment} from "vue/Helpers.ts";
 import {ref} from "vue";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {texts, useEquipment} = storeToRefs(store);
 
 const {character} = defineProps<{
   character?: ICharacter
 }>();
+
+useEquipment.value = true;
 
 const isCollapsed = ref(false);
 const itemService = store.getItemService();

@@ -32,13 +32,15 @@ import {ref} from "vue";
 import {IParty} from "storyScript/Interfaces/party.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {texts, useQuests} = storeToRefs(store);
 const characterService = store.getCharacterService();
 const isCollapsed = ref(false);
 
 const {quests} = defineProps<{
   quests?: IQuest[]
 }>();
+
+useQuests.value = true;
 
 const showQuests = (): boolean => !isEmpty(quests);
 
