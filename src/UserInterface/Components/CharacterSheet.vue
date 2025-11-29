@@ -32,14 +32,14 @@ import {storeToRefs} from "pinia";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {ref} from "vue";
 import {IParty} from "storyScript/Interfaces/party.ts";
+import {isDevelopment} from "vue/Helpers.ts";
 
 const store = useStateStore();
 const {texts} = storeToRefs(store);
 
 const {character} = defineProps<{
   party: IParty,
-  character?: ICharacter,
-  isDevelopment: boolean
+  character?: ICharacter
 }>();
 
 const isCollapsed = ref(false);

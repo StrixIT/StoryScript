@@ -37,13 +37,10 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {isDevelopment} from "vue/Helpers.ts";
 
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
-
-const {isDevelopment} = defineProps<{
-  isDevelopment: boolean
-}>();
 
 const menu = () => {
   game.value.playState = PlayState.Menu;

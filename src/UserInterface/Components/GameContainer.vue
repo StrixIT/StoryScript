@@ -1,10 +1,10 @@
 <template>
   <div>
-    <navigation :isDevelopment="game.isDevelopment"></navigation>
+    <navigation></navigation>
     <div class="container-fluid body-content">
       <div class="row">
         <div v-if="game?.state === 'Play'" id="party-container">
-          <party :party="game.party" :isDevelopment="game.isDevelopment"></party>
+          <party :party="game.party"></party>
         </div>
         <div id="location-container">
           <div v-if="!game.state">

@@ -24,7 +24,11 @@ export const useStateStore = defineStore('appState', () => {
     const setStoreData = (factory: ServiceFactory) => {
         serviceFactory = factory;
         game.value = serviceFactory.GetGame();
-        factory.init(game.value);
+        
+        // THIS LINE IS CRUCIAL! It ensures the proxy object created by Vue is used throughout the application.
+        // Without this, reactivity doesn't work!
+        serviceFactory.init(game.value);
+        
         texts.value = serviceFactory.GetTexts();
         rules.value = serviceFactory.GetRules();
 

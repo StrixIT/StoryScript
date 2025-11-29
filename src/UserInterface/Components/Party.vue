@@ -7,7 +7,7 @@
   </div>
   <div v-for="character of party.characters" :class="{ 'is-active': (<any>character).isActive, 'unavailable': character.currentHitpoints <= 0 }" class="character-container"
        @click="store.setActiveCharacter(character)">
-    <character-sheet :character="character" :isDevelopment="isDevelopment" :party="party"></character-sheet>
+    <character-sheet :character="character" :party="party"></character-sheet>
     <equipment :character="character"></equipment>
     <backpack :character="character"></backpack>
   </div>
@@ -22,8 +22,7 @@ const store = useStateStore();
 const {texts} = storeToRefs(store);
 
 const {party} = defineProps<{
-  party?: IParty,
-  isDevelopment: boolean
+  party?: IParty
 }>();
 
 </script>

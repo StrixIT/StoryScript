@@ -7,6 +7,8 @@ import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
 
 let useEquipment: boolean;
 
+export const isDevelopment = process.env.NODE_ENV !== 'production';
+
 export const enemiesPresent = (game: IGame) => game.currentLocation?.activeEnemies?.length > 0;
 
 export const showEquipment = (character: ICharacter): boolean => 

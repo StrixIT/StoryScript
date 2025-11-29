@@ -10,4 +10,5 @@ import {storeToRefs} from "pinia";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
+
 </script>
