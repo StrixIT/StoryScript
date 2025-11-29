@@ -41,6 +41,7 @@ const components = [
     'ActionLog',
     'Navigation',
     'LocationText',
+    'LocationVisual',
     'Exploration',
     'Sound',
     'Quests',

@@ -14,7 +14,8 @@
           </div>
 
           <div v-if="game.state === 'Play'">
-            <location-text :location="game.currentLocation" :combinations="game.combinations"></location-text>
+            <location-visual v-if="game.worldProperties.type === 'Visual'" :location="game.currentLocation" :combinations="game.combinations"></location-visual>
+            <location-text v-else :location="game.currentLocation" :combinations="game.combinations"></location-text>
           </div>
         </div>
       </div>
