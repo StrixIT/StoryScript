@@ -60,6 +60,8 @@ export const useStateStore = defineStore('appState', () => {
 
     const getCharacterService = () => serviceFactory.GetCharacterService();
 
+    const getCombinationService = () => serviceFactory.GetCombinationService();
+
     const getGameService = () => serviceFactory.GetGameService();
 
     return {
@@ -83,6 +85,7 @@ export const useStateStore = defineStore('appState', () => {
         getItemService,
         getCharacterService,
         getGameService,
-        getCombatService
+        getCombatService,
+        getCombinationService
     }
 });
