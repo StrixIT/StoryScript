@@ -12,14 +12,12 @@
   import {useStateStore} from "vue/StateStore.ts";
   import {storeToRefs} from "pinia";
   import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-  import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
   import {addHtmlSpaces, compareString} from "storyScript/utilityFunctions.ts";
   import {IFeature} from "storyScript/Interfaces/feature.ts";
   import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
 
   const store = useStateStore();
   const {texts} = storeToRefs(store);
-  const gameService = store.getGameService();
   const combinationService = store.getCombinationService();
 
   const description = useTemplateRef('description')
@@ -30,52 +28,45 @@
   }>();
 
   const refreshFeatures = (newValue: boolean) => {
-    if (newValue) {
-      // Show the text of added features.
-      const features = description.value?.getElementsByTagName('feature');
-      
-      if (!features) {
-        return;
-      }
-      
-      const featureArray = Array.prototype.slice.call(features) as HTMLElement[];
-
-      featureArray.filter(e => e.innerHTML.trim() === '')
-          .forEach((e) => {
-            const feature = location.features.get(e.getAttribute('name'));
-
-            if (feature) {
-              location.description = location.description.replace(new RegExp('<feature name="' + feature.id + '">\s*<\/feature>'), '<feature name="' + feature.id + '">' + addHtmlSpaces(feature.description) + '<\/feature>');
-            }
-          });
-
-      // Remove the text of deleted features.
-      featureArray.filter(e => e.innerHTML.trim() !== '')
-          .forEach((e) => {
-            if (combinations.combinationResult.featuresToRemove.indexOf(e.getAttribute('name')) > -1) {
-              e.innerHTML = '';
-            }
-          });
-
-      featureArray.forEach((e) => {
-        e.classList.remove('combine-active-selected');
-        e.classList.add('combine-selectable');
-      });
+    if (!newValue) {
+      return;
     }
+    
+    // Show the text of added features.
+    const features = description.value?.getElementsByTagName('feature');
+    
+    if (!features) {
+      return;
+    }
+    
+    const featureArray = Array.prototype.slice.call(features) as HTMLElement[];
+
+    featureArray.filter(e => e.innerHTML.trim() === '')
+        .forEach((e) => {
+          const feature = location.features.get(e.getAttribute('name'));
+
+          if (feature) {
+            location.description = location.description.replace(new RegExp('<feature name="' + feature.id + '">\s*<\/feature>'), '<feature name="' + feature.id + '">' + addHtmlSpaces(feature.description) + '<\/feature>');
+          }
+        });
+
+    // Remove the text of deleted features.
+    featureArray.filter(e => e.innerHTML.trim() !== '')
+        .forEach((e) => {
+          if (combinations.combinationResult.featuresToRemove.indexOf(e.getAttribute('name')) > -1) {
+            e.innerHTML = '';
+          }
+        });
+
+    featureArray.forEach((e) => {
+      e.classList.remove('combine-active-selected');
+      e.classList.add('combine-selectable');
+    });
   };
   
   refreshFeatures(true);
   
   const show = computed(() => location.description || !location.features?.collectionPicture);
-  
-  // This watcher is needed to show hidden features when a game is loaded.
-  gameService.watchPlayState((_, newPlayState: PlayState, oldPlayState: PlayState) => {
-    if (oldPlayState === PlayState.Menu && newPlayState === null) {
-      setTimeout(() => {
-        refreshFeatures(true);
-      }, 0);
-    }
-  });
 
   const isFeatureNode = (ev: MouseEvent): boolean => {
     const nodeType = ev.target && (<any>ev.target).nodeName;
@@ -95,8 +86,13 @@
       const feature = getFeature(ev);
 
       if (feature) {
-        combinations.tryCombine(feature);
+        const previousNumberOfFeatures = location.features.length;
+        const result = combinations.tryCombine(feature);
         addCombineClass(ev, feature);
+        
+        if (result && location.features.length > previousNumberOfFeatures) {
+          refreshFeatures(true);
+        }
       }
     }
   }
@@ -108,8 +104,8 @@
     }
   };
 
-  const getFeature = (ev: any): IFeature => {
-    const featureName = ev.target.getAttribute('name');
+  const getFeature = (ev: MouseEvent): IFeature => {
+    const featureName = (<any>ev.target).getAttribute('name');
     return location.features.get(featureName);
   }
   
