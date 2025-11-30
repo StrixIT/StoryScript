@@ -4,7 +4,7 @@
       {{ (person.conversation.title || texts.format(texts.talk, [person.name])) }}
     </h1>
     <div class="dialog-body conversation-body">
-      <div v-if="person.conversation" id="conversation">
+      <div v-if="person?.conversation" id="conversation">
 
         <div v-if="person.conversation.activeNode" id="conversation-options">
           <div v-html="getLines(person.conversation.activeNode)"></div>
