@@ -1,6 +1,8 @@
 <template>
   <conversation :playState="game.playState" :person="game.person"></conversation>
   <trade :playState="game.playState" :trade="game.trade" :character="game.activeCharacter"></trade>
+  <combat :playState="game.playState" :combat="game.combat" :combatActions="game.currentLocation.combatActions" :combaLog="game.combatLog" ></combat>
+  <description :playState="game.playState"></description>
   <div>
     <navigation></navigation>
     <div class="container-fluid body-content">

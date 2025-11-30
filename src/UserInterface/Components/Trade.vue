@@ -54,7 +54,6 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {IPerson} from "storyScript/Interfaces/person.ts";
 import {ITrade} from "storyScript/Interfaces/trade.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
