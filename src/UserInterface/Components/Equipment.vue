@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showEquipment(character)" class="character-equipment box-container">
+  <div v-if="showEquipment(useEquipment, character)" class="character-equipment box-container">
     <collapsible :text="texts.equipmentHeader" :class="'box-title'"></collapsible>
     <div class="equipment-panel">
       <div v-if="isSlotUsed('head')" class="row">

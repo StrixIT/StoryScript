@@ -21,7 +21,7 @@ const characterService = useServices().getCharacterService();
 const { state, party, sheet } = defineProps<{
   state: GameState;
   party?: IParty,
-  sheet: ICreateCharacter
+  sheet?: ICreateCharacter
 }>();
 
 const titleText = (): string => {

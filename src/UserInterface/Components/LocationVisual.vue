@@ -1,5 +1,5 @@
 <template>
-  <div v-if="location.features.collectionPicture" class="box-container" id="location-visual">
+  <div v-if="location?.features?.collectionPicture" class="box-container" id="location-visual">
     <div class="box-title" v-html="texts.format(texts.youAreHere, [location.name])"></div>
     <div id="visual-features">
       <img :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id" :alt="location.name">

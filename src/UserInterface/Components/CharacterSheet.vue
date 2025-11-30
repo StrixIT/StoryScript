@@ -32,9 +32,11 @@ import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {ref} from "vue";
 import {IParty} from "storyScript/Interfaces/party.ts";
 import {isDevelopment} from "vue/Helpers.ts";
+import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
 const {texts, useCharacterSheet} = storeToRefs(store);
+const characterService = useServices().getCharacterService();
 
 const {character} = defineProps<{
   party: IParty,
@@ -43,7 +45,7 @@ const {character} = defineProps<{
 
 useCharacterSheet.value = true;
 
-const displayCharacterAttributes = ref<string[]>([]);
+const displayCharacterAttributes = ref<string[]>(characterService.getSheetAttributes());
 
 const limitInput = (event: any, character: ICharacter): void => {
   if (character.currentHitpoints > character.hitpoints) {

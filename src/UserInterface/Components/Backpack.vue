@@ -6,7 +6,7 @@
         <div @click="tryCombine(game, item)" :class="game.combinations.getCombineClass(item)">
           <span>{{ getItemName(item) }}</span>
           <div id="backpack-button-row" class="inline">
-            <button v-if="canEquip(item) && showEquipment(character)" type="button" class="btn btn-info btn-sm" @click="equipItem(item)">{{ texts.equip }}</button>
+            <button v-if="canEquip(item) && showEquipment(useEquipment, character)" type="button" class="btn btn-info btn-sm" @click="equipItem(item)">{{ texts.equip }}</button>
             <button v-if="hasDescription(item)" type="button" class="btn btn-info btn-sm" @click="showDescription(game, 'item', item, getItemName(item))">{{ texts.view }}</button>
             <button v-if="canUseItem(game, character, item)" type="button" class="btn btn-info btn-sm" @click="useItem(item)">{{ texts.use }}</button>
             <button v-if="canGroupItem(item as IGroupableItem<IItem>)" type="button" class="btn btn-sm"
@@ -33,7 +33,7 @@ import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
 import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {game, texts, useGround, useBackpack} = storeToRefs(store);
+const {game, texts, useGround, useBackpack, useEquipment} = storeToRefs(store);
 const itemService = useServices().getItemService();
 
 const { character } = defineProps<{

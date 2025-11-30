@@ -1,5 +1,6 @@
 <template>
   <div>
+    <conversation :playState="game.playState" :person="game.person"></conversation>
     <navigation></navigation>
     <div class="container-fluid body-content">
       <div class="row">

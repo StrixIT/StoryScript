@@ -112,7 +112,8 @@ export class DefaultTexts {
         currencyWon: 'Currency gained: {0}',
         itemsTaken: 'Items taken',
         enemiesDefeated: 'Enemies defeated',
-        backToGame: 'Back to the game'
+        backToGame: 'Back to the game',
+        conversationEnded: 'Your conversation has ended.'
     }
 
     format = format;

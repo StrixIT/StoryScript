@@ -5,13 +5,13 @@ import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
 
-let useEquipment: boolean;
+
 
 export const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export const enemiesPresent = (game: IGame) => game.currentLocation?.activeEnemies?.length > 0;
 
-export const showEquipment = (character: ICharacter): boolean => 
+export const showEquipment = (useEquipment: boolean, character: ICharacter): boolean => 
     useEquipment && character && Object.keys(character.equipment).some(k => (<any>character.equipment)[k] !== undefined);
 
 export const canUseItem = (game: IGame, character: ICharacter, item: IItem): boolean => 
