@@ -1,8 +1,7 @@
 <template>
   <div v-if="showEquipment(character)" class="character-equipment box-container">
-    <div class="box-title" @click="isCollapsed = !isCollapsed">{{ texts.equipmentHeader }}</div>
-    <!-- TODO   [ngbCollapse]="isCollapsed"-->
-    <div class="equipment-panel collapse navbar-collapse">
+    <collapsible :text="texts.equipmentHeader" :class="'box-title'"></collapsible>
+    <div class="equipment-panel">
       <div v-if="isSlotUsed('head')" class="row">
         <div class="col-12">
           <div>

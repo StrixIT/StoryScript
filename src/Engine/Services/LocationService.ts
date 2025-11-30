@@ -15,8 +15,6 @@ import {
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {GameEventNames} from "storyScript/GameEventNames.ts";
 
 export class LocationService implements ILocationService {
     constructor(

@@ -23,8 +23,6 @@ import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreator
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {GameEventNames} from "storyScript/GameEventNames.ts";
 
 export class GameService implements IGameService {
     constructor
@@ -175,11 +173,11 @@ export class GameService implements IGameService {
             this._locationService.loadLocationDescriptions(this._game);
             this._rules.setup.continueGame?.(this._game);
 
+            // Todo: do we still need this??
             // Use a timeout here to allow the UI to respond to the loading flag set.
             setTimeout(() => {
                 this._game.loading = false;
                 this._game.state = GameState.Play;
-                gameEvents.publish(GameEventNames.ChangeLocation, { location: this._game.currentLocation });
             }, 0);
         }
     }
@@ -293,12 +291,9 @@ export class GameService implements IGameService {
 
         this.initCombinations();
         this._locationService.init();
-
-        gameEvents.register(GameEventNames.ChangeLocation, false);
         
         this._game.changeLocation = (location, travel) => {
             this._locationService.changeLocation(location, travel, this._game);
-            gameEvents.publish(GameEventNames.ChangeLocation, { location, travel });
 
             if (travel) {
                 this._dataService.saveGame(this._game);

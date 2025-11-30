@@ -1,7 +1,7 @@
 <template>
   <div class="box-container" id="character-backpack">
     <collapsible :text="texts.backpack" :class="'box-title'"></collapsible>
-    <ul id="backpack-panel" class="list-unstyled" ref="collapsible">
+    <ul id="backpack-panel" class="list-unstyled">
       <li v-for="item of character.items">
         <div @click="tryCombine(game, item)" :class="game.combinations.getCombineClass(item)">
           <span>{{ getItemName(item) }}</span>
@@ -26,7 +26,7 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
-import {ref, useTemplateRef} from "vue";
+import {ref} from "vue";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {canUseItem, showDescription, showEquipment, tryCombine} from "vue/Helpers.ts";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";

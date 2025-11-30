@@ -1,8 +1,7 @@
 <template>
   <div v-if="showQuests()" class="box-container" id="character-quests">
-    <div class="box-title" @click="isCollapsed = !isCollapsed">{{ texts.quests }}</div>
-<!-- TODO   [ngbCollapse]="isCollapsed"-->
-    <div id="quest-panel"  class="collapse navbar-collapse">
+    <collapsible :text="texts.quests" :class="'box-title'"></collapsible>
+    <div id="quest-panel">
       <div v-if="showActiveQuests()">
         <h4>{{ texts.currentQuests }}</h4>
         <ul>

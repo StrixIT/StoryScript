@@ -2,8 +2,6 @@ import {IGame, IInterfaceTexts, IMap} from 'storyScript/Interfaces/storyScript';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {GameEventNames} from "storyScript/GameEventNames.ts";
 import {SharedModule} from 'ui/Modules/sharedModule.ts';
 
 const visible: string = 'visible';
@@ -27,19 +25,19 @@ export class LocationMapComponent {
         this.map = this.game.currentMap;
         this.currentMapId = this.getMapId(this.map);
 
-        gameEvents.subscribe(GameEventNames.ChangeLocation, (game) => {
-            const map = this.game.currentMap;
-            const currentId = this.getMapId(map);
-            
-            if (currentId !== this.currentMapId) {
-                this.map = map;
-                this.currentMapId = currentId;
-                this.firstShowFullScreen = true;
-                this.prepareMap(true);
-            }
-            
-            this.navigateMap(this.currentMap, game, false);
-        });
+        // gameEvents.subscribe(GameEventNames.ChangeLocation, (game) => {
+        //     const map = this.game.currentMap;
+        //     const currentId = this.getMapId(map);
+        //    
+        //     if (currentId !== this.currentMapId) {
+        //         this.map = map;
+        //         this.currentMapId = currentId;
+        //         this.firstShowFullScreen = true;
+        //         this.prepareMap(true);
+        //     }
+        //    
+        //     this.navigateMap(this.currentMap, game, false);
+        // });
 
         this.prepareMap(false);
     }

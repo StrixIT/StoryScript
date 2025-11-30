@@ -33,6 +33,7 @@ logTime('Start Vue', () => {
 const components = [
     'Collapsible',
     'GameContainer',
+    'CreateCharacter',
     'Party',
     'CharacterSheet',
     'Backpack',

@@ -19,8 +19,6 @@ export const canUseItem = (game: IGame, character: ICharacter, item: IItem): boo
 
 export const tryCombine = (game, combinable: ICombinable): boolean => {
     const result = game.combinations.tryCombine(combinable);
-    // Todo: how to replace this??
-    //this.combinationSource.next(result.success);
     return result.success;
 }
 

@@ -1,8 +1,7 @@
 <template>
   <div id="character-attributes" class="box-container">
-    <div class="box-title" @click="isCollapsed = !isCollapsed">{{ character.name || texts.characterSheet }}</div>
-    <!-- TODO   [ngbCollapse]="isCollapsed"-->
-    <div class="collapse navbar-collapse list-unstyled character-info">
+    <collapsible :text="character.name || texts.characterSheet" :class="'box-title'"></collapsible>
+    <div class="character-info">
       <div v-if="character.portraitFileName" class="portraitFrame">
         <img :alt="character.name" class="portrait" :src="character.portraitFileName"/>
       </div>

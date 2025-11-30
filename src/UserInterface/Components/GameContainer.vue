@@ -3,7 +3,7 @@
     <navigation></navigation>
     <div class="container-fluid body-content">
       <div class="row">
-        <div v-if="game?.state === 'Play'" id="party-container" :class="{ 'col-4': showCharacterPane }">
+        <div v-if="game.state === 'Play'" id="party-container" :class="{ 'col-4': showCharacterPane }">
           <party :party="game.party"></party>
         </div>
         <div id="location-container" :class="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
@@ -22,7 +22,7 @@
           </div>
 
           <!--        <intro></intro>-->
-          <!--        <create-character></create-character>-->
+          <create-character :state="game.state" :party="game.party" :sheet="game.createCharacterSheet"></create-character>
           <!-- TODO: how to make this work? -->
           <!--        @for (character of game.party?.characters; track character)-->
           <!--        {-->

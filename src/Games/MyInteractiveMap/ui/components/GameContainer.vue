@@ -27,8 +27,6 @@ import {storeToRefs} from "pinia";
 import {computed, ref} from "vue";
 
 const store = useStateStore();
-const {game, texts, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);
-
-const showCharacterPane = computed(() => useCharacterSheet.value || useEquipment.value || useBackpack.value || useQuests.value)
+const {game, texts} = storeToRefs(store);
 
 </script>
