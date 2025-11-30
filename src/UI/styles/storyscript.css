@@ -331,8 +331,10 @@ feature {
     padding-left: 0px;
 }
 
-.modal-dialog {
-    max-width: 50%;
+.dialog {
+    z-index: 10;
+    width: 50%;
+    top: 100px;
 }
 
 .custom-select {

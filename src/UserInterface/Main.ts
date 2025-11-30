@@ -31,6 +31,7 @@ logTime('Start Vue', () => {
 //app.config.errorHandler = (error: any) => errorRepo.logError(error.message, error.stack);
 
 const components = [
+    'Collapsible',
     'GameContainer',
     'Party',
     'CharacterSheet',

@@ -1,9 +1,9 @@
 <template>
-  <dialog :open="playState === PlayState.Menu">
-    <h1 class="modal-title">
+  <dialog :open="playState === PlayState.Menu" class="dialog">
+    <h1 class="dialog-title menu-title">
       {{ texts.mainMenu }}
     </h1>
-    <div class="modal-body">
+    <div class="dialog-body menu-body">
       <div v-if="menuState === <string>PlayState.Menu" id="mainmenu">
         <button v-if="state !== GameState.CreateCharacter" class="btn btn-outline-dark btn-lg" type="button"
                 @click="save()">{{ texts.saveGame }}
@@ -71,19 +71,24 @@ const { playState } = defineProps<{
 }>();
 
 const internalState = ref<string>(PlayState.Menu);
-const menuState = computed(() => { return playState === PlayState.Menu ? internalState.value : null });
+const menuState = computed(() => { return playState === PlayState.Menu ? internalState.value ?? PlayState.Menu : null });
 const selectedGame = ref<string>(null);
 const saveKeys = ref<string[]>([]);
 
 const restart = (): string => internalState.value = 'ConfirmRestart';
 
+const setSelected = (name: string) => selectedGame.value = name;
+
+const overwriteSelected = (): boolean => store.getSaveKeys().indexOf(selectedGame.value) > -1;
+
 const cancel = (): void => {
   setSelected(null);
-  internalState.value = 'Menu';
+  internalState.value = null;
 }
 
 const restartConfirmed = (): void => {
   store.restart();
+  cancel();
 }
 
 const save = (): void => {
@@ -96,16 +101,14 @@ const load = (): void => {
   internalState.value = 'Load';
 }
 
-const setSelected = (name: string) => selectedGame.value = name;
-
-const overwriteSelected = (): boolean => store.getSaveKeys().indexOf(selectedGame.value) > -1;
-
 const saveGame = (): void => {
   store.saveGame(selectedGame.value);
+  cancel();
 }
 
 const loadGame = (): void => {
   store.loadGame(selectedGame.value);
+  cancel();
 }
 
 </script>
