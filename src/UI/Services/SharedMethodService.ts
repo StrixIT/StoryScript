@@ -5,7 +5,6 @@ import {ConversationService} from 'storyScript/Services/ConversationService';
 import {IGame} from 'storyScript/Interfaces/game';
 import {Subject} from 'rxjs';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {ModalService} from './ModalService';
 import {CombatService} from "storyScript/Services/CombatService.ts";
 import {hasDescription} from 'storyScript/Services/sharedFunctions';
 import {DataService} from "storyScript/Services/DataService.ts";
@@ -20,8 +19,6 @@ export class SharedMethodService {
     private readonly combinationSource = new Subject<boolean>();
 
     constructor() {
-        // Warning: the modal service needs to be injected so it gets created. Without this, the modal won't show!
-        inject(ModalService);
         const objectFactory = inject(ServiceFactory);
         this._dataService = inject(DataService);
         this._combatService = inject(CombatService);

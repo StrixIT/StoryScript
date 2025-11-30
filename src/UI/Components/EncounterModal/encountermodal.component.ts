@@ -7,14 +7,13 @@ import {CombatComponent} from "../Combat/combat.component.ts";
 import {TradeComponent} from "../Trade/trade.component.ts";
 import {ConversationComponent} from "../Conversation/conversation.component.ts";
 import {EncounterComponent} from "ui/Components/Encounter/encounter.component.ts";
-import {LocationTextComponent} from "ui/Components/LocationText/locationtext.component.ts";
 import {EnemyComponent} from "ui/Components/Enemy/enemy.component.ts";
 import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'encounter-modal',
-    imports: [SharedModule, ConversationComponent, TradeComponent, CombatComponent, EncounterComponent, LocationTextComponent, EnemyComponent],
+    imports: [SharedModule, ConversationComponent, TradeComponent, CombatComponent, EncounterComponent, EnemyComponent],
     template: getTemplate('encountermodal', await import('./encountermodal.component.html?raw'))
 })
 export class EncounterModalComponent {

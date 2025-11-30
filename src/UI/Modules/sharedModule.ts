@@ -1,4 +1,3 @@
-import {SafePipe} from "ui/Pipes/sanitizationPipe.ts";
 import {NgModule} from "@angular/core";
 import {NgClass, NgStyle} from "@angular/common";
 import {FormsModule} from "@angular/forms";
@@ -7,14 +6,12 @@ import {FormsModule} from "@angular/forms";
     imports: [
         NgClass,
         NgStyle,
-        FormsModule,
-        SafePipe
+        FormsModule
     ],
     exports: [
         NgClass,
         NgStyle,
-        FormsModule,
-        SafePipe
+        FormsModule
     ]
 })
 

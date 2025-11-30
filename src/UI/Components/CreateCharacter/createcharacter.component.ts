@@ -4,13 +4,12 @@ import {CharacterService} from 'storyScript/Services/CharacterService';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
 import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
-import {BuildCharacterComponent} from "../BuildCharacter/buildcharacter.component.ts";
 import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'create-character',
-    imports: [SharedModule, BuildCharacterComponent],
+    imports: [SharedModule],
     template: getTemplate('createcharacter', await import('./createcharacter.component.html?raw'))
 })
 export class CreateCharacterComponent {

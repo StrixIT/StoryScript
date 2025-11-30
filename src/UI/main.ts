@@ -5,7 +5,6 @@ import {bootstrapApplication} from "@angular/platform-browser";
 import {MainComponent} from "./Components/Main/main.component.ts";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {SharedMethodService} from "./Services/SharedMethodService.ts";
-import {ModalService} from "./Services/ModalService.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {DataService} from "storyScript/Services/DataService.ts";
 import {TradeService} from "storyScript/Services/TradeService.ts";
@@ -33,7 +32,6 @@ bootstrapApplication(MainComponent, {
     providers: [
         NgbActiveModal,
         SharedMethodService,
-        ModalService,
         {provide: ServiceFactory, useValue: serviceFactory},
         {provide: DataService, useValue: serviceFactory.GetDataService()},
         {provide: TradeService, useValue: serviceFactory.GetTradeService()},
