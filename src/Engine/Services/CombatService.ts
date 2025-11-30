@@ -18,6 +18,7 @@ export class CombatService implements ICombatService {
     }
     
     initCombat = (): void => {
+        this._game.combatLog = [];
         this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
         this.initCombatRound(true);
         this._game.playState = PlayState.Combat;

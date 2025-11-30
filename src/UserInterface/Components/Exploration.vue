@@ -51,9 +51,11 @@ import {IAction} from "storyScript/Interfaces/action.ts";
 import {ref} from "vue";
 import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
+import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
+const dataService = useServices().getDataService();
 
 const confirmAction = ref<IAction>(null);
 
@@ -79,7 +81,7 @@ const execute = (action: IAction): void => {
   }
 
   confirmAction.value = undefined;
-  executeAction(game.value, action, this, store.saveGame);
+  executeAction(game.value, action, this, () => dataService.saveGame(game.value));
 }
 
 const changeLocation = (location: string) => game.value.changeLocation(location, true);

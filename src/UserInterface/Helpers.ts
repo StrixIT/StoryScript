@@ -17,7 +17,7 @@ export const showEquipment = (character: ICharacter): boolean =>
 export const canUseItem = (game: IGame, character: ICharacter, item: IItem): boolean => 
     item.use && (!item.canUse || item.canUse(game, character, item));
 
-export const tryCombine = (game, combinable: ICombinable): boolean => {
+export const tryCombine = (game: IGame, combinable: ICombinable): boolean => {
     const result = game.combinations.tryCombine(combinable);
     return result.success;
 }

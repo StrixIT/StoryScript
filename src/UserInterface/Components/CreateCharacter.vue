@@ -11,11 +11,12 @@ import {storeToRefs} from "pinia";
 import {IParty} from "storyScript/Interfaces/party.ts";
 import {ICreateCharacter} from "storyScript/Interfaces/createCharacter/createCharacter.ts";
 import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
+import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
 const {texts, rules} = storeToRefs(store);
-const gameService = store.getGameService();
-const characterService = store.getCharacterService();
+const gameService = useServices().getGameService();
+const characterService = useServices().getCharacterService();
 
 const { state, party, sheet } = defineProps<{
   state: GameState;

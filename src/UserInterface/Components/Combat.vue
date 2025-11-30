@@ -88,7 +88,9 @@ import {ref} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ICombatSetup} from "storyScript/Interfaces/combatSetup.ts";
 import {enemiesPresent, executeAction, getButtonClass} from "vue/Helpers.ts";
+import {useServices} from "vue/Services.ts";
 
+const services = useServices();
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
 
@@ -107,8 +109,9 @@ const split = (array: any[], size: number): any[] => {
   return result;
 }
 
-const itemService = store.getItemService();
-const combatService = store.getCombatService();
+const itemService = services.getItemService();
+const combatService = services.getCombatService();
+const dataService = services.getDataService();
 
 const {playState, combat} = defineProps<{
   playState: PlayState,
@@ -125,7 +128,7 @@ const getTargetName = (target: any) => target.name;
 
 const getItemName = (item: IItem): string => itemService.getItemName(item);
 
-const execute = (action: IAction) => executeAction(game.value, action, this, store.saveGame);
+const execute = (action: IAction) => executeAction(game.value, action, this, () => dataService.saveGame(game.value));
 
 const itemChange = (item: IItem, turn: ICombatTurn) => {
   const currentTarget = turn.target;

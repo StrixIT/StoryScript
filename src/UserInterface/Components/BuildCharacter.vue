@@ -36,10 +36,11 @@ import {ICreateCharacterAttribute} from "storyScript/Interfaces/createCharacter/
 import {ICreateCharacterAttributeEntry} from "storyScript/Interfaces/createCharacter/createCharacterAttributeEntry.ts";
 import {ICreateCharacterStep} from "storyScript/Interfaces/createCharacter/createCharacterStep.ts";
 import type {ICreateCharacter} from "storyScript/Interfaces/createCharacter/createCharacter.ts";
+import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
 const {texts} = storeToRefs(store);
-const characterService = store.getCharacterService();
+const characterService = useServices().getCharacterService();
 
 const {sheet} = defineProps<{
   sheet?: ICreateCharacter

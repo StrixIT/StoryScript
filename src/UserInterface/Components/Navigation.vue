@@ -38,14 +38,16 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {isDevelopment} from "vue/Helpers.ts";
+import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
 const {game, texts} = storeToRefs(store);
+const gameService = useServices().getGameService();
 
 const menu = () => {
   game.value.playState = PlayState.Menu;
 }
 
-const reset = () => store.reset();
+const reset = () => gameService.reset();
 
 </script>

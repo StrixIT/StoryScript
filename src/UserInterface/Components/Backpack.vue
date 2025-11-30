@@ -30,10 +30,11 @@ import {ref} from "vue";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {canUseItem, showDescription, showEquipment, tryCombine} from "vue/Helpers.ts";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
+import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
 const {game, texts, useGround, useBackpack} = storeToRefs(store);
-const itemService = store.getItemService();
+const itemService = useServices().getItemService();
 
 const { character } = defineProps<{
   character?: ICharacter

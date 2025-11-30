@@ -8,6 +8,7 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 
 const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
+const uiPath = path.resolve(__dirname, `./src/UserInterface`);
 const resourceRegex = process.platform === 'linux' ? /\/resources\/(.{1,}\.)/ : /\\resources\\(.{1,}\.)/;
 
 const plugins = [
@@ -46,6 +47,7 @@ export default defineConfig({
         alias: {
             storyScript: path.resolve(__dirname, './src/Engine'),
             game: gamePath,
+            ui: uiPath,
             $resources: path.resolve(gamePath, 'resources')
         }
     },

@@ -12,9 +12,9 @@
           </div>
 
           <div v-if="game.state === 'Play'">
-            <!--          <encounter></encounter>-->
+            <encounter :location="game.currentLocation" :combinations="game.combinations"></encounter>
             <location-text :location="game.currentLocation" :combinations="game.combinations"></location-text>
-            <!--          <location-visual></location-visual>-->
+            <location-visual :hidden="true"></location-visual>
             <action-log :log="game.actionLog"></action-log>
             <ground :items="game.currentLocation.activeItems"></ground>
             <exploration :location="game.currentLocation"></exploration>

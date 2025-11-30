@@ -62,8 +62,11 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {GameState, PlayState} from "storyScript/Interfaces/storyScript.ts";
 import {ref, computed} from "vue";
+import {useServices} from "vue/Services.ts";
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {game, texts} = storeToRefs(store);
+const dataService = useServices().getDataService();
+const gameService = useServices().getGameService();
 
 const { playState } = defineProps<{
   state?: GameState
@@ -79,7 +82,7 @@ const restart = (): string => internalState.value = 'ConfirmRestart';
 
 const setSelected = (name: string) => selectedGame.value = name;
 
-const overwriteSelected = (): boolean => store.getSaveKeys().indexOf(selectedGame.value) > -1;
+const overwriteSelected = (): boolean => dataService.getSaveKeys().indexOf(selectedGame.value) > -1;
 
 const cancel = (): void => {
   setSelected(null);
@@ -87,27 +90,27 @@ const cancel = (): void => {
 }
 
 const restartConfirmed = (): void => {
-  store.restart();
+  gameService.restart();
   cancel();
 }
 
 const save = (): void => {
-  saveKeys.value = store.getSaveKeys();
+  saveKeys.value = dataService.getSaveKeys();
   internalState.value = 'Save';
 }
 
 const load = (): void => {
-  saveKeys.value = store.getSaveKeys();
+  saveKeys.value = dataService.getSaveKeys();
   internalState.value = 'Load';
 }
 
 const saveGame = (): void => {
-  store.saveGame(selectedGame.value);
+  dataService.saveGame(game.value, selectedGame.value);
   cancel();
 }
 
 const loadGame = (): void => {
-  store.loadGame(selectedGame.value);
+  gameService.loadGame(selectedGame.value);
   cancel();
 }
 

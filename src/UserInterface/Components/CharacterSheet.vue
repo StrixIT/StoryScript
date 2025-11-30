@@ -43,7 +43,6 @@ const {character} = defineProps<{
 
 useCharacterSheet.value = true;
 
-const isCollapsed = ref(false);
 const displayCharacterAttributes = ref<string[]>([]);
 
 const limitInput = (event: any, character: ICharacter): void => {

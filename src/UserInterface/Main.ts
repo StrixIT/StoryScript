@@ -9,10 +9,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'ui/styles/storyscript.css';
 import 'game/ui/styles/game.css'
 import 'game/run';
+import {useServices} from "vue/Services.ts";
 
 let pinia: Pinia;
 let application: App<Element>
-let _templates = <Map<string, string>>null;
 
 logTime('Start Vue', () => {
     pinia = createPinia();
@@ -54,25 +54,9 @@ const components = [
     'Combinations'
 ];
 
-const getTemplate = (root: string, componentName: string): string => {
-    if (!_templates) {
-        _templates = new Map<string, string>();
-
-        if (import.meta.env?.VITE_BUILDER) {
-            const modules = import.meta.glob('game/ui/**/*.vue', {eager: true, query: 'raw'});
-
-            for (const path in modules) {
-                const capture = path.match(/([a-zA-Z]{1,}).vue$/);
-                _templates.set(capture[1], path);
-            }
-        }
-    }
-
-    return _templates.get(componentName) ?? import.meta.resolve(`${root}/${componentName}.vue`);
-}
-
 logTime('Import components', () => {
-    components.forEach(c => application.component(c, defineAsyncComponent(() => import(getTemplate('/src/UserInterface/Components', c)))));
+    const allComponents = getTemplates();
+    allComponents.forEach((v, k) => application.component(k, defineAsyncComponent(() => import(v))));
 });
 
 application.use(pinia);
@@ -86,8 +70,44 @@ logTime('Create ServiceFactory', () => {
 });
 
 logTime('Init game', () => {
+    const services = useServices();
     const gameService = serviceFactory.GetGameService();
     gameService.init();
+    services.setFactory(serviceFactory);
 });
 
-application.mount('#app')
+application.mount('#app');
+
+function getTemplates(): Map<string, string>{
+    const combinedTemplates = new Map<string, any>();
+    
+    if (!import.meta.env?.VITE_BUILDER) {
+        return combinedTemplates;
+    }
+    
+    const defaultTemplates = import.meta.glob('ui/**/*.vue', {eager: true, query: 'raw'});
+    const customTemplates = import.meta.glob('game/ui/**/*.vue', {eager: true, query: 'raw'});
+
+    Object.keys(customTemplates).forEach(t => {
+        const key = getKey(t);
+        
+        if (key) {
+            combinedTemplates.set(getKey(t), t);
+        }
+    });
+
+    Object.keys(defaultTemplates).forEach(t => {
+        const key = getKey(t);
+        
+        if (key && !combinedTemplates.has(key)) {
+            combinedTemplates.set(key, t);
+        }
+    });
+    
+    return combinedTemplates;
+}
+
+function getKey(path: string) {
+    const capture = path.match(/([a-zA-Z]{1,}).vue$/);
+    return capture ? capture[1] : null;
+}

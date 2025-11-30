@@ -15,10 +15,11 @@
   import {addHtmlSpaces, compareString} from "storyScript/utilityFunctions.ts";
   import {IFeature} from "storyScript/Interfaces/feature.ts";
   import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
+  import {useServices} from "vue/Services.ts";
 
   const store = useStateStore();
   const {texts} = storeToRefs(store);
-  const combinationService = store.getCombinationService();
+  const combinationService = useServices().getCombinationService();
 
   const description = useTemplateRef('description');
   

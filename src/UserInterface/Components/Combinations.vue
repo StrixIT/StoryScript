@@ -22,10 +22,11 @@ import {storeToRefs} from "pinia";
 import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
 import {ref} from "vue";
 import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
+import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
 const {texts} = storeToRefs(store);
-const combinationService = store.getCombinationService()
+const combinationService = useServices().getCombinationService();
 
 const {combinations} = defineProps<{
   combinations?: IGameCombinations
