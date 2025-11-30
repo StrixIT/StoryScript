@@ -20,7 +20,7 @@
   const {texts} = storeToRefs(store);
   const combinationService = store.getCombinationService();
 
-  const description = useTemplateRef('description')
+  const description = useTemplateRef('description');
   
   const { location, combinations } = defineProps<{
     location?: ICompiledLocation,

@@ -471,3 +471,8 @@ feature {
     align-items: center;
     justify-content: center;
 }
+
+.collapsible {
+    overflow: hidden;
+    transition: max-height .2s ease-out;
+}

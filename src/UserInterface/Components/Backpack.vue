@@ -1,8 +1,7 @@
 <template>
   <div class="box-container" id="character-backpack">
-    <div class="box-title" @click="isCollapsed = !isCollapsed">{{ texts.backpack }}</div>
-<!-- TODO    [ngbCollapse]="isCollapsed"-->
-    <ul id="backpack-panel" class="collapse navbar-collapse list-unstyled">
+    <div class="box-title" @click="toggleCollapsible">{{ texts.backpack }}</div>
+    <ul id="backpack-panel" class="collapsible list-unstyled" ref="collapsible">
       <li v-for="item of character.items">
         <div @click="tryCombine(game, item)" :class="game.combinations.getCombineClass(item)">
           <span>{{ getItemName(item) }}</span>
@@ -27,7 +26,7 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
-import {ref} from "vue";
+import {ref, useTemplateRef} from "vue";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {canUseItem, showDescription, showEquipment, tryCombine} from "vue/Helpers.ts";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
@@ -40,8 +39,15 @@ const { character } = defineProps<{
   character?: ICharacter
 }>();
 
-const isCollapsed = ref(false);
 const joinItem = ref<IGroupableItem<IItem>>(null);
+
+const isCollapsed = ref(false);
+const collapsible = useTemplateRef('collapsible');
+
+const toggleCollapsible = () => {
+  isCollapsed.value = !isCollapsed.value;
+  collapsible.value.style.maxHeight = isCollapsed.value ? '0px' : `${collapsible.value.scrollHeight}px`;
+}
 
 useBackpack.value = true;
 
