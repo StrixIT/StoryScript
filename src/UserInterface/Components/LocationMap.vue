@@ -13,11 +13,9 @@
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {GameEventNames} from "storyScript/GameEventNames.ts";
-import {IGame} from "storyScript/Interfaces/game.ts";
 import {IMap} from "storyScript/Interfaces/maps/map.ts";
-import {computed, ref} from "vue";
+import {ref, watch} from "vue";
+import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 
 const visible: string = 'visible';
 const hidden: string = 'hidden';
@@ -29,32 +27,24 @@ const imageClass: string = 'map-location-image';
 const store = useStateStore();
 const {game} = storeToRefs(store);
 
-const { map } = defineProps<{
+const { map, location } = defineProps<{
   map?: IMap
+  location?: ICompiledLocation
 }>();
 
-const getMapId = (map: IMap) => {
-  return map?.['id'];
-}
-
-const currentMapId = computed(() => getMapId(map));
 const fullScreen = ref(false);
 const firstShowFullScreen = ref(true);
 const currentMap = ref<HTMLImageElement>(null);
 const currentFullScreenMap = ref<HTMLImageElement>(null);
 
-gameEvents.subscribe(GameEventNames.ChangeLocation, (game) => {
-  const map = game.currentMap;
-  const currentId = getMapId(map);
+watch(() => map, () => {
+  firstShowFullScreen.value = true;
+  prepareMap(true);
+  navigateMap(map, currentMap.value, false);
+});
 
-  if (currentId !== currentMapId) {
-    //map = map;
-    //currentMapId.value = currentId;
-    firstShowFullScreen.value = true;
-    prepareMap(true);
-  }
-
-  navigateMap(map, currentMap.value, game, false);
+watch(() => location, () => {
+  navigateMap(map, currentMap.value, false);
 });
 
 prepareMap(false);
@@ -65,7 +55,7 @@ function toggleFullScreen() {
 
   if (fullScreen.value) {
     dialogElement.showModal();
-    navigateMap(map, currentFullScreenMap.value, game.value, firstShowFullScreen.value);
+    navigateMap(map, currentFullScreenMap.value, firstShowFullScreen.value);
     firstShowFullScreen.value = false;
     currentFullScreenMap.value.focus();
   } else {
@@ -117,7 +107,7 @@ function prepareMap(cleanup: boolean) {
     initMap(currentMap.value);
 
     // Call navigateMap now to arrange the map in its initial state.
-    navigateMap(map, currentMap.value, game.value, true);
+    navigateMap(map, currentMap.value, true);
   });
 }
 
@@ -161,10 +151,10 @@ function initMap(mapElement: HTMLElement) {
   }
 }
 
-function navigateMap(map: IMap, mapElement: HTMLElement, game: IGame, show: boolean) {
+function navigateMap(map: IMap, mapElement: HTMLElement, show: boolean) {
   setTimeout(() => {
     const parentElement = mapElement.parentElement;
-    const coordString = map.locations.find(l => l.location === game.currentLocation.id)?.coords;
+    const coordString = map.locations.find(l => l.location === location.id)?.coords;
     const avatar = parentElement.getElementsByClassName('avatar-image')[0] as HTMLImageElement;
     let mapMargins: { x: number, y: number };
 
@@ -241,7 +231,7 @@ function moveMarker(markerElements: HTMLCollection, mapMargins: { x: number, y: 
     }
 
     if (map.clickable === true) {
-      const isReachable = game.value.currentLocation.destinations.find(d => d.target === locationId);
+      const isReachable = location.destinations.find(d => d.target === locationId);
 
       markerElement.onclick = null;
       markerElement.classList.remove(reachable);
@@ -251,7 +241,7 @@ function moveMarker(markerElements: HTMLCollection, mapMargins: { x: number, y: 
         markerElement.onclick = () => {
           game.value.changeLocation(locationId);
         }
-      } else if (game.value.currentLocation.id === locationId) {
+      } else if (location.id === locationId) {
         markerElement.classList.add(reachable);
       }
     }

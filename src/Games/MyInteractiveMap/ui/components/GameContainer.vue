@@ -4,7 +4,7 @@
     <div class="container-fluid body-content">
       <div class="row">
         <div class="col-6">
-          <location-map :map="game.currentMap"></location-map>
+          <location-map :map="game.currentMap" :location="game.currentLocation"></location-map>
         </div>
         <div id="location-container" class="col-6">
           <div v-if="!game.state">
@@ -12,7 +12,6 @@
           </div>
 
           <div v-if="game.state === 'Play'">
-            <encounter></encounter>
             <location-text :location="game.currentLocation"></location-text>
             <exploration :location="game.currentLocation"></exploration>
           </div>
