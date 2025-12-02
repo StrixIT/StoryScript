@@ -1,5 +1,6 @@
 <template>
   <div :class="headerClass" @click="toggleCollapsible" ref="collapsible-header">{{ text }}</div>
+  <slot></slot>
 </template>
 <script lang="ts" setup>
 
@@ -12,10 +13,10 @@ const { headerClass } = defineProps<{
 
 const isCollapsed = ref(false);
 const collapsibleHeader = useTemplateRef('collapsible-header');
-const collapsibleContent = computed(() => collapsibleHeader.value?.nextSibling as HTMLElement);
+const collapsibleContent = computed(() => collapsibleHeader.value?.nextElementSibling as HTMLElement);
 
 const setHeight = () => {
-  collapsibleContent.value.style.maxHeight = isCollapsed.value ? '0px' : `${collapsibleContent.value.scrollHeight}px`;
+  collapsibleContent.value.style.maxHeight = isCollapsed.value ? '0px' : null;
 }
 
 onMounted(() => {

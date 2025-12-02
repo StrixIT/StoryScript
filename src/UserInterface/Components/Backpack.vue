@@ -1,24 +1,25 @@
 <template>
   <div class="box-container" id="character-backpack">
-    <collapsible :text="texts.backpack" :class="'box-title'"></collapsible>
-    <ul id="backpack-panel" class="list-unstyled">
-      <li v-for="item of character.items">
-        <div @click="tryCombine(game, item)" :class="game.combinations.getCombineClass(item)">
-          <span>{{ getItemName(item) }}</span>
-          <div id="backpack-button-row" class="inline">
-            <button v-if="canEquip(item) && showEquipment(useEquipment, character)" type="button" class="btn btn-info btn-sm" @click="equipItem(item)">{{ texts.equip }}</button>
-            <button v-if="hasDescription(item)" type="button" class="btn btn-info btn-sm" @click="showDescription(game, 'item', item, getItemName(item))">{{ texts.view }}</button>
-            <button v-if="canUseItem(game, character, item)" type="button" class="btn btn-info btn-sm" @click="useItem(item)">{{ texts.use }}</button>
-            <button v-if="canGroupItem(item as IGroupableItem<IItem>)" type="button" class="btn btn-sm"
-                    :class="{ 'btn-primary': item === joinItem, 'btn-outline-secondary': joinItem && item !== joinItem, 'btn-info': !joinItem  }"
-                    @click="groupItem(item as IGroupableItem<IItem>)">{{ texts.groupItem }}
-            </button>
-            <button v-if="(item as IGroupableItem<IItem>).members?.length > 0" type="button" class="btn btn-info btn-sm" @click="splitItemGroup(item as IGroupableItem<IItem>)">{{ texts.splitItemGroup }}</button>
-            <button v-if="useGround && canDrop(item)" type="button" class="btn btn-info btn-sm" @click="dropItem(item)">{{ texts.drop }}</button>
+    <collapsible :text="texts.backpack" :headerClass="'box-title'">
+      <ul id="backpack-panel" class="list-unstyled">
+        <li v-for="item of character.items">
+          <div @click="tryCombine(game, item)" :class="game.combinations.getCombineClass(item)">
+            <span>{{ getItemName(item) }}</span>
+            <div id="backpack-button-row" class="inline">
+              <button v-if="canEquip(item) && showEquipment(useEquipment, character)" type="button" class="btn btn-info btn-sm" @click="equipItem(item)">{{ texts.equip }}</button>
+              <button v-if="hasDescription(item)" type="button" class="btn btn-info btn-sm" @click="showDescription(game, 'item', item, getItemName(item))">{{ texts.view }}</button>
+              <button v-if="canUseItem(game, character, item)" type="button" class="btn btn-info btn-sm" @click="useItem(item)">{{ texts.use }}</button>
+              <button v-if="canGroupItem(item as IGroupableItem<IItem>)" type="button" class="btn btn-sm"
+                      :class="{ 'btn-primary': item === joinItem, 'btn-outline-secondary': joinItem && item !== joinItem, 'btn-info': !joinItem  }"
+                      @click="groupItem(item as IGroupableItem<IItem>)">{{ texts.groupItem }}
+              </button>
+              <button v-if="(item as IGroupableItem<IItem>).members?.length > 0" type="button" class="btn btn-info btn-sm" @click="splitItemGroup(item as IGroupableItem<IItem>)">{{ texts.splitItemGroup }}</button>
+              <button v-if="useGround && canDrop(item)" type="button" class="btn btn-info btn-sm" @click="dropItem(item)">{{ texts.drop }}</button>
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </collapsible>
   </div>
 </template>
 <script lang="ts" setup>

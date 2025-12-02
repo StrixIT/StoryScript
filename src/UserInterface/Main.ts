@@ -30,30 +30,6 @@ logTime('Start Vue', () => {
 
 //app.config.errorHandler = (error: any) => errorRepo.logError(error.message, error.stack);
 
-const components = [
-    'Collapsible',
-    'GameContainer',
-    'CreateCharacter',
-    'Party',
-    'CharacterSheet',
-    'Backpack',
-    'Equipment',
-    'Ground',
-    'BuildCharacter',
-    'ActionLog',
-    'Navigation',
-    'LocationText',
-    'LocationVisual',
-    'LocationMap',
-    'Exploration',
-    'Sound',
-    'Quests',
-    'GameMenu',
-    'Combat',
-    'CombatParticipant',
-    'Combinations'
-];
-
 logTime('Import components', () => {
     const allComponents = getTemplates();
     allComponents.forEach((v, k) => application.component(k, defineAsyncComponent(() => import(v))));

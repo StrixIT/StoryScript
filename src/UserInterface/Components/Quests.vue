@@ -1,25 +1,26 @@
 <template>
   <div v-if="showQuests()" class="box-container" id="character-quests">
-    <collapsible :text="texts.quests" :class="'box-title'"></collapsible>
-    <div id="quest-panel">
-      <div v-if="showActiveQuests()">
-        <h4>{{ texts.currentQuests }}</h4>
-        <ul>
-          <li v-for="quest of currentQuests()">
-            <span>{{ quest.name }}</span>
-            <div v-html="questStatus(quest)"></div>
-          </li>
-        </ul>
+    <collapsible :text="texts.quests" :class="'box-title'">
+      <div id="quest-panel">
+        <div v-if="showActiveQuests()">
+          <h4>{{ texts.currentQuests }}</h4>
+          <ul>
+            <li v-for="quest of currentQuests()">
+              <span>{{ quest.name }}</span>
+              <div v-html="questStatus(quest)"></div>
+            </li>
+          </ul>
+        </div>
+        <div v-if="showCompletedQuests()">
+          <h4>{{ texts.completedQuests }}</h4>
+          <ul>
+            <li v-for="quest of completedQuests()">
+              <div v-html="questStatus(quest)"></div>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div v-if="showCompletedQuests()">
-        <h4>{{ texts.completedQuests }}</h4>
-        <ul>
-          <li v-for="quest of completedQuests()">
-            <div v-html="questStatus(quest)"></div>
-          </li>
-        </ul>
-      </div>
-    </div>
+    </collapsible>
   </div>
 </template>
 <script lang="ts" setup>

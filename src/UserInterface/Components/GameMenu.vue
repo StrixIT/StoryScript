@@ -1,61 +1,56 @@
 <template>
-  <dialog :open="playState === PlayState.Menu" class="dialog">
-    <h1 class="dialog-title menu-title">
-      {{ texts.mainMenu }}
-    </h1>
-    <div class="dialog-body menu-body">
-      <div v-if="menuState === <string>PlayState.Menu" id="mainmenu">
-        <button v-if="state !== GameState.CreateCharacter" class="btn btn-outline-dark btn-lg" type="button"
-                @click="save()">{{ texts.saveGame }}
-        </button>
-        <button class="btn btn-outline-dark btn-lg" type="button" @click="load()">{{ texts.loadGame }}</button>
-        <button class="btn btn-outline-danger btn-lg" type="button" @click="restart()">{{ texts.startOver }}</button>
-      </div>
+  <modal-dialog :playState="playState" :open-state="PlayState.Menu" :close-text="texts.closeModal">
+    <div v-if="menuState === <string>PlayState.Menu" id="mainmenu">
+      <button v-if="state !== GameState.CreateCharacter" class="btn btn-outline-dark btn-lg" type="button"
+              @click="save()">{{ texts.saveGame }}
+      </button>
+      <button class="btn btn-outline-dark btn-lg" type="button" @click="load()">{{ texts.loadGame }}</button>
+      <button class="btn btn-outline-danger btn-lg" type="button" @click="restart()">{{ texts.startOver }}</button>
+    </div>
+
+    <div v-if="menuState === 'ConfirmRestart'" id="confirmrestart">
+      <h4>
+        {{ texts.confirmRestart }}
+      </h4>
+      <button class="btn btn-outline-dark btn-lg" type="button" @click="cancel()">{{ texts.restartCancelled }}</button>
+      <button class="btn btn-outline-danger btn-lg" type="button" @click="restartConfirmed()">{{
+          texts.restartConfirmed
+        }}
+      </button>
+    </div>
   
-      <div v-if="menuState === 'ConfirmRestart'" id="confirmrestart">
-        <h4>
-          {{ texts.confirmRestart }}
-        </h4>
-        <button class="btn btn-outline-dark btn-lg" type="button" @click="cancel()">{{ texts.restartCancelled }}</button>
-        <button class="btn btn-outline-danger btn-lg" type="button" @click="restartConfirmed()">{{
-            texts.restartConfirmed
-          }}
-        </button>
-      </div>
-  
-      <div v-if="menuState === 'Save' || menuState === 'Load'">
-        <div class="row">
-          <div id="save-game" class="col-12">
-            <p>{{ texts.existingSaveGames }}</p>
-            <ul class="list-unstyled">
-              <li v-for="key of saveKeys">
-                <span @click="setSelected(key)">{{ key }}</span>
-              </li>
-            </ul>
-            <div v-if="menuState === 'Save'">
-              <p>{{ texts.newSaveGame }}</p>
-              <input v-model="selectedGame" class="col-md-8 question-input" type="text"/>
-            </div>
+    <div v-if="menuState === 'Save' || menuState === 'Load'">
+      <div class="row">
+        <div id="save-game" class="col-12">
+          <p>{{ texts.existingSaveGames }}</p>
+          <ul class="list-unstyled">
+            <li v-for="key of saveKeys">
+              <span @click="setSelected(key)">{{ key }}</span>
+            </li>
+          </ul>
+          <div v-if="menuState === 'Save'">
+            <p>{{ texts.newSaveGame }}</p>
+            <input v-model="selectedGame" class="col-md-8 question-input" type="text"/>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12">
-            <p v-if="menuState === 'Save' && overwriteSelected()" class="alert alert-danger">
-              {{ texts.format(texts.overwriteSaveGame, [selectedGame]) }}</p>
-            <p v-if="menuState === 'Load' && selectedGame" class="alert alert-success">
-              {{ texts.format(texts.loadSaveGame, [selectedGame]) }}</p>
-            <button v-if="menuState === 'Save'" :disabled="!selectedGame" class="btn btn-primary save-button" type="button"
-                    @click="saveGame()">{{ texts.save }}
-            </button>
-            <button v-if="menuState === 'Load'" :disabled="!selectedGame" class="btn btn-primary save-button" type="button"
-                    @click="loadGame()">{{ texts.load }}
-            </button>
-            <button class="btn btn-primary save-button" type="button" @click="cancel()">{{ texts.cancel }}</button>
-          </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p v-if="menuState === 'Save' && overwriteSelected()" class="alert alert-danger">
+            {{ texts.format(texts.overwriteSaveGame, [selectedGame]) }}</p>
+          <p v-if="menuState === 'Load' && selectedGame" class="alert alert-success">
+            {{ texts.format(texts.loadSaveGame, [selectedGame]) }}</p>
+          <button v-if="menuState === 'Save'" :disabled="!selectedGame" class="btn btn-primary save-button" type="button"
+                  @click="saveGame()">{{ texts.save }}
+          </button>
+          <button v-if="menuState === 'Load'" :disabled="!selectedGame" class="btn btn-primary save-button" type="button"
+                  @click="loadGame()">{{ texts.load }}
+          </button>
+          <button class="btn btn-primary save-button" type="button" @click="cancel()">{{ texts.cancel }}</button>
         </div>
       </div>
     </div>
-  </dialog>
+  </modal-dialog>
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
