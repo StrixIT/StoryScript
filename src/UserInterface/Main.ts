@@ -30,9 +30,12 @@ logTime('Start Vue', () => {
 
 //app.config.errorHandler = (error: any) => errorRepo.logError(error.message, error.stack);
 
-logTime('Import components', () => {
+logTime('Import components', async() => {
     const allComponents = getTemplates();
-    allComponents.forEach((v, k) => application.component(k, defineAsyncComponent(() => import(v))));
+
+    for (const [componentName, component] of allComponents) {
+        application.component(componentName, (component as any)?.default);
+    }
 });
 
 application.use(pinia);
@@ -54,21 +57,21 @@ logTime('Init game', () => {
 
 application.mount('#app');
 
-function getTemplates(): Map<string, string>{
+function getTemplates(): Map<string, any>{
     const combinedTemplates = new Map<string, any>();
     
     if (!import.meta.env?.VITE_BUILDER) {
         return combinedTemplates;
     }
     
-    const defaultTemplates = import.meta.glob('ui/**/*.vue', {eager: true, query: 'raw'});
-    const customTemplates = import.meta.glob('game/ui/**/*.vue', {eager: true, query: 'raw'});
+    const defaultTemplates = import.meta.glob('ui/**/*.vue', { eager: true });
+    const customTemplates = import.meta.glob('game/ui/**/*.vue', { eager: true });
 
     Object.keys(customTemplates).forEach(t => {
         const key = getKey(t);
         
         if (key) {
-            combinedTemplates.set(getKey(t), t);
+            combinedTemplates.set(getKey(t), customTemplates[t]);
         }
     });
 
@@ -76,7 +79,7 @@ function getTemplates(): Map<string, string>{
         const key = getKey(t);
         
         if (key && !combinedTemplates.has(key)) {
-            combinedTemplates.set(key, t);
+            combinedTemplates.set(key, defaultTemplates[t]);
         }
     });
     

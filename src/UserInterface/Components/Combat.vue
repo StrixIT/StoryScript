@@ -26,7 +26,7 @@
                 <select v-if="turn.itemsAvailable.length > 1" class="custom-select" @change="itemChange(turn.item, turn)" v-model="turn.item">
                   <option v-for="item of turn.itemsAvailable" :value="item" :disabled="!itemSelectable(item)" :class="{'unselectable': !itemSelectable(item)}" >{{ getItemName(item) }}</option>
                 </select>
-                <input v-if="turn.itemsAvailable.length === 1" class="single-item" type="text" :disabled="true" v-model="getItemName(turn.item)" />
+                <input v-if="turn.itemsAvailable.length === 1" class="single-item" type="text" :disabled="true" :value="getItemName(turn.item)" />
               </div>
             </div>
             <div v-if="!turn.item && turn.character.currentHitpoints > 0">
