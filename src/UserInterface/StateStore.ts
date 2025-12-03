@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref, unref} from 'vue';
+import {App, ref} from 'vue';
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
@@ -19,6 +19,21 @@ export const useStateStore = defineStore('appState', () => {
     const useCharacterSheet = ref(false);
     const useQuests = ref(false);
 
+    const error = ref<{ stackTrace: string, message: string }>(null);
+
+    const initErrorHandling = (app: App<Element>) => {
+        addEventListener("error", event => {
+            error.value = { message: event.message, stackTrace: event.error.stack };
+            event.stopPropagation();
+        });
+        addEventListener("unhandledrejection", event => {
+            error.value = { message: event.reason.message, stackTrace: event.reason.stack };
+            event.stopPropagation();
+        });
+
+        app.config.errorHandler = (error: any) => error.value = { message: error.message, stackTrace: error.stack };
+    }
+    
     const setStoreData = (factory: ServiceFactory) => {
         serviceFactory = factory;
         game.value = serviceFactory.GetGame();
@@ -34,6 +49,7 @@ export const useStateStore = defineStore('appState', () => {
     const setActiveCharacter = (character: ICharacter) => game.value.activeCharacter = character;
 
     return {
+        error,
         game,
         texts,
         rules,
@@ -42,6 +58,7 @@ export const useStateStore = defineStore('appState', () => {
         useEquipment,
         useCharacterSheet,
         useQuests,
+        initErrorHandling,
         setStoreData,
         setActiveCharacter
     }

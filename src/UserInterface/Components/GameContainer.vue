@@ -1,8 +1,8 @@
 <template>
-  <conversation :playState="game.playState" :person="game.person"></conversation>
-  <trade :playState="game.playState" :trade="game.trade" :character="game.activeCharacter"></trade>
-  <combat :playState="game.playState" :combat="game.combat" :combatActions="game.currentLocation.combatActions" :combaLog="game.combatLog" ></combat>
-  <description :playState="game.playState"></description>
+  <conversation v-if="game.playState === PlayState.Conversation" :playState="game.playState" :person="game.person"></conversation>
+  <trade v-if="game.playState === PlayState.Trade" :playState="game.playState" :trade="game.trade" :character="game.activeCharacter"></trade>
+  <combat v-if="game.playState === PlayState.Combat"  :playState="game.playState" :combat="game.combat" :combatActions="game.currentLocation.combatActions" :combaLog="game.combatLog" ></combat>
+  <description v-if="game.playState === PlayState.Description" :playState="game.playState"></description>
   <div>
     <navigation></navigation>
     <div class="container-fluid body-content">
@@ -49,6 +49,7 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {computed, ref} from "vue";
+import {PlayState} from "storyScript/Interfaces/storyScript.ts";
 
 const store = useStateStore();
 const {game, texts, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);

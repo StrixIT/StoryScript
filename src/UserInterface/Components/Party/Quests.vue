@@ -1,6 +1,6 @@
 <template>
   <div v-if="showQuests()" class="box-container" id="character-quests">
-    <collapsible :text="texts.quests" :class="'box-title'">
+    <collapsible :text="texts.quests" :headerClass="'box-title'">
       <div id="quest-panel">
         <div v-if="showActiveQuests()">
           <h4>{{ texts.currentQuests }}</h4>

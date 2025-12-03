@@ -1,6 +1,6 @@
 <template>
   <div id="character-attributes" class="box-container">
-    <collapsible :text="character.name || texts.characterSheet" :class="'box-title'">
+    <collapsible :text="character.name || texts.characterSheet" :headerClass="'box-title'">
       <div class="character-info">
         <div v-if="character.portraitFileName" class="portraitFrame">
           <img :alt="character.name" class="portrait" :src="character.portraitFileName"/>
