@@ -39,8 +39,7 @@ logTime('Create ServiceFactory', () => {
 
 logTime('Init game', () => {
     const services = useServices();
-    const gameService = serviceFactory.GetGameService();
-    gameService.init();
+    serviceFactory.GetGameService().init();
     services.setFactory(serviceFactory);
 });
 

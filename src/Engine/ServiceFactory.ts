@@ -39,6 +39,7 @@ export class ServiceFactory {
     private readonly _dataSynchronizer: IDataSynchronizer;
     private readonly _dataService: IDataService;
 
+    private _initialized = false;
     private _game: IGame = <IGame>{};
 
     private _gameService: IGameService;
@@ -67,7 +68,6 @@ export class ServiceFactory {
         this._dataSerializer = new DataSerializer(this._registeredEntities);
         this._dataSynchronizer = new DataSynchronizer(this._registeredEntities);
         this._dataService = new DataService(localStorageService, this._dataSerializer, this._dataSynchronizer, this._rules, nameSpace);
-        this.init(this._game);
         ServiceFactory._instance = this;
     }
 
@@ -79,8 +79,8 @@ export class ServiceFactory {
 
     // Allows the re-initialization of the game object and the services. This is needed
     // when the game object should be controlled by the UI framework. Vue needs this.
-    init = (game: IGame) => {
-        this._game = game;
+    init = (game?: IGame) => {
+        this._game = game ?? <IGame>{};
         this._itemService = new ItemService(this._game, this._rules, this._texts);
         this._tradeService = new TradeService(this._itemService, this._game, this._rules, this._texts, this._definitions);
         this._conversationService = new ConversationService(this._game);
@@ -103,35 +103,44 @@ export class ServiceFactory {
         );
         this._combatService = new CombatService(this._game, this._rules, this._texts);
         gameEvents.setGame(this._game);
+        this._initialized = true;
     }
 
-    GetGame = (): IGame => this._game;
+    GetGame = (): IGame => this.Get(this._game);
 
-    GetRules = (): IRules => this._rules;
+    GetRules = (): IRules => this.Get(this._rules);
 
-    GetTexts = (): IInterfaceTexts => this._texts;
+    GetTexts = (): IInterfaceTexts => this.Get(this._texts);
 
-    GetGameService = (): IGameService => this._gameService;
+    GetGameService = (): IGameService => this.Get(this._gameService);
 
-    GetTradeService = (): ITradeService => this._tradeService;
+    GetTradeService = (): ITradeService => this.Get(this._tradeService);
 
-    GetConversationService = (): IConversationService => this._conversationService;
+    GetConversationService = (): IConversationService => this.Get(this._conversationService);
 
-    GetCharacterService = (): ICharacterService => this._characterService;
+    GetCharacterService = (): ICharacterService => this.Get(this._characterService);
 
-    GetCombinationService = (): ICombinationService => this._combinationService;
+    GetCombinationService = (): ICombinationService => this.Get(this._combinationService);
 
-    GetDataService = (): IDataService => this._dataService;
+    GetDataService = (): IDataService => this.Get(this._dataService);
 
-    GetDataSerializer = (): IDataSerializer => this._dataSerializer;
+    GetDataSerializer = (): IDataSerializer => this.Get(this._dataSerializer);
 
-    GetDataSynchronizer = (): IDataSynchronizer => this._dataSynchronizer;
+    GetDataSynchronizer = (): IDataSynchronizer => this.Get(this._dataSynchronizer);
 
-    GetCombatService = (): ICombatService => this._combatService;
+    GetCombatService = (): ICombatService => this.Get(this._combatService);
 
-    GetSoundService = (): ISoundService => this._soundService;
+    GetSoundService = (): ISoundService => this.Get(this._soundService);
 
-    GetItemService = (): IItemService => this._itemService;
+    GetItemService = (): IItemService => this.Get(this._itemService);
 
     static readonly GetInstance = () => ServiceFactory._instance;
+    
+    private Get<T>(service: T): T {
+        if (!this._initialized) {
+            throw new Error('ServiceFactory is not initialized!');
+        }
+        
+        return service;
+    }
 }
