@@ -2,7 +2,6 @@ import 'zone.js';
 import '@angular/compiler';
 import {enableProdMode} from '@angular/core';
 import {bootstrapApplication} from "@angular/platform-browser";
-import {MainComponent} from "./Components/Main/main.component.ts";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {SharedMethodService} from "./Services/SharedMethodService.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
@@ -28,7 +27,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const serviceFactory = ServiceFactory.GetInstance();
 
-bootstrapApplication(MainComponent, {
+bootstrapApplication(null, {
     providers: [
         NgbActiveModal,
         SharedMethodService,

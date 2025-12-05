@@ -25,15 +25,12 @@
             <enemy :enemies="game.currentLocation.activeEnemies" :combinations="game.combinations"></enemy>
           </div>
 
-          <!--        <intro></intro>-->
+          <intro v-if="game.state === GameState.Intro"></intro>
           <create-character :state="game.state" :party="game.party" :sheet="game.createCharacterSheet"></create-character>
           <!-- TODO: how to make this work? -->
-          <!--        @for (character of game.party?.characters; track character)-->
-          <!--        {-->
-          <!--        <level-up [character]="character"></level-up>-->
-          <!--        }-->
-          <!--        <game-over></game-over>-->
-          <!--        <victory></victory>-->
+          <level-up v-if="game.state === GameState.LevelUp" v-for="character of game.party?.characters" :character="character" :sheet="game.createCharacterSheet"></level-up>
+          <game-over v-if="game.state === GameState.GameOver"></game-over>
+          <victory v-if="game.state === GameState.Victory" :score="game.party.score"></victory>
         </div>
       </div>
       <div v-if="game.state === 'Play'" class="row">
@@ -49,7 +46,7 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {computed, ref} from "vue";
-import {PlayState} from "storyScript/Interfaces/storyScript.ts";
+import {GameState, PlayState} from "storyScript/Interfaces/storyScript.ts";
 
 const store = useStateStore();
 const {game, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);

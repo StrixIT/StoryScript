@@ -6,12 +6,11 @@ import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {DataService} from "storyScript/Services/DataService.ts";
 import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";
-import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'exploration',
-    imports: [SharedModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
+    imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
     template: getTemplate('exploration', await import('./exploration.component.html?raw'))
 })
 export class ExplorationComponent {

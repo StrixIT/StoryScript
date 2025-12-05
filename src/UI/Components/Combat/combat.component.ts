@@ -5,12 +5,10 @@ import {Component, inject} from '@angular/core';
 import {getTemplate} from '../../helpers';
 import {CombatService} from "storyScript/Services/CombatService.ts";
 import {ItemService} from "storyScript/Services/ItemService.ts";
-import {SharedModule} from "ui/Modules/sharedModule.ts";
 
 @Component({
     standalone: true,
     selector: 'combat',
-    imports: [SharedModule],
     template: getTemplate('combat', await import('./combat.component.html?raw'))
 })
 export class CombatComponent {

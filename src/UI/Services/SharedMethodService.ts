@@ -1,42 +1,24 @@
 import {inject, Injectable} from '@angular/core';
-import {ActionType, IAction, ICharacter, ICombinable, IItem, IPerson, ITrade} from 'storyScript/Interfaces/storyScript';
+import {ActionType, IAction, ICombinable, IPerson, ITrade} from 'storyScript/Interfaces/storyScript';
 import {TradeService} from 'storyScript/Services/TradeService';
-import {ConversationService} from 'storyScript/Services/ConversationService';
 import {IGame} from 'storyScript/Interfaces/game';
 import {Subject} from 'rxjs';
 import {ServiceFactory} from 'storyScript/ServiceFactory.ts';
-import {CombatService} from "storyScript/Services/CombatService.ts";
-import {hasDescription} from 'storyScript/Services/sharedFunctions';
 import {DataService} from "storyScript/Services/DataService.ts";
 
 @Injectable()
 export class SharedMethodService {
+    game: IGame;
     private readonly _dataService: DataService;
-    private readonly _combatService: CombatService;
-    private readonly _conversationService: ConversationService;
     private readonly _tradeService: TradeService;
-
     private readonly combinationSource = new Subject<boolean>();
 
     constructor() {
         const objectFactory = inject(ServiceFactory);
         this._dataService = inject(DataService);
-        this._combatService = inject(CombatService);
-        this._conversationService = inject(ConversationService);
         this._tradeService = inject(TradeService);
         this.game = objectFactory.GetGame();
     }
-
-    game: IGame;
-    useCharacterSheet?: boolean;
-    useEquipment?: boolean;
-    useBackpack?: boolean;
-    useQuests?: boolean;
-    useGround?: boolean;
-
-    combinationChange$ = this.combinationSource.asObservable();
-
-    setCombineState = (value: boolean): void => this.combinationSource.next(value);
 
     enemiesPresent = (): boolean => this.game.currentLocation?.activeEnemies?.length > 0;
 
@@ -44,10 +26,6 @@ export class SharedMethodService {
         const result = this.game.combinations.tryCombine(combinable);
         this.combinationSource.next(result.success);
         return result.success;
-    }
-
-    talk = (person: IPerson): void => {
-        this._conversationService.talk(person);
     }
 
     trade = (trade: IPerson | ITrade): boolean => {
@@ -62,26 +40,6 @@ export class SharedMethodService {
         // Return true to keep the action button for trade locations.
         return true;
     };
-
-    hasDescription = (entity: {
-        id?: string,
-        description?: string
-    }): boolean => hasDescription(entity);
-
-    showDescription = (type: string, item: any, title: string): void => {
-        this.game.currentDescription = {title: title, type: type, item: item};
-    }
-
-    startCombat = (person?: IPerson): void => {
-        if (person) {
-            // The person becomes an enemy when attacked!
-            this.game.currentLocation.persons.delete(person);
-            this.game.currentLocation.enemies.add(person);
-        }
-
-        this.game.combatLog = [];
-        this._combatService.initCombat();
-    }
 
     getButtonClass = (action: [string, IAction]): string => {
         const type = action[1].actionType || ActionType.Regular;
@@ -132,12 +90,6 @@ export class SharedMethodService {
             this._dataService.saveGame(this.game);
         }
     }
-
-    showEquipment = (character: ICharacter): boolean => {
-        return this.useEquipment && character && Object.keys(character.equipment).some(k => (<any>character.equipment)[k] !== undefined);
-    }
-
-    canUseItem = (character: ICharacter, item: IItem): boolean => item.use && (!item.canUse || item.canUse(this.game, character, item));
 
     private readonly getActionIndex = (action: [string, IAction]): { type: ActionType, index: number } => {
         let index = -1;
