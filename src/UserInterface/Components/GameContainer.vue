@@ -22,7 +22,7 @@
             <action-log :log="game.actionLog"></action-log>
             <ground :items="game.currentLocation.activeItems"></ground>
             <exploration :location="game.currentLocation"></exploration>
-            <!--          <enemy></enemy>-->
+            <enemy :enemies="game.currentLocation.activeEnemies" :combinations="game.combinations"></enemy>
           </div>
 
           <!--        <intro></intro>-->
