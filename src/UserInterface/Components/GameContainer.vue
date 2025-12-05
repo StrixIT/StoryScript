@@ -52,7 +52,8 @@ import {computed, ref} from "vue";
 import {PlayState} from "storyScript/Interfaces/storyScript.ts";
 
 const store = useStateStore();
-const {game, texts, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);
+const {game, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);
+const {texts} = store.services;
 
 const showCharacterPane = computed(() => useCharacterSheet.value || useEquipment.value || useBackpack.value || useQuests.value)
 

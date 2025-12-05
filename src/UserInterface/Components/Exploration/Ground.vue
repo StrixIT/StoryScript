@@ -14,11 +14,10 @@ import {storeToRefs} from "pinia";
 import {enemiesPresent} from "vue/Helpers.ts";
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {game, texts, useGround} = storeToRefs(store);
-const itemService = useServices().getItemService();
+const {game, useGround} = storeToRefs(store);
+const {texts, itemService} = store.services;
 
 const { items } = defineProps<{
   items?: IItem[]

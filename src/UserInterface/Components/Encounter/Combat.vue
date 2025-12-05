@@ -88,11 +88,10 @@ import {ref} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ICombatSetup} from "storyScript/Interfaces/combatSetup.ts";
 import {enemiesPresent, executeAction, getButtonClass} from "vue/Helpers.ts";
-import {useServices} from "vue/Services.ts";
 
-const services = useServices();
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {game} = storeToRefs(store);
+const {texts, dataService, itemService, combatService} = store.services;
 
 const split = (array: any[], size: number): any[] => {
   const result = [];
@@ -108,10 +107,6 @@ const split = (array: any[], size: number): any[] => {
 
   return result;
 }
-
-const itemService = services.getItemService();
-const combatService = services.getCombatService();
-const dataService = services.getDataService();
 
 const {playState, combat} = defineProps<{
   playState: PlayState,

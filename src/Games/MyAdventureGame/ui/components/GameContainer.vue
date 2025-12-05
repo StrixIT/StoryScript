@@ -8,14 +8,16 @@
             <backpack :character="character"></backpack>
           </div>
         </div>
-        <div id="location-container" :class="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
+        <div id="location-container"
+             :class="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
           <div v-if="!game.state">
             {{ texts.loading }}
           </div>
 
           <div v-if="game.state === 'Play'">
-            <location-visual v-if="game.worldProperties.type === 'Visual'" :location="game.currentLocation" :combinations="game.combinations"></location-visual>
-            <location-text v-else :location="game.currentLocation" :combinations="game.combinations"></location-text>
+            <location-visual v-if="game.worldProperties.type === 'Visual'" :combinations="game.combinations"
+                             :location="game.currentLocation"></location-visual>
+            <location-text v-else :combinations="game.combinations" :location="game.currentLocation"></location-text>
           </div>
         </div>
       </div>
@@ -31,10 +33,11 @@
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 
 const store = useStateStore();
-const {game, texts, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);
+const {game, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);
+const {texts} = store.services;
 
 const showCharacterPane = computed(() => useCharacterSheet.value || useEquipment.value || useBackpack.value || useQuests.value)
 

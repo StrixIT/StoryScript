@@ -10,16 +10,13 @@
 <script lang="ts" setup>
   import {computed, useTemplateRef} from "vue";
   import {useStateStore} from "vue/StateStore.ts";
-  import {storeToRefs} from "pinia";
   import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
   import {addHtmlSpaces, compareString} from "storyScript/utilityFunctions.ts";
   import {IFeature} from "storyScript/Interfaces/feature.ts";
   import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
-  import {useServices} from "vue/Services.ts";
 
   const store = useStateStore();
-  const {texts} = storeToRefs(store);
-  const combinationService = useServices().getCombinationService();
+  const {texts, combinationService} = store.services;
 
   const description = useTemplateRef('description');
   

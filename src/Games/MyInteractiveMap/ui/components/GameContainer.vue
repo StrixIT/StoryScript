@@ -4,7 +4,7 @@
     <div class="container-fluid body-content">
       <div class="row">
         <div class="col-6">
-          <location-map :map="game.currentMap" :location="game.currentLocation"></location-map>
+          <location-map :location="game.currentLocation" :map="game.currentMap"></location-map>
         </div>
         <div id="location-container" class="col-6">
           <div v-if="!game.state">
@@ -24,9 +24,9 @@
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {computed, ref} from "vue";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {game} = storeToRefs(store);
+const {texts} = store.services;
 
 </script>

@@ -77,8 +77,8 @@ export class ServiceFactory {
         });
     };
 
-    // Allows the re-initialization of the game object and the services. This is needed
-    // when the game object should be controlled by the UI framework. Vue needs this.
+    // Initialize the game object and the services. Pass in a game object 
+    // when it should be controlled by the UI framework. Vue needs this.
     init = (game?: IGame) => {
         this._game = game ?? <IGame>{};
         this._itemService = new ItemService(this._game, this._rules, this._texts);

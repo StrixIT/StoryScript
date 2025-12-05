@@ -17,7 +17,8 @@ import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
+const {game} = storeToRefs(store);
+const {texts} = store.services;
 
 const { playState, openState } = defineProps<{
   playState?: PlayState,

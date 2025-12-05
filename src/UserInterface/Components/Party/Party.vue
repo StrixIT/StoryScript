@@ -19,7 +19,7 @@ import {storeToRefs} from "pinia";
 import {IParty} from "storyScript/Interfaces/party.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {texts} = store.services;
 
 const {party} = defineProps<{
   party?: IParty

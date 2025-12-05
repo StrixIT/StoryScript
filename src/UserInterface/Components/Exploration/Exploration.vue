@@ -51,11 +51,10 @@ import {IAction} from "storyScript/Interfaces/action.ts";
 import {ref} from "vue";
 import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
-const dataService = useServices().getDataService();
+const {game} = storeToRefs(store);
+const {texts, dataService} = store.services;
 
 const confirmAction = ref<IAction>(null);
 

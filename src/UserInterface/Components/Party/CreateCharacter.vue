@@ -7,16 +7,12 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {IParty} from "storyScript/Interfaces/party.ts";
 import {ICreateCharacter} from "storyScript/Interfaces/createCharacter/createCharacter.ts";
 import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {texts, rules} = storeToRefs(store);
-const gameService = useServices().getGameService();
-const characterService = useServices().getCharacterService();
+const {texts, rules, characterService, gameService} = store.services;
 
 const { state, party, sheet } = defineProps<{
   state: GameState;
@@ -25,28 +21,28 @@ const { state, party, sheet } = defineProps<{
 }>();
 
 const titleText = (): string => {
-  if (rules.value.setup.numberOfCharacters > 1) {
+  if (rules.setup.numberOfCharacters > 1) {
     switch (party.characters.length || 0) {
       case 0:
-        return texts.value.firstCharacter;
+        return texts.firstCharacter;
       case 1:
-        return texts.value.secondCharacter;
+        return texts.secondCharacter;
       case 2:
-        return texts.value.thirdCharacter;
+        return texts.thirdCharacter;
       default:
-        return texts.value.format(texts.value.nthCharacter, [(party.characters.length + 1).toString()])
+        return texts.format(texts.nthCharacter, [(party.characters.length + 1).toString()])
     }
   }
 
-  return texts.value.newGame;
+  return texts.newGame;
 };
 
 const startText = (): string => {
-  if (rules.value.setup.numberOfCharacters > 1 && (party.characters.length < rules.value.setup.numberOfCharacters - 1)) {
-    return texts.value.nextCharacter;
+  if (rules.setup.numberOfCharacters > 1 && (party.characters.length < rules.setup.numberOfCharacters - 1)) {
+    return texts.nextCharacter;
   }
 
-  return texts.value.startAdventure;
+  return texts.startAdventure;
 };
 
 const distributionDone = (): boolean => characterService.distributionDone(sheet, null);

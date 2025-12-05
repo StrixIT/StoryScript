@@ -18,15 +18,12 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
 import {ref} from "vue";
 import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
-const combinationService = useServices().getCombinationService();
+const {texts, combinationService} = store.services;
 
 const {combinations} = defineProps<{
   combinations?: IGameCombinations

@@ -21,7 +21,7 @@ import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {texts} = store.services;
 
 const { location, combinations } = defineProps<{
   location?: ICompiledLocation,

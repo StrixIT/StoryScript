@@ -8,11 +8,9 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
-import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {texts} = store.services;
 
 const { log } = defineProps<{
   log?: string[]

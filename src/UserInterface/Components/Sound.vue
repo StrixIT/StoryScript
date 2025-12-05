@@ -6,14 +6,11 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {ref} from "vue";
 import {ISoundPlayer} from "storyScript/Interfaces/soundPlayer.ts";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {rules} = storeToRefs(store);
-const soundService = useServices().getSoundService();
+const {rules, soundService} = store.services;
 
 const isPlaying = ref(false);
 const fadeInterval = ref<NodeJS.Timeout>(null);
@@ -52,7 +49,7 @@ setInterval(checkMusicPlaying, 500);
 const getCurrentMusic = (): string => {
   const music = soundService.getCurrentMusic();
 
-  if (rules.value.setup.fadeMusicInterval) {
+  if (rules.setup.fadeMusicInterval) {
 
     if (!currentMusic) {
       currentMusic.value = music;
@@ -60,7 +57,7 @@ const getCurrentMusic = (): string => {
 
     if (!fadingMusic && music != currentMusic.value) {
       fadingMusic.value = true;
-      fadeInterval.value = setInterval(() => fade(music), rules.value.setup.fadeMusicInterval);
+      fadeInterval.value = setInterval(() => fade(music), rules.setup.fadeMusicInterval);
     }
 
     return currentMusic.value;

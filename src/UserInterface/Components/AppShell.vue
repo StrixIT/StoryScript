@@ -10,13 +10,11 @@
 import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {onMounted, useTemplateRef} from "vue";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const services = useServices();
 const {game} = storeToRefs(store);
+const {gameService} = store.services;
 const uiRoot = useTemplateRef('ui-root');
-const gameService = services.getGameService();
 
 onMounted(() => game.value.UIRootElement = uiRoot.value);
 

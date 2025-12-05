@@ -57,11 +57,9 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {GameState, PlayState} from "storyScript/Interfaces/storyScript.ts";
 import {ref, computed} from "vue";
-import {useServices} from "vue/Services.ts";
 const store = useStateStore();
-const {game, texts} = storeToRefs(store);
-const dataService = useServices().getDataService();
-const gameService = useServices().getGameService();
+const {game} = storeToRefs(store);
+const {texts, dataService, gameService} = store.services;
 
 const { playState } = defineProps<{
   state?: GameState

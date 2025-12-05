@@ -36,17 +36,13 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {IConversationNode} from "storyScript/Interfaces/conversations/conversationNode.ts";
 import {IConversationReply} from "storyScript/Interfaces/conversations/conversationReply.ts";
-import {useServices} from "vue/Services.ts";
-import {IConversation} from "storyScript/Interfaces/conversations/conversation.ts";
 import {IPerson} from "storyScript/Interfaces/person.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
-const conversationService = useServices().getConversationService();
+const {texts, conversationService} = store.services;
 
 const { playState, person } = defineProps<{
   person?: IPerson,

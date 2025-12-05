@@ -7,15 +7,14 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {computed} from "vue";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
+const {texts} = store.services;
 
 const participantType = computed(() => participant.type ?? 'character');
 
-const hitPointText = computed(() => participant.type ? texts.value.enemyHitpoints : texts.value.characterHitpoints);
+const hitPointText = computed(() => participant.type ? texts.enemyHitpoints : texts.characterHitpoints);
 
 const {participant} = defineProps<{
   participant: any

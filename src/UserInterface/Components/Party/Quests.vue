@@ -28,13 +28,10 @@ import {useStateStore} from "vue/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {isEmpty} from "storyScript/utilityFunctions.ts";
 import {IQuest} from "storyScript/Interfaces/quest.ts";
-import {ref} from "vue";
-import {IParty} from "storyScript/Interfaces/party.ts";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {texts, useQuests} = storeToRefs(store);
-const characterService = useServices().getCharacterService();
+const {useQuests} = storeToRefs(store);
+const {texts, characterService} = store.services;
 
 const {quests} = defineProps<{
   quests?: IQuest[]

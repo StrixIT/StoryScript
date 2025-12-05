@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'ui/styles/storyscript.css';
 import 'game/ui/styles/game.css'
 import 'game/run';
-import {useServices} from "vue/Services.ts";
 
 let pinia: Pinia;
 let application: App<Element>
@@ -38,9 +37,7 @@ logTime('Create ServiceFactory', () => {
 });
 
 logTime('Init game', () => {
-    const services = useServices();
     serviceFactory.GetGameService().init();
-    services.setFactory(serviceFactory);
 });
 
 logTime('Mount app', () => {

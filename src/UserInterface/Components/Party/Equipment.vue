@@ -104,19 +104,16 @@ import {DefaultEquipment} from "storyScript/Interfaces/defaultEquipment.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {showEquipment} from "vue/Helpers.ts";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {texts, useEquipment} = storeToRefs(store);
+const {useEquipment} = storeToRefs(store);
+const {texts, itemService, characterService} = store.services;
 
 const {character} = defineProps<{
   character?: ICharacter
 }>();
 
 useEquipment.value = true;
-
-const itemService = useServices().getItemService();
-const characterService = useServices().getCharacterService();
 
 const customSlots = (): string[] => {
   const defaultSlots = Object.keys(new DefaultEquipment());

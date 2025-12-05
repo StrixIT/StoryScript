@@ -52,17 +52,14 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ITrade} from "storyScript/Interfaces/trade.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {ref} from "vue";
-import {useServices} from "vue/Services.ts";
 
 const store = useStateStore();
-const {texts} = storeToRefs(store);
-const tradeService = useServices().getTradeService();
+const {texts, tradeService} = store.services;
 
 const { playState, trade, character } = defineProps<{
   trade?: ITrade,

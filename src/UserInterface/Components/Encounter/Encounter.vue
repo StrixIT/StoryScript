@@ -23,12 +23,11 @@ import {ITrade} from "storyScript/Interfaces/trade.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
 import {enemiesPresent, tryCombine} from "vue/Helpers.ts";
-import {useServices} from "vue/Services.ts";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
 
 const store = useStateStore();
-const services = useServices();
-const {game, texts} = storeToRefs(store);
+const {game} = storeToRefs(store);
+const {texts, conversationService} = store.services;
 
 const { location, combinations } = defineProps<{
   location?: ICompiledLocation,
@@ -39,9 +38,9 @@ const showDescription = (person: IPerson, title: string): void => {
   game.value.currentDescription = {type: 'person', item: person, title: title};
 }
 
-const talk = (person: IPerson): void => services.getConversationService().talk(person);
+const talk = (person: IPerson): void => conversationService.talk(person);
 
-const trade = (trade: IPerson | ITrade): boolean => services.trade(location, trade);
+const trade = (trade: IPerson | ITrade): boolean => store.trade(location, trade);
 
-const startCombat = (person: IPerson): void => services.startCombat(location, person);
+const startCombat = (person: IPerson): void => store.startCombat(location, person);
 </script>

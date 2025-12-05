@@ -4,13 +4,7 @@
   </dialog>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "vue/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-
-const store = useStateStore();
-const {texts} = storeToRefs(store);
 
 const { playState, description } = defineProps<{
   playState: PlayState;
