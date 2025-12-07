@@ -50,7 +50,7 @@
         "@vitest/coverage-v8": "^3.2.4",
         "@vitest/ui": "^3.2.4",
         "archiver": "^7.0.1",
-        "bootstrap": "^5.3.7",
+        "bootstrap": "^5.3.8",
         "electron": "^37.2.3",
         "electron-builder": "^26.0.12",
         "fs-extra": "^11.3.0",
@@ -67,6 +67,7 @@
         "vite-plugin-static-copy": "^3.1.1",
         "vite-tsconfig-paths": "^5.1.4",
         "vitest": "^3.2.4",
-        "zone.js": "^0.15.1"
+        "zone.js": "^0.15.1",
+        "sass-embedded": "^1.93.3"
     }
 }

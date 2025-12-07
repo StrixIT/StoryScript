@@ -5,7 +5,7 @@ import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {logTime} from "../StartupLogger.ts";
 import {useStateStore} from "vue/StateStore.ts";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'ui/styles/storyscript.scss';
 import 'ui/styles/storyscript.css';
 import 'game/ui/styles/game.css'
 import 'game/run';
