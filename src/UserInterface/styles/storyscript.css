@@ -478,3 +478,10 @@ feature {
     overflow: hidden;
     transition: max-height .2s ease-out;
 }
+
+.dropdown-menu-active {
+    position: absolute;
+    inset: 0 auto auto 5px;
+    margin: 0;
+    transform: translate(0px, 40px);
+}
