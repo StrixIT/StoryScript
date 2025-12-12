@@ -1,5 +1,6 @@
 <template>
-  <modal-dialog :playState="playState" :open-state="PlayState.Menu" :close-text="texts.closeModal">
+  <modal-dialog :close-text="texts.closeModal" :open-state="PlayState.Menu" :playState="playState"
+                :title="texts.mainMenu">
     <div v-if="menuState === <string>PlayState.Menu" id="mainmenu">
       <button v-if="state !== GameState.CreateCharacter" class="btn btn-outline-dark btn-lg" type="button"
               @click="save()">{{ texts.saveGame }}
@@ -18,7 +19,7 @@
         }}
       </button>
     </div>
-  
+
     <div v-if="menuState === 'Save' || menuState === 'Load'">
       <div class="row">
         <div id="save-game" class="col-12">
@@ -40,10 +41,12 @@
             {{ texts.format(texts.overwriteSaveGame, [selectedGame]) }}</p>
           <p v-if="menuState === 'Load' && selectedGame" class="alert alert-success">
             {{ texts.format(texts.loadSaveGame, [selectedGame]) }}</p>
-          <button v-if="menuState === 'Save'" :disabled="!selectedGame" class="btn btn-primary save-button" type="button"
+          <button v-if="menuState === 'Save'" :disabled="!selectedGame" class="btn btn-primary save-button"
+                  type="button"
                   @click="saveGame()">{{ texts.save }}
           </button>
-          <button v-if="menuState === 'Load'" :disabled="!selectedGame" class="btn btn-primary save-button" type="button"
+          <button v-if="menuState === 'Load'" :disabled="!selectedGame" class="btn btn-primary save-button"
+                  type="button"
                   @click="loadGame()">{{ texts.load }}
           </button>
           <button class="btn btn-primary save-button" type="button" @click="cancel()">{{ texts.cancel }}</button>
@@ -56,18 +59,21 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {GameState, PlayState} from "storyScript/Interfaces/storyScript.ts";
-import {ref, computed} from "vue";
+import {computed, ref} from "vue";
+
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, dataService, gameService} = store.services;
 
-const { playState } = defineProps<{
+const {playState} = defineProps<{
   state?: GameState
   playState?: PlayState
 }>();
 
 const internalState = ref<string>(PlayState.Menu);
-const menuState = computed(() => { return playState === PlayState.Menu ? internalState.value ?? PlayState.Menu : null });
+const menuState = computed(() => {
+  return playState === PlayState.Menu ? internalState.value ?? PlayState.Menu : null
+});
 const selectedGame = ref<string>(null);
 const saveKeys = ref<string[]>([]);
 

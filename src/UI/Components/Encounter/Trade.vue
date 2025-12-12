@@ -1,54 +1,66 @@
 <template>
-  <dialog :open="playState === PlayState.Trade" class="dialog">
-    <h1 v-if="trade" class="dialog-title conversation-title">
-      {{ trade.name }}
-    </h1>
-    <div class="dialog-body conversation-body">
-      <div v-if="trade" id="trade">
-        <p class="trade-description">{{ trade.text }}</p>
-        <div v-if="trade.buy">{{ trade.buy.text }}</div>
-        <p v-if="trade.buy.items?.length === 0" class="trade-empty">{{ trade.buy.emptyText }}</p>
-        <ul v-if="trade.buy.items?.length > 0 && !confirmBuyItem" class="list-unstyled">
-          <li v-for="item of trade.buy.items" class="inline">
-            <button type="button" class="btn btn-success" @click="buy(item, character, trade)" :disabled="!canPay(item, character, trade)">{{ displayPrice(item, actualPrice(item, character, trade)) }}</button>
+  <modal-dialog :close-text="texts.closeModal"
+                :closeButton="true"
+                :open-state="PlayState.Trade"
+                :playState="playState"
+                :title="trade.name">
+    <div id="trade">
+      <p class="trade-description">{{ trade.text }}</p>
+      <div v-if="trade.buy">{{ trade.buy.text }}</div>
+      <p v-if="trade.buy.items?.length === 0" class="trade-empty">{{ trade.buy.emptyText }}</p>
+      <ul v-if="trade.buy.items?.length > 0 && !confirmBuyItem" class="list-unstyled">
+        <li v-for="item of trade.buy.items" class="inline">
+          <button :disabled="!canPay(item, character, trade)" class="btn btn-success" type="button"
+                  @click="buy(item, character, trade)">{{
+              displayPrice(item, actualPrice(item, character, trade))
+            }}
+          </button>
+        </li>
+      </ul>
+
+      <div v-if="confirmBuyItem">
+        <p v-html="texts.format(trade.buy.confirmationText, [confirmBuyItem.name, actualPrice(confirmBuyItem, character, trade).toString(), texts.currency])"></p>
+        <ul class="list-unstyled">
+          <li class="inline">
+            <button class="btn btn-primary" type="button" @click="cancelBuy()">{{ texts.cancelBuy }}</button>
+            <button class="btn btn-warning" type="button" @click="buy(confirmBuyItem, character, trade)">
+              {{ texts.confirmBuy }}
+            </button>
           </li>
         </ul>
-        
-        <div v-if="confirmBuyItem">
-          <p v-html="texts.format(trade.buy.confirmationText, [confirmBuyItem.name, actualPrice(confirmBuyItem, character, trade).toString(), texts.currency])"></p>
-          <ul class="list-unstyled">
-            <li class="inline">
-              <button type="button" class="btn btn-primary" @click="cancelBuy()">{{ texts.cancelBuy }}</button>
-              <button type="button" class="btn btn-warning" @click="buy(confirmBuyItem, character, trade)">{{ texts.confirmBuy }}</button>
-            </li>
-          </ul>
-        </div>
-        
-        <div v-if="trade.sell">{{ trade.sell.text }}</div>
-        
-        <p v-if="trade.sell.items?.length === 0" class="trade-empty">{{ trade.sell.emptyText }}</p>
-
-
-        <ul v-if="trade.sell.items?.length > 0 && !confirmSellItem" class="list-unstyled">
-          <li v-for="item of trade.sell.items" class="inline">
-            <button type="button" class="btn btn-warning" @click="sell(item, trade, character)" :disabled="!canPay(item, trade, character)">{{ displayPrice(item, actualPrice(item, trade, character)) }}</button>
-          </li>
-        </ul>
-        
-        <div v-if="confirmSellItem">
-          <p v-html="texts.format(trade.sell.confirmationText, [confirmSellItem.name, actualPrice(confirmSellItem, trade, character).toString(), texts.currency])"></p>
-          <ul class="list-unstyled">
-            <li class="inline">
-              <button type="button" class="btn btn-primary" @click="cancelSell()">{{ texts.cancelSell }}</button>
-              <button type="button" class="btn btn-warning" @click="sell(confirmSellItem, trade, character)">{{ texts.confirmSell }}</button>
-            </li>
-          </ul>
-        </div>
-        
-        <p v-if="trade.currency != undefined">{{ texts.format(texts.traderCurrency, [trade.currency.toString(), texts.currency]) }}</p>
       </div>
+
+      <div v-if="trade.sell">{{ trade.sell.text }}</div>
+
+      <p v-if="trade.sell.items?.length === 0" class="trade-empty">{{ trade.sell.emptyText }}</p>
+
+
+      <ul v-if="trade.sell.items?.length > 0 && !confirmSellItem" class="list-unstyled">
+        <li v-for="item of trade.sell.items" class="inline">
+          <button :disabled="!canPay(item, trade, character)" class="btn btn-warning" type="button"
+                  @click="sell(item, trade, character)">{{
+              displayPrice(item, actualPrice(item, trade, character))
+            }}
+          </button>
+        </li>
+      </ul>
+
+      <div v-if="confirmSellItem">
+        <p v-html="texts.format(trade.sell.confirmationText, [confirmSellItem.name, actualPrice(confirmSellItem, trade, character).toString(), texts.currency])"></p>
+        <ul class="list-unstyled">
+          <li class="inline">
+            <button class="btn btn-primary" type="button" @click="cancelSell()">{{ texts.cancelSell }}</button>
+            <button class="btn btn-warning" type="button" @click="sell(confirmSellItem, trade, character)">
+              {{ texts.confirmSell }}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <p v-if="trade.currency != undefined">
+        {{ texts.format(texts.traderCurrency, [trade.currency.toString(), texts.currency]) }}</p>
     </div>
-  </dialog>
+  </modal-dialog>
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
@@ -61,14 +73,14 @@ import {ref} from "vue";
 const store = useStateStore();
 const {texts, tradeService} = store.services;
 
-const { playState, trade, character } = defineProps<{
+const {playState, trade, character} = defineProps<{
   trade?: ITrade,
   playState?: PlayState,
   character?: ICharacter
 }>();
 
 const confirmBuyItem = ref<IItem>(null);
-const confirmSellItem= ref<IItem>(null);
+const confirmSellItem = ref<IItem>(null);
 
 const canPay = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => tradeService.canPay(item, buyer, seller);
 

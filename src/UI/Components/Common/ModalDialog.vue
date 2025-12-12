@@ -6,7 +6,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="model-title">
-              {{ texts.mainMenu }}
+              {{ title }}
             </h4>
             <button type="button" aria-label="Close" class="close" @click="closeModal()">
               <span aria-hidden="true">×</span>
@@ -16,7 +16,7 @@
             <slot></slot>
           </div>
           <div class="modal-footer">
-<!--            <button type="button" class="btn btn-primary" @click="closeModal()">{{ closeText }}</button>-->
+            <button v-if="closeButton" type="button" class="btn btn-primary" @click="closeModal()">{{ texts.closeModal }}</button>
           </div>
         </div>
       </div>
@@ -35,8 +35,9 @@ const {texts} = store.services;
 const { playState, openState, canClose } = defineProps<{
   playState?: PlayState,
   openState?: PlayState,
-  closeText?: string,
-  canClose?: boolean
+  canClose?: boolean,
+  title?: string,
+  closeButton?: boolean,
 }>();
 
 const closeModal = (event?: PointerEvent) => {
