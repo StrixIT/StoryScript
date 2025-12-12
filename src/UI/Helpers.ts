@@ -4,6 +4,7 @@ import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
 
 export const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -24,7 +25,7 @@ export const showDescription = (game: IGame, type: string, item: any, title: str
     game.currentDescription = {title: title, type: type, item: item};
 }
 
-export const getButtonClass = (action: IAction): string => {
+export const getButtonClass = (action: [string, IAction]): string => {
     const type = action[1].actionType || ActionType.Regular;
     let buttonClass = 'btn-';
 
@@ -46,17 +47,19 @@ export const getButtonClass = (action: IAction): string => {
     return buttonClass;
 }
 
-export const executeAction = (game: IGame, action: IAction, component: any, saveGame: () => void): void => {
-    const execute = action?.[1]?.execute;
+export const executeAction = (game: IGame, action: [string, IAction], saveGame: () => void): void => {
+    const execute = action[1]?.execute;
 
     if (execute) {
-        // Modify the arguments collection to add the game to the collection before calling the function specified.
-        const args = <any[]>[game, action];
+        let result = true;
 
-        // Execute the action and when nothing or false is returned, remove it from the current location.
-        const executeFunc = typeof execute !== 'function' ? component[execute] : execute;
-        const result = executeFunc.apply(component, args);
-
+        if (typeof execute === 'function') {
+            const actionResult = execute(game);
+            result = actionResult === true;
+        } else {
+            gameEvents.publish(execute, action);
+        }
+        
         const typeAndIndex = getActionIndex(game, action);
 
         if (!result && typeAndIndex.index !== -1) {
@@ -74,7 +77,7 @@ export const executeAction = (game: IGame, action: IAction, component: any, save
     }
 }
 
-const getActionIndex = (game: IGame, action: IAction): { type: ActionType, index: number } => {
+const getActionIndex = (game: IGame, action: [string, IAction]): { type: ActionType, index: number } => {
     let index = -1;
     let type = ActionType.Regular;
 

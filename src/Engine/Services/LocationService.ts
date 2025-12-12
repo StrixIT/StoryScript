@@ -36,7 +36,7 @@ export class LocationService implements ILocationService {
             this._definitions.locations.forEach(l => this._game.locations[getId(l)] = <ICompiledLocation>l());
             Object.values(this._game.locations).forEach(l => setReadOnlyLocationProperties(<ICompiledLocation>l));
         }
-        
+
         if (!this._game.maps && this._definitions.maps) {
             this._game.maps = {};
             // When we have no maps, it could be that maps were added later and that they are not in the saved
@@ -45,7 +45,7 @@ export class LocationService implements ILocationService {
         }
 
         this.setupLocations();
-        
+
         this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
             game.currentLocation?.destinations.forEach(d => {
                 this.addKeyAction(game, d);
@@ -120,8 +120,7 @@ export class LocationService implements ILocationService {
 
                 if (targetLocation && visitedRule) {
                     d.visited = visitedRule(game, targetLocation);
-                }
-                else {
+                } else {
                     d.visited = targetLocation?.hasVisited;
                 }
 

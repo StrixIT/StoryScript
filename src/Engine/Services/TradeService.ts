@@ -12,11 +12,18 @@ import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
+import {IAction} from "storyScript/Interfaces/action.ts";
 
 export class TradeService implements ITradeService {
     private _activeTrader: IPerson;
 
     constructor(private readonly _itemService: IItemService, private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts, private readonly _definitions: IDefinitions) {
+        gameEvents.register('trade');
+        gameEvents.subscribe('trade', (game,  data: [string, IAction]) => {
+            const trader = game.currentLocation.trade.find(t => t.id === data[0]);
+            this.trade(trader);
+        });
     }
 
     trade = (trade: IPerson | ITrade): void => {

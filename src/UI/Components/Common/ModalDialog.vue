@@ -8,7 +8,7 @@
             <h4 class="model-title">
               {{ title }}
             </h4>
-            <button type="button" aria-label="Close" class="close" @click="closeModal()">
+            <button v-if="canClose" type="button" aria-label="Close" class="close" @click="closeModal()">
               <span aria-hidden="true">×</span>
             </button>
           </div>
@@ -42,7 +42,7 @@ const { playState, openState, canClose } = defineProps<{
 
 const closeModal = (event?: PointerEvent) => {
   if (event) {
-    if (canClose !== false|| !(<HTMLElement>event.target).classList.contains("modal")) {
+    if (canClose === false || !(<HTMLElement>event.target).classList.contains("modal")) {
       return;
     }
   }

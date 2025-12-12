@@ -17,7 +17,7 @@ export interface ILocation {
     name: string;
 
     /**
-     * The location description html file.
+     * The location description HTML file.
      */
     description: string;
 

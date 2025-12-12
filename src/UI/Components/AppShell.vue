@@ -1,6 +1,10 @@
 <template>
   <sound :sounds="game.sounds" :rootElement="game.UIRootElement"></sound>
   <game-menu :state="game.state" :playState="game.playState"></game-menu>
+  <div v-if="error">
+    <p class="danger">{{ error.message }}</p>
+    <p>{{ error.stackTrace }}</p>
+  </div>
   <div ref="ui-root">
     <game-container></game-container>
   </div>
@@ -12,7 +16,7 @@ import {storeToRefs} from "pinia";
 import {onMounted, useTemplateRef} from "vue";
 
 const store = useStateStore();
-const {game} = storeToRefs(store);
+const {game, error} = storeToRefs(store);
 const {gameService} = store.services;
 const uiRoot = useTemplateRef('ui-root');
 

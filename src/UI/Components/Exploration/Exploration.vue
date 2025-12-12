@@ -59,7 +59,7 @@ const {game} = storeToRefs(store);
 const {texts, dataService} = store.services;
 
 const dropDownExpanded = ref(false);
-const confirmAction = ref<IAction>(null);
+const confirmAction = ref<[string, IAction]>(null);
 
 const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-menu-active' : '');
 
@@ -67,7 +67,7 @@ const { location } = defineProps<{
   location?: ICompiledLocation
 }>();
 
-const checkStatus = (action: IAction, status: ActionStatus) => 
+const checkStatus = (action: [string, IAction], status: ActionStatus) => 
     typeof action[1].status === 'function' 
         ? (<any>action[1]).status(game) == status 
         : action[1].status == undefined ? false : action[1].status == status;
@@ -88,14 +88,14 @@ const executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBar
   dataService.saveGame(game.value);
 }
 
-const execute = (action: IAction): void => {
+const execute = (action: [string, IAction]): void => {
   if (action[1].confirmationText && !confirmAction) {
     confirmAction.value = action;
     return;
   }
 
   confirmAction.value = undefined;
-  executeAction(game.value, action, this, () => dataService.saveGame(game.value));
+  executeAction(game.value, action,() => dataService.saveGame(game.value));
 }
 
 const changeLocation = (location: string) => game.value.changeLocation(location, true);

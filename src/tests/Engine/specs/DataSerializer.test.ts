@@ -23,7 +23,6 @@ import {IDestination} from "storyScript/Interfaces/destination.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {ConversationService} from "storyScript/Services/ConversationService.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -282,7 +281,10 @@ describe("DataSerializer", () => {
         game.helpers = new HelperService(<IGame>{}, definitions);
         game.party = <IParty>{};
         game.party.characters = [];
-        const locationService = new LocationService(definitions, <IRules>{}, game, <any>{ subscribe: () => {}});
+        const locationService = new LocationService(definitions, <IRules>{}, game, <any>{
+            subscribe: () => {
+            }
+        });
         const garden = <ICompiledLocation>Garden();
         locationService.initDestinations(garden);
         const searchShedAction = garden.actions.find(a => a[0] === 'SearchShed')[1];

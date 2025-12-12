@@ -37,7 +37,7 @@ export interface ICompiledLocation extends ILocation {
     /**
      * The actions the player can choose from (active) at this location.
      */
-    activeActions?: IAction[];
+    activeActions?: [string, IAction][];
 
     /**
      * The current description shown to the player for this location.

@@ -206,7 +206,7 @@ export class CombatService implements ICombatService {
         let targetType = newItem?.targetType ?? TargetType.Enemy;
         let targets = targetType === TargetType.Enemy ? enemies : allies;
         let newTarget = newItem === previousItem && previousTarget ?
-            targets.find(i => i === previousTarget && (!newItem.canTarget || newItem.canTarget(this._game, newItem, i)))
+            targets.find(i => i === previousTarget && (!newItem?.canTarget || newItem.canTarget(this._game, newItem, i)))
             : undefined;
         return { targets, newTarget };
     }
