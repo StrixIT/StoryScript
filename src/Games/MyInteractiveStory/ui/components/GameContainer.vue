@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import {useStateStore} from "vue/StateStore.ts";
+import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {computed} from "vue";
 

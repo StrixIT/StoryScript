@@ -8,7 +8,7 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 
 const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
-const uiPath = path.resolve(__dirname, `./src/UserInterface`);
+const uiPath = path.resolve(__dirname, `./src/UI`);
 const resourceRegex = process.platform === 'linux' ? /\/resources\/(.{1,}\.)/ : /\\resources\\(.{1,}\.)/;
 
 const plugins = [
