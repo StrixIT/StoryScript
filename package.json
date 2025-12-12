@@ -35,13 +35,6 @@
         "electron-publish": "vite build && node postbuild.js && electron-builder"
     },
     "devDependencies": {
-        "@angular/common": "^20.1.2",
-        "@angular/compiler": "^20.1.2",
-        "@angular/core": "^20.1.2",
-        "@angular/forms": "^20.1.2",
-        "@angular/platform-browser": "^20.1.2",
-        "@ng-bootstrap/ng-bootstrap": "^19.0.1",
-        "@popperjs/core": "^2.11.8",
         "@vueuse/components": "^14.1.0",
         "@vueuse/core": "^14.1.0",
         "@vue/language-server": "^3.1.5",
@@ -58,8 +51,6 @@
         "jsonfile": "^6.1.0",
         "pinia": "^3.0.4",
         "rollup-plugin-visualizer": "^6.0.3",
-        "rxjs": "^7.8.2",
-        "sharp": "^0.34.3",
         "typescript": "^5.8.3",
         "vue-tsc": "^3.1.5",
         "vite": "^7.2.4",
@@ -67,7 +58,6 @@
         "vite-plugin-static-copy": "^3.1.1",
         "vite-tsconfig-paths": "^5.1.4",
         "vitest": "^3.2.4",
-        "zone.js": "^0.15.1",
         "sass-embedded": "^1.93.3"
     }
 }
