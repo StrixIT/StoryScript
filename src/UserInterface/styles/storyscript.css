@@ -474,6 +474,7 @@ feature {
     justify-content: center;
 }
 
+/* Common component styles */
 .collapsible {
     overflow: hidden;
     transition: max-height .2s ease-out;
@@ -484,4 +485,9 @@ feature {
     inset: 0 auto auto 5px;
     margin: 0;
     transform: translate(0px, 40px);
+}
+
+dialog {
+    border: none;
+    outline: none;
 }
