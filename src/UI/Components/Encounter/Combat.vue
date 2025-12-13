@@ -1,35 +1,45 @@
 <template>
-  <modal-dialog :canClose="false"
+  <modal-dialog :canClose="canClose"
+                :closeButton="true"
                 :closeText="texts.closeModal"
                 :openState="PlayState.Combat"
-                :playState="playState"
+                :playState="game.playState"
                 :title="texts.combatTitle">
-    <div id="combat" v-if="enemiesPresent(game)" class="col-12">
+    <div v-if="enemiesPresent(game)" id="combat" class="col-12">
       <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
 
       <div v-for="enemyRow of enemyRows" class="row enemy-row">
-        <div v-for="enemy of enemyRow" class="'col-' + 12 / enemyRow.length" :class="{ 'unavailable': enemy.currentHitpoints <= 0 }">
+        <div v-for="enemy of enemyRow" :class="{ 'unavailable': enemy.currentHitpoints <= 0 }"
+             class="'col-' + 12 / enemyRow.length">
           <combat-participant :participant="enemy"></combat-participant>
         </div>
       </div>
-      
+
       <div v-for="characterRow of characterRows" class="row character-row">
-        <div v-for="turn of characterRow" class="'col-' + 12 / characterRow.length" :class="{ 'unavailable': turn.character.currentHitpoints <= 0 }">
+        <div v-for="turn of characterRow" :class="{ 'unavailable': turn.character.currentHitpoints <= 0 }"
+             class="'col-' + 12 / characterRow.length">
           <combat-participant :participant="turn.character"></combat-participant>
           <div v-if="turn.item && turn.character.currentHitpoints > 0">
             <div :class="{ 'not-applicable': !turn.item.targetType }">
               <span>{{ turn.item.targetType === 'Enemy' ? texts.attack : texts.aid }}</span>
-              <select v-if="filteredTargets(turn).length > 1" class="custom-select" v-model="turn.target">
+              <select v-if="filteredTargets(turn).length > 1" v-model="turn.target" class="custom-select">
                 <option v-for="target of filteredTargets(turn)" :value="target">{{ getTargetName(target) }}</option>
               </select>
-              <input v-if="filteredTargets(turn).length === 1" class="single-item" type="text" :disabled="true" v-model="turn.target.name" />
+              <input v-if="filteredTargets(turn).length === 1" v-model="turn.target.name" :disabled="true" class="single-item"
+                     type="text"/>
             </div>
             <div v-if="turn.itemsAvailable.length">
-              <span>{{ turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType ? texts.aidWith : texts.useCombatItem }}</span>
-              <select v-if="turn.itemsAvailable.length > 1" class="custom-select" @change="itemChange(turn.item, turn)" v-model="turn.item">
-                <option v-for="item of turn.itemsAvailable" :value="item" :disabled="!itemSelectable(item)" :class="{'unselectable': !itemSelectable(item)}" >{{ getItemName(item) }}</option>
+              <span>{{
+                  turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType ? texts.aidWith : texts.useCombatItem
+                }}</span>
+              <select v-if="turn.itemsAvailable.length > 1" v-model="turn.item" class="custom-select"
+                      @change="itemChange(turn.item, turn)">
+                <option v-for="item of turn.itemsAvailable" :class="{'unselectable': !itemSelectable(item)}" :disabled="!itemSelectable(item)"
+                        :value="item">{{ getItemName(item) }}
+                </option>
               </select>
-              <input v-if="turn.itemsAvailable.length === 1" class="single-item" type="text" :disabled="true" :value="getItemName(turn.item)" />
+              <input v-if="turn.itemsAvailable.length === 1" :disabled="true" :value="getItemName(turn.item)" class="single-item"
+                     type="text"/>
             </div>
           </div>
           <div v-if="!turn.item && turn.character.currentHitpoints > 0">
@@ -40,13 +50,18 @@
 
       <div class="row">
         <div class="col-12 fight-row">
-          <button type="button" class="btn btn-danger" @click="fight()" :disabled="!actionsEnabled">{{ texts.fight }}</button>
+          <button :disabled="!actionsEnabled" class="btn btn-danger" type="button" @click="fight()">{{
+              texts.fight
+            }}
+          </button>
         </div>
       </div>
       <div class="row">
         <ul class="list-unstyled combat-actions">
-          <li v-for="action of combatActions">
-            <button type="button" class="btn" :class="getButtonClass(action)" @click="execute(action)" :disabled="!actionsEnabled">{{ action[1].text }}</button>
+          <li v-for="action of game.currentLocation.combatActions">
+            <button :class="getButtonClass(action)" :disabled="!actionsEnabled" class="btn" type="button"
+                    @click="execute(action)">{{ action[1].text }}
+            </button>
           </li>
         </ul>
       </div>
@@ -58,14 +73,16 @@
         <li>
           <span class="enemies-defeated-header">{{ texts.enemiesDefeated }}</span>
           <ul>
-            <li v-for="enemy of combat.winnings.enemiesDefeated">{{ enemy.name }}</li>
+            <li v-for="enemy of game.combat.winnings.enemiesDefeated">{{ enemy.name }}</li>
           </ul>
         </li>
-        <li v-if="combat.winnings.currency" class="currency-won">{{ texts.format(texts.currencyWon, [combat.winnings.currency.toString()]) }}</li>
-        <li v-if="combat.winnings.itemsWon.length">
+        <li v-if="game.combat.winnings.currency" class="currency-won">
+          {{ texts.format(texts.currencyWon, [game.combat.winnings.currency.toString()]) }}
+        </li>
+        <li v-if="game.combat.winnings.itemsWon.length">
           <span class="items-taken-header">{{ texts.itemsTaken }}</span>
           <ul>
-            <li v-for="item of combat.winnings.itemsWon">{{ item.name }}</li>
+            <li v-for="item of game.combat.winnings.itemsWon">{{ item.name }}</li>
           </ul>
         </li>
       </ul>
@@ -74,7 +91,7 @@
     <fieldset class="combatlog">
       <legend>{{ texts.messages }}</legend>
       <ul class="list-unstyled action-log">
-        <li v-for="message of combatLog">{{ message }}</li>
+        <li v-for="message of game.combatLog">{{ message }}</li>
       </ul>
     </fieldset>
   </modal-dialog>
@@ -86,14 +103,18 @@ import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {ICombatSetup} from "storyScript/Interfaces/combatSetup.ts";
 import {enemiesPresent, executeAction, getButtonClass} from "ui/Helpers.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, dataService, itemService, combatService} = store.services;
+const canClose = ref(false);
+
+watch(game.value.currentLocation.activeEnemies, () => {
+  canClose.value = !enemiesPresent(game.value);
+});
 
 const split = (array: any[], size: number): any[] => {
   const result = [];
@@ -110,16 +131,9 @@ const split = (array: any[], size: number): any[] => {
   return result;
 }
 
-const {playState, combat} = defineProps<{
-  playState: PlayState,
-  combat: ICombatSetup<ICombatTurn>,
-  combatActions: [string, IAction][],
-  combatLog?: string[]
-}>();
-
 const actionsEnabled = ref(true);
-const enemyRows = ref<Array<Array<IEnemy>> >(split(combat.enemies, 3));
-const characterRows = ref<Array<Array<ICombatTurn>>>(split(combat, 3));
+const enemyRows = ref<Array<Array<IEnemy>>>(split(game.value.combat.enemies, 3));
+const characterRows = ref<Array<Array<ICombatTurn>>>(split(game.value.combat, 3));
 
 const getTargetName = (target: any) => target.name;
 
@@ -138,9 +152,9 @@ const filteredTargets = (turn: ICombatTurn): IEnemy[] | ICombatTurn[] => turn.ta
 const fight = (): void => {
   actionsEnabled.value = false;
 
-  Promise.resolve(combatService.fight(combat)).then(() => {
+  Promise.resolve(combatService.fight(game.value.combat)).then(() => {
     actionsEnabled.value = true;
-    characterRows.value = split(combat, 3) as Array<Array<ICombatTurn>>;
+    characterRows.value = split(game.value.combat, 3) as Array<Array<ICombatTurn>>;
   });
 }
 

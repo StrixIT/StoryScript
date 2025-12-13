@@ -16,7 +16,7 @@
             <slot></slot>
           </div>
           <div class="modal-footer">
-            <button v-if="closeButton" type="button" class="btn btn-primary" @click="closeModal()">{{ texts.closeModal }}</button>
+            <button v-if="closeButton && canClose" type="button" class="btn btn-primary" @click="closeModal()">{{ texts.closeModal }}</button>
           </div>
         </div>
       </div>

@@ -2,63 +2,62 @@
   <modal-dialog :close-text="texts.closeModal"
                 :closeButton="true"
                 :open-state="PlayState.Trade"
-                :playState="playState"
-                :title="trade.name">
+                :playState="game.playState"
+                :title="game.trade.name">
     <div id="trade">
-      <p class="trade-description">{{ trade.text }}</p>
-      <div v-if="trade.buy">{{ trade.buy.text }}</div>
-      <p v-if="trade.buy.items?.length === 0" class="trade-empty">{{ trade.buy.emptyText }}</p>
-      <ul v-if="trade.buy.items?.length > 0 && !confirmBuyItem" class="list-unstyled">
-        <li v-for="item of trade.buy.items" class="inline">
-          <button :disabled="!canPay(item, character, trade)" class="btn btn-success" type="button"
-                  @click="buy(item, character, trade)">{{
-              displayPrice(item, actualPrice(item, character, trade))
+      <p class="trade-description">{{ game.trade.text }}</p>
+      <div v-if="game.trade.buy">{{ game.trade.buy.text }}</div>
+      <p v-if="game.trade.buy.items?.length === 0" class="trade-empty">{{ game.trade.buy.emptyText }}</p>
+      <ul v-if="game.trade.buy.items?.length > 0 && !confirmBuyItem" class="list-unstyled">
+        <li v-for="item of game.trade.buy.items" class="inline">
+          <button :disabled="!canPay(item, game.activeCharacter, game.trade)" class="btn btn-success" type="button"
+                  @click="buy(item, game.activeCharacter, game.trade)">{{
+              displayPrice(item, actualPrice(item, game.activeCharacter, game.trade))
             }}
           </button>
         </li>
       </ul>
 
       <div v-if="confirmBuyItem">
-        <p v-html="texts.format(trade.buy.confirmationText, [confirmBuyItem.name, actualPrice(confirmBuyItem, character, trade).toString(), texts.currency])"></p>
+        <p v-html="texts.format(game.trade.buy.confirmationText, [confirmBuyItem.name, actualPrice(confirmBuyItem, game.activeCharacter, game.trade).toString(), texts.currency])"></p>
         <ul class="list-unstyled">
           <li class="inline">
             <button class="btn btn-primary" type="button" @click="cancelBuy()">{{ texts.cancelBuy }}</button>
-            <button class="btn btn-warning" type="button" @click="buy(confirmBuyItem, character, trade)">
+            <button class="btn btn-warning" type="button" @click="buy(confirmBuyItem, game.activeCharacter, game.trade)">
               {{ texts.confirmBuy }}
             </button>
           </li>
         </ul>
       </div>
 
-      <div v-if="trade.sell">{{ trade.sell.text }}</div>
+      <div v-if="game.trade.sell">{{ game.trade.sell.text }}</div>
 
-      <p v-if="trade.sell.items?.length === 0" class="trade-empty">{{ trade.sell.emptyText }}</p>
-
-
-      <ul v-if="trade.sell.items?.length > 0 && !confirmSellItem" class="list-unstyled">
-        <li v-for="item of trade.sell.items" class="inline">
-          <button :disabled="!canPay(item, trade, character)" class="btn btn-warning" type="button"
-                  @click="sell(item, trade, character)">{{
-              displayPrice(item, actualPrice(item, trade, character))
+      <p v-if="game.trade.sell.items?.length === 0" class="trade-empty">{{ game.trade.sell.emptyText }}</p>
+      
+      <ul v-if="game.trade.sell.items?.length > 0 && !confirmSellItem" class="list-unstyled">
+        <li v-for="item of game.trade.sell.items" class="inline">
+          <button :disabled="!canPay(item, game.trade, game.activeCharacter)" class="btn btn-warning" type="button"
+                  @click="sell(item, game.trade, game.activeCharacter)">{{
+              displayPrice(item, actualPrice(item, game.trade, game.activeCharacter))
             }}
           </button>
         </li>
       </ul>
 
       <div v-if="confirmSellItem">
-        <p v-html="texts.format(trade.sell.confirmationText, [confirmSellItem.name, actualPrice(confirmSellItem, trade, character).toString(), texts.currency])"></p>
+        <p v-html="texts.format(game.trade.sell.confirmationText, [confirmSellItem.name, actualPrice(confirmSellItem, game.trade, game.activeCharacter).toString(), texts.currency])"></p>
         <ul class="list-unstyled">
           <li class="inline">
             <button class="btn btn-primary" type="button" @click="cancelSell()">{{ texts.cancelSell }}</button>
-            <button class="btn btn-warning" type="button" @click="sell(confirmSellItem, trade, character)">
+            <button class="btn btn-warning" type="button" @click="sell(confirmSellItem, game.trade, game.activeCharacter)">
               {{ texts.confirmSell }}
             </button>
           </li>
         </ul>
       </div>
 
-      <p v-if="trade.currency != undefined">
-        {{ texts.format(texts.traderCurrency, [trade.currency.toString(), texts.currency]) }}</p>
+      <p v-if="game.trade.currency != undefined">
+        {{ texts.format(texts.traderCurrency, [game.trade.currency.toString(), texts.currency]) }}</p>
     </div>
   </modal-dialog>
 </template>
@@ -69,15 +68,11 @@ import {ITrade} from "storyScript/Interfaces/trade.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {ref} from "vue";
+import {storeToRefs} from "pinia";
 
 const store = useStateStore();
+const {game} = storeToRefs(store);
 const {texts, tradeService} = store.services;
-
-const {playState, trade, character} = defineProps<{
-  trade?: ITrade,
-  playState?: PlayState,
-  character?: ICharacter
-}>();
 
 const confirmBuyItem = ref<IItem>(null);
 const confirmSellItem = ref<IItem>(null);

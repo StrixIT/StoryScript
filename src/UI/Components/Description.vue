@@ -1,14 +1,19 @@
 <template>
-  <dialog :open="playState === PlayState.Description">
-    <div class="description" v-html="description"></div>
-  </dialog>
+  <modal-dialog :close-text="texts.closeModal"
+                :closeButton="true"
+                :open-state="PlayState.Description"
+                :playState="game.playState"
+                :title="game.currentDescription.title">
+    <div class="description" v-html="game.currentDescription.item.description"></div>
+  </modal-dialog>
 </template>
 <script lang="ts" setup>
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {useStateStore} from "ui/StateStore.ts";
+import {storeToRefs} from "pinia";
 
-const { playState, description } = defineProps<{
-  playState: PlayState;
-  description?: string
-}>();
+const store = useStateStore();
+const {game} = storeToRefs(store);
+const {texts} = store.services;
 
 </script>

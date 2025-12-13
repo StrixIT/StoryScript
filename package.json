@@ -49,6 +49,7 @@
         "fs-extra": "^11.3.0",
         "jsdom": "^26.1.0",
         "jsonfile": "^6.1.0",
+        "sharp": "^0.34.5",
         "pinia": "^3.0.4",
         "rollup-plugin-visualizer": "^6.0.3",
         "typescript": "^5.8.3",

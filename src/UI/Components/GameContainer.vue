@@ -1,8 +1,8 @@
 <template>
-  <conversation v-if="game.playState === PlayState.Conversation" :playState="game.playState" :person="game.person"></conversation>
-  <trade v-if="game.playState === PlayState.Trade" :playState="game.playState" :trade="game.trade" :character="game.activeCharacter"></trade>
-  <combat v-if="game.playState === PlayState.Combat"  :playState="game.playState" :combat="game.combat" :combatActions="game.currentLocation.combatActions" :combaLog="game.combatLog" ></combat>
-  <description v-if="game.playState === PlayState.Description" :playState="game.playState"></description>
+  <conversation v-if="game.playState === PlayState.Conversation"></conversation>
+  <trade v-if="game.playState === PlayState.Trade"></trade>
+  <combat v-if="game.playState === PlayState.Combat"></combat>
+  <description v-if="game.playState === PlayState.Description"></description>
   <div>
     <navigation></navigation>
     <div class="container-fluid body-content">

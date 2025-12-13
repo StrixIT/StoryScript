@@ -2,20 +2,20 @@
   <modal-dialog :closeButton="true"
                 :close-text="texts.closeModal" 
                 :open-state="PlayState.Conversation" 
-                :playState="playState"
-                :title="person.conversation.title || texts.format(texts.talk, [person.name])">
+                :playState="game.playState"
+                :title="game.person.conversation.title || texts.format(texts.talk, [game.person.name])">
     <div id="conversation">
-      <div v-if="person.conversation.activeNode" id="conversation-options">
-        <div v-html="getLines(person.conversation.activeNode)"></div>
-        <div v-for="reply of person.conversation.activeNode.replies">
+      <div v-if="game.person.conversation.activeNode" id="conversation-options">
+        <div v-html="getLines(game.person.conversation.activeNode)"></div>
+        <div v-for="reply of game.person.conversation.activeNode.replies">
           <div v-if="reply.available || reply.showWhenUnavailable" :class="{ 'unavailable': !reply.available }">
-            <input :disabled="!reply.available" type="radio" @click="answer(person.conversation.activeNode, reply)"/>
+            <input :disabled="!reply.available" type="radio" @click="answer(game.person.conversation.activeNode, reply)"/>
             <span v-html="getLines(reply)"></span>
           </div>
         </div>
       </div>
 
-      <div v-if="!person.conversation.activeNode || !person.conversation.activeNode.replies.length">
+      <div v-if="!game.person.conversation.activeNode || !game.person.conversation.activeNode.replies.length">
         {{ texts.conversationEnded }}
       </div>
 
@@ -23,7 +23,7 @@
         <hr/>
         <p id="conversation-history-title">Conversation history</p>
         <ul class="list-unstyled">
-          <li v-for="entry of person.conversation.conversationLog">
+          <li v-for="entry of game.person.conversation.conversationLog">
             <div class="conversation-lines" v-html="entry.lines"></div>
             <div class="conversation-option" v-html="entry.reply"></div>
           </li>
@@ -38,14 +38,11 @@ import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {IConversationNode} from "storyScript/Interfaces/conversations/conversationNode.ts";
 import {IConversationReply} from "storyScript/Interfaces/conversations/conversationReply.ts";
 import {IPerson} from "storyScript/Interfaces/person.ts";
+import {storeToRefs} from "pinia";
 
 const store = useStateStore();
+const {game} = storeToRefs(store);
 const {texts, conversationService} = store.services;
-
-const {playState, person} = defineProps<{
-  person?: IPerson,
-  playState?: PlayState
-}>();
 
 const answer = (node: IConversationNode, reply: IConversationReply): void => conversationService.answer(node, reply);
 
