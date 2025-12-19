@@ -140,34 +140,6 @@ export function buildEntities(definitions: IDefinitions): Record<string, Record<
     return _registeredEntities;
 }
 
-export function setReadOnlyLocationProperties(location: ILocation) {
-    // If the location already has the active collections, we don't need to do anything else.
-    if ((<any>location).activePersons) {
-        return;
-    }
-
-    Object.defineProperty(location, 'activePersons', {
-        get: () => filterInactive(location.persons)
-    });
-
-    Object.defineProperty(location, 'activeEnemies', {
-        get: () => filterInactive(location.enemies)
-    });
-
-    Object.defineProperty(location, 'activeItems', {
-        get: () => filterInactive(location.items)
-    });
-
-    Object.defineProperty(location, 'activeActions', {
-        get: function () {
-            return location.actions
-                .filter(([_, v]) => {
-                    return !v.inactive;
-                });
-        }
-    });
-}
-
 export function InitEntityCollection(entity: any, property: string) {
     if (_gameCollections.indexOf(property) === -1) {
         return;
@@ -328,9 +300,6 @@ function createLocation(entity: ILocation) {
     initCollection(location, 'persons');
     initCollection(location, 'enterEvents');
     initCollection(location, 'leaveEvents');
-
-    setReadOnlyLocationProperties(location);
-
     return location;
 }
 

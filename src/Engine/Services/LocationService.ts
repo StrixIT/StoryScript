@@ -10,13 +10,10 @@ import {ActionType} from '../Interfaces/enumerations/actionType';
 import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
 import {
     getBasicFeatureData,
-    setDestination,
-    setReadOnlyLocationProperties
+    setDestination
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {GameEventNames} from "storyScript/GameEventNames.ts";
 
 export class LocationService implements ILocationService {
     constructor(
@@ -33,12 +30,11 @@ export class LocationService implements ILocationService {
 
         if (!this._game.locations) {
             // When we don't have any locations yet, we're starting a new game. Use the definitions to build
-            // all the locations and set their readonly properties. Also build the maps, if present.
+            // all the locations. Also build the maps, if present.
             this._game.locations = {};
             this._definitions.locations.forEach(l => this._game.locations[getId(l)] = <ICompiledLocation>l());
-            Object.values(this._game.locations).forEach(l => setReadOnlyLocationProperties(<ICompiledLocation>l));
         }
-        
+
         if (!this._game.maps && this._definitions.maps) {
             this._game.maps = {};
             // When we have no maps, it could be that maps were added later and that they are not in the saved
@@ -47,7 +43,7 @@ export class LocationService implements ILocationService {
         }
 
         this.setupLocations();
-        
+
         this._gameEvents.subscribe(['add-character-items', 'delete-character-items', 'add-location-items'], (game: IGame, _) => {
             game.currentLocation?.destinations.forEach(d => {
                 this.addKeyAction(game, d);
@@ -122,8 +118,7 @@ export class LocationService implements ILocationService {
 
                 if (targetLocation && visitedRule) {
                     d.visited = visitedRule(game, targetLocation);
-                }
-                else {
+                } else {
                     d.visited = targetLocation?.hasVisited;
                 }
 

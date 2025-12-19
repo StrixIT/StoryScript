@@ -1,8 +1,0 @@
-@if (getCurrentMusic())
-{
-    <audio class="storyscript-player backgroundmusic-player" src="resources/{{ getCurrentMusic() }}" autoplay loop></audio>
-}
-@for (sound of getSoundQueue(); track sound)
-{
-    <audio class="storyscript-player" src="resources/{{ sound[1] }}" autoplay (ended)="soundCompleted(sound[0])"></audio>
-}

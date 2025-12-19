@@ -9,7 +9,7 @@
 /dist/*
 /pub/*
 /test/*
-/src/Tests/**/coverage/*
+/src/tests/**/coverage/*
 /src/types/*
 /src/Games/**/resources/*
 

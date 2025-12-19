@@ -24,6 +24,14 @@ export interface IExplorationRules {
     hasVisitedLocation?(game: IGame, location: ICompiledLocation): boolean;
 
     /**
+     * When specified, this function will be called to determine whether a destination should
+     * be marked as visited.
+     * @param game The active game
+     * @param location The location the destination leads to
+     */
+    hasVisitedLocation?(game: IGame, location: ICompiledLocation): boolean;
+
+    /**
      * Specify this function if you want to run custom logic to set the description selector when selecting the description when
      * entering a location. Return the selector string. This is useful if you for example want to show different descriptions at
      * night.
