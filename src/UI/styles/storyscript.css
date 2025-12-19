@@ -367,6 +367,13 @@ feature {
     inset: 0 auto auto 0;
     margin: 0;
     transform: translate(1661px, 50px);
+    cursor: pointer;
+}
+
+.refine-search {
+    font-style: italic;
+    opacity: .5;
+    margin-bottom: -20px;
 }
 
 .is-active {
