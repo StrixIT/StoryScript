@@ -362,6 +362,13 @@ feature {
     max-width: 40%;
 }
 
+#location-selector-locations {
+    position: absolute;
+    inset: 0 auto auto 0;
+    margin: 0;
+    transform: translate(1661px, 50px);
+}
+
 .is-active {
     border: solid 5px;
 }

@@ -34,6 +34,7 @@ export const useStateStore = defineStore('appState', () => {
     const useQuests = ref(false);
 
     const error = ref<{ stackTrace: string, message: string }>(null);
+    const availableLocations = ref<{id: string, name: string}[]>();
 
     const services = {
         soundService: <ISoundService>null,
@@ -80,6 +81,7 @@ export const useStateStore = defineStore('appState', () => {
         services.conversationService = serviceFactory.GetConversationService();
         services.tradeService = serviceFactory.GetTradeService();
         services.dataService = serviceFactory.GetDataService();
+        availableLocations.value = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     const trade = (location: ICompiledLocation, trade: IPerson | ITrade): boolean => {
@@ -183,6 +185,7 @@ export const useStateStore = defineStore('appState', () => {
         useCharacterSheet,
         useQuests,
         services,
+        availableLocations,
         initErrorHandling,
         setStoreData,
         setActiveCharacter,
