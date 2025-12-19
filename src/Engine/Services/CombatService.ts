@@ -18,6 +18,7 @@ export class CombatService implements ICombatService {
     }
     
     initCombat = (): void => {
+        this._game.combatLog.length = 0;
         this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
         this.initCombatRound(true);
         this._game.playState = PlayState.Combat;
@@ -33,7 +34,10 @@ export class CombatService implements ICombatService {
 
         return Promise.resolve(promise).then(() => {
             combat.forEach((s, i) => {
-                if (s.item?.targetType == TargetType.Enemy && s.target?.currentHitpoints <= 0 && (s.targetDefeated === undefined || s.targetDefeated)) {
+                const defeatWithItem = s.item?.targetType === TargetType.Enemy && s.target?.currentHitpoints <= 0 && (s.targetDefeated === undefined || s.targetDefeated);
+                const defeatWithoutItem = (<any>s.target).type === TargetType.Enemy.toLowerCase() && s.target.currentHitpoints < 0;
+                
+                if (defeatWithItem || defeatWithoutItem) {
                     this.enemyDefeated(combat, this._game.party.characters[i], s.target);
                 }
             });
@@ -87,14 +91,15 @@ export class CombatService implements ICombatService {
             this._game.combat.enemies = [];
 
             const enemiesPerType = <Record<string, number[]>>{};
+            const activeEnemies = this._game.currentLocation.enemies.filter(e => !e.inactive);
 
-            this._game.currentLocation.activeEnemies.forEach((e: any, i) => {
+            activeEnemies.forEach((e: any, i) => {
                 enemiesPerType[e.id] ??= [];
                 e.index = enemiesPerType[e.id].length + 1;
                 enemiesPerType[e.id].push(i);
             });
 
-            this._game.currentLocation.activeEnemies.forEach(e => {
+            activeEnemies.forEach(e => {
                 // Add a unique id here so we can track multiple enemies of the same type.
                 // Combat will end only when the enemies are defeated, at which point they will
                 // be assigned a unique id anyway.
@@ -205,7 +210,7 @@ export class CombatService implements ICombatService {
         let targetType = newItem?.targetType ?? TargetType.Enemy;
         let targets = targetType === TargetType.Enemy ? enemies : allies;
         let newTarget = newItem === previousItem && previousTarget ?
-            targets.find(i => i === previousTarget && (!newItem.canTarget || newItem.canTarget(this._game, newItem, i)))
+            targets.find(i => i === previousTarget && (!newItem?.canTarget || newItem.canTarget(this._game, newItem, i)))
             : undefined;
         return { targets, newTarget };
     }

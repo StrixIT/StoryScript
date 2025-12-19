@@ -1,8 +1,8 @@
 {
-    "name": "",
-    "description": "",
+    "name": "Interactive Map Demo",
+    "description": "A demo to showcase the use of visual maps to navigate and enrich a StoryScript game",
     "picture": "",
-    "sourcesIncluded": false,
+    "sourcesIncluded": true,
     "author": {
         "name": "",
         "email": ""
