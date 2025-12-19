@@ -31,10 +31,15 @@
             <button v-if="!barrier[1].actions?.length" class="btn btn-outline-primary">{{ barrier[1].name }}</button>
             <div v-else class="dropdown">
               <button :aria-expanded="dropDownExpanded" class="btn btn-outline-primary dropdown-toggle"
-                      type="button" @click="dropDownExpanded = !dropDownExpanded">
+                      type="button" @click="dropDownExpanded = !dropDownExpanded" @focusout="dropDownLoseFocus">
                 {{ barrier[1].name }}
               </button>
-              <ul v-if="dropDownExpanded" :class="dropDownMenuActive" class="dropdown-menu action-select">
+              <ul 
+                  v-if="dropDownExpanded" 
+                  :class="dropDownMenuActive" 
+                  class="dropdown-menu action-select" 
+                  @mouseover="mouseOverDropDown = true" 
+                  @mouseleave="mouseOverDropDown = false">
                 <li v-for="action of barrier[1].actions"><a class="dropdown-item" href="#"
                                                             @click="executeBarrierAction(barrier, action, destination)">{{
                     action[1].text
@@ -71,7 +76,14 @@ const {texts, dataService} = store.services;
 const {enemiesPresent, activeActions, activeDestinations} = useActiveEntityWatcher(game);
 
 const dropDownExpanded = ref(false);
+const mouseOverDropDown = ref(false);
 const confirmAction = ref<[string, IAction]>(null);
+
+const dropDownLoseFocus = () => {
+  if (!mouseOverDropDown.value) {
+    dropDownExpanded.value = false;
+  }
+}
 
 const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-menu-active' : '');
 
@@ -92,6 +104,7 @@ const executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBar
   action[1].execute(game.value, barrier, destination);
   barrier[1].actions.delete(barrier[1].actions.find(([k, _]) => k === action[0]));
   dataService.saveGame(game.value);
+  dropDownExpanded.value = false;
 }
 
 const execute = (action: [string, IAction]): void => {
