@@ -172,13 +172,8 @@ export class GameService implements IGameService {
             this._locationService.processDestinations(this._game);
             this._locationService.loadLocationDescriptions(this._game);
             this._rules.setup.continueGame?.(this._game);
-            
-            // Use a timeout here to allow the UI to respond to the loading flag set. Without this, the
-            // game will not transition between a CreateCharacter state and a Play state when loading.
-            setTimeout(() => {
-                this._game.loading = false;
-                this._game.state = GameState.Play;
-            }, 0);
+            this._game.loading = false;
+            this._game.state = GameState.Play;
         }
     }
 

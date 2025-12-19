@@ -19,7 +19,7 @@ export class TradeService implements ITradeService {
     private _activeTrader: IPerson;
 
     constructor(private readonly _itemService: IItemService, private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts, private readonly _definitions: IDefinitions) {
-        gameEvents.register('trade');
+        gameEvents.register('trade', false);
         gameEvents.subscribe('trade', (game,  data: [string, IAction]) => {
             const trader = game.currentLocation.trade.find(t => t.id === data[0]);
             this.trade(trader);
