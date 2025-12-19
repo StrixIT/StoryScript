@@ -43,9 +43,7 @@ const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, gameService} = store.services;
 
-const menu = () => {
-  game.value.playState = PlayState.Menu;
-}
+const menu = () => game.value.playState = PlayState.Menu;
 
 const reset = () => gameService.reset();
 

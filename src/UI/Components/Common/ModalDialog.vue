@@ -1,6 +1,6 @@
 <template>
-  <dialog :open="playState === openState">
-    <div class="modal-backdrop show" aria-hidden="true"></div>
+  <dialog :open="game.playState === openState">
+    <div aria-hidden="true" class="modal-backdrop show"></div>
     <div class="d-block modal" @click="e => closeModal(e)">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -8,7 +8,7 @@
             <h4 class="model-title">
               {{ title }}
             </h4>
-            <button v-if="canClose" type="button" aria-label="Close" class="close" @click="closeModal()">
+            <button v-if="canClose" aria-label="Close" class="close" type="button" @click="closeModal()">
               <span aria-hidden="true">×</span>
             </button>
           </div>
@@ -16,7 +16,9 @@
             <slot></slot>
           </div>
           <div class="modal-footer">
-            <button v-if="closeButton && canClose" type="button" class="btn btn-primary" @click="closeModal()">{{ texts.closeModal }}</button>
+            <button v-if="closeButton && canClose" class="btn btn-primary" type="button" @click="closeModal()">
+              {{ closeText ?? texts.closeModal }}
+            </button>
           </div>
         </div>
       </div>
@@ -32,12 +34,12 @@ const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
 
-const { playState, openState, canClose } = defineProps<{
-  playState?: PlayState,
-  openState?: PlayState,
-  canClose?: boolean,
-  title?: string,
-  closeButton?: boolean,
+const {openState, canClose} = defineProps<{
+  openState: PlayState,
+  canClose: boolean,
+  title: string,
+  closeButton: boolean,
+  closeText?: string,
 }>();
 
 const closeModal = (event?: PointerEvent) => {
@@ -46,7 +48,7 @@ const closeModal = (event?: PointerEvent) => {
       return;
     }
   }
-  
+
   game.value.playState = null;
 }
 

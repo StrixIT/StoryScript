@@ -1,8 +1,8 @@
 <template>
-  <div v-if="!enemiesPresent(game) && items?.length" id="exploration-onground" class="box-container">
+  <div v-if="!enemiesPresent && itemsPresent" id="exploration-onground" class="box-container">
     <div class="box-title">{{ texts.onTheGround }}</div>
     <ul class="list-unstyled">
-      <li v-for="item of items" :class="getCombineClass(item)" @click="pickupItem(item)">
+      <li v-for="item of activeItems" :class="getCombineClass(item)" @click="pickupItem(item)">
         {{ getItemName(item) }}
       </li>
     </ul>
@@ -11,19 +11,18 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {enemiesPresent} from "ui/Helpers.ts";
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
+import {computed, ref, watch} from "vue";
+import {useActiveEntityWatcher} from "ui/Composables/EnemyWatcher.ts";
 
 const store = useStateStore();
 const {game, useGround} = storeToRefs(store);
 const {texts, itemService} = store.services;
-
-const { items } = defineProps<{
-  items?: IItem[]
-}>();
-
+const {enemiesPresent, activeItems} = useActiveEntityWatcher(game);
 useGround.value = true;
+
+const itemsPresent = computed(() => activeItems.value.length > 0);
 
 const getCombineClass = (barrier: IBarrier): string => game.value.combinations.getCombineClass(barrier);
 

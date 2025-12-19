@@ -16,13 +16,13 @@
           </div>
 
           <div v-if="game.state === 'Play'">
-            <encounter :location="game.currentLocation" :combinations="game.combinations"></encounter>
-            <location-text :location="game.currentLocation" :combinations="game.combinations"></location-text>
+            <encounter></encounter>
+            <location-text></location-text>
             <location-visual :hidden="true"></location-visual>
-            <action-log :log="game.actionLog"></action-log>
-            <ground :items="game.currentLocation.activeItems"></ground>
-            <exploration :location="game.currentLocation"></exploration>
-            <enemy :enemies="game.currentLocation.activeEnemies" :combinations="game.combinations"></enemy>
+            <action-log></action-log>
+            <ground></ground>
+            <exploration></exploration>
+            <enemy></enemy>
           </div>
 
           <intro v-if="game.state === GameState.Intro"></intro>
@@ -35,7 +35,7 @@
       </div>
       <div v-if="game.state === 'Play'" class="row">
         <div class="col-12">
-          <combinations :combinations="game.combinations"></combinations>
+          <combinations></combinations>
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import {GameState, PlayState} from "storyScript/Interfaces/storyScript.ts";
 
 const store = useStateStore();

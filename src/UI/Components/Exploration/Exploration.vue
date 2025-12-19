@@ -1,9 +1,9 @@
 <template>
   <div id="exploration">
-    <div v-if="actionsPresent()" class="box-container" id="exploration-actions">
+    <div v-if="!enemiesPresent && activeActions.length > 0" class="box-container" id="exploration-actions">
       <div class="box-title">{{ texts.actions }}</div>
       <ul v-if="!confirmAction" class="list-unstyled">
-        <li v-for="action of location.activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
+        <li v-for="action of activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
           <button type="button" class="btn" :class="getButtonClass(action)" @click="execute(action)" :disabled="disableActionButton(action)">{{ action[1].text }}</button>
         </li>
       </ul>
@@ -17,10 +17,10 @@
         </ul>
       </div>
     </div>
-    <div v-if="!enemiesPresent(game)" class="box-container" id="exploration-destinations">
+    <div v-if="!enemiesPresent" class="box-container" id="exploration-destinations">
       <div class="box-title">{{ texts.destinations }}</div>
       <ul class="list-unstyled">
-        <li v-for="destination of location.activeDestinations" :class="`inline ${destination.visited ? '' : 'not-'}visited`">
+        <li v-for="destination of activeDestinations" :class="`inline ${destination.visited ? '' : 'not-'}visited`">
           <div v-for="barrier of destination.barriers" class="barrier">
             <button v-if="!barrier[1].actions?.length" class="btn btn-outline-primary">{{ barrier[1].name  }}</button>
             <div v-else class="dropdown">
@@ -44,35 +44,32 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {enemiesPresent, getButtonClass, executeAction} from "ui/Helpers.ts";
-import {isEmpty} from "storyScript/utilityFunctions.ts";
+import {getButtonClass, executeAction} from "ui/Helpers.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {computed, ref} from "vue";
 import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
-import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IBarrierAction} from "storyScript/Interfaces/barrierAction.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
+import {useActiveEntityWatcher} from "ui/Composables/EnemyWatcher.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, dataService} = store.services;
+const {enemiesPresent} = useActiveEntityWatcher(game);
 
 const dropDownExpanded = ref(false);
 const confirmAction = ref<[string, IAction]>(null);
 
 const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-menu-active' : '');
 
-const { location } = defineProps<{
-  location?: ICompiledLocation
-}>();
+const activeActions = computed(() => game.value.currentLocation.actions.filter(i => !i[1].inactive));
+const activeDestinations = computed(() => game.value.currentLocation.destinations.filter(i => !i.inactive));
 
 const checkStatus = (action: [string, IAction], status: ActionStatus) => 
     typeof action[1].status === 'function' 
         ? (<any>action[1]).status(game) == status 
         : action[1].status == undefined ? false : action[1].status == status;
-
-const actionsPresent = () => location && !enemiesPresent(game.value) && !isEmpty(location.actions);
 
 const disableActionButton = (a) => checkStatus(a, ActionStatus.Disabled);
 

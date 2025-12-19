@@ -10,8 +10,8 @@
         </li>
       </ul>
       <div class="col-9">
-        <p v-if="combinations.combinationResult.text" class="combination-result-text">
-          {{ combinations.combinationResult.text }}</p>
+        <p v-if="game.combinations.combinationResult.text" class="combination-result-text">
+          {{ game.combinations.combinationResult.text }}</p>
       </div>
     </div>
   </div>
@@ -20,19 +20,16 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
 import {ref} from "vue";
-import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
+import {storeToRefs} from "pinia";
 
 const store = useStateStore();
+const {game} = storeToRefs(store);
 const {texts, combinationService} = store.services;
-
-const {combinations} = defineProps<{
-  combinations?: IGameCombinations
-}>();
 
 const combineActions = ref<ICombinationAction[]>(combinationService.getCombinationActions());
 
 const selectCombinationAction = (combination: ICombinationAction) => combinationService.setActiveCombination(combination);
 
-const getCombineClass = (action: ICombinationAction): string => combinations.activeCombination && combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
+const getCombineClass = (action: ICombinationAction): string => game.value.combinations.activeCombination && game.value.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
 
 </script>

@@ -1,8 +1,7 @@
 <template>
-  <modal-dialog :close-text="texts.closeModal"
+  <modal-dialog :canClose="true"
                 :closeButton="true"
-                :open-state="PlayState.Trade"
-                :playState="game.playState"
+                :openState="PlayState.Trade"
                 :title="game.trade.name">
     <div id="trade">
       <p class="trade-description">{{ game.trade.text }}</p>

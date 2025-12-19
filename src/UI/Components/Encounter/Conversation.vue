@@ -1,8 +1,7 @@
 <template>
-  <modal-dialog :closeButton="true"
-                :close-text="texts.closeModal" 
-                :open-state="PlayState.Conversation" 
-                :playState="game.playState"
+  <modal-dialog :canClose="true"
+                :closeButton="true"
+                :openState="PlayState.Conversation"
                 :title="game.person.conversation.title || texts.format(texts.talk, [game.person.name])">
     <div id="conversation">
       <div v-if="game.person.conversation.activeNode" id="conversation-options">

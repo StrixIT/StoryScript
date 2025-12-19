@@ -1,5 +1,7 @@
 <template>
-  <modal-dialog :close-text="texts.closeModal" :open-state="PlayState.Menu" :playState="playState"
+  <modal-dialog :canClose="true"
+                :closeButton="false"
+                :openState="PlayState.Menu"
                 :title="texts.mainMenu">
     <div v-if="menuState === <string>PlayState.Menu" id="mainmenu">
       <button v-if="state !== GameState.CreateCharacter" class="btn btn-outline-dark btn-lg" type="button"
@@ -86,6 +88,7 @@ const overwriteSelected = (): boolean => dataService.getSaveKeys().indexOf(selec
 const cancel = (): void => {
   setSelected(null);
   internalState.value = null;
+  game.value.playState = null;
 }
 
 const restartConfirmed = (): void => {

@@ -8,12 +8,10 @@ import {gameEvents} from "storyScript/gameEvents.ts";
 
 export const isDevelopment = process.env.NODE_ENV !== 'production';
 
-export const enemiesPresent = (game: IGame) => game.currentLocation?.activeEnemies?.length > 0;
-
-export const showEquipment = (useEquipment: boolean, character: ICharacter): boolean => 
+export const showEquipment = (useEquipment: boolean, character: ICharacter): boolean =>
     useEquipment && character && Object.keys(character.equipment).some(k => (<any>character.equipment)[k] !== undefined);
 
-export const canUseItem = (game: IGame, character: ICharacter, item: IItem): boolean => 
+export const canUseItem = (game: IGame, character: ICharacter, item: IItem): boolean =>
     item.use && (!item.canUse || item.canUse(game, character, item));
 
 export const tryCombine = (game: IGame, combinable: ICombinable): boolean => {
@@ -59,7 +57,7 @@ export const executeAction = (game: IGame, action: [string, IAction], saveGame: 
         } else {
             gameEvents.publish(execute, action);
         }
-        
+
         const typeAndIndex = getActionIndex(game, action);
 
         if (!result && typeAndIndex.index !== -1) {

@@ -1,8 +1,7 @@
 <template>
-  <modal-dialog :close-text="texts.closeModal"
+  <modal-dialog :canClose="true"
                 :closeButton="true"
-                :open-state="PlayState.Description"
-                :playState="game.playState"
+                :openState="PlayState.Description"
                 :title="game.currentDescription.title">
     <div class="description" v-html="game.currentDescription.item.description"></div>
   </modal-dialog>
@@ -14,6 +13,5 @@ import {storeToRefs} from "pinia";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
-const {texts} = store.services;
 
 </script>

@@ -1,11 +1,9 @@
 <template>
-  <modal-dialog :canClose="canClose"
+  <modal-dialog :canClose="!enemiesPresent"
                 :closeButton="true"
-                :closeText="texts.closeModal"
                 :openState="PlayState.Combat"
-                :playState="game.playState"
                 :title="texts.combatTitle">
-    <div v-if="enemiesPresent(game)" id="combat" class="col-12">
+    <div v-if="enemiesPresent" id="combat" class="col-12">
       <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
 
       <div v-for="enemyRow of enemyRows" class="row enemy-row">
@@ -103,18 +101,15 @@ import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {enemiesPresent, executeAction, getButtonClass} from "ui/Helpers.ts";
+import {executeAction, getButtonClass} from "ui/Helpers.ts";
+import {useActiveEntityWatcher} from "ui/Composables/EnemyWatcher.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, dataService, itemService, combatService} = store.services;
-const canClose = ref(false);
-
-watch(game.value.currentLocation.activeEnemies, () => {
-  canClose.value = !enemiesPresent(game.value);
-});
+const {enemiesPresent} = useActiveEntityWatcher(game);
 
 const split = (array: any[], size: number): any[] => {
   const result = [];
