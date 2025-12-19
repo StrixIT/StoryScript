@@ -20,6 +20,16 @@ const {game} = storeToRefs(store);
 const {texts, combinationService} = store.services;
 const description = useTemplateRef('description');
 
+// This array can be used in the template to display translations for world properties.
+const worldProperties: { name: string, value: string }[] = [];
+
+for (const n in game.value.worldProperties) {
+  if (game.value.worldProperties.hasOwnProperty(n) && texts.worldProperties?.hasOwnProperty(n)) {
+    const value = texts.worldProperties[n];
+    worldProperties.push({name: n, value: value});
+  }
+}
+
 const refreshFeatures = (newValue: boolean) => {
   if (!newValue) {
     return;
