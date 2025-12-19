@@ -331,8 +331,10 @@ feature {
     padding-left: 0px;
 }
 
-.modal-dialog {
-    max-width: 50%;
+.dialog {
+    z-index: 10;
+    width: 50%;
+    top: 100px;
 }
 
 .custom-select {
@@ -358,6 +360,20 @@ feature {
 #location-selector {
     float: right;
     max-width: 40%;
+}
+
+#location-selector-locations {
+    position: absolute;
+    inset: 0 auto auto 0;
+    margin: 0;
+    transform: translate(1661px, 50px);
+    cursor: pointer;
+}
+
+.refine-search {
+    font-style: italic;
+    opacity: .5;
+    margin-bottom: -20px;
 }
 
 .is-active {
@@ -470,4 +486,22 @@ feature {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Common component styles */
+.collapsible {
+    overflow: hidden;
+    transition: max-height .2s ease-out;
+}
+
+.dropdown-menu-active {
+    position: absolute;
+    inset: 0 auto auto 5px;
+    margin: 0;
+    transform: translate(0px, 40px);
+}
+
+dialog {
+    border: none;
+    outline: none;
 }

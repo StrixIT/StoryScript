@@ -16,7 +16,7 @@ export class GameEvents implements IGameEvents {
         
         this._eventHandlers.set(eventName, []);
     }
-    subscribe = (eventName: string | string[], handler: (game: IGame, eventArguments: {}) => void, throwIfUnknown?: boolean): void => {
+    subscribe = (eventName: string | string[], handler: (game: IGame, eventArguments: any) => void, throwIfUnknown?: boolean): void => {
         const eventNames = Array.isArray(eventName) ? eventName : [eventName];
         
         eventNames.forEach(e => {
@@ -34,7 +34,7 @@ export class GameEvents implements IGameEvents {
         });
     }
     
-    publish = (eventName: string, eventData: {}): void => {
+    publish = (eventName: string, eventData: any): void => {
         if (!this._eventHandlers.has(eventName)) {
             throw new Error(`Event ${eventName} has not been registered!`);
         }

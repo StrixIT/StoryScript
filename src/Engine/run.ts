@@ -7,23 +7,18 @@ import {assetRegex} from '../../constants';
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
 /**
- * This function bootstraps and runs your game.
+ * This function bootstraps and runs your game. It creates a singleton of the ServiceFactory to
+ * use with the UI framework.
  * @param nameSpace Your game's namespace (e.g. '_GameTemplate')
  * @param texts Your game's custom interface texts
  * @param rules Your game rules
  */
 export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
-    let instance = ServiceFactory.GetInstance();
-
-    if (!instance) {
-        addFunctionExtensions();
-        addArrayExtensions();
-        const definitions = importAssets();
-        const registeredEntities = buildEntities(definitions);
-        instance = new ServiceFactory(nameSpace, definitions, registeredEntities, rules, texts);
-    }
-
-    return instance;
+    addFunctionExtensions();
+    addArrayExtensions();
+    const definitions = importAssets();
+    const registeredEntities = buildEntities(definitions);
+    new ServiceFactory(nameSpace, definitions, registeredEntities, rules, texts);
 }
 
 export function importAssets(): IDefinitions {

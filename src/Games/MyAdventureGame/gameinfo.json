@@ -1,6 +1,6 @@
 {
     "name": "Adventure Game demo",
-    "description": "A demo to showcase the StoryScript building blocks for Adventure Games",
+    "description": "A demo to showcase the StoryScript building blocks for Text-based Adventure Games",
     "picture": "",
     "sourcesIncluded": true,
     "author": {
