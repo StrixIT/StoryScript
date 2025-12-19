@@ -17,8 +17,7 @@ import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
 import {
     customEntity,
     DynamicEntity,
-    InitEntityCollection,
-    setReadOnlyLocationProperties
+    InitEntityCollection
 } from "storyScript/EntityCreatorFunctions.ts";
 import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
@@ -36,16 +35,9 @@ describe("EntityCreatorFunctions", function () {
         expect(start.id).toEqual('start');
         expect((<any>start).type).toEqual('location');
 
-        expect(start.activeItems.length).toEqual(0);
-
-        // Check that the activeItems array is present and 
-        // both it and the items array cannot be replaced.
+        // Check that the items array is present and that it cannot be replaced.
         expect(function () {
             start.items = [];
-        }).toThrow();
-
-        expect(function () {
-            start.activeItems = [];
         }).toThrow();
 
         // Add an item definition to the items array, and check that the function was executed.
@@ -135,7 +127,7 @@ describe("EntityCreatorFunctions", function () {
 
     test("should throw an error when creating a dynamic entity with an anonymous function and no id", function () {
         expect(() => {
-            const lamp = DynamicEntity(() => Feature({name: 'Magic Lamp'}));
+            DynamicEntity(() => Feature({name: 'Magic Lamp'}));
         }).toThrow();
     });
 
@@ -155,17 +147,6 @@ describe("EntityCreatorFunctions", function () {
         expect(result.items.length).toBe(2);
         expect(result.items[1]).toEqual(boots);
         expect(result.trade.buy.emptyText).toBe(emptyText);
-    });
-
-    test("should not override read-only properties", function () {
-        const activePersons = [];
-        
-        const location = <ICompiledLocation>{
-            activePersons: activePersons
-        };
-        
-        setReadOnlyLocationProperties(location);
-        expect(location.activePersons).toBe(activePersons);
     });
 
     test("should not init unknown collections", function () {

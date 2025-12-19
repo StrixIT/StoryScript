@@ -104,7 +104,7 @@ import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
 import {ref} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {executeAction, getButtonClass} from "ui/Helpers.ts";
-import {useActiveEntityWatcher} from "ui/Composables/EnemyWatcher.ts";
+import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

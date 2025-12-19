@@ -14,7 +14,7 @@ import {storeToRefs} from "pinia";
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {computed, ref, watch} from "vue";
-import {useActiveEntityWatcher} from "ui/Composables/EnemyWatcher.ts";
+import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
 const {game, useGround} = storeToRefs(store);

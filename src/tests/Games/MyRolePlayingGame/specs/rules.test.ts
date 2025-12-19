@@ -11,7 +11,6 @@ describe("Rules", function() {
         const game = <IGame>{
             activeCharacter: <ICharacter>character,
             currentLocation: <ICompiledLocation>{
-                activeEnemies: []
             },
             helpers: <IHelpers>{
                 rollDice: (dice) => {
@@ -47,8 +46,8 @@ describe("Rules", function() {
     });
 
     test("should create a new character", function() {
-        var service = Rules();
-        var character = service.character.createCharacter(<IGame>{}, <ICreateCharacter>{});
+        const service = Rules();
+        const character = service.character.createCharacter(<IGame>{}, <ICreateCharacter>{});
         expect(character).not.toBeNull();
     });
 

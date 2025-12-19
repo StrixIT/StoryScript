@@ -24,7 +24,7 @@ import {useStateStore} from "ui/StateStore.ts";
 import {showDescription, tryCombine} from "ui/Helpers.ts";
 import {storeToRefs} from "pinia";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
-import {useActiveEntityWatcher} from "ui/Composables/EnemyWatcher.ts";
+import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

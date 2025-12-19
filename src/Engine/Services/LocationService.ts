@@ -10,8 +10,7 @@ import {ActionType} from '../Interfaces/enumerations/actionType';
 import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
 import {
     getBasicFeatureData,
-    setDestination,
-    setReadOnlyLocationProperties
+    setDestination
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
@@ -31,10 +30,9 @@ export class LocationService implements ILocationService {
 
         if (!this._game.locations) {
             // When we don't have any locations yet, we're starting a new game. Use the definitions to build
-            // all the locations and set their readonly properties. Also build the maps, if present.
+            // all the locations. Also build the maps, if present.
             this._game.locations = {};
             this._definitions.locations.forEach(l => this._game.locations[getId(l)] = <ICompiledLocation>l());
-            Object.values(this._game.locations).forEach(l => setReadOnlyLocationProperties(<ICompiledLocation>l));
         }
 
         if (!this._game.maps && this._definitions.maps) {

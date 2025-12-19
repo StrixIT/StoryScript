@@ -51,20 +51,17 @@ import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts"
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IBarrierAction} from "storyScript/Interfaces/barrierAction.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
-import {useActiveEntityWatcher} from "ui/Composables/EnemyWatcher.ts";
+import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, dataService} = store.services;
-const {enemiesPresent} = useActiveEntityWatcher(game);
+const {enemiesPresent, activeActions, activeDestinations} = useActiveEntityWatcher(game);
 
 const dropDownExpanded = ref(false);
 const confirmAction = ref<[string, IAction]>(null);
 
 const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-menu-active' : '');
-
-const activeActions = computed(() => game.value.currentLocation.actions.filter(i => !i[1].inactive));
-const activeDestinations = computed(() => game.value.currentLocation.destinations.filter(i => !i.inactive));
 
 const checkStatus = (action: [string, IAction], status: ActionStatus) => 
     typeof action[1].status === 'function' 

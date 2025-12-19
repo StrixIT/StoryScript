@@ -91,14 +91,15 @@ export class CombatService implements ICombatService {
             this._game.combat.enemies = [];
 
             const enemiesPerType = <Record<string, number[]>>{};
+            const activeEnemies = this._game.currentLocation.enemies.filter(e => !e.inactive);
 
-            this._game.currentLocation.activeEnemies.forEach((e: any, i) => {
+            activeEnemies.forEach((e: any, i) => {
                 enemiesPerType[e.id] ??= [];
                 e.index = enemiesPerType[e.id].length + 1;
                 enemiesPerType[e.id].push(i);
             });
 
-            this._game.currentLocation.activeEnemies.forEach(e => {
+            activeEnemies.forEach(e => {
                 // Add a unique id here so we can track multiple enemies of the same type.
                 // Combat will end only when the enemies are defeated, at which point they will
                 // be assigned a unique id anyway.
