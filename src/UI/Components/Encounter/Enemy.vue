@@ -4,11 +4,11 @@
     <p>{{ texts.enemiesToFight }}</p>
     <ul class="list-unstyled enemy-list">
       <li v-for="enemy of activeEnemies" :class="game.combinations.getCombineClass(enemy)"
-          @click="tryCombine(game, enemy)">
+          @click="store.tryCombine(enemy)">
         <span class="enemy-name">{{ enemy.name }}</span>
         <div :class="game.combinations.getCombineClass(enemy)" class="inline">
           <button v-if="hasDescription(enemy)" class="btn btn-info btn-sm" type="button"
-                  @click="showDescription(game, 'enemy', enemy, enemy.name)">{{ texts.view }}
+                  @click="store.showDescription('enemy', enemy, enemy.name)">{{ texts.view }}
           </button>
         </div>
         <img v-if="enemy.picture" :alt="enemy.name" :src="enemy.picture" class="enemy-picture"/>
@@ -21,7 +21,6 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {showDescription, tryCombine} from "ui/Helpers.ts";
 import {storeToRefs} from "pinia";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
 import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";

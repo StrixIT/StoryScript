@@ -17,6 +17,10 @@ import {IGameService} from "storyScript/Interfaces/services/gameService.ts";
 import {IConversationService} from "storyScript/Interfaces/services/conversationService.ts";
 import {ITradeService} from "storyScript/Interfaces/services/tradeService.ts";
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
+import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
+import {IAction} from "storyScript/Interfaces/action.ts";
+import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
@@ -91,6 +95,21 @@ export const useStateStore = defineStore('appState', () => {
         return true;
     };
 
+    const showEquipment = (character: ICharacter): boolean =>
+        useEquipment 
+        && character 
+        && Object.keys(character.equipment)
+            .some(k => (<any>character.equipment)[k] !== undefined);
+
+    const tryCombine = (combinable: ICombinable): boolean => {
+        const result = game.value.combinations.tryCombine(combinable);
+        return result.success;
+    }
+
+    const showDescription = (type: string, item: any, title: string): void => {
+        game.value.currentDescription = {title: title, type: type, item: item};
+    }
+
     const startCombat = (location: ICompiledLocation, person?: IPerson): void => {
         if (person) {
             // The person becomes an enemy when attacked!
@@ -102,6 +121,58 @@ export const useStateStore = defineStore('appState', () => {
     }
 
     const setActiveCharacter = (character: ICharacter) => game.value.activeCharacter = character;
+
+    const getButtonClass = (action: [string, IAction]): string => {
+        const type = action[1].actionType || ActionType.Regular;
+        let buttonClass = 'btn-';
+
+        switch (type) {
+            case ActionType.Regular:
+                buttonClass += 'info'
+                break;
+            case ActionType.Check:
+                buttonClass += 'warning';
+                break;
+            case ActionType.Combat:
+                buttonClass += 'danger';
+                break;
+            case ActionType.Trade:
+                buttonClass += 'secondary';
+                break;
+        }
+
+        return buttonClass;
+    }
+    
+    const executeAction = (action: [string, IAction]): void => {
+        const execute = action[1]?.execute;
+
+        if (execute) {
+            let result = true;
+
+            if (typeof execute === 'function') {
+                const actionResult = execute(game.value);
+                result = actionResult === true;
+            } else {
+                gameEvents.publish(execute, action);
+            }
+
+            const typeAndIndex = getActionIndex(game.value, action);
+
+            if (!result && typeAndIndex.index !== -1) {
+                if (typeAndIndex.type === ActionType.Regular && game.value.currentLocation.actions) {
+                    const currentAction = game.value.currentLocation.actions[typeAndIndex.index];
+                    game.value.currentLocation.actions.delete(currentAction);
+                } else if (typeAndIndex.type === ActionType.Combat && game.value.currentLocation.combatActions) {
+                    const currentCombatAction = game.value.currentLocation.combatActions[typeAndIndex.index];
+                    game.value.currentLocation.combatActions.delete(currentCombatAction);
+                }
+            }
+
+            // After each action, save the game.
+            services.dataService.saveGame(game.value)
+        }
+    }
 
     return {
         error,
@@ -115,7 +186,35 @@ export const useStateStore = defineStore('appState', () => {
         initErrorHandling,
         setStoreData,
         setActiveCharacter,
+        showEquipment,
+        showDescription,
+        tryCombine,
+        getButtonClass,
+        executeAction,
         trade,
         startCombat
     }
 });
+
+const getActionIndex = (game: IGame, action: [string, IAction]): { type: ActionType, index: number } => {
+    let index = -1;
+    let type = ActionType.Regular;
+
+    game.currentLocation.actions.forEach(([k, v], i) => {
+        if (k === action[0]) {
+            index = i;
+            type = ActionType.Regular;
+        }
+    });
+
+    if (index == -1) {
+        game.currentLocation.combatActions.forEach(([k, v], i) => {
+            if (k === action[0]) {
+                index = i;
+                type = ActionType.Combat;
+            }
+        });
+    }
+
+    return {type, index};
+}

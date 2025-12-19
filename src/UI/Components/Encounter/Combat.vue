@@ -23,7 +23,8 @@
               <select v-if="filteredTargets(turn).length > 1" v-model="turn.target" class="custom-select">
                 <option v-for="target of filteredTargets(turn)" :value="target">{{ getTargetName(target) }}</option>
               </select>
-              <input v-if="filteredTargets(turn).length === 1" v-model="turn.target.name" :disabled="true" class="single-item"
+              <input v-if="filteredTargets(turn).length === 1" v-model="turn.target.name" :disabled="true"
+                     class="single-item"
                      type="text"/>
             </div>
             <div v-if="turn.itemsAvailable.length">
@@ -32,11 +33,13 @@
                 }}</span>
               <select v-if="turn.itemsAvailable.length > 1" v-model="turn.item" class="custom-select"
                       @change="itemChange(turn.item, turn)">
-                <option v-for="item of turn.itemsAvailable" :class="{'unselectable': !itemSelectable(item)}" :disabled="!itemSelectable(item)"
+                <option v-for="item of turn.itemsAvailable" :class="{'unselectable': !itemSelectable(item)}"
+                        :disabled="!itemSelectable(item)"
                         :value="item">{{ getItemName(item) }}
                 </option>
               </select>
-              <input v-if="turn.itemsAvailable.length === 1" :disabled="true" :value="getItemName(turn.item)" class="single-item"
+              <input v-if="turn.itemsAvailable.length === 1" :disabled="true" :value="getItemName(turn.item)"
+                     class="single-item"
                      type="text"/>
             </div>
           </div>
@@ -57,7 +60,7 @@
       <div class="row">
         <ul class="list-unstyled combat-actions">
           <li v-for="action of game.currentLocation.combatActions">
-            <button :class="getButtonClass(action)" :disabled="!actionsEnabled" class="btn" type="button"
+            <button :class="store.getButtonClass(action)" :disabled="!actionsEnabled" class="btn" type="button"
                     @click="execute(action)">{{ action[1].text }}
             </button>
           </li>
@@ -103,12 +106,11 @@ import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
 import {ref} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {executeAction, getButtonClass} from "ui/Helpers.ts";
 import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
-const {texts, dataService, itemService, combatService} = store.services;
+const {texts, itemService, combatService} = store.services;
 const {enemiesPresent} = useActiveEntityWatcher(game);
 
 const split = (array: any[], size: number): any[] => {
@@ -134,7 +136,7 @@ const getTargetName = (target: any) => target.name;
 
 const getItemName = (item: IItem): string => itemService.getItemName(item);
 
-const execute = (action: [string, IAction]) => executeAction(game.value, action, () => dataService.saveGame(game.value));
+const execute = (action: [string, IAction]) => store.executeAction(action);
 
 const itemChange = (item: IItem, turn: ICombatTurn) => {
   const currentTarget = turn.target;

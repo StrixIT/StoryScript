@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showEquipment(useEquipment, character)" class="character-equipment box-container">
+  <div v-if="store.showEquipment(character)" class="character-equipment box-container">
     <collapsible :text="texts.equipmentHeader" :headerClass="'box-title'">
       <div class="equipment-panel">
         <div v-if="isSlotUsed('head')" class="row">
@@ -103,7 +103,6 @@ import {storeToRefs} from "pinia";
 import {DefaultEquipment} from "storyScript/Interfaces/defaultEquipment.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {showEquipment} from "ui/Helpers.ts";
 
 const store = useStateStore();
 const {useEquipment} = storeToRefs(store);

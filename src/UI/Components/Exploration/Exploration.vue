@@ -1,38 +1,51 @@
 <template>
   <div id="exploration">
-    <div v-if="!enemiesPresent && activeActions.length > 0" class="box-container" id="exploration-actions">
+    <div v-if="!enemiesPresent && activeActions.length > 0" id="exploration-actions" class="box-container">
       <div class="box-title">{{ texts.actions }}</div>
       <ul v-if="!confirmAction" class="list-unstyled">
         <li v-for="action of activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
-          <button type="button" class="btn" :class="getButtonClass(action)" @click="execute(action)" :disabled="disableActionButton(action)">{{ action[1].text }}</button>
+          <button :class="store.getButtonClass(action)" :disabled="disableActionButton(action)" class="btn"
+                  type="button"
+                  @click="execute(action)">{{ action[1].text }}
+          </button>
         </li>
       </ul>
       <div v-else>
         <p v-html="confirmAction[1].confirmationText"></p>
         <ul class="list-unstyled">
           <li class="inline">
-            <button type="button" class="btn btn-primary" @click="cancelAction()">{{ texts.cancelAction }}</button>
-            <button type="button" class="btn btn-warning" @click="execute(confirmAction)">{{ texts.confirmAction }}</button>
+            <button class="btn btn-primary" type="button" @click="cancelAction()">{{ texts.cancelAction }}</button>
+            <button class="btn btn-warning" type="button" @click="execute(confirmAction)">{{
+                texts.confirmAction
+              }}
+            </button>
           </li>
         </ul>
       </div>
     </div>
-    <div v-if="!enemiesPresent" class="box-container" id="exploration-destinations">
+    <div v-if="!enemiesPresent" id="exploration-destinations" class="box-container">
       <div class="box-title">{{ texts.destinations }}</div>
       <ul class="list-unstyled">
         <li v-for="destination of activeDestinations" :class="`inline ${destination.visited ? '' : 'not-'}visited`">
           <div v-for="barrier of destination.barriers" class="barrier">
-            <button v-if="!barrier[1].actions?.length" class="btn btn-outline-primary">{{ barrier[1].name  }}</button>
+            <button v-if="!barrier[1].actions?.length" class="btn btn-outline-primary">{{ barrier[1].name }}</button>
             <div v-else class="dropdown">
-              <button class="btn btn-outline-primary dropdown-toggle" type="button" @click="dropDownExpanded = !dropDownExpanded" :aria-expanded="dropDownExpanded">
+              <button :aria-expanded="dropDownExpanded" class="btn btn-outline-primary dropdown-toggle"
+                      type="button" @click="dropDownExpanded = !dropDownExpanded">
                 {{ barrier[1].name }}
               </button>
-              <ul class="dropdown-menu action-select" :class="dropDownMenuActive" v-if="dropDownExpanded">
-                <li v-for="action of barrier[1].actions"><a class="dropdown-item" href="#" @click="executeBarrierAction(barrier, action, destination)">{{ action[1].text }}</a></li>
+              <ul v-if="dropDownExpanded" :class="dropDownMenuActive" class="dropdown-menu action-select">
+                <li v-for="action of barrier[1].actions"><a class="dropdown-item" href="#"
+                                                            @click="executeBarrierAction(barrier, action, destination)">{{
+                    action[1].text
+                  }}</a></li>
               </ul>
             </div>
           </div>
-          <button type="button" class="btn btn-info" :class="destination.style" @click="changeLocation(<string>destination.target)" :disabled="!destination.target || destination.barriers?.length > 0">
+          <button :class="destination.style" :disabled="!destination.target || destination.barriers?.length > 0"
+                  class="btn btn-info"
+                  type="button"
+                  @click="changeLocation(<string>destination.target)">
             <span v-if="(<any>destination).isPreviousLocation" class="back-label">{{ texts.back }}</span>
             {{ destination.name }}
           </button>
@@ -44,7 +57,6 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {getButtonClass, executeAction} from "ui/Helpers.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {computed, ref} from "vue";
 import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
@@ -63,9 +75,9 @@ const confirmAction = ref<[string, IAction]>(null);
 
 const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-menu-active' : '');
 
-const checkStatus = (action: [string, IAction], status: ActionStatus) => 
-    typeof action[1].status === 'function' 
-        ? (<any>action[1]).status(game) == status 
+const checkStatus = (action: [string, IAction], status: ActionStatus) =>
+    typeof action[1].status === 'function'
+        ? (<any>action[1]).status(game) == status
         : action[1].status == undefined ? false : action[1].status == status;
 
 const disableActionButton = (a) => checkStatus(a, ActionStatus.Disabled);
@@ -89,7 +101,7 @@ const execute = (action: [string, IAction]): void => {
   }
 
   confirmAction.value = undefined;
-  executeAction(game.value, action,() => dataService.saveGame(game.value));
+  store.executeAction(action);
 }
 
 const changeLocation = (location: string) => game.value.changeLocation(location, true);

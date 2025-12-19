@@ -1,20 +1,33 @@
 <template>
-  <div class="box-container" id="character-backpack">
-    <collapsible :text="texts.backpack" :headerClass="'box-title'">
+  <div id="character-backpack" class="box-container">
+    <collapsible :headerClass="'box-title'" :text="texts.backpack">
       <ul id="backpack-panel" class="list-unstyled">
         <li v-for="item of character.items">
-          <div @click="tryCombine(game, item)" :class="game.combinations.getCombineClass(item)">
+          <div :class="game.combinations.getCombineClass(item)" @click="store.tryCombine(item)">
             <span>{{ getItemName(item) }}</span>
             <div id="backpack-button-row" class="inline">
-              <button v-if="canEquip(item) && showEquipment(useEquipment, character)" type="button" class="btn btn-info btn-sm" @click="equipItem(item)">{{ texts.equip }}</button>
-              <button v-if="hasDescription(item)" type="button" class="btn btn-info btn-sm" @click="showDescription(game, 'item', item, getItemName(item))">{{ texts.view }}</button>
-              <button v-if="canUseItem(game, character, item)" type="button" class="btn btn-info btn-sm" @click="useItem(item)">{{ texts.use }}</button>
-              <button v-if="canGroupItem(item as IGroupableItem<IItem>)" type="button" class="btn btn-sm"
+              <button v-if="canEquip(item) && store.showEquipment(character)" class="btn btn-info btn-sm" type="button"
+                      @click="equipItem(item)">{{ texts.equip }}
+              </button>
+              <button v-if="hasDescription(item)" class="btn btn-info btn-sm" type="button"
+                      @click="store.showDescription('item', item, getItemName(item))">{{ texts.view }}
+              </button>
+              <button v-if="canUseItem(character, item)" class="btn btn-info btn-sm" type="button"
+                      @click="useItem(item)">{{ texts.use }}
+              </button>
+              <button v-if="canGroupItem(item as IGroupableItem<IItem>)"
                       :class="{ 'btn-primary': item === joinItem, 'btn-outline-secondary': joinItem && item !== joinItem, 'btn-info': !joinItem  }"
+                      class="btn btn-sm"
+                      type="button"
                       @click="groupItem(item as IGroupableItem<IItem>)">{{ texts.groupItem }}
               </button>
-              <button v-if="(item as IGroupableItem<IItem>).members?.length > 0" type="button" class="btn btn-info btn-sm" @click="splitItemGroup(item as IGroupableItem<IItem>)">{{ texts.splitItemGroup }}</button>
-              <button v-if="useGround && canDrop(item)" type="button" class="btn btn-info btn-sm" @click="dropItem(item)">{{ texts.drop }}</button>
+              <button v-if="(item as IGroupableItem<IItem>).members?.length > 0" class="btn btn-info btn-sm"
+                      type="button" @click="splitItemGroup(item as IGroupableItem<IItem>)">
+                {{ texts.splitItemGroup }}
+              </button>
+              <button v-if="useGround && canDrop(item)" class="btn btn-info btn-sm" type="button"
+                      @click="dropItem(item)">{{ texts.drop }}
+              </button>
             </div>
           </div>
         </li>
@@ -29,20 +42,22 @@ import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ref} from "vue";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {canUseItem, showDescription, showEquipment, tryCombine} from "ui/Helpers.ts";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
 
 const store = useStateStore();
-const {game, useGround, useBackpack, useEquipment} = storeToRefs(store);
+const {game, useGround, useBackpack} = storeToRefs(store);
 const {texts, itemService} = store.services;
 
-const { character } = defineProps<{
+const {character} = defineProps<{
   character?: ICharacter
 }>();
 
 const joinItem = ref<IGroupableItem<IItem>>(null);
 
 useBackpack.value = true;
+
+const canUseItem = (character: ICharacter, item: IItem): boolean =>
+    item.use && (!item.canUse || item.canUse(game.value, character, item));
 
 const getItemName = (item: IItem): string => itemService.getItemName(item);
 

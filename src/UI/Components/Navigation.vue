@@ -37,7 +37,7 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {isDevelopment} from "ui/Helpers.ts";
+import {isDevelopment} from "../../../constants.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

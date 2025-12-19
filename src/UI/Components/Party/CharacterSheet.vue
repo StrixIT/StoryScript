@@ -32,7 +32,7 @@ import {storeToRefs} from "pinia";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {ref} from "vue";
 import {IParty} from "storyScript/Interfaces/party.ts";
-import {isDevelopment} from "ui/Helpers.ts";
+import {isDevelopment} from "../../../../constants.ts";
 
 const store = useStateStore();
 const {useCharacterSheet} = storeToRefs(store);
