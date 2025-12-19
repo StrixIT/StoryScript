@@ -5,26 +5,28 @@
         <h1>{{ texts.gameName }}</h1>
       </div>
       <div class="col-4">
-        <input id="location-selector" 
-               v-if="availableLocations.length > 1" 
-               type="text" 
-               autocapitalize="off"
-               autocomplete="off"
-               aria-autocomplete="list"
-               class="form-control"
-               placeholder="Jump to location..."
-               ref="locationSelector"
-               @keyup="search"
-               @focus="setShowSelection(true)"
-               @focusout="setShowSelection(false)"
-        />
-        <ul v-if="showSelection" id="location-selector-locations" class="dropdown-menu" :class="showSelection ? 'show' : ''">
-          <li v-for="location of selectedLocations.slice(0, maxLocationsShown)" 
-              class="dropdown-item"
-              @mouseenter="setActive"
-              @click="jumpToLocation(location.id)">{{ location.name }}</li>
-          <li v-if="selectedLocations.length > maxLocationsShown" class="dropdown-item refine-search"><pre>{{ `More than ${maxLocationsShown} locations\r\nfound.Search to reduce the\r\nsize of the list.` }}</pre></li>
-        </ul>
+        <div v-if="isDevelopment">
+          <input id="location-selector" 
+                 v-if="availableLocations.length > 1" 
+                 type="text" 
+                 autocapitalize="off"
+                 autocomplete="off"
+                 aria-autocomplete="list"
+                 class="form-control"
+                 placeholder="Jump to location..."
+                 ref="locationSelector"
+                 @keyup="search"
+                 @focus="setShowSelection(true)"
+                 @focusout="setShowSelection(false)"
+          />
+          <ul v-if="showSelection" id="location-selector-locations" class="dropdown-menu" :class="showSelection ? 'show' : ''">
+            <li v-for="location of selectedLocations.slice(0, maxLocationsShown)" 
+                class="dropdown-item"
+                @mouseenter="setActive"
+                @click="jumpToLocation(location.id)">{{ location.name }}</li>
+            <li v-if="selectedLocations.length > maxLocationsShown" class="dropdown-item refine-search"><pre>{{ `More than ${maxLocationsShown} locations\r\nfound.Search to reduce the\r\nsize of the list.` }}</pre></li>
+          </ul>
+        </div>
         <div class="float-right">
           <button type="button" class="btn btn-dark btn-sm" @click="menu()">{{ texts.mainMenuShort }}</button>
           <button v-if="isDevelopment" id="resetbutton" type="button" class="btn btn-danger btn-sm" @click="reset()">{{ texts.resetWorld }}</button>
