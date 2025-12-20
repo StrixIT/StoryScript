@@ -21,8 +21,6 @@ export interface IExplorationRules {
      */
     leaveLocation?(game: IGame, location: ICompiledLocation, newLocationId: string): void;
 
-    hasVisitedLocation?(game: IGame, location: ICompiledLocation): boolean;
-
     /**
      * When specified, this function will be called to determine whether a destination should
      * be marked as visited.
