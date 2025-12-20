@@ -57,7 +57,7 @@ export class TradeService implements ITradeService {
         const trader = buyer as ITrade;
         const currency = trader.buy ? trader.currency : this._game.party.currency;
         const price = this.actualPrice(item, buyer, seller);
-        return (price != undefined && currency != undefined && currency >= price) || price == 0;
+        return (price !== undefined && currency !== undefined && currency >= price) || price === 0;
     };
 
     actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): number => {
@@ -66,7 +66,7 @@ export class TradeService implements ITradeService {
         const sellerTrade = seller as ITrade;
         const modifier = buyerTrade.sell?.priceModifier ?? sellerTrade.buy?.priceModifier;
 
-        if (modifier == undefined) {
+        if (modifier === undefined) {
             resolvedModifier = 1;
         } else if (typeof modifier === 'function') {
             resolvedModifier = (<((game: IGame) => number)>modifier)(this._game)

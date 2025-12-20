@@ -91,7 +91,7 @@ export function addArrayExtensions() {
             enumerable: false,
             writable: true,
             value: function (entity: any) {
-                if (typeof entity === 'undefined') {
+                if (entity === undefined) {
                     return;
                 }
 
@@ -133,7 +133,7 @@ export function addArrayExtensions() {
             enumerable: false,
             writable: true,
             value: function (item: any) {
-                if (typeof item === 'undefined') {
+                if (item === undefined) {
                     return;
                 }
 
@@ -230,7 +230,7 @@ function findIndex(collection: any[], item: any) {
 
     let index: number;
 
-    if (typeof entry === 'undefined') {
+    if (entry === undefined) {
         index = collection.indexOf(item);
     } else {
         index = collection.indexOf(entry);

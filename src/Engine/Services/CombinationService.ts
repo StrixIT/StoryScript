@@ -46,7 +46,7 @@ export class CombinationService implements ICombinationService {
             return;
         }
 
-        combination.requiresTool = (typeof combination.requiresTool === 'undefined') || combination.requiresTool === true;
+        combination.requiresTool = (combination.requiresTool === undefined) || combination.requiresTool === true;
 
         this._game.combinations.activeCombination = {
             selectedCombinationAction: combination,

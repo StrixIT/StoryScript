@@ -29,7 +29,7 @@ export class ConversationService implements IConversationService {
             lines: checkAutoplay(this._game, node.lines),
             reply: reply.lines
         });
-        
+
         if (reply.questStart) {
             this.questProgress('questStart', person, reply);
         }
@@ -37,7 +37,7 @@ export class ConversationService implements IConversationService {
         if (reply.questComplete) {
             this.questProgress('questComplete', person, reply);
         }
-        
+
         this.processReply(person, reply);
     }
 
@@ -154,6 +154,7 @@ export class ConversationService implements IConversationService {
                 const questStart = this.GetNodeValue(replyNode, 'quest-start');
                 const questComplete = this.GetNodeValue(replyNode, 'quest-complete');
                 const setStart = this.GetNodeValue(replyNode, 'set-start');
+                const once = this.GetNodeValue(replyNode, 'once') === 'true';
 
                 if (trigger && !person.conversation.actions.some(([k, _]) => k === trigger)) {
                     console.log('No action ' + trigger + ' for node ' + newNode.node + ' found.');
@@ -166,6 +167,7 @@ export class ConversationService implements IConversationService {
                     questStart: questStart,
                     questComplete: questComplete,
                     setStart: setStart,
+                    once: once,
                     lines: parseGamePropertiesInTemplate((<any>replyNode).innerHTML.trim(), this._game)
                 };
 
@@ -220,6 +222,9 @@ export class ConversationService implements IConversationService {
     private readonly initReplies = (person: IPerson): void => {
         const activeNode = person.conversation.activeNode;
 
+        activeNode.replies = activeNode.replies.filter(r => 
+            !r.once || !person.conversation.singleRepliesChosen?.includes(this.getReplyId(activeNode, r)));
+
         activeNode.replies.forEach(reply => {
             if (reply.linkToNode) {
                 if (!person.conversation.nodes.some((node) => {
@@ -237,25 +242,32 @@ export class ConversationService implements IConversationService {
 
     private readonly processReply = (person: IPerson, reply: IConversationReply) => {
         this.executeAction(reply.trigger, person);
+        const conversation = person.conversation;
 
         if (reply.setStart) {
-            const startNode = person.conversation.nodes.filter((node) => {
+            const startNode = conversation.nodes.filter((node) => {
                 return node.node == reply.setStart;
             })[0];
-            person.conversation.startNode = startNode.node;
+            conversation.startNode = startNode.node;
         }
 
         let activeNode = null;
 
         if (reply.linkToNode) {
-            activeNode = person.conversation.nodes.filter((node) => {
+            if (reply.once) {
+                conversation.singleRepliesChosen = !conversation.singleRepliesChosen ? '' : conversation.singleRepliesChosen + ';';
+                conversation.singleRepliesChosen += this.getReplyId(conversation.activeNode, reply);
+            }
+            
+            activeNode = conversation.nodes.filter((node) => {
                 return node.node == reply.linkToNode;
             })[0];
-            person.conversation.activeNode = activeNode;
+
+            conversation.activeNode = activeNode;
             this.executeAction(activeNode.trigger, person);
-            this.setReplyStatus(person.conversation, activeNode);
+            this.setReplyStatus(conversation, activeNode);
         } else {
-            person.conversation.activeNode = null;
+            conversation.activeNode = null;
         }
 
         if (!activeNode?.lines) {
@@ -318,14 +330,13 @@ export class ConversationService implements IConversationService {
             case 'quest-complete': {
                 // Check quest start, quest done or quest complete.
                 const quest = this._game.party.quests.get(value);
-                
+
                 if (quest) {
                     if (type === 'quest-start') {
                         isAvailable = true;
-                    }
-                    else if (type === 'quest-done') {
+                    } else if (type === 'quest-done') {
                         isAvailable = quest.checkDone(this._game, quest);
-                    } else { 
+                    } else {
                         isAvailable = quest.completed;
                     }
                 }
@@ -349,10 +360,10 @@ export class ConversationService implements IConversationService {
 
     private readonly setReplyStatus = (conversation: IConversation, node: IConversationNode): void => {
         node.replies?.forEach(reply => {
-            if (reply.available == undefined) {
+            if (reply.available === undefined) {
                 reply.available = true;
             }
-            if (reply.showWhenUnavailable == undefined) {
+            if (reply.showWhenUnavailable === undefined) {
                 reply.showWhenUnavailable = conversation.showUnavailableReplies;
             }
         });
@@ -389,5 +400,9 @@ export class ConversationService implements IConversationService {
                 quest.completed = true;
             }
         }
+    }
+
+    private readonly getReplyId = (node: IConversationNode, reply: IConversationReply): string => {
+        return `${node.node}_${reply.linkToNode}`;
     }
 }

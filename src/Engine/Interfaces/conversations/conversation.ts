@@ -49,4 +49,9 @@ export interface IConversation {
      * A log of the conversation so far.
      */
     conversationLog?: IConversationLogEntry[];
+
+    /**
+     * A semicolon separated list set at runtime of replies that can be selected only once and have been selected by the player.
+     */
+    singleRepliesChosen?: string;
 }

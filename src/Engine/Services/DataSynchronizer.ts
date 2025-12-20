@@ -23,7 +23,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         }
 
         if (this.isEntity(entity)) {
-            if (typeof pristineEntity === 'undefined') {
+            if (pristineEntity === undefined) {
                 pristineEntity = this._pristineEntities[getPlural(entity.type)][entity.id];
             }
         }
@@ -50,7 +50,7 @@ export class DataSynchronizer implements IDataSynchronizer {
             let currentProperty = entity[p];
 
             // If there is no pristine entity, recurse down the object to find entities to synchronize.
-            if (typeof pristineEntity === 'undefined') {
+            if (pristineEntity === undefined) {
                 if (Array.isArray(currentProperty) || typeof currentProperty === 'object') {
                     this.synchronizeEntityData(currentProperty, undefined, entity, pristineEntity, p);
                 }
@@ -59,7 +59,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
             let pristineProperty = pristineEntity[p];
 
-            if (typeof currentProperty === 'undefined') {
+            if (currentProperty === undefined) {
                 if (Array.isArray(pristineProperty)) {
                     entity[p] = [];
                 } else if (typeof pristineProperty === 'object' && pristineProperty !== null) {
@@ -74,7 +74,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
             currentProperty = entity[p];
 
-            if (typeof pristineProperty === 'undefined') {
+            if (pristineProperty === undefined) {
                 if (Array.isArray(currentProperty)) {
                     pristineProperty = [];
                 } else if (typeof currentProperty === 'object') {
@@ -192,7 +192,7 @@ export class DataSynchronizer implements IDataSynchronizer {
     }
 
     private isEntity = (entity: any): boolean => {
-        return typeof entity?.type !== 'undefined' && typeof entity?.id !== 'undefined';
+        return entity?.type !== undefined && entity?.id !== undefined;
     }
 
     private markEntriesAsDeleted = (item: any[]) => {

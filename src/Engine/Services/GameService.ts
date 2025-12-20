@@ -18,7 +18,15 @@ import {IFeature} from '../Interfaces/feature';
 import {IParty} from '../Interfaces/party';
 import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
 import {IHelpers} from "storyScript/Interfaces/helpers.ts";
-import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} from "../../../constants.ts";
+import {
+    Characters,
+    DescriptionProperty,
+    GameStateSave,
+    HighScores,
+    Items,
+    Quests,
+    SaveGamePrefix
+} from "../../../constants.ts";
 import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
@@ -446,7 +454,7 @@ export class GameService implements IGameService {
                 currentDescription = value;
 
                 if (currentDescription.item.description) {
-                    currentDescription.item.description = checkAutoplay(this._game, getParsedDocument('description', currentDescription.item.description, true)[0].innerHTML);
+                    currentDescription.item.description = checkAutoplay(this._game, getParsedDocument(DescriptionProperty, currentDescription.item.description, true)[0].innerHTML);
                 }
 
                 this._game.playState = PlayState.Description;

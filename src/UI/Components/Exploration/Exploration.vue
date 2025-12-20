@@ -90,7 +90,7 @@ const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-men
 const checkStatus = (action: [string, IAction], status: ActionStatus) =>
     typeof action[1].status === 'function'
         ? (<any>action[1]).status(game) == status
-        : action[1].status == undefined ? false : action[1].status == status;
+        : action[1].status === undefined ? false : action[1].status == status;
 
 const disableActionButton = (a) => checkStatus(a, ActionStatus.Disabled);
 

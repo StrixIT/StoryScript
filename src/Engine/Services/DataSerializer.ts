@@ -3,10 +3,16 @@ import {InitEntityCollection} from "storyScript/EntityCreatorFunctions";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
-import {IdProperty} from "../../../constants.ts";
+import {DescriptionProperty, IdProperty} from "../../../constants.ts";
 import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 
 export class DataSerializer implements IDataSerializer {
+    private conversationPropertiesToSerialize = [
+        'actions',
+        'startNode',
+        'singleRepliesChosen'
+    ]
+    
     constructor(private readonly _pristineEntities: Record<string, Record<string, any>>) {
     }
 
@@ -207,7 +213,7 @@ export class DataSerializer implements IDataSerializer {
                 return true;
             } else if (typeof value === 'function' && value[StateProperties.Added]) {
                 record[0] = data.originalValue[0];
-                record[1] = {"function": serializeFunction(value), [StateProperties.Added]: true};
+                record[1] = {'function': serializeFunction(value), [StateProperties.Added]: true};
                 return true;
             }
         }
@@ -252,7 +258,7 @@ export class DataSerializer implements IDataSerializer {
             if (typeof e !== 'object') {
                 return false;
             }
-            return !Object.values(e).filter(v => typeof v !== 'undefined' && v !== null && v !== '').length;
+            return !Object.values(e).filter(v => v !== undefined && v !== null && v !== '').length;
         });
         emptyItems.forEach(e => resultArray.splice(resultArray.indexOf(e), 1));
 
@@ -292,8 +298,8 @@ export class DataSerializer implements IDataSerializer {
             || originalValue.isProxy
             // Exclude descriptions and conversation nodes from the save data, these are not present on the pristine data.
             // Use an additional property to identify them, as their names are quite generic.
-            || (original[IdProperty] && (key === 'description' || key === 'descriptions'))
-            || (parentKey === "conversation" && key !== 'actions' && key !== 'startNode')
+            || (original[IdProperty] && (key === DescriptionProperty || key === 'descriptions'))
+            || (parentKey === 'conversation' && !this.conversationPropertiesToSerialize.includes(key))
         );
     }
     

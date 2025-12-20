@@ -19,7 +19,7 @@ export function Library() {
                 text: 'Take out of closet',
                 emptyText: 'The closet is empty',
                 itemSelector: (game: IGame, item: IItem) => {
-                    return item.value != undefined;
+                    return item.value !== undefined;
                 },
                 maxItems: 5,
                 priceModifier: 0
@@ -28,7 +28,7 @@ export function Library() {
                 text: 'Put back in closet',
                 emptyText: 'You have nothing to put in the your closet',
                 itemSelector: (game: IGame, item: IItem) => {
-                    return item.value != undefined;
+                    return item.value !== undefined;
                 },
                 maxItems: 5,
                 priceModifier: (game: IGame) => {

@@ -9,6 +9,7 @@ import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {compareString, parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
 import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
+import {DescriptionProperty} from "../../../constants.ts";
 
 const parsedDescriptions = new Map<string, boolean>();
 
@@ -18,7 +19,7 @@ export function hasDescription(entity: { id?: string, description?: string }): b
     }
 
     if (!parsedDescriptions.get(entity.id)) {
-        const descriptionNode = getParsedDocument('description', entity.description)[0];
+        const descriptionNode = getParsedDocument(DescriptionProperty, entity.description)[0];
         parsedDescriptions.set(entity.id, descriptionNode?.innerHTML?.trim() !== '');
     }
 

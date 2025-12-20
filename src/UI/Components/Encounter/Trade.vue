@@ -55,7 +55,7 @@
         </ul>
       </div>
 
-      <p v-if="game.trade.currency != undefined">
+      <p v-if="game.trade.currency !== undefined">
         {{ texts.format(texts.traderCurrency, [game.trade.currency.toString(), texts.currency]) }}</p>
     </div>
   </modal-dialog>
