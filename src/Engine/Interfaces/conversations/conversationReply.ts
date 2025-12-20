@@ -33,7 +33,7 @@ export interface IConversationReply {
     showWhenUnavailable?: boolean;
 
     /**
-     * The action triggered by chosing this response. The trigger string must equal an action in the conversation options.
+     * The action triggered by choosing this response. The trigger string must equal an action in the conversation options.
      */
     trigger?: string;
 
@@ -51,4 +51,9 @@ export interface IConversationReply {
      * The name of the node to set as the start node when this reply is chosen.
      */
     setStart?: string;
+
+    /**
+     * True if this reply can be chosen only once.
+     */
+    once?: boolean;
 }

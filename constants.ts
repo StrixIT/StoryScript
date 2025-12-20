@@ -13,3 +13,4 @@ export const Characters: string = 'characters';
 export const GameStateSave: string = "gameState";
 export const SaveGamePrefix: string = "SaveGame_";
 export const HighScores: string = 'highScores';
+export const DescriptionProperty: string = 'description';

@@ -11,7 +11,7 @@ import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './util
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
 import {ICompiledLocation, IDestination, IGroupableItem} from './Interfaces/storyScript';
-import {Enemies, Features, Items, Locations, Maps, Persons, Quests} from "../../constants.ts";
+import {DescriptionProperty, Enemies, Features, Items, Locations, Maps, Persons, Quests} from "../../constants.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
 
 const _entityCollections: string[] = [
@@ -391,7 +391,7 @@ function loadPictureFromDescription(entity: any, description: string): void {
 
 function loadDescriptions(location: ICompiledLocation): void {
     location.descriptions = {};
-    const nodes = getParsedDocument('description', location.description);
+    const nodes = getParsedDocument(DescriptionProperty, location.description);
 
     for (const element of nodes) {
         const nameAttribute = element.attributes['name']?.nodeValue;
@@ -517,7 +517,7 @@ function getEntityKey(entity: object): string {
         const type = typeof value;
         let text: string;
 
-        if (p === 'description' || Array.isArray(value)) {
+        if (p === DescriptionProperty || Array.isArray(value)) {
             text = undefined;
         } else if (type === 'object') {
             text = p.toString();
