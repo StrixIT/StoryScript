@@ -55,7 +55,7 @@ export class CombatService implements ICombatService {
         });
     }
 
-    isSelectable = (item: IItem): boolean => item?.selectable || typeof item?.selectable === 'undefined';
+    isSelectable = (item: IItem): boolean => item?.selectable || item?.selectable === undefined;
 
     canTarget = (item: IItem, target: IEnemy | ICharacter, character: ICharacter) => {
         const type = (<any>target).type;

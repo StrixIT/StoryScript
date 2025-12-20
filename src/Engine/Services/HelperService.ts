@@ -32,7 +32,7 @@ export class HelperService implements IHelpers {
                 // Random damage, 'XdY+/-Z'
                 dieNumber = parseInt(dieResult[0]);
                 sides = parseInt(bonusResult[0]);
-                bonus = typeof bonusResult[1] === 'undefined' ? 0 : parseInt(bonusResult[1]);
+                bonus = bonusResult[1] === undefined ? 0 : parseInt(bonusResult[1]);
                 const modifier = compositeOrSides.match(/[+-]/i);
                 bonus = bonus > 0 ? modifier?.[0] === '+' ? bonus : bonus * -1 : 0;
             }

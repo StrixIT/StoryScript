@@ -181,7 +181,7 @@ export class ItemService implements IItemService {
 
         if (typeof item.canDrop === 'function') {
             canDrop = item.canDrop(this._game, item);
-        } else if (typeof item.canDrop === 'undefined') {
+        } else if (item.canDrop === undefined) {
             canDrop = true;
         } else {
             canDrop = item.canDrop;

@@ -252,7 +252,7 @@ export class DataSerializer implements IDataSerializer {
             if (typeof e !== 'object') {
                 return false;
             }
-            return !Object.values(e).filter(v => typeof v !== 'undefined' && v !== null && v !== '').length;
+            return !Object.values(e).filter(v => v !== undefined && v !== null && v !== '').length;
         });
         emptyItems.forEach(e => resultArray.splice(resultArray.indexOf(e), 1));
 

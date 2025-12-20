@@ -11,7 +11,7 @@ export function Open(callback?: (game: IGame, barrier: [string, IBarrier], desti
     return makeSerializeSafe((game: IGame, barrier: [string, IBarrier], destination: IDestination): void => {
         destination.barriers.delete(barrier);
 
-        if (typeof callback !== 'undefined' && callback) {
+        if (callback !== undefined && callback) {
             callback(game, barrier, destination);
         }
     }, { 'callback': callback });

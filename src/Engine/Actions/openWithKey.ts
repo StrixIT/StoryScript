@@ -23,7 +23,7 @@ export function OpenWithKey(callback?: (game: IGame, barrier: [string, IBarrier]
 
         destination.barriers.delete(barrier);
 
-        if (typeof callback !== 'undefined' && callback) {
+        if (callback !== undefined && callback) {
             callback(game, barrier, destination);
         }
     }, {'callback': callback});

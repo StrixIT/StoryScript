@@ -349,10 +349,10 @@ export class ConversationService implements IConversationService {
 
     private readonly setReplyStatus = (conversation: IConversation, node: IConversationNode): void => {
         node.replies?.forEach(reply => {
-            if (reply.available == undefined) {
+            if (reply.available === undefined) {
                 reply.available = true;
             }
-            if (reply.showWhenUnavailable == undefined) {
+            if (reply.showWhenUnavailable === undefined) {
                 reply.showWhenUnavailable = conversation.showUnavailableReplies;
             }
         });

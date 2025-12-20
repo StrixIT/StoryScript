@@ -34,7 +34,7 @@ export function isDataRecord(item: any[]): boolean {
 }
 
 export function getKeyPropertyNames(item: any, includeUniqueIds?: boolean): { first: string, second: string } {
-    if (typeof item === 'undefined') {
+    if (item === undefined) {
         return {first: null, second: null};
     }
 
@@ -53,7 +53,7 @@ export function getKeyPropertyNames(item: any, includeUniqueIds?: boolean): { fi
 }
 
 export function propertyMatch(first: any, second: any): boolean {
-    if (typeof first === 'undefined' || typeof second === 'undefined') {
+    if (first === undefined || second === undefined) {
         return false;
     }
 
@@ -145,7 +145,7 @@ export function hasItem(party: IParty, item: IItem | string): boolean {
             return;
         }
 
-        hasItem = c.items.get(item) != undefined;
+        hasItem = c.items.get(item) !== undefined;
 
         if (hasItem) {
             return;
