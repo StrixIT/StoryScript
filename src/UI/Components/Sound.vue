@@ -37,14 +37,28 @@ const checkMusicPlaying = () => {
     // I haven't found a way to silence this warning.
     const audioContext = new window.AudioContext();
 
-    if (audioContext?.state !== 'suspended') {
+    if (!audioContext) {
+      return;
+    }
+
+    if (audioContext.state !== 'suspended' && backgroundMusicElement.paused) {
       backgroundMusicElement.play();
       isPlaying.value = true;
+      return;
+    }
+
+    if (audioContext.state === 'suspended') {
+      backgroundMusicElement.play().then(() => {
+        backgroundMusicElement.play();
+        isPlaying.value = true;
+      }).catch(_ => {
+        // Do nothing. Silence the error and await another try.
+      });
     }
   }
 }
 
-setInterval(checkMusicPlaying, 500);
+setInterval(checkMusicPlaying, 1000);
 
 const getCurrentMusic = (): string => {
   const music = soundService.getCurrentMusic();
