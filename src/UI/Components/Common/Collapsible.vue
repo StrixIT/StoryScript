@@ -1,18 +1,21 @@
 <template>
-  <div :class="headerClass" @click="toggleCollapsible" ref="collapsible-header">
+  <div class="collapsible-header" :class="headerClass" @click="toggleCollapsible" ref="collapsible-header">
     <slot name="header">
       {{ text }}
     </slot>
   </div>
-  <slot></slot>
+  <div class="collapsible-body">
+    <slot></slot>
+  </div>
 </template>
 <script lang="ts" setup>
 
 import {computed, onMounted, ref, useTemplateRef} from "vue";
 
-const { headerClass } = defineProps<{
+const { preventCollapse, headerClass } = defineProps<{
   text?: string;
-  headerClass?: string
+  headerClass?: string;
+  preventCollapse?: (isCollapsed: boolean) => boolean;
 }>();
 
 const isCollapsed = ref(false);
@@ -29,7 +32,18 @@ onMounted(() => {
 });
 
 const toggleCollapsible = () => {
+  if (preventCollapse?.(isCollapsed.value)) {
+    return;
+  }
+
   isCollapsed.value = !isCollapsed.value;
+
+  if (isCollapsed.value) {
+    collapsibleHeader.value.classList.add('collapsed');
+  } else {
+    collapsibleHeader.value.classList.remove('collapsed');
+  }
+
   setHeight();
 }
 

@@ -3,68 +3,68 @@
                 :closeButton="true"
                 :openState="PlayState.Combat"
                 :title="texts.combatTitle">
-    <div v-if="enemiesPresent" id="combat" class="col-12">
-      <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
+    <div v-if="enemiesPresent" id="combat" class="row">
+      <div class="col-12">
+        <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
 
-      <div v-for="enemyRow of enemyRows" class="row enemy-row">
-        <div v-for="enemy of enemyRow" :class="{ 'unavailable': enemy.currentHitpoints <= 0 }"
-             class="'col-' + 12 / enemyRow.length">
-          <combat-participant :participant="enemy"></combat-participant>
-        </div>
-      </div>
-
-      <div v-for="characterRow of characterRows" class="row character-row">
-        <div v-for="turn of characterRow" :class="{ 'unavailable': turn.character.currentHitpoints <= 0 }"
-             class="'col-' + 12 / characterRow.length">
-          <combat-participant :participant="turn.character"></combat-participant>
-          <div v-if="turn.item && turn.character.currentHitpoints > 0">
-            <div :class="{ 'not-applicable': !turn.item.targetType }">
-              <span>{{ turn.item.targetType === 'Enemy' ? texts.attack : texts.aid }}</span>
-              <select v-if="filteredTargets(turn).length > 1" v-model="turn.target" class="custom-select">
-                <option v-for="target of filteredTargets(turn)" :value="target">{{ getTargetName(target) }}</option>
-              </select>
-              <input v-if="filteredTargets(turn).length === 1" v-model="turn.target.name" :disabled="true"
-                     class="single-item"
-                     type="text"/>
-            </div>
-            <div v-if="turn.itemsAvailable.length">
-              <span>{{
-                  turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType ? texts.aidWith : texts.useCombatItem
-                }}</span>
-              <select v-if="turn.itemsAvailable.length > 1" v-model="turn.item" class="custom-select"
-                      @change="itemChange(turn.item, turn)">
-                <option v-for="item of turn.itemsAvailable" :class="{'unselectable': !itemSelectable(item)}"
-                        :disabled="!itemSelectable(item)"
-                        :value="item">{{ getItemName(item) }}
-                </option>
-              </select>
-              <input v-if="turn.itemsAvailable.length === 1" :disabled="true" :value="getItemName(turn.item)"
-                     class="single-item"
-                     type="text"/>
-            </div>
-          </div>
-          <div v-if="!turn.item && turn.character.currentHitpoints > 0">
-            <span>{{ game.combat.noActionText }}</span>
+        <div v-for="enemyRow of enemyRows" class="row enemy-row">
+          <div v-for="enemy of enemyRow" :class="[`col-${(12 / enemyRow.length)}`, { 'unavailable': enemy.currentHitpoints <= 0 }]">
+            <combat-participant :participant="enemy"></combat-participant>
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-12 fight-row">
-          <button :disabled="!actionsEnabled" class="btn btn-danger" type="button" @click="fight()">{{
-              texts.fight
-            }}
-          </button>
+        <div v-for="characterRow of characterRows" class="row character-row">
+          <div v-for="turn of characterRow" :class="[`col-${(12 / characterRow.length)}`, { 'unavailable': turn.character.currentHitpoints <= 0 }]">
+            <combat-participant :participant="turn.character"></combat-participant>
+            <div v-if="turn.item && turn.character.currentHitpoints > 0">
+              <div :class="{ 'not-applicable': !turn.item.targetType }">
+                <span>{{ turn.item.targetType === 'Enemy' ? texts.attack : texts.aid }}</span>
+                <select v-if="filteredTargets(turn).length > 1" v-model="turn.target" class="custom-select">
+                  <option v-for="target of filteredTargets(turn)" :value="target">{{ getTargetName(target) }}</option>
+                </select>
+                <input v-if="filteredTargets(turn).length === 1" v-model="turn.target.name" :disabled="true"
+                       class="single-item"
+                       type="text"/>
+              </div>
+              <div v-if="turn.itemsAvailable.length">
+                <span>{{
+                    turn.item.targetType === 'Enemy' ? texts.attackWith : turn.item.targetType ? texts.aidWith : texts.useCombatItem
+                  }}</span>
+                <select v-if="turn.itemsAvailable.length > 1" v-model="turn.item" class="custom-select"
+                        @change="itemChange(turn.item, turn)">
+                  <option v-for="item of turn.itemsAvailable" :class="{'unselectable': !itemSelectable(item)}"
+                          :disabled="!itemSelectable(item)"
+                          :value="item">{{ getItemName(item) }}
+                  </option>
+                </select>
+                <input v-if="turn.itemsAvailable.length === 1" :disabled="true" :value="getItemName(turn.item)"
+                       class="single-item"
+                       type="text"/>
+              </div>
+            </div>
+            <div v-if="!turn.item && turn.character.currentHitpoints > 0">
+              <span>{{ game.combat.noActionText }}</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <ul class="list-unstyled combat-actions">
-          <li v-for="action of game.currentLocation.combatActions">
-            <button :class="store.getButtonClass(action)" :disabled="!actionsEnabled" class="btn" type="button"
-                    @click="execute(action)">{{ action[1].text }}
+
+        <div class="row">
+          <div class="col-12 fight-row">
+            <button :disabled="!actionsEnabled" class="btn btn-danger" type="button" @click="fight()">{{
+                texts.fight
+              }}
             </button>
-          </li>
-        </ul>
+          </div>
+        </div>
+        <div class="row">
+          <ul class="list-unstyled combat-actions">
+            <li v-for="action of game.currentLocation.combatActions">
+              <button :class="store.getButtonClass(action)" :disabled="!actionsEnabled" class="btn" type="button"
+                      @click="execute(action)">{{ action[1].text }}
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
 
