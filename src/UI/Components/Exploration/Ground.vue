@@ -13,13 +13,11 @@ import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
-import {computed, ref, watch} from "vue";
-import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
+import {computed} from "vue";
 
 const store = useStateStore();
-const {game, useGround} = storeToRefs(store);
+const {game, useGround, enemiesPresent, activeItems} = storeToRefs(store);
 const {texts, itemService} = store.services;
-const {enemiesPresent, activeItems} = useActiveEntityWatcher(game);
 useGround.value = true;
 
 const itemsPresent = computed(() => activeItems.value.length > 0);

@@ -3,8 +3,8 @@
                 :closeButton="false"
                 :openState="PlayState.Menu"
                 :title="texts.mainMenu">
-    <div v-if="menuState === <string>PlayState.Menu" id="mainmenu">
-      <button v-if="state !== GameState.CreateCharacter" class="btn btn-outline-dark btn-lg" type="button"
+    <div id="mainmenu">
+      <button v-if="game.state !== GameState.CreateCharacter" class="btn btn-outline-dark btn-lg" type="button"
               @click="save()">{{ texts.saveGame }}
       </button>
       <button class="btn btn-outline-dark btn-lg" type="button" @click="load()">{{ texts.loadGame }}</button>
@@ -67,14 +67,9 @@ const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, dataService, gameService} = store.services;
 
-const {playState} = defineProps<{
-  state?: GameState
-  playState?: PlayState
-}>();
-
 const internalState = ref<string>(PlayState.Menu);
 const menuState = computed(() => {
-  return playState === PlayState.Menu ? internalState.value ?? PlayState.Menu : null
+  return game.value.playState === PlayState.Menu ? internalState.value ?? PlayState.Menu : null
 });
 const selectedGame = ref<string>(null);
 const saveKeys = ref<string[]>([]);

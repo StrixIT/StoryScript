@@ -106,12 +106,10 @@ import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
 import {ref} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
-const {game} = storeToRefs(store);
+const {game, enemiesPresent} = storeToRefs(store);
 const {texts, itemService, combatService} = store.services;
-const {enemiesPresent} = useActiveEntityWatcher(game);
 
 const split = (array: any[], size: number): any[] => {
   const result = [];

@@ -96,6 +96,13 @@ export class GameService implements IGameService {
                 this._rules.setup.continueGame(this._game);
             }
         } else {
+            this._game.party = <IParty>{
+                type: 'party',
+                characters: [],
+                quests: [],
+                score: 0
+            };
+            
             this._characterService.setupCharacter();
             this._game.state = GameState.CreateCharacter;
         }
@@ -250,13 +257,6 @@ export class GameService implements IGameService {
     }
 
     private readonly createCharacter = (characterData: ICreateCharacter): void => {
-        this._game.party = this._game.party ?? <IParty>{
-            type: 'party',
-            characters: [],
-            quests: [],
-            score: 0
-        };
-
         const character = this._characterService.createCharacter(this._game, characterData);
         (<any>character).type = 'character';
         character.items = character.items || [];

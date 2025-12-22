@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {App, ref} from 'vue';
+import {App, ref, watch} from 'vue';
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
@@ -21,9 +21,16 @@ import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
+import {IItem} from "storyScript/Interfaces/item.ts";
+import {IEnemy} from "storyScript/Interfaces/enemy.ts";
+import {IDestination} from "storyScript/Interfaces/destination.ts";
+import {Error} from "ui/error.ts";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
+
+    const error = ref<Error>(null);
+    const availableLocations = ref<{ id: string, name: string }[]>();
 
     const game = ref<IGame>(<IGame>{});
 
@@ -33,8 +40,12 @@ export const useStateStore = defineStore('appState', () => {
     const useCharacterSheet = ref(false);
     const useQuests = ref(false);
 
-    const error = ref<{ stackTrace: string, message: string }>(null);
-    const availableLocations = ref<{id: string, name: string}[]>();
+    const enemiesPresent = ref(getActiveEntities(game.value.currentLocation?.enemies).length > 0);
+    const activePersons = ref(getActiveEntities<IPerson>(game.value.currentLocation?.persons));
+    const activeEnemies = ref(getActiveEntities<IEnemy>(game.value.currentLocation?.enemies));
+    const activeItems = ref(getActiveEntities<IItem>(game.value.currentLocation?.items));
+    const activeActions = ref(getActiveActions(game.value.currentLocation?.actions));
+    const activeDestinations = ref(getActiveEntities<IDestination>(game.value.currentLocation?.destinations));
 
     const services = {
         soundService: <ISoundService>null,
@@ -50,6 +61,15 @@ export const useStateStore = defineStore('appState', () => {
         rules: <IRules>null
     };
 
+    watch(() => game.value.currentLocation, (newValue, _) => {
+        enemiesPresent.value = getActiveEntities(game.value.currentLocation?.enemies).length > 0;
+        activePersons.value = getActiveEntities<IPerson>(game.value.currentLocation?.persons);
+        activeEnemies.value = getActiveEntities<IEnemy>(game.value.currentLocation?.enemies);
+        activeItems.value = getActiveEntities<IItem>(game.value.currentLocation?.items);
+        activeActions.value = getActiveActions(game.value.currentLocation?.actions);
+        activeDestinations.value = getActiveEntities<IDestination>(game.value.currentLocation?.destinations);
+    }, {deep: true});
+
     const initErrorHandling = (app: App<Element>) => {
         addEventListener("error", event => {
             error.value = {message: event.message, stackTrace: event.error.stack};
@@ -60,7 +80,12 @@ export const useStateStore = defineStore('appState', () => {
             event.stopPropagation();
         });
 
-        app.config.errorHandler = (error: any) => error.value = {message: error.message, stackTrace: error.stack};
+        app.config.errorHandler = (error: any, vm, info) => error.value = {
+            message: error.message,
+            component: vm,
+            info: info,
+            stackTrace: error.stack
+        };
     }
 
     const setStoreData = (factory: ServiceFactory) => {
@@ -98,8 +123,8 @@ export const useStateStore = defineStore('appState', () => {
     };
 
     const showEquipment = (character: ICharacter): boolean =>
-        useEquipment 
-        && character 
+        useEquipment
+        && character
         && Object.keys(character.equipment)
             .some(k => (<any>character.equipment)[k] !== undefined);
 
@@ -145,7 +170,7 @@ export const useStateStore = defineStore('appState', () => {
 
         return buttonClass;
     }
-    
+
     const executeAction = (action: [string, IAction]): void => {
         const execute = action[1]?.execute;
 
@@ -186,6 +211,12 @@ export const useStateStore = defineStore('appState', () => {
         useQuests,
         services,
         availableLocations,
+        enemiesPresent,
+        activePersons,
+        activeEnemies,
+        activeItems,
+        activeActions,
+        activeDestinations,
         initErrorHandling,
         setStoreData,
         setActiveCharacter,
@@ -221,3 +252,9 @@ const getActionIndex = (game: IGame, action: [string, IAction]): { type: ActionT
 
     return {type, index};
 }
+
+const getActiveEntities = <T>(entities: {
+    inactive?: boolean
+}[]): T[] => (entities?.filter(e => !e.inactive) ?? []) as T[];
+
+const getActiveActions = (actions: [string, IAction][]) => (actions?.filter(i => !i[1].inactive) || []);

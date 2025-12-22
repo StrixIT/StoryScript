@@ -68,12 +68,10 @@ import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts"
 import {IBarrier} from "storyScript/Interfaces/barrier.ts";
 import {IBarrierAction} from "storyScript/Interfaces/barrierAction.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
-import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
-const {game} = storeToRefs(store);
+const {game, enemiesPresent, activeActions, activeDestinations} = storeToRefs(store);
 const {texts, dataService} = store.services;
-const {enemiesPresent, activeActions, activeDestinations} = useActiveEntityWatcher(game);
 
 const dropDownExpanded = ref(false);
 const mouseOverDropDown = ref(false);

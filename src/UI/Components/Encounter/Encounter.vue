@@ -31,12 +31,10 @@ import {storeToRefs} from "pinia";
 import {IPerson} from "storyScript/Interfaces/person.ts";
 import {ITrade} from "storyScript/Interfaces/trade.ts";
 import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
-import {useActiveEntityWatcher} from "ui/Composables/ActiveEntityWatcher.ts";
 
 const store = useStateStore();
-const {game} = storeToRefs(store);
+const {game, enemiesPresent, activePersons} = storeToRefs(store);
 const {texts, conversationService} = store.services;
-const {enemiesPresent, activePersons} = useActiveEntityWatcher(game);
 
 const talk = (person: IPerson): void => conversationService.talk(person);
 

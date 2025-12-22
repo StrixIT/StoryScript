@@ -1,5 +1,9 @@
 <template>
-  <div :class="headerClass" @click="toggleCollapsible" ref="collapsible-header">{{ text }}</div>
+  <div :class="headerClass" @click="toggleCollapsible" ref="collapsible-header">
+    <slot name="header">
+      {{ text }}
+    </slot>
+  </div>
   <slot></slot>
 </template>
 <script lang="ts" setup>

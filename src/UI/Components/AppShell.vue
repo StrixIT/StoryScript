@@ -1,11 +1,16 @@
 <template>
   <sound :sounds="game.sounds" :rootElement="game.UIRootElement"></sound>
-  <game-menu :state="game.state" :playState="game.playState"></game-menu>
+  <game-menu v-if="game.playState === PlayState.Menu"></game-menu>
+  <conversation v-if="game.playState === PlayState.Conversation"></conversation>
+  <trade v-if="game.playState === PlayState.Trade"></trade>
+  <combat v-if="game.playState === PlayState.Combat"></combat>
+  <description v-if="game.playState === PlayState.Description"></description>
   <div v-if="error">
     <p class="danger">{{ error.message }}</p>
     <p>{{ error.stackTrace }}</p>
   </div>
   <div ref="ui-root">
+    <navigation></navigation>
     <game-container></game-container>
   </div>
 </template>
@@ -14,6 +19,7 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {onMounted, useTemplateRef} from "vue";
+import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 
 const store = useStateStore();
 const {game, error} = storeToRefs(store);

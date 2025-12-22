@@ -1,28 +1,25 @@
 <template>
-  <div v-if="state === 'CreateCharacter'" class="box-container" id="create-character">
+  <div v-if="game.state === 'CreateCharacter'" id="create-character" class="box-container">
     <div class="box-title">{{ titleText() }}</div>
-    <build-character :sheet="sheet"></build-character>
-    <button v-if="sheet.currentStep >= sheet.steps.length - 1 || sheet.steps[sheet.currentStep].finish" type="button" id="start-adventure" class="btn btn-primary" :disabled="!distributionDone()" @click="startNewGame()">{{ startText() }}</button>
+    <build-character :sheet="game.createCharacterSheet"></build-character>
+    <button
+        v-if="game.createCharacterSheet.currentStep >= game.createCharacterSheet.steps.length - 1 || game.createCharacterSheet.steps[game.createCharacterSheet.currentStep].finish"
+        id="start-adventure" :disabled="!distributionDone()" class="btn btn-primary" type="button"
+        @click="startNewGame()">{{ startText() }}
+    </button>
   </div>
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {IParty} from "storyScript/Interfaces/party.ts";
-import {ICreateCharacter} from "storyScript/Interfaces/createCharacter/createCharacter.ts";
-import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
+import {storeToRefs} from "pinia";
 
 const store = useStateStore();
+const {game} = storeToRefs(store);
 const {texts, rules, characterService, gameService} = store.services;
-
-const { state, party, sheet } = defineProps<{
-  state: GameState;
-  party?: IParty,
-  sheet?: ICreateCharacter
-}>();
 
 const titleText = (): string => {
   if (rules.setup.numberOfCharacters > 1) {
-    switch (party.characters.length || 0) {
+    switch (game.value.party.characters.length || 0) {
       case 0:
         return texts.firstCharacter;
       case 1:
@@ -30,7 +27,7 @@ const titleText = (): string => {
       case 2:
         return texts.thirdCharacter;
       default:
-        return texts.format(texts.nthCharacter, [(party.characters.length + 1).toString()])
+        return texts.format(texts.nthCharacter, [(game.value.party.characters.length + 1).toString()])
     }
   }
 
@@ -38,15 +35,15 @@ const titleText = (): string => {
 };
 
 const startText = (): string => {
-  if (rules.setup.numberOfCharacters > 1 && (party.characters.length < rules.setup.numberOfCharacters - 1)) {
+  if (rules.setup.numberOfCharacters > 1 && (game.value.party.characters.length < rules.setup.numberOfCharacters - 1)) {
     return texts.nextCharacter;
   }
 
   return texts.startAdventure;
 };
 
-const distributionDone = (): boolean => characterService.distributionDone(sheet, null);
+const distributionDone = (): boolean => characterService.distributionDone(game.value.createCharacterSheet, null);
 
-const startNewGame = () => gameService.startNewGame(sheet);
+const startNewGame = () => gameService.startNewGame(game.value.createCharacterSheet);
 
 </script>
