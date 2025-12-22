@@ -25,6 +25,12 @@ export interface ICompiledLocation extends ILocation {
     descriptions?: { [key: string]: string; };
 
     /**
+     * The file path for the picture to show for this location. It is read from the location's HTML file's
+     * picture tag if present.
+     */
+    picture?: string;
+
+    /**
      * Messages logged to this location.
      */
     log?: string[];

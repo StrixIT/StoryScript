@@ -1,6 +1,7 @@
 <template>
   <div v-if="show" id="location" class="box-container">
     <div class="box-title" v-html="texts.format(texts.youAreHere, [game.currentLocation.name])"></div>
+    <img v-if="game.currentLocation.picture" :alt="game.currentLocation.name" :src="game.currentLocation.picture" class="location-picture"/>
     <div ref="description" @click="event => click(event)" @mouseover="event => mouseOver(event)"
          v-html="game.currentLocation.description"></div>
     <ul id="location-log" class="list-unstyled">

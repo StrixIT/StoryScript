@@ -16,7 +16,7 @@ import {addUniqueId} from "storyScript/arrayAndFunctionExtensions.ts";
 export class CombatService implements ICombatService {
     constructor(private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts) {
     }
-    
+
     initCombat = (): void => {
         this._game.combatLog.length = 0;
         this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
@@ -35,8 +35,8 @@ export class CombatService implements ICombatService {
         return Promise.resolve(promise).then(() => {
             combat.forEach((s, i) => {
                 const defeatWithItem = s.item?.targetType === TargetType.Enemy && s.target?.currentHitpoints <= 0 && (s.targetDefeated === undefined || s.targetDefeated);
-                const defeatWithoutItem = (<any>s.target).type === TargetType.Enemy.toLowerCase() && s.target.currentHitpoints < 0;
-                
+                const defeatWithoutItem = (<any>s.target)?.type === TargetType.Enemy.toLowerCase() && s.target?.currentHitpoints <= 0;
+
                 if (defeatWithItem || defeatWithoutItem) {
                     this.enemyDefeated(combat, this._game.party.characters[i], s.target);
                 }
@@ -83,7 +83,7 @@ export class CombatService implements ICombatService {
 
         return item.canTarget(this._game, item, target);
     }
-    
+
     private readonly initCombatRound = (newFight: boolean) => {
         this._game.combat = newFight ? <ICombatSetup<ICombatTurn>>[] : this._game.combat;
 
@@ -125,13 +125,16 @@ export class CombatService implements ICombatService {
             // Remember the last item used and enemy attacked and select them when they are still valid.
             let previousItem = this._game.combat[i]?.item;
             previousItem = this.isSelectable(previousItem) ? previousItem : undefined;
-            const previousTarget = this._game.combat[i]?.target; 
+            const previousTarget = this._game.combat[i]?.target;
             let newItem = (previousItem && items.find(i => i === previousItem)) ?? items.filter(i => this.isSelectable(i))[0];
-            let { targets, newTarget } = this.getTarget(newItem, enemies, allies, previousTarget, previousItem);
-            
+            let {targets, newTarget} = this.getTarget(newItem, enemies, allies, previousTarget, previousItem);
+
             if (!newTarget) {
                 newItem = items.filter(i => this.isSelectable(i) && (!i.canTarget || (newTarget && i.canTarget(this._game, newItem, newTarget))))[0];
-                ({ targets, newTarget } = this.getTarget(newItem, enemies, allies, this._game.combat[i]?.target, previousItem));
+                ({
+                    targets,
+                    newTarget
+                } = this.getTarget(newItem, enemies, allies, this._game.combat[i]?.target, previousItem));
                 newTarget ??= targets[0];
             }
 
@@ -148,7 +151,7 @@ export class CombatService implements ICombatService {
 
         this._rules.combat?.initCombatRound?.(this._game, this._game.combat);
     }
-    
+
     private readonly getItems = (character: ICharacter, enemies: IEnemy[], allies: ICharacter[]) => {
         const items = character.combatItems ?? [];
 
@@ -164,14 +167,14 @@ export class CombatService implements ICombatService {
             if (this._rules.combat.itemIsSelectable) {
                 i.selectable = this._rules.combat.itemIsSelectable(this._game, i);
             }
-            
+
             if (!i.canTarget) {
                 return;
             }
 
             i.selectable = false;
             let targets;
-            
+
             switch (i.targetType) {
                 case TargetType.Enemy: {
                     targets = enemies;
@@ -203,18 +206,18 @@ export class CombatService implements ICombatService {
         items.sort((a: IItem, b: IItem) => b.targetType?.localeCompare(a.targetType) || a.name.localeCompare(b.name));
         return items;
     }
-    
-    private readonly getTarget = 
-        (newItem: IItem, enemies: IEnemy[], allies: ICharacter[], previousTarget: IEnemy | ICharacter, previousItem?: IItem): 
+
+    private readonly getTarget =
+        (newItem: IItem, enemies: IEnemy[], allies: ICharacter[], previousTarget: IEnemy | ICharacter, previousItem?: IItem):
             { targets: IEnemy[] | ICharacter[], newTarget?: IEnemy | ICharacter } => {
-        let targetType = newItem?.targetType ?? TargetType.Enemy;
-        let targets = targetType === TargetType.Enemy ? enemies : allies;
-        let newTarget = newItem === previousItem && previousTarget ?
-            targets.find(i => i === previousTarget && (!newItem?.canTarget || newItem.canTarget(this._game, newItem, i)))
-            : undefined;
-        return { targets, newTarget };
-    }
-    
+            let targetType = newItem?.targetType ?? TargetType.Enemy;
+            let targets = targetType === TargetType.Enemy ? enemies : allies;
+            let newTarget = newItem === previousItem && previousTarget ?
+                targets.find(i => i === previousTarget && (!newItem?.canTarget || newItem.canTarget(this._game, newItem, i)))
+                : undefined;
+            return {targets, newTarget};
+        }
+
     private readonly getTargetName = (enemiesPerType: Record<string, number[]>, target: any): string => {
         const ofSameType = enemiesPerType[target.id];
 
@@ -231,7 +234,7 @@ export class CombatService implements ICombatService {
             itemsWon: [],
             enemiesDefeated: []
         };
-        
+
         if (enemy.items) {
             const items = [...enemy.items];
 
