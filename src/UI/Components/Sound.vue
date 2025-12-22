@@ -1,7 +1,7 @@
 <template>
   <audio v-if="getCurrentMusic()" :src="`resources/${getCurrentMusic()}`"
          autoplay class="storyscript-player backgroundmusic-player" loop></audio>
-  <audio v-for="sound of getSoundQueue()" autoplay class="storyscript-player" src="resources/{{ sound[1] }}"
+  <audio v-for="sound of getSoundQueue()" autoplay class="storyscript-player" :src="`resources/${sound[1]}`"
          @ended="soundCompleted(sound[0])"></audio>
 </template>
 <script lang="ts" setup>
@@ -26,7 +26,7 @@ const {sounds, rootElement} = defineProps<{
 
 // This code is here to (re)start music playback as soon as the user interacts with the browser.
 const checkMusicPlaying = () => {
-  if (isPlaying) {
+  if (isPlaying.value) {
     return;
   }
 
@@ -51,11 +51,11 @@ const getCurrentMusic = (): string => {
 
   if (rules.setup.fadeMusicInterval) {
 
-    if (!currentMusic) {
+    if (!currentMusic.value) {
       currentMusic.value = music;
     }
 
-    if (!fadingMusic && music != currentMusic.value) {
+    if (!fadingMusic.value && music != currentMusic.value) {
       fadingMusic.value = true;
       fadeInterval.value = setInterval(() => fade(music), rules.setup.fadeMusicInterval);
     }

@@ -1,20 +1,22 @@
 <template>
-  <sound :sounds="game.sounds" :rootElement="game.UIRootElement"></sound>
-  <game-menu v-if="game.playState === PlayState.Menu"></game-menu>
-  <conversation v-if="game.playState === PlayState.Conversation"></conversation>
-  <trade v-if="game.playState === PlayState.Trade"></trade>
-  <combat v-if="game.playState === PlayState.Combat"></combat>
-  <description v-if="game.playState === PlayState.Description"></description>
-  <div v-if="error" id="error-alert">
-    <div class="error-alert-body alert alert-danger">
-      <h2 class="danger">{{ `An unhandled error occurred: ${error.message}!` }}</h2>
-      <p>{{ error.stackTrace }}</p>
-      <button class="btn btn-primary" @click="reload">Reload</button>
-    </div>
-  </div>
   <div ref="ui-root">
-    <navigation></navigation>
-    <game-container></game-container>
+    <sound :sounds="game.sounds" :rootElement="game.UIRootElement"></sound>
+    <game-menu v-if="game.playState === PlayState.Menu"></game-menu>
+    <conversation v-if="game.playState === PlayState.Conversation"></conversation>
+    <trade v-if="game.playState === PlayState.Trade"></trade>
+    <combat v-if="game.playState === PlayState.Combat"></combat>
+    <description v-if="game.playState === PlayState.Description"></description>
+    <div v-if="error" id="error-alert">
+      <div class="error-alert-body alert alert-danger">
+        <h2 class="danger">{{ `An unhandled error occurred: ${error.message}!` }}</h2>
+        <p>{{ error.stackTrace }}</p>
+        <button class="btn btn-primary" @click="reload">Reload</button>
+      </div>
+    </div>
+    <div>
+      <navigation></navigation>
+      <game-container></game-container>
+    </div>
   </div>
 </template>
 

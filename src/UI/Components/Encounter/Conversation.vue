@@ -4,11 +4,13 @@
                 :openState="PlayState.Conversation"
                 :title="game.person.conversation.title || texts.format(texts.talk, [game.person.name])">
     <div id="conversation">
+      <img v-if="game.person.picture" :alt="game.person.name" :src="game.person.picture"/>
       <div v-if="game.person.conversation.activeNode" id="conversation-options">
         <div v-html="getLines(game.person.conversation.activeNode)"></div>
         <div v-for="reply of game.person.conversation.activeNode.replies">
           <div v-if="reply.available || reply.showWhenUnavailable" :class="{ 'unavailable': !reply.available }">
-            <input :disabled="!reply.available" type="radio" @click="answer(game.person.conversation.activeNode, reply)"/>
+            <input :disabled="!reply.available" type="radio"
+                   @click="answer(game.person.conversation.activeNode, reply)"/>
             <span v-html="getLines(reply)"></span>
           </div>
         </div>
@@ -36,7 +38,6 @@ import {useStateStore} from "ui/StateStore.ts";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {IConversationNode} from "storyScript/Interfaces/conversations/conversationNode.ts";
 import {IConversationReply} from "storyScript/Interfaces/conversations/conversationReply.ts";
-import {IPerson} from "storyScript/Interfaces/person.ts";
 import {storeToRefs} from "pinia";
 
 const store = useStateStore();

@@ -3,7 +3,7 @@
   <p :class="{ 'enemy-health': participantType === 'enemy', 'character-health': participantType === 'character' }">
     {{ texts.format(hitPointText, [participant.currentHitpoints, participant.hitpoints]) }}
   </p>
-  <img v-if="participant.picture" :src="participant.picture" :alt="participant.name" />
+  <img v-if="participant.picture" :src="participant.picture" :alt="participant.name" class="combat-participant">
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";

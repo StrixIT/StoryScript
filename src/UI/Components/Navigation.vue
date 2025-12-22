@@ -44,7 +44,7 @@ import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {isDevelopment} from "../../../constants.ts";
 import {ref, useTemplateRef} from "vue";
 
-const maxLocationsShown = 25;
+const maxLocationsShown = 15;
 const store = useStateStore();
 const {game, availableLocations} = storeToRefs(store);
 const {texts, gameService} = store.services;
