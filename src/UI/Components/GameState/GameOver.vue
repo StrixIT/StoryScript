@@ -3,9 +3,9 @@
     <div class="col-12">
       <h2>{{ texts.youLost }}</h2>
       <p>{{ texts.questFailed }}</p>
-      <div>{{ texts.finalScore }}{{ score }}</div>
+      <div>{{ texts.finalScore }}{{ game.party.score }}</div>
       <button class="btn btn-primary restart" type="button" @click="restart()">{{ texts.tryAgain }}</button>
-      <high-scores v-if="score > 0" :scores="game.highScores"></high-scores>
+      <high-scores v-if="game.party.score > 0" :scores="game.highScores"></high-scores>
     </div>
   </div>
 </template>
@@ -17,10 +17,6 @@ import {GameState} from "storyScript/Interfaces/storyScript.ts";
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, gameService} = store.services;
-
-const {score} = defineProps<{
-  score: number;
-}>();
 
 const restart = (): void => gameService.restart();
 

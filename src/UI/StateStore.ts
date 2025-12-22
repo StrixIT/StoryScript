@@ -80,11 +80,10 @@ export const useStateStore = defineStore('appState', () => {
             event.stopPropagation();
         });
 
-        app.config.errorHandler = (error: any, vm, info) => error.value = {
-            message: error.message,
-            component: vm,
+        app.config.errorHandler = (e: any, vm, info) => error.value = {
+            message: e.message,
             info: info,
-            stackTrace: error.stack
+            stackTrace: e.stack
         };
     }
 

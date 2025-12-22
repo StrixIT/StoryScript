@@ -4,7 +4,7 @@
     --white: #fff;
     --red: red;
     --light-gray: lightgray;
-  }
+}
 
 body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -18,6 +18,23 @@ h2 {
 
 button {
     margin-right: 10px;
+}
+
+
+#error-alert {
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+}
+
+#error-alert, #error-alert > h2 {
+    font-family: 'Lucida Sans';
+}
+
+.error-alert-body {
+    margin-top: 50px;
+    max-width: 50%;
 }
 
 .float-left {
@@ -70,7 +87,7 @@ button {
     font-family: Andalus;
     color: var(--white);;
     background-color: var(--purple);;
-    padding: 0px 10px;
+    padding: 0 10px;
     margin: -10px -10px 10px -10px;
 }
 
@@ -328,7 +345,7 @@ feature {
 }
 
 #level-up #create-character {
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .dialog {
@@ -339,7 +356,7 @@ feature {
 
 .custom-select {
     position: relative;
-    flex: 1 1 0%;
+    flex: 1 1 0;
     min-width: 0;
     margin-bottom: 0;
     display: inline-block;

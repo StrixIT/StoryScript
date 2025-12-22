@@ -5,9 +5,12 @@
   <trade v-if="game.playState === PlayState.Trade"></trade>
   <combat v-if="game.playState === PlayState.Combat"></combat>
   <description v-if="game.playState === PlayState.Description"></description>
-  <div v-if="error">
-    <p class="danger">{{ error.message }}</p>
-    <p>{{ error.stackTrace }}</p>
+  <div v-if="error" id="error-alert">
+    <div class="error-alert-body alert alert-danger">
+      <h2 class="danger">{{ `An unhandled error occurred: ${error.message}!` }}</h2>
+      <p>{{ error.stackTrace }}</p>
+      <button class="btn btn-primary" @click="reload">Reload</button>
+    </div>
   </div>
   <div ref="ui-root">
     <navigation></navigation>
@@ -33,6 +36,10 @@ gameService.watchPlayState(() => stopAutoplay);
 const stopAutoplay = () => {
   const mediaElements = uiRoot.value.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
   mediaElements.forEach((m: Element) => (m as HTMLMediaElement).pause());
+}
+
+const reload = () => {
+  window.location.reload();
 }
 
 </script>
