@@ -22,9 +22,6 @@ export function OpenWithKey(callback?: (game: IGame, barrier: [string, IBarrier]
         }
 
         destination.barriers.delete(barrier);
-
-        if (callback !== undefined && callback) {
-            callback(game, barrier, destination);
-        }
-    }, {'callback': callback});
+        callback?.(game, barrier, destination);
+    }, callback);
 }

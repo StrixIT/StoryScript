@@ -79,24 +79,23 @@ export function parseFunction<T extends Function>(text: string) {
 }
 
 /**
- * This function creates a new function with the callbacks embedded. This makes the new function safe for serialization.
+ * This function creates a new function with the callback embedded. This makes the new function safe for serialization.
  * @param functionDefinition The main function to make safe for serialization.
- * @param callbacks The callback functions to embed. Use the names the callbacks have in the main function body.
- * @returns The main function with the callbacks embedded.
+ * @param callback The callback function to embed.
+ * @returns The main function with the callback embedded.
  */
-export function makeSerializeSafe<T extends Function>(functionDefinition: T, callbacks: {
-    [key: string]: Function
-}): T {
+export function makeSerializeSafe<T extends Function>(functionDefinition: T, callback: Function): T {
     let serialized = serializeFunction(functionDefinition);
 
-    for (const key in callbacks) {
-        const callback = callbacks[key];
+    if (callback) {
+        const functionSignature = /function(\((?:[a-zA-Z]+[, )]+)*)/.exec(serialized);
+        const functionParams = functionSignature[1];
+        const callbackSignature = Array.from(serialized.matchAll(new RegExp('([a-zA-z]+)[\?\.]{0,2}\\(' + functionParams + '\\)', 'gm')))[1];
 
-        if (callback) {
-            if (serialized.indexOf(key) > -1) {
-                const startIndex = serialized.indexOf('{') + 1;
-                serialized = serialized.substring(0, startIndex) + `const ${key} = ${serializeFunction(callback)};` + serialized.substring(startIndex);
-            }
+        if (callbackSignature) {
+            const callbackName = callbackSignature[1];
+            const startIndex = serialized.indexOf('{') + 1;
+            serialized = serialized.substring(0, startIndex) + `const ${callbackName} = ${serializeFunction(callback)};` + serialized.substring(startIndex);
         }
     }
 
