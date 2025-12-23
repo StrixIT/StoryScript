@@ -22,7 +22,8 @@
         <ul class="list-unstyled">
           <li class="inline">
             <button class="btn btn-primary" type="button" @click="cancelBuy()">{{ texts.cancelBuy }}</button>
-            <button class="btn btn-warning" type="button" @click="buy(confirmBuyItem, game.activeCharacter, game.trade)">
+            <button class="btn btn-warning" type="button"
+                    @click="buy(confirmBuyItem, game.activeCharacter, game.trade)">
               {{ texts.confirmBuy }}
             </button>
           </li>
@@ -32,7 +33,7 @@
       <div v-if="game.trade.sell">{{ game.trade.sell.text }}</div>
 
       <p v-if="game.trade.sell.items?.length === 0" class="trade-empty">{{ game.trade.sell.emptyText }}</p>
-      
+
       <ul v-if="game.trade.sell.items?.length > 0 && !confirmSellItem" class="list-unstyled">
         <li v-for="item of game.trade.sell.items" class="inline">
           <button :disabled="!canPay(item, game.trade, game.activeCharacter)" class="btn btn-warning" type="button"
@@ -48,7 +49,8 @@
         <ul class="list-unstyled">
           <li class="inline">
             <button class="btn btn-primary" type="button" @click="cancelSell()">{{ texts.cancelSell }}</button>
-            <button class="btn btn-warning" type="button" @click="sell(confirmSellItem, game.trade, game.activeCharacter)">
+            <button class="btn btn-warning" type="button"
+                    @click="sell(confirmSellItem, game.trade, game.activeCharacter)">
               {{ texts.confirmSell }}
             </button>
           </li>
@@ -82,27 +84,27 @@ const actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | I
 
 const displayPrice = (item: IItem, actualPrice: number): string => tradeService.displayPrice(item, actualPrice);
 
-const cancelBuy = (): void => confirmBuyItem.value = undefined;
+const cancelBuy = (): void => confirmBuyItem.value = null;
 
 const buy = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
-  if (actualPrice(item, buyer, seller) > 0 && !confirmBuyItem) {
+  if (actualPrice(item, buyer, seller) > 0 && !confirmBuyItem.value) {
     confirmBuyItem.value = item;
     return true;
   }
 
-  confirmBuyItem.value = undefined;
+  confirmBuyItem.value = null;
   return tradeService.buy(item, seller);
 }
 
-const cancelSell = (): void => confirmSellItem.value = undefined;
+const cancelSell = (): void => confirmSellItem.value = null;
 
 const sell = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
-  if (actualPrice(item, buyer, seller) > 0 && !confirmSellItem) {
+  if (actualPrice(item, buyer, seller) > 0 && !confirmSellItem.value) {
     confirmSellItem.value = item;
     return true;
   }
 
-  confirmSellItem.value = undefined;
+  confirmSellItem.value = null;
   return tradeService.sell(item, buyer);
 }
 

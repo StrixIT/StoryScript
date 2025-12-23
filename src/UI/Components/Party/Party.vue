@@ -2,7 +2,7 @@
   <div v-if="game.party.characters.length > 1" class="box-container">
     <div class="box-title">{{ game.party.name }}</div>
     <ul class="list-unstyled">
-      <li>{{ texts.currency }} {{ game.party.currency }}</li>
+      <li>{{ texts.partyCurrency }} {{ game.party.currency }}</li>
     </ul>
   </div>
   <div v-for="character of game.party.characters"

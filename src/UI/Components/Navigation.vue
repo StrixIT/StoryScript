@@ -6,30 +6,36 @@
       </div>
       <div class="col-4">
         <div v-if="isDevelopment">
-          <input id="location-selector" 
-                 v-if="availableLocations.length > 1" 
-                 type="text" 
+          <input v-if="availableLocations.length > 1"
+                 id="location-selector"
+                 ref="locationSelector"
+                 aria-autocomplete="list"
                  autocapitalize="off"
                  autocomplete="off"
-                 aria-autocomplete="list"
                  class="form-control"
                  placeholder="Jump to location..."
-                 ref="locationSelector"
-                 @keyup="search"
+                 type="text"
                  @focus="setShowSelection(true)"
                  @focusout="setShowSelection(false)"
+                 @keyup="search"
           />
-          <ul v-if="showSelection" id="location-selector-locations" class="dropdown-menu" :class="showSelection ? 'show' : ''">
-            <li v-for="location of selectedLocations.slice(0, maxLocationsShown)" 
+          <ul v-if="showSelection" id="location-selector-locations" :class="showSelection ? 'show' : ''"
+              class="dropdown-menu">
+            <li v-for="location of selectedLocations.slice(0, maxLocationsShown)"
                 class="dropdown-item"
-                @mouseenter="setActive"
-                @click="jumpToLocation(location.id)">{{ location.name }}</li>
-            <li v-if="selectedLocations.length > maxLocationsShown" class="dropdown-item refine-search"><pre>{{ `More than ${maxLocationsShown} locations\r\nfound.Search to reduce the\r\nsize of the list.` }}</pre></li>
+                @click="jumpToLocation(location.id)"
+                @mouseenter="setActive">{{ location.name }}
+            </li>
+            <li v-if="selectedLocations.length > maxLocationsShown" class="dropdown-item refine-search">
+              <pre>{{ `More than ${maxLocationsShown} locations found.\r\nSearch to reduce the list.` }}</pre>
+            </li>
           </ul>
         </div>
         <div class="float-right">
-          <button type="button" class="btn btn-dark btn-sm" @click="menu()">{{ texts.mainMenuShort }}</button>
-          <button v-if="isDevelopment" id="resetbutton" type="button" class="btn btn-danger btn-sm" @click="reset()">{{ texts.resetWorld }}</button>
+          <button class="btn btn-dark btn-sm" type="button" @click="menu()">{{ texts.mainMenuShort }}</button>
+          <button v-if="isDevelopment" id="resetbutton" class="btn btn-danger btn-sm" type="button" @click="reset()">
+            {{ texts.resetWorld }}
+          </button>
         </div>
         <div class="float-none"></div>
       </div>
@@ -44,7 +50,7 @@ import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {isDevelopment} from "../../../constants.ts";
 import {ref, useTemplateRef} from "vue";
 
-const maxLocationsShown = 15;
+const maxLocationsShown = 20;
 const store = useStateStore();
 const {game, availableLocations} = storeToRefs(store);
 const {texts, gameService} = store.services;
@@ -56,15 +62,15 @@ const showSelection = ref(false);
 const setActive = (event: MouseEvent) => {
   const element = event.currentTarget as HTMLElement;
   const allElements = element.parentElement.children;
-  
+
   for (const el of allElements) {
     el.classList.remove("active");
   }
-  
+
   if (element.classList.contains('active')) {
     element.classList.remove('active');
   } else {
-   element.classList.add('active'); 
+    element.classList.add('active');
   }
 }
 
@@ -75,7 +81,7 @@ const setShowSelection = (value: boolean) => {
       showSelection.value = value;
     }, 100)
   } else {
-    showSelection.value = value; 
+    showSelection.value = value;
   }
 }
 

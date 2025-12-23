@@ -62,6 +62,7 @@ export interface IInterfaceTexts {
     messages?: string;
     hitpoints?: string;
     currency?: string;
+    partyCurrency?: string,
     trade?: string;
     talk?: string;
     examine?: string;
@@ -115,7 +116,7 @@ export interface IInterfaceTexts {
     enemiesDefeated?: string;
     backToGame?: string;
     conversationEnded?: string;
-    
+
     /**
      * A function to build text replacing tokens in a template, e.g. 'it is {0}, {1}' with parameters 'day' and '12:00' becomes 'it is day, 12:00'.
      * If no function is specified, a default implementation is used.
