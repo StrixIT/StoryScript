@@ -23,7 +23,7 @@ button {
 
 #error-alert {
     position: absolute;
-    z-index: 100;
+    z-index: 1500;
     display: flex;
     justify-content: center;
 }

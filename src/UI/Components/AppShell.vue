@@ -33,7 +33,7 @@ const uiRoot = useTemplateRef('ui-root');
 
 onMounted(() => game.value.UIRootElement = uiRoot.value);
 
-gameService.watchPlayState(() => stopAutoplay);
+gameService.watchPlayState(() => stopAutoplay());
 
 const stopAutoplay = () => {
   const mediaElements = uiRoot.value.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');

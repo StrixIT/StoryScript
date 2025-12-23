@@ -34,12 +34,12 @@
                       type="button" @click="dropDownExpanded = !dropDownExpanded" @focusout="dropDownLoseFocus">
                 {{ barrier[1].name }}
               </button>
-              <ul 
-                  v-if="dropDownExpanded" 
-                  :class="dropDownMenuActive" 
-                  class="dropdown-menu action-select" 
-                  @mouseover="mouseOverDropDown = true" 
-                  @mouseleave="mouseOverDropDown = false">
+              <ul
+                  v-if="dropDownExpanded"
+                  :class="dropDownMenuActive"
+                  class="dropdown-menu action-select"
+                  @mouseleave="mouseOverDropDown = false"
+                  @mouseover="mouseOverDropDown = true">
                 <li v-for="action of barrier[1].actions"><a class="dropdown-item" href="#"
                                                             @click="executeBarrierAction(barrier, action, destination)">{{
                     action[1].text
@@ -87,7 +87,7 @@ const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-men
 
 const checkStatus = (action: [string, IAction], status: ActionStatus) =>
     typeof action[1].status === 'function'
-        ? (<any>action[1]).status(game) == status
+        ? action[1].status(game.value) == status
         : action[1].status === undefined ? false : action[1].status == status;
 
 const disableActionButton = (a) => checkStatus(a, ActionStatus.Disabled);

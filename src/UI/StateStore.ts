@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {App, ref, watch} from 'vue';
+import {App, computed, ref} from 'vue';
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
@@ -21,10 +21,8 @@ import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
-import {IEnemy} from "storyScript/Interfaces/enemy.ts";
-import {IDestination} from "storyScript/Interfaces/destination.ts";
 import {Error} from "ui/error.ts";
+import {isDevelopment} from "../../constants.ts";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
@@ -40,12 +38,12 @@ export const useStateStore = defineStore('appState', () => {
     const useCharacterSheet = ref(false);
     const useQuests = ref(false);
 
-    const enemiesPresent = ref(getActiveEntities(game.value.currentLocation?.enemies).length > 0);
-    const activePersons = ref(getActiveEntities<IPerson>(game.value.currentLocation?.persons));
-    const activeEnemies = ref(getActiveEntities<IEnemy>(game.value.currentLocation?.enemies));
-    const activeItems = ref(getActiveEntities<IItem>(game.value.currentLocation?.items));
-    const activeActions = ref(getActiveActions(game.value.currentLocation?.actions));
-    const activeDestinations = ref(getActiveEntities<IDestination>(game.value.currentLocation?.destinations));
+    const enemiesPresent = computed(() => game.value.currentLocation?.enemies.filter(e => !e.inactive).length > 0);
+    const activePersons = computed(() => game.value.currentLocation?.persons.filter(e => !e.inactive) || []);
+    const activeEnemies = computed(() => game.value.currentLocation?.enemies.filter(e => !e.inactive) || []);
+    const activeItems = computed(() => game.value.currentLocation?.items.filter(e => !e.inactive) || []);
+    const activeActions = computed(() => game.value.currentLocation?.actions.filter(i => !i[1].inactive) || []);
+    const activeDestinations = computed(() => game.value.currentLocation?.destinations.filter(e => !e.inactive) || []);
 
     const services = {
         soundService: <ISoundService>null,
@@ -61,15 +59,6 @@ export const useStateStore = defineStore('appState', () => {
         rules: <IRules>null
     };
 
-    watch(() => game.value.currentLocation, (newValue, _) => {
-        enemiesPresent.value = getActiveEntities(game.value.currentLocation?.enemies).length > 0;
-        activePersons.value = getActiveEntities<IPerson>(game.value.currentLocation?.persons);
-        activeEnemies.value = getActiveEntities<IEnemy>(game.value.currentLocation?.enemies);
-        activeItems.value = getActiveEntities<IItem>(game.value.currentLocation?.items);
-        activeActions.value = getActiveActions(game.value.currentLocation?.actions);
-        activeDestinations.value = getActiveEntities<IDestination>(game.value.currentLocation?.destinations);
-    }, {deep: true});
-
     const initErrorHandling = (app: App<Element>) => {
         addEventListener("error", event => {
             error.value = {message: event.message, stackTrace: event.error.stack};
@@ -80,11 +69,13 @@ export const useStateStore = defineStore('appState', () => {
             event.stopPropagation();
         });
 
-        app.config.errorHandler = (e: any, vm, info) => error.value = {
-            message: e.message,
-            info: info,
-            stackTrace: e.stack
-        };
+        if (!isDevelopment) {
+            app.config.errorHandler = (e: any, vm, info) => error.value = {
+                message: e.message,
+                info: info,
+                stackTrace: e.stack
+            };
+        }
     }
 
     const setStoreData = (factory: ServiceFactory) => {
@@ -251,9 +242,3 @@ const getActionIndex = (game: IGame, action: [string, IAction]): { type: ActionT
 
     return {type, index};
 }
-
-const getActiveEntities = <T>(entities: {
-    inactive?: boolean
-}[]): T[] => (entities?.filter(e => !e.inactive) ?? []) as T[];
-
-const getActiveActions = (actions: [string, IAction][]) => (actions?.filter(i => !i[1].inactive) || []);

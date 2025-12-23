@@ -8,21 +8,24 @@
         <h3 class="combat-header">{{ game.combat.roundHeader }}</h3>
 
         <div v-for="enemyRow of enemyRows" class="row enemy-row">
-          <div v-for="enemy of enemyRow" :class="[`col-${(12 / enemyRow.length)}`, { 'unavailable': enemy.currentHitpoints <= 0 }]">
+          <div v-for="enemy of enemyRow"
+               :class="[`col-${(12 / enemyRow.length)}`, { 'unavailable': enemy.currentHitpoints <= 0 }]">
             <combat-participant :participant="enemy"></combat-participant>
           </div>
         </div>
 
         <div v-for="characterRow of characterRows" class="row character-row">
-          <div v-for="turn of characterRow" :class="[`col-${(12 / characterRow.length)}`, { 'unavailable': turn.character.currentHitpoints <= 0 }]">
+          <div v-for="turn of characterRow"
+               :class="[`col-${(12 / characterRow.length)}`, { 'unavailable': turn.character.currentHitpoints <= 0 }]">
             <combat-participant :participant="turn.character"></combat-participant>
             <div v-if="turn.item && turn.character.currentHitpoints > 0">
               <div :class="{ 'not-applicable': !turn.item.targetType }">
                 <span>{{ turn.item.targetType === 'Enemy' ? texts.attack : texts.aid }}</span>
                 <select v-if="filteredTargets(turn).length > 1" v-model="turn.target" class="custom-select">
-                  <option v-for="target of filteredTargets(turn)" :value="target">{{ getTargetName(target) }}</option>
+                  <option v-for="target of filteredTargets(turn)" :value="target">{{ (target as any).name }}</option>
                 </select>
-                <input v-if="filteredTargets(turn).length === 1" v-model="turn.target.name" :disabled="true"
+                <input v-if="filteredTargets(turn).length === 1"
+                       :disabled="true" :value="turn.target?.name"
                        class="single-item"
                        type="text"/>
               </div>
@@ -130,19 +133,17 @@ const actionsEnabled = ref(true);
 const enemyRows = ref<Array<Array<IEnemy>>>(split(game.value.combat.enemies, 3));
 const characterRows = ref<Array<Array<ICombatTurn>>>(split(game.value.combat, 3));
 
-const getTargetName = (target: any) => target.name;
-
 const getItemName = (item: IItem): string => itemService.getItemName(item);
 
 const execute = (action: [string, IAction]) => store.executeAction(action);
 
 const itemChange = (item: IItem, turn: ICombatTurn) => {
   const currentTarget = turn.target;
-  const targets = turn.targetsAvailable.concat(turn.character).filter(t => combatService.canTarget(item, t, turn.character));
+  const targets = turn.targetsAvailable.concat([turn.character]).filter(t => combatService.canTarget(item, t, turn.character));
   turn.target = targets.filter(t => t === currentTarget)[0] ?? targets[0];
 }
 
-const filteredTargets = (turn: ICombatTurn): IEnemy[] | ICombatTurn[] => turn.targetsAvailable.concat(turn.character).filter(t => combatService.canTarget(turn.item, t, turn.character));
+const filteredTargets = (turn: ICombatTurn): IEnemy[] | ICombatTurn[] => turn.targetsAvailable.concat([turn.character]).filter(t => combatService.canTarget(turn.item, t, turn.character));
 
 const fight = (): void => {
   actionsEnabled.value = false;
