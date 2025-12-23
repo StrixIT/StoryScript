@@ -1,9 +1,9 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
 import {StateProperties} from "storyScript/stateProperties.ts";
-import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit";
-import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots";
-import {RunGame} from '../../../Games/MyRolePlayingGame/run';
+import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
+import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
+import {RunGame} from '../../../Games/MyRolePlayingGame/run.ts';
 import {IEnemy} from "../../../Games/MyRolePlayingGame/interfaces/enemy.ts";
 import {IKey} from "../../../Games/MyRolePlayingGame/interfaces/key.ts";
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";

@@ -11,7 +11,7 @@ import {
     IRules
 } from 'storyScript/Interfaces/storyScript';
 import {CharacterService} from 'storyScript/Services/CharacterService';
-import {Rules} from '../../../Games/MyRolePlayingGame/rules';
+import {Rules} from '../../../Games/MyRolePlayingGame/rules.ts';
 import {ICharacterRules} from 'storyScript/Interfaces/rules/characterRules';
 import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions';
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";

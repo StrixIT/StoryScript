@@ -1,6 +1,6 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
-import {RunGame} from "../../../Games/MyRolePlayingGame/run";
+import {RunGame} from "../../../Games/MyRolePlayingGame/run.ts";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IGame} from "../../../Games/MyRolePlayingGame/interfaces/game.ts";
 import {HelperService} from "storyScript/Services/HelperService.ts";

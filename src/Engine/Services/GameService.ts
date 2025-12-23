@@ -78,31 +78,30 @@ export class GameService implements IGameService {
             return;
         }
 
-        let locationName = this._game.party?.currentLocationId;
-        const characterSheet = this._rules.character.getCreateCharacterSheet?.();
-        const hasCreateCharacterSteps = characterSheet?.steps?.length > 0;
-        let isNewGame = false;
+        if (this._game.party) {
+            const locationName = this._game.party?.currentLocationId ?? 'Start';
+            this.resume(locationName);
 
-        if (!hasCreateCharacterSteps && !this._game.party) {
-            isNewGame = true;
-            locationName = 'Start';
-            this.startNewGame(<ICreateCharacter>{});
-        }
-
-        if (this._game.party && locationName) {
-            this.resume(locationName, !isNewGame);
-
-            if (!isNewGame && this._rules.setup.continueGame) {
+            if (this._rules.setup.continueGame) {
                 this._rules.setup.continueGame(this._game);
             }
+
+            return;
+        }
+
+        const characterSheet = this._rules.character.getCreateCharacterSheet?.();
+        const hasCreateCharacterSteps = characterSheet?.steps?.length > 0;
+
+        this._game.party = <IParty>{
+            type: 'party',
+            characters: [],
+            quests: [],
+            score: 0
+        };
+
+        if (!hasCreateCharacterSteps) {
+            this.startNewGame(<ICreateCharacter>{});
         } else {
-            this._game.party = <IParty>{
-                type: 'party',
-                characters: [],
-                quests: [],
-                score: 0
-            };
-            
             this._characterService.setupCharacter();
             this._game.state = GameState.CreateCharacter;
         }
@@ -196,16 +195,13 @@ export class GameService implements IGameService {
         this.watchState<PlayState>('playState', callBack);
     }
 
-    private readonly resume = (locationName: string, setInterceptors: boolean): void => {
+    private readonly resume = (locationName: string): void => {
         if (!this._game.party.characters.some(c => c.currentHitpoints > 0)) {
             this._game.state = GameState.GameOver;
             return;
         }
-
-        if (setInterceptors) {
-            this.setInterceptors();
-        }
-
+        
+        this.setInterceptors();
         this._characterService.checkEquipment();
         const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
         const previousLocationName = this._game.party.previousLocationId;
@@ -294,7 +290,7 @@ export class GameService implements IGameService {
 
         this.initCombinations();
         this._locationService.init();
-        
+
         this._game.changeLocation = (location, travel) => {
             this._locationService.changeLocation(location, travel, this._game);
 
@@ -307,20 +303,19 @@ export class GameService implements IGameService {
             configurable: true,
             get: () => {
                 let result = null;
-                
+
                 if (this._game.maps) {
-                    for (const key in this._game.maps)
-                    {
+                    for (const key in this._game.maps) {
                         const map = this._game.maps[key];
                         const location = map.locations.find(l => l.location === this._game.currentLocation.id);
-                        
+
                         if (location) {
                             result = map;
                             break;
                         }
                     }
                 }
-                
+
                 return result;
             }
         });

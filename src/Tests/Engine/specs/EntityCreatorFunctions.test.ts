@@ -10,7 +10,7 @@ import {
     ILocation,
     Location,
 } from 'storyScript/Interfaces/storyScript';
-import {RunGame} from '../../../Games/MyRolePlayingGame/run';
+import {RunGame} from '../../../Games/MyRolePlayingGame/run.ts';
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
