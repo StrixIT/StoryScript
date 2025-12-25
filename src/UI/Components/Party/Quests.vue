@@ -1,13 +1,13 @@
 <template>
-  <div v-if="showQuests()" class="box-container" id="character-quests">
-    <collapsible :text="texts.quests" :headerClass="'box-title'">
+  <div v-if="!isEmpty(quests)" id="character-quests" class="box-container">
+    <collapsible :headerClass="'box-title'" :text="texts.quests">
       <div id="quest-panel">
         <div v-if="showActiveQuests()">
           <h4>{{ texts.currentQuests }}</h4>
           <ul>
             <li v-for="quest of currentQuests()">
               <span>{{ quest.name }}</span>
-              <div v-html="questStatus(quest)"></div>
+              <div v-html="characterService.questStatus(quest)"></div>
             </li>
           </ul>
         </div>
@@ -15,7 +15,7 @@
           <h4>{{ texts.completedQuests }}</h4>
           <ul>
             <li v-for="quest of completedQuests()">
-              <div v-html="questStatus(quest)"></div>
+              <div v-html="characterService.questStatus(quest)"></div>
             </li>
           </ul>
         </div>
@@ -39,16 +39,12 @@ const {quests} = defineProps<{
 
 useQuests.value = true;
 
-const showQuests = (): boolean => !isEmpty(quests);
+const showActiveQuests = (): boolean => currentQuests().length > 0;
 
-const showActiveQuests = (): boolean => quests.filter(q => !q.completed).length > 0;
-
-const showCompletedQuests = (): boolean => quests.filter(q => q.completed).length > 0;
+const showCompletedQuests = (): boolean => completedQuests().length > 0;
 
 const currentQuests = (): IQuest[] => quests.filter(q => q.completed === false);
 
-const completedQuests = (): IQuest[] =>quests.filter(q => q.completed === true);
-
-const questStatus = (quest: IQuest): string => characterService.questStatus(quest);
+const completedQuests = (): IQuest[] => quests.filter(q => q.completed === true);
 
 </script>

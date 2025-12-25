@@ -35,12 +35,12 @@
                   }}</span>
                 <select v-if="turn.itemsAvailable.length > 1" v-model="turn.item" class="custom-select"
                         @change="itemChange(turn.item, turn)">
-                  <option v-for="item of turn.itemsAvailable" :class="{'unselectable': !itemSelectable(item)}"
-                          :disabled="!itemSelectable(item)"
-                          :value="item">{{ getItemName(item) }}
+                  <option v-for="item of turn.itemsAvailable" :class="{'unselectable': !combatService.isSelectable(item)}"
+                          :disabled="!combatService.isSelectable(item)"
+                          :value="item">{{ itemService.getItemName(item) }}
                   </option>
                 </select>
-                <input v-if="turn.itemsAvailable.length === 1" :disabled="true" :value="getItemName(turn.item)"
+                <input v-if="turn.itemsAvailable.length === 1" :disabled="true" :value="itemService.getItemName(turn.item)"
                        class="single-item"
                        type="text"/>
               </div>
@@ -63,7 +63,7 @@
           <ul class="list-unstyled combat-actions">
             <li v-for="action of game.currentLocation.combatActions">
               <button :class="store.getButtonClass(action)" :disabled="!actionsEnabled" class="btn" type="button"
-                      @click="execute(action)">{{ action[1].text }}
+                      @click="store.executeAction(action)">{{ action[1].text }}
               </button>
             </li>
           </ul>
@@ -104,7 +104,6 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {IEnemy} from "storyScript/Interfaces/enemy.ts";
-import {IAction} from "storyScript/Interfaces/action.ts";
 import {IItem} from "storyScript/Interfaces/item.ts";
 import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
 import {ref} from "vue";
@@ -133,27 +132,25 @@ const actionsEnabled = ref(true);
 const enemyRows = ref<Array<Array<IEnemy>>>(split(game.value.combat.enemies, 3));
 const characterRows = ref<Array<Array<ICombatTurn>>>(split(game.value.combat, 3));
 
-const getItemName = (item: IItem): string => itemService.getItemName(item);
-
-const execute = (action: [string, IAction]) => store.executeAction(action);
-
 const itemChange = (item: IItem, turn: ICombatTurn) => {
   const currentTarget = turn.target;
   const targets = turn.targetsAvailable.concat([turn.character]).filter(t => combatService.canTarget(item, t, turn.character));
   turn.target = targets.filter(t => t === currentTarget)[0] ?? targets[0];
 }
 
-const filteredTargets = (turn: ICombatTurn): IEnemy[] | ICombatTurn[] => turn.targetsAvailable.concat([turn.character]).filter(t => combatService.canTarget(turn.item, t, turn.character));
+const filteredTargets = (turn: ICombatTurn): IEnemy[] | ICombatTurn[] => 
+    turn.targetsAvailable
+        .concat([turn.character])
+        .filter(t => combatService.canTarget(turn.item, t, turn.character));
 
 const fight = (): void => {
   actionsEnabled.value = false;
 
   Promise.resolve(combatService.fight(game.value.combat)).then(() => {
     actionsEnabled.value = true;
+    // Todo: is this line needed?
     characterRows.value = split(game.value.combat, 3) as Array<Array<ICombatTurn>>;
   });
 }
-
-const itemSelectable = (item: IItem) => combatService.isSelectable(item);
 
 </script>

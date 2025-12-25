@@ -1,6 +1,6 @@
 <template>
   <div ref="ui-root">
-    <sound :sounds="game.sounds" :rootElement="game.UIRootElement"></sound>
+    <sound :rootElement="game.UIRootElement" :sounds="game.sounds"></sound>
     <game-menu v-if="game.playState === PlayState.Menu"></game-menu>
     <conversation v-if="game.playState === PlayState.Conversation"></conversation>
     <trade v-if="game.playState === PlayState.Trade"></trade>
@@ -31,7 +31,7 @@ const {game, error} = storeToRefs(store);
 const {gameService} = store.services;
 const uiRoot = useTemplateRef('ui-root');
 
-onMounted(() => game.value.UIRootElement = uiRoot.value);
+onMounted(() => game.value.UIRootElement = uiRoot.value.closest('body'));
 
 gameService.watchPlayState(() => stopAutoplay());
 

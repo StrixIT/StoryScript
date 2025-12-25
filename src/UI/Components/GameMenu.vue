@@ -68,11 +68,9 @@ const {game} = storeToRefs(store);
 const {texts, dataService, gameService} = store.services;
 
 const internalState = ref<string>(PlayState.Menu);
-const menuState = computed(() => {
-  return game.value.playState === PlayState.Menu ? internalState.value ?? PlayState.Menu : null
-});
 const selectedGame = ref<string>(null);
 const saveKeys = ref<string[]>([]);
+const menuState = computed(() => game.value.playState === PlayState.Menu ? internalState.value ?? PlayState.Menu : null);
 
 const restart = (): string => internalState.value = 'ConfirmRestart';
 

@@ -1,18 +1,22 @@
 <template>
   <div id="character-attributes" class="box-container">
-    <collapsible :text="character.name || texts.characterSheet" :headerClass="'box-title'">
+    <collapsible :headerClass="'box-title'" :text="character.name || texts.characterSheet">
       <div class="character-info">
         <div v-if="character.portraitFileName" class="portraitFrame">
-          <img :alt="character.name" class="portrait" :src="character.portraitFileName"/>
+          <img :alt="character.name" :src="character.portraitFileName" class="portrait"/>
         </div>
         <ul id="attributes-panel" class="list-unstyled">
-          <li v-for="attribute of displayCharacterAttributes">
+          <li v-for="attribute of characterService.getSheetAttributes()">
             {{ texts.titleCase(attribute) }} {{ character[attribute] }}
           </li>
           <li>{{ texts.hitpoints }}
             <div class="hitpoint-editor">
               <span v-if="!isDevelopment">{{ character.currentHitpoints }}</span>
-              <input v-else v-model="character.currentHitpoints" :max="character.hitpoints" :min="1" type="number"
+              <input v-else 
+                     v-model="character.currentHitpoints" 
+                     :max="character.hitpoints" 
+                     :min="1" 
+                     type="number"
                      @blur="limitInput($event, character)">
             </div>
             &nbsp;/ {{ character.hitpoints }}
@@ -30,7 +34,6 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {ref} from "vue";
 import {IParty} from "storyScript/Interfaces/party.ts";
 import {isDevelopment} from "../../../../constants.ts";
 
@@ -45,9 +48,7 @@ const {character} = defineProps<{
 
 useCharacterSheet.value = true;
 
-const displayCharacterAttributes = ref<string[]>(characterService.getSheetAttributes());
-
-const limitInput = (event: any, character: ICharacter): void => {
+const limitInput = (_: Event, character: ICharacter): void => {
   if (character.currentHitpoints > character.hitpoints) {
     character.currentHitpoints = character.hitpoints;
   } else if (character.currentHitpoints <= 0) {

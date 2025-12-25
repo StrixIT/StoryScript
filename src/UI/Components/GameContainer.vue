@@ -44,6 +44,6 @@ const store = useStateStore();
 const {game, useEquipment, useBackpack, useQuests, useCharacterSheet} = storeToRefs(store);
 const {texts} = store.services;
 
-const showCharacterPane = computed(() => useCharacterSheet.value || useEquipment.value || useBackpack.value || useQuests.value)
+const showCharacterPane = computed(() => useCharacterSheet.value || useEquipment.value || useBackpack.value || useQuests.value);
 
 </script>

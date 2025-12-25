@@ -57,7 +57,7 @@ const checkStatus = (action: [string, IAction], status: ActionStatus) =>
         : action[1].status === undefined ? false : action[1].status == status;
 
 const execute = (action: [string, IAction]): void => {
-  if (action[1].confirmationText && !confirmAction) {
+  if (action[1].confirmationText && !confirmAction.value) {
     confirmAction.value = action;
     return;
   }

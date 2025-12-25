@@ -4,8 +4,9 @@
     <build-character :sheet="game.createCharacterSheet"></build-character>
     <button
         v-if="game.createCharacterSheet.currentStep >= game.createCharacterSheet.steps.length - 1 || game.createCharacterSheet.steps[game.createCharacterSheet.currentStep].finish"
-        id="start-adventure" :disabled="!distributionDone()" class="btn btn-primary" type="button"
-        @click="startNewGame()">{{ startText() }}
+        id="start-adventure" :disabled="!characterService.distributionDone(game.createCharacterSheet, null)"
+        class="btn btn-primary" type="button"
+        @click="gameService.startNewGame(game.createCharacterSheet)">{{ startText() }}
     </button>
   </div>
 </template>
@@ -41,9 +42,5 @@ const startText = (): string => {
 
   return texts.startAdventure;
 };
-
-const distributionDone = (): boolean => characterService.distributionDone(game.value.createCharacterSheet, null);
-
-const startNewGame = () => gameService.startNewGame(game.value.createCharacterSheet);
 
 </script>

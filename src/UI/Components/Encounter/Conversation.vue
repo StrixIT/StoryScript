@@ -10,7 +10,7 @@
         <div v-for="reply of game.person.conversation.activeNode.replies">
           <div v-if="reply.available || reply.showWhenUnavailable" :class="{ 'unavailable': !reply.available }">
             <input :disabled="!reply.available" type="radio"
-                   @click="answer(game.person.conversation.activeNode, reply)"/>
+                   @click="conversationService.answer(game.person.conversation.activeNode, reply)"/>
             <span v-html="getLines(reply)"></span>
           </div>
         </div>
@@ -43,8 +43,6 @@ import {storeToRefs} from "pinia";
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, conversationService} = store.services;
-
-const answer = (node: IConversationNode, reply: IConversationReply): void => conversationService.answer(node, reply);
 
 const getLines = (nodeOrReply: IConversationNode | IConversationReply): string => nodeOrReply?.lines || null;
 

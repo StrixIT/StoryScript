@@ -7,8 +7,10 @@
         <p>{{ texts.format(texts.levelUpDescription, [character.level.toString()]) }}</p>
         <build-character :sheet="game.createCharacterSheet"></build-character>
         <button v-if="game.createCharacterSheet.currentStep >= game.createCharacterSheet.steps.length - 1"
-                :disabled="!distributionDone()" class="btn btn-primary"
-                type="button" @click="levelUp(character)">{{ texts.completeLevelUp }}
+                :disabled="!characterService.distributionDone(game.createCharacterSheet, null)"
+                class="btn btn-primary"
+                type="button"
+                @click="characterService.levelUp(character)">{{ texts.completeLevelUp }}
         </button>
       </div>
     </div>
@@ -16,16 +18,11 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {storeToRefs} from "pinia";
 import {GameState} from "storyScript/Interfaces/storyScript.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, characterService} = store.services;
-
-const distributionDone = (): boolean => characterService.distributionDone(game.value.createCharacterSheet, null);
-
-const levelUp = (character: ICharacter): ICharacter => characterService.levelUp(character);
 
 </script>

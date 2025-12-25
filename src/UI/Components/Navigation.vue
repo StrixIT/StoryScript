@@ -23,7 +23,7 @@
               class="dropdown-menu">
             <li v-for="location of selectedLocations.slice(0, maxLocationsShown)"
                 class="dropdown-item"
-                @click="jumpToLocation(location.id)"
+                @click="game.changeLocation(location.id)"
                 @mouseenter="setActive">{{ location.name }}
             </li>
             <li v-if="selectedLocations.length > maxLocationsShown" class="dropdown-item refine-search">
@@ -32,8 +32,11 @@
           </ul>
         </div>
         <div class="float-right">
-          <button class="btn btn-dark btn-sm" type="button" @click="menu()">{{ texts.mainMenuShort }}</button>
-          <button v-if="isDevelopment" id="resetbutton" class="btn btn-danger btn-sm" type="button" @click="reset()">
+          <button class="btn btn-dark btn-sm" type="button" @click="game.playState = PlayState.Menu">
+            {{ texts.mainMenuShort }}
+          </button>
+          <button v-if="isDevelopment" id="resetbutton" class="btn btn-danger btn-sm" type="button"
+                  @click="gameService.reset()">
             {{ texts.resetWorld }}
           </button>
         </div>
@@ -89,13 +92,5 @@ const search = () => {
   const searchString = locationSelector.value.value.toLowerCase();
   selectedLocations.value = availableLocations.value.filter(l => l.name.toLocaleLowerCase().includes(searchString));
 }
-
-const jumpToLocation = (id: string) => {
-  game.value.changeLocation(id);
-}
-
-const menu = () => game.value.playState = PlayState.Menu;
-
-const reset = () => gameService.reset();
 
 </script>

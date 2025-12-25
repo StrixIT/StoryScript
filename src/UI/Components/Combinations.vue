@@ -4,8 +4,11 @@
     <div class="row">
       <ul class="list-unstyled col-3">
         <li>
-          <button v-for="c of combineActions" :class="getCombineClass(c)" class="btn" type="button"
-                  @click="selectCombinationAction(c)">{{ c.text }}
+          <button v-for="c of combineActions" 
+                  :class="getCombineClass(c)" 
+                  class="btn" 
+                  type="button"
+                  @click="combinationService.setActiveCombination(c)">{{ c.text }}
           </button>
         </li>
       </ul>
@@ -27,8 +30,6 @@ const {game} = storeToRefs(store);
 const {texts, combinationService} = store.services;
 
 const combineActions = ref<ICombinationAction[]>(combinationService.getCombinationActions());
-
-const selectCombinationAction = (combination: ICombinationAction) => combinationService.setActiveCombination(combination);
 
 const getCombineClass = (action: ICombinationAction): string => game.value.combinations.activeCombination && game.value.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
 

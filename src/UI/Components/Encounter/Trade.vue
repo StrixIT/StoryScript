@@ -9,16 +9,16 @@
       <p v-if="game.trade.buy.items?.length === 0" class="trade-empty">{{ game.trade.buy.emptyText }}</p>
       <ul v-if="game.trade.buy.items?.length > 0 && !confirmBuyItem" class="list-unstyled">
         <li v-for="item of game.trade.buy.items" class="inline">
-          <button :disabled="!canPay(item, game.activeCharacter, game.trade)" class="btn btn-success" type="button"
+          <button :disabled="!tradeService.canPay(item, game.activeCharacter, game.trade)" class="btn btn-success" type="button"
                   @click="buy(item, game.activeCharacter, game.trade)">{{
-              displayPrice(item, actualPrice(item, game.activeCharacter, game.trade))
+              tradeService.displayPrice(item, tradeService.actualPrice(item, game.activeCharacter, game.trade))
             }}
           </button>
         </li>
       </ul>
 
       <div v-if="confirmBuyItem">
-        <p v-html="texts.format(game.trade.buy.confirmationText, [confirmBuyItem.name, actualPrice(confirmBuyItem, game.activeCharacter, game.trade).toString(), texts.currency])"></p>
+        <p v-html="texts.format(game.trade.buy.confirmationText, [confirmBuyItem.name, tradeService.actualPrice(confirmBuyItem, game.activeCharacter, game.trade).toString(), texts.currency])"></p>
         <ul class="list-unstyled">
           <li class="inline">
             <button class="btn btn-primary" type="button" @click="cancelBuy()">{{ texts.cancelBuy }}</button>
@@ -36,16 +36,16 @@
 
       <ul v-if="game.trade.sell.items?.length > 0 && !confirmSellItem" class="list-unstyled">
         <li v-for="item of game.trade.sell.items" class="inline">
-          <button :disabled="!canPay(item, game.trade, game.activeCharacter)" class="btn btn-warning" type="button"
+          <button :disabled="!tradeService.canPay(item, game.trade, game.activeCharacter)" class="btn btn-warning" type="button"
                   @click="sell(item, game.trade, game.activeCharacter)">{{
-              displayPrice(item, actualPrice(item, game.trade, game.activeCharacter))
+              tradeService.displayPrice(item, tradeService.actualPrice(item, game.trade, game.activeCharacter))
             }}
           </button>
         </li>
       </ul>
 
       <div v-if="confirmSellItem">
-        <p v-html="texts.format(game.trade.sell.confirmationText, [confirmSellItem.name, actualPrice(confirmSellItem, game.trade, game.activeCharacter).toString(), texts.currency])"></p>
+        <p v-html="texts.format(game.trade.sell.confirmationText, [confirmSellItem.name, tradeService.actualPrice(confirmSellItem, game.trade, game.activeCharacter).toString(), texts.currency])"></p>
         <ul class="list-unstyled">
           <li class="inline">
             <button class="btn btn-primary" type="button" @click="cancelSell()">{{ texts.cancelSell }}</button>
@@ -78,16 +78,10 @@ const {texts, tradeService} = store.services;
 const confirmBuyItem = ref<IItem>(null);
 const confirmSellItem = ref<IItem>(null);
 
-const canPay = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => tradeService.canPay(item, buyer, seller);
-
-const actualPrice = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): number => tradeService.actualPrice(item, buyer, seller);
-
-const displayPrice = (item: IItem, actualPrice: number): string => tradeService.displayPrice(item, actualPrice);
-
 const cancelBuy = (): void => confirmBuyItem.value = null;
 
 const buy = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
-  if (actualPrice(item, buyer, seller) > 0 && !confirmBuyItem.value) {
+  if (tradeService.actualPrice(item, buyer, seller) > 0 && !confirmBuyItem.value) {
     confirmBuyItem.value = item;
     return true;
   }
@@ -99,7 +93,7 @@ const buy = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacte
 const cancelSell = (): void => confirmSellItem.value = null;
 
 const sell = (item: IItem, buyer: ITrade | ICharacter, seller: ITrade | ICharacter): boolean => {
-  if (actualPrice(item, buyer, seller) > 0 && !confirmSellItem.value) {
+  if (tradeService.actualPrice(item, buyer, seller) > 0 && !confirmSellItem.value) {
     confirmSellItem.value = item;
     return true;
   }

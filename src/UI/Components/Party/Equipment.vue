@@ -2,26 +2,8 @@
   <div v-if="store.showEquipment(character)" class="character-equipment box-container">
     <collapsible :text="texts.equipmentHeader" :headerClass="'box-title'">
       <div class="equipment-panel">
-        <div v-if="isSlotUsed('head')" class="row">
-          <div class="col-12">
-            <div>
-              {{ texts.head }}
-            </div>
-            <div class="item-box" @click="unequipItem(character.equipment.head)">
-              {{ getItemName(character.equipment.head) }}
-            </div>
-          </div>
-        </div>
-        <div v-if="isSlotUsed('amulet')" class="row">
-          <div class="col-12">
-            <div>
-              {{ texts.amulet }}
-            </div>
-            <div class="item-box" @click="unequipItem(character.equipment.amulet)">
-              {{ getItemName(character.equipment.amulet) }}
-            </div>
-          </div>
-        </div>
+        <equipment-slot slot="head" :character="character"></equipment-slot>
+        <equipment-slot slot="amulet" :character="character"></equipment-slot>
         <div class="row">
           <div class="col-3">
             <span v-if="isSlotUsed(['hands', 'rightHand', 'rightRing'])">{{ texts.rightHand }}</span>
@@ -63,36 +45,9 @@
             </div>
           </div>
         </div>
-        <div v-if="isSlotUsed('legs')" class="row">
-          <div class="col-12">
-            <div>
-              {{ texts.legs }}
-            </div>
-            <div class="item-box" @click="unequipItem(character.equipment.legs)">
-              {{ getItemName(character.equipment.legs) }}
-            </div>
-          </div>
-        </div>
-        <div v-if="isSlotUsed('feet')" class="row">
-          <div class="col-12">
-            <div>
-              {{ texts.feet }}
-            </div>
-            <div class="item-box" @click="unequipItem(character.equipment.feet)">
-              {{ getItemName(character.equipment.feet) }}
-            </div>
-          </div>
-        </div>
-        <div v-for="slot of customSlots()" class="row">
-          <div v-if="isSlotUsed(slot)" class="col-12">
-            <div>
-              {{ texts[slot] }}
-            </div>
-            <div class="item-box" @click="unequipItem(character.equipment[slot])">
-              {{ getItemName(character.equipment[slot]) }}
-            </div>
-          </div>
-        </div>
+        <equipment-slot slot="legs" :character="character"></equipment-slot>
+        <equipment-slot slot="feet" :character="character"></equipment-slot>
+        <equipment-slot v-for="slot of customSlots()" :slot="slot" :character="character"></equipment-slot>
       </div>
     </collapsible>
   </div>
