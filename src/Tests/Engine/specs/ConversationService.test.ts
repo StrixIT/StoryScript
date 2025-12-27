@@ -94,5 +94,5 @@ function getService(game?: any) {
         playedAudio: []
     };
 
-    return new ConversationService(game);
+    return new ConversationService(game, null);
 }

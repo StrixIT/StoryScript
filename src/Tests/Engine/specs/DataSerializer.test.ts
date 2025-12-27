@@ -465,7 +465,7 @@ describe("DataSerializer", () => {
             playedAudio: []
         };
         game.activeCharacter = <ICharacter>{};
-        const conversationService = new ConversationService(game);
+        const conversationService = new ConversationService(game, null);
         conversationService.talk(person);
         const result = serializer.createSerializableClone(person);
         const serializedConversationProperties = Object.keys(result.conversation);

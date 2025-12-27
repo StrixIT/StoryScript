@@ -240,7 +240,7 @@ export class ConversationService implements IConversationService {
             }
         });
         
-        this._rules.encounters.initReplies?.(this._game, activeNode);
+        this._rules.encounters?.initReplies?.(this._game, activeNode);
     }
 
     private readonly processReply = (person: IPerson, reply: IConversationReply) => {
