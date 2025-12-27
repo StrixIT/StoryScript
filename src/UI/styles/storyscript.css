@@ -274,12 +274,8 @@ button {
     line-height: 25px;
 }
 
-.character-equipment .item-box.no-border {
-    border: none;
-}
-
-.character-equipment .item-box.side-borders {
-    border-top: none;
+.body-slot {
+    align-content: center;
 }
 
 .question-row, .attribute-row {
