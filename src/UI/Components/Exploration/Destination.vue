@@ -45,14 +45,13 @@ const {destination} = defineProps<{
 
 const dropDownExpanded = ref(false);
 const mouseOverDropDown = ref(false);
+const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-menu-active' : '');
 
 const dropDownLoseFocus = () => {
   if (!mouseOverDropDown.value) {
     dropDownExpanded.value = false;
   }
 }
-
-const dropDownMenuActive = computed(() => dropDownExpanded.value ? 'dropdown-menu-active' : '');
 
 const executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): void => {
   if (game.value.combinations.tryCombine(barrier[1]).success || game.value.combinations.activeCombination) {

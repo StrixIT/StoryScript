@@ -1,6 +1,6 @@
 <template>
-  <div id="exploration">
-    <div v-if="!enemiesPresent && activeActions.length > 0" id="exploration-actions" class="box-container">
+  <div v-if="!enemiesPresent" id="exploration">
+    <div v-if="activeActions.length > 0" id="exploration-actions" class="box-container">
       <div class="box-title">{{ texts.actions }}</div>
       <ul v-if="!confirmAction" class="list-unstyled">
         <li v-for="action of activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
@@ -15,19 +15,17 @@
         <p v-html="confirmAction[1].confirmationText"></p>
         <ul class="list-unstyled">
           <li class="inline">
-            <button class="btn btn-primary" type="button" @click="confirmAction = null">{{
-                texts.cancelAction
-              }}
+            <button class="btn btn-primary" type="button" @click="confirmAction = null">
+              {{ texts.cancelAction }}
             </button>
-            <button class="btn btn-warning" type="button" @click="execute(confirmAction)">{{
-                texts.confirmAction
-              }}
+            <button class="btn btn-warning" type="button" @click="execute(confirmAction)">
+              {{ texts.confirmAction }}
             </button>
           </li>
         </ul>
       </div>
     </div>
-    <div v-if="!enemiesPresent" id="exploration-destinations" class="box-container">
+    <div id="exploration-destinations" class="box-container">
       <div class="box-title">{{ texts.destinations }}</div>
       <ul class="list-unstyled">
         <li v-for="destination of activeDestinations" :class="`inline ${destination.visited ? '' : 'not-'}visited`">

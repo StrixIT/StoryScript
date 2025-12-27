@@ -1,7 +1,7 @@
 import { ICombatTurn } from "./combatTurn";
 import {IEnemy} from "./enemy.ts";
 import {ICharacter} from "./character.ts";
-import {IItem} from "./item.ts";
+import {ICombatWinnings} from "storyScript/Interfaces/combatWinnings.ts";
 
 export interface ICombatSetup<T extends ICombatTurn> extends Array<T> {
     roundHeader: string;
@@ -9,9 +9,5 @@ export interface ICombatSetup<T extends ICombatTurn> extends Array<T> {
     round: number;
     characters: ICharacter[];
     enemies: IEnemy[];
-    winnings: {
-        currency: number;
-        itemsWon: IItem[];
-        enemiesDefeated: IEnemy[];
-    }
+    winnings: ICombatWinnings
 }

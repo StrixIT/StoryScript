@@ -13,7 +13,7 @@
         <div v-if="game.state === 'Play'">
           <encounter></encounter>
           <location-text></location-text>
-          <location-visual :hidden="true"></location-visual>
+          <location-visual></location-visual>
           <action-log></action-log>
           <ground></ground>
           <exploration></exploration>

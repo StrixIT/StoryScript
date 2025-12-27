@@ -30,7 +30,7 @@ const { location, combinations } = defineProps<{
 
 const getFeatureCoordinates = (feature: IFeature): { top: string, left: string } => {
   const coords = feature.coords.split(',');
-  let top = null, left = null;
+  let top: string, left: string;
 
   if (compareString(feature.shape, 'poly')) {
     const x = [], y = [];

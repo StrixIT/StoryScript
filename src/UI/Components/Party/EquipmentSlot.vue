@@ -1,8 +1,8 @@
 <template>
-  <div v-if="isSlotUsed('head')" class="row">
+  <div v-if="isSlotUsed(slot)" class="row">
     <div class="col-12">
       <div>
-        {{ texts.head }}
+        {{ texts[slot] }}
       </div>
       <div class="item-box" @click="itemService.unequipItem(character, character.equipment[slot])">
         {{ itemService.getItemName(character.equipment[slot]) }}
