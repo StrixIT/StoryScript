@@ -83,7 +83,7 @@ export class ServiceFactory {
         this._game = game ?? <IGame>{};
         this._itemService = new ItemService(this._game, this._rules, this._texts);
         this._tradeService = new TradeService(this._itemService, this._game, this._rules, this._texts, this._definitions);
-        this._conversationService = new ConversationService(this._game);
+        this._conversationService = new ConversationService(this._game, this._rules);
 
         this._soundService = new SoundService(this._game, this._rules);
         this._characterService = new CharacterService(this._dataService, this._game, this._rules);

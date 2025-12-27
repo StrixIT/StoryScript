@@ -9,9 +9,10 @@ import {IConversation} from '../Interfaces/conversations/conversation';
 import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
 import {compareString, hasItem} from "storyScript/utilityFunctions.ts";
 import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
+import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 
 export class ConversationService implements IConversationService {
-    constructor(private readonly _game: IGame) {
+    constructor(private readonly _game: IGame, private readonly _rules: IRules) {
     }
 
     talk = (person: IPerson): void => {
@@ -238,6 +239,8 @@ export class ConversationService implements IConversationService {
                 reply.available = this.checkReplyAvailability(activeNode, reply);
             }
         });
+        
+        this._rules.encounters.initReplies?.(this._game, activeNode);
     }
 
     private readonly processReply = (person: IPerson, reply: IConversationReply) => {
