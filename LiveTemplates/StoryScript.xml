@@ -1,0 +1,153 @@
+<templateSet group="StoryScript">
+  <template name="ssdestination" value="{&#10;    name: '$name$',&#10;    target: null$target$&#10;}$END$" description="StoryScript - Add a location destination" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="target" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_EXPRESSION" value="true" />
+      <option name="TS_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="ssbarriers" value="barriers: [&#10;    [ '$id$', {&#10;        name: '$name$',&#10;        actions: [&#10;            $actions$&#10;        ]&#10;    }]&#10;]$END$" description="StoryScript - Add destination barriers" toReformat="false" toShortenFQNames="true">
+    <variable name="id" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="actions" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_EXPRESSION" value="false" />
+      <option name="TS_STATEMENT" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="ssbarrier" value="[ '$id$', {&#10;    name: '$name$',&#10;    actions: [&#10;        $actions$&#10;    ]&#10;}]$END$" description="StoryScript - Add a destination barrier" toReformat="false" toShortenFQNames="true">
+    <variable name="id" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="actions" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="ssfeature" value="{&#10;    name: '$name$',&#10;    combinations: {&#10;        combine: [&#10;            $combine$&#10;        ]&#10;    }&#10;}$END$" description="StoryScript - Add an inline feature" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="combine" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="ssmaplocation" value="{&#10;    location: $location$,&#10;    coords: '$coordinates$'&#10; }$END$" description="StoryScript - Add a map location" toReformat="false" toShortenFQNames="true">
+    <variable name="location" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="coordinates" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="ssaction" value="[ '$id$', {&#10;    text: '$text$',&#10;    execute: (game: IGame) =&gt; {&#10;        $executeFunc$&#10;    }&#10;}]$END$" description="StoryScript - Add an action" toReformat="false" toShortenFQNames="true">
+    <variable name="id" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="executeFunc" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="sscombinationaction" value="{&#10;    text: '$text$',&#10;    preposition: '$preposition$',&#10;    requiresTool: false$requiresTool$,&#10;    failText: (game: IGame, target: ICombinable, tool: ICombinable): string =&gt; &#10;        '$failText$'&#10;}$END$" description="StoryScript - Add a combination action" toReformat="false" toShortenFQNames="true">
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="preposition" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="requiresTool" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="failText" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="sscombinations" value="combinations: {&#10;    combine: [&#10;        $acombination$,&#10;    ]&#10;}$END$" description="StoryScript - Add combinations" toReformat="false" toShortenFQNames="true">
+    <variable name="acombination" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="sscombine" value="{&#10;    combinationType: '$type$',&#10;    match: (game: IGame, target: ICombinable, tool: ICombinable): string | { text: string, removeTarget: boolean } =&gt; {&#10;        return '$matchResult$';&#10;    }&#10;}$END$" description="StoryScript - Add a combination" toReformat="false" toShortenFQNames="true">
+    <variable name="type" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="matchResult" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="ssconversationaction" value="['$id$', (game: IGame, person: IPerson) =&gt; {&#10;    $actionBody$&#10;}]$END$" description="StoryScript - Add a conversation action" toReformat="false" toShortenFQNames="true">
+    <variable name="id" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="actionBody" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="sstrade" value="trade : {&#10;    name: '$name$',&#10;    text: '$text$',&#10;    ownItemsOnly: true$ownItemsOnly$,&#10;    buy: {&#10;        text: '$buyText$',&#10;        emptyText: '$emptyBuyText$',&#10;        itemSelector: (game: IGame, item: IItem): boolean =&gt; {&#10;            return true$buyItemSelector$;&#10;        }&#10;    },&#10;    sell: {&#10;        text: '$sellText$',&#10;        emptyText: '$emptySellText$',&#10;        itemSelector: (game: IGame, item: IItem): boolean =&gt; {&#10;            return true$sellItemSelector$;&#10;        }&#10;    }&#10;}$END$" description="StoryScript - Add a trade object" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="ownItemsOnly" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="buyText" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="emptyBuyText" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="buyItemSelector" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="sellText" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="emptySellText" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="sellItemSelector" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TSX_HTML" value="false" />
+      <option name="TS_CLASS" value="false" />
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_CLASS_MEMBER_STATEMENT" value="false" />
+      <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
+      <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
+      <option name="TypeScript" value="true" />
+    </context>
+  </template>
+</templateSet>
