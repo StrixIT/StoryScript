@@ -1,6 +1,4 @@
 <template>
-  <div>
-    <navigation></navigation>
     <div class="container-fluid body-content">
       <div class="row">
         <div v-if="game.state === 'Play'" id="party-container" :class="{ 'col-4': showCharacterPane }">
@@ -27,7 +25,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
