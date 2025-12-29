@@ -201,6 +201,10 @@ export class DataSynchronizer implements IDataSynchronizer {
     }
 
     private deleteRemovedEntities = (entity: any, pristineEntity: any): void => {
+        if (!pristineEntity) {
+            return;
+        }
+        
         const entityKeys = Object.keys(entity);
         const pristineKeys = Object.keys(pristineEntity);
 
