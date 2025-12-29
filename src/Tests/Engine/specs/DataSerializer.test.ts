@@ -1,6 +1,5 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
-import {RunGame} from "../../../Games/MyRolePlayingGame/run.ts";
 import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IGame} from "../../../Games/MyRolePlayingGame/interfaces/game.ts";
 import {HelperService} from "storyScript/Services/HelperService.ts";
@@ -23,6 +22,7 @@ import {IDestination} from "storyScript/Interfaces/destination.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {ConversationService} from "storyScript/Services/ConversationService.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
+import {initServiceFactory} from "../helpers.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -232,8 +232,7 @@ describe("DataSerializer", () => {
     let serializer: IDataSerializer;
 
     beforeAll(() => {
-        RunGame();
-        serviceFactory = ServiceFactory.GetInstance();
+        serviceFactory = initServiceFactory();
         serializer = serviceFactory.GetDataSerializer();
     });
 
@@ -465,7 +464,7 @@ describe("DataSerializer", () => {
             playedAudio: []
         };
         game.activeCharacter = <ICharacter>{};
-        const conversationService = new ConversationService(game, null);
+        const conversationService = new ConversationService(game, <IRules>{});
         conversationService.talk(person);
         const result = serializer.createSerializableClone(person);
         const serializedConversationProperties = Object.keys(result.conversation);

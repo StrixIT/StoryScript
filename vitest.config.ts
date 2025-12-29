@@ -4,19 +4,12 @@ import gameName from './gameName.js';
 
 export default mergeConfig(viteConfig, defineConfig({
     test: {
-        environmentMatchGlobs: [
-            ['**/Data*.test.ts', 'jsdom'],
-            ['**/ServiceFactory.test.ts', 'jsdom'],
-            ['**/EntityCreatorFunctions.test.ts', 'jsdom'],
-            ['**/Features.test.ts', 'jsdom'],
-            ['**/LocalStorageService.test.ts', 'jsdom'],
-            ['**/ConversationService.test.ts', 'jsdom'],
-        ],
+        environment: 'jsdom',
         coverage: {
             enabled: true,
             provider: 'v8',
             reporter: ['json', 'html'],
-            reportsDirectory: './src/tests/coverage',
+            reportsDirectory: './src/Tests/coverage',
             reportOnFailure: true,
             include: [
                 'src/Engine/**',

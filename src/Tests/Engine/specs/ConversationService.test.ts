@@ -4,6 +4,7 @@ import {IPerson} from "storyScript/Interfaces/person.ts";
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IParty} from "storyScript/Interfaces/party.ts";
 import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
+import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 
 describe("ConversationService", function () {
 
@@ -94,5 +95,5 @@ function getService(game?: any) {
         playedAudio: []
     };
 
-    return new ConversationService(game, null);
+    return new ConversationService(game, <IRules>{});
 }

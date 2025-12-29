@@ -3,7 +3,6 @@ import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
 import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
-import {RunGame} from '../../../Games/MyRolePlayingGame/run.ts';
 import {IEnemy} from "../../../Games/MyRolePlayingGame/interfaces/enemy.ts";
 import {IKey} from "../../../Games/MyRolePlayingGame/interfaces/key.ts";
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
@@ -14,7 +13,6 @@ import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts
 import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
 import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
-import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
@@ -22,6 +20,7 @@ import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {Journal} from "../../../Games/MyRolePlayingGame/quests/journal.ts";
 import {IGroupableItem} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
+import {initServiceFactory} from "../helpers.ts";
 
 const startLocationSkeleton = {
     "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
@@ -196,8 +195,7 @@ describe("DataSynchronizer", () => {
     let dataSynchronizer: IDataSynchronizer;
 
     beforeAll(() => {
-        RunGame();
-        const serviceFactory = ServiceFactory.GetInstance();
+        const serviceFactory = initServiceFactory();
         dataSerializer = serviceFactory.GetDataSerializer();
         dataSynchronizer = serviceFactory.GetDataSynchronizer();
     });
@@ -321,7 +319,7 @@ describe("DataSynchronizer", () => {
             party: <IParty>{},
             playedAudio: [],
             statistics: {},
-            world: {'start': <any>{ ...startLocationSkeleton } },
+            world: {'start': <any>{...startLocationSkeleton}},
             maps: {},
             worldProperties: {}
         };
@@ -352,16 +350,16 @@ describe("DataSynchronizer", () => {
             name: "Dagger",
             isGroupable: true
         };
-        
+
         const pristineEntities = {
             'items': {
                 'dagger': {...dagger}
             }
         };
-        
+
         const serializer = new DataSerializer(pristineEntities);
         const synchronizer = new DataSynchronizer(pristineEntities);
-        
+
         const skeleton = <IParty>serializer.restoreObjects(partyDataWithGroupedItem);
         synchronizer.synchronizeEntityData(skeleton);
         expect(skeleton.characters[0].name).toBe('Test');
@@ -401,46 +399,46 @@ describe("DataSynchronizer", () => {
         expect(skeleton.enterEvents.length).toBe(2);
         expect(skeleton.enterEvents[1][1]).toBeTypeOf('function');
     });
-    
-    test("should restore tuples with arrays as second elements correctly", function() {
+
+    test("should restore tuples with arrays as second elements correctly", function () {
         const expected = {
             attackPriority: [
-                ["Warrior", [1,2,3,4]],
-                ["Wizard", [5,6]]
+                ["Warrior", [1, 2, 3, 4]],
+                ["Wizard", [5, 6]]
             ]
         }
-        
+
         const input = {
             attackPriority: [["Warrior"], ["Wizard"]]
         }
-        
+
         dataSynchronizer.synchronizeEntityData(input, expected);
         expect(Array.isArray(input.attackPriority[1][1])).toBeTruthy();
     });
 
-    test("should restore objects of same type as separate objects", function() {
+    test("should restore objects of same type as separate objects", function () {
         const pristine = {
             locations: {
                 start: {
                     enemies: [
                         Bandit(),
                         Bandit()
-                    ]   
+                    ]
                 }
             },
             enemies: {
                 bandit: Bandit(),
             }
         }
-        
+
         const input = {
             world: {
                 start: {
                     type: 'location',
                     id: 'start',
                     enemies: [
-                        { type: 'enemy', id: 'bandit' },
-                        { type: 'enemy', id: 'bandit' }
+                        {type: 'enemy', id: 'bandit'},
+                        {type: 'enemy', id: 'bandit'}
                     ]
                 }
             }

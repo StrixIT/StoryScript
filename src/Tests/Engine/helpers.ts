@@ -1,6 +1,22 @@
 import { ILocalStorageService } from "../../Engine/Interfaces/services/localStorageService";
+import {ServiceFactory} from "storyScript/ServiceFactory.ts";
+import {RunGame} from "../../Games/MyRolePlayingGame/run.ts";
 
-export function getStorageServiceMock() {
+export const initServiceFactory = (): ServiceFactory => {
+    let factory = ServiceFactory.GetInstance();
+    
+    if (!factory) {
+        RunGame();
+        factory = ServiceFactory.GetInstance();
+        factory.init();
+    } else if (!ServiceFactory.Initialized) {
+        factory.init();
+    }
+
+    return factory;
+}
+
+export const getStorageServiceMock = (): ILocalStorageService => {
     const storage = <Record<string, string>>{};
 
     return <ILocalStorageService>{
@@ -19,7 +35,7 @@ export function getStorageServiceMock() {
     };
 }
 
-export function compareId(id, func) {
-    const name = func.name || func;
+export const compareId = (id: string, func: string | Function): boolean=> {
+    const name = (func as Function).name || func as string;
     return id.toLowerCase() === name.toLowerCase();
 }

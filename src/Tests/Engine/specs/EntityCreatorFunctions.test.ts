@@ -10,23 +10,19 @@ import {
     ILocation,
     Location,
 } from 'storyScript/Interfaces/storyScript';
-import {RunGame} from '../../../Games/MyRolePlayingGame/run.ts';
 import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
-import {
-    customEntity,
-    DynamicEntity,
-    InitEntityCollection
-} from "storyScript/EntityCreatorFunctions.ts";
+import {customEntity, DynamicEntity, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
 import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {Item} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
+import {initServiceFactory} from "../helpers.ts";
 
 describe("EntityCreatorFunctions", function () {
 
     beforeAll(() => {
-        RunGame();
+        initServiceFactory();
     });
 
     test("should create the Start location with read-only properties", function () {
