@@ -68,7 +68,12 @@ const rowClass = (row: (IEnemy | ICombatTurn)[], participant: IEnemy | ICharacte
 
 const fight = (): void => {
   actionsEnabled.value = false;
-  Promise.resolve(combatService.fight(game.value.combat)).then(() => actionsEnabled.value = true);
+
+  Promise.resolve(combatService.fight(game.value.combat)).then(() => {
+    // Refresh the character rows to show the new combat targets. We don't need to do this for enemies.
+    characterRows.value = split(game.value.combat, 3);
+    actionsEnabled.value = true;
+  });
 }
 
 function split(array: any[], size: number): any[] {
