@@ -413,7 +413,7 @@ feature {
     justify-content: center;
 }
 
-.unavailable {
+.unavailable, .empty-slot {
     opacity: .5;
 }
 
