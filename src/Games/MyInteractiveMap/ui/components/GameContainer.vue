@@ -1,20 +1,17 @@
 <template>
-  <div>
-    <navigation></navigation>
-    <div class="container-fluid body-content">
-      <div class="row">
-        <div class="col-6">
-          <location-map :location="game.currentLocation" :map="game.currentMap"></location-map>
+  <div class="container-fluid body-content">
+    <div class="row">
+      <div class="col-6">
+        <location-map></location-map>
+      </div>
+      <div id="location-container" class="col-6">
+        <div v-if="!game.state">
+          {{ texts.loading }}
         </div>
-        <div id="location-container" class="col-6">
-          <div v-if="!game.state">
-            {{ texts.loading }}
-          </div>
 
-          <div v-if="game.state === 'Play'">
-            <location-text :location="game.currentLocation"></location-text>
-            <exploration :location="game.currentLocation"></exploration>
-          </div>
+        <div v-if="game.state === 'Play'">
+          <location-text></location-text>
+          <exploration></exploration>
         </div>
       </div>
     </div>
