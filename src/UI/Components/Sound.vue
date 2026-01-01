@@ -5,7 +5,7 @@
          class="storyscript-player"
          loop>
   </audio>
-  <audio v-for="sound of soundQueue" :src="`resources/${sound[1]}`"
+  <audio v-for="sound of getSoundQueue()" :src="`resources/${sound[1]}`"
          autoplay
          class="storyscript-player"
          @ended="soundCompleted(sound[0])">
@@ -15,7 +15,7 @@
 import {onMounted, onUnmounted, useTemplateRef} from "vue";
 import {useSound} from "ui/Composables/Sound.ts";
 
-const {musicPlayer, soundQueue, getCurrentMusic, checkMusicPlaying, soundCompleted} = useSound();
+const {musicPlayer, getSoundQueue, getCurrentMusic, checkMusicPlaying, soundCompleted} = useSound();
 let interval: NodeJS.Timeout;
 
 const musicRef = useTemplateRef('music-player');

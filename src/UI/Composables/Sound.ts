@@ -8,26 +8,26 @@ export function useSound() {
     const {rules, soundService} = store.services;
 
     const musicPlayer = ref<HTMLAudioElement>(null);
-    
+
     const isPlaying = ref(false);
     const fadeInterval = ref<NodeJS.Timeout>(null);
     const fadingMusic = ref(false);
     const currentMusic = ref<string>(null);
     const currentVolume = ref(1);
 
-    const soundQueue = computed((): [number, string][] => {
-        const queue = [];
-        
+    const soundQueue: [number, string][] = [];
+
+    const getSoundQueue = (): [number, string][] => {
         Array.from(game.value.sounds.soundQueue).forEach(e => {
             if (!e[1].playing) {
-                queue.push([e[0], e[1].value]);
+                soundQueue.push([e[0], e[1].value]);
                 e[1].playing = true;
             }
         });
 
-        return queue;
-    });
-    
+        return soundQueue;
+    }
+
     // This code is here to (re)start music playback as soon as the user interacts with the browser.
     const checkMusicPlaying = () => {
         if (isPlaying.value) {
@@ -83,10 +83,10 @@ export function useSound() {
     const soundCompleted = (soundKey: number) => {
         game.value.sounds.soundQueue.get(soundKey).completeCallBack?.();
         game.value.sounds.soundQueue.delete(soundKey);
-        const index = soundQueue.value.indexOf(soundQueue.value.find(([k, _]) => soundKey === k));
+        const index = soundQueue.indexOf(soundQueue.find(([k, _]) => soundKey === k));
 
         if (index > -1) {
-            soundQueue.value.splice(index, 1);
+            soundQueue.splice(index, 1);
         }
     }
 
@@ -104,10 +104,10 @@ export function useSound() {
 
         musicPlayer.value.volume = currentVolume.value;
     }
-    
+
     return {
         musicPlayer,
-        soundQueue,
+        getSoundQueue,
         checkMusicPlaying,
         getCurrentMusic,
         soundCompleted
