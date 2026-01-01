@@ -6,7 +6,7 @@
     </ul>
   </div>
   <div v-for="character of game.party.characters"
-       :class="{ 'is-active': (<any>character).isActive, 'unavailable': character.currentHitpoints <= 0 }"
+       :class="{ 'is-active': character === activeCharacter, 'unavailable': character.currentHitpoints <= 0 }"
        class="character-container"
        @click="store.setActiveCharacter(character)">
     <character-sheet :character="character" :party="game.party"></character-sheet>
@@ -18,9 +18,12 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
+import {computed} from "vue";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
+
+const activeCharacter = computed(() => game.value.activeCharacter);
 
 </script>

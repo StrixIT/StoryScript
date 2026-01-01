@@ -34,10 +34,11 @@ export class CombatService implements ICombatService {
 
         return Promise.resolve(promise).then(() => {
             combat.forEach((s, i) => {
-                const defeatWithItem = s.item?.targetType === TargetType.Enemy && s.target?.currentHitpoints <= 0 && (s.targetDefeated === undefined || s.targetDefeated);
-                const defeatWithoutItem = (<any>s.target)?.type === TargetType.Enemy.toLowerCase() && s.target?.currentHitpoints <= 0;
+                const defeated = (s.item?.targetType === TargetType.Enemy || (<any>s.target)?.type === TargetType.Enemy.toLowerCase())
+                    && s.target?.currentHitpoints <= 0
+                    && (s.targetDefeated === undefined || s.targetDefeated);
 
-                if (defeatWithItem || defeatWithoutItem) {
+                if (defeated) {
                     this.enemyDefeated(combat, this._game.party.characters[i], s.target);
                 }
             });

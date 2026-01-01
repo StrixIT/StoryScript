@@ -28,16 +28,6 @@ const {description, click, mouseOver, refreshFeatures} = useTextFeatures();
 
 const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
 
-// This array can be used in the template to display translations for world properties.
-const worldProperties: { name: string, value: string }[] = [];
-
-for (const n in game.value.worldProperties) {
-  if (game.value.worldProperties.hasOwnProperty(n) && texts.worldProperties?.hasOwnProperty(n)) {
-    const value = texts.worldProperties[n];
-    worldProperties.push({name: n, value: value});
-  }
-}
-
 onMounted(() => {
   description.value = descriptionRef.value;
   refreshFeatures(true);

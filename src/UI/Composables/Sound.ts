@@ -30,7 +30,7 @@ export function useSound() {
 
     // This code is here to (re)start music playback as soon as the user interacts with the browser.
     const checkMusicPlaying = () => {
-        if (isPlaying.value) {
+        if (!getCurrentMusic() || isPlaying.value) {
             return;
         }
 
