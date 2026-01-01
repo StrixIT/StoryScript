@@ -1,6 +1,6 @@
 <template>
   <div ref="ui-root">
-    <sound :rootElement="game.UIRootElement" :sounds="game.sounds"></sound>
+    <sound></sound>
     <game-menu v-if="game.playState === PlayState.Menu"></game-menu>
     <conversation v-if="game.playState === PlayState.Conversation"></conversation>
     <trade v-if="game.playState === PlayState.Trade"></trade>

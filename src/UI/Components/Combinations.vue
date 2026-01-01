@@ -31,6 +31,7 @@ const {texts, combinationService} = store.services;
 
 const combineActions = ref<ICombinationAction[]>(combinationService.getCombinationActions());
 
-const getCombineClass = (action: ICombinationAction): string => game.value.combinations.activeCombination && game.value.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
+const getCombineClass = (action: ICombinationAction): string => game.value.combinations.activeCombination 
+  && game.value.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
 
 </script>

@@ -97,6 +97,10 @@ export const useStateStore = defineStore('appState', () => {
         services.dataService = serviceFactory.GetDataService();
         availableLocations.value = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
     }
+    
+    const setActiveCharacter = (character: ICharacter) => {
+        game.value.activeCharacter = character;
+    }
 
     const trade = (location: ICompiledLocation, trade: IPerson | ITrade): boolean => {
         const locationTrade = <ITrade>trade;
@@ -201,6 +205,7 @@ export const useStateStore = defineStore('appState', () => {
         activeDestinations,
         initErrorHandling,
         setStoreData,
+        setActiveCharacter,
         showEquipment,
         showDescription,
         getButtonClass,
