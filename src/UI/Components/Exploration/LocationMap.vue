@@ -183,7 +183,7 @@ function navigateMap(map: IMap, mapElement: HTMLElement, show: boolean) {
     parentElement.focus();
 
     // This timeout is needed to allow the UI components to render and have the avatar dimensions available.
-  }, 100);
+  }, 500);
 }
 
 function setCoordinates(element: HTMLElement, left: number, top: number) {

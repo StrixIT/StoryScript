@@ -3,7 +3,7 @@
     <div class="box-title">{{ texts.encounters }}</div>
     <ul class="list-unstyled">
       <li v-for="person of activePersons" :class="game.combinations.getCombineClass(person)"
-          @click="store.tryCombine(person)">
+          @click="game.combinations.tryCombine(person)">
         <span class="person-name">{{ person.name }}</span>
         <div class="inline">
           <button v-if="person.conversation" class="btn btn-info talk" type="button" @click="conversationService.talk(person)">

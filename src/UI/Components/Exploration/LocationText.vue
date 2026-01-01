@@ -93,7 +93,7 @@ const click = (ev: PointerEvent) => {
       const result = game.value.combinations.tryCombine(feature);
       addCombineClass(ev, feature);
 
-      if (result) {
+      if (result.success) {
         refreshFeatures(true);
       }
     }

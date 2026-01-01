@@ -3,7 +3,7 @@
     <collapsible :headerClass="'box-title'" :text="texts.backpack">
       <ul id="backpack-panel" class="list-unstyled">
         <li v-for="item of character.items">
-          <div :class="game.combinations.getCombineClass(item)" @click="store.tryCombine(item)">
+          <div :class="game.combinations.getCombineClass(item)" @click="game.combinations.tryCombine(item)">
             <span>{{ itemService.getItemName(item) }}</span>
             <div id="backpack-button-row" class="inline">
               <button v-if="itemService.isEquippable(item, character) && store.showEquipment(character)"

@@ -8,7 +8,7 @@
   <div v-for="character of game.party.characters"
        :class="{ 'is-active': (<any>character).isActive, 'unavailable': character.currentHitpoints <= 0 }"
        class="character-container"
-       @click="store.setActiveCharacter(character)">
+       @click="game.activeCharacter = character">
     <character-sheet :character="character" :party="game.party"></character-sheet>
     <equipment :character="character"></equipment>
     <backpack :character="character"></backpack>

@@ -1,20 +1,22 @@
 <template>
-  <div v-if="location?.features?.collectionPicture" class="box-container" id="location-visual">
+  <div v-if="location?.features?.collectionPicture" id="location-visual" class="box-container">
     <div class="box-title" v-html="texts.format(texts.youAreHere, [location.name])"></div>
     <div id="visual-features">
-      <img :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id" :alt="location.name">
+      <img :alt="location.name" :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id">
       <map :name="location.id">
-        <area v-for="feature of location.features" href="#0" :shape="feature.shape" :coords="feature.coords" @click="combinations.tryCombine(feature)" :alt="feature.name" />
+        <area v-for="feature of location.features" :alt="feature.name" :coords="feature.coords" :shape="feature.shape"
+              href="#0" @click="combinations.tryCombine(feature)"/>
       </map>
-      <div v-for="feature of location.features" >
-        <img v-if="feature.picture" class="feature-picture" :name="`feature-${feature.id}`" :src="`resources/${feature.picture}`" :style="getFeatureCoordinates(feature)" @click="combinations.tryCombine(feature)" :alt="feature.name" />
+      <div v-for="feature of location.features">
+        <img v-if="feature.picture" :alt="feature.name" :name="`feature-${feature.id}`"
+             :src="`resources/${feature.picture}`" :style="getFeatureCoordinates(feature)"
+             class="feature-picture" @click="combinations.tryCombine(feature)"/>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {storeToRefs} from "pinia";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
@@ -23,7 +25,7 @@ import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombina
 const store = useStateStore();
 const {texts} = store.services;
 
-const { location, combinations } = defineProps<{
+const {location, combinations} = defineProps<{
   location?: ICompiledLocation,
   combinations?: IGameCombinations
 }>();

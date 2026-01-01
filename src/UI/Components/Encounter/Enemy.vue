@@ -4,7 +4,7 @@
     <p>{{ texts.enemiesToFight }}</p>
     <ul class="list-unstyled enemy-list">
       <li v-for="enemy of activeEnemies" :class="game.combinations.getCombineClass(enemy)"
-          @click="store.tryCombine(enemy)">
+          @click="game.combinations.tryCombine(enemy)">
         <span class="enemy-name">{{ enemy.name }}</span>
         <div :class="game.combinations.getCombineClass(enemy)" class="inline">
           <button v-if="hasDescription(enemy)" class="btn btn-info btn-sm" type="button"
