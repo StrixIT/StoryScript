@@ -469,6 +469,11 @@ feature {
     cursor: default;
 }
 
+.show-marker-instructions {
+    display: block;
+    font-size: small;
+}
+
 .map-location-label {
     background-color: white;
     border: solid 1px black;

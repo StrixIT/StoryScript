@@ -114,7 +114,10 @@ export class DefaultTexts {
         itemsTaken: 'Items taken',
         enemiesDefeated: 'Enemies defeated',
         backToGame: 'Back to the game',
-        conversationEnded: 'Your conversation has ended.'
+        conversationEnded: 'Your conversation has ended.',
+        openFullScreenMap: '>',
+        closeFullScreenMap: '<',
+        pressToShowMarkers: 'Press {0} to show location markers'
     }
 
     format = format;

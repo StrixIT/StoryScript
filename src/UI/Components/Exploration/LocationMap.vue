@@ -2,7 +2,14 @@
   <div v-if="map" class="box-container map-container" tabindex="0">
     <p class="map-name">
       {{ map.name }}
-      <span v-if="map.toggleFullScreen" class="map-full-screen-toggle" @click="toggleFullScreen()">></span>
+      <span v-if="map.toggleFullScreen" 
+            class="map-full-screen-toggle"
+            @click="toggleFullScreen()">
+        {{ texts.openFullScreenMap }}
+      </span>
+      <span v-if="markerKey" class="show-marker-instructions">
+        {{ texts.format(texts.pressToShowMarkers, [markerKey]) }}
+      </span>
     </p>
     <img ref="map-element" :alt="map.name" :src="`resources/${map.mapImage}`" class="map-image">
     <img v-if="map.avatarImage" :alt="map.name" :src="`resources/${map.avatarImage}`" class="avatar-image"
@@ -14,11 +21,18 @@
 <script lang="ts" setup>
 import {onMounted, onUpdated, useTemplateRef} from "vue";
 import {useLocationMap} from "ui/Composables/LocationMap.ts";
+import {useStateStore} from "ui/StateStore.ts";
 
+const store = useStateStore();
+const {texts} = store.services;
 const {map, currentMap, mapDialog, prepareMap, toggleFullScreen} = useLocationMap();
 
 const mapRef = useTemplateRef('map-element');
 const dialogRef = useTemplateRef('map-dialog');
+const markerKey = map.value.showMarkersOnKeyPress ? 
+    map.value.showMarkersOnKeyPress.trim() 
+        ? map.value.showMarkersOnKeyPress : 'space' 
+    : null;
 
 onMounted(() => {
   currentMap.value = mapRef.value;

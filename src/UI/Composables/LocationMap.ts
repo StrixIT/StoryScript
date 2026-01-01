@@ -13,6 +13,7 @@ export function useLocationMap() {
 
     const store = useStateStore();
     const {game} = storeToRefs(store);
+    const {texts} = store.services;
 
     const map = computed(() => game.value.currentMap);
     const location = computed(() => game.value.currentLocation);
@@ -25,6 +26,10 @@ export function useLocationMap() {
 
     watch(() => location.value, () => {
         navigateMap(map.value, currentMap.value, false);
+        
+        if (fullScreen.value) {
+            navigateMap(map.value, currentFullScreenMap.value, false);
+        }
     });
 
     function toggleFullScreen() {
@@ -71,7 +76,7 @@ export function useLocationMap() {
                 }
 
                 const closeToggle = mapDialog.value.getElementsByClassName('map-full-screen-toggle')[0] as HTMLSpanElement;
-                closeToggle.innerText = '<';
+                closeToggle.innerText = texts.closeFullScreenMap;
                 closeToggle.onclick = () => toggleFullScreen();
             }
 
