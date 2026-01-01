@@ -388,10 +388,6 @@ feature {
     margin-bottom: -20px;
 }
 
-.is-active {
-    border: solid 5px;
-}
-
 .not-applicable {
     line-height: normal;
     visibility: hidden;
