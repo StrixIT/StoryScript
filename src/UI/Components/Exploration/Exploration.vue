@@ -4,10 +4,12 @@
       <div class="box-title">{{ texts.actions }}</div>
       <ul v-if="!confirmAction" class="list-unstyled">
         <li v-for="action of activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
-          <button :class="store.getButtonClass(action)" :disabled="checkStatus(action, ActionStatus.Disabled)"
+          <button :class="store.getButtonClass(action)"
+                  :disabled="checkStatus(action, ActionStatus.Disabled)"
                   class="btn"
                   type="button"
-                  @click="execute(action)">{{ action[1].text }}
+                  @click="execute(action)">
+            {{ action[1].text }}
           </button>
         </li>
       </ul>

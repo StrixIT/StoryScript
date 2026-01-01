@@ -2,8 +2,10 @@
   <div v-for="barrier of destination.barriers" class="barrier">
     <button v-if="!barrier[1].actions?.length" class="btn btn-outline-primary">{{ barrier[1].name }}</button>
     <div v-else class="dropdown">
-      <button :aria-expanded="dropDownExpanded" class="btn btn-outline-primary dropdown-toggle"
-              type="button" @click="dropDownExpanded = !dropDownExpanded" @focusout="dropDownLoseFocus">
+      <button :aria-expanded="dropDownExpanded"
+              class="btn btn-outline-primary dropdown-toggle"
+              type="button" @click="dropDownExpanded = !dropDownExpanded"
+              @focusout="dropDownLoseFocus">
         {{ barrier[1].name }}
       </button>
       <ul
@@ -12,14 +14,16 @@
           class="dropdown-menu action-select"
           @mouseleave="mouseOverDropDown = false"
           @mouseover="mouseOverDropDown = true">
-        <li v-for="action of barrier[1].actions"><a class="dropdown-item" href="#"
-                                                    @click="executeBarrierAction(barrier, action, destination)">{{
-            action[1].text
-          }}</a></li>
+        <li v-for="action of barrier[1].actions">
+          <a class="dropdown-item" href="#" @click="executeBarrierAction(barrier, action, destination)">
+            {{ action[1].text }}
+          </a>
+        </li>
       </ul>
     </div>
   </div>
-  <button :class="destination.style" :disabled="!destination.target || destination.barriers?.length > 0"
+  <button :class="destination.style"
+          :disabled="!destination.target || destination.barriers?.length > 0"
           class="btn btn-info"
           type="button"
           @click="game.changeLocation(destination.target, true)">
