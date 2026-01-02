@@ -49,6 +49,15 @@ button {
     float: none;
 }
 
+.modal-dialog {
+    max-width: 50%;
+}
+
+.modal-dialog .modal-content {
+    max-height: 95%;
+    overflow-y: auto;
+}
+
 .modal-header {
     display: grid;
 }
@@ -370,6 +379,7 @@ feature {
 }
 
 #location-selector {
+    position: relative;
     float: right;
     max-width: 40%;
 }
@@ -377,8 +387,7 @@ feature {
 #location-selector-locations {
     position: absolute;
     inset: 0 auto auto 0;
-    margin: 0;
-    transform: translate(1661px, 50px);
+    margin-top: 40px;
     cursor: pointer;
 }
 

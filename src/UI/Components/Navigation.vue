@@ -5,9 +5,8 @@
         <h1>{{ texts.gameName }}</h1>
       </div>
       <div class="col-4">
-        <div v-if="isDevelopment">
+        <div v-if="isDevelopment" id="location-selector">
           <input v-if="availableLocations.length > 1"
-                 id="location-selector"
                  ref="locationSelector"
                  aria-autocomplete="list"
                  autocapitalize="off"
