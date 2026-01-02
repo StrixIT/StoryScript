@@ -479,7 +479,7 @@
 		"prefix": "ssAudio",
 		"body": [
 			"<audio controls=\"controls\" autoplay=\"autoplay\">",
-			"\t<source src=\"$1.mp3\" type=\"audio/mp3\" />",
+			"\t<source :src=\"'resources/$1.mp3'\" type=\"audio/mp3\" />",
 			"\tYour browser does not support audio.",
 			"</audio>"
 		],

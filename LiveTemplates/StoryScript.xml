@@ -37,7 +37,7 @@
       <option name="TypeScript" value="true" />
     </context>
   </template>
-  <template name="ssfeature" value="{&#10;    name: '$name$',&#10;    combinations: {&#10;        combine: [&#10;            $combine$&#10;        ]&#10;    }&#10;}$END$" description="StoryScript - Add an inline feature" toReformat="false" toShortenFQNames="true">
+  <template name="ssinlinefeature" value="{&#10;    name: '$name$',&#10;    combinations: {&#10;        combine: [&#10;            $combine$&#10;        ]&#10;    }&#10;}$END$" description="StoryScript - Add an inline feature" toReformat="false" toShortenFQNames="true">
     <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="combine" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
@@ -148,6 +148,117 @@
       <option name="TS_DOT_PROPERTY_ACCESS" value="false" />
       <option name="TS_TOP_LEVEL_STATEMENT" value="false" />
       <option name="TypeScript" value="true" />
+    </context>
+  </template>
+  <template name="ssattributes" value="{&#10;    attributes: [&#10;        $attributes$&#10;    ]&#10;}$END$" description="StoryScript - Add character creation attributes" toReformat="false" toShortenFQNames="true">
+    <variable name="attributes" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_EXPRESSION" value="true" />
+    </context>
+  </template>
+  <template name="ssattribute" value="{&#10;    question: '$question$',&#10;    entries: [&#10;        $entries$&#10;    ]&#10;}$END$" description="StoryScript - Add a character creation attribute" toReformat="false" toShortenFQNames="true">
+    <variable name="question" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="entries" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_EXPRESSION" value="true" />
+    </context>
+  </template>
+  <template name="ssattributeentry" value="{&#10;    attribute: '$attribute$',&#10;    min: $min$,&#10;    max: $max$,&#10;    value: '$value$'&#10;}$END$" description="StoryScript - Add a character creation attribute entry" toReformat="false" toShortenFQNames="true">
+    <variable name="attribute" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="min" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="max" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="value" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_EXPRESSION" value="true" />
+    </context>
+  </template>
+  <template name="ssquestions" value="{&#10;    questions: [&#10;        $questions$&#10;    ]&#10;}$END$" description="StoryScript - Add character creation questions" toReformat="false" toShortenFQNames="true">
+    <variable name="questions" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_EXPRESSION" value="true" />
+    </context>
+  </template>
+  <template name="ssquestion" value="{&#10;    question: '$question$',&#10;    entries: [&#10;        $entries$&#10;    ]&#10;}$END$" description="StoryScript - Add a character creation question" toReformat="false" toShortenFQNames="true">
+    <variable name="question" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="entries" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_EXPRESSION" value="true" />
+    </context>
+  </template>
+  <template name="ssquestionentry" value="{&#10;    text: '$text$',&#10;    value: '$value$',&#10;    bonus: $bonus$&#10;}$END$" description="StoryScript - Add a character creation question entry" toReformat="false" toShortenFQNames="true">
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="value" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="bonus" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="TS_CLASS_MEMBER_EXPRESSION" value="false" />
+      <option name="TS_EXPRESSION" value="true" />
+    </context>
+  </template>
+  <template name="ssdescription" value="&lt;description name=&quot;$name$&quot;&gt;&#10;    $content$&#10;&lt;/description&gt;&#10;$END$" description="StoryScript - Add a description node" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="content" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="ssaudio" value="&lt;audio controls=&quot;controls&quot; autoplay=&quot;autoplay&quot;&gt;&#10;    &lt;source :src=&quot;'resources/$filename$.mp3'&quot; type=&quot;audio/mp3&quot; /&gt;&#10;    Your browser does not support audio.&#10;&lt;/audio&gt;&#10;$END$" description="StoryScript - Add an audio node" toReformat="false" toShortenFQNames="true">
+    <variable name="filename" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="ssvisualfeatures" value="&lt;visual-features img=&quot;$filename$&quot;&gt;&#10;    &lt;area name=&quot;$name$&quot; shape=&quot;$shape$&quot; coords=&quot;$coords$&quot; /&gt;&#10;&lt;/visual-features&gt;$END$" description="StoryScript - Add visual features" toReformat="false" toShortenFQNames="true">
+    <variable name="filename" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="shape" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="coords" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="ssfeature" value="&lt;feature name=&quot;$name$&quot;&gt;$text$&lt;/feature&gt;&#10;$END$" description="StoryScript - Add a feature" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="ssvisualFeature" value="&lt;area name=&quot;$name$&quot; shape=&quot;$shape$&quot; coords=&quot;$coords$&quot; /&gt;&#10;$END$" description="StoryScript - Add a visual feature" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="shape" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="coords" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="ssconversation" value="&lt;conversation&gt;&#10;    &lt;default-reply&gt;&#10;    &lt;/default-reply&gt;&#10;    &lt;node name=&quot;$name$&quot; trigger=&quot;$trigger$&quot;&gt;&#10;        &lt;p&gt;&#10;            $text$&#10;        &lt;/p&gt;&#10;        &lt;replies default-reply=&quot;&quot;&gt;&#10;            $replies$&#10;        &lt;/replies&gt;&#10;    &lt;/node&gt;&#10;&lt;/conversation&gt;&#10;$END$" description="StoryScript - Add a conversation" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="trigger" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="replies" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="ssconversationnode" value="&lt;node name=&quot;$name$&quot; trigger=&quot;$trigger$&quot;&gt;&#10;    &lt;p&gt;&#10;        $text$&#10;    &lt;/p&gt;&#10;    &lt;replies default-reply=&quot;&quot;&gt;&#10;        $replies$&#10;    &lt;/replies&gt;&#10;&lt;/node&gt;&#10;$END$" description="StoryScript - Add a conversation node" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="trigger" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="replies" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="ssconversationreply" value="&lt;reply node=&quot;$name$&quot; set-start=&quot;&quot; requires=&quot;&quot; trigger=&quot;&quot; quest-complete=&quot;&quot;&gt;&#10;    $text$&#10;&lt;/reply&gt;&#10;$END$" description="StoryScript - Add a conversation reply" toReformat="false" toShortenFQNames="true">
+    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
     </context>
   </template>
 </templateSet>
