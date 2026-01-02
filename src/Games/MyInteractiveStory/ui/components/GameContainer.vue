@@ -1,18 +1,15 @@
 <template>
-  <div>
-    <navigation></navigation>
-    <div class="container-fluid body-content">
-      <div class="row">
-        <div id="location-container"
-             :class="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
-          <div v-if="!game.state">
-            {{ texts.loading }}
-          </div>
+  <div class="container-fluid body-content">
+    <div class="row">
+      <div id="location-container"
+           :class="{ 'col-8': game.state === 'Play' && showCharacterPane, 'col-12': game.state !== 'Play' || !showCharacterPane }">
+        <div v-if="!game.state">
+          {{ texts.loading }}
+        </div>
 
-          <div v-if="game.state === 'Play'">
-            <location-text :location="game.currentLocation"></location-text>
-            <exploration :location="game.currentLocation"></exploration>
-          </div>
+        <div v-if="game.state === 'Play'">
+          <location-text :location="game.currentLocation"></location-text>
+          <exploration :location="game.currentLocation"></exploration>
         </div>
       </div>
     </div>

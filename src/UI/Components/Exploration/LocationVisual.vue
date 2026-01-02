@@ -5,12 +5,12 @@
       <img :alt="location.name" :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id">
       <map :name="location.id">
         <area v-for="feature of location.features" :alt="feature.name" :coords="feature.coords" :shape="feature.shape"
-              href="#0" @click="combinations.tryCombine(feature)"/>
+              href="#0" @click="game.combinations.tryCombine(feature)"/>
       </map>
       <div v-for="feature of location.features">
         <img v-if="feature.picture" :alt="feature.name" :name="`feature-${feature.id}`"
              :src="`resources/${feature.picture}`" :style="getFeatureCoordinates(feature)"
-             class="feature-picture" @click="combinations.tryCombine(feature)"/>
+             class="feature-picture" @click="game.combinations.tryCombine(feature)"/>
       </div>
     </div>
   </div>
@@ -21,14 +21,14 @@ import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
+import {computed} from "vue";
+import {storeToRefs} from "pinia";
 
 const store = useStateStore();
+const {game} = storeToRefs(store);
 const {texts} = store.services;
 
-const {location, combinations} = defineProps<{
-  location?: ICompiledLocation,
-  combinations?: IGameCombinations
-}>();
+const location = computed(() => game.value.currentLocation);
 
 const getFeatureCoordinates = (feature: IFeature): { top: string, left: string } => {
   const coords = feature.coords.split(',');

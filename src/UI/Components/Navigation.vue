@@ -81,7 +81,7 @@ const setShowSelection = (value: boolean) => {
     // When losing focus, set a timeout to allow the click handler to fire!
     setTimeout(() => {
       showSelection.value = value;
-    }, 100)
+    }, 200)
   } else {
     showSelection.value = value;
   }
