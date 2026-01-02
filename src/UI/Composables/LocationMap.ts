@@ -1,9 +1,9 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {computed, ref, watch} from "vue";
+import {computed, Ref, ref, watch} from "vue";
 import {IMap} from "storyScript/Interfaces/maps/map.ts";
 
-export function useLocationMap() {
+export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef: Ref<HTMLDialogElement>) {
     const visible: string = 'visible';
     const hidden: string = 'hidden';
     const reachable: string = 'reachable';
@@ -17,16 +17,16 @@ export function useLocationMap() {
 
     const map = computed(() => game.value.currentMap);
     const location = computed(() => game.value.currentLocation);
-    
+
     const fullScreen = ref(false);
     const firstShowFullScreen = ref(true);
-    const mapDialog = ref<HTMLDialogElement>(null);
-    const currentMap = ref<HTMLImageElement>(null);
+    const mapDialog = mapDialogRef;
+    const currentMap = mapImageRef;
     const currentFullScreenMap = ref<HTMLImageElement>(null);
 
     watch(() => location.value, () => {
         navigateMap(map.value, currentMap.value, false);
-        
+
         if (fullScreen.value) {
             navigateMap(map.value, currentFullScreenMap.value, false);
         }
@@ -138,7 +138,10 @@ export function useLocationMap() {
 
         if (coordString) {
             const coords = getCoords(coordString);
-            mapMargins = {x: getMapMargin(mapElement, coords.x, 'width'), y: getMapMargin(mapElement, coords.y, 'height')};
+            mapMargins = {
+                x: getMapMargin(mapElement, coords.x, 'width'),
+                y: getMapMargin(mapElement, coords.y, 'height')
+            };
             mapElement.style.marginLeft = `-${mapMargins.x}px`;
             mapElement.style.marginTop = `-${mapMargins.y}px`;
 
@@ -223,7 +226,7 @@ export function useLocationMap() {
         }
     }
 
-    function showElements (avatar: HTMLElement, labelElements: HTMLCollection, markerElements: HTMLCollection) {
+    function showElements(avatar: HTMLElement, labelElements: HTMLCollection, markerElements: HTMLCollection) {
         setTimeout(() => {
             if (avatar) {
                 avatar.style.visibility = visible;
@@ -236,7 +239,7 @@ export function useLocationMap() {
         }, map.value.transitionTime ?? 1000);
     }
 
-    function setMarkerVisibility (labelElements: HTMLCollection, markerElements: HTMLCollection, visibility: string) {
+    function setMarkerVisibility(labelElements: HTMLCollection, markerElements: HTMLCollection, visibility: string) {
         for (const n in Object.keys(labelElements)) {
             const labelElement = labelElements[n] as HTMLElement;
             labelElement.style.visibility = visibility;
@@ -266,14 +269,12 @@ export function useLocationMap() {
         return mapMargin;
     }
 
-    function getMapElement (parentElement: HTMLElement): HTMLImageElement {
+    function getMapElement(parentElement: HTMLElement): HTMLImageElement {
         return parentElement.getElementsByClassName('map-image')[0] as HTMLImageElement;
     }
-    
+
     return {
         map,
-        currentMap,
-        mapDialog,
         prepareMap,
         toggleFullScreen
     }

@@ -23,13 +23,11 @@ import {useTextFeatures} from "ui/Composables/TextFeatures.ts";
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
-const descriptionRef = useTemplateRef('description');
-const {description, click, mouseOver, refreshFeatures} = useTextFeatures();
+const {description, click, mouseOver, refreshFeatures} = useTextFeatures(useTemplateRef('description'));
 
 const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
 
 onMounted(() => {
-  description.value = descriptionRef.value;
   refreshFeatures(true);
 });
 

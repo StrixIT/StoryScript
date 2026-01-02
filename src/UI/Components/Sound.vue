@@ -15,13 +15,10 @@
 import {onMounted, onUnmounted, useTemplateRef} from "vue";
 import {useSound} from "ui/Composables/Sound.ts";
 
-const {musicPlayer, getSoundQueue, getCurrentMusic, checkMusicPlaying, soundCompleted} = useSound();
+const {getSoundQueue, getCurrentMusic, checkMusicPlaying, soundCompleted} = useSound(useTemplateRef('music-player'));
 let interval: NodeJS.Timeout;
 
-const musicRef = useTemplateRef('music-player');
-
 onMounted(() => {
-  musicPlayer.value = musicRef.value;
   interval = setInterval(checkMusicPlaying, 1000);
 })
 

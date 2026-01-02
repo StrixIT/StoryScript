@@ -1,15 +1,15 @@
 import {addHtmlSpaces, compareString} from "storyScript/utilityFunctions.ts";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {useStateStore} from "ui/StateStore.ts";
-import {ref} from "vue";
+import {Ref} from "vue";
 import {storeToRefs} from "pinia";
 
-export function useTextFeatures() {
+export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {combinationService} = store.services;
-    
-    const description = ref<HTMLDivElement>(null);
+
+    const description = descriptionRef;
 
     const refreshFeatures = (newValue: boolean) => {
         if (!newValue) {

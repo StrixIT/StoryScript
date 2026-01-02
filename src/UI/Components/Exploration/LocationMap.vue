@@ -2,7 +2,7 @@
   <div v-if="map" class="box-container map-container" tabindex="0">
     <p class="map-name">
       {{ map.name }}
-      <span v-if="map.toggleFullScreen" 
+      <span v-if="map.toggleFullScreen"
             class="map-full-screen-toggle"
             @click="toggleFullScreen()">
         {{ texts.openFullScreenMap }}
@@ -25,18 +25,14 @@ import {useStateStore} from "ui/StateStore.ts";
 
 const store = useStateStore();
 const {texts} = store.services;
-const {map, currentMap, mapDialog, prepareMap, toggleFullScreen} = useLocationMap();
+const {map, prepareMap, toggleFullScreen} = useLocationMap(useTemplateRef('map-element'), useTemplateRef('map-dialog'));
 
-const mapRef = useTemplateRef('map-element');
-const dialogRef = useTemplateRef('map-dialog');
-const markerKey = map.value.showMarkersOnKeyPress ? 
-    map.value.showMarkersOnKeyPress.trim() 
-        ? map.value.showMarkersOnKeyPress : 'space' 
+const markerKey = map.value.showMarkersOnKeyPress ?
+    map.value.showMarkersOnKeyPress.trim()
+        ? map.value.showMarkersOnKeyPress : 'space'
     : null;
 
 onMounted(() => {
-  currentMap.value = mapRef.value;
-  mapDialog.value = dialogRef.value;
   prepareMap(map.value, false);
 });
 
