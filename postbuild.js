@@ -15,11 +15,14 @@ const gameInfoPath = `${gamePath}/gameinfo.json`;
 const gameInfo = readFileSync(gameInfoPath);
 
 // 1. Copy the gameinfo.json file.
-fs.copyFile(gameInfoPath, 'dist/gameinfo.json', () => {});
+fs.copyFile(gameInfoPath, 'dist/gameinfo.json', e => console.log(e));
 
 // 2. Include the game sources if specified to do so.
 if (gameInfo.sourcesIncluded) {
-    await zipDirectory(gamePath, 'dist/sources.zip');
+    fs.cpSync(gamePath, 'dist/sources',{ recursive: true }, e => console.log(e));
+    fs.rmSync('dist/sources/resources', { recursive: true }, e => console.log(e));
+    await zipDirectory('dist/sources', 'dist/sources.zip');
+    fs.rmSync('dist/sources', { recursive: true }, e => console.log(e));
 }
 
 // 3. Optimize jpg and png images using sharp.
