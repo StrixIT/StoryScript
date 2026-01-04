@@ -14,25 +14,27 @@ import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
  * @param rules Your game rules
  */
 export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
-    addFunctionExtensions();
-    addArrayExtensions();
-    const definitions = importAssets();
-    const registeredEntities = buildEntities(definitions);
-    new ServiceFactory(nameSpace, definitions, registeredEntities, rules, texts);
+    if (!ServiceFactory.GetInstance()) {
+        addFunctionExtensions();
+        addArrayExtensions();
+        const definitions = importAssets();
+        const registeredEntities = buildEntities(definitions);
+        new ServiceFactory(nameSpace, definitions, registeredEntities, rules, texts);
+    }
 }
 
-export function importAssets(): IDefinitions {
+export function importAssets(modules?: Record<string, unknown>): IDefinitions {
     if (import.meta.env?.VITE_BUILDER) {
-        return loadAssetsWithImport();
+        return loadAssetsWithImport(modules);
     }
 
     /* v8 ignore next 2 */
     throw new Error('No loader found for importing the game assets!');
 }
 
-function loadAssetsWithImport(): IDefinitions {
+function loadAssetsWithImport(modules?: Record<string, unknown>): IDefinitions {
     const definitions = <IDefinitions>{};
-    const modules = import.meta.glob([
+    modules ??= import.meta.glob([
         'game/actions/**/*.ts',
         'game/features/**/*.ts',
         'game/items/**/*.ts',

@@ -3,7 +3,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import {viteStaticCopy} from 'vite-plugin-static-copy';
 import {visualizer} from "rollup-plugin-visualizer";
-import gameName from './gameName.js';
+import gameName from './currentGameName.js';
 import path from 'path';
 import vue from '@vitejs/plugin-vue';
 
@@ -48,7 +48,8 @@ export default defineConfig({
             storyScript: path.resolve(__dirname, './src/Engine'),
             game: gamePath,
             ui: uiPath,
-            $resources: path.resolve(gamePath, 'resources')
+            $resources: path.resolve(gamePath, 'resources'),
+            testGame: path.resolve(__dirname, './src/Games/MyRolePlayingGame')
         }
     },
     plugins: plugins,

@@ -2,7 +2,7 @@ import fs from 'fs';
 import archiver from 'archiver';
 import path, { resolve } from "path";
 import jsonfile from 'jsonfile';
-import gameName from "./gameName.js";
+import gameName from "./currentGameName.js";
 import { fileURLToPath } from "url";
 import sharp from 'sharp';
 

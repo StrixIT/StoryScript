@@ -8,7 +8,8 @@
 
         "paths": {
             "storyScript/*": ["./src/Engine/*"],
-            "ui/*": ["./src/UI/*"]
+            "ui/*": ["./src/UI/*"],
+            "testGame/*": ["./src/Games/MyRolePlayingGame/*"]
         },
         "typeRoots": ["./node_modules/@types"],
         "types": ["node", "vite/client"],

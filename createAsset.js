@@ -1,4 +1,4 @@
-import gameName from './gameName.js';
+import gameName from './currentGameName.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import pkg from 'jsonfile';
 

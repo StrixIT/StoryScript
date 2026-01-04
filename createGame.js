@@ -9,7 +9,7 @@ if (!gameName) {
 }
 
 // Set the game name to the new game.
-await correctFile('gameName.js', /gameName\s{0,}=\s{0,}[\w\'-]{0,};/g, `gameName = \'${gameName}\';`);
+await correctFile('currentGameName.js', /gameName\s{0,}=\s{0,}[\w\'-]{0,};/g, `gameName = \'${gameName}\';`);
 
 const gameRoot = './src/Games/_GameTemplate/';
 const gameDestination = './src/Games/' + gameName;
