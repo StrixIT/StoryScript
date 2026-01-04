@@ -1,5 +1,6 @@
 <template>
   <audio ref="music-player"
+         v-if="getCurrentMusic()"
          :src="`resources/${getCurrentMusic()}`"
          autoplay
          class="storyscript-player"
