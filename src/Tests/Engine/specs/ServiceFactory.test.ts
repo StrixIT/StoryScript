@@ -32,6 +32,18 @@ describe('ServiceFactory', function () {
         const dataSynchronizer = factory.GetDataSynchronizer();
         expect(dataSynchronizer).not.toBeNull();
 
+        const dataService = factory.GetDataService();
+        expect(dataService).not.toBeNull();
+
+        const combatService = factory.GetCombatService();
+        expect(combatService).not.toBeNull();
+
+        const itemService = factory.GetItemService();
+        expect(itemService).not.toBeNull();
+
+        const soundService = factory.GetSoundService();
+        expect(soundService).not.toBeNull();
+        
         const texts = factory.GetTexts();
         expect(texts).not.toBeNull();
 
