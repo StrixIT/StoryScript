@@ -1,7 +1,9 @@
 import {ILocalStorageService} from "../../Engine/Interfaces/services/localStorageService";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {Run} from "storyScript/run.ts";
+import {buildEntities} from "storyScript/EntityCreatorFunctions.ts";
+import {importAssets} from "storyScript/run.ts";
 import {CustomTexts, Rules} from "testGame/types.ts";
+import {addArrayExtensions, addFunctionExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
 
 export const initServiceFactory = (): ServiceFactory => {
     const modules = import.meta.glob([
@@ -15,7 +17,11 @@ export const initServiceFactory = (): ServiceFactory => {
         'testGame/maps/**/*.ts'
     ], {eager: true});
 
-    Run('MyRolePlayingGame', Rules(), CustomTexts(), modules);
+    addFunctionExtensions();
+    addArrayExtensions();
+    const definitions = importAssets(modules);
+    const registeredEntities = buildEntities(definitions);
+    new ServiceFactory('MyRolePlayingGame', definitions, registeredEntities, Rules(), CustomTexts());
     let factory = ServiceFactory.GetInstance();
     factory.init();
     return factory;

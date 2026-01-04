@@ -8,17 +8,18 @@ import {useStateStore} from "ui/StateStore.ts";
 import 'ui/styles/bootstrap-storyscript.scss';
 import 'ui/styles/storyscript.css';
 import 'game/ui/styles/game.css'
+import 'game/run';
 
 let pinia: Pinia;
-let application: App<Element>;
-
-await startStoryScript();
+let application: App<Element>
 
 logTime('Start Vue', () => {
     pinia = createPinia();
     application = createApp(AppShell);
     application.use(pinia);
+});
 
+logTime('Import components', async () => {
     const allComponents = getComponents();
 
     for (const [componentName, component] of allComponents) {
@@ -27,9 +28,13 @@ logTime('Start Vue', () => {
 });
 
 const store = useStateStore();
-const serviceFactory = ServiceFactory.GetInstance();
 store.initErrorHandling(application);
-store.setStoreData(serviceFactory);
+let serviceFactory: ServiceFactory;
+
+logTime('Create ServiceFactory', () => {
+    serviceFactory = ServiceFactory.GetInstance();
+    store.setStoreData(serviceFactory);
+});
 
 logTime('Init game', () => {
     serviceFactory.GetGameService().init();
@@ -38,15 +43,6 @@ logTime('Init game', () => {
 logTime('Mount app', () => {
     application.mount('#app');
 });
-
-async function startStoryScript() {
-    // Use a dynamic import as the game alias is dynamic. It cannot be added to the tsconfig.json file
-    // and will cause a TypeScript error.
-    const runModuleImport = import.meta.glob('game/run');
-    const importKeys = Object.keys(runModuleImport);
-    const runFunction = runModuleImport[importKeys[0]];
-    await runFunction();
-}
 
 function getComponents(): Map<string, any> {
     const combinedTemplates = new Map<string, any>();

@@ -12,14 +12,12 @@ import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
  * @param nameSpace Your game's namespace (e.g. '_GameTemplate')
  * @param texts Your game's custom interface texts
  * @param rules Your game rules
- * @param modules if you need to load modules outside of this function, pass them in. The regular
- * module loading will be skipped. This is used for working with MyRolePlayingGame resources in tests.
  */
-export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts, modules?: Record<string, unknown>) {
+export function Run(nameSpace: string, rules: IRules, texts: IInterfaceTexts) {
     if (!ServiceFactory.GetInstance()) {
         addFunctionExtensions();
         addArrayExtensions();
-        const definitions = importAssets(modules);
+        const definitions = importAssets();
         const registeredEntities = buildEntities(definitions);
         new ServiceFactory(nameSpace, definitions, registeredEntities, rules, texts);
     }
