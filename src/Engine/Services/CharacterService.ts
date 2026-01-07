@@ -257,16 +257,6 @@ export class CharacterService implements ICharacterService {
         }
 
         characterData.steps.forEach(step => {
-            if (step.questions) {
-                step.questions.forEach(question => {
-                    if (question.selectedEntry && character.hasOwnProperty(question.selectedEntry.value)) {
-                        character[question.selectedEntry.value] += question.selectedEntry.bonus;
-                    }
-                });
-            }
-        });
-
-        characterData.steps.forEach(step => {
             if (step.attributes) {
                 step.attributes.forEach(attribute => {
                     attribute.entries.forEach(entry => {
@@ -274,6 +264,16 @@ export class CharacterService implements ICharacterService {
                             character[entry.attribute] = entry.value;
                         }
                     });
+                });
+            }
+        });
+
+        characterData.steps.forEach(step => {
+            if (step.questions) {
+                step.questions.forEach(question => {
+                    if (question.selectedEntry && character.hasOwnProperty(question.selectedEntry.value)) {
+                        character[question.selectedEntry.value] += question.selectedEntry.bonus;
+                    }
                 });
             }
         });
