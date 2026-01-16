@@ -20,7 +20,11 @@ fs.copyFile(gameInfoPath, 'dist/gameinfo.json', () => {});
 // 2. Include the game sources if specified to do so.
 if (gameInfo.sourcesIncluded) {
     fs.cpSync(gamePath, 'dist/sources',{ recursive: true });
-    fs.rmSync('dist/sources/resources', { recursive: true });
+
+    if (fs.existsSync('dist/sources/resources')) {
+        fs.rmSync('dist/sources/resources', {recursive: true});
+    }
+
     await zipDirectory('dist/sources', 'dist/sources.zip');
     fs.rmSync('dist/sources', { recursive: true });
 }
@@ -68,11 +72,11 @@ async function optimizeImages(imageFiles) {
 
 function getImageFiles(dirPath, arrayOfFiles) {
     arrayOfFiles = arrayOfFiles || [];
-    
+
     if (!fs.existsSync(dirPath)) {
         return;
     }
-    
+
     const files = fs.readdirSync(dirPath);
 
     files.forEach(function(file) {

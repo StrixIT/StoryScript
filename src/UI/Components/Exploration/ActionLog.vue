@@ -2,7 +2,7 @@
   <div id="action-log" class="box-container">
     <div class="box-title">{{ texts.messages }}</div>
     <ul class="action-log list-unstyled">
-      <li v-for="message of game.actionLog">{{ message }}</li>
+      <li v-for="message of game.actionLog" v-html="message"></li>
     </ul>
   </div>
 </template>
