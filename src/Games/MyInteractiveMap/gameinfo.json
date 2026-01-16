@@ -3,8 +3,8 @@
     "description": "A demo to showcase the use of visual maps to navigate and enrich a StoryScript game",
     "picture": "",
     "sourcesIncluded": true,
-    "author": {
-        "name": "",
-        "email": ""
-    }
+    "authors": [{
+        "name": "Rutger Schurgers",
+        "email": "rutger@strixit.com"
+    }]
 }
