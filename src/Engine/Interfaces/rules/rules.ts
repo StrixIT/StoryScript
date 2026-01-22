@@ -4,6 +4,7 @@ import {ICharacterRules} from './characterRules';
 import {IExplorationRules} from './explorationRules';
 import {ICombatRules} from './combatRules';
 import {IEncounterRules} from "storyScript/Interfaces/rules/encounterRules.ts";
+import {ICombinationRules} from "storyScript/Interfaces/rules/combinationRules.ts";
 
 export interface IRules {
     /**
@@ -32,7 +33,12 @@ export interface IRules {
     encounters?: IEncounterRules,
 
     /**
+     * Rules for combat.
+     */
+    combat?: ICombatRules,
+
+    /**
      * Rule for combat.
      */
-    combat?: ICombatRules
+    combinations?: ICombinationRules
 }

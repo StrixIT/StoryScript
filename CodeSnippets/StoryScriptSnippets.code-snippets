@@ -548,7 +548,7 @@
 			"\t</replies>",
 			"</node>"
 		],
-		"description": "Add a new conversation reply"
+		"description": "Add a new conversation node"
 	},
 
 	"Reply": {

@@ -48,7 +48,7 @@ export interface ISetupRules {
             For multiple play states: 'play.mp4': [GameState.Intro, GameState.Play].
             Using PlayState: 'combat.mp4': [PlayState.Combat].
             Using Locations: 'start.mp4': [Start].
-            Using a custom function: '': [() => string] (the string value returned from the function should be the music file).
+            Using a custom function: '': [game => string] (the string value returned from the function should be the music file).
         }
      */
     playList?: StateList;

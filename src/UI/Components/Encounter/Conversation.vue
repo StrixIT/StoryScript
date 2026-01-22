@@ -16,7 +16,7 @@
         </div>
       </div>
 
-      <div v-if="!game.person.conversation.activeNode || !game.person.conversation.activeNode.replies.length">
+      <div v-if="!game.person.conversation.activeNode?.replies?.length">
         {{ texts.conversationEnded }}
       </div>
 
