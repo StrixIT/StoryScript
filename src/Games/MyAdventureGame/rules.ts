@@ -1,10 +1,20 @@
-import { IRules, ICombinationAction, ICreateCharacter, ICharacter, ICombinable } from 'storyScript/Interfaces/storyScript';
+import {
+    IRules,
+    ICombinationAction,
+    ICreateCharacter,
+    ICharacter,
+    ICombinable,
+    GameState
+} from 'storyScript/Interfaces/storyScript';
 import { Combinations } from './combinations';
 import { IGame, Character, IEnemy, ICombatSetup } from './types';
 
 export function Rules(): IRules {
     return {
         setup: {
+            playList: {
+                'Contemplate_the_stars.mp3': [GameState.Play]
+            },
             initGame(game: IGame) {
                 game.worldProperties.type = 'Visual'; // Set to 'Text' or 'Visual' to switch between modes.
             },
@@ -32,6 +42,12 @@ export function Rules(): IRules {
                         }
                     }
                 ];
+            }
+        },
+
+        combinations: {
+            success: (game: IGame) => {
+                game.sounds.playSound('kings_quest_6_ding.mp3');
             }
         },
 

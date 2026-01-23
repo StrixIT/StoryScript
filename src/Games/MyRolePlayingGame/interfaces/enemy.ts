@@ -7,5 +7,6 @@ export function Enemy(entity: IEnemy): IEnemy {
 
 export interface IEnemy extends IFeature, StoryScriptIEnemy {
     items?: IItem[];
+    // Add game-specific enemy properties here
     attack?: string;
 }

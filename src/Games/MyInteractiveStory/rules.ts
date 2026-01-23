@@ -4,9 +4,6 @@ import { IGame, IEnemy, Character, ICombatSetup } from './types';
 export function Rules(): IRules {
     return {
         setup: {
-            playList: {
-                'Contemplate_the_stars.mp3': [GameState.Play]
-            },
             getCombinationActions: (): ICombinationAction[] => {
                 return [
                     // Add combination action names here if you want to use this feature.

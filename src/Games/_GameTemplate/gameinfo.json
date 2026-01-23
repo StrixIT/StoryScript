@@ -3,8 +3,8 @@
     "description": "",
     "picture": "",
     "sourcesIncluded": false,
-    "author": {
+    "authors": [{
         "name": "",
         "email": ""
-    }
+    }]
 }
