@@ -2,9 +2,7 @@ import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 
 export const  getDemoMode = (serviceFactory: ServiceFactory) => {
-    const gameRef = serviceFactory.GetGame();
     const conversationService = serviceFactory.GetConversationService();
-    const joe = gameRef.locations['start'].persons[0];
     
     return <IDemoMode>{
         runningDemo: true,
@@ -26,7 +24,7 @@ export const  getDemoMode = (serviceFactory: ServiceFactory) => {
         showDemoPlayText: true,
         steps: [{
             action: game => {
-                conversationService.talk(joe);
+                conversationService.talk(game.locations['start'].persons[0]);
             },
             delay: 2000
         },{

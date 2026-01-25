@@ -119,7 +119,7 @@ export const useStateStore = defineStore('appState', () => {
 
     const showEquipment = (character: ICharacter): boolean =>
         useEquipment
-        && character
+        && character?.equipment
         && Object.keys(character.equipment)
             .some(k => (<any>character.equipment)[k] !== undefined);
 

@@ -21,10 +21,11 @@ let demoTimer: NodeJS.Timeout;
 let demoTextTimer: NodeJS.Timeout;
 
 const startGame = () => {
-  demoTimer = null;
-  demoTextTimer = null;
+  clearTimeout(demoTimer);
+  clearTimeout(demoTextTimer);
   runningDemo.value = false;
   gameService.restart();
+  game.value.playState = null;
 }
 
 onMounted(() => {
