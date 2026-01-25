@@ -117,7 +117,9 @@ export class DefaultTexts {
         conversationEnded: 'Your conversation has ended.',
         openFullScreenMap: '>',
         closeFullScreenMap: '<',
-        pressToShowMarkers: 'Press {0} to show location markers'
+        pressToShowMarkers: 'Press {0} to show location markers',
+        startGame: 'Start',
+        demoPlayText: "Auto-playing"
     }
 
     format = format;

@@ -46,8 +46,24 @@ export class GameService implements IGameService {
         private readonly _texts: IInterfaceTexts,
     ) {
     }
+    
+    initDemo = (party: IParty) => {
+        this._game.helpers = this._helperService;
+        this._game.statistics = {};
+        this._game.worldProperties = {};
+        this._game.party = party;
+
+        this._rules.setup?.initGame?.(this._game);
+        this.initGame([]);
+        this.initTexts();
+        this.resume('Start');
+    }
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
+        if (this._game.demoMode?.runningDemo) {
+            this._game.demoMode.runningDemo = false;
+        }
+        
         this._game.helpers = this._helperService;
 
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);

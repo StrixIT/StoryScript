@@ -1,5 +1,7 @@
 ﻿import { IRules, ICreateCharacter, ICharacter, GameState } from 'storyScript/Interfaces/storyScript';
-import { IGame, Character, ICombatSetup, IEnemy } from './types';
+import {IGame, Character, ICombatSetup, IEnemy, IParty} from './types';
+import {getDemoMode} from "testGame/demoMode.ts";
+import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 
 export function Rules(): IRules {
     return {
@@ -10,6 +12,21 @@ export function Rules(): IRules {
             },
 
             intro: false,
+            titleScreen: {
+                showTitleScreen: true,
+                demoParty: <IParty>{
+                    characters: [{
+                        name: 'Rutger',
+                        strength: 2,
+                        agility: 1,
+                        intelligence: 2,
+                        hitpoints: 10,
+                        currentHitpoints: 10,
+                        equipment: {}
+                    }]
+                },
+                getDemoMode: (serviceFactory: ServiceFactory) => getDemoMode(serviceFactory)
+            },
             gameStart(game) {
                 game.party.currency ??= 0;
             },

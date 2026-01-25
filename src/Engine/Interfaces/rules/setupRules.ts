@@ -1,6 +1,9 @@
 import { IGame } from '../game';
 import { ICombinationAction } from '../combinations/combinationAction';
 import { StateList } from '../stateList';
+import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
+import {ServiceFactory} from "storyScript/ServiceFactory.ts";
+import {ITitleScreen} from "storyScript/Interfaces/rules/titleScreen.ts";
 
 export interface ISetupRules {
     /**
@@ -9,6 +12,11 @@ export interface ISetupRules {
      */
     numberOfCharacters?: number;
 
+    /**
+     * Set this if you want to use a title screen.
+     */
+    titleScreen?: ITitleScreen;
+    
     /**
      * Set this to true if you want to show an intro screen when the game starts.
      */

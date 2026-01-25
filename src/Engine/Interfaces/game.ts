@@ -16,6 +16,7 @@ import {ICombatTurn} from './combatTurn';
 import {ISoundPlayer} from "./soundPlayer.ts";
 import { IMap } from './maps/map.ts';
 import {IGameCombinations} from "./combinations/gameCombinations.ts";
+import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 
 /**
  * The StoryScript main game object.
@@ -89,6 +90,11 @@ export interface IGame {
      * The current state of play of the game.
      */
     playState: PlayState;
+
+    /**
+     * True when the game is running in demo mode, false otherwise.
+     */
+    demoMode: IDemoMode;
 
     /**
      * The person the player is currently interacting with.

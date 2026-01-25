@@ -37,7 +37,18 @@ logTime('Create ServiceFactory', () => {
 });
 
 logTime('Init game', () => {
-    serviceFactory.GetGameService().init();
+    const game = serviceFactory.GetGame();
+    const rules = serviceFactory.GetRules();
+    const gameService = serviceFactory.GetGameService();
+    const demoParty = rules.setup?.titleScreen?.demoParty;
+            
+    if (demoParty) {
+        gameService.initDemo(demoParty);
+        game.demoMode = rules.setup.titleScreen.getDemoMode(serviceFactory);
+        
+    } else {
+        gameService.init();
+    }
 });
 
 logTime('Mount app', () => {

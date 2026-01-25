@@ -30,6 +30,8 @@ export const useStateStore = defineStore('appState', () => {
     const availableLocations = ref<{ id: string, name: string }[]>();
 
     const game = ref<IGame>(<IGame>{});
+    
+    const runningDemo = ref<boolean>(false);
 
     const useBackpack = ref(false);
     const useGround = ref(false);
@@ -190,6 +192,7 @@ export const useStateStore = defineStore('appState', () => {
     return {
         error,
         game,
+        runningDemo,
         useGround,
         useBackpack,
         useEquipment,
