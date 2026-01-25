@@ -25,4 +25,9 @@ export interface IDemoMode {
      * True if you want to show the text that demo mode is in progress, false otherwise.
      */
     showDemoPlayText?: boolean;
+
+    /**
+     * Restarts the demo. This function is set by StoryScript, you don't need to do it yourself.
+     */
+    restart?: () => void;
 }

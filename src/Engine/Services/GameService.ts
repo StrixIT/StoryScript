@@ -51,6 +51,8 @@ export class GameService implements IGameService {
         this._game.helpers = this._helperService;
         this._game.statistics = {};
         this._game.worldProperties = {};
+        this._game.locations = null;
+        this._game.maps = null;
         this._game.party = party;
 
         this._rules.setup?.initGame?.(this._game);

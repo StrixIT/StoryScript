@@ -43,8 +43,13 @@ logTime('Init game', () => {
     const demoParty = rules.setup?.titleScreen?.demoParty;
             
     if (demoParty) {
-        gameService.initDemo(demoParty);
+        gameService.initDemo(structuredClone(demoParty));
         game.demoMode = rules.setup.titleScreen.getDemoMode(serviceFactory);
+        
+        game.demoMode.restart = () => {
+            gameService.initDemo(structuredClone(demoParty));
+            game.demoMode = rules.setup.titleScreen.getDemoMode(serviceFactory);
+        }
         
     } else {
         gameService.init();

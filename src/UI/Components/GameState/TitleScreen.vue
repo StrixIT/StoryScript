@@ -52,7 +52,16 @@ onMounted(() => {
 
 function runDemoStep(demoMode: IDemoMode, stepNumber: number) {
   if (stepNumber >= demoMode.steps.length) {
-    demoTimer = null;
+    demoTimer = setTimeout(() => {
+      demoTimer = null;
+      demoMode.restart();
+
+      demoTimer = setTimeout(() => {
+        runDemoStep(demoMode, 0);
+      }, demoMode.steps[0].delay)
+      
+    }, demoMode.steps[stepNumber - 1].delay);
+    
     return;
   }
   
