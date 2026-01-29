@@ -119,7 +119,7 @@ export class DefaultTexts {
         closeFullScreenMap: '<',
         pressToShowMarkers: 'Press {0} to show location markers',
         startGame: 'Start',
-        demoPlayText: "Auto-playing"
+        autoplayText: "Auto-playing"
     }
 
     format = format;

@@ -37,20 +37,12 @@ logTime('Create ServiceFactory', () => {
 });
 
 logTime('Init game', () => {
-    const game = serviceFactory.GetGame();
     const rules = serviceFactory.GetRules();
     const gameService = serviceFactory.GetGameService();
-    const demoParty = rules.setup?.titleScreen?.demoParty;
             
-    if (demoParty) {
-        gameService.initDemo(structuredClone(demoParty));
-        game.demoMode = rules.setup.titleScreen.getDemoMode(serviceFactory);
-        
-        game.demoMode.restart = () => {
-            gameService.initDemo(structuredClone(demoParty));
-            game.demoMode = rules.setup.titleScreen.getDemoMode(serviceFactory);
-        }
-        
+    if (rules.setup?.titleScreen?.getDemoMode) {
+        const demoConfig = rules.setup.titleScreen.getDemoMode(serviceFactory);
+        gameService.initDemo(demoConfig);
     } else {
         gameService.init();
     }

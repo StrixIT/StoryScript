@@ -17,6 +17,7 @@ import {ISoundPlayer} from "./soundPlayer.ts";
 import { IMap } from './maps/map.ts';
 import {IGameCombinations} from "./combinations/gameCombinations.ts";
 import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
+import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
 
 /**
  * The StoryScript main game object.
@@ -92,9 +93,14 @@ export interface IGame {
     playState: PlayState;
 
     /**
-     * True when the game is running in demo mode, false otherwise.
+     * The autoplay service to autoplay (parts of) your game and run your game in demo mode.
      */
-    demoMode: IDemoMode;
+    autoplay: IAutoplayService;
+
+    /**
+     * True if autoplay is in progress, false otherwise.
+     */
+    autoplaying: boolean;
 
     /**
      * The person the player is currently interacting with.

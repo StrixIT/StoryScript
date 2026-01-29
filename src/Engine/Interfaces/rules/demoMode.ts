@@ -1,33 +1,19 @@
-import {IDemoStep} from "storyScript/Interfaces/rules/demoStep.ts";
+import {IAutoplayStep} from "storyScript/Interfaces/services/autoplayStep.ts";
+import {IParty} from "testGame/interfaces/party.ts";
 
 export interface IDemoMode {
     /**
-     * The transition time to use to fade to the game.
-     */
-    startTransitionDelay?: string;
-    
-    /**
      * The number of milliseconds to wait before starting the game demo.
      */
-    startInterval: number;
+    startDelay: number;
 
     /**
-     * The steps to play for your game's demo.
+     * The party to use when playing the demo.
      */
-    steps: IDemoStep[];
+    party: IParty;
 
     /**
-     * True if the game demo is running, false otherwise.
+     * The steps to play during the demo.
      */
-    runningDemo: boolean;
-
-    /**
-     * True if you want to show the text that demo mode is in progress, false otherwise.
-     */
-    showDemoPlayText?: boolean;
-
-    /**
-     * Restarts the demo. This function is set by StoryScript, you don't need to do it yourself.
-     */
-    restart?: () => void;
+    steps: IAutoplayStep[];
 }

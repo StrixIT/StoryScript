@@ -528,16 +528,24 @@ dialog {
     outline: none;
 }
 
-#title-screen {
+#autoplay-overlay, #title-screen {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 1200;
     width: 100%;
     height: 100%;
-    background: white;
     align-content: center;
     text-align: center;
+}
+
+#autoplay-overlay {
+    z-index: 1200;
+}
+
+#title-screen {
+    z-index: 1300;
+    background: white;
 }
 
 #title-screen h1 {

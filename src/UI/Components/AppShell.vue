@@ -1,7 +1,8 @@
 <template>
   <div ref="ui-root">
     <sound></sound>
-    <title-screen v-if="runningDemo"></title-screen>
+    <autoplay></autoplay>
+    <title-screen v-if="rules.setup?.titleScreen?.showTitleScreen"></title-screen>
     <div>
       <game-menu v-if="game.playState === PlayState.Menu"></game-menu>
       <conversation v-if="game.playState === PlayState.Conversation"></conversation>
@@ -30,14 +31,13 @@ import {onMounted, useTemplateRef} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 
 const store = useStateStore();
-const {game, runningDemo, error} = storeToRefs(store);
-const {gameService, dataService} = store.services;
+const {game, error} = storeToRefs(store);
+const {gameService, dataService, rules} = store.services;
 const uiRoot = useTemplateRef('ui-root');
 
 const saveStates = [PlayState.Combat, PlayState.Conversation, PlayState.Trade];
 
 onMounted(() => {
-  runningDemo.value = game.value.demoMode?.runningDemo ?? false;
   game.value.UIRootElement = uiRoot.value.closest('body');
 });
 

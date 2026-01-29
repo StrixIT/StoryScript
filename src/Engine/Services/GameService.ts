@@ -31,6 +31,8 @@ import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreator
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
+import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
+import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 
 export class GameService implements IGameService {
     constructor
@@ -40,6 +42,7 @@ export class GameService implements IGameService {
         private readonly _characterService: ICharacterService,
         private readonly _combinationService: ICombinationService,
         private readonly _soundService: ISoundService,
+        private readonly _autoplayService: IAutoplayService,
         private readonly _rules: IRules,
         private readonly _helperService: IHelpers,
         private readonly _game: IGame,
@@ -47,7 +50,13 @@ export class GameService implements IGameService {
     ) {
     }
     
-    initDemo = (party: IParty) => {
+    initDemo = (demoConfig: IDemoMode) => {
+        if (this._game.autoplaying) {
+            this._game.autoplaying = false;    
+        }
+        
+        const party = structuredClone(demoConfig.party);
+        
         this._game.helpers = this._helperService;
         this._game.statistics = {};
         this._game.worldProperties = {};
@@ -59,13 +68,10 @@ export class GameService implements IGameService {
         this.initGame([]);
         this.initTexts();
         this.resume('Start');
+        this._game.autoplay.startDemoMode(demoConfig, () => this.initDemo(demoConfig));
     }
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
-        if (this._game.demoMode?.runningDemo) {
-            this._game.demoMode.runningDemo = false;
-        }
-        
         this._game.helpers = this._helperService;
 
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
@@ -308,6 +314,8 @@ export class GameService implements IGameService {
 
         this.initCombinations();
         this._locationService.init();
+        
+        this._game.autoplay = this._autoplayService;
 
         this._game.changeLocation = (location, travel) => {
             this._locationService.changeLocation(location, travel, this._game);

@@ -5,7 +5,7 @@ export const  getDemoMode = (serviceFactory: ServiceFactory) => {
     const conversationService = serviceFactory.GetConversationService();
     
     return <IDemoMode>{
-        runningDemo: true,
+        startDelay: 1000,
         party: {
             characters: [
                 {
@@ -19,9 +19,6 @@ export const  getDemoMode = (serviceFactory: ServiceFactory) => {
                 }
             ]
         },
-        startTransitionDelay: '1',
-        startInterval: 1000,
-        showDemoPlayText: true,
         steps: [{
             action: game => {
                 conversationService.talk(game.locations['start'].persons[0]);
@@ -37,20 +34,17 @@ export const  getDemoMode = (serviceFactory: ServiceFactory) => {
                 conversationService.answer(game.person.conversation.activeNode, game.person.conversation.activeNode.replies[0]);
             },
             delay: 1000
-        }, {
+        },{
             action: game => {
                 game.playState = null;
             },
             delay: 1000
-        }
-        , {
+        },{
             action: game => {
                 game.playState = null;
                 game.changeLocation('garden');
             },
             delay: 2000
-        }
-            
-        ]
+        }]
     };
 }

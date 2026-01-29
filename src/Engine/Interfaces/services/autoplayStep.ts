@@ -1,6 +1,6 @@
 import {IGame} from "storyScript/Interfaces/game.ts";
 
-export interface IDemoStep {
+export interface IAutoplayStep {
     /**
      * The action to execute for this step.
      */

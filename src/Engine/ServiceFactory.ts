@@ -28,19 +28,20 @@ import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
 import {ItemService} from "storyScript/Services/ItemService.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
+import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
+import {AutoplayService} from "storyScript/Services/AutoplayService.ts";
 
 export class ServiceFactory {
+    private static _instance: ServiceFactory;
+    private static _initialized: boolean = false;
     private readonly _texts: IInterfaceTexts;
     private readonly _rules: IRules;
     private readonly _definitions: IDefinitions
     private readonly _registeredEntities: Record<string, Record<string, any>>;
-
     private readonly _dataSerializer: IDataSerializer;
     private readonly _dataSynchronizer: IDataSynchronizer;
     private readonly _dataService: IDataService;
-    
     private _game: IGame = <IGame>{};
-
     private _gameService: IGameService;
     private _conversationService: IConversationService;
     private _combinationService: ICombinationService;
@@ -49,9 +50,7 @@ export class ServiceFactory {
     private _characterService: ICharacterService;
     private _itemService: IItemService;
     private _tradeService: ITradeService;
-
-    private static _instance: ServiceFactory;
-    private static _initialized: boolean = false;
+    private _autoPlayService: IAutoplayService;
 
     constructor(
         nameSpace: string,
@@ -71,13 +70,16 @@ export class ServiceFactory {
         ServiceFactory._instance = this;
     }
 
+    // Initialize the game object and the services. Pass in a game object 
+
     get AvailableLocations() {
         return Object.values(this._registeredEntities.locations).map(l => {
             return {id: l.id, name: l.name}
         });
     };
 
-    // Initialize the game object and the services. Pass in a game object 
+    static readonly GetInstance = () => ServiceFactory._instance;
+
     // when it should be controlled by the UI framework. Vue needs this.
     init = (game?: IGame) => {
         this._game = game ?? <IGame>{};
@@ -89,6 +91,7 @@ export class ServiceFactory {
         this._characterService = new CharacterService(this._dataService, this._game, this._rules);
         const locationService = new LocationService(this._definitions, this._rules, this._game, gameEvents);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
+        this._autoPlayService = new AutoplayService(this._game);
         this._gameService = new GameService
         (
             this._dataService,
@@ -96,6 +99,7 @@ export class ServiceFactory {
             this._characterService,
             this._combinationService,
             this._soundService,
+            this._autoPlayService,
             this._rules,
             new HelperService(this._game, this._definitions),
             this._game,
@@ -134,15 +138,13 @@ export class ServiceFactory {
 
     GetItemService = (): IItemService => this.Get(this._itemService);
 
-    static readonly GetInstance = () => ServiceFactory._instance;
-    
-    static readonly Initialized = ServiceFactory._initialized;
-    
+    GetAutoplayService = (): IAutoplayService => this.Get(this._autoPlayService);
+
     private Get<T>(service: T): T {
         if (!ServiceFactory._initialized) {
             throw new Error('ServiceFactory is not initialized!');
         }
-        
+
         return service;
     }
 }

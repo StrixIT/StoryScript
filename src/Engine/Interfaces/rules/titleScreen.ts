@@ -4,14 +4,15 @@ import {IParty} from "storyScript/Interfaces/party.ts";
 
 export interface ITitleScreen {
     showTitleScreen: boolean;
-
+    
     /**
-     * The party to use to play the demo game.
-     */
-    demoParty?: IParty;
-
-    /**
-     * The function to get the demo mode for the game.
+     * Set this function to get the demo configuration if you want to autoplay a demo mode.
      */
     getDemoMode?: (serviceFactory: ServiceFactory) => IDemoMode;
+
+    /**
+     * The transition time to use to fade to the game from
+     * the title screen and back out when the demo has run.
+     */
+    transitionDelay?: string;
 }

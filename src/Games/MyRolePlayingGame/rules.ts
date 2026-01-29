@@ -14,17 +14,7 @@ export function Rules(): IRules {
             intro: false,
             titleScreen: {
                 showTitleScreen: true,
-                demoParty: <IParty>{
-                    characters: [{
-                        name: 'Rutger',
-                        strength: 2,
-                        agility: 1,
-                        intelligence: 2,
-                        hitpoints: 10,
-                        currentHitpoints: 10,
-                        equipment: {}
-                    }]
-                },
+                transitionDelay: '1',
                 getDemoMode: (serviceFactory: ServiceFactory) => getDemoMode(serviceFactory)
             },
             gameStart(game) {
