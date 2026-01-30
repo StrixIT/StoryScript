@@ -15,7 +15,7 @@ export function Rules(): IRules {
             titleScreen: {
                 showTitleScreen: true,
                 transitionDelay: '2',
-                getDemoMode: (serviceFactory: ServiceFactory) => getDemoMode(serviceFactory)
+                getDemoMode: getDemoMode
             },
             gameStart(game) {
                 game.party.currency ??= 0;

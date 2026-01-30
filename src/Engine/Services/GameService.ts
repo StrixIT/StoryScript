@@ -31,7 +31,6 @@ import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreator
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
-import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
 import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 
 export class GameService implements IGameService {
@@ -42,7 +41,6 @@ export class GameService implements IGameService {
         private readonly _characterService: ICharacterService,
         private readonly _combinationService: ICombinationService,
         private readonly _soundService: ISoundService,
-        private readonly _autoplayService: IAutoplayService,
         private readonly _rules: IRules,
         private readonly _helperService: IHelpers,
         private readonly _game: IGame,
@@ -147,7 +145,7 @@ export class GameService implements IGameService {
         }
 
         if (this._game.party?.currentLocationId) {
-            this._game.changeLocation(this._game.party.currentLocationId, false);
+            this._game.commands.go(this._game.party.currentLocationId, false);
         }
     }
 
@@ -163,7 +161,7 @@ export class GameService implements IGameService {
         this._rules.setup.gameStart?.(this._game);
 
         if (!this._game.currentLocation) {
-            this._game.changeLocation('Start');
+            this._game.commands.go('Start');
         }
 
         this.setInterceptors();
@@ -232,7 +230,7 @@ export class GameService implements IGameService {
             this._game.previousLocation = this._game.locations.get(previousLocationName);
         }
 
-        this._game.changeLocation(lastLocation.id, false);
+        this._game.commands.go(lastLocation.id, false);
         this._game.state = GameState.Play;
     }
 
@@ -312,15 +310,9 @@ export class GameService implements IGameService {
 
         this.initCombinations();
         this._locationService.init();
-        
-        this._game.autoplay = this._autoplayService;
 
         this._game.changeLocation = (location, travel) => {
-            this._locationService.changeLocation(location, travel, this._game);
-
-            if (travel) {
-                this._dataService.saveGame(this._game);
-            }
+            this._game.commands.go(location, travel);
         };
 
         Object.defineProperty(this._game, 'currentMap', {

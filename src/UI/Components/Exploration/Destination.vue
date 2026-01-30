@@ -26,7 +26,7 @@
           :disabled="!destination.target || destination.barriers?.length > 0"
           class="btn btn-info"
           type="button"
-          @click="game.changeLocation(destination.target, true)">
+          @click="game.commands.go(destination.target, true)">
     <span v-if="(<any>destination).isPreviousLocation" class="back-label">{{ texts.back }}</span>
     {{ destination.name }}
   </button>

@@ -5,7 +5,7 @@ import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
 
 describe("LocationService", function () {
 
-    test("init should build the world and add the change location function to the game", function () {
+    test("init should build the world", function () {
         const dataService = {
             value: null,
             load: function () {
@@ -19,8 +19,7 @@ describe("LocationService", function () {
         const game = <IGame>{};
         const service = getService(dataService, {}, game);
         service.init();
-
-        expect(game.changeLocation).not.toBeNull();
+        
         expect(game.currentLocation).toBeNull();
         expect(game.previousLocation).toBeNull();
         expect(game.locations).toEqual({});

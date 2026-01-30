@@ -30,6 +30,8 @@ import {ItemService} from "storyScript/Services/ItemService.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
 import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
 import {AutoplayService} from "storyScript/Services/AutoplayService.ts";
+import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
+import {CommandService} from "storyScript/Services/CommandService.ts";
 
 export class ServiceFactory {
     private static _instance: ServiceFactory;
@@ -51,6 +53,7 @@ export class ServiceFactory {
     private _itemService: IItemService;
     private _tradeService: ITradeService;
     private _autoPlayService: IAutoplayService;
+    private _commandService: ICommandService;
 
     constructor(
         nameSpace: string,
@@ -88,12 +91,15 @@ export class ServiceFactory {
         this._itemService = new ItemService(this._game, this._rules, this._texts);
         this._tradeService = new TradeService(this._itemService, this._game, this._rules, this._texts, this._definitions);
         this._conversationService = new ConversationService(this._game, this._rules);
-
+        this._combatService = new CombatService(this._game, this._rules, this._texts);
+        
         this._soundService = new SoundService(this._game, this._rules);
         this._characterService = new CharacterService(this._dataService, this._game, this._rules);
         const locationService = new LocationService(this._definitions, this._rules, this._game, gameEvents);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
         this._autoPlayService = new AutoplayService(this._game, this._rules);
+        this._commandService = new CommandService(locationService, this._conversationService, this._dataService, this._game);
+        
         this._gameService = new GameService
         (
             this._dataService,
@@ -101,14 +107,16 @@ export class ServiceFactory {
             this._characterService,
             this._combinationService,
             this._soundService,
-            this._autoPlayService,
             this._rules,
             new HelperService(this._game, this._definitions),
             this._game,
             this._texts
         );
-        this._combatService = new CombatService(this._game, this._rules, this._texts);
+
         gameEvents.setGame(this._game);
+        this._game.autoplay = this._autoPlayService;
+        this._game.commands = this._commandService;
+        
         ServiceFactory._initialized = true;
     }
 

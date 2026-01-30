@@ -1,9 +1,8 @@
 import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
-import {ServiceFactory} from "storyScript/ServiceFactory.ts";
+import {Friend} from "./persons/Friend.ts";
+import {Garden} from "./locations/Garden.ts";
 
-export const  getDemoMode = (serviceFactory: ServiceFactory) => {
-    const conversationService = serviceFactory.GetConversationService();
-    
+export const  getDemoMode = () => {
     return <IDemoMode>{
         startDelay: 2000,
         party: {
@@ -21,28 +20,27 @@ export const  getDemoMode = (serviceFactory: ServiceFactory) => {
         },
         steps: [{
             action: game => {
-                conversationService.talk(game.locations['start'].persons[0]);
+                game.commands.talk(Friend);
             },
             delay: 2000
         },{
             action: game => {
-                conversationService.answer(game.person.conversation.activeNode, game.person.conversation.activeNode.replies[0]);
+                game.commands.answer('hello', 'fine');
             },
             delay: 1000
         },{
             action: game => {
-                conversationService.answer(game.person.conversation.activeNode, game.person.conversation.activeNode.replies[0]);
-            },
-            delay: 1000
-        },{
-            action: game => {
-                game.playState = null;
+                game.commands.answer('fine');
             },
             delay: 1000
         },{
             action: game => {
                 game.playState = null;
-                game.changeLocation('garden');
+            },
+            delay: 1000
+        },{
+            action: game => {
+                game.commands.go(Garden);
             },
             delay: 2000
         }]

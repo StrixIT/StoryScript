@@ -22,7 +22,7 @@
               class="dropdown-menu">
             <li v-for="location of selectedLocations.slice(0, maxLocationsShown)"
                 class="dropdown-item"
-                @click="game.changeLocation(location.id)"
+                @click="game.commands.go(location.id)"
                 @mouseenter="setActive">{{ location.name }}
             </li>
             <li v-if="selectedLocations.length > maxLocationsShown" class="dropdown-item refine-search">

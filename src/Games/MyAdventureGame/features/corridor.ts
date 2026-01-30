@@ -13,7 +13,7 @@ export function Corridor() {
                 {
                     combinationType: Combinations.WALK,
                     match: (game, target, tool): string => {
-                        game.changeLocation(Passage);
+                        game.commands.go(Passage);
                         return 'You crawl through the passage.';
                     }
                 },
