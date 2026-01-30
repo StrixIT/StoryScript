@@ -9,7 +9,7 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
 
     const musicPlayer = musicPlayerRef;
 
-    const isPlaying = ref(false);
+    const canPlay = ref(false);
     const fadeInterval = ref<NodeJS.Timeout>(null);
     const fadingMusic = ref(false);
     const currentMusic = ref<string>(null);
@@ -29,8 +29,8 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
     }
 
     // This code is here to (re)start music playback as soon as the user interacts with the browser.
-    const checkMusicPlaying = () => {
-        if (!getCurrentMusic() || isPlaying.value) {
+    const checkMusicPlaying = async () => {
+        if (!getCurrentMusic() || canPlay.value) {
             return;
         }
 
@@ -42,17 +42,22 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
             if (!audioContext) {
                 return;
             }
+            
+            if (audioContext.state === 'running') {
+                canPlay.value = true;
+                return;
+            }
 
             if (audioContext.state !== 'suspended' && musicPlayer.value.paused) {
-                musicPlayer.value.play();
-                isPlaying.value = true;
+                await musicPlayer.value.play();
+                canPlay.value = true;
                 return;
             }
 
             if (audioContext.state === 'suspended') {
                 musicPlayer.value.play().then(() => {
                     musicPlayer.value.play();
-                    isPlaying.value = true;
+                    canPlay.value = true;
                 }).catch(_ => {
                     // Do nothing. Silence the error and await another try.
                 });
@@ -117,6 +122,7 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
     }
 
     return {
+        canPlay,
         getSoundQueue,
         checkMusicPlaying,
         getCurrentMusic,

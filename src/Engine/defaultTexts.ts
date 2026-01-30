@@ -119,6 +119,7 @@ export class DefaultTexts {
         closeFullScreenMap: '<',
         pressToShowMarkers: 'Press {0} to show location markers',
         startGame: 'Start',
+        continueGame: 'Continue',
         autoplayText: "Auto-playing"
     }
 

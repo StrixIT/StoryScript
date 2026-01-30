@@ -6,4 +6,5 @@ export interface IDataService {
     remove(key: string): void;
     saveGame(game: IGame, name?: string): void;
     getSaveKeys(): string[];
+    hasGameState(): boolean;
 }

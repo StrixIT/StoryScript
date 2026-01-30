@@ -3,7 +3,7 @@
     <h1>{{ texts.gameName }}</h1>
   </div>
   <div v-if="showTitleScreen" id="title-screen-start">
-    <button id="start-game" class="btn btn-primary" type="button" @click="startGame()">{{ texts.startGame }}</button>
+    <button id="start-game" class="btn btn-primary" type="button" @click="startGame()">{{ hasProgress ? texts.continueGame : texts.startGame }}</button>
   </div>
 </template>
 <script lang="ts" setup>
@@ -14,7 +14,8 @@ import {computed, onMounted, useTemplateRef, watch} from "vue";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
-const {rules, texts, gameService, autoplayService} = store.services;
+const {rules, texts, gameService, dataService, autoplayService} = store.services;
+const hasProgress = dataService.hasGameState()
 
 const titleScreen = useTemplateRef('title-screen');
 const transitionDelay = rules.setup?.titleScreen?.transitionDelay ?? 1;

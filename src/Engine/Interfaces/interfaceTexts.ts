@@ -120,6 +120,7 @@ export interface IInterfaceTexts {
     closeFullScreenMap?: string;
     pressToShowMarkers?: string;
     startGame?: string;
+    continueGame?: string;
     autoplayText?: string;
 
     /**
