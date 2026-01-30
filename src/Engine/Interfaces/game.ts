@@ -103,6 +103,11 @@ export interface IGame {
     autoplaying: boolean;
 
     /**
+     * True if the game has started, meaning the user has passed the title screen. Flse otherwise.
+     */
+    started: boolean;
+    
+    /**
      * The person the player is currently interacting with.
      */
     person: IPerson;

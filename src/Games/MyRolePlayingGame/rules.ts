@@ -14,7 +14,7 @@ export function Rules(): IRules {
             intro: false,
             titleScreen: {
                 showTitleScreen: true,
-                transitionDelay: '1',
+                transitionDelay: '2',
                 getDemoMode: (serviceFactory: ServiceFactory) => getDemoMode(serviceFactory)
             },
             gameStart(game) {

@@ -5,7 +5,7 @@ export const  getDemoMode = (serviceFactory: ServiceFactory) => {
     const conversationService = serviceFactory.GetConversationService();
     
     return <IDemoMode>{
-        startDelay: 1000,
+        startDelay: 2000,
         party: {
             characters: [
                 {

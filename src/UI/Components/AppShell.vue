@@ -2,7 +2,7 @@
   <div ref="ui-root">
     <sound></sound>
     <autoplay></autoplay>
-    <title-screen v-if="rules.setup?.titleScreen?.showTitleScreen"></title-screen>
+    <title-screen></title-screen>
     <div>
       <game-menu v-if="game.playState === PlayState.Menu"></game-menu>
       <conversation v-if="game.playState === PlayState.Conversation"></conversation>
@@ -29,6 +29,7 @@ import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {onMounted, useTemplateRef} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {GameState} from "storyScript/Interfaces/storyScript.ts";
 
 const store = useStateStore();
 const {game, error} = storeToRefs(store);

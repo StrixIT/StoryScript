@@ -68,10 +68,12 @@ export class GameService implements IGameService {
         this.initGame([]);
         this.initTexts();
         this.resume('Start');
+        
         this._game.autoplay.startDemoMode(demoConfig, () => this.initDemo(demoConfig));
     }
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
+        this._game.started = true;
         this._game.helpers = this._helperService;
 
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
