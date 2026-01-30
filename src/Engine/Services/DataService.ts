@@ -53,6 +53,10 @@ export class DataService implements IDataService {
     }
 
     saveGame = (game: IGame, name?: string): void => {
+        if (!game.started) {
+            return;
+        }
+        
         name = name ? SaveGamePrefix + name : GameStateSave;
         this._rules.general?.beforeSave?.(game);
 

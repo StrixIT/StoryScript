@@ -81,9 +81,20 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
     }
 
     const soundCompleted = (soundKey: number) => {
-        game.value.sounds.soundQueue.get(soundKey).completeCallBack?.();
-        game.value.sounds.soundQueue.delete(soundKey);
-        const index = soundQueue.indexOf(soundQueue.find(([k, _]) => soundKey === k));
+        const sound = game.value.sounds.soundQueue.get(soundKey);
+        
+        if (sound) {
+            sound.completeCallBack?.();
+            game.value.sounds.soundQueue.delete(soundKey);
+        }
+        
+        const queueEntry = soundQueue.find(([k, _]) => soundKey === k);
+        
+        if (!queueEntry) {
+            return;    
+        }
+        
+        const index = soundQueue.indexOf(queueEntry);
 
         if (index > -1) {
             soundQueue.splice(index, 1);
