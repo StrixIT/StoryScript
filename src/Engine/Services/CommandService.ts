@@ -12,17 +12,17 @@ import {getItemFromParty} from "storyScript/Services/sharedFunctions.ts";
 
 export class CommandService implements ICommandService {
 
+    private _combinationActions: ICombinationAction[] = [];
+
     constructor(
-        private _locationService: ILocationService, 
+        private _locationService: ILocationService,
         private _conversationService: IConversationService,
         private _combinationService: ICombinationService,
-        private _dataService: IDataService, 
+        private _dataService: IDataService,
         private _game: IGame) {
         this._combinationActions = this._combinationService.getCombinationActions();
     }
 
-    private _combinationActions: ICombinationAction[] = [];
-    
     go = (location: (() => ILocation) | string, travel?: boolean): void => {
         this._locationService.changeLocation(location, travel, this._game);
 
@@ -81,18 +81,18 @@ export class CommandService implements ICommandService {
         if (!selectedTarget) {
             throw new Error(`No target feature ${typeof target === 'function' ? target.name : target} was found to try combination ${combination}!`);
         }
-        
+
         const selectedTool = tool ? this.getFeature(tool) : null;
 
         if (tool && !selectedTool) {
             throw new Error(`No tool feature ${typeof tool === 'function' ? tool.name : tool} was found to try combination ${combination}!`);
         }
-        
+
         this._game.combinations.activeCombination = {
             selectedCombinationAction: selectedCombination,
             selectedTool: selectedTool
         }
-        
+
         this._combinationService.tryCombination(selectedTarget);
     }
 
@@ -106,11 +106,11 @@ export class CommandService implements ICommandService {
 
     private getCombination = (combination: string) => {
         const selectedCombination = this._combinationActions.find(c => c.text.toLowerCase() === combination.toLowerCase());
-        
+
         if (!selectedCombination) {
             throw new Error(`Combination ${combination} is not defined!`);
         }
-        
+
         return selectedCombination;
     }
 }
