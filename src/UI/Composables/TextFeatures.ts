@@ -12,20 +12,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const description = descriptionRef;
 
     watch(() => game.value.combinations.activeCombination?.selectedTool, (newValue) => {
-        if (!newValue) {
-            const featureArray = getFeatureArray();
-            featureArray.forEach((f) => f.classList.remove('combine-active-selected'));
-            return;
-        }
-        
-        const toolId = newValue.id.toLowerCase();
-        const featureArray = getFeatureArray();
-        const featureElement = featureArray.find(e => e.getAttribute('name').toLowerCase() === toolId);
-        
-        if (featureElement) {
-            const combineClass = combinationService.getCombineClass(newValue);
-            featureElement.classList.add(combineClass);
-        }
+        refreshFeatures(true);
     });
 
     const refreshFeatures = (newValue: boolean) => {

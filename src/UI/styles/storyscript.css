@@ -562,9 +562,11 @@ dialog {
 #start-game {
     font-size: 2.5em;
     padding: 5px 40px;
+    margin-top: 200px;
 }
 
 #autoplay-text {
+    margin-top: 20px;
     visibility: hidden;
     font-size: 1.5em;
     transition: visibility .1s ease-out;

@@ -93,10 +93,14 @@ export class CommandService implements ICommandService {
             selectedTool: selectedTool
         }
 
-        this._combinationService.tryCombination(selectedTarget);
+        this._game.combinations.tryCombine(selectedTarget);
     }
 
     private getFeature(feature: (() => IFeature) | string) {
+        if (typeof feature === 'string') {
+            feature = feature.toLowerCase().replace(/\s/g, '');
+        }
+        
         let selectedFeature = this._game.currentLocation.features.get(feature);
         selectedFeature ??= this._game.currentLocation.persons.get(<any>feature);
         selectedFeature ??= this._game.currentLocation.enemies.get(<any>feature);

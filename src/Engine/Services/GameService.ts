@@ -61,7 +61,7 @@ export class GameService implements IGameService {
         this._rules.setup?.initGame?.(this._game);
         this.initGame([]);
         this.initTexts();
-        this.resume('Start', true);
+        this.resume('Start');
         
         this._game.autoplay.startDemoMode(demoConfig, () => this.initDemo(demoConfig));
     }
@@ -215,8 +215,8 @@ export class GameService implements IGameService {
         this.watchState<PlayState>('playState', callBack);
     }
 
-    private readonly resume = (locationName: string, demoMode?: boolean): void => {
-        if (!demoMode && !this._game.party.characters.some(c => c.currentHitpoints > 0)) {
+    private readonly resume = (locationName: string): void => {
+        if (!this._game.party.characters.some(c => c.currentHitpoints === undefined || c.currentHitpoints > 0)) {
             this._game.state = GameState.GameOver;
             return;
         }
