@@ -26,8 +26,16 @@ const startGame = () => {
   gameService.init();
 }
 
-onMounted(() => titleScreen.value.style = `transition: opacity ${transitionDelay}s ease-out;`);
+onMounted(() => { 
+  if (titleScreen.value) { 
+    titleScreen.value.style = `transition: opacity ${transitionDelay}s ease-out;`;
+  }
+});
 
-watch(() => game.value.autoplaying, (newVal) => titleScreen.value.style.opacity = newVal ? '0' : '1');
+watch(() => game.value.autoplaying, (newVal) => { 
+  if (titleScreen.value) {
+    titleScreen.value.style.opacity = newVal ? '0' : '1';
+  }
+});
 
 </script>

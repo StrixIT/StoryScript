@@ -8,15 +8,21 @@ import {
 } from 'storyScript/Interfaces/storyScript';
 import { Combinations } from './combinations';
 import { IGame, Character, IEnemy, ICombatSetup } from './types';
+import {getDemoMode} from "./demoMode.ts";
 
 export function Rules(): IRules {
     return {
         setup: {
+            titleScreen: {
+                showTitleScreen: true,
+                transitionDelay: '2',
+                getDemoMode: getDemoMode
+            },
             playList: {
                 'Contemplate_the_stars.mp3': [GameState.Play]
             },
             initGame(game: IGame) {
-                game.worldProperties.type = 'Visual'; // Set to 'Text' or 'Visual' to switch between modes.
+                game.worldProperties.type = 'Text'; // Set to 'Text' or 'Visual' to switch between modes.
             },
             getCombinationActions: (): ICombinationAction[] => {
                 return [

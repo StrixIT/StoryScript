@@ -5,13 +5,25 @@ import {IConversationService} from "storyScript/Interfaces/services/conversation
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {IPerson} from "storyScript/Interfaces/person.ts";
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
+import {ICombinationService} from "storyScript/Interfaces/services/combinationService.ts";
+import {IFeature} from "storyScript/Interfaces/feature.ts";
+import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
+import {getItemFromParty} from "storyScript/Services/sharedFunctions.ts";
 
 export class CommandService implements ICommandService {
 
-    constructor(private _locationService: ILocationService, private _conversationService: IConversationService, private _dataService: IDataService, private _game: IGame) {
+    constructor(
+        private _locationService: ILocationService, 
+        private _conversationService: IConversationService,
+        private _combinationService: ICombinationService,
+        private _dataService: IDataService, 
+        private _game: IGame) {
+        this._combinationActions = this._combinationService.getCombinationActions();
     }
 
-    go(location: (() => ILocation) | string, travel?: boolean): void {
+    private _combinationActions: ICombinationAction[] = [];
+    
+    go = (location: (() => ILocation) | string, travel?: boolean): void => {
         this._locationService.changeLocation(location, travel, this._game);
 
         if (travel) {
@@ -19,7 +31,7 @@ export class CommandService implements ICommandService {
         }
     }
 
-    talk(person: () => IPerson): void {
+    talk = (person: () => IPerson): void => {
         const partner = this._game.currentLocation.persons.get(person);
 
         if (!partner) {
@@ -29,7 +41,7 @@ export class CommandService implements ICommandService {
         this._conversationService.talk(partner);
     }
 
-    answer(node: string, reply?: string): void {
+    answer = (node: string, reply?: string): void => {
         node ??= 'default';
         const selectedNode = this._game.person.conversation.nodes.find(n => n.node?.toLowerCase() === node);
 
@@ -45,5 +57,60 @@ export class CommandService implements ICommandService {
         }
 
         this._conversationService.answer(selectedNode, selectedReply);
+    }
+
+    selectCombination = (combination: string): void => {
+        const selectedCombination = this.getCombination(combination);
+        this._combinationService.setActiveCombination(selectedCombination);
+    }
+
+    setTool = (feature: (() => IFeature) | string): void => {
+        const selectedTool = this.getFeature(feature);
+
+        if (!selectedTool) {
+            throw new Error(`No feature ${typeof feature === 'function' ? feature.name : feature} was found to set as tool!`);
+        }
+
+        this._combinationService.tryCombination(selectedTool);
+    }
+
+    combine = (combination: string, target: (() => IFeature) | string, tool?: (() => IFeature) | string): void => {
+        const selectedCombination = this.getCombination(combination);
+        const selectedTarget = this.getFeature(target);
+
+        if (!selectedTarget) {
+            throw new Error(`No target feature ${typeof target === 'function' ? target.name : target} was found to try combination ${combination}!`);
+        }
+        
+        const selectedTool = tool ? this.getFeature(tool) : null;
+
+        if (tool && !selectedTool) {
+            throw new Error(`No tool feature ${typeof tool === 'function' ? tool.name : tool} was found to try combination ${combination}!`);
+        }
+        
+        this._game.combinations.activeCombination = {
+            selectedCombinationAction: selectedCombination,
+            selectedTool: selectedTool
+        }
+        
+        this._combinationService.tryCombination(selectedTarget);
+    }
+
+    private getFeature(feature: (() => IFeature) | string) {
+        let selectedFeature = this._game.currentLocation.features.get(feature);
+        selectedFeature ??= this._game.currentLocation.persons.get(<any>feature);
+        selectedFeature ??= this._game.currentLocation.enemies.get(<any>feature);
+        selectedFeature ??= getItemFromParty(this._game.party, <any>feature);
+        return selectedFeature;
+    }
+
+    private getCombination = (combination: string) => {
+        const selectedCombination = this._combinationActions.find(c => c.text.toLowerCase() === combination.toLowerCase());
+        
+        if (!selectedCombination) {
+            throw new Error(`Combination ${combination} is not defined!`);
+        }
+        
+        return selectedCombination;
     }
 }
