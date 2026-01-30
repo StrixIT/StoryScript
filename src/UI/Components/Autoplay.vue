@@ -16,7 +16,7 @@ const {texts} = store.services;
 const autoPlayText = useTemplateRef('autoplay-text');
 let demoTextTimer: NodeJS.Timeout;
 
-watch(() => game.value.autoplaying, (newVal, oldVal) => {
+watch(() => game.value.autoplaying, (newVal) => {
   if (newVal) {
     let autoTextVisible = true;
 

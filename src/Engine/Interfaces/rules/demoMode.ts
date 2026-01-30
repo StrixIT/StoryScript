@@ -1,5 +1,5 @@
-import {IAutoplayStep} from "storyScript/Interfaces/services/autoplayStep.ts";
 import {IParty} from "testGame/interfaces/party.ts";
+import {IAutoplayStep} from "storyScript/Interfaces/autoplayStep.ts";
 
 export interface IDemoMode {
     /**

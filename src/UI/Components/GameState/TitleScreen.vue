@@ -1,8 +1,8 @@
 <template>
-  <div id="title-screen" ref="title-screen" v-if="showTitleScreen">
+  <div v-if="showTitleScreen" id="title-screen" ref="title-screen">
     <h1>{{ texts.gameName }}</h1>
   </div>
-  <div id="title-screen-start" v-if="showTitleScreen">
+  <div v-if="showTitleScreen" id="title-screen-start">
     <button id="start-game" class="btn btn-primary" type="button" @click="startGame()">{{ texts.startGame }}</button>
   </div>
 </template>
@@ -10,7 +10,7 @@
 
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
+import {computed, onMounted, useTemplateRef, watch} from "vue";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
@@ -26,16 +26,8 @@ const startGame = () => {
   gameService.init();
 }
 
-onMounted(() => {
-  titleScreen.value.style = `transition: opacity ${transitionDelay}s ease-out;`;
-})
+onMounted(() => titleScreen.value.style = `transition: opacity ${transitionDelay}s ease-out;`);
 
-watch(() => game.value.autoplaying, (newVal, oldVal) => {
-  if (newVal) {
-    titleScreen.value.style.opacity = '0';
-  } else {
-    titleScreen.value.style.opacity = '1';
-  }
-});
+watch(() => game.value.autoplaying, (newVal) => titleScreen.value.style.opacity = newVal ? '0' : '1');
 
 </script>

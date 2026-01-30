@@ -70,8 +70,6 @@ export class ServiceFactory {
         ServiceFactory._instance = this;
     }
 
-    // Initialize the game object and the services. Pass in a game object 
-
     get AvailableLocations() {
         return Object.values(this._registeredEntities.locations).map(l => {
             return {id: l.id, name: l.name}
@@ -80,7 +78,11 @@ export class ServiceFactory {
 
     static readonly GetInstance = () => ServiceFactory._instance;
 
-    // when it should be controlled by the UI framework. Vue needs this.
+    /**
+     * Initialize the game object and the services. Pass in a game object when it should be controlled 
+     * by the UI framework. Vue needs this.
+     * @param game The game object.
+     */
     init = (game?: IGame) => {
         this._game = game ?? <IGame>{};
         this._itemService = new ItemService(this._game, this._rules, this._texts);

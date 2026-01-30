@@ -51,10 +51,6 @@ export class GameService implements IGameService {
     }
     
     initDemo = (demoConfig: IDemoMode) => {
-        if (this._game.autoplaying) {
-            this._game.autoplaying = false;    
-        }
-        
         const party = structuredClone(demoConfig.party);
         
         this._game.helpers = this._helperService;

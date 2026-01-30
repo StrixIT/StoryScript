@@ -6,13 +6,12 @@ export interface ITitleScreen {
     showTitleScreen: boolean;
     
     /**
-     * Set this function to get the demo configuration if you want to autoplay a demo mode.
+     * Set this function to get the demo configuration if you want to autoplay a demo game.
      */
     getDemoMode?: (serviceFactory: ServiceFactory) => IDemoMode;
 
     /**
-     * The transition time to use to fade to the game from
-     * the title screen and back out when the demo has run.
+     * The transition time to use to fade to the game demo from the title screen, and back out when the demo has run.
      */
     transitionDelay?: string;
 }

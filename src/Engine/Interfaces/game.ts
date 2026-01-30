@@ -103,7 +103,7 @@ export interface IGame {
     autoplaying: boolean;
 
     /**
-     * True if the game has started, meaning the user has passed the title screen. Flse otherwise.
+     * True if the game has started, meaning the user has passed the title screen. False otherwise.
      */
     started: boolean;
     

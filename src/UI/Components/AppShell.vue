@@ -38,9 +38,7 @@ const uiRoot = useTemplateRef('ui-root');
 
 const saveStates = [PlayState.Combat, PlayState.Conversation, PlayState.Trade];
 
-onMounted(() => {
-  game.value.UIRootElement = uiRoot.value.closest('body');
-});
+onMounted(() => game.value.UIRootElement = uiRoot.value.closest('body'));
 
 gameService.watchPlayState((_, newState, oldState) => {
   stopAutoplay();
