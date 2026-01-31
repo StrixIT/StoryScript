@@ -16,6 +16,7 @@
           <location-visual v-if="game.worldProperties.type === 'Visual'"></location-visual>
           <location-text v-else></location-text>
         </div>
+        <victory></victory>
       </div>
     </div>
     <div v-if="game.state === 'Play'" class="row">

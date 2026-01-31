@@ -3,7 +3,7 @@ import {IEnemy} from '../Interfaces/enemy';
 import {IItem} from '../Interfaces/item';
 import {IDefinitions} from '../Interfaces/definitions';
 import {compareString} from '../utilityFunctions';
-import {random, removeItemFromParty} from "storyScript/Services/sharedFunctions.ts";
+import {getItemFromParty, random, removeItemFromParty} from "storyScript/Services/sharedFunctions.ts";
 import { IGame } from '../Interfaces/game';
 
 export class HelperService implements IHelpers {
@@ -19,7 +19,7 @@ export class HelperService implements IHelpers {
     getEnemy = (selector: string): IEnemy => this.find<IEnemy>(selector, 'enemies', this._definitions);
 
     rollDice = (compositeOrSides: string | number, dieNumber: number = 1, bonus: number = 0): number => {
-        let sides = 0;
+        let sides: number;
 
         if (typeof compositeOrSides !== 'number') {
             const dieResult = compositeOrSides.split(/d/i).map(e => e.trim());
@@ -75,6 +75,10 @@ export class HelperService implements IHelpers {
         return bonus;
     }
 
+    getItemFromParty = (item: string | (() => IItem)): IItem => {
+        return getItemFromParty(this._game.party, item);
+    };
+    
     removeItemFromParty = (item: IItem | (() => IItem)): void => {
         removeItemFromParty(this._game.party, item);
     };

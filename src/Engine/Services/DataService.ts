@@ -53,6 +53,10 @@ export class DataService implements IDataService {
     }
 
     saveGame = (game: IGame, name?: string): void => {
+        if (!game.started) {
+            return;
+        }
+        
         name = name ? SaveGamePrefix + name : GameStateSave;
         this._rules.general?.beforeSave?.(game);
 
@@ -76,6 +80,11 @@ export class DataService implements IDataService {
 
     getSaveKeys = (): string[] => this._localStorageService.getKeys(this.getKey(SaveGamePrefix));
 
+    hasGameState = (): boolean => {
+        const state = this._localStorageService.get(this.getKey(GameStateSave));
+        return state !== null;
+    }
+    
     private getKey = (key?: string): string => {
         return key ? `${this._gameNameSpace}_${key}` : this._gameNameSpace;
     }

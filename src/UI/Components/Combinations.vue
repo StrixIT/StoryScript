@@ -4,9 +4,9 @@
     <div class="row">
       <ul class="list-unstyled col-3">
         <li>
-          <button v-for="c of combineActions" 
-                  :class="getCombineClass(c)" 
-                  class="btn" 
+          <button v-for="c of combineActions"
+                  :class="getCombineClass(c)"
+                  class="btn"
                   type="button"
                   @click="combinationService.setActiveCombination(c)">{{ c.text }}
           </button>
@@ -31,7 +31,6 @@ const {texts, combinationService} = store.services;
 
 const combineActions = ref<ICombinationAction[]>(combinationService.getCombinationActions());
 
-const getCombineClass = (action: ICombinationAction): string => game.value.combinations.activeCombination 
-  && game.value.combinations.activeCombination.selectedCombinationAction === action ? 'btn-outline-dark' : 'btn-dark';
+const getCombineClass = (action: ICombinationAction): string => game.value.combinations.activeCombination?.selectedCombinationAction.text === action.text ? 'btn-outline-dark' : 'btn-dark';
 
 </script>

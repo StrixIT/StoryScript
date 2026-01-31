@@ -19,7 +19,7 @@ export function Passage() {
                         {
                             combinationType: Combinations.WALK,
                             match: (game, target, tool): string => {
-                                game.changeLocation(Start);
+                                game.commands.go(Start);
                                 return 'You crawl back to the fountain.';
                             }
                         }

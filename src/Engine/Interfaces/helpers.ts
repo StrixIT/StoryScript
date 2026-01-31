@@ -42,6 +42,12 @@ export interface IHelpers {
     getEnemy(selector: string): IEnemy;
 
     /**
+     * Gets an item from the party, checking all character equipment and backpacks.
+     * @param item  The item to get from the party
+     */
+    getItemFromParty(item: string | (() => IItem)): IItem;
+
+    /**
      * Removes an item from the party, checking all character equipment and backpacks.
      * @param item  The item to remove from the party
      */

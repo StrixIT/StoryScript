@@ -1,5 +1,7 @@
 ﻿import { IRules, ICreateCharacter, ICharacter, GameState } from 'storyScript/Interfaces/storyScript';
-import { IGame, Character, ICombatSetup, IEnemy } from './types';
+import {IGame, Character, ICombatSetup, IEnemy, IParty} from './types';
+import {getDemoMode} from "testGame/demoMode.ts";
+import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 
 export function Rules(): IRules {
     return {
@@ -10,6 +12,11 @@ export function Rules(): IRules {
             },
 
             intro: false,
+            titleScreen: {
+                showTitleScreen: true,
+                transitionDelay: '2',
+                getDemoMode: getDemoMode
+            },
             gameStart(game) {
                 game.party.currency ??= 0;
             },

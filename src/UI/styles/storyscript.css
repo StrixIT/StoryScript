@@ -527,3 +527,47 @@ dialog {
     border: none;
     outline: none;
 }
+
+#autoplay-overlay, #title-screen, #title-screen-start {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#autoplay-overlay {
+    z-index: 1200;
+    text-align: center;
+}
+
+#title-screen {
+    z-index: 1300;
+    background: white;
+    align-content: center;
+    text-align: center;
+}
+
+#title-screen-start {
+    z-index: 1310;
+    align-content: center;
+    text-align: center;
+}
+
+#title-screen h1 {
+    font-size: 6em;
+    margin-bottom: 40px;
+}
+
+#start-game {
+    font-size: 2.5em;
+    padding: 5px 40px;
+    margin-top: 200px;
+}
+
+#autoplay-text {
+    margin-top: 20px;
+    visibility: hidden;
+    font-size: 1.5em;
+    transition: visibility .1s ease-out;
+}

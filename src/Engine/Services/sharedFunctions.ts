@@ -209,6 +209,16 @@ export function checkAutoplay(game: IGame, value: string, autoPlayCheck?: boolea
     return value;
 }
 
+export function getItemFromParty(party: IParty, item: string | (() => IItem)): IItem {
+    let foundItem: IItem;
+
+    party.characters.forEach(c => {
+        foundItem = foundItem ?? getItemFromItemsAndEquipment(c, item);
+    });
+    
+    return foundItem;
+}
+
 export function removeItemFromParty(party: IParty, item: IItem | (() => IItem)) {
     let deleted = false;
 
@@ -243,6 +253,26 @@ export function removeItemFromItemsAndEquipment(character: ICharacter, item: IIt
     }
 
     return deleted;
+}
+
+function getItemFromItemsAndEquipment(character: ICharacter, item: string | (() => IItem)): IItem {
+    let foundItem = character.items.get(item);
+    
+    if (foundItem) {
+        return foundItem;
+    }
+
+    if (character.equipment) {
+        for (const n in character.equipment) {
+            const currentItem = character.equipment[n] as IItem;
+            
+            if ((typeof item === 'function' && currentItem.id == item.name ) || (currentItem.id == item)) {
+                return character.equipment[n];
+            }
+        }
+    }
+
+    return null;
 }
 
 function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], selector?: (item: T) => boolean) {
