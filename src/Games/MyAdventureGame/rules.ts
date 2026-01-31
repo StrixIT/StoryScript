@@ -8,10 +8,17 @@ import {
 } from 'storyScript/Interfaces/storyScript';
 import { Combinations } from './combinations';
 import { IGame, Character, IEnemy, ICombatSetup } from './types';
+import {getDemoMode} from "./demoMode.ts";
+import {IActiveCombination} from "storyScript/Interfaces/combinations/activeCombination.ts";
 
 export function Rules(): IRules {
     return {
         setup: {
+            titleScreen: {
+                showTitleScreen: true,
+                transitionDelay: '2',
+                getDemoMode: getDemoMode
+            },
             playList: {
                 'Contemplate_the_stars.mp3': [GameState.Play]
             },
@@ -46,8 +53,10 @@ export function Rules(): IRules {
         },
 
         combinations: {
-            success: (game: IGame) => {
-                game.sounds.playSound('kings_quest_6_ding.mp3');
+            success: (game: IGame, combination: IActiveCombination) => {
+                if (combination.selectedCombinationAction.text != Combinations.WALK) {
+                    game.sounds.playSound('kings_quest_6_ding.mp3');
+                }
             }
         },
 

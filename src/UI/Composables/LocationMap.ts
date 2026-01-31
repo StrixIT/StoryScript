@@ -217,7 +217,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
                 if (isReachable) {
                     markerElement.classList.add(reachable);
                     markerElement.onclick = () => {
-                        game.value.changeLocation(locationId);
+                        game.value.commands.go(locationId);
                     }
                 } else if (location.value.id === locationId) {
                     markerElement.classList.add(reachable);

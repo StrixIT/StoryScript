@@ -22,6 +22,7 @@ import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
 import {Error} from "ui/error.ts";
 import {isDevelopment} from "../../constants.ts";
+import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
@@ -54,6 +55,7 @@ export const useStateStore = defineStore('appState', () => {
         conversationService: <IConversationService>null,
         tradeService: <ITradeService>null,
         dataService: <IDataService>null,
+        autoplayService: <IAutoplayService>null,
         texts: <IInterfaceTexts>null,
         rules: <IRules>null
     };
@@ -95,6 +97,7 @@ export const useStateStore = defineStore('appState', () => {
         services.conversationService = serviceFactory.GetConversationService();
         services.tradeService = serviceFactory.GetTradeService();
         services.dataService = serviceFactory.GetDataService();
+        services.autoplayService = serviceFactory.GetAutoplayService();
         availableLocations.value = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
     }
     
@@ -117,7 +120,7 @@ export const useStateStore = defineStore('appState', () => {
 
     const showEquipment = (character: ICharacter): boolean =>
         useEquipment
-        && character
+        && character?.equipment
         && Object.keys(character.equipment)
             .some(k => (<any>character.equipment)[k] !== undefined);
 

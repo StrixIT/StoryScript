@@ -17,7 +17,6 @@ import {ICombinable} from '../Interfaces/combinations/combinable';
 import {IFeature} from '../Interfaces/feature';
 import {IParty} from '../Interfaces/party';
 import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
-import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 import {
     Characters,
     DescriptionProperty,
@@ -31,6 +30,7 @@ import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreator
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
+import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 
 export class GameService implements IGameService {
     constructor
@@ -41,15 +41,31 @@ export class GameService implements IGameService {
         private readonly _combinationService: ICombinationService,
         private readonly _soundService: ISoundService,
         private readonly _rules: IRules,
-        private readonly _helperService: IHelpers,
         private readonly _game: IGame,
         private readonly _texts: IInterfaceTexts,
     ) {
     }
+    
+    initDemo = (demoConfig: IDemoMode) => {
+        const party = structuredClone(demoConfig.party);
+        
+        this._game.statistics = {};
+        this._game.worldProperties = {};
+        this._game.locations = null;
+        this._game.maps = null;
+        this._game.party = party;
+
+        this._rules.setup?.initGame?.(this._game);
+        this.initGame([]);
+        this.initTexts();
+        this.resume('Start');
+        
+        this._game.autoplay.startDemoMode(demoConfig, () => this.initDemo(demoConfig));
+    }
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
-        this._game.helpers = this._helperService;
-
+        this._game.started = true;
+        
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
         this._game.party = gameState?.party;
@@ -125,7 +141,7 @@ export class GameService implements IGameService {
         }
 
         if (this._game.party?.currentLocationId) {
-            this._game.changeLocation(this._game.party.currentLocationId, false);
+            this._game.commands.go(this._game.party.currentLocationId, false);
         }
     }
 
@@ -141,7 +157,7 @@ export class GameService implements IGameService {
         this._rules.setup.gameStart?.(this._game);
 
         if (!this._game.currentLocation) {
-            this._game.changeLocation('Start');
+            this._game.commands.go('Start', false);
         }
 
         this.setInterceptors();
@@ -196,7 +212,7 @@ export class GameService implements IGameService {
     }
 
     private readonly resume = (locationName: string): void => {
-        if (!this._game.party.characters.some(c => c.currentHitpoints > 0)) {
+        if (!this._game.party.characters.some(c => c.currentHitpoints === undefined || c.currentHitpoints > 0)) {
             this._game.state = GameState.GameOver;
             return;
         }
@@ -210,7 +226,7 @@ export class GameService implements IGameService {
             this._game.previousLocation = this._game.locations.get(previousLocationName);
         }
 
-        this._game.changeLocation(lastLocation.id, false);
+        this._game.commands.go(lastLocation.id, false);
         this._game.state = GameState.Play;
     }
 
@@ -266,7 +282,9 @@ export class GameService implements IGameService {
             configurable: true,
             get: () => {
                 const characters = this._game.party.characters;
-                let character = characters.filter(c => c.isActiveCharacter)[0] ?? characters.filter(c => c.currentHitpoints > 0)[0];
+                let character = characters.filter(c => c.isActiveCharacter)[0] 
+                    ?? characters.filter(c => c.currentHitpoints > 0)[0]
+                    ?? characters[0];
 
                 if (!character.isActiveCharacter) {
                     character.isActiveCharacter = true;
@@ -292,11 +310,7 @@ export class GameService implements IGameService {
         this._locationService.init();
 
         this._game.changeLocation = (location, travel) => {
-            this._locationService.changeLocation(location, travel, this._game);
-
-            if (travel) {
-                this._dataService.saveGame(this._game);
-            }
+            this._game.commands.go(location, travel);
         };
 
         Object.defineProperty(this._game, 'currentMap', {

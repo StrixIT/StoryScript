@@ -1,8 +1,11 @@
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 
 export interface IGameService {
     init(): void;
+
+    initDemo(demoConfig: IDemoMode): void;
 
     startNewGame(characterData: any): void;
 

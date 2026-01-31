@@ -1,7 +1,7 @@
 import {addHtmlSpaces, compareString} from "storyScript/utilityFunctions.ts";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {useStateStore} from "ui/StateStore.ts";
-import {Ref} from "vue";
+import {Ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 
 export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
@@ -11,19 +11,21 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
 
     const description = descriptionRef;
 
+    watch(() => game.value.combinations.activeCombination?.selectedTool, (newValue) => {
+        refreshFeatures(true);
+    });
+
     const refreshFeatures = (newValue: boolean) => {
         if (!newValue) {
             return;
         }
 
         // Show the text of added features.
-        const features = description.value?.getElementsByTagName('feature');
+        const featureArray = getFeatureArray();
 
-        if (!features) {
+        if (featureArray.length === 0) {
             return;
         }
-
-        const featureArray = Array.prototype.slice.call(features) as HTMLElement[];
 
         featureArray.filter(e => e.innerHTML.trim() === '')
             .forEach((e) => {
@@ -86,6 +88,16 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const getFeature = (ev: MouseEvent): IFeature => {
         const featureName = (<any>ev.target).getAttribute('name');
         return game.value.currentLocation.features.get(featureName);
+    }
+
+    const getFeatureArray = (): HTMLElement[] => {
+        const features = description.value?.getElementsByTagName('feature');
+
+        if (!features) {
+            return [];
+        }
+
+        return Array.prototype.slice.call(features) as HTMLElement[];
     }
 
     return {

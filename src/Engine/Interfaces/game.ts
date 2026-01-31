@@ -16,6 +16,9 @@ import {ICombatTurn} from './combatTurn';
 import {ISoundPlayer} from "./soundPlayer.ts";
 import { IMap } from './maps/map.ts';
 import {IGameCombinations} from "./combinations/gameCombinations.ts";
+import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
+import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
+import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
 
 /**
  * The StoryScript main game object.
@@ -91,6 +94,11 @@ export interface IGame {
     playState: PlayState;
 
     /**
+     * True if the game has started, meaning the user has passed the title screen. False otherwise.
+     */
+    started: boolean;
+    
+    /**
      * The person the player is currently interacting with.
      */
     person: IPerson;
@@ -153,9 +161,25 @@ export interface IGame {
     sounds: ISoundPlayer,
 
     /**
+     * The autoplay service to autoplay (parts of) your game and run your game in demo mode.
+     */
+    autoplay: IAutoplayService;
+
+    /**
+     * True if autoplay is in progress, false otherwise.
+     */
+    autoplaying: boolean;
+    
+    /**
+     * The command service for programmatic access to your game's interactions.
+     */
+    commands: ICommandService;
+    
+    /**
      * The function executed to change from one location to the next.
      * @param location The location to go to
      * @param travel True if the player is traveling, false if he gets to the next location because of some other event.
+     * @deprecated this function is obsolete and will be removed in the future. Please use the commands' 'go' instead.
      */
     changeLocation(location?: string | (() => ILocation), travel?: boolean): void;
 

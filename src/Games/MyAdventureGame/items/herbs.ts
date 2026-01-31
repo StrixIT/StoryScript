@@ -12,7 +12,7 @@ export function Herbs() {
                 {
                     combinationType: Combinations.TOUCH,
                     match: (game, target, tool): string | ICombinationMatchResult => {
-                        if (game.activeCharacter.items.find(Herbs)) {
+                        if (game.activeCharacter.items.get(Herbs)) {
                             return 'The herb leaves are soft to the touch.';
                         }
                         
