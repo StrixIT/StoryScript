@@ -4,12 +4,11 @@ import {IFeature} from "storyScript/Interfaces/feature.ts";
 
 export interface ICommandService {
     /**
-     * Go to the location specified. If you set the travel flag to false, no logic will be run before entering
-     * the location (so a.o. enter events will not run).
+     * Go to the location specified. If you set the saveProgress flag to false, the game progress will NOT be saved.
      * @param location The location to travel to.
-     * @param travel Omit if you want to travel regularly, set to false if you don't want to run enter events.
+     * @param saveProgress Omit if you want to save the game progress, set to false if you don't want to save.
      */
-    go: (location: (() => ILocation) | string, travel?: boolean) => void;
+    go: (location: (() => ILocation) | string, saveProgress?: boolean) => void;
 
     /**
      * Talk to the specified person at the current location.

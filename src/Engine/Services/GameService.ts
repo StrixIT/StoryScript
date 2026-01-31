@@ -157,7 +157,7 @@ export class GameService implements IGameService {
         this._rules.setup.gameStart?.(this._game);
 
         if (!this._game.currentLocation) {
-            this._game.commands.go('Start');
+            this._game.commands.go('Start', false);
         }
 
         this.setInterceptors();
