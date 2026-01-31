@@ -17,7 +17,6 @@ import {ICombinable} from '../Interfaces/combinations/combinable';
 import {IFeature} from '../Interfaces/feature';
 import {IParty} from '../Interfaces/party';
 import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
-import {IHelpers} from "storyScript/Interfaces/helpers.ts";
 import {
     Characters,
     DescriptionProperty,
@@ -42,7 +41,6 @@ export class GameService implements IGameService {
         private readonly _combinationService: ICombinationService,
         private readonly _soundService: ISoundService,
         private readonly _rules: IRules,
-        private readonly _helperService: IHelpers,
         private readonly _game: IGame,
         private readonly _texts: IInterfaceTexts,
     ) {
@@ -51,7 +49,6 @@ export class GameService implements IGameService {
     initDemo = (demoConfig: IDemoMode) => {
         const party = structuredClone(demoConfig.party);
         
-        this._game.helpers = this._helperService;
         this._game.statistics = {};
         this._game.worldProperties = {};
         this._game.locations = null;
@@ -68,8 +65,7 @@ export class GameService implements IGameService {
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
         this._game.started = true;
-        this._game.helpers = this._helperService;
-
+        
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
         this._game.party = gameState?.party;

@@ -63,6 +63,6 @@ describe("GameService", function () {
     });
 });
 
-function getService(game?, dataService?, locationService?, characterService?, combinationService?, soundService?, rules?, helperService?, texts?) {
-    return new GameService(dataService || {}, locationService || {}, characterService || {}, combinationService || {}, soundService || {}, rules || {}, helperService || {}, game || {}, texts || {});
+function getService(game?, dataService?, locationService?, characterService?, combinationService?, soundService?, rules?, texts?) {
+    return new GameService(dataService || {}, locationService || {}, characterService || {}, combinationService || {}, soundService || {}, rules || {}, game || {}, texts || {});
 }

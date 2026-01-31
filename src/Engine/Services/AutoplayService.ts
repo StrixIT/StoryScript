@@ -31,8 +31,6 @@ export class AutoplayService implements IAutoplayService {
             const transitionDelay = (typeof delay === 'number' ? delay : parseFloat(delay)) * 1000;
 
             const delayedCallback = () => {
-                this._game.autoplaying = false;
-
                 setTimeout(() => {
                     restartCallback();
                 }, transitionDelay);
@@ -47,6 +45,7 @@ export class AutoplayService implements IAutoplayService {
     private runAutoplayStep = (steps: IAutoplayStep[], stepNumber: number, restartCallback: () => void): void => {
         if (stepNumber >= steps.length) {
             this._demoTimer = setTimeout(() => {
+                this._game.autoplaying = false;
                 clearTimeout(this._demoTimer);
                 restartCallback();
             }, steps[stepNumber - 1].delay);

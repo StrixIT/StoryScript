@@ -108,7 +108,6 @@ export class ServiceFactory {
             this._combinationService,
             this._soundService,
             this._rules,
-            new HelperService(this._game, this._definitions),
             this._game,
             this._texts
         );
@@ -116,6 +115,7 @@ export class ServiceFactory {
         gameEvents.setGame(this._game);
         this._game.autoplay = this._autoPlayService;
         this._game.commands = this._commandService;
+        this._game.helpers = new HelperService(this._game, this._definitions);
         
         ServiceFactory._initialized = true;
     }
