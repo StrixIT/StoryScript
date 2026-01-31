@@ -7,7 +7,7 @@ export interface IAutoplayStep {
     action: (game: IGame) => void;
 
     /**
-     * The amount of time in milliseconds before proceeding to the next step.
+     * The number of milliseconds to wait before executing this step.
      */
     delay: number;
 }

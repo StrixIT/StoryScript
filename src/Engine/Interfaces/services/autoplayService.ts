@@ -18,7 +18,7 @@ export interface IAutoplayService {
     /**
      * Start autoplaying the game in demo mode using the configuration specified.
      * @param demoConfig The demo mode configuration.
-     * @param restartCallback call a function to restart the demo when it completes.
+     * @param restartCallback Call a function to restart the demo when it completes.
      */
     startDemoMode: (demoConfig: IDemoMode, restartCallback: () => void) => void;
 }

@@ -29,11 +29,10 @@ import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {onMounted, useTemplateRef} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {GameState} from "storyScript/Interfaces/storyScript.ts";
 
 const store = useStateStore();
 const {game, error} = storeToRefs(store);
-const {gameService, dataService, rules} = store.services;
+const {gameService, dataService} = store.services;
 const uiRoot = useTemplateRef('ui-root');
 
 const saveStates = [PlayState.Combat, PlayState.Conversation, PlayState.Trade];

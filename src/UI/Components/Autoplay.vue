@@ -17,6 +17,8 @@ const autoPlayText = useTemplateRef('autoplay-text');
 let demoTextTimer: NodeJS.Timeout;
 
 watch(() => game.value.autoplaying, (newVal) => {
+  clearInterval(demoTextTimer);
+  
   if (newVal) {
     let autoTextVisible = true;
 
@@ -24,8 +26,6 @@ watch(() => game.value.autoplaying, (newVal) => {
       autoPlayText.value.style = autoTextVisible ? 'visibility: visible;' : 'visibility: hidden;';
       autoTextVisible = !autoTextVisible;
     }, 1000);
-  } else {
-    clearTimeout(demoTextTimer);
   }
 });
 
