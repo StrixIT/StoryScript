@@ -9,6 +9,7 @@ import {ICombinationService} from "storyScript/Interfaces/services/combinationSe
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
 import {getItemFromParty} from "storyScript/Services/sharedFunctions.ts";
+import {IAction} from "storyScript/Interfaces/action.ts";
 
 export class CommandService implements ICommandService {
 
@@ -94,6 +95,17 @@ export class CommandService implements ICommandService {
         }
 
         this._game.combinations.tryCombine(selectedTarget);
+    }
+    
+    useAction = (action: string | [string, IAction]): void => {
+        const selectedAction = typeof action === 'string' ? this._game.currentLocation.actions.get(action) : action;
+
+        if (!selectedAction) {
+            throw new Error(`Action ${action} is not present at location ${this._game.currentLocation.name}!`);
+        }
+        
+        this._locationService.executeAction(selectedAction);
+        this._dataService.saveGame(this._game)
     }
 
     private getFeature(feature: (() => IFeature) | string) {

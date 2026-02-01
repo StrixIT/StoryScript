@@ -150,6 +150,8 @@ export class ServiceFactory {
 
     GetAutoplayService = (): IAutoplayService => this.Get(this._autoPlayService);
 
+    GetCommandService = (): ICommandService => this.Get(this._commandService);
+
     private Get<T>(service: T): T {
         if (!ServiceFactory._initialized) {
             throw new Error('ServiceFactory is not initialized!');

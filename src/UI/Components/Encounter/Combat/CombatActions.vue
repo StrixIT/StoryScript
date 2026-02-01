@@ -6,7 +6,7 @@
                 :disabled="!enabled" 
                 class="btn" 
                 type="button"
-                @click="store.executeAction(action)">{{ action[1].text }}
+                @click="commandService.useAction(action)">{{ action[1].text }}
         </button>
       </li>
     </ul>
@@ -17,6 +17,7 @@ import {useStateStore} from "ui/StateStore.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 
 const store = useStateStore();
+const {commandService} = store.services;
 
 const {actions} = defineProps<{
   actions: [string, IAction][],

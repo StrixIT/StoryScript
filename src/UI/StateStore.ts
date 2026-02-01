@@ -19,10 +19,10 @@ import {ITradeService} from "storyScript/Interfaces/services/tradeService.ts";
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
 import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
 import {Error} from "ui/error.ts";
 import {isDevelopment} from "../../constants.ts";
 import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
+import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
@@ -56,6 +56,7 @@ export const useStateStore = defineStore('appState', () => {
         tradeService: <ITradeService>null,
         dataService: <IDataService>null,
         autoplayService: <IAutoplayService>null,
+        commandService: <ICommandService>null,
         texts: <IInterfaceTexts>null,
         rules: <IRules>null
     };
@@ -98,9 +99,10 @@ export const useStateStore = defineStore('appState', () => {
         services.tradeService = serviceFactory.GetTradeService();
         services.dataService = serviceFactory.GetDataService();
         services.autoplayService = serviceFactory.GetAutoplayService();
+        services.commandService = serviceFactory.GetCommandService();
         availableLocations.value = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
     }
-    
+
     const setActiveCharacter = (character: ICharacter) => {
         game.value.activeCharacter = character;
     }
@@ -160,36 +162,6 @@ export const useStateStore = defineStore('appState', () => {
         return buttonClass;
     }
 
-    const executeAction = (action: [string, IAction]): void => {
-        const execute = action[1]?.execute;
-
-        if (execute) {
-            let result = true;
-
-            if (typeof execute === 'function') {
-                const actionResult = execute(game.value);
-                result = actionResult === true;
-            } else {
-                gameEvents.publish(execute, action);
-            }
-
-            const typeAndIndex = getActionIndex(game.value, action);
-
-            if (!result && typeAndIndex.index !== -1) {
-                if (typeAndIndex.type === ActionType.Regular && game.value.currentLocation.actions) {
-                    const currentAction = game.value.currentLocation.actions[typeAndIndex.index];
-                    game.value.currentLocation.actions.delete(currentAction);
-                } else if (typeAndIndex.type === ActionType.Combat && game.value.currentLocation.combatActions) {
-                    const currentCombatAction = game.value.currentLocation.combatActions[typeAndIndex.index];
-                    game.value.currentLocation.combatActions.delete(currentCombatAction);
-                }
-            }
-
-            // After each action, save the game.
-            services.dataService.saveGame(game.value)
-        }
-    }
-
     return {
         error,
         game,
@@ -212,31 +184,7 @@ export const useStateStore = defineStore('appState', () => {
         showEquipment,
         showDescription,
         getButtonClass,
-        executeAction,
         trade,
         startCombat
     }
 });
-
-const getActionIndex = (game: IGame, action: [string, IAction]): { type: ActionType, index: number } => {
-    let index = -1;
-    let type = ActionType.Regular;
-
-    game.currentLocation.actions.forEach(([k, v], i) => {
-        if (k === action[0]) {
-            index = i;
-            type = ActionType.Regular;
-        }
-    });
-
-    if (index == -1) {
-        game.currentLocation.combatActions.forEach(([k, v], i) => {
-            if (k === action[0]) {
-                index = i;
-                type = ActionType.Combat;
-            }
-        });
-    }
-
-    return {type, index};
-}

@@ -1,6 +1,7 @@
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {IPerson} from "storyScript/Interfaces/person.ts";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
+import {IAction} from "storyScript/Interfaces/action.ts";
 
 export interface ICommandService {
     /**
@@ -42,4 +43,10 @@ export interface ICommandService {
      * @param tool The tool to use in the combination.
      */
     combine: (combination: string, target: (() => IFeature) | string, tool?: (() => IFeature) | string) => void;
+
+    /**
+     * Use the action specified on the current location.
+     * @param action The action to use
+     */
+    useAction: (action: string | [string, IAction]) => void;
 }
