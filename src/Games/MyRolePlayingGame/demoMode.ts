@@ -1,10 +1,24 @@
 import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 import {Friend} from "./persons/Friend.ts";
 import {Garden} from "./locations/Garden.ts";
+import {Start} from "./locations/start.ts";
+import {Library} from "./locations/Library.ts";
+import {Combinations} from "../MyAdventureGame/combinations.ts";
+import {Fountain} from "../MyAdventureGame/features/fountain.ts";
+import {Corridor} from "../MyAdventureGame/features/corridor.ts";
+import {WoundedWarrior} from "../MyAdventureGame/features/woundedWarrior.ts";
+import {Herbs} from "../MyAdventureGame/items/herbs.ts";
+import {Flask} from "../MyAdventureGame/items/flask.ts";
+import {Water} from "../MyAdventureGame/items/water.ts";
+import {HealingPotion} from "../MyAdventureGame/items/healingPotion.ts";
+import {IFeature} from "../MyAdventureGame/interfaces/feature.ts";
+import {IAutoplayStep} from "storyScript/Interfaces/autoplayStep.ts";
+import {IGame} from "../MyAdventureGame/interfaces/game.ts";
+import {Sword} from "./items/sword.ts";
 
 export const  getDemoMode = () => {
     return <IDemoMode>{
-        startDelay: 2000,
+        startDelay: 1000,
         party: {
             characters: [
                 {
@@ -18,31 +32,21 @@ export const  getDemoMode = () => {
                 }
             ]
         },
-        steps: [{
-            action: game => {
-                game.commands.talk(Friend);
-            },
-            delay: 2000
-        },{
-            action: game => {
-                game.commands.answer('hello', 'fine');
-            },
-            delay: 1000
-        },{
-            action: game => {
-                game.commands.answer('fine');
-            },
-            delay: 1000
-        },{
-            action: game => {
-                game.playState = null;
-            },
-            delay: 1000
-        },{
-            action: game => {
-                game.commands.go(Garden);
-            },
-            delay: 2000
-        }]
+        steps: [
+            // { action: game => game.commands.talk(Friend), delay: 2000 },
+            // { action: game => game.commands.answer('hello', 'fine'), delay: 1000 },
+            // { action: game => game.commands.answer('fine'), delay: 1000 },
+            // { action: game => game.playState = null, delay: 1000 },
+            // { action: game => game.commands.go(Garden), delay: 1000 },
+            // { action: game => game.commands.useAction('LookInPond'), delay: 1000 },
+            // { action: game => game.commands.useAction('SearchShed'), delay: 1000 },
+            // { action: game => game.commands.useBarrierAction('Basement', 'TrapDoor', 'Inspect'), delay: 1000 },
+            // { action: game => game.commands.go(Start), delay: 1000 },
+            { action: game => game.commands.go(Library), delay: 1000 },
+            { action: game => game.commands.trade('YourPersonalCloset'), delay: 1000 },
+            { action: game => game.commands.buy(Sword), delay: 1000 },
+            { action: game => game.playState = null, delay: 1000 },
+            { action: game => game.commands.go(Start), delay: 1000 },
+        ]
     };
 }
