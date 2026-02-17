@@ -69,7 +69,7 @@ export interface ICommandService {
     trade: (trade: string | (() => IPerson)) => void;
 
     /**
-     * Buy the current item from the current trader
+     * Buy the specified item from the current trader
      * @param item The item to buy
      */
     buy: (item: (() => IItem)) => void;
