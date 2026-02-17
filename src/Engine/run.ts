@@ -3,7 +3,7 @@ import {addArrayExtensions, addFunctionExtensions} from './arrayAndFunctionExten
 import {IInterfaceTexts} from './Interfaces/interfaceTexts';
 import {IRules} from './Interfaces/rules/rules';
 import {buildEntities} from './EntityCreatorFunctions';
-import {assetRegex} from '../../constants';
+import {entityTypeRegex} from '../../constants';
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
 /**
@@ -48,15 +48,20 @@ function loadAssetsWithImport(modules?: Record<string, unknown>): IDefinitions {
     // Loop over all found files to register the assets with the proper type.
     for (const path in modules) {
         const asset = modules[path];
-        const type = assetRegex.exec(path)[1].replace('./', '').split('/')[0];
+        const entityType = entityTypeRegex.exec(path)?.[0];
+
+        if (!entityType) {
+            throw new Error(`'${path}' is not a valid entity type path!`);
+        }
+
         const property = Object.getOwnPropertyNames(asset)[0];
         const entityFunc = asset[property];
 
         // Add the entity function to the definitions object for creating entities at run-time.
-        definitions[type] = definitions[type] || [];
+        definitions[entityType] = definitions[entityType] || [];
 
-        if (definitions[type].indexOf(entityFunc) === -1) {
-            definitions[type].push(entityFunc);
+        if (definitions[entityType].indexOf(entityFunc) === -1) {
+            definitions[entityType].push(entityFunc);
         }
     }
 
