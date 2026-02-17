@@ -47,7 +47,7 @@ import Destination from "ui/Components/Exploration/Destination.vue";
 
 const store = useStateStore();
 const {game, enemiesPresent, activeActions, activeDestinations} = storeToRefs(store);
-const {texts} = store.services;
+const {commandService, texts} = store.services;
 
 const confirmAction = ref<[string, IAction]>(null);
 
@@ -63,7 +63,7 @@ const execute = (action: [string, IAction]): void => {
   }
 
   confirmAction.value = undefined;
-  store.executeAction(action);
+  commandService.useAction(action);
 }
 
 </script>

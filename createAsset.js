@@ -1,6 +1,7 @@
 import gameName from './currentGameName.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import pkg from 'jsonfile';
+import {entityNameRegex} from "./constants.ts";
 
 const gameDir = `src/Games/${gameName}`;
 const { readFileSync } = pkg;
@@ -16,6 +17,11 @@ const assetName = process.argv[3];
 
 if (!assetName) {
     console.log('You need to specify an asset name, e.g. \'Cave\'.');
+    process.exit();
+}
+
+if (!entityNameRegex.exec(assetName)) {
+    console.log(`${assetName} is not a valid asset name! The name must start with a letter and contain only letters, numbers and '_'.`);
     process.exit();
 }
 

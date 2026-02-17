@@ -9,6 +9,12 @@ import {ICombinationService} from "storyScript/Interfaces/services/combinationSe
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
 import {getItemFromParty} from "storyScript/Services/sharedFunctions.ts";
+import {IAction} from "storyScript/Interfaces/action.ts";
+import {IBarrier} from "storyScript/Interfaces/barrier.ts";
+import {IDestination} from "storyScript/Interfaces/destination.ts";
+import {IBarrierAction} from "storyScript/Interfaces/barrierAction.ts";
+import {ITradeService} from "storyScript/Interfaces/services/tradeService.ts";
+import {IItem} from "storyScript/Interfaces/item.ts";
 
 export class CommandService implements ICommandService {
 
@@ -17,6 +23,7 @@ export class CommandService implements ICommandService {
     constructor(
         private _locationService: ILocationService,
         private _conversationService: IConversationService,
+        private _tradeService: ITradeService,
         private _combinationService: ICombinationService,
         private _dataService: IDataService,
         private _game: IGame) {
@@ -94,6 +101,62 @@ export class CommandService implements ICommandService {
         }
 
         this._game.combinations.tryCombine(selectedTarget);
+    }
+    
+    useAction = (action: string | [string, IAction]): void => {
+        const selectedAction = typeof action === 'string' ? this._game.currentLocation.actions.get(action) : action;
+
+        if (!selectedAction) {
+            throw new Error(`Action ${action} is not present at location ${this._game.currentLocation.name}!`);
+        }
+        
+        this._locationService.executeAction(selectedAction);
+        this._dataService.saveGame(this._game)
+    }
+
+    useBarrierAction = (destination: string | IDestination, barrier: string | [string, IBarrier], action: string | [string, IBarrierAction]): void => {
+        const selectedDestination = typeof destination === 'string' ? this._game.currentLocation.destinations.get(destination) : destination;
+
+        if (!selectedDestination) {
+            throw new Error(`Destination ${destination} is not present at location ${this._game.currentLocation.name}!`);
+        }
+
+        const selectedBarrier = typeof barrier === 'string' ? selectedDestination.barriers.get(barrier) : barrier;
+
+        if (!selectedBarrier) {
+            throw new Error(`Barrier ${barrier} is not present on destination ${selectedDestination.name}!`);
+        }
+        
+        const selectedAction = typeof action === 'string' ? selectedBarrier[1].actions.get(action) : action;
+
+        if (!selectedAction) {
+            throw new Error(`Action ${action} is not present at barrier ${selectedBarrier[0]}!`);
+        }
+
+        selectedAction[1].execute(this._game, selectedBarrier, selectedDestination);
+        selectedBarrier[1].actions.delete(selectedBarrier[1].actions.find(([k, _]) => k === action[0]));
+        this._dataService.saveGame(this._game)
+    }
+
+    trade = (trade: string | (() => IPerson)): void => {
+        const partner = this._game.currentLocation.trade.get(trade);
+
+        if (!partner) {
+            const tradeName = typeof trade === 'string' ? trade : trade.name;
+            throw new Error(`No trade ${tradeName} present at location ${this._game.currentLocation.name}!`);
+        }
+
+        this._tradeService.trade(partner);
+    }
+    
+    buy = (item: (() => IItem)): void => {
+        const selectedItem = this._game.trade.buy.items.get(item);
+
+        if (!selectedItem) {
+            throw new Error(`Trader ${this._game.trade.name} does not have item ${item.name} for sale!`);
+        }
+        
+        this._tradeService.buy(selectedItem, this._game.trade);
     }
 
     private getFeature(feature: (() => IFeature) | string) {
