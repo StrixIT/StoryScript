@@ -8,6 +8,7 @@ import {useStateStore} from "ui/StateStore.ts";
 import 'ui/styles/bootstrap-storyscript.scss';
 import 'ui/styles/storyscript.css';
 import 'game/ui/styles/game.css'
+// @ts-ignore
 import 'game/run';
 
 let pinia: Pinia;

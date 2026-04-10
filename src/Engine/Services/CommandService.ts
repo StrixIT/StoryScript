@@ -159,6 +159,16 @@ export class CommandService implements ICommandService {
         this._tradeService.buy(selectedItem, this._game.trade);
     }
 
+    sell = (item: (() => IItem)): void => {
+        const selectedItem = this._game.trade.sell.items.get(item);
+
+        if (!selectedItem) {
+            throw new Error(`Item ${item.name} is not available or cannot be sold to ${this._game.trade.name}!`);
+        }
+
+        this._tradeService.sell(selectedItem, this._game.trade);
+    }
+
     private getFeature(feature: (() => IFeature) | string) {
         if (typeof feature === 'string') {
             feature = feature.toLowerCase().replace(/\s/g, '');

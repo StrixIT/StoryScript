@@ -73,4 +73,10 @@ export interface ICommandService {
      * @param item The item to buy
      */
     buy: (item: (() => IItem)) => void;
+
+    /**
+     * Sell the specified item to the current trader
+     * @param item The item to sell
+     */
+    sell: (item: (() => IItem)) => void;
 }
