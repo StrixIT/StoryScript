@@ -1,20 +1,21 @@
-import { describe, test, expect } from 'vitest';
-import { TradeService } from 'storyScript/Services/TradeService';
+import {describe, expect, test} from 'vitest';
+import {TradeService} from 'storyScript/Services/TradeService';
 import {
-    ITrade,
-    ICompiledLocation,
-    IPerson,
-    PlayState,
-    IGame,
     ICharacter,
-    IDefinitions, IRules
+    ICompiledLocation,
+    IDefinitions,
+    IGame,
+    IPerson,
+    IRules,
+    ITrade,
+    PlayState
 } from 'storyScript/Interfaces/storyScript';
-import { IStock } from 'storyScript/Interfaces/stock';
+import {IStock} from 'storyScript/Interfaces/stock';
 import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
 
-describe("TradeService", function() {
+describe("TradeService", function () {
 
-    test("should start trade with an entity that is not a person", function() {
+    test("should start trade with an entity that is not a person", function () {
         var game = <IGame>{
             activeCharacter: {
                 items: []
@@ -40,8 +41,8 @@ describe("TradeService", function() {
         service.trade(trade[0]);
         expect(game.playState).toBe(PlayState.Trade);
     });
-    
-    test("should start trade with a person", function() {
+
+    test("should start trade with a person", function () {
         var game = <IGame>{
             activeCharacter: {
                 items: []
@@ -49,7 +50,9 @@ describe("TradeService", function() {
         };
 
         var texts = {
-            format: function(format, tokens) { return tokens[0]; }
+            format: function (format, tokens) {
+                return tokens[0];
+            }
         }
 
         var trader = <IPerson>{
@@ -62,7 +65,7 @@ describe("TradeService", function() {
                     text: '',
                     emptyText: '',
                     maxItems: 3,
-                    itemSelector: function() {
+                    itemSelector: function () {
                         return true;
                     }
                 },
@@ -70,7 +73,7 @@ describe("TradeService", function() {
                     text: '',
                     emptyText: '',
                     maxItems: 3,
-                    sellSelector: function() {
+                    sellSelector: function () {
                         return true;
                     }
                 }
@@ -81,7 +84,7 @@ describe("TradeService", function() {
             persons: [trader]
         };
 
-        const service = getService(<IItemService>{}, game, undefined, texts, <IDefinitions>{ items: [] });
+        const service = getService(<IItemService>{}, game, undefined, texts, <IDefinitions>{items: []});
 
         service.trade(trader);
         const activeTrade = game.trade;

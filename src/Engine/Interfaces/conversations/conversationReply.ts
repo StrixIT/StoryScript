@@ -29,7 +29,7 @@ export interface IConversationReply {
 
     /**
      * True if the player can see the reply even though it is not available to him, false otherwise.
-     */        
+     */
     showWhenUnavailable?: boolean;
 
     /**

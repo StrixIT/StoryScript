@@ -8,10 +8,7 @@ import {addHtmlSpaces, getId, parseHtmlDocumentFromString} from '../utilityFunct
 import {ILocationService} from '../Interfaces/services/locationService';
 import {ActionType} from '../Interfaces/enumerations/actionType';
 import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
-import {
-    getBasicFeatureData,
-    setDestination
-} from "storyScript/EntityCreatorFunctions.ts";
+import {getBasicFeatureData, setDestination} from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";

@@ -1,5 +1,5 @@
-﻿import { Item } from '../types';
-import { EquipmentType } from 'storyScript/Interfaces/storyScript';
+﻿import {Item} from '../types';
+import {EquipmentType} from 'storyScript/Interfaces/storyScript';
 
 export function LeatherBoots() {
     return Item({

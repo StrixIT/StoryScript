@@ -1,5 +1,5 @@
 <template>
-  <div class="collapsible-header" :class="headerClass" @click="toggleCollapsible" ref="collapsible-header">
+  <div ref="collapsible-header" :class="headerClass" class="collapsible-header" @click="toggleCollapsible">
     <slot name="header">
       {{ text }}
     </slot>
@@ -12,7 +12,7 @@
 
 import {computed, onMounted, ref, useTemplateRef} from "vue";
 
-const { preventCollapse, headerClass } = defineProps<{
+const {preventCollapse, headerClass} = defineProps<{
   text?: string;
   headerClass?: string;
   preventCollapse?: (isCollapsed: boolean) => boolean;

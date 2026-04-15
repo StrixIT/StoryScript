@@ -2,7 +2,7 @@ import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 import {IAutoplayStep} from "storyScript/Interfaces/autoplayStep.ts";
 
 export interface IAutoplayService {
-    
+
     /**
      * Start autoplay using the steps specified.
      * @param steps The steps to autoplay.

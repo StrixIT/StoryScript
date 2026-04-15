@@ -1,6 +1,6 @@
-import { IGame } from '../game';
-import { ICombinable } from './combinable';
-import { ICombinationMatchResult } from './combinationMatchResult';
+import {IGame} from '../game';
+import {ICombinable} from './combinable';
+import {ICombinationMatchResult} from './combinationMatchResult';
 
 /**
  * A combination definition.

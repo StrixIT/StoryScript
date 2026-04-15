@@ -1,5 +1,5 @@
-import { IGame } from '../game';
-import { PlayState } from '../enumerations/playState';
+import {IGame} from '../game';
+import {PlayState} from '../enumerations/playState';
 import {GameState, ICharacter, IGroupableItem, IInterfaceTexts, IItem, ITrade} from '../storyScript';
 
 export interface IGeneralRules {

@@ -6,10 +6,12 @@
           @click="game.combinations.tryCombine(person)">
         <span class="person-name">{{ person.name }}</span>
         <div class="inline">
-          <button v-if="person.conversation" class="btn btn-info talk" type="button" @click="conversationService.talk(person)">
+          <button v-if="person.conversation" class="btn btn-info talk" type="button"
+                  @click="conversationService.talk(person)">
             {{ texts.format(texts.talk, [person.name]) }}
           </button>
-          <button v-if="person.trade" class="btn btn-info trade" type="button" @click="store.trade(game.currentLocation, person)">
+          <button v-if="person.trade" class="btn btn-info trade" type="button"
+                  @click="store.trade(game.currentLocation, person)">
             {{ texts.format(texts.trade, [person.name]) }}
           </button>
           <button v-if="hasDescription(person)" class="btn btn-info examine" type="button"
@@ -17,7 +19,8 @@
             {{ texts.format(texts.examine, [person.name]) }}
           </button>
           <button v-if="person.canAttack === undefined || person.canAttack === true" class="btn btn-danger"
-                  type="button" @click="store.startCombat(game.currentLocation, person)">{{ texts.format(texts.attack, [person.name]) }}
+                  type="button" @click="store.startCombat(game.currentLocation, person)">{{ texts.format(texts.attack,
+            [person.name]) }}
           </button>
         </div>
         <img v-if="person.picture" :alt="person.name" :src="person.picture" class="person-picture"/>

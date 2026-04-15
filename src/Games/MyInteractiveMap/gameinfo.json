@@ -1,9 +1,11 @@
 {
-    "name": "Interactive Map Demo",
-    "description": "A demo to showcase the use of visual maps to navigate and enrich a StoryScript game",
-    "picture": "",
-    "sourcesIncluded": true,
-    "authors": [{
-        "name": "Rutger Schurgers"
-    }]
+  "name": "Interactive Map Demo",
+  "description": "A demo to showcase the use of visual maps to navigate and enrich a StoryScript game",
+  "picture": "",
+  "sourcesIncluded": true,
+  "authors": [
+    {
+      "name": "Rutger Schurgers"
+    }
+  ]
 }

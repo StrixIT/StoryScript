@@ -1,7 +1,7 @@
-import { ICreateCharacterAttributeEntry } from './createCharacterAttributeEntry';
+import {ICreateCharacterAttributeEntry} from './createCharacterAttributeEntry';
 
 /**
- * An attribute entry for a create character question. 
+ * An attribute entry for a create character question.
  */
 export interface ICreateCharacterAttribute {
     /**

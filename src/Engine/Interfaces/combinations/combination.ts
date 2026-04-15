@@ -1,6 +1,6 @@
-import { IGame } from '../game';
-import { ICombinable } from './combinable';
-import { ICombine } from './combine';
+import {IGame} from '../game';
+import {ICombinable} from './combinable';
+import {ICombine} from './combine';
 
 /**
  * A list of combinations that can be used on an object.

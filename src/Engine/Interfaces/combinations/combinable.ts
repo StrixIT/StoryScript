@@ -1,4 +1,4 @@
-import { ICombinations } from './combination';
+import {ICombinations} from './combination';
 
 /**
  * Defines an object that can participate in combinations.

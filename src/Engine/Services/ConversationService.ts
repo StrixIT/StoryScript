@@ -223,7 +223,7 @@ export class ConversationService implements IConversationService {
     private readonly initReplies = (person: IPerson): void => {
         const activeNode = person.conversation.activeNode;
 
-        activeNode.replies = activeNode.replies.filter(r => 
+        activeNode.replies = activeNode.replies.filter(r =>
             !r.once || !person.conversation.singleRepliesChosen?.includes(this.getReplyId(activeNode, r)));
 
         activeNode.replies.forEach(reply => {
@@ -239,7 +239,7 @@ export class ConversationService implements IConversationService {
                 reply.available = this.checkReplyAvailability(activeNode, reply);
             }
         });
-        
+
         this._rules.encounters?.initReplies?.(this._game, activeNode);
     }
 
@@ -261,7 +261,7 @@ export class ConversationService implements IConversationService {
                 conversation.singleRepliesChosen = !conversation.singleRepliesChosen ? '' : conversation.singleRepliesChosen + ';';
                 conversation.singleRepliesChosen += this.getReplyId(conversation.activeNode, reply);
             }
-            
+
             activeNode = conversation.nodes.filter((node) => {
                 return node.node == reply.linkToNode;
             })[0];

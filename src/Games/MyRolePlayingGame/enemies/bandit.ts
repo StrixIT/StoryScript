@@ -1,6 +1,6 @@
-﻿import { Enemy } from '../types';
-import { Sword } from '../items/sword';
-import { BasementKey } from '../items/basementKey';
+﻿import {Enemy} from '../types';
+import {Sword} from '../items/sword';
+import {BasementKey} from '../items/basementKey';
 import description from './bandit.html?raw';
 
 export function Bandit() {

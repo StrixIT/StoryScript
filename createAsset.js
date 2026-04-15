@@ -1,10 +1,10 @@
 import gameName from './currentGameName.js';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import {existsSync, mkdirSync, writeFileSync} from 'fs';
 import pkg from 'jsonfile';
 import {entityNameRegex} from "./constants.ts";
 
 const gameDir = `src/Games/${gameName}`;
-const { readFileSync } = pkg;
+const {readFileSync} = pkg;
 
 const assetType = process.argv[2];
 
@@ -25,8 +25,8 @@ if (!entityNameRegex.exec(assetName)) {
     process.exit();
 }
 
-let baseSnippetKey =  assetType.substring(0, 1).toUpperCase() + assetType.substring(1) + 's';
-let snippetKey = baseSnippetKey.endsWith('ys') ? baseSnippetKey.substring(0, baseSnippetKey.length - 2) + 'ies' : baseSnippetKey; 
+let baseSnippetKey = assetType.substring(0, 1).toUpperCase() + assetType.substring(1) + 's';
+let snippetKey = baseSnippetKey.endsWith('ys') ? baseSnippetKey.substring(0, baseSnippetKey.length - 2) + 'ies' : baseSnippetKey;
 const assetNameCapital = assetName.substring(0, 1).toUpperCase() + assetName.substring(1);
 
 const snippets = readFileSync('CodeSnippets/StoryScriptSnippets.code-snippets');
@@ -66,28 +66,28 @@ const dirName = snippetKey === 'Keys' ? 'Items' : snippetKey;
 const assetDir = `${gameDir}/${dirName.toLowerCase()}`;
 const assetBaseFileName = `${assetDir}/${assetName}`;
 
-if (!existsSync(assetDir)){
+if (!existsSync(assetDir)) {
     mkdirSync(assetDir);
 }
 
 if (!includeDescription) {
     const cleaned = [];
 
-    snippet.body = Object.keys(snippet.body).forEach(k => { 
-        const l = snippet.body[k]; 
+    snippet.body = Object.keys(snippet.body).forEach(k => {
+        const l = snippet.body[k];
         if (!l.match(/import description from \'\.\/\$\{TM_FILENAME_BASE\}\.html?raw';/g) && !l.match(/[\\t]{0,}description:/g)) {
             cleaned.push(l);
-        } 
+        }
     });
 
     snippet.body = cleaned;
 }
 
 const tsString = snippet.body
-                .join('\n')
-                .replace(/\${TM_FILENAME_BASE}/g, assetName)
-                .replace(/\${TM_FILENAME_BASE\/\(\.\*\)\/\${1:\/capitalize}\/}/g, assetNameCapital)
-                .replace(/\$[0-9]{1,}/g, '');
+    .join('\n')
+    .replace(/\${TM_FILENAME_BASE}/g, assetName)
+    .replace(/\${TM_FILENAME_BASE\/\(\.\*\)\/\${1:\/capitalize}\/}/g, assetNameCapital)
+    .replace(/\$[0-9]{1,}/g, '');
 
 // Write ts file
 writeFileSync(assetBaseFileName + '.ts', tsString);

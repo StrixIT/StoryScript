@@ -4,7 +4,7 @@ import {IItem} from '../Interfaces/item';
 import {IDefinitions} from '../Interfaces/definitions';
 import {compareString} from '../utilityFunctions';
 import {getItemFromParty, random, removeItemFromParty} from "storyScript/Services/sharedFunctions.ts";
-import { IGame } from '../Interfaces/game';
+import {IGame} from '../Interfaces/game';
 
 export class HelperService implements IHelpers {
     constructor(private _game: IGame, private _definitions: IDefinitions) {
@@ -78,7 +78,7 @@ export class HelperService implements IHelpers {
     getItemFromParty = (item: string | (() => IItem)): IItem => {
         return getItemFromParty(this._game.party, item);
     };
-    
+
     removeItemFromParty = (item: IItem | (() => IItem)): void => {
         removeItemFromParty(this._game.party, item);
     };

@@ -20,7 +20,7 @@ export interface IConversationNode {
     replies: IConversationReply[];
 
     /**
-    * The action triggered when this node is activated. The trigger string must equal an action in the conversation options.
-    */
+     * The action triggered when this node is activated. The trigger string must equal an action in the conversation options.
+     */
     trigger?: string;
 }

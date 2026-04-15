@@ -1,5 +1,5 @@
-﻿import { Key, IGame } from '../types';
-import { EquipmentType, IDestination, OpenWithKey, IBarrier } from 'storyScript/Interfaces/storyScript'
+﻿import {IGame, Key} from '../types';
+import {EquipmentType, IBarrier, IDestination, OpenWithKey} from 'storyScript/Interfaces/storyScript'
 
 export function BasementKey() {
     return Key({

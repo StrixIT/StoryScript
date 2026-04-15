@@ -1,5 +1,5 @@
-import { ICharacter } from "./character";
-import { IQuest } from "./quest";
+import {ICharacter} from "./character";
+import {IQuest} from "./quest";
 
 export interface IParty {
     /**

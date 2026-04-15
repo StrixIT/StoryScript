@@ -1,7 +1,7 @@
-import { ICreateCharacter } from './createCharacter';
-import { ICreateCharacterQuestion } from './createCharacterQuestion';
-import { ICreateCharacterAttribute } from './createCharacterAttribute';
-import { IParty } from '../party';
+import {ICreateCharacter} from './createCharacter';
+import {ICreateCharacterQuestion} from './createCharacterQuestion';
+import {ICreateCharacterAttribute} from './createCharacterAttribute';
+import {IParty} from '../party';
 
 /**
  * The definition of a step in the character creation process.
@@ -34,12 +34,12 @@ export interface ICreateCharacterStep {
     nextStepSelector?: number | ((party: IParty, character: ICreateCharacter, currentStep: ICreateCharacterStep) => number);
 
     /**
-     * Set this flag to true to mark this step as one of the final steps in character creation. 
+     * Set this flag to true to mark this step as one of the final steps in character creation.
      * This allows building a branched character creation process.
      */
     finish?: boolean;
 
-        /**
+    /**
      * A function that executes when the step is to be displayed to the player.
      * @param party The party created so far
      * @param character The character sheet filled in so far

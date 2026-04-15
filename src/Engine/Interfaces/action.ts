@@ -1,6 +1,6 @@
-﻿import { IGame } from './game';
-import { ActionType } from './enumerations/actionType';
-import { ActionStatus } from './enumerations/actionStatus';
+﻿import {IGame} from './game';
+import {ActionType} from './enumerations/actionType';
+import {ActionStatus} from './enumerations/actionStatus';
 
 /**
  * Actions available to the player when exploring the location.
@@ -22,7 +22,7 @@ export interface IAction {
     status?: ActionStatus | ((game: IGame) => ActionStatus);
 
     /**
-     * The function to execute or game event to raise when the player selects the action. Return 
+     * The function to execute or game event to raise when the player selects the action. Return
      * true if the action should be allowed to execute more than once. When an event is raised
      * the action is considered to be allowed to execute more than once.
      */

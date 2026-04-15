@@ -62,7 +62,7 @@ export function addArrayExtensions() {
                 } else {
                     result = this[0];
                 }
-                
+
                 return result;
             }
         });
@@ -118,8 +118,7 @@ export function addArrayExtensions() {
                     delete entity[StateProperties.Added];
                 } else if (isDataRecord(entity)) {
                     entity[1][StateProperties.Added] = true;
-                }
-                else {
+                } else {
                     entity[StateProperties.Added] = true;
                 }
 
@@ -139,20 +138,20 @@ export function addArrayExtensions() {
 
                 const collection = this;
                 const firstCollectionItem = collection[0];
-                
-                if (firstCollectionItem 
-                    && Array.isArray(firstCollectionItem) 
-                    && firstCollectionItem.length === 2 
+
+                if (firstCollectionItem
+                    && Array.isArray(firstCollectionItem)
+                    && firstCollectionItem.length === 2
                     && typeof firstCollectionItem[0] === 'string') {
                     item = collection.get(item);
                 }
-                
+
                 const index = findIndex(collection, item);
 
                 if (index === -1) {
                     return;
                 }
-                
+
                 // When an id was passed in, replace the item with the actual entity so we 
                 // have the information we need to create the deletion record.
                 if (typeof item === 'string') {
@@ -235,7 +234,7 @@ function findIndex(collection: any[], item: any) {
     } else {
         index = collection.indexOf(entry);
     }
-    
+
     return index;
 }
 
@@ -254,12 +253,12 @@ function find(id: any, array: any[], usePropertyMatch: boolean): any[] {
 
     return Array.prototype.filter.call(array, (x: { id: string, target: Function | string } | Function) => {
         let currentId: string | Function;
-        
+
         if (typeof x === 'function') {
             currentId = x;
         } else if (Array.isArray(x) && x.length === 2) {
             currentId = x[0];
-            
+
         } else {
             currentId = x.target ?? x.id;
         }

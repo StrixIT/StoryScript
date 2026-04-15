@@ -1,7 +1,7 @@
-import { ICharacter } from '../character';
-import { ICompiledLocation } from '../compiledLocation';
-import { IGame } from '../game';
-import { IItem } from '../item';
+import {ICharacter} from '../character';
+import {ICompiledLocation} from '../compiledLocation';
+import {IGame} from '../game';
+import {IItem} from '../item';
 
 export interface IExplorationRules {
     /**

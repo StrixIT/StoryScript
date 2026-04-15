@@ -102,14 +102,14 @@ export class CommandService implements ICommandService {
 
         this._game.combinations.tryCombine(selectedTarget);
     }
-    
+
     useAction = (action: string | [string, IAction]): void => {
         const selectedAction = typeof action === 'string' ? this._game.currentLocation.actions.get(action) : action;
 
         if (!selectedAction) {
             throw new Error(`Action ${action} is not present at location ${this._game.currentLocation.name}!`);
         }
-        
+
         this._locationService.executeAction(selectedAction);
         this._dataService.saveGame(this._game)
     }
@@ -126,7 +126,7 @@ export class CommandService implements ICommandService {
         if (!selectedBarrier) {
             throw new Error(`Barrier ${barrier} is not present on destination ${selectedDestination.name}!`);
         }
-        
+
         const selectedAction = typeof action === 'string' ? selectedBarrier[1].actions.get(action) : action;
 
         if (!selectedAction) {
@@ -148,14 +148,14 @@ export class CommandService implements ICommandService {
 
         this._tradeService.trade(partner);
     }
-    
+
     buy = (item: (() => IItem)): void => {
         const selectedItem = this._game.trade.buy.items.get(item);
 
         if (!selectedItem) {
             throw new Error(`Trader ${this._game.trade.name} does not have item ${item.name} for sale!`);
         }
-        
+
         this._tradeService.buy(selectedItem, this._game.trade);
     }
 
@@ -173,7 +173,7 @@ export class CommandService implements ICommandService {
         if (typeof feature === 'string') {
             feature = feature.toLowerCase().replace(/\s/g, '');
         }
-        
+
         let selectedFeature = this._game.currentLocation.features.get(feature);
         selectedFeature ??= this._game.currentLocation.persons.get(<any>feature);
         selectedFeature ??= this._game.currentLocation.enemies.get(<any>feature);

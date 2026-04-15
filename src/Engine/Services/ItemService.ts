@@ -2,7 +2,7 @@ import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
-import { IItem } from "storyScript/Interfaces/item";
+import {IItem} from "storyScript/Interfaces/item";
 import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {EquipmentType} from "storyScript/Interfaces/enumerations/equipmentType.ts";
@@ -19,17 +19,17 @@ export class ItemService implements IItemService {
         if (!item) {
             return undefined;
         }
-        
+
         if (this._rules.general.getItemName) {
             return this._rules.general.getItemName(item, this._texts);
         }
-        
+
         const groupableItem = item as IGroupableItem<IItem>
-        
+
         if (!groupableItem.members?.length) {
             return item.name;
         }
-        
+
         return this._texts.format(groupableItem.groupName, [(groupableItem.members.length + 1).toString()]);
     }
 
@@ -64,12 +64,12 @@ export class ItemService implements IItemService {
             if ((group.members?.length ?? 0) >= group.maxSize - 1) {
                 return false;
             }
-    
+
             if (group.id !== item.id && (!group.groupTypes || group.groupTypes.indexOf(item.id) === -1)) {
                 return false;
             }
         }
-        
+
         const anyGroupableItem = character.items.find(i => {
             if (i === item) {
                 return false;
@@ -78,18 +78,18 @@ export class ItemService implements IItemService {
             const groupable = i as IGroupableItem<IItem>;
             return groupable.isGroupable && (!groupable.maxSize || ((groupable.members?.length ?? 0) < groupable.maxSize - 1))
         });
-        
+
         if (!anyGroupableItem) {
             return false;
         }
-        
+
         if (this._rules.general.canGroupItem) {
             return this._rules.general.canGroupItem(character, group, item);
         }
 
         return true;
     };
-    
+
     groupItem = (character: ICharacter, group: IGroupableItem<IItem>, item: IGroupableItem<IItem>): boolean => {
         if (group && group !== item) {
             group.members ??= [];
@@ -97,7 +97,7 @@ export class ItemService implements IItemService {
             character.items.delete(item);
             return true;
         }
-        
+
         return false;
     }
 
@@ -106,7 +106,7 @@ export class ItemService implements IItemService {
             item.members.forEach((item: IItem) => {
                 character.items.add(item);
             });
-            
+
             item.members = undefined;
         }
     }
@@ -135,11 +135,11 @@ export class ItemService implements IItemService {
         if (item.equipmentType === EquipmentType.Miscellaneous) {
             return false;
         }
-        
+
         if (this._rules.character.canEquip) {
             return this._rules.character.canEquip(item, character);
         }
-        
+
         return true;
     };
 
@@ -189,7 +189,7 @@ export class ItemService implements IItemService {
 
         return canDrop
     };
-    
+
     dropItem = (character: ICharacter, item: IItem): void => {
         if (!item) {
             return;

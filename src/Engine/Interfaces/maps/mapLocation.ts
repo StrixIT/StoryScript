@@ -1,4 +1,4 @@
-import { ILocation } from "../location";
+import {ILocation} from "../location";
 
 export interface IMapLocation {
     /**

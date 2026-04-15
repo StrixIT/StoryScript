@@ -1,4 +1,4 @@
-import { IFeature } from './feature';
+import {IFeature} from './feature';
 
 /**
  * A collection of features of a location.

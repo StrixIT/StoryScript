@@ -1,5 +1,5 @@
-import { IEquipment } from './equipment';
-import { IItem } from './item';
+import {IEquipment} from './equipment';
+import {IItem} from './item';
 
 /**
  * This class is for internal StoryScript use only, to determine which equipment slots belong

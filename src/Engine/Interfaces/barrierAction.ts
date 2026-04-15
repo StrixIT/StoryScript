@@ -1,6 +1,6 @@
-import { IGame } from './game';
-import { IBarrier } from './barrier';
-import { IDestination } from './destination';
+import {IGame} from './game';
+import {IBarrier} from './barrier';
+import {IDestination} from './destination';
 
 /**
  * Actions that can be performed on barriers, like opening doors or rowing across rivers.

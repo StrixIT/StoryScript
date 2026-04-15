@@ -10,7 +10,7 @@ import {Rules} from "../../../Games/MyRolePlayingGame/rules.ts";
 import {ItemService} from "storyScript/Services/ItemService.ts";
 import {DefaultTexts} from "storyScript/defaultTexts.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
-import {IItem, IGroupableItem} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
+import {IGroupableItem, IItem} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
 
 describe("ItemService", function () {
 
@@ -416,7 +416,7 @@ describe("ItemService", function () {
             const result = service.canGroupItem(<any>character, daggerA, sword);
             expect(result).toBeTruthy();
         });
-        
+
         test("eligible items should be grouped", function () {
             const daggerA = daggerFunc();
             const daggerB = daggerFunc();
@@ -427,13 +427,13 @@ describe("ItemService", function () {
                     daggerB
                 ]
             };
-            
+
             const service = getService();
             service.groupItem(<any>character, daggerA, daggerB);
             expect(daggerA.members).toHaveLength(1);
             expect(daggerA.members[0]).toBe(daggerB);
         });
-        
+
     });
 
     test("should call the use function on an item", function () {

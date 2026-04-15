@@ -4,7 +4,8 @@
       <div v-if="!inline">
         {{ texts[slot] }}
       </div>
-      <div class="item-box" @click="itemService.unequipItem(character, character.equipment[slot])" :class="!inline || character.equipment[slot] ? '' : 'empty-slot'">
+      <div :class="!inline || character.equipment[slot] ? '' : 'empty-slot'" class="item-box"
+           @click="itemService.unequipItem(character, character.equipment[slot])">
         {{ itemService.getItemName(character.equipment[slot]) ?? (inline ? texts[slot] : null) }}
       </div>
     </div>

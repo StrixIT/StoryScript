@@ -1,7 +1,7 @@
 ﻿import {EquipmentType, IItem, ILocation, IParty} from "./Interfaces/storyScript";
 import {StateProperties} from "storyScript/stateProperties.ts";
 
-const functionRenameRegex =  /[$_].{1,}/i;
+const functionRenameRegex = /[$_].{1,}/i;
 
 export function compareString(left: string, right: string): boolean {
     if ((left === undefined && right === undefined) || (left === null && right === null)) {
@@ -150,7 +150,7 @@ export function hasItem(party: IParty, item: IItem | string): boolean {
         if (hasItem) {
             return;
         }
-        
+
         for (const i in c.equipment) {
             const slotItem = <IItem>c.equipment[i];
             hasItem = slotItem && compareString(slotItem.id, (item as IItem)?.id ?? item as string);
@@ -160,7 +160,7 @@ export function hasItem(party: IParty, item: IItem | string): boolean {
             }
         }
     });
-    
+
     return hasItem;
 }
 

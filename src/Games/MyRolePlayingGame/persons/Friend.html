@@ -1,4 +1,4 @@
-﻿<img class="picture" src="resources/farmboy.png" />
+﻿<img class="picture" src="resources/farmboy.png"/>
 <description>
 </description>
 <conversation>
@@ -23,10 +23,10 @@
             Back so soon?
         </p>
         <replies>
-            <reply node="garden" requires="location=garden" once="true">
+            <reply node="garden" once="true" requires="location=garden">
                 I just walked through the garden.
             </reply>
-            <reply node="key" requires="item=basementkey" once="true">
+            <reply node="key" once="true" requires="item=basementkey">
                 I found a key.
             </reply>
             <reply node="lostjournal">
@@ -82,7 +82,7 @@
             <reply>
                 Not yet, sorry.
             </reply>
-            <reply requires="quest-done=Journal" quest-complete="Journal" set-start="return">
+            <reply quest-complete="Journal" requires="quest-done=Journal" set-start="return">
                 Yes I have. Here it is!
             </reply>
         </replies>

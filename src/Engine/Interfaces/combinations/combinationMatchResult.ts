@@ -8,7 +8,7 @@ export interface ICombinationMatchResult {
      * If true, remove the tool feature after the match is made.
      */
     removeTool?: boolean
-    
+
     /**
      * If true, remove the target feature after the match is made.
      */

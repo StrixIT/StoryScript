@@ -1,4 +1,4 @@
-import { IItem } from "./item";
+import {IItem} from "./item";
 
 export interface IEquipment {
     /**

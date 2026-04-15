@@ -1,7 +1,7 @@
-﻿import { IGame, IItem, IPerson, Person } from '../types';
-import { Sword } from '../items/sword';
-import { Garden } from '../locations/Garden';
-import { Journal } from '../quests/journal';
+﻿import {IGame, IItem, IPerson, Person} from '../types';
+import {Sword} from '../items/sword';
+import {Garden} from '../locations/Garden';
+import {Journal} from '../quests/journal';
 import conversation from './Friend.html?raw';
 
 export function Friend() {

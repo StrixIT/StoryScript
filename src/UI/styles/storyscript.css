@@ -375,7 +375,7 @@ feature {
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
     appearance: none;
-    transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 #location-selector {
@@ -486,7 +486,7 @@ feature {
     white-space: nowrap;
 }
 
-.map-location-label.reachable, .map-location-image.reachable  {
+.map-location-label.reachable, .map-location-image.reachable {
     cursor: pointer;
 }
 

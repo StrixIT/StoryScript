@@ -1,10 +1,10 @@
-import { IGame, Feature } from '../types';
-import { Passage } from '../locations/passage';
-import { Combinations } from '../combinations';
+import {Feature} from '../types';
+import {Passage} from '../locations/passage';
+import {Combinations} from '../combinations';
 
 export function Corridor() {
-	return Feature({
-		name: 'Corridor',
+    return Feature({
+        name: 'Corridor',
         description: 'A passage through the undergrowth',
         coords: '492,241,464,196',
         shape: 'rect',
@@ -19,5 +19,5 @@ export function Corridor() {
                 },
             ]
         }
-	});
+    });
 }

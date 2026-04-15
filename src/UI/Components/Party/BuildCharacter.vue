@@ -18,22 +18,22 @@
         <div v-for="entry of attribute.entries" class="input-group mb-3">
           <div class="input-group-prepend">
             <label v-if="attribute.entries.length !== 1" class="input-group-text">{{
-                texts.titleCase(entry.attribute)
+              texts.titleCase(entry.attribute)
               }}</label>
             <label v-if="attribute.entries.length === 1" class="input-group-text">{{ attribute.question }}</label>
           </div>
           <input v-if="!entry.min && !entry.max" v-model="entry.value" class="form-control" type="text"/>
-          <input v-if="entry.min || entry.max" 
-                 v-model="entry.value" 
-                 class="form-control" 
+          <input v-if="entry.min || entry.max"
+                 v-model="entry.value"
+                 class="form-control"
                  max="{{ entry.max }}"
-                 min="{{ entry.min }}" 
+                 min="{{ entry.min }}"
                  type="number"
                  @blur="characterService.limitSheetInput(parseInt(($event.target as any).value), attribute, entry)"/>
         </div>
       </div>
 
-      <button v-if="sheet.currentStep < sheet.steps.length - 1 && !sheet.steps[sheet.currentStep].finish" 
+      <button v-if="sheet.currentStep < sheet.steps.length - 1 && !sheet.steps[sheet.currentStep].finish"
               :disabled="!characterService.distributionDone(sheet, step)"
               class="btn btn-primary" type="button"
               @click="sheet.nextStep(sheet)">{{ texts.nextQuestion }}

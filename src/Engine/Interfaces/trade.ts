@@ -1,6 +1,6 @@
-﻿import { IItem } from './item';
-import { IStock } from './stock';
-import { IGame } from './game';
+﻿import {IItem} from './item';
+import {IStock} from './stock';
+import {IGame} from './game';
 
 /**
  * The base properties to configure a trader of or a container for items in the game.
@@ -35,6 +35,24 @@ export interface ITrade {
      * items is done using the initCollection function.
      */
     ownItemsOnly?: boolean;
+    /**
+     * The collection of items the trader will buy or that can be put in the store.
+     */
+    sell?: IStock;
+    /**
+     * The collection of items the trader has to offer or that can be taken from the store.
+     */
+    buy?: IStock & {
+
+        /**
+         * This function runs when initiating trade and determines whether the list of items
+         * available for buying should be refreshed. Return true to refresh the lists, false
+         * to keep them as they were.
+         * @param game The game object
+         * @param trade The trader for which to refresh the item lists
+         */
+        initCollection?(game: IGame, trade: ITrade): boolean;
+    };
 
     /**
      * This function is executed when the player has bought an item from the trader.
@@ -49,24 +67,4 @@ export interface ITrade {
      * @param item The item sold
      */
     onSell?(game: IGame, item: IItem): void;
-
-    /**
-     * The collection of items the trader will buy or that can be put in the store.
-     */
-    sell?: IStock;
-
-    /**
-     * The collection of items the trader has to offer or that can be taken from the store.
-     */
-    buy?: IStock & {
-          
-        /**
-         * This function runs when initiating trade and determines whether the list of items
-         * available for buying should be refreshed. Return true to refresh the lists, false 
-         * to keep them as they were.
-         * @param game The game object
-         * @param trade The trader for which to refresh the item lists
-         */
-        initCollection?(game: IGame, trade: ITrade): boolean;
-    };
 }

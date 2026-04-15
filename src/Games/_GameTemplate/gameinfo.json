@@ -1,10 +1,12 @@
 {
-    "name": "",
-    "description": "",
-    "picture": "",
-    "sourcesIncluded": false,
-    "authors": [{
-        "name": "",
-        "email": ""
-    }]
+  "name": "",
+  "description": "",
+  "picture": "",
+  "sourcesIncluded": false,
+  "authors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ]
 }

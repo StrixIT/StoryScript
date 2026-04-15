@@ -3,7 +3,9 @@
     <h1>{{ texts.gameName }}</h1>
   </div>
   <div v-if="showTitleScreen" id="title-screen-start">
-    <button id="start-game" class="btn btn-primary" type="button" @click="startGame()">{{ hasProgress ? texts.continueGame : texts.startGame }}</button>
+    <button id="start-game" class="btn btn-primary" type="button" @click="startGame()">{{ hasProgress ?
+      texts.continueGame : texts.startGame }}
+    </button>
   </div>
 </template>
 <script lang="ts" setup>
@@ -27,13 +29,13 @@ const startGame = () => {
   gameService.init();
 }
 
-onMounted(() => { 
-  if (titleScreen.value) { 
+onMounted(() => {
+  if (titleScreen.value) {
     titleScreen.value.style = `transition: opacity ${transitionDelay}s ease-out;`;
   }
 });
 
-watch(() => game.value.autoplaying, (newVal) => { 
+watch(() => game.value.autoplaying, (newVal) => {
   if (titleScreen.value) {
     titleScreen.value.style.opacity = newVal ? '0' : '1';
   }

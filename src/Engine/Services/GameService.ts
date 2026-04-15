@@ -45,10 +45,10 @@ export class GameService implements IGameService {
         private readonly _texts: IInterfaceTexts,
     ) {
     }
-    
+
     initDemo = (demoConfig: IDemoMode) => {
         const party = structuredClone(demoConfig.party);
-        
+
         this._game.statistics = {};
         this._game.worldProperties = {};
         this._game.locations = null;
@@ -59,13 +59,13 @@ export class GameService implements IGameService {
         this.initGame([]);
         this.initTexts();
         this.resume('Start');
-        
+
         this._game.autoplay.startDemoMode(demoConfig, () => this.initDemo(demoConfig));
     }
 
     init = (restart?: boolean, skipIntro?: boolean): void => {
         this._game.started = true;
-        
+
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
         this._game.highScores = this._dataService.load<ScoreEntry[]>(HighScores);
         this._game.party = gameState?.party;
@@ -216,7 +216,7 @@ export class GameService implements IGameService {
             this._game.state = GameState.GameOver;
             return;
         }
-        
+
         this.setInterceptors();
         this._characterService.checkEquipment();
         const lastLocation = locationName && this._game.locations.get(locationName) || this._game.locations.start;
@@ -282,7 +282,7 @@ export class GameService implements IGameService {
             configurable: true,
             get: () => {
                 const characters = this._game.party.characters;
-                let character = characters.filter(c => c.isActiveCharacter)[0] 
+                let character = characters.filter(c => c.isActiveCharacter)[0]
                     ?? characters.filter(c => c.currentHitpoints > 0)[0]
                     ?? characters[0];
 

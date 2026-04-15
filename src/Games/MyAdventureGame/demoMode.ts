@@ -11,7 +11,7 @@ import {HealingPotion} from "./items/healingPotion.ts";
 import {IAutoplayStep} from "storyScript/Interfaces/autoplayStep.ts";
 import {Water} from "./items/water.ts";
 
-export const  getDemoMode = () => {
+export const getDemoMode = () => {
     return <IDemoMode>{
         startDelay: 5000,
         party: {
@@ -55,6 +55,6 @@ function getStep(combination: string, feature: (() => IFeature) | string, tool?:
             delay: 1000
         }];
     }
-    
+
     return steps;
 }

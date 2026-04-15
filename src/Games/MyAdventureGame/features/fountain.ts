@@ -1,9 +1,9 @@
-import { Feature } from '../types';
-import { Combinations } from '../combinations';
-import { Flask } from '../items/flask';
-import { Water } from '../items/water';
-import { Corridor } from './corridor';
-import { Herbs } from '../items/herbs';
+import {Feature} from '../types';
+import {Combinations} from '../combinations';
+import {Flask} from '../items/flask';
+import {Water} from '../items/water';
+import {Corridor} from './corridor';
+import {Herbs} from '../items/herbs';
 
 export function Fountain() {
     return Feature({
@@ -24,8 +24,7 @@ export function Fountain() {
                             return `You walk towards the fountain and touch the fountain water.
                                 It is a little cold. When you pull back your hand, you hear a soft
                                 muttering. It is coming from a small passage in the undergrowth.`;
-                        }
-                        else {
+                        } else {
                             return 'The fountain water is pleasant to the touch.';
                         }
                     }
@@ -40,8 +39,7 @@ export function Fountain() {
                             game.activeCharacter.items.delete(flask);
                             game.activeCharacter.items.add(Water);
                             return `You fill the flask with the clear fountain water.`;
-                        }
-                        else {
+                        } else {
                             return 'The fountain water is pleasant to the touch.';
                         }
                     }

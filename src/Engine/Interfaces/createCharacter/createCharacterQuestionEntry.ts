@@ -18,7 +18,7 @@ export interface ICreateCharacterQuestionEntry {
     bonus?: number;
 
     /**
-     * Set this flag to true to make this choice finish character creation. 
+     * Set this flag to true to make this choice finish character creation.
      * This allows building a branched character creation process.
      */
     finish?: boolean;

@@ -1,5 +1,5 @@
-﻿import { IRules, ICharacter, ICreateCharacter, ICombinationAction } from 'storyScript/Interfaces/storyScript';
-import {IGame, IEnemy, Character, ICombatSetup, ICompiledLocation} from './types';
+﻿import {ICharacter, ICombinationAction, ICreateCharacter, IRules} from 'storyScript/Interfaces/storyScript';
+import {Character, ICombatSetup, IEnemy, IGame} from './types';
 
 export function Rules(): IRules {
     return {
@@ -11,13 +11,13 @@ export function Rules(): IRules {
             }
         },
 
-        general: {  
+        general: {
             scoreChange: (game: IGame, change: number): boolean => {
                 // Implement logic to occur when the score changes. Return true when the character gains a level.
                 return false;
             }
         },
-        
+
         character: {
             getSheetAttributes: (): string[] => {
                 return [
@@ -39,17 +39,18 @@ export function Rules(): IRules {
             }
         },
 
-        exploration: {
-        },
+        exploration: {},
 
-        combat: {     
+        combat: {
             fight: (game: IGame, combatSetup: ICombatSetup, retaliate?: boolean) => {
                 retaliate = retaliate ?? retaliate;
 
                 // Implement character attack here.
 
                 if (retaliate) {
-                    game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.currentHitpoints > 0; }).forEach(enemy => {
+                    game.currentLocation.enemies.filter((enemy: IEnemy) => {
+                        return enemy.currentHitpoints > 0;
+                    }).forEach(enemy => {
                         // Implement monster attack here
                     });
                 }

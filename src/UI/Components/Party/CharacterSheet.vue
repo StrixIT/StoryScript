@@ -12,10 +12,10 @@
           <li>{{ texts.hitpoints }}
             <div class="hitpoint-editor">
               <span v-if="!isDevelopment">{{ character.currentHitpoints }}</span>
-              <input v-else 
-                     v-model="character.currentHitpoints" 
-                     :max="character.hitpoints" 
-                     :min="1" 
+              <input v-else
+                     v-model="character.currentHitpoints"
+                     :max="character.hitpoints"
+                     :min="1"
                      type="number"
                      @blur="limitInput($event, character)">
             </div>

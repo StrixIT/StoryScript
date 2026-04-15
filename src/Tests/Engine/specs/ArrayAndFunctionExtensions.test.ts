@@ -233,8 +233,8 @@ describe("arrayAndFunctionExtensions", function () {
 
     test("should add the added flag to the value of an added datarecord", function () {
         addArrayExtensions();
-        const actionRecords = [['First', { name: 'first' }]];
-        actionRecords.add(['Second', { name: 'second' }]);
+        const actionRecords = [['First', {name: 'first'}]];
+        actionRecords.add(['Second', {name: 'second'}]);
         expect(actionRecords[1][1][StateProperties.Added]).toBeTruthy();
 
         const eventRecords = [['First', () => true]];
@@ -247,13 +247,13 @@ describe("arrayAndFunctionExtensions", function () {
         const openKey = 'open';
         const closeKey = 'close';
         const openText = 'open function';
-        const testArray =[[openKey, () => openText], [closeKey, () => 'close function']];
-        
+        const testArray = [[openKey, () => openText], [closeKey, () => 'close function']];
+
         const result = testArray.get(openKey);
         expect(result).not.toBeNull();
         const resultFunction = <Function>result[1];
         expect(resultFunction()).toBe(openText);
-        
+
         testArray.delete(closeKey);
         const deleted = testArray.getDeleted();
         expect(testArray).toHaveLength(1);

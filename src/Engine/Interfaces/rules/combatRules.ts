@@ -1,10 +1,10 @@
-import { ICharacter } from '../character';
-import { ICombatSetup } from '../combatSetup';
-import { ICombatTurn } from '../combatTurn';
-import { ICompiledLocation } from '../compiledLocation';
-import { IEnemy } from '../enemy';
-import { IGame } from '../game';
-import { IItem } from '../item';
+import {ICharacter} from '../character';
+import {ICombatSetup} from '../combatSetup';
+import {ICombatTurn} from '../combatTurn';
+import {ICompiledLocation} from '../compiledLocation';
+import {IEnemy} from '../enemy';
+import {IGame} from '../game';
+import {IItem} from '../item';
 
 export interface ICombatRules {
     /**
@@ -28,7 +28,7 @@ export interface ICombatRules {
      * @param combatRound The setup for this combat round
      * @param retaliate True if the enemies present can fight back, false or undefined otherwise
      */
-    fight?(game: IGame, combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void>| void;
+    fight?(game: IGame, combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
 
     /**
      * Use this function to run custom code to determine whether an item should be selectable for combat
@@ -37,7 +37,7 @@ export interface ICombatRules {
      * @param item The item for which to determine whether it should be selectable
      */
     itemIsSelectable?(game: IGame, item: IItem): boolean;
-    
+
     /**
      * This function will be called when an enemy is defeated.
      * @param game The active game

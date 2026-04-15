@@ -17,7 +17,7 @@
       </h4>
       <button class="btn btn-outline-dark btn-lg" type="button" @click="cancel()">{{ texts.restartCancelled }}</button>
       <button class="btn btn-outline-danger btn-lg" type="button" @click="restartConfirmed()">{{
-          texts.restartConfirmed
+        texts.restartConfirmed
         }}
       </button>
     </div>

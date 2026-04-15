@@ -7,8 +7,8 @@ export interface IStatistics {
      */
     enemiesDefeated?: number;
 
-    /** 
-     * The number of locations the player visited 
+    /**
+     * The number of locations the player visited
      * */
     LocationsVisited?: number;
 }

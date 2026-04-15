@@ -40,7 +40,7 @@ logTime('Create ServiceFactory', () => {
 logTime('Init game', () => {
     const rules = serviceFactory.GetRules();
     const gameService = serviceFactory.GetGameService();
-            
+
     if (rules.setup?.titleScreen?.getDemoMode) {
         const demoConfig = rules.setup.titleScreen.getDemoMode();
         gameService.initDemo(demoConfig);

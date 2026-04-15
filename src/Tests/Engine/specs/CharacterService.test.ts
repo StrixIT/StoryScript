@@ -489,8 +489,8 @@ describe("CharacterService", function () {
             expect(restoredCharacter.equipment.rightHand).toBe(restoredCharacter.equipment.leftHand);
         });
     });
-    
-    describe("Equipment slots", function() {
+
+    describe("Equipment slots", function () {
         test("should return false when an equipment slot is not used", function () {
             const character = <ICharacter>{
                 equipment: {

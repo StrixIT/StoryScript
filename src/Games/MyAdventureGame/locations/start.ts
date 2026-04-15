@@ -1,5 +1,5 @@
-import { Location } from '../types';
-import { Fountain } from '../features/fountain';
+import {Location} from '../types';
+import {Fountain} from '../features/fountain';
 import description from './Start.html?raw';
 
 export function Start() {

@@ -1,4 +1,4 @@
-﻿import { Location } from '../types'
+﻿import {Location} from '../types'
 import description from './Start.html?raw'
 import {Westphalia} from "./Westphalia.ts";
 import {Carinthia} from "./Carinthia.ts";

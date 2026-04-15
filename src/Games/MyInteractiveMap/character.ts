@@ -1,5 +1,5 @@
-﻿import { ICharacter } from 'storyScript/Interfaces/storyScript';
-import { IItem, IEquipment } from './types';
+﻿import {ICharacter} from 'storyScript/Interfaces/storyScript';
+import {IEquipment, IItem} from './types';
 
 export class Character implements ICharacter {
     name: string = '';

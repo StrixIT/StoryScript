@@ -18,8 +18,7 @@ export function WoundedWarrior() {
                             game.activeCharacter.items.add(Flask);
                             return `Looking at the warrior, you see a flask on his belt.
                                     carefully, you remove it.`;
-                        }
-                        else {
+                        } else {
                             return 'You see nothing else that might help.';
                         }
                     }

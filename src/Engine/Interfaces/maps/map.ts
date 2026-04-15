@@ -1,4 +1,4 @@
-import { IMapLocation } from "./mapLocation";
+import {IMapLocation} from "./mapLocation";
 
 export interface IMap {
     /**

@@ -1,6 +1,6 @@
-﻿import { IFeature } from './feature';
-import { IItem } from './item';
-import { IGame } from './game';
+﻿import {IFeature} from './feature';
+import {IItem} from './item';
+import {IGame} from './game';
 
 /**
  * Defines the base properties for an enemy in the game.

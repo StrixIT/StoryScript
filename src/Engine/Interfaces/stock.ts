@@ -1,5 +1,5 @@
-import { IItem } from './item';
-import { IGame } from './game';
+import {IItem} from './item';
+import {IGame} from './game';
 
 /**
  * The base properties to configure a collection of items available to buy or sell.
@@ -20,6 +20,18 @@ export interface IStock {
      * This can be used to e.g. give players a discount when they completed quests for the trader.
      */
     priceModifier?: number | ((game: IGame) => number);
+    /**
+     * The maximum number of items to select for buying or selling using the item selector.
+     */
+    maxItems?: number;
+    /**
+     * The items available for buying or selling.
+     */
+    items?: IItem[];
+    /**
+     * The text shown to ask the user to confirm the buy or sell.
+     */
+    confirmationText?: string;
 
     /**
      * This function can be used to limit the items selected from the list of items available for the trader or the items
@@ -28,19 +40,4 @@ export interface IStock {
      * @param item The item considered for selection.
      */
     itemSelector?(game: IGame, item: IItem): boolean;
-
-    /**
-     * The maximum number of items to select for buying or selling using the item selector.
-     */
-    maxItems?: number;
-
-    /**
-     * The items available for buying or selling.
-     */
-    items?: IItem[];
-
-    /**
-     * The text shown to ask the user to confirm the buy or sell.
-     */
-    confirmationText?: string;
 }

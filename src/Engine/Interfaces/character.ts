@@ -1,5 +1,5 @@
-﻿import { IItem } from './item';
-import { IEquipment } from './equipment';
+﻿import {IItem} from './item';
+import {IEquipment} from './equipment';
 
 /**
  * The player character in the StoryScript game.

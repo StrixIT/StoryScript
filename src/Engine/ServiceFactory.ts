@@ -82,7 +82,7 @@ export class ServiceFactory {
     static readonly GetInstance = () => ServiceFactory._instance;
 
     /**
-     * Initialize the game object and the services. Pass in a game object when it should be controlled 
+     * Initialize the game object and the services. Pass in a game object when it should be controlled
      * by the UI framework. Vue needs this.
      * @param game The game object.
      */
@@ -92,14 +92,14 @@ export class ServiceFactory {
         this._tradeService = new TradeService(this._itemService, this._game, this._rules, this._texts, this._definitions);
         this._conversationService = new ConversationService(this._game, this._rules);
         this._combatService = new CombatService(this._game, this._rules, this._texts);
-        
+
         this._soundService = new SoundService(this._game, this._rules);
         this._characterService = new CharacterService(this._dataService, this._game, this._rules);
         const locationService = new LocationService(this._definitions, this._rules, this._game, gameEvents);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
         this._autoPlayService = new AutoplayService(this._game, this._rules);
         this._commandService = new CommandService(locationService, this._conversationService, this._tradeService, this._combinationService, this._dataService, this._game);
-        
+
         this._gameService = new GameService
         (
             this._dataService,
@@ -116,7 +116,7 @@ export class ServiceFactory {
         this._game.autoplay = this._autoPlayService;
         this._game.commands = this._commandService;
         this._game.helpers = new HelperService(this._game, this._definitions);
-        
+
         ServiceFactory._initialized = true;
     }
 

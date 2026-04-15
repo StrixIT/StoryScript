@@ -1,6 +1,6 @@
-import { ICharacter } from './character';
-import { IEnemy } from './enemy';
-import { IItem } from './item';
+import {ICharacter} from './character';
+import {IEnemy} from './enemy';
+import {IItem} from './item';
 
 export interface ICombatTurn {
     /**

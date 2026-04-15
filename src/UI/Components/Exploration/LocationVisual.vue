@@ -19,8 +19,6 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
-import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
 import {computed} from "vue";
 import {storeToRefs} from "pinia";
 

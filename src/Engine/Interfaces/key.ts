@@ -1,5 +1,5 @@
-﻿import { IItem } from './item';
-import { IBarrierAction } from './barrierAction';
+﻿import {IItem} from './item';
+import {IBarrierAction} from './barrierAction';
 
 /**
  * A special kind of item, that can remove a barrier.

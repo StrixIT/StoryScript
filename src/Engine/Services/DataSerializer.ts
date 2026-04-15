@@ -12,7 +12,7 @@ export class DataSerializer implements IDataSerializer {
         'startNode',
         'singleRepliesChosen'
     ]
-    
+
     constructor(private readonly _pristineEntities: Record<string, Record<string, any>>) {
     }
 
@@ -71,20 +71,20 @@ export class DataSerializer implements IDataSerializer {
                 if (parentKey === 'equipment') {
                     clone[key] = null;
                 }
-                
+
                 continue;
             }
 
             if (this.skipProperty(original, originalValue, key, parentKey)) {
                 continue;
             }
-            
+
             let newValue = this.processArrayDeletedValuesAndProperties(originalValue);
 
             this.getClonedValue({
-                clone: clone, 
-                key: key, 
-                original: original, 
+                clone: clone,
+                key: key,
+                original: original,
                 originalValue: newValue,
                 pristine: pristine,
                 pristineValue: pristineValue
@@ -93,10 +93,10 @@ export class DataSerializer implements IDataSerializer {
 
         return clone;
     }
-    
-    private processArrayDeletedValuesAndProperties(originalValue: any, ): any {
+
+    private processArrayDeletedValuesAndProperties(originalValue: any,): any {
         let newValue: any = originalValue;
-        
+
         // Add deleted entries to the array. Create a new array for this to prevent changing
         // the one used at runtime. Also copy over additional properties that may be there,
         // except for the array of deleted entities. This is handled differently.
@@ -109,7 +109,7 @@ export class DataSerializer implements IDataSerializer {
                 newValue[p] = originalValue[p];
             });
         }
-        
+
         return newValue;
     }
 
@@ -302,7 +302,7 @@ export class DataSerializer implements IDataSerializer {
             || (parentKey === 'conversation' && !this.conversationPropertiesToSerialize.includes(key))
         );
     }
-    
+
     private readonly isKeyProperty = (item: any, propertyName: string): boolean => {
         const keyProperties = getKeyPropertyNames(item);
         return keyProperties.first === propertyName || keyProperties.second === propertyName;

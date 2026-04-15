@@ -1,7 +1,7 @@
-﻿import { IEnemy } from './enemy';
-import { ITrade } from './trade';
-import { IQuest } from './quest';
-import { IConversation } from './conversations/conversation';
+﻿import {IEnemy} from './enemy';
+import {ITrade} from './trade';
+import {IQuest} from './quest';
+import {IConversation} from './conversations/conversation';
 
 /**
  * The base properties of a character in the game the player can talk or trade with.

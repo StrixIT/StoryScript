@@ -1,7 +1,7 @@
 import {ICompiledLocation} from './compiledLocation';
 import {IStatistics} from './statistics';
 import {IParty} from './party';
-import { IMap } from './maps/map';
+import {IMap} from './maps/map';
 
 /**
  * An object to save the game state.

@@ -1,13 +1,13 @@
 import {
-    IRules,
-    ICombinationAction,
-    ICreateCharacter,
+    GameState,
     ICharacter,
     ICombinable,
-    GameState
+    ICombinationAction,
+    ICreateCharacter,
+    IRules
 } from 'storyScript/Interfaces/storyScript';
-import { Combinations } from './combinations';
-import { IGame, Character, IEnemy, ICombatSetup } from './types';
+import {Combinations} from './combinations';
+import {Character, ICombatSetup, IEnemy, IGame} from './types';
 import {getDemoMode} from "./demoMode.ts";
 import {IActiveCombination} from "storyScript/Interfaces/combinations/activeCombination.ts";
 
@@ -44,7 +44,7 @@ export function Rules(): IRules {
                         text: Combinations.LOOKAT,
                         preposition: 'at',
                         requiresTool: false,
-                        failText: (ame: IGame, target: ICombinable, tool: ICombinable): string => { 
+                        failText: (ame: IGame, target: ICombinable, tool: ICombinable): string => {
                             return 'You look at the ' + target.name + '. There is nothing special about it';
                         }
                     }
@@ -67,7 +67,7 @@ export function Rules(): IRules {
             }
         },
 
-        character: {   
+        character: {
             getSheetAttributes: (): string[] => {
                 return [
                     // Add the character attributes that you want to show on the character sheet here
@@ -95,7 +95,9 @@ export function Rules(): IRules {
                 // Implement character attack here.
 
                 if (retaliate) {
-                    game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.currentHitpoints > 0; }).forEach(function (enemy) {
+                    game.currentLocation.enemies.filter((enemy: IEnemy) => {
+                        return enemy.currentHitpoints > 0;
+                    }).forEach(function (enemy) {
                         // Implement monster attack here
                     });
                 }

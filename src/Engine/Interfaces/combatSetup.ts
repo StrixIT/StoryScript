@@ -1,4 +1,4 @@
-import { ICombatTurn } from "./combatTurn";
+import {ICombatTurn} from "./combatTurn";
 import {IEnemy} from "./enemy.ts";
 import {ICharacter} from "./character.ts";
 import {ICombatWinnings} from "storyScript/Interfaces/combatWinnings.ts";

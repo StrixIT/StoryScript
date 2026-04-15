@@ -24,7 +24,7 @@ const plugins = [
             {
                 src: normalizePath(path.resolve(gamePath, 'resources/**/*.*')),
                 dest: 'resources',
-                rename: { stripBase: true }
+                rename: {stripBase: true}
             }
         ]
     }),

@@ -42,7 +42,7 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
             if (!audioContext) {
                 return;
             }
-            
+
             if (audioContext.state === 'running') {
                 canPlay.value = true;
                 return;
@@ -87,18 +87,18 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
 
     const soundCompleted = (soundKey: number) => {
         const sound = game.value.sounds.soundQueue.get(soundKey);
-        
+
         if (sound) {
             sound.completeCallBack?.();
             game.value.sounds.soundQueue.delete(soundKey);
         }
-        
+
         const queueEntry = soundQueue.find(([k, _]) => soundKey === k);
-        
+
         if (!queueEntry) {
-            return;    
+            return;
         }
-        
+
         const index = soundQueue.indexOf(queueEntry);
 
         if (index > -1) {

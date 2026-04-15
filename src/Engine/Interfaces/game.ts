@@ -14,9 +14,8 @@ import {IParty} from './party';
 import {ICombatSetup} from './combatSetup';
 import {ICombatTurn} from './combatTurn';
 import {ISoundPlayer} from "./soundPlayer.ts";
-import { IMap } from './maps/map.ts';
+import {IMap} from './maps/map.ts';
 import {IGameCombinations} from "./combinations/gameCombinations.ts";
-import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
 import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
 import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
 
@@ -67,7 +66,7 @@ export interface IGame {
      * The map of the part of the world the player is currently at, if any.
      */
     currentMap?: IMap;
-    
+
     /**
      * The high score log for the game.
      */
@@ -97,7 +96,7 @@ export interface IGame {
      * True if the game has started, meaning the user has passed the title screen. False otherwise.
      */
     started: boolean;
-    
+
     /**
      * The person the player is currently interacting with.
      */
@@ -169,12 +168,17 @@ export interface IGame {
      * True if autoplay is in progress, false otherwise.
      */
     autoplaying: boolean;
-    
+
     /**
      * The command service for programmatic access to your game's interactions.
      */
     commands: ICommandService;
-    
+    /**
+     * The setup for the next combat round. This object is used to track
+     * which character attacks which enemy using what item or weapon.
+     */
+    combat: ICombatSetup<ICombatTurn>;
+
     /**
      * The function executed to change from one location to the next.
      * @param location The location to go to
@@ -200,10 +204,4 @@ export interface IGame {
      * @param message The message to log
      */
     logToCombatLog(message: string): void;
-
-    /**
-     * The setup for the next combat round. This object is used to track
-     * which character attacks which enemy using what item or weapon.
-     */
-    combat: ICombatSetup<ICombatTurn>;
 }

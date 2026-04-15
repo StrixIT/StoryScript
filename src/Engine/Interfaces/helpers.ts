@@ -1,5 +1,5 @@
-﻿import { IItem } from './item';
-import { IEnemy } from './enemy';
+﻿import {IItem} from './item';
+import {IEnemy} from './enemy';
 
 export interface IHelpers {
     /**
@@ -32,13 +32,13 @@ export interface IHelpers {
     /**
      * Gets a specific item to add to the game.
      * @param selector The id of the item to add
-     */        
+     */
     getItem(selector: string): IItem;
 
     /**
      * Gets a specific enemy to add to the game.
      * @param selector The id of the enemy to add
-     */        
+     */
     getEnemy(selector: string): IEnemy;
 
     /**

@@ -1,5 +1,5 @@
-﻿import { IPerson } from './person';
-import { IGame } from './game';
+﻿import {IPerson} from './person';
+import {IGame} from './game';
 
 /**
  * A quest a player can complete.
@@ -19,6 +19,18 @@ export interface IQuest {
      * The quest status, either as a string or a function that can produce a quest status dynamically.
      */
     status: string | ((game: IGame, quest: IQuest, done: boolean) => string),
+    /**
+     * True if the player started the quest, false otherwise.
+     */
+    started?: boolean;
+    /**
+     * True if the player completed the quest, false otherwise.
+     */
+    completed?: boolean;
+    /**
+     * A custom object to track quest progress.
+     */
+    progress?: any
 
     /**
      * A function to execute when the player starts this quest.
@@ -42,19 +54,4 @@ export interface IQuest {
      * @param person The person this quest is for
      */
     complete?(game: IGame, quest: IQuest, person: IPerson): void;
-
-    /**
-     * True if the player started the quest, false otherwise.
-     */
-    started?: boolean;
-
-    /**
-     * True if the player completed the quest, false otherwise.
-     */
-    completed?: boolean;
-
-    /**
-     * A custom object to track quest progress.
-     */
-    progress?: any
 }

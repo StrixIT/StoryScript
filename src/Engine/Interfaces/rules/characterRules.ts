@@ -1,7 +1,7 @@
-import { ICharacter } from '../character';
-import { IItem } from '../item';
-import { IGame } from '../game';
-import { ICreateCharacter } from '../createCharacter/createCharacter';
+import {ICharacter} from '../character';
+import {IItem} from '../item';
+import {IGame} from '../game';
+import {ICreateCharacter} from '../createCharacter/createCharacter';
 
 export interface ICharacterRules {
     /**
@@ -52,7 +52,7 @@ export interface ICharacterRules {
      * @param character The player character
      */
     canEquip?(item: IItem, character: ICharacter): boolean;
-    
+
     /**
      * Specify this function if you want to apply custom rules before allowing a player to equip an item. If the player
      * is not allowed to equip the item, return false.
@@ -78,7 +78,7 @@ export interface ICharacterRules {
      * @param character The player character
      * @param item The item about to be picked up
      */
-     beforePickup?(game: IGame, character: ICharacter, item: IItem): boolean;
+    beforePickup?(game: IGame, character: ICharacter, item: IItem): boolean;
 
     /**
      * Specify this function if you want to apply custom rules before a player drops an item. Return false if the player

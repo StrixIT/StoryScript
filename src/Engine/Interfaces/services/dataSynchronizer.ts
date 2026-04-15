@@ -1,6 +1,6 @@
 export interface IDataSynchronizer {
-    synchronizeEntityData (
-        entity: any, 
+    synchronizeEntityData(
+        entity: any,
         pristineEntity?: any,
         parentEntity?: any,
         pristineParentEntity?: any,

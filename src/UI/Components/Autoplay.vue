@@ -18,7 +18,7 @@ let demoTextTimer: NodeJS.Timeout;
 
 watch(() => game.value.autoplaying, (newVal) => {
   clearInterval(demoTextTimer);
-  
+
   if (newVal) {
     let autoTextVisible = true;
 

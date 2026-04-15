@@ -215,7 +215,7 @@ export function getItemFromParty(party: IParty, item: string | (() => IItem)): I
     party.characters.forEach(c => {
         foundItem = foundItem ?? getItemFromItemsAndEquipment(c, item);
     });
-    
+
     return foundItem;
 }
 
@@ -257,7 +257,7 @@ export function removeItemFromItemsAndEquipment(character: ICharacter, item: IIt
 
 function getItemFromItemsAndEquipment(character: ICharacter, item: string | (() => IItem)): IItem {
     let foundItem = character.items.get(item);
-    
+
     if (foundItem) {
         return foundItem;
     }
@@ -265,8 +265,8 @@ function getItemFromItemsAndEquipment(character: ICharacter, item: string | (() 
     if (character.equipment) {
         for (const n in character.equipment) {
             const currentItem = character.equipment[n] as IItem;
-            
-            if ((typeof item === 'function' && currentItem.id == item.name ) || (currentItem.id == item)) {
+
+            if ((typeof item === 'function' && currentItem.id == item.name) || (currentItem.id == item)) {
                 return character.equipment[n];
             }
         }

@@ -1,9 +1,11 @@
 {
-    "name": "Adventure Game demo",
-    "description": "A demo to showcase the StoryScript building blocks for Text-based Adventure Games",
-    "picture": "",
-    "sourcesIncluded": true,
-    "authors": [{
-        "name": "Rutger Schurgers"
-    }]
+  "name": "Adventure Game demo",
+  "description": "A demo to showcase the StoryScript building blocks for Text-based Adventure Games",
+  "picture": "",
+  "sourcesIncluded": true,
+  "authors": [
+    {
+      "name": "Rutger Schurgers"
+    }
+  ]
 }

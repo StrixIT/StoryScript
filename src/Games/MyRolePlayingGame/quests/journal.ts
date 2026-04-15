@@ -1,4 +1,4 @@
-﻿import { IGame, IQuest, Quest, IPerson } from '../types';
+﻿import {IGame, IPerson, IQuest, Quest} from '../types';
 import * as Items from '../items/journal'
 
 export function Journal() {

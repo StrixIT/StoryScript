@@ -1,7 +1,7 @@
-import { Location } from '../types';
+import {Location} from '../types';
 import description from './Start.html?raw';
-import { Clearing } from './clearing';
-import { Horse } from './Horse';
+import {Clearing} from './clearing';
+import {Horse} from './Horse';
 
 export function Start() {
     return Location({

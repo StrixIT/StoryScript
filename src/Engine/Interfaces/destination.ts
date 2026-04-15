@@ -1,5 +1,5 @@
-﻿import { IBarrier } from './barrier';
-import { ILocation } from './location';
+﻿import {IBarrier} from './barrier';
+import {ILocation} from './location';
 
 /**
  * The base properties for a destination reachable from a location.
