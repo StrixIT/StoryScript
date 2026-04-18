@@ -23,7 +23,7 @@ blockquote {
 div.reference::before {
     content: "";
     display: inline-block;
-    background-image: url('resources/book_colour.png');
+    background-image: url('/resources/book_colour.png');
     background-size: contain;
     width: 30px;
     height: 30px;
@@ -75,12 +75,10 @@ button {
     margin: -10px -10px 10px -10px;
 }
 
-img.markerImage {
+markerImage {
   max-width: 60px;
   max-height: 60px;
   width: auto;
   height: auto;
   object-fit: contain;
 }
-
-
