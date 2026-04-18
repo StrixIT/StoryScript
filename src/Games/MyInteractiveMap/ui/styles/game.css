@@ -23,7 +23,7 @@ blockquote {
 div.reference::before {
     content: "";
     display: block; 
-    background-image: url('/resources/book_colour.png');
+    background-image: url($resources/book_colour.png);
     background-size: contain;
     background-repeat: no-repeat;
     width: 70px;
