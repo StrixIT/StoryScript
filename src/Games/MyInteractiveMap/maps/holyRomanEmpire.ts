@@ -22,16 +22,20 @@ export function HolyRomanEmpire() {
             {
                 location: Franconia,
                 textLabel: 'Franconia',
-                coords: '580,500'
+                coords: '580,500',
+                markerImage: 'Franconia.png'
             },
             {
                 location: Westphalia,
+                textLabel: 'Westphalia',
                 coords: '430,330',
-                markerImage: 'westphalia.png'
+                markerImage: 'Westphalia.png'
             },
             {
                 location: Austria,
-                coords: '820,720'
+                textLabel: 'Austria',
+                coords: '820,720',
+                markerImage: 'Austria.png'
             }
         ]
     });
