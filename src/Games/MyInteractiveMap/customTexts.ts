@@ -2,6 +2,7 @@
 
 export function CustomTexts(): IInterfaceTexts {
         return {
+        gameName: 'Exploring the early modern Imperial Circles',
         load: 'Load',
         loadGame: 'Load map',
         loading: 'Loading...',
