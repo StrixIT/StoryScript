@@ -22,14 +22,13 @@ blockquote {
 
 div.reference::before {
     content: "";
-    display: inline-block;
+    display: block; 
     background-image: url('/resources/book_colour.png');
     background-size: contain;
-    width: 30px;
-    height: 30px;
-    float: left;
-    margin: 0 10px 10px 0;
-    vertical-align: middle;
+    background-repeat: no-repeat;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 10px auto; 
 }
 
 body {
