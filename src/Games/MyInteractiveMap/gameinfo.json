@@ -4,9 +4,10 @@
     "picture": "",
     "sourcesIncluded": true,
     "authors": [{
-        "name": "Rutger Schurgers"
-    },
-    {
-        "name": "Monika Barget"
+        "name": "Monika Barget",
+        "role": "Writer"
+    },{
+        "name": "Rutger Schurgers",
+        "role": "Developer"
     }]
 }
