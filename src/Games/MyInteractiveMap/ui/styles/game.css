@@ -75,7 +75,7 @@ h2 {
     margin: -10px -10px 10px -10px;
 }
 
-.map-location-image {
+.map-location-image img {
   max-width: 60px;
   max-height: 60px;
   width: auto;
