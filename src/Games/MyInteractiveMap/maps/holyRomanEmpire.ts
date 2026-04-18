@@ -1,7 +1,8 @@
 import {LocationMap} from "../types.ts";
 import {Start} from "../locations/start.ts";
 import {Westphalia} from "../locations/Westphalia.ts";
-import {Carinthia} from "../locations/Carinthia.ts";
+import {Austria} from "../locations/Austria.ts";
+import {Franconia} from "../locations/Franconia.ts";
 
 export function HolyRomanEmpire() {
     return LocationMap({
@@ -15,6 +16,11 @@ export function HolyRomanEmpire() {
         locations: [
             {
                 location: Start,
+                textLabel: 'Start',
+                coords: '255,785'
+            },
+            {
+                location: Franconia,
                 textLabel: 'Franconia',
                 coords: '580,500'
             },
@@ -24,7 +30,7 @@ export function HolyRomanEmpire() {
                 markerImage: 'westphalia.png'
             },
             {
-                location: Carinthia,
+                location: Austria,
                 coords: '820,720'
             }
         ]

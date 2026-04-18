@@ -1,0 +1,9 @@
+{
+    "name": "Adventure Game demo - Autoplay",
+    "description": "A demo to showcase the StoryScript building blocks for autploaying games",
+    "picture": "",
+    "sourcesIncluded": true,
+    "authors": [{
+        "name": "Rutger Schurgers"
+    }]
+}

@@ -5,3 +5,12 @@
 .map-container {
     max-height: 800px;
 }
+
+#location {
+    max-height: 600px;
+    overflow-y: scroll;
+}
+
+blockquote {
+    margin-left: 20px;
+}

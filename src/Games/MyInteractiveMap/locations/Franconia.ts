@@ -10,18 +10,13 @@ export function Franconia() {
         description: description,
         destinations: [
             {
-                name: 'Westphalia',
-                target: Westphalia
-            },
-            {
                 name: 'Austria',
                 target: Austria
             },
             {
-                name: 'Start',
-                target: Start
-            },
-            // Add more destinations here as needed
+                name: 'Westphalia',
+                target: Westphalia
+            }
         ]
     });
 }
