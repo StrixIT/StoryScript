@@ -41,7 +41,7 @@ import {IDestination} from "storyScript/Interfaces/destination.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
-const {texts, dataService} = store.services;
+const {texts, commandService} = store.services;
 
 const {destination} = defineProps<{
   destination: IDestination
@@ -62,9 +62,7 @@ const executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBar
     return;
   }
 
-  action[1].execute(game.value, barrier, destination);
-  barrier[1].actions.delete(barrier[1].actions.find(([k, _]) => k === action[0]));
-  dataService.saveGame(game.value);
+  commandService.useBarrierAction(destination, barrier, action);
   dropDownExpanded.value = false;
 }
 

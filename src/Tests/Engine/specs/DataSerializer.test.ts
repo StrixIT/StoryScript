@@ -72,7 +72,7 @@ const locationWithAddedDestination = {
             "name": "Wooden trap door",
             "actions": [["Inspect", {
                 "text": "Inspect",
-                "execute": "function(game2){\n                      game2.logToLocationLog(\"The trap door looks old but still strong due to steel reinforcements. It is locked.\");\n                    }"
+                "execute": "function(game){\n                      game.logToLocationLog(\"The trap door looks old but still strong due to steel reinforcements. It is locked.\");\n                    }"
             }]]
         }]],
         "ss_added": true

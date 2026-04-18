@@ -14,6 +14,8 @@ import {
 } from "storyScript/EntityCreatorFunctions.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
+import {IAction} from "storyScript/Interfaces/action.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
 
 export class LocationService implements ILocationService {
     constructor(
@@ -70,6 +72,33 @@ export class LocationService implements ILocationService {
         this.initTrade(game);
         this.playEvents(game, 'enterEvents');
         this.markCurrentLocationAsVisited(game);
+    }
+
+    executeAction = (action: [string, IAction]): void => {
+        const execute = action[1]?.execute;
+
+        if (execute) {
+            let result = true;
+
+            if (typeof execute === 'function') {
+                const actionResult = execute(this._game);
+                result = actionResult === true;
+            } else {
+                gameEvents.publish(execute, action);
+            }
+
+            const typeAndIndex = this.getActionIndex(this._game, action);
+
+            if (!result && typeAndIndex.index !== -1) {
+                if (typeAndIndex.type === ActionType.Regular && this._game.currentLocation.actions) {
+                    const currentAction = this._game.currentLocation.actions[typeAndIndex.index];
+                    this._game.currentLocation.actions.delete(currentAction);
+                } else if (typeAndIndex.type === ActionType.Combat && this._game.currentLocation.combatActions) {
+                    const currentCombatAction = this._game.currentLocation.combatActions[typeAndIndex.index];
+                    this._game.currentLocation.combatActions.delete(currentCombatAction);
+                }
+            }
+        }
     }
 
     loadLocationDescriptions = (game: IGame): void => {
@@ -326,5 +355,28 @@ export class LocationService implements ILocationService {
                 }
             }
         });
+    }
+
+    private getActionIndex = (game: IGame, action: [string, IAction]): { type: ActionType, index: number } => {
+        let index = -1;
+        let type = ActionType.Regular;
+
+        game.currentLocation.actions.forEach(([k, v], i) => {
+            if (k === action[0]) {
+                index = i;
+                type = ActionType.Regular;
+            }
+        });
+
+        if (index == -1) {
+            game.currentLocation.combatActions.forEach(([k, v], i) => {
+                if (k === action[0]) {
+                    index = i;
+                    type = ActionType.Combat;
+                }
+            });
+        }
+
+        return {type, index};
     }
 }

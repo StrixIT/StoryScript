@@ -98,7 +98,7 @@ export class ServiceFactory {
         const locationService = new LocationService(this._definitions, this._rules, this._game, gameEvents);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
         this._autoPlayService = new AutoplayService(this._game, this._rules);
-        this._commandService = new CommandService(locationService, this._conversationService, this._combinationService, this._dataService, this._game);
+        this._commandService = new CommandService(locationService, this._conversationService, this._tradeService, this._combinationService, this._dataService, this._game);
         
         this._gameService = new GameService
         (
@@ -149,6 +149,8 @@ export class ServiceFactory {
     GetItemService = (): IItemService => this.Get(this._itemService);
 
     GetAutoplayService = (): IAutoplayService => this.Get(this._autoPlayService);
+
+    GetCommandService = (): ICommandService => this.Get(this._commandService);
 
     private Get<T>(service: T): T {
         if (!ServiceFactory._initialized) {

@@ -1,5 +1,4 @@
 import {defineConfig, normalizePath} from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import {viteStaticCopy} from 'vite-plugin-static-copy';
 import {visualizer} from "rollup-plugin-visualizer";
@@ -9,10 +8,8 @@ import vue from '@vitejs/plugin-vue';
 
 const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
 const uiPath = path.resolve(__dirname, `./src/UI`);
-const resourceRegex = process.platform === 'linux' ? /\/resources\/(.{1,}\.)/ : /\\resources\\(.{1,}\.)/;
 
 const plugins = [
-    tsconfigPaths(),
     vue(),
     checker({
         typescript: true,
@@ -27,14 +24,11 @@ const plugins = [
             {
                 src: normalizePath(path.resolve(gamePath, 'resources/**/*.*')),
                 dest: 'resources',
-                rename: (_, extension, fullPath) => {
-                    const match = fullPath.match(resourceRegex)[1];
-                    return match + extension;
-                }
+                rename: { stripBase: true }
             }
         ]
     }),
-    visualizer() as Plugin
+    visualizer()
 ];
 
 // https://vitejs.dev/config/
@@ -60,12 +54,14 @@ export default defineConfig({
     preview: {
         port: 8080,
     },
-    esbuild: {
-        keepNames: true
-    },
     build: {
-        target: 'esNext',
+        target: 'esnext',
         outDir: "./dist",
-        sourcemap: false
+        sourcemap: false,
+        rolldownOptions: {
+            output: {
+                keepNames: true
+            }
+        }
     }
 })
