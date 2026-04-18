@@ -1,7 +1,7 @@
 ﻿import { Location } from '../types'
 import description from './Start.html?raw'
 import {Westphalia} from "./Westphalia.ts";
-import {Carinthia} from "./Austria.ts";
+import {Austria} from "./Austria.ts";
 
 export function Start() {
     return Location({
