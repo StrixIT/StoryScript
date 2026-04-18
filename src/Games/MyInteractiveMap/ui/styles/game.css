@@ -12,13 +12,18 @@
 }
 
 blockquote {
-    margin-left: 20px;
+    margin: 0 0 1em 0;
+    padding: 0 0 0 20px;
+    border-left: 4px solid #8B4513; /* left border */
+    font-style: italic;
+    color: #3a2c1a; /* Dark brown for readability */
+    background-color: rgba(255, 255, 255, 0.1); /* opaque for contrast */
 }
 
 div.reference::before {
     content: "";
     display: inline-block;
-    background-image: url('../../resources/book_colour.png');
+    background-image: url('/resources/book_colour.png');
     background-size: contain;
     width: 30px;
     height: 30px;
