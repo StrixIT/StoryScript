@@ -1,11 +1,11 @@
 import { IGame, Location } from '../types';
-import description from './Carinthia.html?raw';
+import description from './Austria.html?raw';
 import {Westphalia} from "./Westphalia.ts";
 import {Start} from "./start.ts";
 
 export function Carinthia() {
 	return Location({
-		name: 'Carinthia',
+		name: 'Austria',
 		description: description,
 		destinations: [
 			{
