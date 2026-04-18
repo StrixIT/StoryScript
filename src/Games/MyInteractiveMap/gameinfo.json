@@ -1,9 +1,12 @@
 {
-    "name": "Interactive Map Demo",
-    "description": "A demo to showcase the use of visual maps to navigate and enrich a StoryScript game",
+    "name": "Interactive Map Demo: Imperial Circles",
+    "description": "A demo to showcase the use of visual maps to navigate and enrich a StoryScript (serious) game. We have chosen a historical map of Holy Roman Empire as an example to showcase how StoryScript can be used in research and education.",
     "picture": "",
     "sourcesIncluded": true,
     "authors": [{
         "name": "Rutger Schurgers"
+    },
+    {
+        "name": "Monika Barget"
     }]
 }
