@@ -1,6 +1,6 @@
 import { IGame, Location } from '../types';
 import description from './Westphalia.html?raw';
-import {Carinthia} from "./Carinthia.ts";
+import {Carinthia} from "./Austria.ts";
 import {Start} from "./start.ts";
 
 export function Westphalia() {
@@ -13,8 +13,8 @@ export function Westphalia() {
 				target: Start
 			},
 			{
-				name: 'Carinthia',
-				target: Carinthia
+				name: 'Austria',
+				target: Austria
 			},
 		]
 	});
