@@ -75,7 +75,7 @@ button {
     margin: -10px -10px 10px -10px;
 }
 
-.markerImage {
+.map-location-image {
   max-width: 60px;
   max-height: 60px;
   width: auto;
