@@ -12,5 +12,77 @@
 }
 
 blockquote {
-    margin-left: 20px;
+    margin: 0 0 1em 0;
+    padding: 0 0 0 20px;
+    border-left: 4px solid #8B4513; /* left border */
+    font-style: italic;
+    color: #3a2c1a; /* Dark brown for readability */
+    background-color: rgba(255, 255, 255, 0.1); /* opaque for contrast */
+}
+
+div.reference::before {
+    content: "";
+    display: block; 
+    background-image: url('/resources/book_colour.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 10px auto; 
+}
+
+body {
+    font-family: Georgia, "Times New Roman", Times, serif; /* More traditional feel? */
+    color: #000000; /* Force black text */
+    background-color: #e8d5b5; /* Imitates aged paper */
+    filter: sepia(20%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    font-family: Georgia, "Times New Roman", serif; /* Match body font */
+    color: #3a2c1a; /* Dark brown */
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+#exploration button {
+    margin-right: 10px;
+    background-color: #8B4513; /* Chocolate brown */
+    color: white; /* Ensure text is readable */
+    border: 1px solid #5D2906; /* Darker brown border */
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+.box-container {
+    border: 1px solid #8B4513; /* Chocolate brown */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px 5px 0 0;
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly opaque for readability */
+}
+
+.box-title {
+    font-size: 1.3rem;
+    font-family: Georgia, serif; /* Match body font */
+    color: var(--white); /* Keep white text */
+    background-color: #8B4513; /* Chocolate brown */
+    padding: 0 10px;
+    margin: -10px -10px 10px -10px;
+}
+
+.map-location-image img {
+  max-width: 100px;
+  max-height: 100px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
