@@ -3,6 +3,7 @@ import {Start} from "../locations/start.ts";
 import {Westphalia} from "../locations/Westphalia.ts";
 import {Austria} from "../locations/Austria.ts";
 import {Franconia} from "../locations/Franconia.ts";
+import {Swabia} from "../locations/Swabia.ts";
 
 export function HolyRomanEmpire() {
     return LocationMap({
@@ -36,7 +37,12 @@ export function HolyRomanEmpire() {
                 textLabel: 'Austria',
                 coords: '820,720',
                 markerImage: 'Austria.png'
-            }
+            },
+            {
+                location: Swabia,
+                textLabel: 'Swabia',
+                coords: '400,785'
+            },
         ]
     });
 }
