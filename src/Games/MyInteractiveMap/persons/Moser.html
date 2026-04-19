@@ -1,78 +1,15 @@
-<img class="picture" src="resources/moser.png" />
-<description>
-    <p>
-        You meet <strong>Johann Jacob Moser</strong>, a renowned jurist and chronicler of the Holy Roman Empire.
-        He is known for his detailed works on the Imperial Circles, including the Swabian Circle.
-        Moser seems willing to share his knowledge if you ask the right questions.
-    </p>
+<description name="">
+	
 </description>
 <conversation>
-    <default-reply>
-        I have no more to say on this matter. Farewell.
-    </default-reply>
-    <node name="start">
-        <p>
-            Greetings. I am Johann Jacob Moser. How may I assist you?
-        </p>
-        <replies>
-            <reply node="support_in_crisis">
-                How did the Swabian Circle support members in crises?
-            </reply>
-            <reply node="unable_to_pay">
-                What happened if members were unable to pay their contributions?
-            </reply>
-            <reply node="military_defense">
-                Can you tell me about the military defense of the Swabian Circle?
-            </reply>
-        </replies>
-    </node>
-    <node name="support_in_crisis">
-        <p>
-            In 1544, the Swabian Circle provided financial aid to the city of Zell after a devastating fire. Here you should note that Zell was the smallest imperial city in the Empire at the time and had limited resources. The Circle granted 300 gulden as a fire tax to help rebuild.<a href="#footnote-1" class="footnote-ref"><sup>1</sup></a>
-        </p>
-        <replies>
-            <reply node="start">
-                Thank you. I have another question.
-            </reply>
-        </replies>
-    </node>
-    <node name="unable_to_pay">
-        <p>
-            In 1689, the city of Heilbronn faced hardship during the French invasion. While some tax relief was granted, Heilbronn was required to continue paying its imperial circle taxes and repair its ruined fortifications.<a href="#footnote-2" class="footnote-ref"><sup>2</sup></a>
-        </p>
-        <replies>
-            <reply node="start">
-                Fascinating. I have another question.
-            </reply>
-        </replies>
-    </node>
-    <node name="military_defense">
-        <p>
-            The Swabian Circle played a crucial role in defending against French expansion in the late 17th century. After 1694, the imperial circles even maintained a joint army based at the Kehl fortress.
-        </p>
-        <replies>
-            <reply node="start">
-                Thank you for the information.
-            </reply>
-        </replies>
-    </node>
+	<default-reply>
+	</default-reply>
+	<node name="" trigger="">
+		<p>
+			
+		</p>
+		<replies default-reply="">
+			
+		</replies>
+	</node>
 </conversation>
-
-<!-- Footnotes -->
-<div class="footnotes">
-    <hr>
-    <ol>
-        <li id="footnote-1">
-            <p>
-                Original German: <em>"Von dem Schwäbischen Crays kan ich dises melden: Als An. 1544 die Stadt Zell schier gar abbrannte, wurde ihre von gemeinen Schwäbischen Crayses wegen 300. fl zur Brand=Steuer gegeben."</em>
-                <a href="#footnote-ref-1" class="footnote-backref">↩</a>
-            </p>
-        </li>
-        <li id="footnote-2">
-            <p>
-                Original German: <em>"Anno 1689. ist der Stadt Heilbronn, in Consideration der bey jetziger Französischen Irruption erlittenen Trangsalen einiger Nachlaß gegönnet, jedoch, daß sie dagegen mit denen lauffenden Crays=Praestandis fleißig beyhalten und die verfallene oder von denen Franzosen ruinirte Fortifications=Wercke nach äusserster Vermöglichkeit repariren sollte, erinnert und die verlangte Vorschrifft an Ihre Kayserliche Majestät erlassen wurden."</em>
-                <a href="#footnote-ref-2" class="footnote-backref">↩</a>
-            </p>
-        </li>
-    </ol>
-</div>
