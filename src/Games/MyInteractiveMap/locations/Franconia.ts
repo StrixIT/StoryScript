@@ -1,7 +1,7 @@
 import { IGame, Location } from '../types';
 import description from './Franconia.html?raw';
 import { Westphalia } from "./Westphalia.ts";
-import { Start } from "./start.ts";
+import { Swabia } from "./Swabia.ts";
 import { Austria } from "./Austria.ts";
 
 export function Franconia() {
@@ -12,6 +12,10 @@ export function Franconia() {
             {
                 name: 'Austria',
                 target: Austria
+            },
+            {
+                name: 'Swabia',
+                target: Swabia
             },
             {
                 name: 'Westphalia',

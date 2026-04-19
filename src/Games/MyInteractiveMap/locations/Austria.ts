@@ -1,7 +1,7 @@
 import {Location} from '../types';
 import description from './Austria.html?raw';
 import {Westphalia} from "./Westphalia.ts";
-import {Start} from "./start.ts";
+import {Swabia} from "./Swabia.ts";
 import {Franconia} from "./Franconia.ts";
 
 export function Austria() {
@@ -13,6 +13,10 @@ export function Austria() {
 				name: 'Franconia',
 				target: Franconia
 			},
+            {
+                name: 'Swabia',
+                target: Swabia
+            },
 			{
                 name: 'Westphalia',
                 target: Westphalia
