@@ -41,6 +41,11 @@ body {
     padding: 20px;
 }
 
+a {
+    color: #184cb4; /*  night blue for links */
+    text-decoration: underline;
+}
+
 h2 {
     font-family: Georgia, "Times New Roman", serif; /* Match body font */
     color: #3a2c1a; /* Dark brown */
@@ -55,7 +60,7 @@ p {
 
 #exploration button {
     margin-right: 10px;
-    background-color: #8B4513; /* Chocolate brown */
+    background-color: #8b4513a6; /* Cappucino brown */
     color: white; /* Ensure text is readable */
     border: 1px solid #5D2906; /* Darker brown border */
     padding: 5px 10px;
@@ -80,6 +85,7 @@ p {
 }
 
 .map-location-image img {
+  border: 5px solid #8B4513; /* Chocolate brown border */
   max-width: 100px;
   max-height: 100px;
   width: auto;
