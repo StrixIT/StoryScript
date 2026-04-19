@@ -6,11 +6,6 @@ export function Moser() {
     return Person({
         description: conversation,
         name: 'Johann Jacob Moser',
-        hitpoints: 0, // No combat
-        attack: '0', // No combat
-        canAttack: false, // Disable combat
-        items: [], // No items
-        currency: 0, // No currency
         conversation: {
             actions: [] // No special actions needed
         },
