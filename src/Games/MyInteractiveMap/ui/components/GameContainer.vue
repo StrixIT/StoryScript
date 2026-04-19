@@ -10,6 +10,7 @@
         </div>
 
         <div v-if="game.state === 'Play'">
+          <encounter></encounter>
           <location-text></location-text>
           <exploration></exploration>
         </div>
