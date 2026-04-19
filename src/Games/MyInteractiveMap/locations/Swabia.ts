@@ -1,14 +1,19 @@
 import { Location } from '../types';
 import description from './Swabia.html?raw';
-import { Franconia } from "./Franconia.ts";
-import { Westphalia } from "./Westphalia.ts";
-import { Austria } from "./Austria.ts";
+import { Franconia } from "./Franconia";
+import { Westphalia } from "./Westphalia";
+import { Austria } from "./Austria";
+import { Moser } from "../persons/Moser"; // Import Moser
 
 export function Swabia() {
     return Location({
         name: 'Swabia',
         description: description,
         destinations: [
+             {
+                name: 'Austria',
+                target: Austria
+            },
             {
                 name: 'Franconia',
                 target: Franconia
@@ -16,12 +21,10 @@ export function Swabia() {
             {
                 name: 'Westphalia',
                 target: Westphalia
-            },
-            {
-                name: 'Austria',
-                target: Austria
-            },
-            // Add more destinations here as needed
+            }
+        ],
+        persons: [
+            Moser() // Add Moser as a person in Swabia
         ]
     });
 }
