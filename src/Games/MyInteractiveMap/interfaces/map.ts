@@ -14,3 +14,14 @@ export interface IMapLocation extends StoryScriptIMapLocation {
     location: (() => ILocation) | string;
     // Add game-specific location properties here
 }
+
+export interface IMap extends StoryScriptIMap {
+    locations: IMapLocation[];
+    secondaryLocations?: IMapSecondaryLocation[]; // New optional property
+}
+
+export interface IMapSecondaryLocation {
+    name: string;
+    coords: string;
+    tooltip?: string;
+}
