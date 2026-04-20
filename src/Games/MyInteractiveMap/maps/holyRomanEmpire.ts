@@ -37,6 +37,21 @@ export function HolyRomanEmpire() {
                 coords: '820,720',
                 markerImage: 'Austria.png'
             }
+        ],
+        secondaryLocations: [
+            {
+                name: 'Bavaria',
+                coords: '700,600',
+                tooltip: 'Bavaria'
+            },
+            {
+                name: 'Saxony',
+                coords: '650,400',
+                tooltip: 'Saxony'
+            }
+        ]
+    });
+}
         ]
     });
 }
