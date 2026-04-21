@@ -40,18 +40,15 @@ export function HolyRomanEmpire() {
         ],
         secondaryLocations: [
             {
-                name: 'Bavaria',
-                coords: '700,600',
-                tooltip: 'Bavaria'
+                name: 'Liège',
+                coords: '400,300',
+                tooltip: 'Liège'
             },
             {
-                name: 'Saxony',
-                coords: '650,400',
-                tooltip: 'Saxony'
+                name: 'Luxembourg',
+                coords: '500,400',
+                tooltip: 'Luxembourg'
             }
-        ]
-    });
-}
         ]
     });
 }
