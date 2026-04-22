@@ -7,13 +7,13 @@
       <img v-if="game.person.picture" :alt="game.person.name" :src="game.person.picture"/>
       <div v-if="game.person.conversation.activeNode" id="conversation-options">
         <div v-html="getLines(game.person.conversation.activeNode)"></div>
-        <div v-for="reply of game.person.conversation.activeNode.replies">
-          <div v-if="reply.available || reply.showWhenUnavailable" :class="{ 'unavailable': !reply.available }">
-            <input :disabled="!reply.available" type="radio"
-                   @click="conversationService.answer(game.person.conversation.activeNode, reply)"/>
-            <span v-html="getLines(reply)"></span>
-          </div>
-        </div>
+        <ul>
+          <li v-for="reply of game.person.conversation.activeNode.replies.filter(r => r.available || r.showWhenUnavailable)">
+            <div :class="{ 'unavailable': !reply.available }" @click="answer(reply)">
+              <span v-html="getLines(reply)"></span>
+            </div>
+          </li>
+        </ul>
       </div>
 
       <div v-if="!game.person.conversation.activeNode?.replies?.length">
@@ -45,5 +45,11 @@ const {game} = storeToRefs(store);
 const {texts, conversationService} = store.services;
 
 const getLines = (nodeOrReply: IConversationNode | IConversationReply): string => nodeOrReply?.lines || null;
+
+const answer = (reply: IConversationReply) => {
+  if (reply.available) {
+    conversationService.answer(game.value.person.conversation.activeNode, reply)
+  }
+}
 
 </script>

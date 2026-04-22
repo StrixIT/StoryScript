@@ -116,16 +116,6 @@ button {
     display: inline-block;
 }
 
-#conversation-history-title {
-    font-weight: bold;
-    margin-bottom: 0;
-}
-
-#conversation-history ul {
-    max-height: 400px;
-    overflow-y: scroll;
-}
-
 #create-character .input-group-prepend {
     max-width: 70%;
 }
@@ -150,12 +140,28 @@ button {
     margin-right: 10px;
 }
 
-#conversation-options span {
-    margin-left: 10px;
+#conversation-options li {
+     cursor: pointer;
+    padding-left: 10px;
+ }
+
+#conversation-options li:hover {
+    color: var(--bs-blue);
+    padding-left: 5px;
 }
 
 #conversation-options .unavailable {
     color: rgba(0, 0, 0, 0.5);
+}
+
+#conversation-history-title {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#conversation-history ul {
+    max-height: 400px;
+    overflow-y: scroll;
 }
 
 .conversation-lines p {
