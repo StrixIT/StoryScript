@@ -7,6 +7,7 @@
       <div class="col-4">
         <div v-if="isDevelopment" id="location-selector">
           <input v-if="availableLocations.length > 1"
+                 name="location-selector"
                  ref="locationSelector"
                  aria-autocomplete="list"
                  autocapitalize="off"
