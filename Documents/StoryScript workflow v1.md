@@ -3,7 +3,7 @@
 > [!NOTE]  
 > This sample workflow briefly outlines key steps that you will repeatedly have to perform when building and
 > testing your interactive stories or games in StoryScript. If you have never worked with StoryScript before, you
-> should consult the [full tutorial](./StoryScript tutorial v5.1.pdf) first. 
+> should consult the [full tutorial](https://storyscript.nl/tutorials) first. 
 
 ## Syncing content upstream / downstream before making new changes
 

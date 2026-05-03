@@ -1,8 +1,10 @@
 import {LocationMap} from "../types.ts";
-import {Start} from "../locations/start.ts";
-import {Westphalia} from "../locations/Westphalia.ts";
 import {Austria} from "../locations/Austria.ts";
 import {Franconia} from "../locations/Franconia.ts";
+import {Liege} from "../locations/Liege.ts";
+import {Luxembourg} from "../locations/Luxembourg.ts";
+import {Start} from "../locations/start.ts";
+import {Westphalia} from "../locations/Westphalia.ts";
 
 export function HolyRomanEmpire() {
     return LocationMap({
@@ -20,34 +22,34 @@ export function HolyRomanEmpire() {
                 coords: '255,785'
             },
             {
+                location: Austria,
+                textLabel: 'Austria',
+                coords: '820,720',
+                markerImage: 'Austria.png'
+            },
+            {
                 location: Franconia,
                 textLabel: 'Franconia',
                 coords: '580,500',
                 markerImage: 'Franconia.png'
             },
             {
+                location: Liege,
+                textLabel: 'Liège',
+                coords: '400,300',
+                markerImage: 'reddot.png'
+            },
+            {
+                location: Luxembourg,
+                textLabel: 'Luxembourg',
+                coords: '500,400',
+                markerImage: 'reddot.png'
+            },
+            {
                 location: Westphalia,
                 textLabel: 'Westphalia',
                 coords: '420,330',
                 markerImage: 'Westphalia.png'
-            },
-            {
-                location: Austria,
-                textLabel: 'Austria',
-                coords: '820,720',
-                markerImage: 'Austria.png'
-            }
-        ],
-        secondaryLocations: [
-            {
-                name: 'Liège',
-                coords: '400,300',
-                tooltip: 'Liège'
-            },
-            {
-                name: 'Luxembourg',
-                coords: '500,400',
-                tooltip: 'Luxembourg'
             }
         ]
     });
