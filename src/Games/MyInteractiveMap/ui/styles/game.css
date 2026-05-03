@@ -97,6 +97,7 @@ p {
 /* Special case for red dot markers */
 .map-location-image img[src*="reddot.png"] {
   border: none;
+  background: none;
   width: 25px;
   height: 25px;
   max-width: 35px;
@@ -104,6 +105,12 @@ p {
   border-radius: 50%; /* Make sure it is a circle! */
 }
 
-div.secondary-location:hover {
+/* Define behaviour for secondary locations */
+
+span.secondary-location {
   color: chocolate;
+}
+
+span.secondary-location:hover {
+  color: #8B4513;
 }
