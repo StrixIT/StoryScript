@@ -6,6 +6,7 @@ export function Moser() {
 		name: 'Moser',
 		description: description,
 		hitpoints: 10,
+		canAttack: false,
 		items: [
 		],
 		quests: [
