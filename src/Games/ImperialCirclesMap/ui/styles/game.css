@@ -86,3 +86,13 @@ p {
   height: auto;
   object-fit: contain;
 }
+
+/* Special case for red dot markers */
+.map-location-image img[src*="reddot.png"] {
+  border: none;
+  width: 10px;
+  height: 10px;
+  max-width: 10px;
+  max-height: 10px;
+  border-radius: 50%; /* Make sure it is a circle! */
+}
