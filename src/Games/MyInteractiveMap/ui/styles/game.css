@@ -84,6 +84,19 @@ p {
     margin: -10px -10px 10px -10px;
 }
 
+/* Display rules for movable avatar */
+
+img.avatar-image {
+  background: none;
+  max-width: 70px;
+  max-height: 70px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Behaviour for location markers generally */
+
 .map-location-image img {
   border: 2px solid #8B4513; /* Chocolate brown border */
   background: #8B4513;       /* Chocolate brown background */
