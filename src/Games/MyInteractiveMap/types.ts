@@ -16,7 +16,6 @@ import { ICombatSetup } from './interfaces/combatSetup';
 import {
     IMap,
     IMapLocation,
-    IMapSecondaryLocation, // Import the new interface??
     LocationMap
 } from './interfaces/map';
 
@@ -34,7 +33,6 @@ export type {
     ICompiledLocation,
     IMap,
     IMapLocation,
-    IMapSecondaryLocation, // Export the new type??
     IEquipment,
     IGame,
     ICombatSetup
