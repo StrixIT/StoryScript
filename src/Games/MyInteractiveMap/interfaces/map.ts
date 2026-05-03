@@ -7,18 +7,10 @@ export function LocationMap(entity: IMap): IMap {
 
 export interface IMap extends StoryScriptIMap {
     locations: IMapLocation[];
-    secondaryLocations?: IMapSecondaryLocation[]; // Add this line
     // Add game-specific location properties here
 }
 
 export interface IMapLocation extends StoryScriptIMapLocation {
     location: (() => ILocation) | string;
     // Add game-specific location properties here
-}
-
-// Add this new interface
-export interface IMapSecondaryLocation {
-    name: string;
-    coords: string;
-    tooltip?: string;
 }
