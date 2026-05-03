@@ -5,6 +5,7 @@ import {Liege} from "../locations/Liege.ts";
 import {Luxembourg} from "../locations/Luxembourg.ts";
 import {Start} from "../locations/start.ts";
 import {Westphalia} from "../locations/Westphalia.ts";
+import {Swabia} from "../locations/Swabia.ts";
 
 export function HolyRomanEmpire() {
     return LocationMap({
@@ -44,6 +45,12 @@ export function HolyRomanEmpire() {
                 textLabel: 'Luxembourg',
                 coords: '306,495',
                 markerImage: 'reddot.png'
+            },
+            {
+                location: Swabia,
+                textLabel: 'Swabia',
+                coords: '506,627',
+                markerImage: 'Swabia.png'
             },
             {
                 location: Westphalia,
