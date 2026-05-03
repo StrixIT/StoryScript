@@ -85,9 +85,9 @@ p {
 }
 
 .map-location-image img {
-  border: 5px solid #8B4513; /* Chocolate brown border */
-  max-width: 90px;
-  max-height: 90px;
+  border: 2px solid #8B4513; /* Chocolate brown border */
+  max-width: 70px;
+  max-height: 70px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -103,6 +103,6 @@ p {
   border-radius: 50%; /* Make sure it is a circle! */
 }
 
-.secondary-location:hover {
+span.secondary-location:hover {
   color: chocolate;
 }
