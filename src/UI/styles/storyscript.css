@@ -41,7 +41,7 @@ button {
     float: left;
 }
 
-.float-right {
+.float-right, .menu-buttons {
     float: right;
 }
 
@@ -76,7 +76,7 @@ button {
 }
 
 .menu-bar {
-    padding: 10px 15px 5px 30px;
+    padding: 10px 15px 5px 15px;
 }
 
 #mainmenu .btn {
@@ -317,19 +317,15 @@ button.restart {
     display: none;
 }
 
-.combine-selectable:hover {
-    cursor: pointer;
-    background-color: var(--light-gray);;
-    border-radius: 5px;
-}
-
 .combine-active-selected {
     color: var(--red);;
+}
+.combination-actions {
+    padding: 0 0 0 5px;
 }
 
 .combination-text, .combination-result-text {
     display: inline-block;
-    margin-left: 20px;
 }
 
 #highscores {
@@ -576,4 +572,31 @@ dialog {
     visibility: hidden;
     font-size: 1.5em;
     transition: visibility .1s ease-out;
+}
+
+@media (max-width: 991px) {
+    .combination-result-text {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 767px) {
+    .menu-buttons {
+        float: none;
+    }
+}
+
+@media (hover: hover) {
+    .combine-selectable:hover {
+        cursor: pointer;
+        background-color: var(--light-gray);;
+        border-radius: 5px;
+    }
+}
+
+@media (hover: none) {
+    .combine-selectable {
+        background-color: var(--light-gray);;
+        border-radius: 5px;
+    }
 }

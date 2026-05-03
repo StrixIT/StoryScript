@@ -12,14 +12,10 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const description = descriptionRef;
 
     watch(() => game.value.combinations.activeCombination?.selectedTool, (newValue) => {
-        refreshFeatures(true);
+        refreshFeatures();
     });
 
-    const refreshFeatures = (newValue: boolean) => {
-        if (!newValue) {
-            return;
-        }
-
+    const refreshFeatures = () => {
         // Show the text of added features.
         const featureArray = getFeatureArray();
 
@@ -45,8 +41,11 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
             });
 
         featureArray.forEach((e) => {
-            e.classList.remove('combine-active-selected');
-            e.classList.add('combine-selectable');
+            e.classList.remove('combine-active-selected', 'combine-selectable');
+            
+            if (game.value.combinations.activeCombination) {
+                e.classList.add('combine-selectable');
+            }
         });
     };
 
@@ -72,7 +71,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
                 addCombineClass(ev, feature);
 
                 if (result.success) {
-                    refreshFeatures(true);
+                    refreshFeatures();
                 }
             }
         }
