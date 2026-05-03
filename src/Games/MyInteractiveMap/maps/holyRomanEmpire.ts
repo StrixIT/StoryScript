@@ -36,13 +36,13 @@ export function HolyRomanEmpire() {
             {
                 location: Liege,
                 textLabel: 'Liège',
-                coords: '400,300',
+                coords: '314,425',
                 markerImage: 'reddot.png'
             },
             {
                 location: Luxembourg,
                 textLabel: 'Luxembourg',
-                coords: '500,400',
+                coords: '306,495',
                 markerImage: 'reddot.png'
             },
             {
