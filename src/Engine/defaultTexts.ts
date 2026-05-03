@@ -120,7 +120,8 @@ export class DefaultTexts {
         pressToShowMarkers: 'Press {0} to show location markers',
         startGame: 'Start',
         continueGame: 'Continue',
-        autoplayText: "Auto-playing"
+        autoplayText: "Auto-playing",
+        noPlayWarning: "Please interact with the page to allow media playback!"
     }
 
     format = format;
