@@ -41,6 +41,11 @@ body {
     padding: 20px;
 }
 
+a {
+    color: #184cb4; /*  night blue for links */
+    text-decoration: underline;
+}
+
 h2 {
     font-family: Georgia, "Times New Roman", serif; /* Match body font */
     color: #3a2c1a; /* Dark brown */
@@ -55,7 +60,7 @@ p {
 
 #exploration button {
     margin-right: 10px;
-    background-color: #8B4513; /* Chocolate brown */
+    background-color: #8b4513a6; /* Cappucino brown */
     color: white; /* Ensure text is readable */
     border: 1px solid #5D2906; /* Darker brown border */
     padding: 5px 10px;
@@ -80,8 +85,10 @@ p {
 }
 
 .map-location-image img {
-  max-width: 100px;
-  max-height: 100px;
+  border: 2px solid #8B4513; /* Chocolate brown border */
+  background: #8B4513;       /* Chocolate brown background */
+  max-width: 70px;
+  max-height: 70px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -90,9 +97,20 @@ p {
 /* Special case for red dot markers */
 .map-location-image img[src*="reddot.png"] {
   border: none;
-  width: 10px;
-  height: 10px;
-  max-width: 10px;
-  max-height: 10px;
+  background: none;
+  width: 25px;
+  height: 25px;
+  max-width: 35px;
+  max-height: 35px;
   border-radius: 50%; /* Make sure it is a circle! */
+}
+
+/* Define behaviour for secondary locations */
+
+span.secondary-location {
+  color: chocolate;
+}
+
+span.secondary-location:hover {
+  color: #8B4513;
 }
