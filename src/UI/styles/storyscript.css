@@ -41,7 +41,7 @@ button {
     float: left;
 }
 
-.float-right {
+.float-right, .menu-buttons {
     float: right;
 }
 
@@ -76,7 +76,7 @@ button {
 }
 
 .menu-bar {
-    padding: 10px 15px 5px 30px;
+    padding: 10px 15px 5px 15px;
 }
 
 #mainmenu .btn {
@@ -101,7 +101,7 @@ button {
 }
 
 .box-container li .btn {
-    margin-right: 5px;
+    margin: 0 0 5px 5px;
 }
 
 .list-unstyled {
@@ -114,16 +114,6 @@ button {
 
 .inline {
     display: inline-block;
-}
-
-#conversation-history-title {
-    font-weight: bold;
-    margin-bottom: 0;
-}
-
-#conversation-history ul {
-    max-height: 400px;
-    overflow-y: scroll;
 }
 
 #create-character .input-group-prepend {
@@ -150,12 +140,28 @@ button {
     margin-right: 10px;
 }
 
-#conversation-options span {
-    margin-left: 10px;
+#conversation-options li {
+     cursor: pointer;
+    padding-left: 10px;
+ }
+
+#conversation-options li:hover {
+    color: var(--bs-blue);
+    padding-left: 5px;
 }
 
 #conversation-options .unavailable {
     color: rgba(0, 0, 0, 0.5);
+}
+
+#conversation-history-title {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#conversation-history ul {
+    max-height: 400px;
+    overflow-y: scroll;
 }
 
 .conversation-lines p {
@@ -311,19 +317,15 @@ button.restart {
     display: none;
 }
 
-.combine-selectable:hover {
-    cursor: pointer;
-    background-color: var(--light-gray);;
-    border-radius: 5px;
-}
-
 .combine-active-selected {
     color: var(--red);;
+}
+.combination-actions {
+    padding: 0 0 0 5px;
 }
 
 .combination-text, .combination-result-text {
     display: inline-block;
-    margin-left: 20px;
 }
 
 #highscores {
@@ -570,4 +572,31 @@ dialog {
     visibility: hidden;
     font-size: 1.5em;
     transition: visibility .1s ease-out;
+}
+
+@media (max-width: 991px) {
+    .combination-result-text {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 767px) {
+    .menu-buttons {
+        float: none;
+    }
+}
+
+@media (hover: hover) {
+    .combine-selectable:hover {
+        cursor: pointer;
+        background-color: var(--light-gray);;
+        border-radius: 5px;
+    }
+}
+
+@media (hover: none) {
+    .combine-selectable {
+        background-color: var(--light-gray);;
+        border-radius: 5px;
+    }
 }

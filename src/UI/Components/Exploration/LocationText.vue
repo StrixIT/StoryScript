@@ -8,6 +8,7 @@
     <div ref="description"
          @click="event => click(event)"
          @mouseover="event => mouseOver(event)"
+         @mouseout="event => mouseOut(event)"
          v-html="game.currentLocation.description"></div>
     <ul id="location-log" class="list-unstyled">
       <li v-for="message in game.currentLocation.log" v-html="message"></li>
@@ -23,12 +24,12 @@ import {useTextFeatures} from "ui/Composables/TextFeatures.ts";
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
-const {description, click, mouseOver, refreshFeatures} = useTextFeatures(useTemplateRef('description'));
+const {click, mouseOver, mouseOut, refreshFeatures} = useTextFeatures(useTemplateRef('description'));
 
 const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
 
 onMounted(() => {
-  refreshFeatures(true);
+  refreshFeatures();
 });
 
 </script>

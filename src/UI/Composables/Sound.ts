@@ -9,7 +9,7 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
 
     const musicPlayer = musicPlayerRef;
 
-    const canPlay = ref(false);
+    const canPlay = ref<boolean>(null);
     const fadeInterval = ref<NodeJS.Timeout>(null);
     const fadingMusic = ref(false);
     const currentMusic = ref<string>(null);
@@ -35,14 +35,21 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
         }
 
         if (musicPlayer.value) {
-            // This will trigger a warning when the user hasn't interacted with the web page yet. Currently (June 1st 2023),
-            // I haven't found a way to silence this warning.
-            const audioContext = new window.AudioContext();
+            let audioContext: AudioContext;
+
+            // This will trigger an error on mobile devices that we need to catch.
+            try {
+                audioContext = new window.AudioContext();
+            } catch (e) {
+                if (canPlay.value === null) {
+                    canPlay.value = false;
+                }
+            }
 
             if (!audioContext) {
                 return;
             }
-            
+
             if (audioContext.state === 'running') {
                 canPlay.value = true;
                 return;
@@ -57,9 +64,11 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
             if (audioContext.state === 'suspended') {
                 musicPlayer.value.play().then(() => {
                     musicPlayer.value.play();
-                    canPlay.value = true;
                 }).catch(_ => {
-                    // Do nothing. Silence the error and await another try.
+                    // Silence the error and await another try, and show the no play warning.
+                    if (canPlay.value === null) {
+                        canPlay.value = false;
+                    }
                 });
             }
         }
@@ -87,18 +96,18 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
 
     const soundCompleted = (soundKey: number) => {
         const sound = game.value.sounds.soundQueue.get(soundKey);
-        
+
         if (sound) {
             sound.completeCallBack?.();
             game.value.sounds.soundQueue.delete(soundKey);
         }
-        
+
         const queueEntry = soundQueue.find(([k, _]) => soundKey === k);
-        
+
         if (!queueEntry) {
-            return;    
+            return;
         }
-        
+
         const index = soundQueue.indexOf(queueEntry);
 
         if (index > -1) {

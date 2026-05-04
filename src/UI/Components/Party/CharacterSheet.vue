@@ -13,6 +13,7 @@
             <div class="hitpoint-editor">
               <span v-if="!isDevelopment">{{ character.currentHitpoints }}</span>
               <input v-else 
+                     name="hitpoint-editor"
                      v-model="character.currentHitpoints" 
                      :max="character.hitpoints" 
                      :min="1" 

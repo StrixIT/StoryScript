@@ -2,7 +2,7 @@
   <div v-if="combineActions.length" id="combinations" class="box-container">
     <div class="box-title">{{ texts.combinations }}</div>
     <div class="row">
-      <ul class="list-unstyled col-3">
+      <ul class="list-unstyled col-md-12 col-lg-4 combination-actions">
         <li>
           <button v-for="c of combineActions"
                   :class="getCombineClass(c)"
@@ -12,7 +12,7 @@
           </button>
         </li>
       </ul>
-      <div class="col-9">
+      <div class="col-md-12 col-lg-8">
         <p v-if="game.combinations.combinationResult.text" class="combination-result-text">
           {{ game.combinations.combinationResult.text }}</p>
       </div>

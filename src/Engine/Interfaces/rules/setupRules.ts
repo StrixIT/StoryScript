@@ -23,11 +23,11 @@ export interface ISetupRules {
     /**
      * When you want to play a music file when the game is in a certain state, use this list. Use it like this:
      playList: {
-     Using GameState: 'play.mp4': [GameState.Play].
-     For multiple play states: 'play.mp4': [GameState.Intro, GameState.Play].
-     Using PlayState: 'combat.mp4': [PlayState.Combat].
-     Using Locations: 'start.mp4': [Start].
-     Using a custom function: '': [game => string] (the string value returned from the function should be the music file).
+         [Using GameState:] 'play.mp4': [GameState.Play].
+         [For multiple game states:] 'play.mp4': [GameState.Intro, GameState.Play].
+         [Using PlayState:] 'combat.mp4': [PlayState.Combat].
+         [Using Locations:] 'start.mp4': [Start].
+         [Using a custom function:] '': [game => string] (the string value returned from the function should be the music file).
      }
      */
     playList?: StateList;

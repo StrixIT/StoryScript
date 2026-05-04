@@ -100,15 +100,16 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
 
         map.value.locations.forEach(l => {
             const textLabel = l.markerImage ? null : l.textLabel ?? (map.value.locationNamesAsTextMarkers ? game.value.locations[l.location as string].name : null);
+            const id = l.location as string;
 
             if (textLabel) {
-                addElement(mapElement, l.coords, l.location as string, labelClass, 'span', textLabel);
+                l.markerElement = addElement(mapElement, l.coords, id, labelClass, 'span', textLabel);
             }
 
             const markerImage = l.markerImage ?? map.value.locationMarkerImage;
 
             if (markerImage) {
-                addElement(mapElement, l.coords, l.location as string, imageClass, 'img', markerImage);
+                l.markerElement = addElement(mapElement, l.coords, id, imageClass, 'img', markerImage);
             }
         });
 
@@ -169,7 +170,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
         element.style.left = `${left}px`;
     }
 
-    function addElement(mapElement: HTMLElement, coordsString: string, location: string, className: string, elementType: string, elementValue: string) {
+    function addElement(mapElement: HTMLElement, coordsString: string, location: string, className: string, elementType: string, elementValue: string): HTMLElement {
         const coords = getCoords(coordsString);
         const labelElement = document.createElement("div");
         labelElement.setAttribute("class", className);
@@ -187,6 +188,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
 
         labelElement.appendChild(valueElement);
         mapElement.parentElement.appendChild(labelElement);
+        return labelElement;
     }
 
     function moveMarker(markerElements: HTMLCollection, mapMargins: { x: number, y: number }) {

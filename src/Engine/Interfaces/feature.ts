@@ -1,4 +1,5 @@
 ﻿import {ICombinable} from './combinations/combinable';
+import {IGame} from "testGame/interfaces/game.ts";
 
 /**
  * A feature of a location, which can be anything the player can interact with using combinations.
@@ -25,4 +26,19 @@ export interface IFeature extends ICombinable {
      * be shown on top of the image map for this feature. The path should be relative to the resources folder.
      */
     picture?: string;
+
+    /**
+     * True if the feature is activated, falsy otherwise.
+     */
+    active?: boolean;
+
+    /**
+     * A hook to run code when a feature is activated.
+     */
+    activate?: (game: IGame) => void;
+
+    /**
+     * A hook to run code when an activated feature is deactivated.
+     */
+    deactivate?: (game: IGame) => void;
 }
