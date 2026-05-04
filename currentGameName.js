@@ -1,3 +1,3 @@
-const gameName = 'ImperialCirclesMap';
+const gameName = 'MyInteractiveMap';
 
 export default gameName;
