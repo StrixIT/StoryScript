@@ -101,7 +101,7 @@ button {
 }
 
 .box-container li .btn {
-    margin-right: 5px;
+    margin: 0 0 5px 5px;
 }
 
 .list-unstyled {

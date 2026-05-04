@@ -5,6 +5,8 @@ import {Ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 
 export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
+    const touchDevice = navigator.maxTouchPoints > 0;
+    
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {combinationService} = store.services;
@@ -54,12 +56,20 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         return compareString(nodeType, 'feature');
     }
 
-    const addCombineClass = (ev: MouseEvent, feature: IFeature) => {
-        const combineClass = combinationService.getCombineClass(feature);
-
-        if (combineClass) {
-            (<any>ev.target).classList.add(combineClass);
+    const addClass = (ev: MouseEvent, className: string): void => {
+        if (className) {
+            (<any>ev.target).classList.add(className);
         }
+    }
+
+    const removeClass = (ev: MouseEvent, className: string): void => {
+        if (className) {
+            (<any>ev.target).classList.remove(className);
+        }
+    }
+    
+    const addCombineClass = (ev: MouseEvent, feature: IFeature) => {
+        addClass(ev, combinationService.getCombineClass(feature));
     }
 
     const click = (ev: PointerEvent) => {
@@ -73,6 +83,22 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
                 if (result.success) {
                     refreshFeatures();
                 }
+                
+                if (touchDevice) {
+                    const activate = !feature.active;
+                    
+                    game.value.currentLocation.features.forEach(f => {
+                        feature.active = false;
+                        removeClass(ev, 'feature-active');
+                        feature?.deactivate?.(game.value);
+                    });
+                    
+                    if (activate) {
+                        feature.active = true;
+                        addClass(ev, 'feature-active');
+                        feature.activate?.(game.value);
+                    }
+                }
             }
         }
     }
@@ -81,6 +107,24 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         if (isFeatureNode(ev)) {
             const feature = getFeature(ev);
             addCombineClass(ev, feature);
+            
+            if (!touchDevice && !feature.active) {
+                feature.active = true;
+                addClass(ev, 'feature-active');
+                feature?.activate?.(game.value);
+            }
+        }
+    };
+
+    const mouseOut = (ev: MouseEvent) => {
+        if (isFeatureNode(ev)) {
+            const feature = getFeature(ev);
+
+            if (!touchDevice && feature?.active) {
+                feature.active = false;
+                removeClass(ev, 'feature-active');
+                feature.deactivate?.(game.value);
+            }
         }
     };
 
@@ -104,5 +148,6 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         refreshFeatures,
         click,
         mouseOver,
+        mouseOut
     }
 }

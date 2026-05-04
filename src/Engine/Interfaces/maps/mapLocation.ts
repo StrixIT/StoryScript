@@ -20,4 +20,9 @@ export interface IMapLocation {
      * The specific text to show on this location label, if any.
      */
     textLabel?: string
+
+    /**
+     * Set during runtime to contain the HTML element of the text label or marker image.
+     */
+    markerElement?: HTMLElement;
 }
