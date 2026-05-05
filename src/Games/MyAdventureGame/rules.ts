@@ -23,7 +23,7 @@ export function Rules(): IRules {
                 'Contemplate_the_stars.mp3': [GameState.Play]
             },
             initGame(game: IGame) {
-                game.worldProperties.type = 'Visual'; // Set to 'Text' or 'Visual' to switch between modes.
+                game.worldProperties.type = 'Text'; // Set to 'Text' or 'Visual' to switch between modes.
             },
             getCombinationActions: (): ICombinationAction[] => {
                 return [
