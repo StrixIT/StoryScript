@@ -1,4 +1,4 @@
-import {addHtmlSpaces, compareString} from "storyScript/utilityFunctions.ts";
+import {addHtmlSpaces} from "storyScript/utilityFunctions.ts";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {Ref, watch} from "vue";
@@ -14,13 +14,13 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
 
     const description = descriptionRef;
 
-    watch(() => game.value.combinations.activeCombination?.selectedTool, (newValue) => {
+    watch(() => game.value.combinations.activeCombination?.selectedTool, () => {
         refreshFeatures();
     });
 
     const refreshFeatures = () => {
         // Show the text of added features.
-        const featureArray = getFeatureArray();
+        const featureArray = Array.from(description.value?.getElementsByTagName('feature'));
 
         if (featureArray.length === 0) {
             return;
@@ -44,6 +44,12 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
             });
 
         featureArray.forEach((e) => {
+            const feature = game.value.currentLocation.features.get(e.getAttribute('name'));
+            
+            if (feature && game.value.combinations.activeCombination?.selectedTool?.id === feature.id) {
+                return;
+            }
+
             e.classList.remove('combine-active-selected', 'combine-selectable');
             
             if (game.value.combinations.activeCombination) {
@@ -52,55 +58,33 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         });
     };
 
-    const isTrigger = (element: HTMLElement): string => {
-        return element?.dataset?.trigger;
-    }
-    
-    const addCombineClass = (ev: MouseEvent, feature: IFeature) => {
-        const className = combinationService.getCombineClass(feature);
-
-        if (className) {
-            (<any>ev.target).classList.add(className);
-        }
-    }
-
-    const toggleTrigger = (element: HTMLElement, active: boolean) => {
-        const data = element.dataset
-        const event = game.value.currentLocation.triggeredEvents?.find(([k, _]) => k === data.trigger)?.[1];
-        
-        if (active) {
-            element.classList.add(activeTriggerClass);
-            event?.(game.value, active, data);
-        } else {
-            element.classList.remove(activeTriggerClass);
-            event?.(game.value, active, data);
-        }
-    }
-
     const click = (ev: PointerEvent) => {
-        const element = ev?.target as HTMLElement;
-        const trigger = isTrigger(element);
+        const triggerElement = getTriggerElement(ev.target as HTMLElement);
         
-        if (trigger) {
+        if (triggerElement) {
             if (!touchDevice) {
                 return;
             }
             
-            const activate = !element.classList.contains(activeTriggerClass);
+            const activate = !triggerElement.classList.contains(activeTriggerClass);
             
             Array.from(descriptionRef.value.querySelectorAll('[data-trigger]')).forEach((el) => {
                 toggleTrigger(el as any, false);
             });
             
-            toggleTrigger(element, activate);
-            return;
+            toggleTrigger(triggerElement, activate);
         }
 
         const feature = getFeature(ev);
         
         if (feature) {
             const result = game.value.combinations.tryCombine(feature);
-            addCombineClass(ev, feature);
+            const className = combinationService.getCombineClass(feature);
+
+            if (className) {
+                const featureElement = getFeatureElement(ev);
+                featureElement.classList.add(className);
+            }
 
             if (result.success) {
                 refreshFeatures();
@@ -113,20 +97,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
             return;
         }
         
-        const element = ev?.target as HTMLElement;
-        const trigger = isTrigger(element);
-        
-        if (trigger) {
-            toggleTrigger(element, true);
-        }
-
-        const feature = getFeature(ev);
-        
-        if (feature)
-        {
-            // Todo: is this needed?
-            addCombineClass(ev, feature);
-        }
+        toggleTrigger(getTriggerElement(ev?.target as HTMLElement), true);
     };
 
     const mouseOut = (ev: MouseEvent) => {
@@ -134,28 +105,38 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
             return;
         }
         
-        const element = ev?.target as HTMLElement;
-        const trigger = isTrigger(element);
-
-        if (trigger) {
-            toggleTrigger(element, false);
-        }
+        toggleTrigger(getTriggerElement(ev?.target as HTMLElement), false);
     };
 
-    const getFeature = (ev: MouseEvent): IFeature => {
-        const feature = (ev.target as HTMLElement).closest('feature');
-        const featureName = feature?.getAttribute('name');
-        return featureName ? game.value.currentLocation.features.get(featureName) : null;
+    const toggleTrigger = (element: HTMLElement, active: boolean) => {
+        if (!element) {
+            return;
+        }
+        
+        const data = element.dataset
+        const event = game.value.currentLocation.triggeredEvents?.find(([k, _]) => k === data.trigger)?.[1];
+
+        if (active) {
+            element.classList.add(activeTriggerClass);
+            event?.(game.value, active, data);
+        } else {
+            element.classList.remove(activeTriggerClass);
+            event?.(game.value, active, data);
+        }
     }
 
-    const getFeatureArray = (): HTMLElement[] => {
-        const features = description.value?.getElementsByTagName('feature');
+    const getTriggerElement = (element: HTMLElement): HTMLElement => {
+        return element?.closest('[data-trigger]') as HTMLElement;
+    }
 
-        if (!features) {
-            return [];
-        }
-
-        return Array.prototype.slice.call(features) as HTMLElement[];
+    const getFeatureElement = (ev: MouseEvent) => {
+        return (ev.target as HTMLElement).closest('feature');
+    }
+    
+    const getFeature = (ev: MouseEvent): IFeature => {
+        const featureElement = getFeatureElement(ev);
+        const featureName = featureElement?.getAttribute('name');
+        return featureName ? game.value.currentLocation.features.get(featureName) : null;
     }
 
     return {
