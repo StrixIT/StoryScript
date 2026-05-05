@@ -13,7 +13,11 @@ import { CustomTexts } from './customTexts';
 import { Rules } from './rules';
 import { Character } from './character';
 import { ICombatSetup } from './interfaces/combatSetup';
-import {IMap, IMapLocation, LocationMap } from './interfaces/map';
+import {
+    IMap,
+    IMapLocation,
+    LocationMap
+} from './interfaces/map';
 
 export type {
     IParty,

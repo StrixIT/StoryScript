@@ -1,7 +1,7 @@
 import { IMap as StoryScriptIMap, LocationMap as StoryScriptLocationMap, IMapLocation as StoryScriptIMapLocation } from 'storyScript/Interfaces/storyScript';
-import {ILocation} from "./location.ts";
+import { ILocation } from "./location.ts";
 
-export function LocationMap(entity: IMap): IMap  {
+export function LocationMap(entity: IMap): IMap {
     return StoryScriptLocationMap(entity);
 }
 
