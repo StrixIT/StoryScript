@@ -52,11 +52,6 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         });
     };
 
-    const isFeatureNode = (ev: MouseEvent): boolean => {
-        const nodeType = ev.target && (<any>ev.target).nodeName;
-        return compareString(nodeType, 'feature');
-    }
-
     const isTrigger = (element: HTMLElement): string => {
         return element?.dataset?.trigger;
     }
@@ -100,17 +95,15 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
             toggleTrigger(element, activate);
             return;
         }
+
+        const feature = getFeature(ev);
         
-        if (isFeatureNode(ev)) {
-            const feature = getFeature(ev);
+        if (feature) {
+            const result = game.value.combinations.tryCombine(feature);
+            addCombineClass(ev, feature);
 
-            if (feature) {
-                const result = game.value.combinations.tryCombine(feature);
-                addCombineClass(ev, feature);
-
-                if (result.success) {
-                    refreshFeatures();
-                }
+            if (result.success) {
+                refreshFeatures();
             }
         }
     }
@@ -126,10 +119,11 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         if (trigger) {
             toggleTrigger(element, true);
         }
+
+        const feature = getFeature(ev);
         
-        if (isFeatureNode(ev)) {
-            const feature = getFeature(ev);
-            
+        if (feature)
+        {
             // Todo: is this needed?
             addCombineClass(ev, feature);
         }
@@ -149,8 +143,9 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     };
 
     const getFeature = (ev: MouseEvent): IFeature => {
-        const featureName = (<any>ev.target).getAttribute('name');
-        return game.value.currentLocation.features.get(featureName);
+        const feature = (ev.target as HTMLElement).closest('feature');
+        const featureName = feature?.getAttribute('name');
+        return featureName ? game.value.currentLocation.features.get(featureName) : null;
     }
 
     const getFeatureArray = (): HTMLElement[] => {

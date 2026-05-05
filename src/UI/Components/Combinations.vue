@@ -13,8 +13,7 @@
         </li>
       </ul>
       <div class="col-md-12 col-lg-8">
-        <p v-if="game.combinations.combinationResult.text" class="combination-result-text">
-          {{ game.combinations.combinationResult.text }}</p>
+        <p v-if="game.combinations.combinationResult.text" class="combination-result-text" v-html="game.combinations.combinationResult.text"></p>
       </div>
     </div>
   </div>
