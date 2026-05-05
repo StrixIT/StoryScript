@@ -28,6 +28,7 @@ const _gameCollections: string[] = _entityCollections.concat([
     'combatActions',
     'enterEvents',
     'leaveEvents',
+    'triggeredEvents',
     'trade',
     'destinations',
     'combine'
@@ -300,6 +301,7 @@ function createLocation(entity: ILocation) {
     initCollection(location, 'persons');
     initCollection(location, 'enterEvents');
     initCollection(location, 'leaveEvents');
+    initCollection(location, 'triggeredEvents');
     return location;
 }
 

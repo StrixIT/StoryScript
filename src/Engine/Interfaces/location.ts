@@ -34,6 +34,12 @@ export interface ILocation {
      * to keep the function and call it every time the player leaves the location.
      */
     leaveEvents?: [string, (game: IGame) => void | boolean][];
+    
+    /**
+     * When specified, the functions in this array will be called from text features or user code when
+     * the event that should activate them is triggered.
+     */
+    triggeredEvents?: [string, (game: IGame, activate: boolean, data: Record<string, string>) => void][];
 
     /**
      * Actions that the player can perform at this location.

@@ -6,6 +6,7 @@ import {storeToRefs} from "pinia";
 
 export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const touchDevice = navigator.maxTouchPoints > 0;
+    const activeTriggerClass = 'trigger-active';
     
     const store = useStateStore();
     const {game} = storeToRefs(store);
@@ -56,23 +57,50 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         return compareString(nodeType, 'feature');
     }
 
-    const addClass = (ev: MouseEvent, className: string): void => {
+    const isTrigger = (element: HTMLElement): string => {
+        return element?.dataset?.trigger;
+    }
+    
+    const addCombineClass = (ev: MouseEvent, feature: IFeature) => {
+        const className = combinationService.getCombineClass(feature);
+
         if (className) {
             (<any>ev.target).classList.add(className);
         }
     }
 
-    const removeClass = (ev: MouseEvent, className: string): void => {
-        if (className) {
-            (<any>ev.target).classList.remove(className);
+    const toggleTrigger = (element: HTMLElement, active: boolean) => {
+        const data = element.dataset
+        const event = game.value.currentLocation.triggeredEvents?.find(([k, _]) => k === data.trigger)?.[1];
+        
+        if (active) {
+            element.classList.add(activeTriggerClass);
+            event?.(game.value, active, data);
+        } else {
+            element.classList.remove(activeTriggerClass);
+            event?.(game.value, active, data);
         }
-    }
-    
-    const addCombineClass = (ev: MouseEvent, feature: IFeature) => {
-        addClass(ev, combinationService.getCombineClass(feature));
     }
 
     const click = (ev: PointerEvent) => {
+        const element = ev?.target as HTMLElement;
+        const trigger = isTrigger(element);
+        
+        if (trigger) {
+            if (!touchDevice) {
+                return;
+            }
+            
+            const activate = !element.classList.contains(activeTriggerClass);
+            
+            Array.from(descriptionRef.value.querySelectorAll('[data-trigger]')).forEach((el) => {
+                toggleTrigger(el as any, false);
+            });
+            
+            toggleTrigger(element, activate);
+            return;
+        }
+        
         if (isFeatureNode(ev)) {
             const feature = getFeature(ev);
 
@@ -83,48 +111,40 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
                 if (result.success) {
                     refreshFeatures();
                 }
-                
-                if (touchDevice) {
-                    const activate = !feature.active;
-                    
-                    game.value.currentLocation.features.forEach(f => {
-                        feature.active = false;
-                        removeClass(ev, 'feature-active');
-                        feature?.deactivate?.(game.value);
-                    });
-                    
-                    if (activate) {
-                        feature.active = true;
-                        addClass(ev, 'feature-active');
-                        feature.activate?.(game.value);
-                    }
-                }
             }
         }
     }
 
     const mouseOver = (ev: MouseEvent) => {
+        if (touchDevice) {
+            return;
+        }
+        
+        const element = ev?.target as HTMLElement;
+        const trigger = isTrigger(element);
+        
+        if (trigger) {
+            toggleTrigger(element, true);
+        }
+        
         if (isFeatureNode(ev)) {
             const feature = getFeature(ev);
-            addCombineClass(ev, feature);
             
-            if (!touchDevice && !feature.active) {
-                feature.active = true;
-                addClass(ev, 'feature-active');
-                feature?.activate?.(game.value);
-            }
+            // Todo: is this needed?
+            addCombineClass(ev, feature);
         }
     };
 
     const mouseOut = (ev: MouseEvent) => {
-        if (isFeatureNode(ev)) {
-            const feature = getFeature(ev);
+        if (touchDevice) {
+            return;
+        }
+        
+        const element = ev?.target as HTMLElement;
+        const trigger = isTrigger(element);
 
-            if (!touchDevice && feature?.active) {
-                feature.active = false;
-                removeClass(ev, 'feature-active');
-                feature.deactivate?.(game.value);
-            }
+        if (trigger) {
+            toggleTrigger(element, false);
         }
     };
 
