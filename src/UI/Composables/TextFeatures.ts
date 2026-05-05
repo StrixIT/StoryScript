@@ -61,11 +61,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const click = (ev: PointerEvent) => {
         const triggerElement = getTriggerElement(ev.target as HTMLElement);
         
-        if (triggerElement) {
-            if (!touchDevice) {
-                return;
-            }
-            
+        if (triggerElement && touchDevice) {
             const activate = !triggerElement.classList.contains(activeTriggerClass);
             
             Array.from(descriptionRef.value.querySelectorAll('[data-trigger]')).forEach((el) => {
