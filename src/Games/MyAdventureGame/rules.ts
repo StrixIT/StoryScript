@@ -44,7 +44,7 @@ export function Rules(): IRules {
                         text: Combinations.LOOKAT,
                         preposition: 'at',
                         requiresTool: false,
-                        failText: (ame: IGame, target: ICombinable, tool: ICombinable): string => { 
+                        failText: (game: IGame, target: ICombinable, tool: ICombinable): string => { 
                             return 'You look at the ' + target.name + '. There is nothing special about it';
                         }
                     }
