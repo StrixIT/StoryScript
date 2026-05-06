@@ -1,0 +1,128 @@
+.back-label {
+    display: none;
+}
+
+.map-container {
+    max-height: 800px;
+}
+
+blockquote {
+    margin: 0 0 1em 0;
+    padding: 0 0 0 20px;
+    border-left: 4px solid #8B4513; /* left border */
+    font-style: italic;
+    color: #3a2c1a; /* Dark brown for readability */
+    background-color: rgba(255, 255, 255, 0.1); /* opaque for contrast */
+}
+
+div.reference::before {
+    content: "";
+    display: block;
+    background-image: url($resources/book_colour.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 10px auto; 
+}
+
+body {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    color: #000000;
+
+    background-image: url("resources/paper.png");
+    background-repeat: repeat; /* Make sure the tile is indeed shown several times! */
+    background-size: auto;
+
+    filter: sepia(20%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+a {
+    color: #184cb4; /*  night blue for links */
+    text-decoration: underline;
+}
+
+h2 {
+    font-family: Georgia, "Times New Roman", serif; /* Match body font */
+    color: #3a2c1a; /* Dark brown */
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+#exploration button {
+    margin-right: 10px;
+    background-color: #8b4513a6; /* Cappucino brown */
+    color: white; /* Ensure text is readable */
+    border: 1px solid #5D2906; /* Darker brown border */
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+#combinations button {
+    margin-right: 10px;
+    background-color: #8b4513a6; /* Cappucino brown */
+    color: white; /* Ensure text is readable */
+    border: 1px solid #5D2906; /* Darker brown border */
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+.box-container {
+    border: 1px solid #8B4513; /* Chocolate brown */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px 5px 0 0;
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly opaque for readability */
+}
+
+.box-title {
+    font-size: 1.3rem;
+    font-family: Georgia, serif; /* Match body font */
+    color: var(--white); /* Keep white text */
+    background-color: #8B4513; /* Chocolate brown */
+    padding: 0 10px;
+    margin: -10px -10px 10px -10px;
+}
+
+/* Define behaviour for clickable features */
+
+feature {
+  color: chocolate;
+  position: relative;
+  z-index: 3; /* ensure text is above its own background */
+}
+
+feature:hover {
+  color: #8B4513;
+}
+
+/* Container */
+features {
+  position: relative;      /* avoid uncontrolled absolute stacking */
+  z-index: 2;              /* keep it below higher-priority UI if needed */
+  background: transparent; /* prevent blocking underlying text */
+}
+
+/* If features was previously absolute/fixed, constrain it properly */
+#location-container {
+  position: relative;
+}
+
+div.character-equipment.box-container {
+    background-color: #2f6137; /* forest green */
+    color: #ffffff;
+}
+
+div.character-backpack.box-container {
+    background-color: #f5ecd9; /* light beige paper tone */
+    font-family: "Brush Script MT", "Lucida Handwriting", cursive;
+    color: #333333;
+}
