@@ -110,7 +110,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         }
         
         const data = element.dataset
-        const event = game.value.currentLocation.triggeredEvents?.find(([k, _]) => k === data.trigger)?.[1];
+        const event = game.value.currentLocation.triggeredActions?.find(([k, _]) => k === data.trigger)?.[1];
 
         if (active) {
             element.classList.add(activeTriggerClass);

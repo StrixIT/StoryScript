@@ -25,7 +25,7 @@ export function Westphalia() {
                 target: Franconia
             }
         ],
-        triggeredEvents: [[
+        triggeredActions: [[
             'secondary-location-trigger',
             (game: IGame, activate: boolean, data) => {
                 triggerSecondaryLocation(game, data, activate ? 'visible' : 'hidden');

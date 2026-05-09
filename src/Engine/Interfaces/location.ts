@@ -34,12 +34,6 @@ export interface ILocation {
      * to keep the function and call it every time the player leaves the location.
      */
     leaveEvents?: [string, (game: IGame) => void | boolean][];
-    
-    /**
-     * When specified, the functions in this array will be called from text features or user code when
-     * the event that should activate them is triggered.
-     */
-    triggeredEvents?: [string, (game: IGame, activate: boolean, data: Record<string, string>) => void][];
 
     /**
      * Actions that the player can perform at this location.
@@ -50,6 +44,12 @@ export interface ILocation {
      * Actions that the player can perform at this location when in combat.
      */
     combatActions?: [string, IAction][];
+
+    /**
+     * When specified, the functions in this array will be called from text features or user code when
+     * the trigger that should activate them is activated.
+     */
+    triggeredActions?: [string, (game: IGame, activate: boolean, data: Record<string, string>) => void][];
 
     /**
      * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically
