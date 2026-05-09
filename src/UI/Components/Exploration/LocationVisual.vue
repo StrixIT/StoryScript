@@ -1,14 +1,14 @@
 <template>
   <div v-if="location?.features?.collectionPicture" id="location-visual" class="box-container">
     <div class="box-title" v-html="texts.format(texts.youAreHere, [location.name])"></div>
-    <div id="visual-features">
+    <div id="visual-features" ref="location-features">
       <img :alt="location.name" :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id">
       <map :name="location.id">
         <area v-for="feature of location.features" :alt="feature.name" :coords="feature.coords" :shape="feature.shape"
-              href="#0" @click="game.combinations.tryCombine(feature)"/>
+              href="#" @click="game.combinations.tryCombine(feature)"/>
       </map>
       <div v-for="feature of location.features">
-        <img v-if="feature.picture" :alt="feature.name" :name="`feature-${feature.id}`"
+        <img v-if="feature.picture" :id="`feature-${feature.id}`" :alt="feature.name"
              :src="`resources/${feature.picture}`" :style="getFeatureCoordinates(feature)"
              class="feature-picture" @click="game.combinations.tryCombine(feature)"/>
       </div>
@@ -17,51 +17,23 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {IFeature} from "storyScript/Interfaces/feature.ts";
-import {compareString} from "storyScript/utilityFunctions.ts";
-import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-import {IGameCombinations} from "storyScript/Interfaces/combinations/gameCombinations.ts";
-import {computed} from "vue";
+import {computed, onMounted, onUpdated, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
+import {useVisualFeatures} from "ui/Composables/VisualFeatures.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
-
 const location = computed(() => game.value.currentLocation);
 
-const getFeatureCoordinates = (feature: IFeature): { top: string, left: string } => {
-  const coords = feature.coords.split(',');
-  let top: string, left: string;
+const {prepareFeatures, getFeatureCoordinates} = useVisualFeatures(useTemplateRef('location-features'));
 
-  if (compareString(feature.shape, 'poly')) {
-    const x = [], y = [];
+window.onresize = () => prepareFeatures();
 
-    for (let i = 0; i < coords.length; i++) {
-      const value = coords[i];
-      if (i % 2 === 0) {
-        x.push(value);
-      } else {
-        y.push(value);
-      }
-    }
+onMounted(() => {
+  prepareFeatures();
+});
 
-    left = x.reduce(function (p, v) {
-      return (p < v ? p : v);
-    });
-
-    top = y.reduce(function (p, v) {
-      return (p < v ? p : v);
-    });
-  } else {
-    left = coords[0];
-    top = coords[1];
-  }
-
-  return {
-    top: `${top}px`,
-    left: `${left}px`
-  };
-}
+onUpdated(() => prepareFeatures());
 
 </script>
