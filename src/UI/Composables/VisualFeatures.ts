@@ -1,8 +1,8 @@
-import {Ref} from "vue";
+import {Ref, ref} from "vue";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
 
-function prepareLoadedImages(locationImages: HTMLImageElement[], loadedImages: any[]) {
+const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: any[])=> {
     locationImages.forEach(l => {
         let promiseResolve: () => {};
 
@@ -26,6 +26,7 @@ function prepareLoadedImages(locationImages: HTMLImageElement[], loadedImages: a
 export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
     const locationFeatures = imageRef;
     const loadedImages = [];
+    const factor = ref(1);
     
     const prepareFeatures = () => {
         loadedImages.length = 0;
@@ -36,28 +37,28 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         
         Promise.all(allPromises).then(() => {
             const mainImage = loadedImages[0].element;
-            const factor = mainImage.width / mainImage.naturalWidth;
+            factor.value = mainImage.width / mainImage.naturalWidth;
             
             loadedImages.slice(1).map(l => l.element).forEach(i => {
-                i.width = i.naturalWidth * factor;
-                i.height = i.naturalHeight * factor;
+                i.width = i.naturalWidth * factor.value;
+                i.height = i.naturalHeight * factor.value;
             }); 
         });
     }
     
     const getFeatureCoordinates = (feature: IFeature): { top: string, left: string } => {
         const coords = feature.coords.split(',');
-        let top: string, left: string;
+        let top: number, left: number;
 
         if (compareString(feature.shape, 'poly')) {
-            const x = [], y = [];
+            const x: number[] = [], y: number[] = [];
 
             for (let i = 0; i < coords.length; i++) {
                 const value = coords[i];
                 if (i % 2 === 0) {
-                    x.push(value);
+                    x.push(parseInt(value));
                 } else {
-                    y.push(value);
+                    y.push(parseInt(value));
                 }
             }
 
@@ -69,8 +70,8 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
                 return (p < v ? p : v);
             });
         } else {
-            left = coords[0];
-            top = coords[1];
+            left = parseInt(coords[0]) * factor.value;
+            top = parseInt(coords[1]) * factor.value;
         }
 
         return {
