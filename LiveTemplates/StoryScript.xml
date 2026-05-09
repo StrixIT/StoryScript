@@ -261,4 +261,11 @@
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
+  <template name="sstrigger" value="&lt;span data-trigger=&quot;$trigger$&quot;&gt;$text$&lt;/span&gt;&#10;$END$" description="StoryScript - add a trigger" toReformat="false" toShortenFQNames="true">
+    <variable name="trigger" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="HTML_TEXT" value="true" />
+    </context>
+  </template>
 </templateSet>
