@@ -3,6 +3,7 @@ import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
+import {isTouchDevice} from "../../../constants.ts";
 
 const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: any[])=> {
     locationImages.forEach(l => {
@@ -27,23 +28,8 @@ const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: a
 
 export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
     const store = useStateStore();
-    const {game} = storeToRefs(store);
-    const {rules} = store.services;
-    
-    // Todo: move default state settings to store.
-    const defaultCombination = rules.setup.getCombinationActions().find(c => c.isDefault)?.text?.toLowerCase();
-    const defaultCombinationSymbol = rules.setup.getCombinationActions().find(c => c.picture)?.picture?.toLowerCase();
-    const defaultCombinationImageExtension = defaultCombinationSymbol?.split('.')[1];
-    const combinationSymbolDimensions = ref(null);
-    
-    if (defaultCombinationSymbol) {
-        const image = document.createElement('img');
-        image.src = `resources/${defaultCombinationSymbol}`;
-        image.onload = () => {
-            combinationSymbolDimensions.value = { width: image.naturalWidth, height: image.naturalHeight };
-        }
-    }
-    
+    const {game, defaultCombination, defaultCombinationImageExtension, combinationSymbolDimensions} = storeToRefs(store);
+
     const locationFeatures = imageRef;
     const locationImageOriginalWidth = new Map<string, number>();
     const factor = ref(1);
@@ -137,9 +123,13 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         };
     }
 
-    const getCombinationAction = () => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultCombination;
+    const getCombinationAction = () => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultCombination.value;
     
     const setCursor = (e: MouseEvent, regular: boolean) => {
+        if (isTouchDevice){
+            return;
+        }
+        
         const combinationAction = getCombinationAction();
 
         if (!combinationAction) {
@@ -156,10 +146,18 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
     }
     
     const setCombinationSymbols = () => {
+        if (!isTouchDevice){
+            return;
+        }
+        
         const combinationAction = getCombinationAction();
         const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
         const existingSymbols = Array.from(imageRef.value.querySelectorAll('.combination-symbol'));
-        existingSymbols.forEach(s => imageRef.value.removeChild(s));
+        existingSymbols.forEach(s => {
+            const symbolImage = s as HTMLImageElement;
+            symbolImage.onclick = null;
+            imageRef.value.removeChild(symbolImage);
+        });
 
         if (!combinationAction) {
             return;
@@ -180,7 +178,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
             }
             
             const image = document.createElement('img');
-            image.src = `resources/${combinationAction}.${defaultCombinationImageExtension}`;
+            image.src = `resources/${combinationAction}.${defaultCombinationImageExtension.value}`;
             const imageWidth = Math.round(combinationSymbolDimensions.value.width * factor.value);
             const imageHeight = Math.round(combinationSymbolDimensions.value.height * factor.value);
             const imagePosX = Math.round(coords[0] - imageWidth / 2);
@@ -199,6 +197,9 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
 
     window.onresize = () => {
         prepareFeatures();
+        
+        // We need a timeout here to allow the DOM to update so we can get the updated coordinates for
+        // the symbols from the area data attributes.
         setTimeout(() => {
             setCombinationSymbols();
         });

@@ -3,9 +3,9 @@ import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {Ref, watch} from "vue";
 import {storeToRefs} from "pinia";
+import {isTouchDevice} from "../../../constants.ts";
 
 export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
-    const touchDevice = navigator.maxTouchPoints > 0;
     const activeTriggerClass = 'trigger-active';
     
     const store = useStateStore();
@@ -61,7 +61,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const click = (ev: PointerEvent) => {
         const triggerElement = getTriggerElement(ev.target as HTMLElement);
         
-        if (triggerElement && touchDevice) {
+        if (triggerElement && isTouchDevice) {
             const activate = !triggerElement.classList.contains(activeTriggerClass);
             
             Array.from(descriptionRef.value.querySelectorAll('[data-trigger]')).forEach((el) => {
@@ -89,7 +89,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     }
 
     const mouseOver = (ev: MouseEvent) => {
-        if (touchDevice) {
+        if (isTouchDevice) {
             return;
         }
         
@@ -97,7 +97,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     };
 
     const mouseOut = (ev: MouseEvent) => {
-        if (touchDevice) {
+        if (isTouchDevice) {
             return;
         }
         
