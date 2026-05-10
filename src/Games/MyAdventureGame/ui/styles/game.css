@@ -6,6 +6,14 @@
     cursor: url($resources/look.png) 25 25, auto;
 }
 
+.touch {
+    cursor: url($resources/touch.png) 25 25, auto;
+}
+
+.use {
+    cursor: url($resources/use.png) 25 25, auto;
+}
+
 .walk {
     cursor: url($resources/walk.png) 25 25, auto;
 }
