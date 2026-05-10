@@ -39,4 +39,10 @@ export interface ICombinationAction {
      * type of action (e.g. Look at).
      */
     defaultMatch?(game: IGame, target: ICombinable, tool: ICombinable): string | ICombinationMatchResult;
+
+    /**
+     * Set this to use a picture for your combinations in addition to a text. For visual features, this will display the picture
+     * as mouse cursor when a cursor is available or on top of the features for touch devices.
+     */
+    picture?: string;
 }

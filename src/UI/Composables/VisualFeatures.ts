@@ -63,7 +63,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
                 i.height = Math.round(i.naturalHeight * factor.value);
             });
             
-            // Reposition areas
+            // Reposition areas and add symbols for active combination.
             const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
             
             areas.forEach(a => {
@@ -72,8 +72,20 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
                 }
                 
                 const originalCoords = a.dataset.originalCoords;
-                a.coords = originalCoords.split(',').map(c => Math.round(parseInt(c.trim()) * factor.value)).join(',');
-            })
+                const calculatedCoords = originalCoords.split(',').map(c => Math.round(parseInt(c.trim()) * factor.value));
+                a.coords = calculatedCoords.join(',');
+                
+                let totalX = 0, totalY = 0;
+
+                calculatedCoords.forEach((c, i) => {
+                    (i + 1) % 2 !== 0 ? totalX += c : totalY += c;
+                })
+                
+                const avgX =  totalX / (calculatedCoords.length / 2);
+                const avgY =  totalY / (calculatedCoords.length / 2);
+
+                a.dataset.imageCoords = `${avgX}x${avgY}`;
+            });
         });
     }
     

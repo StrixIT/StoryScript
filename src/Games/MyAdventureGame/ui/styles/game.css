@@ -1,3 +1,11 @@
 .back-label {
     display: none;
 }
+
+area.look, .feature-picture.look {
+    cursor: url($resources/look.png) 25 25, auto;
+}
+
+area.walk, .feature-picture.walk {
+    cursor: url($resources/walk.png) 25 25, auto;
+}
