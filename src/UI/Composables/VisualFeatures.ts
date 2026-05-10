@@ -1,6 +1,8 @@
 import {Ref, ref} from "vue";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
+import {useStateStore} from "ui/StateStore.ts";
+import {storeToRefs} from "pinia";
 
 const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: any[])=> {
     locationImages.forEach(l => {
@@ -24,10 +26,14 @@ const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: a
 }
 
 export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
+    const store = useStateStore();
+    const {game} = storeToRefs(store);
+    
     const locationFeatures = imageRef;
+    const locationImageOriginalWidth = new Map<string, number>();
     const factor = ref(1);
     
-    const prepareFeatures = () => {
+    const prepareFeatures = (reset?: boolean) => {
         const loadedImages = [];
         const locationImages = Array.from(locationFeatures.value.querySelectorAll('img'));
         prepareLoadedImages(locationImages, loadedImages);
@@ -37,13 +43,19 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         Promise.all(allPromises).then(() => {
             const mainImage = loadedImages[0].element;
 
-            if (!mainImage.dataset.originalWidth) {
-                mainImage.dataset.originalWidth = mainImage.naturalWidth;
+            if (reset || !mainImage.dataset.originalWidth) {
+                let naturalWidth = mainImage.naturalWidth;
+                
+                if (!naturalWidth) {
+                    naturalWidth = locationImageOriginalWidth[game.value.currentLocation.id];
+                } else {
+                    locationImageOriginalWidth[game.value.currentLocation.id] = naturalWidth;
+                }
+                
+                mainImage.dataset.originalWidth = naturalWidth;
             }
 
-            const originalWidth = mainImage.dataset.originalWidth;
-            
-            factor.value = mainImage.width / originalWidth;
+            factor.value = mainImage.width / parseInt(mainImage.dataset.originalWidth);
             
             // Resize item images
             loadedImages.slice(1).map(l => l.element).forEach(i => {
@@ -55,7 +67,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
             const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
             
             areas.forEach(a => {
-                if (!a.dataset.originalCoords) {
+                if (reset || !a.dataset.originalCoords) {
                     a.dataset.originalCoords = a.coords;
                 }
                 
