@@ -2,7 +2,7 @@
   <div v-if="location?.features?.collectionPicture" id="location-visual" class="box-container">
     <div class="box-title" v-html="texts.format(texts.youAreHere, [location.name])"></div>
     <div id="visual-features" ref="location-features">
-      <img :alt="location.name" :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id">
+      <img :alt="location.name" :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id" @load="prepareFeatures(true)">
       <map :name="location.id">
         <area v-for="feature of location.features" :alt="feature.name" :coords="feature.coords" :shape="feature.shape"
               href="#" @click="game.combinations.tryCombine(feature)"/>
@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {computed, onMounted, onUpdated, useTemplateRef} from "vue";
+import {computed, onMounted, useTemplateRef, onUpdated} from "vue";
 import {storeToRefs} from "pinia";
 import {useVisualFeatures} from "ui/Composables/VisualFeatures.ts";
 
@@ -31,13 +31,5 @@ const {prepareFeatures, getFeatureCoordinates} = useVisualFeatures(useTemplateRe
 window.onresize = () => {
   prepareFeatures();
 };
-  
-onMounted(() => {
-  prepareFeatures();
-});
-
-onUpdated(() => {
-  prepareFeatures(true);
-});
 
 </script>

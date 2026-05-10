@@ -72,7 +72,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
                 }
                 
                 const originalCoords = a.dataset.originalCoords;
-                a.coords = originalCoords.split(',').map(c => Math.round(parseInt(c) * factor.value)).join(',');
+                a.coords = originalCoords.split(',').map(c => Math.round(parseInt(c.trim()) * factor.value)).join(',');
             })
         });
     }
