@@ -28,8 +28,4 @@ const location = computed(() => game.value.currentLocation);
 
 const {prepareFeatures, getFeatureCoordinates, setCursor} = useVisualFeatures(useTemplateRef('location-features'));
 
-window.onresize = () => {
-  prepareFeatures();
-};
-
 </script>

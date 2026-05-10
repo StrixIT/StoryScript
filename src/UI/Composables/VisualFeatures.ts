@@ -29,14 +29,16 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {rules} = store.services;
-    const defaultAction = rules.setup.getCombinationActions().find(c => c.isDefault)?.text?.toLowerCase();
-    const defaultImage = rules.setup.getCombinationActions().find(c => c.picture)?.picture?.toLowerCase();
-    const defaultImageExtension = defaultImage?.split('.')[1];
+    
+    // Todo: move default state settings to store.
+    const defaultCombination = rules.setup.getCombinationActions().find(c => c.isDefault)?.text?.toLowerCase();
+    const defaultCombinationSymbol = rules.setup.getCombinationActions().find(c => c.picture)?.picture?.toLowerCase();
+    const defaultCombinationImageExtension = defaultCombinationSymbol?.split('.')[1];
     const combinationSymbolDimensions = ref(null);
     
-    if (defaultImage) {
+    if (defaultCombinationSymbol) {
         const image = document.createElement('img');
-        image.src = `resources/${defaultImage}`;
+        image.src = `resources/${defaultCombinationSymbol}`;
         image.onload = () => {
             combinationSymbolDimensions.value = { width: image.naturalWidth, height: image.naturalHeight };
         }
@@ -135,7 +137,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         };
     }
 
-    const getCombinationAction = () => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultAction;
+    const getCombinationAction = () => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultCombination;
     
     const setCursor = (e: MouseEvent, regular: boolean) => {
         const combinationAction = getCombinationAction();
@@ -153,35 +155,48 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         }
     }
     
-    watch(() => game.value.combinations.activeCombination, () => {
+    const setCombinationSymbols = () => {
         const combinationAction = getCombinationAction();
         const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
         const existingSymbols = Array.from(imageRef.value.querySelectorAll('.combination-symbol'));
         existingSymbols.forEach(s => imageRef.value.removeChild(s));
-        
+
         if (!combinationAction) {
             return;
         }
 
         areas.forEach(a => {
             const coords = a.dataset.imageCoords?.split(',').map(c => parseInt(c));
-            
+
             if (!coords || !coords.length) {
                 return;
             }
-            
+
             const image = document.createElement('img');
-            image.src = `resources/${combinationAction}.${defaultImageExtension}`;
-            const imagePosX = Math.round(coords[0] - combinationSymbolDimensions.value.width / 2);
-            const imagePosY = Math.round(coords[1] - combinationSymbolDimensions.value.height / 2);
-            
+            image.src = `resources/${combinationAction}.${defaultCombinationImageExtension}`;
+            const imageWidth = Math.round(combinationSymbolDimensions.value.width * factor.value);
+            const imageHeight = Math.round(combinationSymbolDimensions.value.height * factor.value);
+            const imagePosX = Math.round(coords[0] - imageWidth / 2);
+            const imagePosY = Math.round(coords[1] - imageHeight / 2);
+
             image.style.position = 'absolute';
+            image.style.width = imageWidth + 'px';
+            image.style.height = imageHeight + 'px';
             image.style.top = `${imagePosY}px`;
             image.style.left = `${imagePosX}px`;
             image.classList.add('combination-symbol');
             imageRef.value.appendChild(image);
         });
-    });
+    }
+
+    window.onresize = () => {
+        prepareFeatures();
+        setTimeout(() => {
+            setCombinationSymbols();
+        });
+    };
+    
+    watch(() => game.value.combinations.activeCombination, () => setCombinationSymbols());
     
     return {
         locationFeatures,
