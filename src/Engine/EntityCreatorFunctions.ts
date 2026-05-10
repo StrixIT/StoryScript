@@ -200,7 +200,7 @@ export function setDestination(destination: IDestination) {
 }
 
 export function getBasicFeatureData(location: ICompiledLocation, node: HTMLElement): IFeature {
-    const nameAttribute = node.attributes['name']?.nodeValue;
+    const nameAttribute = node.attributes['name']?.nodeValue?.toLowerCase();
 
     if (!nameAttribute) {
         throw new Error('There is no name attribute for a feature node for location ' + location.id + '.');

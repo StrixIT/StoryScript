@@ -25,11 +25,10 @@ const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: a
 
 export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
     const locationFeatures = imageRef;
-    const loadedImages = [];
     const factor = ref(1);
     
     const prepareFeatures = () => {
-        loadedImages.length = 0;
+        const loadedImages = [];
         const locationImages = Array.from(locationFeatures.value.querySelectorAll('img'));
         prepareLoadedImages(locationImages, loadedImages);
 
@@ -37,12 +36,32 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         
         Promise.all(allPromises).then(() => {
             const mainImage = loadedImages[0].element;
-            factor.value = mainImage.width / mainImage.naturalWidth;
+
+            if (!mainImage.dataset.originalWidth) {
+                mainImage.dataset.originalWidth = mainImage.naturalWidth;
+            }
+
+            const originalWidth = mainImage.dataset.originalWidth;
             
+            factor.value = mainImage.width / originalWidth;
+            
+            // Resize item images
             loadedImages.slice(1).map(l => l.element).forEach(i => {
-                i.width = i.naturalWidth * factor.value;
-                i.height = i.naturalHeight * factor.value;
-            }); 
+                i.width = Math.round(i.naturalWidth * factor.value);
+                i.height = Math.round(i.naturalHeight * factor.value);
+            });
+            
+            // Reposition areas
+            const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
+            
+            areas.forEach(a => {
+                if (!a.dataset.originalCoords) {
+                    a.dataset.originalCoords = a.coords;
+                }
+                
+                const originalCoords = a.dataset.originalCoords;
+                a.coords = originalCoords.split(',').map(c => Math.round(parseInt(c) * factor.value)).join(',');
+            })
         });
     }
     
@@ -62,16 +81,16 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
                 }
             }
 
-            left = x.reduce(function (p, v) {
+            left = Math.round(x.reduce(function (p, v) {
                 return (p < v ? p : v);
-            });
+            }) * factor.value);
 
-            top = y.reduce(function (p, v) {
+            top = Math.round(y.reduce(function (p, v) {
                 return (p < v ? p : v);
-            });
+            }) * factor.value);
         } else {
-            left = parseInt(coords[0]) * factor.value;
-            top = parseInt(coords[1]) * factor.value;
+            left = Math.round(parseInt(coords[0]) * factor.value);
+            top = Math.round(parseInt(coords[1]) * factor.value);
         }
 
         return {
