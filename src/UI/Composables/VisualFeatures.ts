@@ -172,6 +172,13 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
                 return;
             }
 
+            const featureId = a.id.replace('feature-area-', '');
+            const feature = game.value.currentLocation.features.get(featureId);
+            
+            if (!feature) {
+                return;
+            }
+            
             const image = document.createElement('img');
             image.src = `resources/${combinationAction}.${defaultCombinationImageExtension}`;
             const imageWidth = Math.round(combinationSymbolDimensions.value.width * factor.value);
@@ -185,6 +192,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
             image.style.top = `${imagePosY}px`;
             image.style.left = `${imagePosX}px`;
             image.classList.add('combination-symbol');
+            image.onclick = () => game.value.combinations.tryCombine(feature);
             imageRef.value.appendChild(image);
         });
     }
