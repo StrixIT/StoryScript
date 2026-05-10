@@ -26,27 +26,10 @@ const {game} = storeToRefs(store);
 const {texts} = store.services;
 const location = computed(() => game.value.currentLocation);
 
-const {prepareFeatures, getFeatureCoordinates} = useVisualFeatures(useTemplateRef('location-features'));
+const {prepareFeatures, getFeatureCoordinates, setCursor} = useVisualFeatures(useTemplateRef('location-features'));
 
 window.onresize = () => {
   prepareFeatures();
 };
-
-const setCursor = (e: MouseEvent, regular: boolean) => {
-  const combinationAction = game.value.combinations.activeCombination?.selectedCombinationAction;
-  
-  if (!combinationAction) {
-    return;
-  }
-  
-  const className = combinationAction.text.toLowerCase();
-  const element = e.target as HTMLAreaElement;
-  
-  if (regular) {
-    element.classList.remove(className);
-  } else {
-    element.classList.add(className);
-  }
-}
 
 </script>

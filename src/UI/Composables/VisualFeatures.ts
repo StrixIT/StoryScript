@@ -1,4 +1,4 @@
-import {Ref, ref} from "vue";
+import {Ref, ref, watch} from "vue";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
 import {useStateStore} from "ui/StateStore.ts";
@@ -28,6 +28,19 @@ const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: a
 export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
     const store = useStateStore();
     const {game} = storeToRefs(store);
+    const {rules} = store.services;
+    const defaultAction = rules.setup.getCombinationActions().find(c => c.isDefault)?.text?.toLowerCase();
+    const defaultImage = rules.setup.getCombinationActions().find(c => c.picture)?.picture?.toLowerCase();
+    const defaultImageExtension = defaultImage?.split('.')[1];
+    const combinationSymbolDimensions = ref(null);
+    
+    if (defaultImage) {
+        const image = document.createElement('img');
+        image.src = `resources/${defaultImage}`;
+        image.onload = () => {
+            combinationSymbolDimensions.value = { width: image.naturalWidth, height: image.naturalHeight };
+        }
+    }
     
     const locationFeatures = imageRef;
     const locationImageOriginalWidth = new Map<string, number>();
@@ -81,10 +94,9 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
                     (i + 1) % 2 !== 0 ? totalX += c : totalY += c;
                 })
                 
-                const avgX =  totalX / (calculatedCoords.length / 2);
-                const avgY =  totalY / (calculatedCoords.length / 2);
-
-                a.dataset.imageCoords = `${avgX}x${avgY}`;
+                const avgX =  Math.round(totalX / (calculatedCoords.length / 2));
+                const avgY =  Math.round(totalY / (calculatedCoords.length / 2));
+                a.dataset.imageCoords = `${avgX},${avgY}`;
             });
         });
     }
@@ -122,10 +134,59 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
             left: `${left}px`
         };
     }
+
+    const getCombinationAction = () => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultAction;
+    
+    const setCursor = (e: MouseEvent, regular: boolean) => {
+        const combinationAction = getCombinationAction();
+
+        if (!combinationAction) {
+            return;
+        }
+
+        const element = e.target as HTMLAreaElement;
+
+        if (regular) {
+            element.classList.remove(combinationAction);
+        } else {
+            element.classList.add(combinationAction);
+        }
+    }
+    
+    watch(() => game.value.combinations.activeCombination, () => {
+        const combinationAction = getCombinationAction();
+        const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
+        const existingSymbols = Array.from(imageRef.value.querySelectorAll('.combination-symbol'));
+        existingSymbols.forEach(s => imageRef.value.removeChild(s));
+        
+        if (!combinationAction) {
+            return;
+        }
+
+        areas.forEach(a => {
+            const coords = a.dataset.imageCoords?.split(',').map(c => parseInt(c));
+            
+            if (!coords || !coords.length) {
+                return;
+            }
+            
+            const image = document.createElement('img');
+            image.src = `resources/${combinationAction}.${defaultImageExtension}`;
+            const imagePosX = Math.round(coords[0] - combinationSymbolDimensions.value.width / 2);
+            const imagePosY = Math.round(coords[1] - combinationSymbolDimensions.value.height / 2);
+            
+            image.style.position = 'absolute';
+            image.style.top = `${imagePosY}px`;
+            image.style.left = `${imagePosX}px`;
+            image.classList.add('combination-symbol');
+            imageRef.value.appendChild(image);
+        });
+    });
     
     return {
         locationFeatures,
         prepareFeatures,
-        getFeatureCoordinates
+        getFeatureCoordinates,
+        setCursor
     }
 }
