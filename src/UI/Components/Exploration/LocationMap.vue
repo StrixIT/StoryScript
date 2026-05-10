@@ -36,6 +36,6 @@ onMounted(() => {
   prepareMap(map.value, false);
 });
 
-onUpdated(() => prepareMap(map.value, true))
+onUpdated(() => prepareMap(map.value, true));
 
 </script>

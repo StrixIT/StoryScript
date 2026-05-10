@@ -46,6 +46,12 @@ export interface ILocation {
     combatActions?: [string, IAction][];
 
     /**
+     * When specified, the functions in this array will be called from text features or user code when
+     * the trigger that should activate them is activated.
+     */
+    triggeredActions?: [string, (game: IGame, activate: boolean, data: Record<string, string>) => void][];
+
+    /**
      * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically
      * setting a location's description. If you want to have a description selector function for all locations, use the descriptionSelector
      * function of the game rules. Return the selector string.

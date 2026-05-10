@@ -10,13 +10,13 @@ export function Rules(): IRules {
                 // 'createCharacter.mp3': [GameState.CreateCharacter],
                 // 'play.mp3': [GameState.Play]
             },
-
-            intro: false,
             titleScreen: {
                 showTitleScreen: true,
                 transitionDelay: '2',
                 getDemoMode: getDemoMode
             },
+            intro: false,
+
             gameStart(game) {
                 game.party.currency ??= 0;
             },
