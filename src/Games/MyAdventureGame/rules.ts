@@ -30,20 +30,25 @@ export function Rules(): IRules {
                     {
                         text: Combinations.WALK,
                         preposition: 'to',
-                        requiresTool: false
+                        requiresTool: false,
+                        picture: 'walk.png'
                     },
                     {
                         text: Combinations.USE,
-                        preposition: 'on'
+                        preposition: 'on',
+                        picture: 'use.png'
                     },
                     {
                         text: Combinations.TOUCH,
-                        requiresTool: false
+                        requiresTool: false,
+                        picture: 'touch.png'
                     },
                     {
                         text: Combinations.LOOKAT,
                         preposition: 'at',
                         requiresTool: false,
+                        // isDefault: true,
+                        picture: 'look.png',
                         failText: (game: IGame, target: ICombinable, tool: ICombinable): string => { 
                             return 'You look at the ' + target.name + '. There is nothing special about it';
                         }

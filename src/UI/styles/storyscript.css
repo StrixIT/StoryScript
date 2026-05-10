@@ -600,3 +600,7 @@ dialog {
         border-radius: 5px;
     }
 }
+
+#visual-features > img {
+    max-width: 100%;
+}
