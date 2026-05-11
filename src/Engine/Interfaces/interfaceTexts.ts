@@ -119,6 +119,7 @@ export interface IInterfaceTexts {
     openFullScreenMap?: string;
     closeFullScreenMap?: string;
     pressToShowMarkers?: string;
+    touchToShowMarkers?: string;
     startGame?: string;
     continueGame?: string;
     autoplayText?: string;

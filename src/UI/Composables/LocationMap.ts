@@ -20,6 +20,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
 
     const fullScreen = ref(false);
     const firstShowFullScreen = ref(true);
+    const touchMarkersVisible = ref(false);
     const mapDialog = mapDialogRef;
     const currentMap = mapImageRef;
     const currentFullScreenMap = ref<HTMLImageElement>(null);
@@ -37,6 +38,17 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
             prepareMap(map.value, true);
         }
     });
+    
+    const toggleTouchMarkersVisible = () => {
+        touchMarkersVisible.value = !touchMarkersVisible.value;
+
+        if (map.value.showMarkersOnKeyPress) {
+            const mapContainer = (fullScreen.value ? currentFullScreenMap.value : currentMap.value).parentElement;
+            const labelElements = mapContainer.getElementsByClassName(labelClass);
+            const markerElements = mapContainer.getElementsByClassName(imageClass);
+            setMarkerVisibility(labelElements, markerElements, touchMarkersVisible.value ? visible : hidden);
+        }
+    }
 
     function toggleFullScreen() {
         fullScreen.value = !fullScreen.value;
@@ -126,6 +138,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
                     setMarkerVisibility(labelElements, markerElements, visible);
                 }
             };
+            
             mapContainer.onkeyup = e => {
                 if (e.key === map.value.showMarkersOnKeyPress) {
                     setMarkerVisibility(labelElements, markerElements, hidden);
@@ -286,6 +299,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
         map,
         prepareMap,
         showMap,
-        toggleFullScreen
+        toggleFullScreen,
+        toggleTouchMarkersVisible
     }
 }
