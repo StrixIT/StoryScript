@@ -32,12 +32,6 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
             navigateMap(map.value, currentFullScreenMap.value, false);
         }
     });
-
-    watch(() => map.value, (newMap, oldMap) => {
-        if ((<any>newMap).id !== (<any>oldMap).id) {
-            prepareMap(map.value, true);
-        }
-    });
     
     const toggleTouchMarkersVisible = () => {
         touchMarkersVisible.value = !touchMarkersVisible.value;
@@ -147,8 +141,8 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
         }
     }
     
-    function showMap(newMap: IMap) {
-        navigateMap(newMap, currentMap.value, true);
+    function showMap() {
+        navigateMap(map.value, currentMap.value, true);
     }
 
     function navigateMap(map: IMap, mapElement: HTMLElement, show: boolean) {

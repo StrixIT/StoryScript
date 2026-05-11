@@ -11,7 +11,7 @@
         {{ isTouchDevice ? texts.format(texts.pressToShowMarkers, [markerKey]) : texts.touchToShowMarkers }}
       </span>
     </p>
-    <img ref="map-element" :alt="map.name" :src="`resources/${map.mapImage}`" class="map-image" @load="showMap(map)">
+    <img ref="map-element" :alt="map.name" :src="`resources/${map.mapImage}`" class="map-image" @load="showMap()">
     <img v-if="map.avatarImage" :alt="map.name" :src="`resources/${map.avatarImage}`" class="avatar-image"
          style="visibility: hidden;">
   </div>
@@ -19,7 +19,7 @@
   </dialog>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, useTemplateRef} from "vue";
+import {onMounted, onUpdated, ref, useTemplateRef} from "vue";
 import {useLocationMap} from "ui/Composables/LocationMap.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {isTouchDevice} from "../../../../constants.ts";
@@ -49,6 +49,10 @@ const showMarkersOnTouch = () => {
 
 onMounted(() => {
   prepareMap(map.value, false);
+});
+
+onUpdated(() => {
+  prepareMap(map.value, true);
 });
 
 </script>
