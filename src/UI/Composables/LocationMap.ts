@@ -32,6 +32,12 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
         }
     });
 
+    watch(() => map.value, (newMap, oldMap) => {
+        if ((<any>newMap).id !== (<any>oldMap).id) {
+            prepareMap(map.value, true);
+        }
+    });
+
     function toggleFullScreen() {
         fullScreen.value = !fullScreen.value;
 
@@ -85,9 +91,6 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
         }
 
         initMap(currentMap.value);
-
-        // Call navigateMap when the map image has loaded to arrange the map in its initial state.
-        currentMap.value.onload = () => navigateMap(newMap, currentMap.value, true);
     }
 
     function initMap(mapElement: HTMLElement) {
@@ -129,6 +132,10 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
                 }
             }
         }
+    }
+    
+    function showMap(newMap: IMap) {
+        navigateMap(newMap, currentMap.value, true);
     }
 
     function navigateMap(map: IMap, mapElement: HTMLElement, show: boolean) {
@@ -278,6 +285,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
     return {
         map,
         prepareMap,
+        showMap,
         toggleFullScreen
     }
 }

@@ -11,7 +11,7 @@
         {{ texts.format(texts.pressToShowMarkers, [markerKey]) }}
       </span>
     </p>
-    <img ref="map-element" :alt="map.name" :src="`resources/${map.mapImage}`" class="map-image">
+    <img ref="map-element" :alt="map.name" :src="`resources/${map.mapImage}`" class="map-image" @load="showMap(map)">
     <img v-if="map.avatarImage" :alt="map.name" :src="`resources/${map.avatarImage}`" class="avatar-image"
          style="visibility: hidden;">
   </div>
@@ -25,7 +25,12 @@ import {useStateStore} from "ui/StateStore.ts";
 
 const store = useStateStore();
 const {texts} = store.services;
-const {map, prepareMap, toggleFullScreen} = useLocationMap(useTemplateRef('map-element'), useTemplateRef('map-dialog'));
+const {
+  map,
+  prepareMap,
+  showMap,
+  toggleFullScreen
+} = useLocationMap(useTemplateRef('map-element'), useTemplateRef('map-dialog'));
 
 const markerKey = map.value.showMarkersOnKeyPress ?
     map.value.showMarkersOnKeyPress.trim()
@@ -35,7 +40,5 @@ const markerKey = map.value.showMarkersOnKeyPress ?
 onMounted(() => {
   prepareMap(map.value, false);
 });
-
-onUpdated(() => prepareMap(map.value, true));
 
 </script>
