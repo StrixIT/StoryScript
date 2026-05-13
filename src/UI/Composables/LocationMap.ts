@@ -26,10 +26,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
     const mapDialog = mapDialogRef;
     const currentMap = mapImageRef;
     const currentFullScreenMap = ref<HTMLImageElement>(null);
-
-    gameEvents.subscribe(GameEventNames.Reset, () => navigateMap(map.value, currentMap.value, false));
-    gameEvents.subscribe(GameEventNames.Restart, () => navigateMap(map.value, currentMap.value, false));
-
+    
     watch(() => location.value, () => {
         navigateMap(map.value, currentMap.value, false);
 
