@@ -1,22 +1,22 @@
-import {Ref, ref, watch} from "vue";
+import {computed, Ref, ref, watch} from "vue";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from "../../../constants.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {GameEventNames} from "storyScript/gameEventNames.ts";
 
-const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: any[])=> {
+const prepareLoadedImages = (locationImages: HTMLImageElement[]) => {
+    const loadedImages: { element: HTMLImageElement, loadPromise: Promise<void> }[] = [];
+    
     locationImages.forEach(l => {
         let promiseResolve: () => {};
 
-        const loadPromise = new Promise((r: any) => {
+        const loadPromise = new Promise<void>((r: any): void => {
             promiseResolve = r;
         });
 
         l.onload = promiseResolve;
-        
+
         if (l.naturalWidth > 0) {
             promiseResolve();
         }
@@ -26,76 +26,105 @@ const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: a
             loadPromise: loadPromise
         });
     });
+    
+    return loadedImages;
 }
 
-export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
+export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     const store = useStateStore();
-    const {game, defaultCombination, defaultCombinationImageExtension, combinationSymbolDimensions} = storeToRefs(store);
+    const {
+        game,
+        defaultCombination,
+        defaultCombinationImageExtension,
+        combinationSymbolDimensions
+    } = storeToRefs(store);
 
     const locationFeatures = imageRef;
     const locationImageOriginalWidth = new Map<string, number>();
+    const featureImageOriginalDimensions = new Map<string, [number, number]>();
+    const areaOriginalCoordinates = new Map<string, string>();
     const factor = ref(1);
+    const locationId = computed(() => game.value.currentLocation.id);
 
-    gameEvents.subscribe(GameEventNames.Reset, () => prepareFeatures(false, true));
-    gameEvents.subscribe(GameEventNames.Restart, () => prepareFeatures(false, true));
+    const actionName = computed(() => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultCombination.value);
+
+    const calculateFactor = () => {
+        const mainImage = locationFeatures.value?.querySelector('img');
+        factor.value = mainImage.width / locationImageOriginalWidth.get(game.value.currentLocation.id);
+    }
     
-    const prepareFeatures = (recalculate: boolean, reset: boolean) => {
-        const loadedImages = [];
-        const locationImages = Array.from(locationFeatures.value.querySelectorAll('img'));
-        prepareLoadedImages(locationImages, loadedImages);
+    window.onresize = () => {
+        calculateFactor();
+        prepareFeatures();
+    };
 
-        const allPromises = loadedImages.map(i => i.loadPromise);
+    watch(() => game.value.combinations.activeCombination, () => setCombinationSymbols());
+    
+    const initFeatures = () => {
+        const mainImage = locationFeatures.value?.querySelector('img');
         
+        if (!locationImageOriginalWidth.has(locationId.value)) {
+            locationImageOriginalWidth.set(locationId.value, mainImage.naturalWidth);
+        }
+
+        calculateFactor();
+        prepareFeatures();
+    }
+    
+    const prepareFeatures = () => {
+        const locationImages = Array.from(locationFeatures.value?.querySelectorAll('img.feature-picture') ?? []) as HTMLImageElement[];
+        const loadedImages = prepareLoadedImages(locationImages);
+        const allPromises = loadedImages.map(i => i.loadPromise);
+
         Promise.all(allPromises).then(() => {
-            if (recalculate) {
-                const mainImage = loadedImages[0].element;
-
-                if (reset || !mainImage.dataset.originalWidth) {
-                    let naturalWidth = mainImage.naturalWidth;
-
-                    if (!naturalWidth) {
-                        naturalWidth = locationImageOriginalWidth[game.value.currentLocation.id];
-                    } else {
-                        locationImageOriginalWidth[game.value.currentLocation.id] = naturalWidth;
-                    }
-
-                    mainImage.dataset.originalWidth = naturalWidth;
-                }
-
-                factor.value = mainImage.width / parseInt(mainImage.dataset.originalWidth);
-            }
-            
             // Resize item images
-            loadedImages.slice(1).map(l => l.element).forEach(i => {
-                i.width = Math.round(i.naturalWidth * factor.value);
-                i.height = Math.round(i.naturalHeight * factor.value);
+            loadedImages.map(l => l.element).forEach(i => {
+                const featureId = i.id.split('-')[1];
+                const imageKey = `${locationId.value}-${featureId}`;
+
+                if (!featureImageOriginalDimensions.has(imageKey)) {
+                    featureImageOriginalDimensions.set(imageKey, [i.naturalWidth, i.naturalHeight]);
+                }
+                
+                const originalDimensions = featureImageOriginalDimensions.get(imageKey);
+                i.width = Math.round(originalDimensions[0] * factor.value);
+                i.height = Math.round(originalDimensions[1] * factor.value);
             });
-            
+
             // Reposition areas and add symbols for active combination.
             const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
-            
+
             areas.forEach(a => {
-                if (reset || !a.dataset.originalCoords) {
-                    a.dataset.originalCoords = a.coords;
+                const featureId = a.id.split('-')[2];
+                const areaKey = `${locationId.value}-${featureId}`;
+                
+                if (!areaOriginalCoordinates.has(areaKey)) {
+                    areaOriginalCoordinates.set(areaKey, a.coords);
                 }
                 
-                const originalCoords = a.dataset.originalCoords;
+                const originalCoords = areaOriginalCoordinates.get(areaKey);
                 const calculatedCoords = originalCoords.split(',').map(c => Math.round(parseInt(c.trim()) * factor.value));
                 a.coords = calculatedCoords.join(',');
-                
+
                 let totalX = 0, totalY = 0;
 
                 calculatedCoords.forEach((c, i) => {
                     (i + 1) % 2 !== 0 ? totalX += c : totalY += c;
                 })
-                
-                const avgX =  Math.round(totalX / (calculatedCoords.length / 2));
-                const avgY =  Math.round(totalY / (calculatedCoords.length / 2));
+
+                const avgX = Math.round(totalX / (calculatedCoords.length / 2));
+                const avgY = Math.round(totalY / (calculatedCoords.length / 2));
                 a.dataset.imageCoords = `${avgX},${avgY}`;
+            });
+
+            // We need a timeout here to allow the DOM to update so we can get the updated coordinates for
+            // the symbols from the area data attributes.
+            setTimeout(() => {
+                setCombinationSymbols();
             });
         });
     }
-    
+
     const getFeatureCoordinates = (feature: IFeature): { top: string, left: string } => {
         const coords = feature.coords.split(',');
         let top: number, left: number;
@@ -129,45 +158,40 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
             left: `${left}px`
         };
     }
-
-    const getCombinationAction = () => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultCombination.value;
     
     const setCursor = (e: MouseEvent, regular: boolean) => {
-        if (isTouchDevice){
+        if (isTouchDevice) {
             return;
         }
-        
-        const combinationAction = getCombinationAction();
 
-        if (!combinationAction) {
+        if (!actionName.value) {
             return;
         }
 
         const element = e.target as HTMLAreaElement;
 
         if (regular) {
-            element.classList.remove(combinationAction);
+            element.classList.remove(actionName.value);
         } else {
-            element.classList.add(combinationAction);
+            element.classList.add(actionName.value);
         }
     }
-    
+
     const setCombinationSymbols = () => {
-        if (!isTouchDevice){
-            return;
-        }
+        // if (!isTouchDevice) {
+        //     return;
+        // }
         
-        const combinationAction = getCombinationAction();
         const areas = Array.from(locationFeatures.value?.querySelectorAll('area'));
         const existingSymbols = Array.from(imageRef.value?.querySelectorAll('.combination-symbol'));
-        
+
         existingSymbols?.forEach(s => {
             const symbolImage = s as HTMLImageElement;
             symbolImage.onclick = null;
             imageRef.value.removeChild(symbolImage);
         });
 
-        if (!combinationAction) {
+        if (!actionName.value) {
             return;
         }
 
@@ -180,13 +204,13 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
 
             const featureId = a.id.replace('feature-area-', '');
             const feature = game.value.currentLocation.features.get(featureId);
-            
+
             if (!feature) {
                 return;
             }
-            
+
             const image = document.createElement('img');
-            image.src = `resources/${combinationAction}.${defaultCombinationImageExtension.value}`;
+            image.src = `resources/${actionName.value}.${defaultCombinationImageExtension.value}`;
             const imageWidth = Math.round(combinationSymbolDimensions.value.width * factor.value);
             const imageHeight = Math.round(combinationSymbolDimensions.value.height * factor.value);
             const imagePosX = Math.round(coords[0] - imageWidth / 2);
@@ -203,24 +227,9 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         });
     }
 
-    // watch(() => game.value.currentLocation, () => {
-    //     prepareFeatures(false, true);
-    // });
-    
-    window.onresize = () => {
-        prepareFeatures(true, false);
-        
-        // We need a timeout here to allow the DOM to update so we can get the updated coordinates for
-        // the symbols from the area data attributes.
-        setTimeout(() => {
-            setCombinationSymbols();
-        });
-    };
-    
-    watch(() => game.value.combinations.activeCombination, () => setCombinationSymbols());
-    
     return {
         locationFeatures,
+        initFeatures,
         prepareFeatures,
         getFeatureCoordinates,
         setCursor
