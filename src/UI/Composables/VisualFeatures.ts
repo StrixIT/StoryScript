@@ -4,6 +4,8 @@ import {compareString} from "storyScript/utilityFunctions.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from "../../../constants.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
+import {GameEventNames} from "storyScript/gameEventNames.ts";
 
 const prepareLoadedImages = (locationImages: HTMLImageElement[], loadedImages: any[])=> {
     locationImages.forEach(l => {
@@ -33,8 +35,11 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
     const locationFeatures = imageRef;
     const locationImageOriginalWidth = new Map<string, number>();
     const factor = ref(1);
+
+    gameEvents.subscribe(GameEventNames.Reset, () => prepareFeatures(false, true));
+    gameEvents.subscribe(GameEventNames.Restart, () => prepareFeatures(false, true));
     
-    const prepareFeatures = (reset?: boolean) => {
+    const prepareFeatures = (recalculate: boolean, reset: boolean) => {
         const loadedImages = [];
         const locationImages = Array.from(locationFeatures.value.querySelectorAll('img'));
         prepareLoadedImages(locationImages, loadedImages);
@@ -42,21 +47,23 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         const allPromises = loadedImages.map(i => i.loadPromise);
         
         Promise.all(allPromises).then(() => {
-            const mainImage = loadedImages[0].element;
+            if (recalculate) {
+                const mainImage = loadedImages[0].element;
 
-            if (reset || !mainImage.dataset.originalWidth) {
-                let naturalWidth = mainImage.naturalWidth;
-                
-                if (!naturalWidth) {
-                    naturalWidth = locationImageOriginalWidth[game.value.currentLocation.id];
-                } else {
-                    locationImageOriginalWidth[game.value.currentLocation.id] = naturalWidth;
+                if (reset || !mainImage.dataset.originalWidth) {
+                    let naturalWidth = mainImage.naturalWidth;
+
+                    if (!naturalWidth) {
+                        naturalWidth = locationImageOriginalWidth[game.value.currentLocation.id];
+                    } else {
+                        locationImageOriginalWidth[game.value.currentLocation.id] = naturalWidth;
+                    }
+
+                    mainImage.dataset.originalWidth = naturalWidth;
                 }
-                
-                mainImage.dataset.originalWidth = naturalWidth;
-            }
 
-            factor.value = mainImage.width / parseInt(mainImage.dataset.originalWidth);
+                factor.value = mainImage.width / parseInt(mainImage.dataset.originalWidth);
+            }
             
             // Resize item images
             loadedImages.slice(1).map(l => l.element).forEach(i => {
@@ -151,9 +158,10 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         }
         
         const combinationAction = getCombinationAction();
-        const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
-        const existingSymbols = Array.from(imageRef.value.querySelectorAll('.combination-symbol'));
-        existingSymbols.forEach(s => {
+        const areas = Array.from(locationFeatures.value?.querySelectorAll('area'));
+        const existingSymbols = Array.from(imageRef.value?.querySelectorAll('.combination-symbol'));
+        
+        existingSymbols?.forEach(s => {
             const symbolImage = s as HTMLImageElement;
             symbolImage.onclick = null;
             imageRef.value.removeChild(symbolImage);
@@ -163,7 +171,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
             return;
         }
 
-        areas.forEach(a => {
+        areas?.forEach(a => {
             const coords = a.dataset.imageCoords?.split(',').map(c => parseInt(c));
 
             if (!coords || !coords.length) {
@@ -195,8 +203,12 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>){
         });
     }
 
+    // watch(() => game.value.currentLocation, () => {
+    //     prepareFeatures(false, true);
+    // });
+    
     window.onresize = () => {
-        prepareFeatures();
+        prepareFeatures(true, false);
         
         // We need a timeout here to allow the DOM to update so we can get the updated coordinates for
         // the symbols from the area data attributes.

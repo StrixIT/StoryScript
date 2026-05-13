@@ -2,6 +2,8 @@ import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {computed, Ref, ref, watch} from "vue";
 import {IMap} from "storyScript/Interfaces/maps/map.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
+import {GameEventNames} from "storyScript/gameEventNames.ts";
 
 export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef: Ref<HTMLDialogElement>) {
     const visible: string = 'visible';
@@ -24,6 +26,9 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
     const mapDialog = mapDialogRef;
     const currentMap = mapImageRef;
     const currentFullScreenMap = ref<HTMLImageElement>(null);
+
+    gameEvents.subscribe(GameEventNames.Reset, () => navigateMap(map.value, currentMap.value, false));
+    gameEvents.subscribe(GameEventNames.Restart, () => navigateMap(map.value, currentMap.value, false));
 
     watch(() => location.value, () => {
         navigateMap(map.value, currentMap.value, false);

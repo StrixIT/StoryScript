@@ -31,6 +31,8 @@ import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
 import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
+import {gameEvents} from "storyScript/gameEvents.ts";
+import {GameEventNames} from "storyScript/gameEventNames.ts";
 
 export class GameService implements IGameService {
     constructor
@@ -44,6 +46,8 @@ export class GameService implements IGameService {
         private readonly _game: IGame,
         private readonly _texts: IInterfaceTexts,
     ) {
+        gameEvents.register(GameEventNames.Reset);
+        gameEvents.register(GameEventNames.Restart);
     }
     
     initDemo = (demoConfig: IDemoMode) => {
@@ -143,6 +147,8 @@ export class GameService implements IGameService {
         if (this._game.party?.currentLocationId) {
             this._game.commands.go(this._game.party.currentLocationId, false);
         }
+        
+        gameEvents.publish(GameEventNames.Reset);
     }
 
     startNewGame = (characterData: ICreateCharacter): void => {
@@ -168,6 +174,7 @@ export class GameService implements IGameService {
     restart = (skipIntro?: boolean): void => {
         this._dataService.remove(GameStateSave);
         this.init(true, skipIntro);
+        gameEvents.publish(GameEventNames.Restart);
     }
 
     loadGame = (name: string): void => {

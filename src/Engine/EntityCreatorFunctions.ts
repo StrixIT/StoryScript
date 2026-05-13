@@ -172,8 +172,8 @@ export function InitEntityCollection(entity: any, property: string) {
                 removeEntity(originalScope, originalFunction, entity, property, deletedEntity))
         });
 
-        gameEvents.register(`add-${entity.type}-${property}`, false);
-        gameEvents.register(`delete-${entity.type}-${property}`, false);
+        gameEvents.register(`add-${entity.type}-${property}`);
+        gameEvents.register(`delete-${entity.type}-${property}`);
     }
 }
 

@@ -8,7 +8,7 @@
         {{ texts.openFullScreenMap }}
       </span>
       <span v-if="markerKey" class="show-marker-instructions" @click="showMarkersOnTouch()">
-        {{ isTouchDevice ? texts.format(texts.pressToShowMarkers, [markerKey]) : texts.touchToShowMarkers }}
+        {{ isTouchDevice ? texts.touchToShowMarkers : texts.format(texts.pressToShowMarkers, [markerKey]) }}
       </span>
     </p>
     <img ref="map-element" :alt="map.name" :src="`resources/${map.mapImage}`" class="map-image" @load="showMap()">

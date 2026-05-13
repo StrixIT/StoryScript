@@ -3,7 +3,7 @@
     <div class="box-title" v-html="texts.format(texts.youAreHere, [location.name])"></div>
     <div id="visual-features" ref="location-features">
       <img :alt="location.name" :src="`resources/${location.features.collectionPicture}`" :usemap="'#' + location.id"
-           @load="prepareFeatures(true)">
+           @load="prepareFeatures(true, true)">
       <map :name="location.id">
         <area v-for="feature of location.features" :id="`feature-area-${feature.id}`" :alt="feature.name"
               :coords="feature.coords" :shape="feature.shape"
@@ -21,7 +21,7 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {computed, useTemplateRef} from "vue";
+import {computed, onUpdated, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
 import {useVisualFeatures} from "ui/Composables/VisualFeatures.ts";
 
@@ -31,5 +31,9 @@ const {texts} = store.services;
 const location = computed(() => game.value.currentLocation);
 
 const {prepareFeatures, getFeatureCoordinates, setCursor} = useVisualFeatures(useTemplateRef('location-features'));
+
+onUpdated(() => {
+  prepareFeatures(false, true);
+});
 
 </script>

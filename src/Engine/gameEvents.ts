@@ -5,12 +5,8 @@ export class GameEvents implements IGameEvents {
     private readonly _eventHandlers = new Map<string, ((game: IGame, eventArguments: any) => void)[]>();
     private _game: IGame;
     
-    register = (eventName: string, throwWhenAlreadyRegistered: boolean = true): void => {
+    register = (eventName: string): void => {
         if (this._eventHandlers.has(eventName)) {
-            if (throwWhenAlreadyRegistered) {
-                throw new Error(`Event ${eventName} has already been registered!`);
-            }
-            
             return;
         }
         
@@ -34,7 +30,7 @@ export class GameEvents implements IGameEvents {
         });
     }
     
-    publish = (eventName: string, eventData: any): void => {
+    publish = (eventName: string, eventData?: any): void => {
         if (!this._eventHandlers.has(eventName)) {
             throw new Error(`Event ${eventName} has not been registered!`);
         }
