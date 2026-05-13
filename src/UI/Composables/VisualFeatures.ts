@@ -230,9 +230,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     const setCursorStyle = (element: HTMLElement, regular: boolean) => {
         let style = getComputedStyle(element);
         let cursorStyle = '';
-
-        //cursor: url($resources/default.png) 25 25, auto;
-
+        
         if (!regular) {
             cursorStyle = style.cursor.replace('resources/default.png', `resources/${actionName.value}.png`);
         }
