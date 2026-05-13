@@ -19,7 +19,7 @@
   </dialog>
 </template>
 <script lang="ts" setup>
-import {onMounted, onUpdated, ref, useTemplateRef} from "vue";
+import {useTemplateRef} from "vue";
 import {useLocationMap} from "ui/Composables/LocationMap.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {isTouchDevice} from "../../../../constants.ts";
@@ -28,31 +28,23 @@ const store = useStateStore();
 const {texts} = store.services;
 const {
   map,
-  prepareMap,
   showMap,
   toggleFullScreen,
   toggleTouchMarkersVisible
 } = useLocationMap(useTemplateRef('map-element'), useTemplateRef('map-dialog'));
 
 const markerKey = map.value.showMarkersOnKeyPress ?
+    // When an empty value is specified use the space key. Use the key specified otherwise.
     map.value.showMarkersOnKeyPress.trim()
         ? map.value.showMarkersOnKeyPress : 'space'
     : null;
 
 const showMarkersOnTouch = () => {
-  if (!isTouchDevice){
+  if (!isTouchDevice) {
     return;
   }
 
   toggleTouchMarkersVisible();
 }
-
-onMounted(() => {
-  prepareMap(map.value, false);
-});
-
-onUpdated(() => {
-  prepareMap(map.value, true);
-});
 
 </script>

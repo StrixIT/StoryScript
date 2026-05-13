@@ -7,13 +7,13 @@
       <map :name="location.id">
         <area v-for="feature of location.features" :id="`feature-area-${feature.id}`" :alt="feature.name"
               :coords="feature.coords" :shape="feature.shape"
-              href="#" @click="game.combinations.tryCombine(feature)" @mouseout="e => setCursor(e, true)"
+              href="#" @click="e => tryCombine(e, feature)" @mouseout="e => setCursor(e, true)"
               @mouseover="e => setCursor(e, false)"/>
       </map>
       <div v-for="feature of location.features">
         <img v-if="feature.picture" :id="`feature-${feature.id}`" :alt="feature.name"
              :src="`resources/${feature.picture}`" :style="getFeatureCoordinates(feature)"
-             class="feature-picture" @click="game.combinations.tryCombine(feature)"
+             class="feature-picture" @click="e => tryCombine(e, feature)"
              @mouseout="e => setCursor(e, true)" @mouseover="e => setCursor(e, false)"/>
       </div>
     </div>
@@ -21,7 +21,7 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
-import {computed, onUpdated, useTemplateRef} from "vue";
+import {computed, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
 import {useVisualFeatures} from "ui/Composables/VisualFeatures.ts";
 
@@ -30,10 +30,6 @@ const {game} = storeToRefs(store);
 const {texts} = store.services;
 const location = computed(() => game.value.currentLocation);
 
-const {initFeatures, prepareFeatures, getFeatureCoordinates, setCursor} = useVisualFeatures(useTemplateRef('location-features'));
-
-onUpdated(() => {
-  prepareFeatures();
-});
+const {initFeatures, getFeatureCoordinates, setCursor, tryCombine} = useVisualFeatures(useTemplateRef('location-features'));
 
 </script>

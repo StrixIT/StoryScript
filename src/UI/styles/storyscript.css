@@ -603,3 +603,7 @@ dialog {
 #visual-features > img {
     max-width: 100%;
 }
+
+#visual-features area, #visual-features img.feature-picture {
+    cursor: url($resources/default.png) 25 25, auto;
+}

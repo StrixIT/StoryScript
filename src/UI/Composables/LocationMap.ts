@@ -1,6 +1,6 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {computed, Ref, ref, watch} from "vue";
+import {computed, onMounted, onUpdated, Ref, ref, watch} from "vue";
 import {IMap} from "storyScript/Interfaces/maps/map.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
 import {GameEventNames} from "storyScript/gameEventNames.ts";
@@ -37,7 +37,15 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
             navigateMap(map.value, currentFullScreenMap.value, false);
         }
     });
-    
+
+    onMounted(() => {
+        prepareMap(map.value, false);
+    });
+
+    onUpdated(() => {
+        prepareMap(map.value, true);
+    });
+
     const toggleTouchMarkersVisible = () => {
         touchMarkersVisible.value = !touchMarkersVisible.value;
 
@@ -137,7 +145,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
                     setMarkerVisibility(labelElements, markerElements, visible);
                 }
             };
-            
+
             mapContainer.onkeyup = e => {
                 if (e.key === map.value.showMarkersOnKeyPress) {
                     setMarkerVisibility(labelElements, markerElements, hidden);
@@ -145,7 +153,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
             }
         }
     }
-    
+
     function showMap() {
         navigateMap(map.value, currentMap.value, true);
     }

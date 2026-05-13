@@ -1,4 +1,4 @@
-import {computed, Ref, ref, watch} from "vue";
+import {computed, onUpdated, Ref, ref, watch} from "vue";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {compareString} from "storyScript/utilityFunctions.ts";
 import {useStateStore} from "ui/StateStore.ts";
@@ -7,7 +7,7 @@ import {isTouchDevice} from "../../../constants.ts";
 
 const prepareLoadedImages = (locationImages: HTMLImageElement[]) => {
     const loadedImages: { element: HTMLImageElement, loadPromise: Promise<void> }[] = [];
-    
+
     locationImages.forEach(l => {
         let promiseResolve: () => {};
 
@@ -26,7 +26,7 @@ const prepareLoadedImages = (locationImages: HTMLImageElement[]) => {
             loadPromise: loadPromise
         });
     });
-    
+
     return loadedImages;
 }
 
@@ -52,17 +52,21 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         const mainImage = locationFeatures.value?.querySelector('img');
         factor.value = mainImage.width / locationImageOriginalWidth.get(game.value.currentLocation.id);
     }
-    
+
     window.onresize = () => {
         calculateFactor();
         prepareFeatures();
     };
 
+    onUpdated(() => {
+        prepareFeatures();
+    });
+
     watch(() => game.value.combinations.activeCombination, () => setCombinationSymbols());
-    
+
     const initFeatures = () => {
         const mainImage = locationFeatures.value?.querySelector('img');
-        
+
         if (!locationImageOriginalWidth.has(locationId.value)) {
             locationImageOriginalWidth.set(locationId.value, mainImage.naturalWidth);
         }
@@ -70,7 +74,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         calculateFactor();
         prepareFeatures();
     }
-    
+
     const prepareFeatures = () => {
         const locationImages = Array.from(locationFeatures.value?.querySelectorAll('img.feature-picture') ?? []) as HTMLImageElement[];
         const loadedImages = prepareLoadedImages(locationImages);
@@ -85,7 +89,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
                 if (!featureImageOriginalDimensions.has(imageKey)) {
                     featureImageOriginalDimensions.set(imageKey, [i.naturalWidth, i.naturalHeight]);
                 }
-                
+
                 const originalDimensions = featureImageOriginalDimensions.get(imageKey);
                 i.width = Math.round(originalDimensions[0] * factor.value);
                 i.height = Math.round(originalDimensions[1] * factor.value);
@@ -97,15 +101,16 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             areas.forEach(a => {
                 const featureId = a.id.split('-')[2];
                 const areaKey = `${locationId.value}-${featureId}`;
-                
+
                 if (!areaOriginalCoordinates.has(areaKey)) {
                     areaOriginalCoordinates.set(areaKey, a.coords);
                 }
-                
+
                 const originalCoords = areaOriginalCoordinates.get(areaKey);
                 const calculatedCoords = originalCoords.split(',').map(c => Math.round(parseInt(c.trim()) * factor.value));
                 a.coords = calculatedCoords.join(',');
 
+                // Calculate the center of the area to place a symbol later on.
                 let totalX = 0, totalY = 0;
 
                 calculatedCoords.forEach((c, i) => {
@@ -158,30 +163,12 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             left: `${left}px`
         };
     }
-    
-    const setCursor = (e: MouseEvent, regular: boolean) => {
-        if (isTouchDevice) {
-            return;
-        }
-
-        if (!actionName.value) {
-            return;
-        }
-
-        const element = e.target as HTMLAreaElement;
-
-        if (regular) {
-            element.classList.remove(actionName.value);
-        } else {
-            element.classList.add(actionName.value);
-        }
-    }
 
     const setCombinationSymbols = () => {
-        // if (!isTouchDevice) {
-        //     return;
-        // }
-        
+        if (!isTouchDevice) {
+            return;
+        }
+
         const areas = Array.from(locationFeatures.value?.querySelectorAll('area'));
         const existingSymbols = Array.from(imageRef.value?.querySelectorAll('.combination-symbol'));
 
@@ -202,7 +189,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
                 return;
             }
 
-            const featureId = a.id.replace('feature-area-', '');
+            const featureId = a.id.split('f-')[2];
             const feature = game.value.currentLocation.features.get(featureId);
 
             if (!feature) {
@@ -227,11 +214,44 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         });
     }
 
+    const setCursor = (e: MouseEvent, regular: boolean) => {
+        if (isTouchDevice) {
+            return;
+        }
+
+        if (!actionName.value) {
+            return;
+        }
+        
+        const element = e.target as HTMLAreaElement;
+        setCursorStyle(element, regular);
+    }
+    
+    const setCursorStyle = (element: HTMLElement, regular: boolean) => {
+        let style = getComputedStyle(element);
+        let cursorStyle = '';
+
+        //cursor: url($resources/default.png) 25 25, auto;
+
+        if (!regular) {
+            cursorStyle = style.cursor.replace('resources/default.png', `resources/${actionName.value}.png`);
+        }
+
+        element.style.cursor = cursorStyle;
+    }
+    
+    const tryCombine = (eventOrElement: PointerEvent | HTMLElement, feature: IFeature) => {
+        game.value.combinations.tryCombine(feature);
+        const element = (eventOrElement as PointerEvent).target as HTMLElement ?? eventOrElement as HTMLElement;
+        setCursorStyle(element, true);
+    }
+
     return {
         locationFeatures,
         initFeatures,
         prepareFeatures,
         getFeatureCoordinates,
-        setCursor
+        setCursor,
+        tryCombine
     }
 }
