@@ -21,7 +21,9 @@ export class CombinationService implements ICombinationService {
         this._combinationActions = this._rules.combinations?.combinationActions ?? [];
     }
 
-    combinationActions: ICombinationAction[] = this._combinationActions;
+    get combinationActions(): ICombinationAction[] {
+        return this._combinationActions;
+    }
 
     getCombineClass = (tool: ICombinable): string => {
         let className: string;

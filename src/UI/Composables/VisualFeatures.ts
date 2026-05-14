@@ -74,15 +74,6 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
 
         calculateFactor();
         prepareFeatures();
-
-        const symbolElements = Array.from(locationFeatures.value.querySelectorAll('area, img.feature-picture')) as HTMLElement[];
-
-        // Set the cursor style for the symbol elements to the default image here. This way, we don't need to use
-        // the game.css, which is a problem anyway because vite won't build when it can't find the image. And we
-        // don't want to include a default image, this is just a placeholder.
-        symbolElements.forEach(e => {
-            e.style.cursor = defaultPointerStyle.value;
-        })
     }
 
     const prepareFeatures = () => {
@@ -136,6 +127,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             // the symbols from the area data attributes.
             setTimeout(() => {
                 setCombinationSymbols();
+                setElementCursorStyle();
             });
         });
     }
@@ -221,6 +213,17 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             image.classList.add('combination-symbol');
             image.onclick = () => game.value.combinations.tryCombine(feature);
             imageRef.value.appendChild(image);
+        });
+    }
+    
+    const setElementCursorStyle = () => {
+        const symbolElements = Array.from(locationFeatures.value.querySelectorAll('area, img.feature-picture')) as HTMLElement[];
+
+        // Set the cursor style for the symbol elements to the default image here. This way, we don't need to use
+        // the game.css, which is a problem anyway because vite won't build when it can't find the image. And we
+        // don't want to include a default image, this is just a placeholder.
+        symbolElements.forEach(e => {
+            e.style.cursor = defaultPointerStyle.value;
         });
     }
 
