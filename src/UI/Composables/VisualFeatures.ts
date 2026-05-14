@@ -189,7 +189,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
                 return;
             }
 
-            const featureId = a.id.split('f-')[2];
+            const featureId = a.id.split('-')[2];
             const feature = game.value.currentLocation.features.get(featureId);
 
             if (!feature) {

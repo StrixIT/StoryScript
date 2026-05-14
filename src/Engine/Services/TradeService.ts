@@ -14,14 +14,15 @@ import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 import {gameEvents} from "storyScript/gameEvents.ts";
 import {IAction} from "storyScript/Interfaces/action.ts";
-import {GameEventNames} from "storyScript/gameEventNames.ts";
+
+const tradeEvent = 'trade';
 
 export class TradeService implements ITradeService {
     private _activeTrader: IPerson;
 
     constructor(private readonly _itemService: IItemService, private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts, private readonly _definitions: IDefinitions) {
-        gameEvents.register(GameEventNames.Trade);
-        gameEvents.subscribe(GameEventNames.Trade, (game,  data: [string, IAction]) => {
+        gameEvents.register(tradeEvent);
+        gameEvents.subscribe(tradeEvent, (game, data: [string, IAction]) => {
             const trader = game.currentLocation.trade.find(t => t.id === data[0]);
             this.trade(trader);
         });

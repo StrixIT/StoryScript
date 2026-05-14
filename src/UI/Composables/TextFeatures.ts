@@ -31,7 +31,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
                 const feature = game.value.currentLocation.features.get(e.getAttribute('name'));
 
                 if (feature) {
-                    game.value.currentLocation.description = game.value.currentLocation.description.replace(new RegExp('<feature name="' + feature.id + '">\s*<\/feature>'), '<feature name="' + feature.id + '">' + addHtmlSpaces(feature.description) + '<\/feature>');
+                    game.value.currentLocation.description = game.value.currentLocation.description.replace(new RegExp('<feature name="' + feature.id + '">\s*<\/feature>', 'i'), '<feature name="' + feature.id + '">' + addHtmlSpaces(feature.description) + '<\/feature>');
                 }
             });
 
