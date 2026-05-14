@@ -7,11 +7,11 @@ import {getDemoMode} from "./demoMode.ts";
 export function Rules(): IRules {
     return {
         setup: {
-            titleScreen: {
-                showTitleScreen: true,
-                transitionDelay: '2',
-                getDemoMode: getDemoMode
-            },
+            // titleScreen: {
+            //     showTitleScreen: true,
+            //     transitionDelay: '2',
+            //     getDemoMode: getDemoMode
+            // },
             playList: {
                 'Contemplate_the_stars.mp3': [GameState.Play]
             },
