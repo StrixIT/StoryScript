@@ -2,26 +2,25 @@ import {ILocalStorageService} from "../../Engine/Interfaces/services/localStorag
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {buildEntities} from "storyScript/EntityCreatorFunctions.ts";
 import {importAssets} from "storyScript/run.ts";
-import {CustomTexts, Rules} from "testGame/types.ts";
+import {Rules} from "./assets/MyRolePlayingGame/rules.ts";
+import {CustomTexts} from "./assets/MyRolePlayingGame/customTexts.ts";
 import {addArrayExtensions, addFunctionExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
 
 export const initServiceFactory = (): ServiceFactory => {
     const modules = import.meta.glob([
-        'testGame/actions/**/*.ts',
-        'testGame/features/**/*.ts',
-        'testGame/items/**/*.ts',
-        'testGame/enemies/**/*.ts',
-        'testGame/persons/**/*.ts',
-        'testGame/quests/**/*.ts',
-        'testGame/locations/**/*.ts',
-        'testGame/maps/**/*.ts'
+
+        './assets/MyRolePlayingGame/locations/**/*.ts',
+        './assets/MyRolePlayingGame/enemies/**/*.ts',
+        './assets/MyRolePlayingGame/items/**/*.ts',
+        './assets/MyRolePlayingGame/persons/**/*.ts',
+        './assets/MyRolePlayingGame/quests/**/*.ts',
     ], {eager: true});
 
     addFunctionExtensions();
     addArrayExtensions();
     const definitions = importAssets(modules);
     const registeredEntities = buildEntities(definitions);
-    new ServiceFactory('MyRolePlayingGame', definitions, registeredEntities, Rules(), CustomTexts());
+    new ServiceFactory('MyTestGame', definitions, registeredEntities, Rules(), CustomTexts());
     let factory = ServiceFactory.GetInstance();
     factory.init();
     return factory;

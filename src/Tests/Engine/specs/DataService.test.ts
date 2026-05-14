@@ -7,7 +7,7 @@ import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronize
 import {getStorageServiceMock} from '../helpers';
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 
-const TESTGAMEPREFIX = '_TestGame';
+const TestGamePrefix = '_TestGame';
 
 describe("DataService", function () {
 
@@ -36,7 +36,7 @@ function getService(): { dataService: IDataService, storageService: ILocalStorag
         }
     }
     return {
-        dataService: new DataService(storageService, serializer, synchronizerMock, <IRules>{}, TESTGAMEPREFIX),
+        dataService: new DataService(storageService, serializer, synchronizerMock, <IRules>{}, TestGamePrefix),
         storageService
     };
 }

@@ -10,7 +10,7 @@ export const getDemoMode = () => {
         startDelay: 1000,
         party: {
             characters: [
-                {
+                <any>{
                     name: 'Rutger',
                     hitpoints: 10,
                     currentHitpoints: 10,

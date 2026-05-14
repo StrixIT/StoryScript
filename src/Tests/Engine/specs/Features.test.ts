@@ -1,13 +1,12 @@
-import { describe, expect, test } from "vitest";
-import { Location } from "../../../Engine/EntityCreatorFunctions";
-import { addArrayExtensions } from "../../../Engine/arrayAndFunctionExtensions";
+import {describe, expect, test} from "vitest";
+import {Location} from "storyScript/EntityCreatorFunctions";
+import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions";
 
 describe("Features", function () {
 
     test("should add coordinates to inline feature", function () {
         addArrayExtensions();
-        const locationDefinition = function Test() 
-        { 
+        const locationDefinition = function Test() {
             return {
                 name: 'Test',
                 description: `<visual-features img="fallenhero.jpg">

@@ -1,26 +1,27 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
 import {StateProperties} from "storyScript/stateProperties.ts";
-import {Bandit} from "../../../Games/MyRolePlayingGame/enemies/bandit.ts";
-import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
-import {IEnemy} from "../../../Games/MyRolePlayingGame/interfaces/enemy.ts";
-import {IKey} from "../../../Games/MyRolePlayingGame/interfaces/key.ts";
-import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
-import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
 import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
-import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
-import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
-import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
-import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
 import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
-import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
-import {Journal} from "../../../Games/MyRolePlayingGame/quests/journal.ts";
-import {IGroupableItem} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
+import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
 import {initServiceFactory} from "../helpers.ts";
+import {IEnemy} from "storyScript/Interfaces/enemy.ts";
+import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit.ts";
+import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey.ts";
+import {IKey} from "storyScript/Interfaces/key.ts";
+import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots.ts";
+import {Start} from "../assets/MyRolePlayingGame/locations/start.ts";
+import {Garden} from "../assets/MyRolePlayingGame/locations/Garden.ts";
+import {Basement} from "../assets/MyRolePlayingGame/locations/Basement.ts";
+import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad.ts";
+import {Friend} from "../assets/MyRolePlayingGame/persons/Friend.ts";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
+import {Journal} from "../assets/MyRolePlayingGame/quests/journal.ts";
+import {IParty} from "storyScript/Interfaces/party.ts";
+import {IItem} from "storyScript/Interfaces/item.ts";
 
 const startLocationSkeleton = {
     "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],
@@ -211,7 +212,7 @@ describe("DataSynchronizer", () => {
     test("should keep updated property values on the skeleton", function () {
         const newName = 'Fierce Bandit';
         const newAttack = '1d8';
-        const skeleton = <IEnemy>{id: 'bandit', name: newName, attack: newAttack};
+        const skeleton = {id: 'bandit', name: newName, attack: newAttack};
         skeleton['type'] = 'enemy';
         const bandit = {...Bandit()};
 
@@ -344,7 +345,7 @@ describe("DataSynchronizer", () => {
     });
 
     test("should restore Party data with grouped items", function () {
-        const dagger = <IGroupableItem><any>{
+        const dagger = <IGroupableItem<IItem>><any>{
             id: 'dagger',
             type: 'item',
             name: "Dagger",
@@ -364,7 +365,7 @@ describe("DataSynchronizer", () => {
         synchronizer.synchronizeEntityData(skeleton);
         expect(skeleton.characters[0].name).toBe('Test');
         expect(skeleton.characters[0].items.length).toBe(1);
-        const item = skeleton.characters[0].items[0] as IGroupableItem;
+        const item = skeleton.characters[0].items[0] as IGroupableItem<IItem>;
         expect(item.members.length).toBe(1);
     });
 

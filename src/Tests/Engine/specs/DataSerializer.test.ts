@@ -1,28 +1,31 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
-import {Garden} from "../../../Games/MyRolePlayingGame/locations/Garden.ts";
-import {IGame} from "../../../Games/MyRolePlayingGame/interfaces/game.ts";
 import {HelperService} from "storyScript/Services/HelperService.ts";
-import {IParty} from "../../../Games/MyRolePlayingGame/interfaces/party.ts";
 import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
-import {ICompiledLocation} from "../../../Games/MyAdventureGame/interfaces/location.ts";
 import {LocationService} from "storyScript/Services/LocationService.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {Character, IGroupableItem} from "../../../Games/MyRolePlayingGame/types.ts";
-import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {StateProperties} from "storyScript/stateProperties.ts";
-import {BasementKey} from "../../../Games/MyRolePlayingGame/items/basementKey.ts";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {DirtRoad} from "../../../Games/MyRolePlayingGame/locations/DirtRoad.ts";
-import {Basement} from "../../../Games/MyRolePlayingGame/locations/Basement.ts";
-import {Library} from "../../../Games/MyRolePlayingGame/locations/Library.ts";
-import {Start} from "../../../Games/MyRolePlayingGame/locations/start.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
-import {Friend} from "../../../Games/MyRolePlayingGame/persons/Friend.ts";
 import {ConversationService} from "storyScript/Services/ConversationService.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {initServiceFactory} from "../helpers.ts";
+import {Basement} from "../assets/MyRolePlayingGame/locations/Basement.ts";
+import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad.ts";
+import {Garden} from "../assets/MyRolePlayingGame/locations/Garden.ts";
+import {Library} from "../assets/MyRolePlayingGame/locations/Library.ts";
+import {Start} from "../assets/MyRolePlayingGame/locations/start.ts";
+import {IGame} from "storyScript/Interfaces/game.ts";
+import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey.ts";
+import {IParty} from "storyScript/Interfaces/party.ts";
+import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
+import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
+import {IItem} from "storyScript/Interfaces/item.ts";
+import {Friend} from "../assets/MyRolePlayingGame/persons/Friend.ts";
+import {Character} from "../assets/MyRolePlayingGame/character.ts";
+import {Passage} from "../assets/MyAdventureGame/locations/passage.ts";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],
@@ -226,6 +229,27 @@ const partyWithCharacter = {
     "currentLocationId": "start"
 };
 
+const locationWithItemAsFeature = {
+    "passage": {
+        "features": [{
+            "combinations": {"combine": [{"combinationType": "Touch"}]},
+            "type": "item",
+            "id": "herbs"
+        }, {
+            "combinations": {
+                "combine": [{"combinationType": "Look"}, {
+                    "combinationType": "Use",
+                    "tool": "HealingPotion"
+                }]
+            }, "type": "feature", "id": "woundedwarrior"
+        }, {"combinations": {"combine": [{"combinationType": "Walk"}]}, "type": "feature", "id": "passageback"}],
+        "features_arrProps": {"collectionPicture": "fallenhero.jpg"},
+        "type": "location",
+        "id": "passage",
+        "hasVisited": true
+    }
+};
+
 describe("DataSerializer", () => {
 
     let serviceFactory: ServiceFactory;
@@ -339,7 +363,7 @@ describe("DataSerializer", () => {
     });
 
     test("should serialize character data with grouped items present", function () {
-        const dagger = <IGroupableItem><any>{
+        const dagger = <IGroupableItem<IItem>><unknown>{
             id: 'dagger',
             type: 'item',
             name: "Dagger",
@@ -386,7 +410,7 @@ describe("DataSerializer", () => {
 
     test("should serialize added events with added flag", function () {
         const garden = Garden();
-        garden.enterEvents.add(['Test', (game) => {
+        garden.enterEvents.add(['Test', (game: IGame) => {
             return true;
         }]);
         const serialized = serializer.createSerializableClone(garden);
@@ -470,6 +494,13 @@ describe("DataSerializer", () => {
         const serializedConversationProperties = Object.keys(result.conversation);
         expect(serializedConversationProperties).toHaveLength(1)
         expect(serializedConversationProperties[0]).toBe("actions");
+    });
+
+
+    test("should not serialize pristine values for items used as features", function () {
+        const location = Passage();
+        const result = serializer.createSerializableClone(location);
+        expect(result).toEqual(locationWithItemAsFeature);
     });
 
 });

@@ -43,7 +43,7 @@ describe('ServiceFactory', function () {
 
         const soundService = factory.GetSoundService();
         expect(soundService).not.toBeNull();
-        
+
         const texts = factory.GetTexts();
         expect(texts).not.toBeNull();
 

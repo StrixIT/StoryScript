@@ -11,13 +11,13 @@ import {
     IRules
 } from 'storyScript/Interfaces/storyScript';
 import {CharacterService} from 'storyScript/Services/CharacterService';
-import {Rules} from '../../../Games/MyRolePlayingGame/rules.ts';
 import {ICharacterRules} from 'storyScript/Interfaces/rules/characterRules';
 import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions';
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
-import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
+import {Rules} from "../assets/MyRolePlayingGame/types.ts";
 
 describe("CharacterService", function () {
 
@@ -489,8 +489,8 @@ describe("CharacterService", function () {
             expect(restoredCharacter.equipment.rightHand).toBe(restoredCharacter.equipment.leftHand);
         });
     });
-    
-    describe("Equipment slots", function() {
+
+    describe("Equipment slots", function () {
         test("should return false when an equipment slot is not used", function () {
             const character = <ICharacter>{
                 equipment: {

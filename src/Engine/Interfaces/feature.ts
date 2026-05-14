@@ -1,5 +1,4 @@
 ﻿import {ICombinable} from './combinations/combinable';
-import {IGame} from "testGame/interfaces/game.ts";
 
 /**
  * A feature of a location, which can be anything the player can interact with using combinations.

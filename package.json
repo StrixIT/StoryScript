@@ -29,7 +29,7 @@
         "scq": "node createAsset.js quest",
         "scm": "node createAsset.js map",
         "start": "vite",
-        "test": "vitest --ui",
+        "test": "node ./src/Tests/Engine/beforeTests.js && vitest --ui",
         "publish": "vite build && node postbuild.js",
         "electron-start": "vite build && electron .",
         "electron-publish": "vite build && node postbuild.js && electron-builder"

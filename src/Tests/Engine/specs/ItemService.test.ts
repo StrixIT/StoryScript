@@ -1,16 +1,17 @@
 import {beforeAll, describe, expect, test} from "vitest";
 import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
-import {LeatherBoots} from "../../../Games/MyRolePlayingGame/items/leatherBoots.ts";
-import {Journal} from "../../../Games/MyRolePlayingGame/items/journal.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
 import {EquipmentType} from "storyScript/Interfaces/enumerations/equipmentType.ts";
-import {Sword} from "../../../Games/MyRolePlayingGame/items/sword.ts";
 import {IGame} from "storyScript/Interfaces/game.ts";
-import {Rules} from "../../../Games/MyRolePlayingGame/rules.ts";
 import {ItemService} from "storyScript/Services/ItemService.ts";
 import {DefaultTexts} from "storyScript/defaultTexts.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
-import {IItem, IGroupableItem} from "../../../Games/MyRolePlayingGame/interfaces/item.ts";
+import {IItem} from "storyScript/Interfaces/item.ts";
+import {IGroupableItem} from "storyScript/Interfaces//groupableItem.ts";
+import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots.ts";
+import {Journal} from "../assets/MyRolePlayingGame/items/journal.ts";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
+import {Rules} from "../assets/MyRolePlayingGame/types.ts";
 
 describe("ItemService", function () {
 
@@ -382,7 +383,7 @@ describe("ItemService", function () {
 
         test("items of different types should NOT be groupable", function () {
             const daggerA = daggerFunc();
-            const sword = <IGroupableItem>Sword();
+            const sword = <IGroupableItem<IItem>>Sword();
             sword.id = 'sword';
             sword.isGroupable = true;
 
@@ -401,7 +402,7 @@ describe("ItemService", function () {
         test("items of different types that may be grouped together should be groupable", function () {
             const daggerA = daggerFunc();
             daggerA.groupTypes = ['sword']
-            const sword = <IGroupableItem>Sword();
+            const sword = <IGroupableItem<IItem>>Sword();
             sword.id = 'sword';
             sword.isGroupable = true;
 
@@ -416,7 +417,7 @@ describe("ItemService", function () {
             const result = service.canGroupItem(<any>character, daggerA, sword);
             expect(result).toBeTruthy();
         });
-        
+
         test("eligible items should be grouped", function () {
             const daggerA = daggerFunc();
             const daggerB = daggerFunc();
@@ -427,13 +428,13 @@ describe("ItemService", function () {
                     daggerB
                 ]
             };
-            
+
             const service = getService();
             service.groupItem(<any>character, daggerA, daggerB);
             expect(daggerA.members).toHaveLength(1);
             expect(daggerA.members[0]).toBe(daggerB);
         });
-        
+
     });
 
     test("should call the use function on an item", function () {
@@ -453,7 +454,7 @@ describe("ItemService", function () {
     });
 });
 
-const daggerFunc = (): IGroupableItem => {
+const daggerFunc = (): IGroupableItem<IItem> => {
     return {
         id: 'dagger',
         name: 'Dagger',

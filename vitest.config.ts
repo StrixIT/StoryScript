@@ -16,9 +16,10 @@ export default mergeConfig(viteConfig, defineConfig({
                 `src/Games/${gameName}/**`
             ],
             exclude: [
+                '**/*.html',
                 '**/typeExtensions.d.ts',
                 '**/defaultTexts.ts',
-                '**/[iI]nterfaces/**',
+                '**/[iI]nterfaces/**'
             ]
         }
     }
