@@ -185,6 +185,11 @@ button {
     margin: 5px 0;
 }
 
+.btn.combination-button img {
+    margin-right: 10px;
+    width: 32px;
+}
+
 #combat-win {
     text-align: center;
 }

@@ -6,14 +6,17 @@
         <li>
           <button v-for="c of combineActions"
                   :class="getCombineClass(c)"
-                  class="btn"
+                  class="btn combination-button"
                   type="button"
-                  @click="combinationService.setActiveCombination(c)">{{ c.text }}
+                  @click="combinationService.setActiveCombination(c)">
+            <img v-if="c.picture" :alt="c.text" :src="`resources/${c.picture}`"/>
+            {{ c.text }}
           </button>
         </li>
       </ul>
       <div class="col-md-12 col-lg-8">
-        <p v-if="game.combinations.combinationResult.text" class="combination-result-text" v-html="game.combinations.combinationResult.text"></p>
+        <p v-if="game.combinations.combinationResult.text" class="combination-result-text"
+           v-html="game.combinations.combinationResult.text"></p>
       </div>
     </div>
   </div>
