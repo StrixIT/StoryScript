@@ -7,7 +7,7 @@
             @click="toggleFullScreen()">
         {{ texts.openFullScreenMap }}
       </span>
-      <span v-if="markerKey" class="show-marker-instructions" @click="showMarkersOnTouch()">
+      <span v-if="markerKey" class="show-marker-instructions" @click="toggleTouchMarkersVisible()">
         {{ isTouchDevice ? texts.touchToShowMarkers : texts.format(texts.pressToShowMarkers, [markerKey]) }}
       </span>
     </p>
@@ -38,13 +38,5 @@ const markerKey = map.value.showMarkersOnKeyPress ?
     map.value.showMarkersOnKeyPress.trim()
         ? map.value.showMarkersOnKeyPress : 'space'
     : null;
-
-const showMarkersOnTouch = () => {
-  if (!isTouchDevice) {
-    return;
-  }
-
-  toggleTouchMarkersVisible();
-}
 
 </script>

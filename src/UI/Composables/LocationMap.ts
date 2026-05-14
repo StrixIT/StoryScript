@@ -2,6 +2,7 @@ import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {computed, onMounted, onUpdated, Ref, ref, watch} from "vue";
 import {IMap} from "storyScript/Interfaces/maps/map.ts";
+import {isTouchDevice} from "../../../constants.ts";
 
 export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef: Ref<HTMLDialogElement>) {
     const visible: string = 'visible';
@@ -42,6 +43,10 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
     });
 
     const toggleTouchMarkersVisible = () => {
+        if (!isTouchDevice) {
+            return;
+        }
+        
         touchMarkersVisible.value = !touchMarkersVisible.value;
 
         if (map.value.showMarkersOnKeyPress) {
@@ -98,6 +103,9 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
                 const closeToggle = mapDialog.value.getElementsByClassName('map-full-screen-toggle')[0] as HTMLSpanElement;
                 closeToggle.innerText = texts.closeFullScreenMap;
                 closeToggle.onclick = () => toggleFullScreen();
+                
+                const showMarkersToggle = (mapDialog.value.querySelector('.show-marker-instructions') as HTMLElement);
+                showMarkersToggle.onclick = () => toggleTouchMarkersVisible();
             }
 
             currentFullScreenMap.value = getMapElement(mapDialog.value);
