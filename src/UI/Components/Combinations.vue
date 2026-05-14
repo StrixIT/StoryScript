@@ -28,7 +28,7 @@ const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts, combinationService} = store.services;
 
-const combineActions = ref<ICombinationAction[]>(combinationService.getCombinationActions());
+const combineActions = ref<ICombinationAction[]>(combinationService.combinationActions);
 
 const getCombineClass = (action: ICombinationAction): string => game.value.combinations.activeCombination?.selectedCombinationAction.text === action.text ? 'btn-outline-dark' : 'btn-dark';
 

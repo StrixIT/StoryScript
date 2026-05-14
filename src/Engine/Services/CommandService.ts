@@ -27,7 +27,7 @@ export class CommandService implements ICommandService {
         private _combinationService: ICombinationService,
         private _dataService: IDataService,
         private _game: IGame) {
-        this._combinationActions = this._combinationService.getCombinationActions();
+        this._combinationActions = this._combinationService.combinationActions;
     }
 
     go = (location: (() => ILocation) | string, saveProgress?: boolean): void => {

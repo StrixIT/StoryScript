@@ -48,6 +48,7 @@ export const useStateStore = defineStore('appState', () => {
     const defaultCombination = ref<string>(null);
     const defaultCombinationImageExtension = ref<string>(null);
     const combinationSymbolDimensions = ref<{ width: number, height: number }>(null);
+    const defaultPointerStyle = ref<string>(null);
     
     const services = {
         soundService: <ISoundService>null,
@@ -169,8 +170,14 @@ export const useStateStore = defineStore('appState', () => {
     }
 
     const initCombinations = () => {
-        const defaultCombinationSymbol = services.rules.setup.getCombinationActions().find(c => c.picture)?.picture?.toLowerCase();
-        defaultCombination.value = services.rules.setup.getCombinationActions().find(c => c.isDefault)?.text?.toLowerCase();
+        const combinations = services.rules.combinations;
+        
+        if (!combinations) {
+            return;
+        }
+        
+        const defaultCombinationSymbol = combinations.combinationActions.find(c => c.picture)?.picture?.toLowerCase();
+        defaultCombination.value = combinations.combinationActions.find(c => c.isDefault)?.text?.toLowerCase();
         defaultCombinationImageExtension.value = defaultCombinationSymbol?.split('.')[1];
 
         if (defaultCombinationSymbol) {
@@ -179,6 +186,8 @@ export const useStateStore = defineStore('appState', () => {
             image.onload = () => {
                 combinationSymbolDimensions.value = {width: image.naturalWidth, height: image.naturalHeight};
             }
+
+            defaultPointerStyle.value = combinations.combinationCursorStyle ?? 'url(resources/default.png) 25 25, pointer';
         }
     };
 
@@ -201,6 +210,7 @@ export const useStateStore = defineStore('appState', () => {
         defaultCombination,
         defaultCombinationImageExtension,
         combinationSymbolDimensions,
+        defaultPointerStyle,
         initErrorHandling,
         setStoreData,
         setActiveCharacter,

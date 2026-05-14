@@ -1,15 +1,8 @@
-import {
-    IRules,
-    ICombinationAction,
-    ICreateCharacter,
-    ICharacter,
-    ICombinable,
-    GameState
-} from 'storyScript/Interfaces/storyScript';
-import { Combinations } from './combinations';
-import { IGame, Character, IEnemy, ICombatSetup } from './types';
-import {getDemoMode} from "./demoMode.ts";
+import {GameState, ICharacter, ICombinable, ICreateCharacter, IRules} from 'storyScript/Interfaces/storyScript';
+import {Combinations} from './combinations';
+import {Character, ICombatSetup, IEnemy, IGame} from './types';
 import {IActiveCombination} from "storyScript/Interfaces/combinations/activeCombination.ts";
+import {getDemoMode} from "./demoMode.ts";
 
 export function Rules(): IRules {
     return {
@@ -24,40 +17,38 @@ export function Rules(): IRules {
             },
             initGame(game: IGame) {
                 game.worldProperties.type = 'Visual'; // Set to 'Text' or 'Visual' to switch between modes.
-            },
-            getCombinationActions: (): ICombinationAction[] => {
-                return [
-                    {
-                        text: Combinations.WALK,
-                        preposition: 'to',
-                        requiresTool: false,
-                        picture: 'walk.png'
-                    },
-                    {
-                        text: Combinations.USE,
-                        preposition: 'on',
-                        picture: 'use.png'
-                    },
-                    {
-                        text: Combinations.TOUCH,
-                        requiresTool: false,
-                        picture: 'touch.png'
-                    },
-                    {
-                        text: Combinations.LOOKAT,
-                        preposition: 'at',
-                        requiresTool: false,
-                        // isDefault: true,
-                        picture: 'look.png',
-                        failText: (game: IGame, target: ICombinable, tool: ICombinable): string => { 
-                            return 'You look at the ' + target.name + '. There is nothing special about it';
-                        }
-                    }
-                ];
             }
         },
 
         combinations: {
+            combinationActions: [
+                {
+                    text: Combinations.WALK,
+                    preposition: 'to',
+                    requiresTool: false,
+                    picture: 'walk.png'
+                },
+                {
+                    text: Combinations.USE,
+                    preposition: 'on',
+                    picture: 'use.png'
+                },
+                {
+                    text: Combinations.TOUCH,
+                    requiresTool: false,
+                    picture: 'touch.png'
+                },
+                {
+                    text: Combinations.LOOKAT,
+                    preposition: 'at',
+                    requiresTool: false,
+                    // isDefault: true,
+                    picture: 'look.png',
+                    failText: (game: IGame, target: ICombinable, tool: ICombinable): string => {
+                        return 'You look at the ' + target.name + '. There is nothing special about it';
+                    }
+                }
+            ],
             success: (game: IGame, combination: IActiveCombination) => {
                 if (combination.selectedCombinationAction.text != Combinations.WALK) {
                     game.sounds.playSound('kings_quest_6_ding.mp3');
@@ -72,7 +63,7 @@ export function Rules(): IRules {
             }
         },
 
-        character: {   
+        character: {
             getSheetAttributes: (): string[] => {
                 return [
                     // Add the character attributes that you want to show on the character sheet here
@@ -100,7 +91,9 @@ export function Rules(): IRules {
                 // Implement character attack here.
 
                 if (retaliate) {
-                    game.currentLocation.enemies.filter((enemy: IEnemy) => { return enemy.currentHitpoints > 0; }).forEach(function (enemy) {
+                    game.currentLocation.enemies.filter((enemy: IEnemy) => {
+                        return enemy.currentHitpoints > 0;
+                    }).forEach(function (enemy) {
                         // Implement monster attack here
                     });
                 }

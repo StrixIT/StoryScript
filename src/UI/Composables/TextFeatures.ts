@@ -7,7 +7,7 @@ import {isTouchDevice} from "../../../constants.ts";
 
 export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const activeTriggerClass = 'trigger-active';
-    
+
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {combinationService} = store.services;
@@ -38,20 +38,22 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         // Remove the text of deleted features.
         featureArray.filter(e => e.innerHTML.trim() !== '')
             .forEach((e) => {
-                if (game.value.combinations.combinationResult.featuresToRemove.indexOf(e.getAttribute('name')) > -1) {
+                const featureName = e.getAttribute('name')?.toLowerCase();
+                
+                if (featureName && game.value.combinations.combinationResult.featuresToRemove.find(f => f === featureName)) {
                     e.innerHTML = '';
                 }
             });
 
         featureArray.forEach((e) => {
             const feature = game.value.currentLocation.features.get(e.getAttribute('name'));
-            
+
             if (feature && game.value.combinations.activeCombination?.selectedTool?.id === feature.id) {
                 return;
             }
 
             e.classList.remove('combine-active-selected', 'combine-selectable');
-            
+
             if (game.value.combinations.activeCombination) {
                 e.classList.add('combine-selectable');
             }
@@ -60,19 +62,19 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
 
     const click = (ev: PointerEvent) => {
         const triggerElement = getTriggerElement(ev.target as HTMLElement);
-        
+
         if (triggerElement && isTouchDevice) {
             const activate = !triggerElement.classList.contains(activeTriggerClass);
-            
+
             Array.from(descriptionRef.value.querySelectorAll('[data-trigger]')).forEach((el) => {
                 toggleTrigger(el as any, false);
             });
-            
+
             toggleTrigger(triggerElement, activate);
         }
 
         const feature = getFeature(ev);
-        
+
         if (feature) {
             const result = game.value.combinations.tryCombine(feature);
             const className = combinationService.getCombineClass(feature);
@@ -92,7 +94,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         if (isTouchDevice) {
             return;
         }
-        
+
         toggleTrigger(getTriggerElement(ev?.target as HTMLElement), true);
     };
 
@@ -100,7 +102,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         if (isTouchDevice) {
             return;
         }
-        
+
         toggleTrigger(getTriggerElement(ev?.target as HTMLElement), false);
     };
 
@@ -108,7 +110,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
         if (!element) {
             return;
         }
-        
+
         const data = element.dataset
         const event = game.value.currentLocation.triggeredActions?.find(([k, _]) => k === data.trigger)?.[1];
 
@@ -128,7 +130,7 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const getFeatureElement = (ev: MouseEvent) => {
         return (ev.target as HTMLElement).closest('feature');
     }
-    
+
     const getFeature = (ev: MouseEvent): IFeature => {
         const featureElement = getFeatureElement(ev);
         const featureName = featureElement?.getAttribute('name');

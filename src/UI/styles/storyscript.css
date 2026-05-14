@@ -577,10 +577,6 @@ dialog {
     max-width: 100%;
 }
 
-#visual-features area, #visual-features img.feature-picture {
-    cursor: url($resources/default.png) 25 25, pointer;
-}
-
 @media (max-width: 991px) {
     .combination-result-text {
         margin-top: 10px;

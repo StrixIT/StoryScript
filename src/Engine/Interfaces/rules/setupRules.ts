@@ -48,12 +48,6 @@ export interface ISetupRules {
     initGame?(game: IGame): void;
 
     /**
-     * If you want to use combinations in your game, use this function to return the combination actions that
-     * your game uses (e.g. 'Look at', 'Use', etc.).
-     */
-    getCombinationActions?(): ICombinationAction[];
-
-    /**
      * Run custom code to prepare the game before entering the start location, e.g. adding game-specific
      * world properties to it.
      * @param game The game about to be started
