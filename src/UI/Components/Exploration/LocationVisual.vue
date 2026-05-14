@@ -12,8 +12,7 @@
       </map>
       <div v-for="feature of location.features">
         <img v-if="feature.picture" :id="`feature-${feature.id}`" :alt="feature.name"
-             :src="`resources/${feature.picture}`" :style="getFeatureCoordinates(feature)"
-             class="feature-picture" @click="e => tryCombine(e, feature)"
+             :src="`resources/${feature.picture}`" class="feature-picture" @click="e => tryCombine(e, feature)"
              @mouseout="e => setCursor(e, true)" @mouseover="e => setCursor(e, false)"/>
       </div>
     </div>
@@ -30,6 +29,6 @@ const {game} = storeToRefs(store);
 const {texts} = store.services;
 const location = computed(() => game.value.currentLocation);
 
-const {initFeatures, getFeatureCoordinates, setCursor, tryCombine} = useVisualFeatures(useTemplateRef('location-features'));
+const {initFeatures, setCursor, tryCombine} = useVisualFeatures(useTemplateRef('location-features'));
 
 </script>

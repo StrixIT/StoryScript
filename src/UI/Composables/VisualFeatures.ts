@@ -96,7 +96,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
                 i.height = Math.round(originalDimensions[1] * factor.value);
             });
 
-            // Reposition areas and add symbols for active combination.
+            // Reposition areas and images for features and add symbols for active combination.
             const areas = Array.from(locationFeatures.value.querySelectorAll('area'));
 
             areas.forEach(a => {
@@ -121,6 +121,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
                 const avgX = Math.round(totalX / (calculatedCoords.length / 2));
                 const avgY = Math.round(totalY / (calculatedCoords.length / 2));
                 a.dataset.imageCoords = `${avgX},${avgY}`;
+                positionFeatureImage(featureId, avgX, avgY);
             });
 
             // We need a timeout here to allow the DOM to update so we can get the updated coordinates for
@@ -132,38 +133,22 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         });
     }
 
-    const getFeatureCoordinates = (feature: IFeature): { top: string, left: string } => {
-        const coords = feature.coords.split(',');
-        let top: number, left: number;
-
-        if (compareString(feature.shape, 'poly')) {
-            const x: number[] = [], y: number[] = [];
-
-            for (let i = 0; i < coords.length; i++) {
-                const value = coords[i];
-                if (i % 2 === 0) {
-                    x.push(parseInt(value));
-                } else {
-                    y.push(parseInt(value));
-                }
-            }
-
-            left = Math.round(x.reduce(function (p, v) {
-                return (p < v ? p : v);
-            }) * factor.value);
-
-            top = Math.round(y.reduce(function (p, v) {
-                return (p < v ? p : v);
-            }) * factor.value);
-        } else {
-            left = Math.round(parseInt(coords[0]) * factor.value);
-            top = Math.round(parseInt(coords[1]) * factor.value);
+    const positionFeatureImage = (featureId: string, x: number, y: number) => {
+        if (!game.value.currentLocation.features.get(featureId)?.picture) {
+            return;
         }
-
-        return {
-            top: `${top}px`,
-            left: `${left}px`
-        };
+        
+        const featureImage = Array.from(locationFeatures.value.querySelectorAll('img.feature-picture'))
+            .find(a => a.id.split('-')[1] === featureId) as HTMLImageElement;
+        
+        if (!featureImage) {
+            return;
+        }
+        
+        const top = y - featureImage.height / 2;
+        const left = x - featureImage.width / 2;
+        featureImage.style.top = top + 'px';
+        featureImage.style.left = left + 'px';
     }
 
     const setCombinationSymbols = () => {
@@ -263,7 +248,6 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         locationFeatures,
         initFeatures,
         prepareFeatures,
-        getFeatureCoordinates,
         setCursor,
         tryCombine
     }
