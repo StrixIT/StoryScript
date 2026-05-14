@@ -15,6 +15,7 @@
 /src/Games/**/resources/*
 !/src/Games/MyAdventureGame/resources/*
 !/src/Games/MyInteractiveMap/resources/*
+!/src/Games/MyRolePlayingGame/resources/*
 
 debug.log
 package-lock.json
