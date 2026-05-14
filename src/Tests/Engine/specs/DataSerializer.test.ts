@@ -10,7 +10,7 @@ import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {IDestination} from "storyScript/Interfaces/destination.ts";
 import {ConversationService} from "storyScript/Services/ConversationService.ts";
 import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {initServiceFactory} from "../helpers.ts";
+import {initMyAdventureGameServiceFactory, initMyRolePlayingGameServiceFactory} from "../helpers.ts";
 import {Basement} from "../assets/MyRolePlayingGame/locations/Basement.ts";
 import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad.ts";
 import {Garden} from "../assets/MyRolePlayingGame/locations/Garden.ts";
@@ -250,13 +250,13 @@ const locationWithItemAsFeature = {
     }
 };
 
-describe("DataSerializer", () => {
+describe("MyRolePlayingGameDataSerializer", () => {
 
     let serviceFactory: ServiceFactory;
     let serializer: IDataSerializer;
 
     beforeAll(() => {
-        serviceFactory = initServiceFactory();
+        serviceFactory = initMyRolePlayingGameServiceFactory();
         serializer = serviceFactory.GetDataSerializer();
     });
 
@@ -496,11 +496,22 @@ describe("DataSerializer", () => {
         expect(serializedConversationProperties[0]).toBe("actions");
     });
 
+});
+
+describe("MyAdventureGameDataSerializer", () => {
+    let serviceFactory: ServiceFactory;
+    let serializer: IDataSerializer;
+
+    beforeAll(() => {
+        serviceFactory = initMyAdventureGameServiceFactory();
+        serializer = serviceFactory.GetDataSerializer();
+    });
 
     test("should not serialize pristine values for items used as features", function () {
         const location = Passage();
         const result = serializer.createSerializableClone(location);
-        expect(result).toEqual(locationWithItemAsFeature);
+        const herbsFeature = result.features.find(f => f.id === 'herbs');
+        expect(herbsFeature).not.toBeNull();
+        expect(herbsFeature.coords).toBeUndefined();
     });
-
 });

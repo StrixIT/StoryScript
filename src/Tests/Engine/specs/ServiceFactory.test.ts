@@ -1,11 +1,11 @@
 import {beforeAll, describe, expect, test} from "vitest";
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {initServiceFactory} from "../helpers.ts";
+import {initMyRolePlayingGameServiceFactory} from "../helpers.ts";
 
 describe('ServiceFactory', function () {
 
     beforeAll(() => {
-        initServiceFactory();
+        initMyRolePlayingGameServiceFactory();
     });
 
     test("should return all services", function () {

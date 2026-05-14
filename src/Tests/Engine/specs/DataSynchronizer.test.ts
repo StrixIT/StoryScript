@@ -7,7 +7,7 @@ import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
 import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
 import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
 import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
-import {initServiceFactory} from "../helpers.ts";
+import {initMyRolePlayingGameServiceFactory} from "../helpers.ts";
 import {IEnemy} from "storyScript/Interfaces/enemy.ts";
 import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit.ts";
 import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey.ts";
@@ -196,7 +196,7 @@ describe("DataSynchronizer", () => {
     let dataSynchronizer: IDataSynchronizer;
 
     beforeAll(() => {
-        const serviceFactory = initServiceFactory();
+        const serviceFactory = initMyRolePlayingGameServiceFactory();
         dataSerializer = serviceFactory.GetDataSerializer();
         dataSynchronizer = serviceFactory.GetDataSynchronizer();
     });

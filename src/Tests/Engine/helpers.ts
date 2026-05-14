@@ -2,28 +2,33 @@ import {ILocalStorageService} from "../../Engine/Interfaces/services/localStorag
 import {ServiceFactory} from "storyScript/ServiceFactory.ts";
 import {buildEntities} from "storyScript/EntityCreatorFunctions.ts";
 import {importAssets} from "storyScript/run.ts";
-import {Rules} from "./assets/MyRolePlayingGame/rules.ts";
-import {CustomTexts} from "./assets/MyRolePlayingGame/customTexts.ts";
 import {addArrayExtensions, addFunctionExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
+import { IRules, IInterfaceTexts } from "storyScript/Interfaces/storyScript.ts";
+import {Rules as MyRolePlayingGameRules } from "./assets/MyRolePlayingGame/rules.ts";
+import {CustomTexts as MyRolePlayingGameCustomTexts} from "./assets/MyRolePlayingGame/customTexts.ts";
+import {Rules as MyAdventureGameRules } from "./assets/MyAdventureGame/rules.ts";
+import {CustomTexts as MyAdventureGameCustomTexts} from "./assets/MyRolePlayingGame/customTexts.ts";
 
-export const initServiceFactory = (): ServiceFactory => {
+export const initMyRolePlayingGameServiceFactory = (): ServiceFactory => {
     const modules = import.meta.glob([
-
         './assets/MyRolePlayingGame/locations/**/*.ts',
         './assets/MyRolePlayingGame/enemies/**/*.ts',
         './assets/MyRolePlayingGame/items/**/*.ts',
         './assets/MyRolePlayingGame/persons/**/*.ts',
-        './assets/MyRolePlayingGame/quests/**/*.ts',
+        './assets/MyRolePlayingGame/quests/**/*.ts'
     ], {eager: true});
 
-    addFunctionExtensions();
-    addArrayExtensions();
-    const definitions = importAssets(modules);
-    const registeredEntities = buildEntities(definitions);
-    new ServiceFactory('MyTestGame', definitions, registeredEntities, Rules(), CustomTexts());
-    let factory = ServiceFactory.GetInstance();
-    factory.init();
-    return factory;
+    return initServiceFactory(modules, 'MyRolePlayingGame', MyRolePlayingGameRules(), MyRolePlayingGameCustomTexts());
+}
+
+export const initMyAdventureGameServiceFactory = (): ServiceFactory => {
+    const modules = import.meta.glob([
+        './assets/MyAdventureGame/locations/**/*.ts',
+        './assets/MyAdventureGame/features/**/*.ts',
+        './assets/MyAdventureGame/items/**/*.ts'
+    ], {eager: true});
+
+    return initServiceFactory(modules, 'MyAdventureGame', MyAdventureGameRules(), MyAdventureGameCustomTexts());
 }
 
 export const getStorageServiceMock = (): ILocalStorageService => {
@@ -48,4 +53,15 @@ export const getStorageServiceMock = (): ILocalStorageService => {
 export const compareId = (id: string, func: string | Function): boolean => {
     const name = (func as Function).name || func as string;
     return id.toLowerCase() === name.toLowerCase();
+}
+
+const initServiceFactory = (modules: Record<string, unknown>, gameName: string, rules: IRules, texts: IInterfaceTexts) => {
+    addFunctionExtensions();
+    addArrayExtensions();
+    const definitions = importAssets(modules);
+    const registeredEntities = buildEntities(definitions);
+    new ServiceFactory(gameName, definitions, registeredEntities, rules, texts);
+    let factory = ServiceFactory.GetInstance();
+    factory.init();
+    return factory;
 }
