@@ -5,6 +5,7 @@ import {SerializationData} from "storyScript/Services/serializationData.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
 import {DescriptionProperty, IdProperty} from "../../../constants.ts";
 import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
+import {IFeature} from "storyScript/Interfaces/feature.ts";
 
 export class DataSerializer implements IDataSerializer {
     private conversationPropertiesToSerialize = [
@@ -64,6 +65,23 @@ export class DataSerializer implements IDataSerializer {
             }
 
             pristineValue = pristine?.[key];
+
+            // When we haven't found a pristine entity even though we checked the pristine collection,
+            // we may be dealing with an entity that is added as a feature, such as an item. These are
+            // not in the pristine features entities but in their own set. Try to find the pristine
+            // entity by checking the features of the pristine locations.
+            if (!pristineValue && original.type && original.id) {
+                let feature: IFeature;
+                
+                for (const location in this._pristineEntities.locations) {
+                    feature = this._pristineEntities.locations[location].features?.find(f => f.id === original.id);
+                    
+                    if (feature) {
+                        pristineValue = feature[key];
+                        break;
+                    }
+                }
+            }
 
             // Do add NULL values to the clone for equipment, as these can be used as placeholders.
             // This is used by the engine to determine which equipment slots are available.
