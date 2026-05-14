@@ -10,7 +10,6 @@
 /pub/*
 /test/*
 /src/Tests/**/coverage/*
-/src/Tests/Engine/assets/*
 /src/types/*
 /src/Games/**/resources/*
 !/src/Games/MyAdventureGame/resources/*
