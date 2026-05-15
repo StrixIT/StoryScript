@@ -556,7 +556,23 @@ dialog {
 
 #autoplay-overlay {
     z-index: 1200;
+    align-content: center;
     text-align: center;
+}
+
+#autoplay-text {
+    margin-top: 20px;
+    visibility: hidden;
+    font-size: 1.5em;
+    transition: visibility .1s ease-out;
+    display: flex;
+    justify-content: center;
+}
+
+#autoplay-text span {
+    background-color: white;
+    border-radius: 3px;
+    padding: 5px 10px;
 }
 
 #title-screen {
@@ -575,6 +591,7 @@ dialog {
 #title-screen h1 {
     font-size: 6em;
     margin-bottom: 40px;
+    white-space: nowrap;
 }
 
 #start-game {
@@ -583,18 +600,11 @@ dialog {
     margin-top: 200px;
 }
 
-#autoplay-text {
-    margin-top: 20px;
-    visibility: hidden;
-    font-size: 1.5em;
-    transition: visibility .1s ease-out;
-}
-
 #visual-features > img {
     max-width: 100%;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
     .combination-result-text {
         margin-top: 10px;
     }
@@ -625,6 +635,17 @@ dialog {
     
     #quest-panel ul {
         padding: 1em;
+    }
+
+    #title-screen h1 {
+        font-size: 2em;
+        margin-bottom: 40px;
+    }
+
+    #start-game {
+        font-size: 1.3em;
+        padding: 5px 40px;
+        margin-top: 100px;
     }
 }
 

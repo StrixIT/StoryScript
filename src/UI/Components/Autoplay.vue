@@ -1,6 +1,6 @@
 <template>
   <div v-if="game.autoplaying" id="autoplay-overlay">
-    <p id="autoplay-text" ref="autoplay-text">{{ texts.autoplayText }}</p>
+    <p id="autoplay-text" ref="autoplay-text"><span>{{ texts.autoplayText }}</span></p>
   </div>
 </template>
 <script lang="ts" setup>
@@ -18,7 +18,7 @@ let demoTextTimer: NodeJS.Timeout;
 
 watch(() => game.value.autoplaying, (newVal) => {
   clearInterval(demoTextTimer);
-  
+
   if (newVal) {
     let autoTextVisible = true;
 
