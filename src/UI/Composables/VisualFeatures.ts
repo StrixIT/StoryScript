@@ -50,7 +50,11 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     const actionName = computed(() => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultCombination.value);
 
     const calculateFactor = () => {
-        const mainImage = locationFeatures.value?.querySelector('img');
+        if (!locationFeatures.value) {
+            return;
+        }
+        
+        const mainImage = locationFeatures.value.querySelector('img');
         factor.value = mainImage.width / locationImageOriginalWidth.get(game.value.currentLocation.id);
     }
 
@@ -77,7 +81,11 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     }
 
     const prepareFeatures = () => {
-        const locationImages = Array.from(locationFeatures.value?.querySelectorAll('img.feature-picture') ?? []) as HTMLImageElement[];
+        if (!locationFeatures.value) {
+            return;
+        }
+        
+        const locationImages = Array.from(locationFeatures.value.querySelectorAll('img.feature-picture') ?? []) as HTMLImageElement[];
         const loadedImages = prepareLoadedImages(locationImages);
         const allPromises = loadedImages.map(i => i.loadPromise);
 

@@ -1,5 +1,6 @@
-﻿import { IGame, IQuest, Quest, IPerson } from '../types';
+﻿import {IGame, IPerson, IQuest, Quest} from '../types';
 import * as Items from '../items/journal'
+import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
 
 export function Journal() {
     return Quest({
@@ -15,6 +16,7 @@ export function Journal() {
         complete: (game: IGame, quest: IQuest, person: IPerson) => {
             game.activeCharacter.items.delete(Items.Journal);
             game.party.currency += 5;
+            game.state = GameState.Victory;
         }
     });
 }

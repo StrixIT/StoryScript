@@ -79,7 +79,7 @@ button {
     padding: 10px 15px 5px 15px;
 }
 
-#mainmenu .btn {
+#mainmenu .btn, #confirmrestart .btn {
     display: block;
     margin-bottom: 10px;
 }
@@ -233,6 +233,14 @@ button {
 
 #start-adventure {
     margin: -10px 0 0 10px;
+}
+
+#encounters img, #conversation img {
+    max-width: 100%;
+}
+
+#conversation img {
+    margin-bottom: 10px;
 }
 
 #start-combat {
@@ -411,6 +419,10 @@ feature {
 .enemy-list li {
     display: inline-block;
     margin-right: 25px;
+}
+
+.enemy-list img {
+    margin-left: 10px;
 }
 
 .enemy-row, .enemy-row > div, .character-row, .fight-row {
@@ -595,8 +607,26 @@ dialog {
 }
 
 @media (max-width: 576px) {
+    font-size: 12px;
+    
     .box-title {
-        font-size: 1.2em;
+        font-size: 1.1em;
+    }
+    
+    #attributes-panel li, .equipment-panel div {
+        white-space: nowrap;
+    }
+    
+    .modal-dialog {
+        max-width: 95%;
+    }
+    
+    .barrier {
+        margin: 10px 0 0 0;
+    }
+    
+    #quest-panel ul {
+        padding: 1em;
     }
 }
 

@@ -5,15 +5,15 @@
         <equipment-slot slot="head" :character="character"></equipment-slot>
         <equipment-slot slot="amulet" :character="character"></equipment-slot>
         <div class="row">
-          <div class="col-4">
+          <div class="col-sm-12 col-md-4">
             <equipment-slot slot="hands" :character="character"></equipment-slot>
             <equipment-slot slot="rightHand" :character="character"></equipment-slot>
             <equipment-slot slot="rightRing" :character="character"></equipment-slot>
           </div>
-          <div class="col-4 body-slot">
+          <div class="col-sm-12 col-md-4 body-slot">
             <equipment-slot slot="body" :character="character"></equipment-slot>
           </div>
-          <div class="col-4">
+          <div class="col-sm-12 col-md-4">
             <equipment-slot slot="hands" :character="character"></equipment-slot>
             <equipment-slot slot="leftHand" :character="character"></equipment-slot>
             <equipment-slot slot="leftRing" :character="character"></equipment-slot>
