@@ -5,7 +5,7 @@ import { Horse } from './Horse';
 
 export function Start() {
     return Location({
-        name: 'A forest clearing',
+        name: 'Awakening',
         description: description,
         destinations: [
             {
