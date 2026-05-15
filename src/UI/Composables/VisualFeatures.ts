@@ -136,7 +136,6 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             // the symbols from the area data attributes.
             setTimeout(() => {
                 setCombinationSymbols();
-                setElementCursorStyle();
             });
         });
     }
@@ -208,17 +207,6 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             imageRef.value.appendChild(image);
         });
     }
-    
-    const setElementCursorStyle = () => {
-        const symbolElements = Array.from(locationFeatures.value.querySelectorAll('area, img.feature-picture')) as HTMLElement[];
-
-        // Set the cursor style for the symbol elements to the default image here. This way, we don't need to use
-        // the game.css, which is a problem anyway because vite won't build when it can't find the image. And we
-        // don't want to include a default image, this is just a placeholder.
-        symbolElements.forEach(e => {
-            e.style.cursor = defaultPointerStyle.value;
-        });
-    }
 
     const setCursor = (e: MouseEvent, regular: boolean) => {
         if (isTouchDevice) {
@@ -234,13 +222,10 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     }
 
     const setCursorStyle = (element: HTMLElement, regular: boolean) => {
-        let style = getComputedStyle(element);
-        let cursorStyle = defaultPointerStyle.value;
+        let cursorStyle = '';
 
         if (!regular) {
-
-
-            cursorStyle = style.cursor.replace(/resources\/[\w-]*\.[a-zA-Z]{3,4}/, `resources/${actionName.value}.${defaultCombinationImageExtension.value}`);
+            cursorStyle = defaultPointerStyle.value.replace(/resources\/[\w-]*\.[a-zA-Z]{3,4}/, `resources/${actionName.value}.${defaultCombinationImageExtension.value}`);
         }
 
         element.style.cursor = cursorStyle;
