@@ -1,6 +1,6 @@
 {
     "name": "Interactive Story demo",
-    "description": "A demo to showcase the StoryScript building blocks for Interactive Stories",
+    "description": "A demo to showcase the StoryScript building blocks for Interactive Stories, the most basic StoryScript game type.",
     "picture": "",
     "sourcesIncluded": true,
     "authors": [{

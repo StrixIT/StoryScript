@@ -1,6 +1,6 @@
 {
     "name": "Adventure Game demo - Autoplay",
-    "description": "A demo to showcase the StoryScript building blocks for autploaying games",
+    "description": "A demo to showcase the StoryScript building blocks for auto-playing games, using the Adventure Game as an example. This functionality is also great for presentations that need to run continuously.",
     "picture": "",
     "sourcesIncluded": true,
     "authors": [{
