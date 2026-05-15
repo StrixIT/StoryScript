@@ -607,8 +607,6 @@ dialog {
 }
 
 @media (max-width: 576px) {
-    font-size: 12px;
-    
     .box-title {
         font-size: 1.1em;
     }
