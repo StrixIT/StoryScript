@@ -1,5 +1,5 @@
 <template>
-  <div v-if="canPlay !== null && !canPlay" class="no-play-container">
+  <div v-if="canPlay !== null && !canPlay" class="no-play-container alert alert-warning">
     <p>
       {{ texts.noPlayWarning }}
     </p>
@@ -49,15 +49,3 @@ onUnmounted(() => {
 })
 
 </script>
-
-<style>
-.no-play-container {
-  margin-top: 5px;
-  display: flex;
-  justify-content: center;
-}
-
-.no-play-container p {
-  margin: 0 0 10px 0;
-}
-</style>

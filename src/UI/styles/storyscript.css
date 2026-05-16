@@ -604,9 +604,33 @@ dialog {
     max-width: 100%;
 }
 
+.no-play-container {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5em;
+}
+
+.no-play-container p {
+    margin: 0;
+}
+
+#victory {
+    text-align: center;
+    margin-top: 50px;
+}
+
+#victory > div {
+    display: flex;
+    justify-content: center;
+}
+
 @media (max-width: 1199px) {
     .combination-result-text {
         margin-top: 10px;
+    }
+
+    .no-play-container {
+        font-size: 1.4em;
     }
 }
 
@@ -618,6 +642,10 @@ dialog {
 
     #start-game {
         font-size: 2em;
+    }
+
+    .no-play-container {
+        font-size: 1.3em;
     }
 }
 
@@ -634,6 +662,10 @@ dialog {
     #start-game {
         font-size: 1.5em;
         margin-top: 100px;
+    }
+
+    .no-play-container {
+        font-size: 1.2em;
     }
 }
 
@@ -666,6 +698,10 @@ dialog {
     #start-game {
         font-size: 1.3em;
         margin-top: 100px;
+    }
+
+    .no-play-container {
+        font-size: 1.1em;
     }
 }
 
