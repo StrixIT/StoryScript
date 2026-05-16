@@ -185,9 +185,8 @@ export const useStateStore = defineStore('appState', () => {
             image.src = `resources/${defaultCombinationSymbol}`;
             image.onload = () => {
                 combinationSymbolDimensions.value = {width: image.naturalWidth, height: image.naturalHeight};
+                defaultPointerStyle.value = `url(resources/default.png) ${combinationSymbolDimensions.value.width / 2} ${combinationSymbolDimensions.value.height / 2}, pointer`;
             }
-
-            defaultPointerStyle.value = combinations.combinationCursorStyle ?? 'url(resources/default.png) 25 25, pointer';
         }
     };
 

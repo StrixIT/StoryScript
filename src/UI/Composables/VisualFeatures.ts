@@ -225,7 +225,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         let cursorStyle = '';
 
         if (!regular) {
-            cursorStyle = defaultPointerStyle.value.replace(/resources\/[\w-]*\.[a-zA-Z]{3,4}/, `resources/${actionName.value}.${defaultCombinationImageExtension.value}`);
+            cursorStyle = defaultPointerStyle.value.replace('resources/default.png', `resources/${actionName.value}.${defaultCombinationImageExtension.value}`);
         }
 
         element.style.cursor = cursorStyle;
