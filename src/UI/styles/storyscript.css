@@ -650,10 +650,6 @@ dialog {
 }
 
 @media (max-width: 767px) {
-    .menu-buttons {
-        float: none;
-    }
-
     #title-screen h1 {
         font-size: 3em;
         margin-bottom: 40px;
@@ -676,6 +672,7 @@ dialog {
     
     #attributes-panel li, .equipment-panel div {
         white-space: nowrap;
+        overflow: hidden;
     }
     
     .modal-dialog {

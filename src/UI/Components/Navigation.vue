@@ -1,10 +1,10 @@
 <template>
   <div class="container-fluid menu-bar">
     <div class="row">
-      <div class="col-md-7 col-lg-8">
+      <div :class="{'col-md-7 col-lg-8': isDevelopment, 'col-9': !isDevelopment }">
         <h1>{{ texts.gameName }}</h1>
       </div>
-      <div class="col-md-5 col-lg-4">
+      <div :class="{'col-md-5 col-lg-4': isDevelopment, 'col-3': !isDevelopment }">
         <div v-if="isDevelopment" id="location-selector">
           <input v-if="availableLocations.length > 1"
                  name="location-selector"
@@ -31,7 +31,7 @@
             </li>
           </ul>
         </div>
-        <div class="menu-buttons">
+        <div class="menu-buttons" :class="{ 'float-none': isDevelopment}">
           <button class="btn btn-dark btn-sm" type="button" @click="game.playState = PlayState.Menu">
             {{ texts.mainMenuShort }}
           </button>
