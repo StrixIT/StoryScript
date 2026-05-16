@@ -589,7 +589,7 @@ dialog {
 }
 
 #title-screen h1 {
-    font-size: 6em;
+    font-size: 5em;
     margin-bottom: 40px;
     white-space: nowrap;
 }
@@ -610,9 +610,30 @@ dialog {
     }
 }
 
+@media (max-width: 991px) {
+    #title-screen h1 {
+        font-size: 4em;
+        margin-bottom: 40px;
+    }
+
+    #start-game {
+        font-size: 2em;
+    }
+}
+
 @media (max-width: 767px) {
     .menu-buttons {
         float: none;
+    }
+
+    #title-screen h1 {
+        font-size: 3em;
+        margin-bottom: 40px;
+    }
+
+    #start-game {
+        font-size: 1.5em;
+        margin-top: 100px;
     }
 }
 
@@ -644,7 +665,6 @@ dialog {
 
     #start-game {
         font-size: 1.3em;
-        padding: 5px 40px;
         margin-top: 100px;
     }
 }
