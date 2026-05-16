@@ -21,7 +21,6 @@
       </div>
 
       <div id="conversation-history">
-        <hr/>
         <p id="conversation-history-title">Conversation history</p>
         <ul class="list-unstyled">
           <li v-for="entry of game.person.conversation.conversationLog">
