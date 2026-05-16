@@ -24,7 +24,9 @@ const plugins = [
             {
                 src: normalizePath(path.resolve(gamePath, 'resources/**/*.*')),
                 dest: 'resources',
-                rename: { stripBase: true }
+                // This is relative to the project root. So ./src/Games/{GameName}/resources will be trimmed. We
+                // cannot use 'stripBase: true' because we want to support placing resources in subdirectories.
+                rename: { stripBase: 4 }
             }
         ]
     }),
@@ -42,8 +44,7 @@ export default defineConfig({
             storyScript: path.resolve(__dirname, './src/Engine'),
             game: gamePath,
             ui: uiPath,
-            $resources: path.resolve(gamePath, 'resources'),
-            testGame: path.resolve(__dirname, './src/Games/MyRolePlayingGame')
+            $resources: path.resolve(gamePath, 'resources')
         }
     },
     plugins: plugins,
