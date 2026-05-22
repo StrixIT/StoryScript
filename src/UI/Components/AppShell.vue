@@ -27,17 +27,36 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {onMounted, useTemplateRef} from "vue";
+import {onMounted, useTemplateRef, watch} from "vue";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {ICustomCursor} from "storyScript/Interfaces/customCursor.ts";
+import {isTouchDevice} from "../../../constants.ts";
 
 const store = useStateStore();
-const {game, error} = storeToRefs(store);
+const {game, error, customCursor} = storeToRefs(store);
 const {gameService, dataService} = store.services;
 const uiRoot = useTemplateRef('ui-root');
 
 const saveStates = [PlayState.Combat, PlayState.Conversation, PlayState.Trade];
 
 onMounted(() => game.value.UIRootElement = uiRoot.value.closest('body'));
+
+watch(() => customCursor.value, (newValue: ICustomCursor) => {
+  if (!isTouchDevice && newValue) {
+    game.value.UIRootElement.style.cursor = newValue.style;
+
+    game.value.UIRootElement.addEventListener('mouseover', e => {
+      const target = e.target as HTMLElement;
+      const targetStyle = getComputedStyle(target);
+      
+      if (targetStyle.cursor !== 'pointer') {
+        return;
+      }
+
+      target.style.cursor = newValue.style;
+    });
+  }
+});
 
 gameService.watchPlayState((_, newState, oldState) => {
   stopAutoplay();

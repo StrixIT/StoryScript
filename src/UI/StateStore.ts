@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {App, computed, ref} from 'vue';
+import {App, computed, Ref, ref} from 'vue';
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
@@ -23,6 +23,8 @@ import {Error} from "ui/error.ts";
 import {isDevelopment} from "../../constants.ts";
 import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
 import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
+import {ICustomCursor} from "storyScript/Interfaces/customCursor.ts";
+import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
@@ -45,10 +47,9 @@ export const useStateStore = defineStore('appState', () => {
     const activeActions = computed(() => game.value.currentLocation?.actions.filter(i => !i[1].inactive) || []);
     const activeDestinations = computed(() => game.value.currentLocation?.destinations.filter(e => !e.inactive) || []);
 
-    const defaultCombination = ref<string>(null);
-    const defaultCombinationImageExtension = ref<string>(null);
-    const combinationSymbolDimensions = ref<{ width: number, height: number }>(null);
-    const defaultPointerStyle = ref<string>(null);
+    const defaultCombination = ref<ICombinationAction>(null);
+    const customCursor = ref<ICustomCursor>(null);
+    const combinationCursor = ref<ICustomCursor>(null);
     
     const services = {
         soundService: <ISoundService>null,
@@ -108,6 +109,10 @@ export const useStateStore = defineStore('appState', () => {
         availableLocations.value = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
 
         initCombinations();
+        
+        if (services.rules.setup?.customCursorImage) {
+            initCustomCursor(services.rules.setup.customCursorImage, customCursor)
+        }
     }
 
     const setActiveCharacter = (character: ICharacter) => {
@@ -175,20 +180,26 @@ export const useStateStore = defineStore('appState', () => {
         if (!combinations) {
             return;
         }
-        
+
+        defaultCombination.value = combinations.combinationActions.find(c => c.isDefault);
         const defaultCombinationSymbol = combinations.combinationActions.find(c => c.picture)?.picture?.toLowerCase();
-        defaultCombination.value = combinations.combinationActions.find(c => c.isDefault)?.text?.toLowerCase();
-        defaultCombinationImageExtension.value = defaultCombinationSymbol?.split('.')[1];
 
         if (defaultCombinationSymbol) {
-            const image = document.createElement('img');
-            image.src = `resources/${defaultCombinationSymbol}`;
-            image.onload = () => {
-                combinationSymbolDimensions.value = {width: image.naturalWidth, height: image.naturalHeight};
-                defaultPointerStyle.value = `url(resources/default.png) ${combinationSymbolDimensions.value.width / 2} ${combinationSymbolDimensions.value.height / 2}, pointer`;
-            }
+            initCustomCursor(defaultCombinationSymbol, combinationCursor, 'default.png');
         }
     };
+    
+    const initCustomCursor = (cursorImage: string, cursorRef: Ref<ICustomCursor>, placeholder?: string): void => {
+        const image = document.createElement('img');
+        image.src = `resources/${cursorImage}`;
+        image.onload = () => {
+            cursorRef.value = {
+                image: cursorImage,
+                dimensions: {width: image.naturalWidth, height: image.naturalHeight},
+                style: `url(resources/${placeholder ?? cursorImage}) ${image.naturalWidth / 2} ${image.naturalHeight / 2}, pointer`
+            }
+        }
+    }
 
     return {
         error,
@@ -207,9 +218,8 @@ export const useStateStore = defineStore('appState', () => {
         activeActions,
         activeDestinations,
         defaultCombination,
-        defaultCombinationImageExtension,
-        combinationSymbolDimensions,
-        defaultPointerStyle,
+        combinationCursor,
+        customCursor,
         initErrorHandling,
         setStoreData,
         setActiveCharacter,

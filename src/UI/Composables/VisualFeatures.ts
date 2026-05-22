@@ -1,6 +1,5 @@
 import {computed, onUpdated, Ref, ref, watch} from "vue";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
-import {compareString} from "storyScript/utilityFunctions.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from "../../../constants.ts";
@@ -35,9 +34,8 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     const {
         game,
         defaultCombination,
-        defaultCombinationImageExtension,
-        combinationSymbolDimensions,
-        defaultPointerStyle
+        combinationCursor,
+        customCursor
     } = storeToRefs(store);
 
     const locationFeatures = imageRef;
@@ -46,14 +44,13 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     const areaOriginalCoordinates = new Map<string, string>();
     const factor = ref(1);
     const locationId = computed(() => game.value.currentLocation.id);
-
-    const actionName = computed(() => game.value.combinations.activeCombination?.selectedCombinationAction?.text.toLowerCase() ?? defaultCombination.value);
+    const combinationPicture = computed(() => game.value.combinations.activeCombination?.selectedCombinationAction?.picture ?? defaultCombination.value?.picture);
 
     const calculateFactor = () => {
         if (!locationFeatures.value) {
             return;
         }
-        
+
         const mainImage = locationFeatures.value.querySelector('img');
         factor.value = mainImage.width / locationImageOriginalWidth.get(game.value.currentLocation.id);
     }
@@ -84,7 +81,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         if (!locationFeatures.value) {
             return;
         }
-        
+
         const locationImages = Array.from(locationFeatures.value.querySelectorAll('img.feature-picture') ?? []) as HTMLImageElement[];
         const loadedImages = prepareLoadedImages(locationImages);
         const allPromises = loadedImages.map(i => i.loadPromise);
@@ -144,14 +141,14 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         if (!game.value.currentLocation.features.get(featureId)?.picture) {
             return;
         }
-        
+
         const featureImage = Array.from(locationFeatures.value.querySelectorAll('img.feature-picture'))
             .find(a => a.id.split('-')[1] === featureId) as HTMLImageElement;
-        
+
         if (!featureImage) {
             return;
         }
-        
+
         const top = y - featureImage.height / 2;
         const left = x - featureImage.width / 2;
         featureImage.style.top = top + 'px';
@@ -172,7 +169,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             imageRef.value.removeChild(symbolImage);
         });
 
-        if (!actionName.value) {
+        if (!combinationPicture.value) {
             return;
         }
 
@@ -191,9 +188,9 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             }
 
             const image = document.createElement('img');
-            image.src = `resources/${actionName.value}.${defaultCombinationImageExtension.value}`;
-            const imageWidth = Math.round(combinationSymbolDimensions.value.width * factor.value);
-            const imageHeight = Math.round(combinationSymbolDimensions.value.height * factor.value);
+            image.src = `resources/${combinationPicture.value}`;
+            const imageWidth = Math.round(combinationCursor.value.dimensions.width * factor.value);
+            const imageHeight = Math.round(combinationCursor.value.dimensions.height * factor.value);
             const imagePosX = Math.round(coords[0] - imageWidth / 2);
             const imagePosY = Math.round(coords[1] - imageHeight / 2);
 
@@ -213,7 +210,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             return;
         }
 
-        if (!actionName.value) {
+        if (!combinationPicture.value) {
             return;
         }
 
@@ -222,10 +219,10 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     }
 
     const setCursorStyle = (element: HTMLElement, regular: boolean) => {
-        let cursorStyle = '';
+        let cursorStyle = customCursor.value ? customCursor.value.style : '';
 
         if (!regular) {
-            cursorStyle = defaultPointerStyle.value.replace('resources/default.png', `resources/${actionName.value}.${defaultCombinationImageExtension.value}`);
+            cursorStyle = combinationCursor.value.style.replace(/resources\/[\w-]*\.[a-zA-Z]{3,4}/, `resources/${combinationPicture.value}`);
         }
 
         element.style.cursor = cursorStyle;

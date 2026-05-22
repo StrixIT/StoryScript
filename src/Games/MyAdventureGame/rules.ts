@@ -7,6 +7,7 @@ import {getDemoMode} from "./demoMode.ts";
 export function Rules(): IRules {
     return {
         setup: {
+            customCursorImage: 'cursor.png',
             // titleScreen: {
             //     showTitleScreen: true,
             //     transitionDelay: '2',

@@ -1,9 +1,14 @@
 import {IGame} from '../game';
-import {ICombinationAction} from '../combinations/combinationAction';
 import {StateList} from '../stateList';
 import {ITitleScreen} from "storyScript/Interfaces/rules/titleScreen.ts";
 
 export interface ISetupRules {
+    /**
+     * Specify a name of an image file in your resources folder to use that image as a custom mouse cursor.
+     * Don't use a large image, as the browser may not display it. Dimensions of 50x50 or 32x32 pixels work well.
+     */
+    customCursorImage?: string;
+
     /**
      * Set this to a positive value greater than 1 to allow the player to create a party of more than
      * one character.
@@ -19,19 +24,19 @@ export interface ISetupRules {
      * Set this to true if you want to show an intro screen when the game starts.
      */
     intro?: boolean;
-    
+
     /**
      * When you want to play a music file when the game is in a certain state, use this list. Use it like this:
      playList: {
-         [Using GameState:] 'play.mp4': [GameState.Play].
-         [For multiple game states:] 'play.mp4': [GameState.Intro, GameState.Play].
-         [Using PlayState:] 'combat.mp4': [PlayState.Combat].
-         [Using Locations:] 'start.mp4': [Start].
-         [Using a custom function:] '': [game => string] (the string value returned from the function should be the music file).
+     [Using GameState:] 'play.mp4': [GameState.Play].
+     [For multiple game states:] 'play.mp4': [GameState.Intro, GameState.Play].
+     [Using PlayState:] 'combat.mp4': [PlayState.Combat].
+     [Using Locations:] 'start.mp4': [Start].
+     [Using a custom function:] '': [game => string] (the string value returned from the function should be the music file).
      }
      */
     playList?: StateList;
-    
+
     /**
      * When you want to fade out music before starting a new piece, set this interval. The interval is in miliseconds, so specify
      * a sufficiently large value (e.g. 250). The volume will be reduced by 10% each interval, and the new music starts when the
