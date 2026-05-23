@@ -205,40 +205,16 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         });
     }
 
-    const setCursor = (e: MouseEvent, regular: boolean) => {
-        if (isTouchDevice) {
-            return;
-        }
-
-        if (!combinationPicture.value) {
-            return;
-        }
-
-        const element = e.target as HTMLAreaElement;
-        setCursorStyle(element, regular);
-    }
-
-    const setCursorStyle = (element: HTMLElement, regular: boolean) => {
-        let cursorStyle = customCursor.value ? customCursor.value.style : '';
-
-        if (!regular) {
-            cursorStyle = combinationCursor.value.style.replace(/resources\/[\w-]*\.[a-zA-Z]{3,4}/, `resources/${combinationPicture.value}`);
-        }
-
-        element.style.cursor = cursorStyle;
-    }
-
     const tryCombine = (eventOrElement: PointerEvent | HTMLElement, feature: IFeature) => {
         game.value.combinations.tryCombine(feature);
         const element = (eventOrElement as PointerEvent).target as HTMLElement ?? eventOrElement as HTMLElement;
-        setCursorStyle(element, true);
+        element.style.cursor = customCursor.value ? customCursor.value.style : '';
     }
 
     return {
         locationFeatures,
         initFeatures,
         prepareFeatures,
-        setCursor,
         tryCombine
     }
 }

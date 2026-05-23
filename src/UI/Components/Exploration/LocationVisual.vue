@@ -7,13 +7,12 @@
       <map :name="location.id">
         <area v-for="feature of location.features" :id="`feature-area-${feature.id}`" :alt="feature.name"
               :coords="feature.coords" :shape="feature.shape"
-              href="#" @click="e => tryCombine(e, feature)" @mouseout="e => setCursor(e, true)"
-              @mouseover="e => setCursor(e, false)"/>
+              class="feature-cursor" href="#" @click="e => tryCombine(e, feature)"/>
       </map>
       <div v-for="feature of location.features">
         <img v-if="feature.picture" :id="`feature-${feature.id}`" :alt="feature.name"
-             :src="`resources/${feature.picture}`" class="feature-picture" @click="e => tryCombine(e, feature)"
-             @mouseout="e => setCursor(e, true)" @mouseover="e => setCursor(e, false)"/>
+             :src="`resources/${feature.picture}`" class="feature-picture feature-cursor"
+             @click="e => tryCombine(e, feature)"/>
       </div>
     </div>
   </div>
@@ -29,6 +28,6 @@ const {game} = storeToRefs(store);
 const {texts} = store.services;
 const location = computed(() => game.value.currentLocation);
 
-const {initFeatures, setCursor, tryCombine} = useVisualFeatures(useTemplateRef('location-features'));
+const {initFeatures, tryCombine} = useVisualFeatures(useTemplateRef('location-features'));
 
 </script>
