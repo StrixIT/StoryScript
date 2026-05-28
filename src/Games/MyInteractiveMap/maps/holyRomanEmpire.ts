@@ -1,6 +1,9 @@
 import {LocationMap} from "../types.ts";
 import {Austria} from "../locations/Austria.ts";
+import {Bohemia} from "../locations/Bohemia.ts";
 import {Franconia} from "../locations/Franconia.ts";
+import {Moravia} from "../locations/Moravia.ts";
+import {Nuremberg} from "../locations/Nuremberg.ts";
 import {Liege} from "../locations/Liege.ts";
 import {Luxembourg} from "../locations/Luxembourg.ts";
 import {Start} from "../locations/start.ts";
@@ -28,6 +31,12 @@ export function HolyRomanEmpire() {
                 markerImage: 'Austria.png'
             },
             {
+                location: Bohemia,
+                textLabel: 'Bohemia',
+                coords: '720,510',
+                markerImage: 'reddot.png'
+            },
+            {
                 location: Franconia,
                 textLabel: 'Franconia',
                 coords: '580,500',
@@ -43,6 +52,18 @@ export function HolyRomanEmpire() {
                 location: Luxembourg,
                 textLabel: 'Luxembourg',
                 coords: '306,495',
+                markerImage: 'reddot.png'
+            },
+            {
+                location: Moravia,
+                textLabel: 'Moravia',
+                coords: '875,530',
+                markerImage: 'reddot.png'
+            },
+            {
+                location: Nuremberg,
+                textLabel: 'Nuremberg',
+                coords: '595,547',
                 markerImage: 'reddot.png'
             },
             {
