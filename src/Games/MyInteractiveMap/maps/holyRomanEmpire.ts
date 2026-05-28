@@ -64,7 +64,7 @@ export function HolyRomanEmpire() {
             {
                 location: Nuremberg,
                 textLabel: 'Nuremberg',
-                coords: '591,543',
+                coords: '600,545',
                 markerImage: 'reddot.png'
             },
             {
