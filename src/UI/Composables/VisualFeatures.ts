@@ -136,7 +136,9 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     }
 
     const positionFeatureImage = (featureId: string, x: number, y: number) => {
-        if (!game.value.currentLocation.features.get(featureId)?.picture) {
+        const feature = game.value.currentLocation.features.get(featureId);
+        
+        if (!feature?.picture && !feature?.animation) {
             return;
         }
 
@@ -147,8 +149,10 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             return;
         }
 
-        const top = y - featureImage.height / 2;
-        const left = x - featureImage.width / 2;
+        const featureHeight = feature.animation ? feature.animation.height : featureImage.height;
+        const featureWidth = feature.animation ? feature.animation.width : featureImage.width;
+        const top = y - featureHeight / 2;
+        const left = x - featureWidth / 2;
         featureImage.style.top = top + 'px';
         featureImage.style.left = left + 'px';
     }

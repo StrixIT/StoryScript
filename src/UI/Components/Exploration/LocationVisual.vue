@@ -13,6 +13,7 @@
         <img v-if="feature.picture" :id="`feature-${feature.id}`" :alt="feature.name"
              :src="`resources/${feature.picture}`" class="feature-picture feature-cursor"
              @click="game.combinations.tryCombine(feature)"/>
+        <sprite v-if="feature.animation" :id="`feature-${feature.id}`" :alt="feature.name" :spriteSettings="feature.animation" class="feature-picture feature-cursor"></sprite>
       </div>
     </div>
   </div>
