@@ -23,7 +23,6 @@ const initSprite = () => {
   sprite.value.style.width = `${props.spriteSettings.width}px`;
   sprite.value.style.height = `${props.spriteSettings.height}px`;
   sprite.value.style.objectFit = 'cover';
-  sprite.value.style.animationTimingFunction = 'jump-none';
 
   sprite.value.animate(animationSettings, {
     duration: props.spriteSettings.speed * 1000,
