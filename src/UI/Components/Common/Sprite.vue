@@ -12,16 +12,14 @@ const props = defineProps<{
 const sprite = useTemplateRef('sprite');
 
 const initSprite = () => {
-  props.spriteSettings.height ??= sprite.value.naturalHeight;
-  props.spriteSettings.steps ??= sprite.value.naturalWidth / props.spriteSettings.width;
   props.spriteSettings.speed ??= 1;
   const animationSettings = [];
   animationSettings.push({objectPosition: '0 0'});
   // Todo: add additional steps here to support sprite sheets with multiple rows(?)
   animationSettings.push({objectPosition: '100% 0'});
 
-  sprite.value.style.width = `${props.spriteSettings.width}px`;
-  sprite.value.style.height = `${props.spriteSettings.height}px`;
+  sprite.value.width = props.spriteSettings.width;
+  sprite.value.height = props.spriteSettings.height;
   sprite.value.style.objectFit = 'cover';
 
   sprite.value.animate(animationSettings, {

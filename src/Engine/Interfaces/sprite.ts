@@ -10,15 +10,14 @@ export interface Sprite {
     width: number;
 
     /**
-     * The height of each animation frame in pixels. When omitted, the height of the sheet will be used.
+     * The height of each animation frame in pixels.
      */
-    height?: number;
+    height: number;
 
     /**
-     * The number of frames to display. When omitted, this value will be calculated from the sheet
-     * size and the dimensions specified.
+     * The number of frames to display.
      */
-    steps?: number;
+    steps: number;
 
     /**
      * The speed at which to display one iteration through all the animation steps, in seconds. When
