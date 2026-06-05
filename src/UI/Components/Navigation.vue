@@ -7,12 +7,12 @@
       <div :class="{'col-md-5 col-lg-4': isDevelopment, 'col-3': !isDevelopment }">
         <div v-if="isDevelopment" id="location-selector">
           <input v-if="availableLocations.length > 1"
-                 name="location-selector"
                  ref="locationSelector"
                  aria-autocomplete="list"
                  autocapitalize="off"
                  autocomplete="off"
                  class="form-control"
+                 name="location-selector"
                  placeholder="Jump to location..."
                  type="text"
                  @focus="setShowSelection(true)"
@@ -23,7 +23,7 @@
               class="dropdown-menu">
             <li v-for="location of selectedLocations.slice(0, maxLocationsShown)"
                 class="dropdown-item"
-                @click="game.commands.go(location.id, false)"
+                @click="game.commands.go(location.id)"
                 @mouseenter="setActive">{{ location.name }}
             </li>
             <li v-if="selectedLocations.length > maxLocationsShown" class="dropdown-item refine-search">
@@ -31,7 +31,7 @@
             </li>
           </ul>
         </div>
-        <div class="menu-buttons" :class="{ 'float-none': isDevelopment}">
+        <div :class="{ 'float-none': isDevelopment}" class="menu-buttons">
           <button class="btn btn-dark btn-sm" type="button" @click="game.playState = PlayState.Menu">
             {{ texts.mainMenuShort }}
           </button>

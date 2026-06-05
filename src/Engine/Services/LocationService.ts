@@ -55,7 +55,7 @@ export class LocationService implements ILocationService {
     changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
         // Clear the play state on travel.
         game.playState = null;
-        this._rules.exploration?.leaveLocation?.(game, game.currentLocation, getId(location));
+        this._rules.exploration?.leaveLocation?.(game, game.currentLocation, getId(location), travel);
         this.playEvents(game, 'leaveEvents');
 
         // If there is no location, we are starting a new game. We're done here.
@@ -66,7 +66,7 @@ export class LocationService implements ILocationService {
         this.processDestinations(game);
         this._game.party.currentLocationId = game.currentLocation.id;
         this._game.party.previousLocationId = game.previousLocation?.id;
-        this._rules.exploration?.enterLocation?.(game, game.currentLocation, travel);
+        this._rules.exploration?.enterLocation?.(game, game.currentLocation, game.previousLocation?.id, travel);
         this.loadLocationDescriptions(game);
         this.initTrade(game);
         this.playEvents(game, 'enterEvents');

@@ -309,10 +309,6 @@ export class GameService implements IGameService {
         this.initCombinations();
         this._locationService.init();
 
-        this._game.changeLocation = (location, travel) => {
-            this._game.commands.go(location, travel);
-        };
-
         Object.defineProperty(this._game, 'currentMap', {
             configurable: true,
             get: () => {

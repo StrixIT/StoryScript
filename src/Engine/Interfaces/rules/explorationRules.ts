@@ -8,18 +8,20 @@ export interface IExplorationRules {
      * When specified, this function will be called whenever the player enters a location.
      * @param game The active game
      * @param location The location the player enters
-     * @param travel True if the player arrived by travelling, false or undefined otherwise. A player can get
-     * to a location without travelling when a game is loaded, for example.
+     * @param previousLocationId The id of the location the player left traveling to the new location
+     * @param travel True if the player arrived by traveling, falsy otherwise. A player can get
+     * to a location without traveling when a game is loaded, for example.
      */
-    enterLocation?(game: IGame, location: ICompiledLocation, travel?: boolean): void;
+    enterLocation?(game: IGame, location: ICompiledLocation, previousLocationId: string, travel?: boolean): void;
 
     /**
-     * When specified, this function will be called whenever the player enters a location.
+     * When specified, this function will be called whenever the player enters leaves a location.
      * @param game The active game
      * @param location The location the player leaves
      * @param newLocationId The id of the location the player travels to
+     * @param travel True if the player leaves by traveling, falsy otherwise.
      */
-    leaveLocation?(game: IGame, location: ICompiledLocation, newLocationId: string): void;
+    leaveLocation?(game: IGame, location: ICompiledLocation, newLocationId: string, travel?: boolean): void;
 
     /**
      * When specified, this function will be called to determine whether a destination should
