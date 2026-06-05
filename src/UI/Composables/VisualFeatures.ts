@@ -149,8 +149,8 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             return;
         }
 
-        const featureHeight = feature.animation ? feature.animation.height : featureImage.height;
-        const featureWidth = feature.animation ? feature.animation.width : featureImage.width;
+        const featureHeight = feature.animation ? feature.animation.height * factor.value : featureImage.height;
+        const featureWidth = feature.animation ? feature.animation.width * factor.value : featureImage.width;
         const top = Math.round(y - featureHeight / 2);
         const left = Math.round(x - featureWidth / 2);
         featureImage.style.top = top + 'px';
