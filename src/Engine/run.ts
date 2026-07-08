@@ -43,7 +43,7 @@ function loadAssetsWithImport(modules?: Record<string, unknown>): IDefinitions {
         'game/quests/**/*.ts',
         'game/locations/**/*.ts',
         'game/maps/**/*.ts'
-    ], {eager: true});
+    ], {eager: true, caseSensitive: false});
 
     // Loop over all found files to register the assets with the proper type.
     for (const path in modules) {

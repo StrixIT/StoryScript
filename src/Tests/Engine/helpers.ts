@@ -16,7 +16,7 @@ export const initMyRolePlayingGameServiceFactory = (): ServiceFactory => {
         './assets/MyRolePlayingGame/items/**/*.ts',
         './assets/MyRolePlayingGame/persons/**/*.ts',
         './assets/MyRolePlayingGame/quests/**/*.ts'
-    ], {eager: true});
+    ], {eager: true, caseSensitive: false});
 
     return initServiceFactory(modules, 'MyRolePlayingGame', MyRolePlayingGameRules(), MyRolePlayingGameCustomTexts());
 }
@@ -26,7 +26,7 @@ export const initMyAdventureGameServiceFactory = (): ServiceFactory => {
         './assets/MyAdventureGame/locations/**/*.ts',
         './assets/MyAdventureGame/features/**/*.ts',
         './assets/MyAdventureGame/items/**/*.ts'
-    ], {eager: true});
+    ], {eager: true, caseSensitive: false});
 
     return initServiceFactory(modules, 'MyAdventureGame', MyAdventureGameRules(), MyAdventureGameCustomTexts());
 }

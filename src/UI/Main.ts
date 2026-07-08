@@ -60,8 +60,8 @@ function getComponents(): Map<string, any> {
         return combinedTemplates;
     }
 
-    const defaultTemplates = import.meta.glob('ui/**/*.vue', {eager: true});
-    const customTemplates = import.meta.glob('game/ui/**/*.vue', {eager: true});
+    const defaultTemplates = import.meta.glob('ui/**/*.vue', {eager: true, caseSensitive: false});
+    const customTemplates = import.meta.glob('game/ui/**/*.vue', {eager: true, caseSensitive: false});
 
     Object.keys(customTemplates).forEach(t => {
         const key = getKey(t);
