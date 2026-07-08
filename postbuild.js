@@ -1,5 +1,5 @@
 import fs from 'fs';
-import archiver from 'archiver';
+import { ZipArchive } from "archiver";
 import path, { resolve } from "path";
 import jsonfile from 'jsonfile';
 import gameName from "./currentGameName.js";
@@ -92,10 +92,10 @@ function getImageFiles(dirPath, arrayOfFiles) {
 }
 
 function zipDirectory(sourceDir, outPath) {
-    const archive = archiver('zip', { zlib: { level: 9 }});
+    const archive = new ZipArchive({ zlib: { level: 9 }});
     const stream = fs.createWriteStream(outPath);
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         archive
             .directory(sourceDir, false)
             .on('error', err => reject(err))
@@ -103,6 +103,6 @@ function zipDirectory(sourceDir, outPath) {
         ;
 
         stream.on('close', () => resolve());
-        archive.finalize();
+        await archive.finalize();
     });
 }
