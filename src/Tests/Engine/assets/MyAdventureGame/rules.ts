@@ -7,6 +7,7 @@ import {getDemoMode} from "./demoMode.ts";
 export function Rules(): IRules {
     return {
         setup: {
+            customCursorImage: 'cursor.png',
             // titleScreen: {
             //     showTitleScreen: true,
             //     transitionDelay: '2',
@@ -42,15 +43,14 @@ export function Rules(): IRules {
                     text: Combinations.LOOKAT,
                     preposition: 'at',
                     requiresTool: false,
-                    // isDefault: true,
                     picture: 'look.png',
                     failText: (game: IGame, target: ICombinable, tool: ICombinable): string => {
                         return 'You look at the ' + target.name + '. There is nothing special about it';
                     }
                 }
             ],
-            success: (game: IGame, combination: IActiveCombination) => {
-                if (combination.selectedCombinationAction.text != Combinations.WALK) {
+            success: (game: IGame, combination: IActiveCombination, target: ICombinable) => {
+                if (target.id !== 'fountain' && combination.selectedCombinationAction.text !== Combinations.WALK) {
                     game.sounds.playSound('kings_quest_6_ding.mp3');
                 }
             }

@@ -21,6 +21,7 @@ export function Fountain() {
                     match: (game, target, tool): string => {
                         if (!game.currentLocation.features.get(Corridor)) {
                             game.currentLocation.features.add(Corridor);
+                            game.sounds.playSound('kings_quest_6_ding.mp3');
                             return `You walk towards the fountain and touch the fountain water.
                                 It is a little cold. When you pull back your hand, you hear a soft
                                 muttering. It is coming from a small passage in the undergrowth.`;
@@ -39,6 +40,7 @@ export function Fountain() {
                         if (flask) {
                             game.activeCharacter.items.delete(flask);
                             game.activeCharacter.items.add(Water);
+                            game.sounds.playSound('kings_quest_6_ding.mp3');
                             return `You fill the flask with the clear fountain water.`;
                         }
                         else {
