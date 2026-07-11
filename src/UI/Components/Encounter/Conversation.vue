@@ -20,7 +20,7 @@
         {{ texts.conversationEnded }}
       </div>
 
-      <div id="conversation-history">
+      <div id="conversation-history" v-if="game.person.conversation.conversationLog?.length">
         <p id="conversation-history-title">Conversation history</p>
         <ul class="list-unstyled">
           <li v-for="entry of game.person.conversation.conversationLog">

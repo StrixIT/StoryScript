@@ -46,6 +46,10 @@ button {
     float: right;
 }
 
+.menu-buttons {
+    line-height: 38px;
+}
+
 .float-none {
     float: none;
 }
@@ -77,7 +81,7 @@ button {
 }
 
 .menu-bar {
-    padding: 0 15px;
+    padding: 10px 15px 0 15px;
 }
 
 #mainmenu .btn, #confirmrestart .btn {
