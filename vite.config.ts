@@ -6,8 +6,8 @@ import gameName from './currentGameName.js';
 import path from 'path';
 import vue from '@vitejs/plugin-vue';
 
-const gamePath = path.resolve(__dirname, `./src/Games/${gameName}`);
-const uiPath = path.resolve(__dirname, `./src/UI`);
+const gamePath = path.resolve(import.meta.dirname, `./src/Games/${gameName}`);
+const uiPath = path.resolve(import.meta.dirname, `./src/UI`);
 
 const plugins = [
     vue(),
@@ -41,11 +41,20 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            storyScript: path.resolve(__dirname, './src/Engine'),
+            storyScript: path.resolve(import.meta.dirname, './src/Engine'),
             game: gamePath,
             ui: uiPath,
             $resources: path.resolve(gamePath, 'resources')
         }
+    },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                logger: {
+                    warn() {} // Suppress all warnings to silence bootstrap issues. Try removing this when bootstraps upgrades to 5.4+.
+                },
+            },
+        },
     },
     plugins: plugins,
     server: {
