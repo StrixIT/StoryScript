@@ -3,9 +3,9 @@
     <div v-if="activeActions.length > 0" id="exploration-actions" class="box-container">
       <div class="box-title">{{ texts.actions }}</div>
       <ul v-if="!confirmAction" class="list-unstyled">
-        <li v-for="action of activeActions.filter(a => !checkStatus(a, ActionStatus.Unavailable))" class="inline">
+        <li v-for="action of activeActions.filter(a => !checkStatus(a, Status.Unavailable))" class="inline">
           <button :class="store.getButtonClass(action)"
-                  :disabled="checkStatus(action, ActionStatus.Disabled)"
+                  :disabled="checkStatus(action, Status.Disabled)"
                   class="btn"
                   type="button"
                   @click="execute(action)">
@@ -45,6 +45,7 @@ import {ref} from "vue";
 import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
 import Destination from "ui/Components/Exploration/Destination.vue";
 
+const Status = ActionStatus;
 const store = useStateStore();
 const {game, enemiesPresent, activeActions, activeDestinations} = storeToRefs(store);
 const {commandService, texts} = store.services;

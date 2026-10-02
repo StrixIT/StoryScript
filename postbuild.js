@@ -33,7 +33,7 @@ if (gameInfo.sourcesIncluded) {
 }
 
 // 3. Optimize jpg and png images using sharp.
-const imageFiles = getFiles(resourcePath, ['.jpg', '.png']);
+const imageFiles = getFiles(resourcePath, ['.jpg', '.png', 'webp']);
 
 if (imageFiles?.length) {
     await optimizeFiles('images', imageFiles, async (filePath, tempPath) => {
@@ -42,6 +42,8 @@ if (imageFiles?.length) {
             await sharpStream.png({quality: 80}).toFile(tempPath);
         } else if (filePath.indexOf('.jpg') > -1) {
             await sharpStream.jpeg({quality: 80}).toFile(tempPath);
+        } else if (filePath.indexOf('.webp') > -1) {
+            await sharpStream.webp({quality: 80}).toFile(tempPath);
         }
     });
 }

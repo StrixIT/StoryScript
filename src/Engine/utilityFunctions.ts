@@ -1,7 +1,7 @@
 ﻿import {EquipmentType, IItem, ILocation, IParty} from "./Interfaces/storyScript";
 import {StateProperties} from "storyScript/stateProperties.ts";
 
-const functionRenameRegex =  /_.+/i;
+const functionRenameRegex =  /\$.+/i;
 
 export function compareString(left: string, right: string): boolean {
     if ((left === undefined && right === undefined) || (left === null && right === null)) {
