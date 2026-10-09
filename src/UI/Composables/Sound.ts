@@ -60,10 +60,11 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
                 canPlay.value = true;
                 return;
             }
-
+            
             if (audioContext.state === 'suspended') {
                 musicPlayer.value.play().then(() => {
                     musicPlayer.value.play();
+                    canPlay.value = true;
                 }).catch(_ => {
                     // Silence the error and await another try, and show the no play warning.
                     if (canPlay.value === null) {
