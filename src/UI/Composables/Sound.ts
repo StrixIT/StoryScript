@@ -9,13 +9,22 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
 
     const musicPlayer = musicPlayerRef;
 
-    const canPlay = ref<boolean>(null);
+    const canPlay = ref<boolean>(false);
     const fadeInterval = ref<NodeJS.Timeout>(null);
     const fadingMusic = ref(false);
     const currentMusic = ref<string>(null);
     const currentVolume = ref(1);
 
+    let audioContext: AudioContext;
     const soundQueue: [number, string][] = [];
+
+    document.addEventListener('click', async () => {
+        if (!audioContext) {
+            audioContext = new window.AudioContext();
+            canPlay.value = true;
+            await musicPlayer.value.play();
+        }
+    }, { once: true });
 
     const getSoundQueue = (): [number, string][] => {
         Array.from(game.value.sounds.soundQueue).forEach(e => {
@@ -26,56 +35,6 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
         });
 
         return soundQueue;
-    }
-
-    // This code is here to (re)start music playback as soon as the user interacts with the browser.
-    const checkMusicPlaying = async () => {
-        if (!getCurrentMusic() || canPlay.value) {
-            return;
-        }
-
-        if (musicPlayer.value) {
-            let audioContext: AudioContext;
-
-            // This will trigger an error on mobile devices that we need to catch.
-            try {
-                audioContext = new window.AudioContext();
-            } catch (e) {
-                if (canPlay.value === null) {
-                    canPlay.value = false;
-                }
-            }
-
-            if (!audioContext) {
-                return;
-            }
-
-            if (audioContext.state === 'running') {
-                // Trigger a play again even though the state is already running. On 2026-10-09 on Chrome 155, at least
-                // while developing, music will not start without this line.
-                await musicPlayer.value.play();
-                canPlay.value = true;
-                return;
-            }
-
-            if (audioContext.state !== 'suspended' && musicPlayer.value.paused) {
-                await musicPlayer.value.play();
-                canPlay.value = true;
-                return;
-            }
-            
-            if (audioContext.state === 'suspended') {
-                musicPlayer.value.play().then(() => {
-                    musicPlayer.value.play();
-                    canPlay.value = true;
-                }).catch(_ => {
-                    // Silence the error and await another try, and show the no play warning.
-                    if (canPlay.value === null) {
-                        canPlay.value = false;
-                    }
-                });
-            }
-        }
     }
 
     const getCurrentMusic = (): string => {
@@ -137,7 +96,6 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
     return {
         canPlay,
         getSoundQueue,
-        checkMusicPlaying,
         getCurrentMusic,
         soundCompleted
     }
