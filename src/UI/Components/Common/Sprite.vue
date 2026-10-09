@@ -1,5 +1,6 @@
 <template>
-  <img ref="sprite" :src="`resources/${spriteSettings.sheet}`" @load="initSprite"/>
+  <img ref="sprite" :src="`resources/${spriteSettings.sheet}`" @load="initSprite"
+       :data-sprite-width="spriteSettings.width" :data-sprite-height="spriteSettings.height"/>
 </template>
 <script lang="ts" setup>
 import {Sprite} from "storyScript/Interfaces/sprite.ts";

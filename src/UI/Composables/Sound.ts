@@ -51,6 +51,9 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
             }
 
             if (audioContext.state === 'running') {
+                // Trigger a play again even though the state is already running. On 2026-10-09 on Chrome 155, at least
+                // while developing, music will not start without this line.
+                await musicPlayer.value.play();
                 canPlay.value = true;
                 return;
             }
