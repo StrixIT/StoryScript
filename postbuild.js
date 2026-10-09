@@ -6,7 +6,7 @@ import gameName from "./currentGameName.js";
 import {fileURLToPath} from "url";
 import sharp from 'sharp';
 import {execFile} from 'child_process'
-import ffmpegStatic from 'ffmpeg-static'
+import which from "which";
 
 const {readFileSync} = jsonfile;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -53,14 +53,16 @@ const soundFiles = getFiles(resourcePath, ['.mp3']);
 
 if (soundFiles?.length) {
 
-    if (!ffmpegStatic) {
-        console.error('FFmpeg is not installed. Please install it to optimize sound files.');
+    // Check if FFmpeg is available on the system. If not, log a warning.
+    const ffmpegPath = await which('ffmpeg').catch(() => null);
+
+    if (!ffmpegPath) {
+        console.warn('FFmpeg is not installed. Please install it to optimize sound files.');
     } else {
         await optimizeFiles('sounds', soundFiles, async (filePath, tempPath) => {
-            execFile(ffmpegStatic, ['-i', filePath, '-b:a', '64k', tempPath], (error) => {
+            execFile(ffmpegPath, ['-i', filePath, '-b:a', '64k', tempPath], (error) => {
                 if (error) {
                     console.error(`Error converting ${filePath}:`, error.message);
-                    reject(error);
                 } else {
                     resolve(filePath);
                 }
