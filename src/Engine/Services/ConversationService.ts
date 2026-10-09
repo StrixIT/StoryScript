@@ -6,7 +6,7 @@ import {PlayState} from 'storyScript/Interfaces/enumerations/playState';
 import {IConversationNode} from 'storyScript/Interfaces/conversations/conversationNode';
 import {IConversationReply} from 'storyScript/Interfaces/conversations/conversationReply';
 import {IConversation} from 'storyScript/Interfaces/conversations/conversation';
-import {checkAutoplay, parseGamePropertiesInTemplate} from './sharedFunctions';
+import {parseGamePropertiesInTemplate} from './sharedFunctions';
 import {compareString, hasItem} from "storyScript/utilityFunctions.ts";
 import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";
@@ -27,7 +27,7 @@ export class ConversationService implements IConversationService {
         person.conversation.conversationLog ??= [];
 
         person.conversation.conversationLog.push({
-            lines: checkAutoplay(this._game, node.lines),
+            lines: node.lines,
             reply: reply.lines
         });
 
@@ -66,7 +66,6 @@ export class ConversationService implements IConversationService {
             return;
         }
 
-        activeNode.lines = checkAutoplay(this._game, activeNode.lines);
         person.conversation.activeNode = activeNode;
 
         this.initReplies(person);
@@ -223,7 +222,7 @@ export class ConversationService implements IConversationService {
     private readonly initReplies = (person: IPerson): void => {
         const activeNode = person.conversation.activeNode;
 
-        activeNode.replies = activeNode.replies.filter(r => 
+        activeNode.replies = activeNode.replies.filter(r =>
             !r.once || !person.conversation.singleRepliesChosen?.includes(this.getReplyId(activeNode, r)));
 
         activeNode.replies.forEach(reply => {
@@ -239,7 +238,7 @@ export class ConversationService implements IConversationService {
                 reply.available = this.checkReplyAvailability(activeNode, reply);
             }
         });
-        
+
         this._rules.encounters?.initReplies?.(this._game, activeNode);
     }
 
@@ -261,7 +260,7 @@ export class ConversationService implements IConversationService {
                 conversation.singleRepliesChosen = !conversation.singleRepliesChosen ? '' : conversation.singleRepliesChosen + ';';
                 conversation.singleRepliesChosen += this.getReplyId(conversation.activeNode, reply);
             }
-            
+
             activeNode = conversation.nodes.filter((node) => {
                 return node.node == reply.linkToNode;
             })[0];
@@ -272,12 +271,6 @@ export class ConversationService implements IConversationService {
         } else {
             conversation.activeNode = null;
         }
-
-        if (!activeNode?.lines) {
-            return;
-        }
-
-        activeNode!.lines = checkAutoplay(this._game, activeNode!.lines);
     }
 
     private readonly executeAction = (key: string, person: IPerson) => {

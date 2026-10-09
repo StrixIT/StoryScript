@@ -4,7 +4,6 @@ import {IInterfaceTexts} from 'storyScript/Interfaces/interfaceTexts';
 import {ISaveGame} from 'storyScript/Interfaces/saveGame';
 import {IItem} from 'storyScript/Interfaces/item';
 import {ScoreEntry} from 'storyScript/Interfaces/scoreEntry';
-import {checkAutoplay} from './sharedFunctions';
 import {DefaultTexts} from 'storyScript/defaultTexts';
 import {IGameService} from 'storyScript/Interfaces/services//gameService';
 import {IDataService} from 'storyScript/Interfaces/services//dataService';
@@ -19,14 +18,13 @@ import {IParty} from 'storyScript/Interfaces/party';
 import {ICreateCharacter} from 'storyScript/Interfaces/createCharacter/createCharacter';
 import {
     Characters,
-    DescriptionProperty,
     GameStateSave,
     HighScores,
     Items,
     Quests,
     SaveGamePrefix
 } from 'src/constants.ts';
-import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
+import {InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
 import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
@@ -457,11 +455,6 @@ export class GameService implements IGameService {
             },
             set: (value: { title: string, type: string, item: IFeature }) => {
                 currentDescription = value;
-
-                if (currentDescription.item.description) {
-                    currentDescription.item.description = checkAutoplay(this._game, getParsedDocument(DescriptionProperty, currentDescription.item.description, true)[0].innerHTML);
-                }
-
                 this._game.playState = PlayState.Description;
             }
         });

@@ -7,7 +7,7 @@ import {StateList, StateListEntry} from "storyScript/Interfaces/stateList.ts";
 import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ILocation} from "storyScript/Interfaces/location.ts";
-import {compareString, parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
+import {compareString} from "storyScript/utilityFunctions.ts";
 import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
 import {DescriptionProperty} from 'src/constants.ts';
 
@@ -196,26 +196,13 @@ function mapPlaylistEntries(game: IGame, key: string, entry: StateListEntry) {
         .sort((a, b) => a.order - b.order)[0];
 }
 
-export function checkAutoplay(game: IGame, value: string, autoPlayCheck?: boolean) {
-    // Check media with the autoplay property to play only once.
-    autoPlayCheck = autoPlayCheck ?? true;
-    const htmlDocumentFromString = parseHtmlDocumentFromString(value);
-
-    if (autoPlayCheck) {
-        value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);
-        value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('video'), game.sounds.playedAudio);
-    }
-
-    return value;
-}
-
 export function getItemFromParty(party: IParty, item: string | (() => IItem)): IItem {
     let foundItem: IItem;
 
     party.characters.forEach(c => {
         foundItem = foundItem ?? getItemFromItemsAndEquipment(c, item);
     });
-    
+
     return foundItem;
 }
 
@@ -257,7 +244,7 @@ export function removeItemFromItemsAndEquipment(character: ICharacter, item: IIt
 
 function getItemFromItemsAndEquipment(character: ICharacter, item: string | (() => IItem)): IItem {
     let foundItem = character.items.get(item);
-    
+
     if (foundItem) {
         return foundItem;
     }
@@ -265,7 +252,7 @@ function getItemFromItemsAndEquipment(character: ICharacter, item: string | (() 
     if (character.equipment) {
         for (const n in character.equipment) {
             const currentItem = character.equipment[n] as IItem;
-            
+
             if ((typeof item === 'function' && currentItem.id == item.name ) || (currentItem.id == item)) {
                 return character.equipment[n];
             }
@@ -287,28 +274,6 @@ function getFilteredInstantiatedCollection<T>(collection: T[] | (() => T)[], sel
     }
 
     return selector ? collectionToFilter.filter(selector) : collectionToFilter;
-}
-
-const autoplayAttribute = 'autoplay';
-const sourceAttribute = 'src';
-
-function checkAutoplayProperties(value: string, elements: HTMLCollectionOf<HTMLElement>, playedAudio: string[]) {
-    Array.from(elements).forEach(e => {
-        const originalText = e.outerHTML;
-        const source = e.getElementsByTagName('source')[0]?.getAttribute(sourceAttribute)?.toLowerCase()
-            ?? e.getAttribute(sourceAttribute)?.toLowerCase();
-
-        if (originalText && source && e.hasAttribute(autoplayAttribute)) {
-            if (playedAudio.indexOf(source) < 0) {
-                playedAudio.push(source);
-            } else {
-                e.removeAttribute(autoplayAttribute);
-                value = value.replace(originalText, e.outerHTML);
-            }
-        }
-    });
-
-    return value;
 }
 
 function selectCandidate(game: IGame, key: string, item: (GameState | PlayState | (() => ILocation) | ((game: IGame) => string) | string)) {
