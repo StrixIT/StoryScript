@@ -1,16 +1,16 @@
-import {IFeature} from '../Interfaces/feature';
-import {IItem} from '../Interfaces/item';
-import {IEnemy} from '../Interfaces/enemy';
-import {IPerson} from '../Interfaces/person';
-import {IGame} from '../Interfaces/game';
-import {IRules} from '../Interfaces/rules/rules';
-import {IInterfaceTexts} from '../Interfaces/interfaceTexts';
+import {IFeature} from 'storyScript/Interfaces/feature';
+import {IItem} from 'storyScript/Interfaces/item';
+import {IEnemy} from 'storyScript/Interfaces/enemy';
+import {IPerson} from 'storyScript/Interfaces/person';
+import {IGame} from 'storyScript/Interfaces/game';
+import {IRules} from 'storyScript/Interfaces/rules/rules';
+import {IInterfaceTexts} from 'storyScript/Interfaces/interfaceTexts';
 import {removeItemFromParty} from './sharedFunctions';
-import {ICombinationService} from '../Interfaces/services/combinationService';
-import {ICombinationAction} from '../Interfaces/combinations/combinationAction';
-import {ICombinable} from '../Interfaces/combinations/combinable';
-import {ICombineResult} from '../Interfaces/combinations/combineResult';
-import {IActiveCombination} from '../Interfaces/combinations/activeCombination';
+import {ICombinationService} from 'storyScript/Interfaces/services/combinationService';
+import {ICombinationAction} from 'storyScript/Interfaces/combinations/combinationAction';
+import {ICombinable} from 'storyScript/Interfaces/combinations/combinable';
+import {ICombineResult} from 'storyScript/Interfaces/combinations/combineResult';
+import {IActiveCombination} from 'storyScript/Interfaces/combinations/activeCombination';
 import {compareString, getId} from 'storyScript/utilityFunctions';
 
 export class CombinationService implements ICombinationService {

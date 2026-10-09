@@ -1,6 +1,6 @@
-﻿import {IGame} from '../Interfaces/game';
-import {IBarrier} from '../Interfaces/barrier';
-import {IDestination} from '../Interfaces/destination';
+﻿import {IGame} from 'storyScript/Interfaces/game';
+import {IBarrier} from 'storyScript/Interfaces/barrier';
+import {IDestination} from 'storyScript/Interfaces/destination';
 import {makeSerializeSafe} from "storyScript/Services/sharedFunctions.ts";
 
 /**

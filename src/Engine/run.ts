@@ -3,7 +3,7 @@ import {addArrayExtensions, addFunctionExtensions} from './arrayAndFunctionExten
 import {IInterfaceTexts} from './Interfaces/interfaceTexts';
 import {IRules} from './Interfaces/rules/rules';
 import {buildEntities} from './EntityCreatorFunctions';
-import {entityTypeRegex} from '../../constants';
+import {entityTypeRegex} from 'src/constants';
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
 /**

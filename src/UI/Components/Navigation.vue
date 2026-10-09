@@ -50,7 +50,7 @@
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {isDevelopment} from "../../../constants.ts";
+import {isDevelopment} from 'src/constants.ts';
 import {ref, useTemplateRef} from "vue";
 
 const maxLocationsShown = 20;

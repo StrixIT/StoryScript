@@ -1,15 +1,15 @@
-﻿import {IRules} from '../Interfaces/rules/rules';
-import {IGame} from '../Interfaces/game';
-import {ICharacter} from '../Interfaces/character';
-import {IItem} from '../Interfaces/item';
-import {IQuest} from '../Interfaces/quest';
-import {ICharacterService} from '../Interfaces/services/characterService';
-import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
-import {ICreateCharacterAttribute} from '../Interfaces/createCharacter/createCharacterAttribute';
-import {ICreateCharacterAttributeEntry} from '../Interfaces/createCharacter/createCharacterAttributeEntry';
-import {ICreateCharacterStep} from '../Interfaces/createCharacter/createCharacterStep';
-import {GameState} from '../Interfaces/enumerations/gameState';
-import {getEquipmentType} from '../utilityFunctions';
+﻿import {IRules} from 'storyScript/Interfaces/rules/rules';
+import {IGame} from 'storyScript/Interfaces/game';
+import {ICharacter} from 'storyScript/Interfaces/character';
+import {IItem} from 'storyScript/Interfaces/item';
+import {IQuest} from 'storyScript/Interfaces/quest';
+import {ICharacterService} from 'storyScript/Interfaces/services/characterService';
+import {ICreateCharacter} from 'storyScript/Interfaces/createCharacter/createCharacter';
+import {ICreateCharacterAttribute} from 'storyScript/Interfaces/createCharacter/createCharacterAttribute';
+import {ICreateCharacterAttributeEntry} from 'storyScript/Interfaces/createCharacter/createCharacterAttributeEntry';
+import {ICreateCharacterStep} from 'storyScript/Interfaces/createCharacter/createCharacterStep';
+import {GameState} from 'storyScript/Interfaces/enumerations/gameState';
+import {getEquipmentType} from 'storyScript/utilityFunctions';
 import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
 
 export class CharacterService implements ICharacterService {

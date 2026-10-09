@@ -1,7 +1,7 @@
 import {computed, onUpdated, Ref, ref, watch} from "vue";
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {isTouchDevice} from "../../../constants.ts";
+import {isTouchDevice} from 'src/constants.ts';
 
 const prepareLoadedImages = (locationImagesRef: HTMLImageElement[]) => {
     const loadedImages: { element: HTMLImageElement, loadPromise: Promise<void> }[] = [];

@@ -8,6 +8,7 @@ import vue from '@vitejs/plugin-vue';
 
 const gamePath = path.resolve(import.meta.dirname, `./src/Games/${gameName}`);
 const uiPath = path.resolve(import.meta.dirname, `./src/UI`);
+const srcPath = path.resolve(import.meta.dirname, `./src`);
 
 const plugins = [
     vue(),
@@ -44,6 +45,7 @@ export default defineConfig({
             storyScript: path.resolve(import.meta.dirname, './src/Engine'),
             game: gamePath,
             ui: uiPath,
+            src: srcPath,
             $resources: path.resolve(gamePath, 'resources')
         }
     },

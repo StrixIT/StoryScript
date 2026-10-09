@@ -34,6 +34,10 @@ const {
   soundCompleted
 } = useSound(musicPlayer);
 
-watch(canPlay, () => musicPlayer.value.muted = false);
+watch(canPlay, (newValue) => {
+  if (musicPlayer.value) {
+    musicPlayer.value.muted = !newValue;
+  }
+});
 
 </script>

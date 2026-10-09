@@ -3,7 +3,7 @@ import {IFeature} from "storyScript/Interfaces/feature.ts";
 import {useStateStore} from "ui/StateStore.ts";
 import {Ref, watch} from "vue";
 import {storeToRefs} from "pinia";
-import {isTouchDevice} from "../../../constants.ts";
+import {isTouchDevice} from 'src/constants.ts';
 
 export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const activeTriggerClass = 'trigger-active';

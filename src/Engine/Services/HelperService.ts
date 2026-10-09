@@ -1,10 +1,10 @@
-import {IHelpers} from '../Interfaces/helpers';
-import {IEnemy} from '../Interfaces/enemy';
-import {IItem} from '../Interfaces/item';
-import {IDefinitions} from '../Interfaces/definitions';
-import {compareString} from '../utilityFunctions';
+import {IHelpers} from 'storyScript/Interfaces/helpers';
+import {IEnemy} from 'storyScript/Interfaces/enemy';
+import {IItem} from 'storyScript/Interfaces/item';
+import {IDefinitions} from 'storyScript/Interfaces/definitions';
+import {compareString} from 'storyScript/utilityFunctions';
 import {getItemFromParty, random, removeItemFromParty} from "storyScript/Services/sharedFunctions.ts";
-import { IGame } from '../Interfaces/game';
+import { IGame } from 'storyScript/Interfaces/game';
 
 export class HelperService implements IHelpers {
     constructor(private _game: IGame, private _definitions: IDefinitions) {

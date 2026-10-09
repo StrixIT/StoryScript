@@ -1,22 +1,22 @@
-﻿import {IRules} from '../Interfaces/rules/rules';
-import {IGame} from '../Interfaces/game';
-import {IInterfaceTexts} from '../Interfaces/interfaceTexts';
-import {ISaveGame} from '../Interfaces/saveGame';
-import {IItem} from '../Interfaces/item';
-import {ScoreEntry} from '../Interfaces/scoreEntry';
+﻿import {IRules} from 'storyScript/Interfaces/rules/rules';
+import {IGame} from 'storyScript/Interfaces/game';
+import {IInterfaceTexts} from 'storyScript/Interfaces/interfaceTexts';
+import {ISaveGame} from 'storyScript/Interfaces/saveGame';
+import {IItem} from 'storyScript/Interfaces/item';
+import {ScoreEntry} from 'storyScript/Interfaces/scoreEntry';
 import {checkAutoplay} from './sharedFunctions';
-import {DefaultTexts} from '../defaultTexts';
-import {IGameService} from '../Interfaces/services//gameService';
-import {IDataService} from '../Interfaces/services//dataService';
-import {ILocationService} from '../Interfaces/services/locationService';
-import {ICharacterService} from '../Interfaces/services/characterService';
-import {ICombinationService} from '../Interfaces/services/combinationService';
-import {GameState} from '../Interfaces/enumerations/gameState';
-import {PlayState} from '../Interfaces/enumerations/playState';
-import {ICombinable} from '../Interfaces/combinations/combinable';
-import {IFeature} from '../Interfaces/feature';
-import {IParty} from '../Interfaces/party';
-import {ICreateCharacter} from '../Interfaces/createCharacter/createCharacter';
+import {DefaultTexts} from 'storyScript/defaultTexts';
+import {IGameService} from 'storyScript/Interfaces/services//gameService';
+import {IDataService} from 'storyScript/Interfaces/services//dataService';
+import {ILocationService} from 'storyScript/Interfaces/services/locationService';
+import {ICharacterService} from 'storyScript/Interfaces/services/characterService';
+import {ICombinationService} from 'storyScript/Interfaces/services/combinationService';
+import {GameState} from 'storyScript/Interfaces/enumerations/gameState';
+import {PlayState} from 'storyScript/Interfaces/enumerations/playState';
+import {ICombinable} from 'storyScript/Interfaces/combinations/combinable';
+import {IFeature} from 'storyScript/Interfaces/feature';
+import {IParty} from 'storyScript/Interfaces/party';
+import {ICreateCharacter} from 'storyScript/Interfaces/createCharacter/createCharacter';
 import {
     Characters,
     DescriptionProperty,
@@ -25,7 +25,7 @@ import {
     Items,
     Quests,
     SaveGamePrefix
-} from "../../../constants.ts";
+} from 'src/constants.ts';
 import {getParsedDocument, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
 import {IEquipment} from "storyScript/Interfaces/equipment.ts";
 import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";

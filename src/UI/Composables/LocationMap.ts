@@ -2,7 +2,7 @@ import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {computed, onMounted, onUpdated, Ref, ref, watch} from "vue";
 import {IMap} from "storyScript/Interfaces/maps/map.ts";
-import {isTouchDevice} from "../../../constants.ts";
+import {isTouchDevice} from 'src/constants.ts';
 
 export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef: Ref<HTMLDialogElement>) {
     const visible: string = 'visible';

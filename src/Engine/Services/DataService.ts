@@ -1,9 +1,9 @@
-﻿import {isEmpty} from '../utilityFunctions';
-import {IDataService} from '../Interfaces/services/dataService';
-import {ILocalStorageService} from '../Interfaces/services/localStorageService';
+﻿import {isEmpty} from 'storyScript/utilityFunctions';
+import {IDataService} from 'storyScript/Interfaces/services/dataService';
+import {ILocalStorageService} from 'storyScript/Interfaces/services/localStorageService';
 import {IDataSerializer} from 'storyScript/Interfaces/services/dataSerializer';
 import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronizer';
-import {GameStateSave, SaveGamePrefix} from "../../../constants.ts";
+import {GameStateSave, SaveGamePrefix} from "src/constants.ts";
 import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
 import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {IRules} from "storyScript/Interfaces/rules/rules.ts";

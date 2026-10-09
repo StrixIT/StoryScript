@@ -3,7 +3,7 @@ import {InitEntityCollection} from "storyScript/EntityCreatorFunctions";
 import {StateProperties} from "storyScript/stateProperties.ts";
 import {SerializationData} from "storyScript/Services/serializationData.ts";
 import {getKeyPropertyNames, getPlural, isDataRecord} from "storyScript/utilityFunctions";
-import {DescriptionProperty, IdProperty} from "../../../constants.ts";
+import {DescriptionProperty, IdProperty} from 'src/constants.ts';
 import {parseFunction, serializeFunction} from "storyScript/Services/sharedFunctions.ts";
 import {IFeature} from "storyScript/Interfaces/feature.ts";
 

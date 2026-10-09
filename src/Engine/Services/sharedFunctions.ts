@@ -1,6 +1,6 @@
-import {ICharacter} from '../Interfaces/character';
-import {IItem} from '../Interfaces/item';
-import {IParty} from '../Interfaces/party';
+import {ICharacter} from 'storyScript/Interfaces/character';
+import {IItem} from 'storyScript/Interfaces/item';
+import {IParty} from 'storyScript/Interfaces/party';
 import {IGame} from "storyScript/Interfaces/game.ts";
 import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 import {StateList, StateListEntry} from "storyScript/Interfaces/stateList.ts";
@@ -9,7 +9,7 @@ import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
 import {ILocation} from "storyScript/Interfaces/location.ts";
 import {compareString, parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
 import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
-import {DescriptionProperty} from "../../../constants.ts";
+import {DescriptionProperty} from 'src/constants.ts';
 
 const parsedDescriptions = new Map<string, boolean>();
 

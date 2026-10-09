@@ -1,4 +1,4 @@
-import {IPerson} from '../../Interfaces/person';
+import {IPerson} from 'storyScript/Interfaces/person';
 import {IConversationNode} from '../conversations/conversationNode';
 import {IConversationReply} from '../conversations/conversationReply';
 

@@ -11,7 +11,7 @@ import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './util
 import {ICombinable} from './Interfaces/combinations/combinable';
 import {ICombine} from './Interfaces/combinations/combine';
 import {ICompiledLocation, IDestination, IGroupableItem} from './Interfaces/storyScript';
-import {DescriptionProperty, Enemies, Features, Items, Locations, Maps, Persons, Quests} from "../../constants.ts";
+import {DescriptionProperty, Enemies, Features, Items, Locations, Maps, Persons, Quests} from 'src/constants.ts';
 import {gameEvents} from "storyScript/gameEvents.ts";
 
 const _entityCollections: string[] = [

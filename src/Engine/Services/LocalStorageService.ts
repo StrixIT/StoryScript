@@ -1,4 +1,4 @@
-import {ILocalStorageService} from '../Interfaces/services/localStorageService';
+import {ILocalStorageService} from 'storyScript/Interfaces/services/localStorageService';
 
 const StoryScriptPrefix: string = 'StoryScript_';
 

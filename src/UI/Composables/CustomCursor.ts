@@ -1,7 +1,7 @@
 import {onMounted, Ref, watch} from "vue";
 import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {isTouchDevice} from "../../../constants.ts";
+import {isTouchDevice} from 'src/constants.ts';
 import {ICustomCursor} from "storyScript/Interfaces/customCursor.ts";
 import {IActiveCombination} from "storyScript/Interfaces/combinations/activeCombination.ts";
 

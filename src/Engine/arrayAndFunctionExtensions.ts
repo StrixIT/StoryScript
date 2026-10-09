@@ -1,6 +1,6 @@
 ﻿import {StateProperties} from "./stateProperties.ts";
 import {compareString, getId, getKeyPropertyNames, isDataRecord, propertyMatch} from "./utilityFunctions";
-import {TypeProperty} from "../../constants.ts";
+import {TypeProperty} from 'src/constants.ts';
 
 const deletedCollection: string = '_deleted';
 
