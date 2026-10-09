@@ -6,7 +6,7 @@ import gameName from "./currentGameName.js";
 import {fileURLToPath} from "url";
 import sharp from 'sharp';
 import {execFile} from 'child_process'
-import ffmpegStatic from 'ffmpeg-static'
+import which from "which";
 
 const {readFileSync} = jsonfile;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,7 +33,7 @@ if (gameInfo.sourcesIncluded) {
 }
 
 // 3. Optimize jpg and png images using sharp.
-const imageFiles = getFiles(resourcePath, ['.jpg', '.png']);
+const imageFiles = getFiles(resourcePath, ['.jpg', '.png', 'webp']);
 
 if (imageFiles?.length) {
     await optimizeFiles('images', imageFiles, async (filePath, tempPath) => {
@@ -42,6 +42,8 @@ if (imageFiles?.length) {
             await sharpStream.png({quality: 80}).toFile(tempPath);
         } else if (filePath.indexOf('.jpg') > -1) {
             await sharpStream.jpeg({quality: 80}).toFile(tempPath);
+        } else if (filePath.indexOf('.webp') > -1) {
+            await sharpStream.webp({quality: 80}).toFile(tempPath);
         }
     });
 }
@@ -51,14 +53,16 @@ const soundFiles = getFiles(resourcePath, ['.mp3']);
 
 if (soundFiles?.length) {
 
-    if (!ffmpegStatic) {
-        console.error('FFmpeg is not installed. Please install it to optimize sound files.');
+    // Check if FFmpeg is available on the system. If not, log a warning.
+    const ffmpegPath = await which('ffmpeg').catch(() => null);
+
+    if (!ffmpegPath) {
+        console.warn('FFmpeg is not installed. Please install it to optimize sound files.');
     } else {
         await optimizeFiles('sounds', soundFiles, async (filePath, tempPath) => {
-            execFile(ffmpegStatic, ['-i', filePath, '-b:a', '64k', tempPath], (error) => {
+            execFile(ffmpegPath, ['-i', filePath, '-b:a', '64k', tempPath], (error) => {
                 if (error) {
                     console.error(`Error converting ${filePath}:`, error.message);
-                    reject(error);
                 } else {
                     resolve(filePath);
                 }

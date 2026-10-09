@@ -8,6 +8,7 @@
          ref="music-player"
          :src="`resources/${getCurrentMusic()}`"
          autoplay
+         muted
          class="storyscript-player"
          loop>
   </audio>
@@ -18,34 +19,21 @@
   </audio>
 </template>
 <script lang="ts" setup>
-import {onMounted, onUnmounted, useTemplateRef} from "vue";
+import {useTemplateRef, watch} from "vue";
 import {useSound} from "ui/Composables/Sound.ts";
 import {useStateStore} from "ui/StateStore.ts";
 
 const store = useStateStore();
 const {texts} = store.services;
+const musicPlayer = useTemplateRef('music-player');
 
 const {
   canPlay,
   getSoundQueue,
   getCurrentMusic,
-  checkMusicPlaying,
   soundCompleted
-} = useSound(useTemplateRef('music-player'));
-let interval: NodeJS.Timeout;
+} = useSound(musicPlayer);
 
-onMounted(() => {
-  interval = setInterval(() => {
-    if (!canPlay.value) {
-      checkMusicPlaying();
-    } else {
-      clearInterval(interval);
-    }
-  }, 1000);
-})
-
-onUnmounted(() => {
-  clearInterval(interval);
-})
+watch(canPlay, () => musicPlayer.value.muted = false);
 
 </script>

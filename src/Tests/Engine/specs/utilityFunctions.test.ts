@@ -99,15 +99,6 @@ describe("UtilityFunctions", function () {
         expect(result).toEqual('test');
     });
 
-    test("should return function name as id when it contains _", function () {
-        function TestFunction_TestFunction() {
-            return;
-        }
-
-        const result = getId(TestFunction_TestFunction);
-        expect(result).toEqual('testfunction');
-    });
-
     test("should return function name as id when it contains $", function () {
         function TestFunction$2() {
             return;

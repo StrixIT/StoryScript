@@ -54,8 +54,12 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     }
 
     window.onresize = () => {
+        const oldFactor = factor.value;
         calculateFactor();
-        prepareFeatures();
+        
+        if (factor.value !== oldFactor) {
+            prepareFeatures();
+        }
     };
 
     onUpdated(() => {
@@ -95,8 +99,8 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
                 }
 
                 const originalDimensions = featureImageOriginalDimensions.get(imageKey);
-                i.width = Math.round(originalDimensions[0] * factor.value);
-                i.height = Math.round(originalDimensions[1] * factor.value);
+                i.width = i.dataset.spriteWidth ? Number.parseInt(i.dataset.spriteWidth) * factor.value : Math.round(originalDimensions[0] * factor.value);
+                i.height = i.dataset.spriteHeight ? Number.parseInt(i.dataset.spriteHeight) * factor.value : Math.round(originalDimensions[1] * factor.value);
             });
 
             // Reposition areas and images for features and add symbols for active combination.
