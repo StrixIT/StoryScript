@@ -69,7 +69,7 @@ export class CombinationService implements ICombinationService {
             text: ''
         };
 
-        if (!target) {
+        if (!target || (target as IFeature).interactive === false) {
             return result;
         }
 

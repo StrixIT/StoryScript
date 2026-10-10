@@ -33,4 +33,11 @@ export interface IFeature extends ICombinable {
      * be shown on top of the image map for this feature. Use either a picture OR an animation.
      */
     animation?: Sprite;
+
+    /**
+     * This flag controls whether the feature can be interacted with. When not set, it defaults to true. Only when
+     * explicitly set to false can the feature not be interacted with. Non-interactive features can be used to for 
+     * example enrich the game in visual adventure games.
+     */
+    interactive?: boolean;
 }
