@@ -11,5 +11,6 @@ export function HealingLight() {
 			speed: 1,
 		},
 		equipmentType: EquipmentType.Miscellaneous,
+		interactive: false
 	});
 }

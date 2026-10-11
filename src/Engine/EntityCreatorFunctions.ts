@@ -182,7 +182,7 @@ export function setDestination(destination: IDestination) {
     destination.target = getId(destination.target);
 
     if (destination.barriers) {
-        destination.barriers.forEach(([k, b]) => {
+        destination.barriers.forEach(([_, b]) => {
             if (b.key) {
                 const key = b.key;
                 b.key = getId(key);
@@ -276,7 +276,7 @@ function createLocation(entity: ILocation) {
 
     if (location.destinations) {
         location.destinations.forEach(d => {
-            d.barriers?.forEach(([k, b]) => {
+            d.barriers?.forEach(([_, b]) => {
                 if (b.key) {
                     b.key = getId(b.key);
                 }
@@ -530,12 +530,6 @@ function getEntityKey(entity: object): string {
 
         return text;
     }).filter(e => e).join('|');
-}
-
-function filterInactive(items: any[]) {
-    return items.filter(e => {
-        return !e.inactive;
-    });
 }
 
 function compileCombinations(entry: ICombinable) {

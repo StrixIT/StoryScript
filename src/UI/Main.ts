@@ -53,6 +53,19 @@ logTime('Mount app', () => {
     application.mount('#app');
 });
 
+// Register the service worker so the game can be installed as a PWA.
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(_ => {
+                console.log('Service Worker registered successfully.')
+            })
+            .catch((error) => {
+                console.log('Service Worker registration failed:', error)
+            })
+    })
+}
+
 function getComponents(): Map<string, any> {
     const combinedTemplates = new Map<string, any>();
 

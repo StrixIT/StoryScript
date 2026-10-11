@@ -13,15 +13,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const gamePath = resolve(__dirname, `./src/Games/${gameName}`);
 const resourcePath = resolve(__dirname, `./dist/resources`);
 const tempResourcePath = path.join(resourcePath, '_tmp');
-const gameInfoPath = `${gamePath}/gameinfo.json`;
-const gameInfo = readFileSync(gameInfoPath);
+const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
 
-// 1. Copy the gameinfo.json file.
-fs.copyFile(gameInfoPath, 'dist/gameinfo.json', () => {
-});
+let gameInfo;
+
+if (fs.existsSync(gamePath)) {
+    gameInfo = readFileSync(gameInfoPath);
+}
 
 // 2. Include the game sources if specified to do so.
-if (gameInfo.sourcesIncluded) {
+if (gameInfo?.sourcesIncluded) {
     fs.cpSync(gamePath, 'dist/sources', {recursive: true});
 
     if (fs.existsSync('dist/sources/resources')) {
