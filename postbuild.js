@@ -15,60 +15,63 @@ const resourcePath = resolve(__dirname, `./dist/resources`);
 const tempResourcePath = path.join(resourcePath, '_tmp');
 const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
 
-let gameInfo;
+export async function postBuild() {
 
-if (fs.existsSync(gameInfoPath)) {
-    gameInfo = readFileSync(gameInfoPath);
-}
+    let gameInfo;
 
-// 2. Include the game sources if specified to do so.
-if (gameInfo?.sourcesIncluded) {
-    fs.cpSync(gamePath, 'dist/sources', {recursive: true});
-
-    if (fs.existsSync('dist/sources/resources')) {
-        fs.rmSync('dist/sources/resources', {recursive: true});
+    if (fs.existsSync(gameInfoPath)) {
+        gameInfo = readFileSync(gameInfoPath);
     }
 
-    await zipDirectory('dist/sources', 'dist/sources.zip');
-    fs.rmSync('dist/sources', {recursive: true});
-}
+    // 1. Include the game sources if specified to do so.
+    if (gameInfo?.sourcesIncluded) {
+        fs.cpSync(gamePath, 'dist/sources', {recursive: true});
 
-// 3. Optimize jpg and png images using sharp.
-const imageFiles = getFiles(resourcePath, ['.jpg', '.png', 'webp']);
-
-if (imageFiles?.length) {
-    await optimizeFiles('images', imageFiles, async (filePath, tempPath) => {
-        const sharpStream = sharp(filePath);
-        if (filePath.indexOf('.png') > -1) {
-            await sharpStream.png({quality: 80}).toFile(tempPath);
-        } else if (filePath.indexOf('.jpg') > -1) {
-            await sharpStream.jpeg({quality: 80}).toFile(tempPath);
-        } else if (filePath.indexOf('.webp') > -1) {
-            await sharpStream.webp({quality: 80}).toFile(tempPath);
+        if (fs.existsSync('dist/sources/resources')) {
+            fs.rmSync('dist/sources/resources', {recursive: true});
         }
-    });
-}
 
-// 4. Optimize sound files
-const soundFiles = getFiles(resourcePath, ['.mp3']);
+        await zipDirectory('dist/sources', 'dist/sources.zip');
+        fs.rmSync('dist/sources', {recursive: true});
+    }
 
-if (soundFiles?.length) {
+    // 2. Optimize jpg and png images using sharp.
+    const imageFiles = getFiles(resourcePath, ['.jpg', '.png', 'webp']);
 
-    // Check if FFmpeg is available on the system. If not, log a warning.
-    const ffmpegPath = await which('ffmpeg').catch(() => null);
-
-    if (!ffmpegPath) {
-        console.warn('FFmpeg is not installed. Please install it to optimize sound files.');
-    } else {
-        await optimizeFiles('sounds', soundFiles, async (filePath, tempPath) => {
-            execFile(ffmpegPath, ['-i', filePath, '-b:a', '64k', tempPath], (error) => {
-                if (error) {
-                    console.error(`Error converting ${filePath}:`, error.message);
-                } else {
-                    resolve(filePath);
-                }
-            });
+    if (imageFiles?.length) {
+        await optimizeFiles('images', imageFiles, async (filePath, tempPath) => {
+            const sharpStream = sharp(filePath);
+            if (filePath.indexOf('.png') > -1) {
+                await sharpStream.png({quality: 80}).toFile(tempPath);
+            } else if (filePath.indexOf('.jpg') > -1) {
+                await sharpStream.jpeg({quality: 80}).toFile(tempPath);
+            } else if (filePath.indexOf('.webp') > -1) {
+                await sharpStream.webp({quality: 80}).toFile(tempPath);
+            }
         });
+    }
+
+    // 3. Optimize sound files using FFmpeg.
+    const soundFiles = getFiles(resourcePath, ['.mp3']);
+
+    if (soundFiles?.length) {
+
+        // Check if FFmpeg is available on the system. If not, log a warning.
+        const ffmpegPath = await which('ffmpeg').catch(() => null);
+
+        if (!ffmpegPath) {
+            console.warn('FFmpeg is not installed. Please install it to optimize sound files.');
+        } else {
+            await optimizeFiles('sounds', soundFiles, async (filePath, tempPath) => {
+                execFile(ffmpegPath, ['-i', filePath, '-b:a', '64k', tempPath], (error) => {
+                    if (error) {
+                        console.error(`Error converting ${filePath}:`, error.message);
+                    } else {
+                        resolve(filePath);
+                    }
+                });
+            });
+        }
     }
 }
 

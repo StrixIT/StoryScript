@@ -7,6 +7,7 @@ import gameName from './currentGameName.js';
 import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import jsonfile from "jsonfile";
+import { VitePWA } from 'vite-plugin-pwa'
 
 const {readFileSync} = jsonfile;
 const gamePath = path.resolve(import.meta.dirname, `./src/Games/${gameName}`);
@@ -18,6 +19,17 @@ let gameInfo;
 
 if (fs.existsSync(gameInfoPath)) {
     gameInfo = readFileSync(gameInfoPath);
+}
+
+function runPostBuild() {
+    return {
+        name: 'run-postbuild',
+        apply: 'build',
+        async writeBundle() {
+            const { postBuild } = await import('./postbuild.js');
+            await postBuild();
+        },
+    }
 }
 
 const plugins = [
@@ -48,6 +60,21 @@ const plugins = [
                 rename: {stripBase: 4}
             }
         ]
+    }),
+    runPostBuild(),
+    VitePWA({
+        registerType: 'autoUpdate',
+        devOptions: {
+            enabled: true
+        },workbox: {
+            globDirectory: 'dist',
+            globPatterns: [
+                'assets/**/*',
+                'resources/**/*',
+                'index.html',
+                'manifest.webmanifest',
+            ],
+        }
     }),
     visualizer()
 ];
