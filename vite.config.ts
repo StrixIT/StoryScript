@@ -16,7 +16,7 @@ const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
 
 let gameInfo;
 
-if (fs.existsSync(gamePath)) {
+if (fs.existsSync(gameInfoPath)) {
     gameInfo = readFileSync(gameInfoPath);
 }
 
