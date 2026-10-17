@@ -1,7 +1,7 @@
-import gameName from './currentGameName.js';
+import gameName from '../currentGameName.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import pkg from 'jsonfile';
-import {entityNameRegex} from "./constants.ts";
+import {entityNameRegex} from "../src/constants.ts";
 
 const gameDir = `src/Games/${gameName}`;
 const { readFileSync } = pkg;

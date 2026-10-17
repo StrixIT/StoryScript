@@ -26,7 +26,7 @@ function runPostBuild() {
         name: 'run-postbuild',
         apply: 'build',
         async writeBundle() {
-            const { postBuild } = await import('./postbuild.js');
+            const { postBuild } = await import('./scripts/postbuild.js');
             await postBuild();
         },
     }
@@ -65,7 +65,7 @@ const plugins = [
     VitePWA({
         registerType: 'autoUpdate',
         devOptions: {
-            enabled: true
+            enabled: false
         },workbox: {
             globDirectory: 'dist',
             globPatterns: [

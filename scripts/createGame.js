@@ -1,5 +1,6 @@
 ﻿import pkg from 'fs-extra';
 import fs from "fs";
+
 const { copy, readFile, writeFile } = pkg;
 
 const gameName = process.argv[2];
