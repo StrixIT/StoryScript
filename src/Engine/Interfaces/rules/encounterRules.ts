@@ -1,5 +1,4 @@
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {IConversationNode} from "storyScript/Interfaces/conversations/conversationNode.ts";
+import {IConversationNode, IGame} from 'storyScript';
 
 export interface IEncounterRules {
     initReplies?: (game: IGame, node: IConversationNode) => void;

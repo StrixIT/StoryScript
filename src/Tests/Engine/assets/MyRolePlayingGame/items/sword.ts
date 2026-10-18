@@ -1,5 +1,5 @@
 ﻿import {Item} from '../types';
-import {EquipmentType, TargetType} from 'storyScript/Interfaces/storyScript'
+import {EquipmentType, TargetType} from 'storyScript'
 import description from './sword.html?raw';
 
 export function Sword() {

@@ -1,4 +1,4 @@
-import {IGame} from "storyScript/Interfaces/game.ts";
+import {IGame} from "storyScript";
 
 export interface IDataService {
     /**

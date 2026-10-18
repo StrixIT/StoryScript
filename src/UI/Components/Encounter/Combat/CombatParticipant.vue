@@ -6,7 +6,7 @@
   <img v-if="participant.picture" :alt="participant.name" :src="participant.picture" class="combat-participant">
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/index";
 import {computed} from "vue";
 
 const store = useStateStore();

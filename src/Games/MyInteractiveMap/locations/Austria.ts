@@ -1,7 +1,7 @@
 import {IGame, Location} from '../types';
 import description from './Austria.html?raw';
-import {Westphalia} from "./Westphalia.ts";
-import {Franconia} from "./Franconia.ts";
+import {Westphalia} from "./Westphalia";
+import {Franconia} from "./Franconia";
 
 const triggerSecondaryLocation = (game: IGame, data: Record<string, string>, className: string) => {
     const mapLocation = game.currentMap.locations.find(l => l.location === data.location);

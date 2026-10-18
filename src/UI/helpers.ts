@@ -1,11 +1,11 @@
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
+import {IGame} from "storyScript";
+import {parseHtmlDocumentFromString} from "src/Engine/utilityFunctions";
 
 export function checkAutoplay(game: IGame, value: string) {
     if (!value) {
         return;
     }
-    
+
     const htmlDocumentFromString = parseHtmlDocumentFromString(value).body;
     value = htmlDocumentFromString.innerHTML;
     value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);

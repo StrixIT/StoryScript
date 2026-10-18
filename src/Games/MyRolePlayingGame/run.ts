@@ -1,4 +1,4 @@
-import { Run } from 'storyScript/run';
+import { Run } from 'storyScript';
 import { CustomTexts, Rules } from './types';
 
 // This is different from the game template because this is used in the engine tests.

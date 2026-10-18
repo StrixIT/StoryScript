@@ -25,13 +25,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {IStock} from "storyScript/Interfaces/stock.ts";
+import {ICharacter, IItem, IStock, ITrade} from "storyScript";
 import {ref} from "vue";
-import {IItem} from "storyScript/Interfaces/item.ts";
-import {ITrade} from "storyScript/Interfaces/trade.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

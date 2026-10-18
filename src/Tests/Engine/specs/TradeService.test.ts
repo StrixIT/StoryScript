@@ -1,17 +1,17 @@
 import {describe, expect, test} from 'vitest';
-import {TradeService} from 'storyScript/Services/TradeService';
+import {TradeService} from 'src/Engine/Services';
 import {
     ICharacter,
     ICompiledLocation,
     IDefinitions,
     IGame,
+    IItemService,
     IPerson,
     IRules,
+    IStock,
     ITrade,
     PlayState
-} from 'storyScript/Interfaces/storyScript';
-import {IStock} from 'storyScript/Interfaces/stock';
-import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
+} from 'storyScript';
 
 describe("TradeService", function () {
 

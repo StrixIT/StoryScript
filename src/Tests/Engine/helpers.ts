@@ -1,21 +1,21 @@
-import {ILocalStorageService} from "../../Engine/Interfaces/services/localStorageService";
-import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {buildEntities} from "storyScript/EntityCreatorFunctions.ts";
-import {importAssets} from "storyScript/run.ts";
-import {addArrayExtensions, addFunctionExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
-import { IRules, IInterfaceTexts } from "storyScript/Interfaces/storyScript.ts";
-import {Rules as MyRolePlayingGameRules } from "./assets/MyRolePlayingGame/rules.ts";
-import {CustomTexts as MyRolePlayingGameCustomTexts} from "./assets/MyRolePlayingGame/customTexts.ts";
-import {Rules as MyAdventureGameRules } from "./assets/MyAdventureGame/rules.ts";
-import {CustomTexts as MyAdventureGameCustomTexts} from "./assets/MyRolePlayingGame/customTexts.ts";
+import {IInterfaceTexts, ILocalStorageService, importAssets, IRules} from "storyScript";
+import {ServiceFactory} from "src/Engine/ServiceFactory";
+import {buildEntities} from "src/Engine/EntityCreatorFunctions";
+import {addArrayExtensions, addFunctionExtensions} from "src/Engine/arrayAndFunctionExtensions";
+import {Rules as MyRolePlayingGameRules} from "./assets/MyRolePlayingGame/rules";
+import {
+    CustomTexts as MyRolePlayingGameCustomTexts,
+    CustomTexts as MyAdventureGameCustomTexts
+} from "./assets/MyRolePlayingGame/customTexts";
+import {Rules as MyAdventureGameRules} from "./assets/MyAdventureGame/rules";
 
 export const initMyRolePlayingGameServiceFactory = (): ServiceFactory => {
     const modules = import.meta.glob([
-        './assets/MyRolePlayingGame/locations/**/*.ts',
-        './assets/MyRolePlayingGame/enemies/**/*.ts',
-        './assets/MyRolePlayingGame/items/**/*.ts',
-        './assets/MyRolePlayingGame/persons/**/*.ts',
-        './assets/MyRolePlayingGame/quests/**/*.ts'
+        './assets/MyRolePlayingGame/locations/**/*',
+        './assets/MyRolePlayingGame/enemies/**/*',
+        './assets/MyRolePlayingGame/items/**/*',
+        './assets/MyRolePlayingGame/persons/**/*',
+        './assets/MyRolePlayingGame/quests/**/*'
     ], {eager: true, caseSensitive: false});
 
     return initServiceFactory(modules, 'MyRolePlayingGame', MyRolePlayingGameRules(), MyRolePlayingGameCustomTexts());
@@ -23,9 +23,9 @@ export const initMyRolePlayingGameServiceFactory = (): ServiceFactory => {
 
 export const initMyAdventureGameServiceFactory = (): ServiceFactory => {
     const modules = import.meta.glob([
-        './assets/MyAdventureGame/locations/**/*.ts',
-        './assets/MyAdventureGame/features/**/*.ts',
-        './assets/MyAdventureGame/items/**/*.ts'
+        './assets/MyAdventureGame/locations/**/*',
+        './assets/MyAdventureGame/features/**/*',
+        './assets/MyAdventureGame/items/**/*'
     ], {eager: true, caseSensitive: false});
 
     return initServiceFactory(modules, 'MyAdventureGame', MyAdventureGameRules(), MyAdventureGameCustomTexts());

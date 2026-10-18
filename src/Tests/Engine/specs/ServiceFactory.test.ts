@@ -1,6 +1,6 @@
 import {beforeAll, describe, expect, test} from "vitest";
-import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {initMyRolePlayingGameServiceFactory} from "../helpers.ts";
+import {ServiceFactory} from "src/Engine/ServiceFactory";
+import {initMyRolePlayingGameServiceFactory} from "../helpers";
 
 describe('ServiceFactory', function () {
 

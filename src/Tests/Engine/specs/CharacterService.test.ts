@@ -3,21 +3,19 @@ import {
     EquipmentType,
     GameState,
     ICharacter,
+    ICharacterRules,
     ICreateCharacter,
     ICreateCharacterAttribute,
+    IDataService,
     IGame,
     IItem,
     IQuest,
     IRules
-} from 'storyScript/Interfaces/storyScript';
-import {CharacterService} from 'storyScript/Services/CharacterService';
-import {ICharacterRules} from 'storyScript/Interfaces/rules/characterRules';
-import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions';
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
-import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
-import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
-import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
-import {Rules} from "../assets/MyRolePlayingGame/types.ts";
+} from 'storyScript';
+import {CharacterService, DataSerializer, DataSynchronizer} from 'src/Engine/Services';
+import {addArrayExtensions} from 'src/Engine/arrayAndFunctionExtensions';
+import {Sword} from "../assets/MyRolePlayingGame/items/sword";
+import {Rules} from "../assets/MyRolePlayingGame/types";
 
 describe("CharacterService", function () {
 

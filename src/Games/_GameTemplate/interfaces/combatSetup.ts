@@ -1,7 +1,5 @@
-import { ICombatSetup as StoryScriptCombatSetup } from 'storyScript/Interfaces/storyScript';
-import { ICombatTurn } from './combatTurn';
-import {Character} from "../character.ts";
-import {IEnemy} from "./enemy.ts";
+import {ICombatSetup as StoryScriptCombatSetup} from 'storyScript';
+import {Character, ICombatTurn, IEnemy} from '../types';
 
 export interface ICombatSetup extends StoryScriptCombatSetup<ICombatTurn> {
     characters: Character[],

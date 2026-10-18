@@ -13,8 +13,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
-import {IAction} from "storyScript/Interfaces/action.ts";
+import {useStateStore} from "ui/index";
+import {IAction}from 'storyScript';
 
 const store = useStateStore();
 const {commandService} = store.services;

@@ -1,4 +1,4 @@
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 import {Ref, ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 

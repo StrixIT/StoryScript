@@ -7,11 +7,11 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {useStateStore} from "ui/StateStore.ts";
+import {PlayState} from "storyScript";
+import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {ref, watch} from "vue";
-import {checkAutoplay} from "ui/helpers.ts";
+import {checkAutoplay} from "ui/helpers";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

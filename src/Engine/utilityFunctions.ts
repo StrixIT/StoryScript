@@ -1,5 +1,5 @@
-﻿import {EquipmentType, IItem, ILocation, IParty} from "./Interfaces/storyScript";
-import {StateProperties} from "storyScript/stateProperties.ts";
+﻿import {EquipmentType, IItem, ILocation, IParty}from 'storyScript';
+import {StateProperties} from "./stateProperties";
 
 const functionRenameRegex =  /\$.+/i;
 

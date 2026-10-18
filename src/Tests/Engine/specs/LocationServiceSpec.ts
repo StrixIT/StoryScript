@@ -1,7 +1,6 @@
 import {describe, expect, test} from 'vitest';
-import {LocationService} from 'storyScript/Services/LocationService';
-import {ICompiledLocation, IGame, IRules} from 'storyScript/Interfaces/storyScript';
-import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
+import {LocationService} from 'src/Engine/Services';
+import {ICompiledLocation, IGame, IGameEvents, IRules} from 'storyScript';
 
 describe("LocationService", function () {
 

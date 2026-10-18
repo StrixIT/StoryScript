@@ -58,9 +58,9 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {GameState, PlayState} from "storyScript/Interfaces/storyScript.ts";
+import {GameState, PlayState}from 'storyScript';
 import {computed, ref} from "vue";
 
 const store = useStateStore();

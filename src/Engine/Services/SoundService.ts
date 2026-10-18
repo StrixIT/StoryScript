@@ -1,13 +1,10 @@
-import {selectStateListEntry} from "storyScript/Services/sharedFunctions.ts";
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
-import {ISoundPlayer} from "storyScript/Interfaces/soundPlayer.ts";
-import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
+import {IGame, IRules, ISoundPlayer, ISoundService, selectStateListEntry} from 'storyScript';
 
-export class SoundService implements ISoundService{
+export class SoundService implements ISoundService {
     private _musicStopped: boolean = false;
 
-    constructor(private _game: IGame, private _rules: IRules){}
+    constructor(private _game: IGame, private _rules: IRules) {
+    }
 
     getSounds = (): ISoundPlayer => {
         return {
@@ -18,7 +15,7 @@ export class SoundService implements ISoundService{
             playedAudio: []
         }
     }
-    
+
     getCurrentMusic = (): string => {
         if (this._musicStopped || !this._rules.setup?.playList || Object.keys(this._rules.setup.playList).length === undefined) {
             return null;

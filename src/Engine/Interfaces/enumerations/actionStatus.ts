@@ -9,7 +9,7 @@ export enum ActionStatus {
 
         /**
      * The action shows up for the player but is not selectable. Useful to show actions that could be performed if additional criteria
-     * would have been met (e.g. the character needs to be stronger to break down a door).
+     * had been met (e.g. the character needs to be stronger to break down a door).
      */
     Disabled = 'Disabled',
 

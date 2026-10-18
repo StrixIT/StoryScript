@@ -1,5 +1,4 @@
-import {IGameEvents} from "./Interfaces/gameEvents.ts";
-import { IGame } from "./Interfaces/storyScript.ts";
+import {IGame, IGameEvents}from 'storyScript';
 
 export class GameEvents implements IGameEvents {
     private readonly _eventHandlers = new Map<string, ((game: IGame, eventArguments: any) => void)[]>();

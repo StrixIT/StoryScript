@@ -1,34 +1,29 @@
-﻿import {IRules} from 'storyScript/Interfaces/rules/rules';
-import {IGame} from 'storyScript/Interfaces/game';
-import {IInterfaceTexts} from 'storyScript/Interfaces/interfaceTexts';
-import {ISaveGame} from 'storyScript/Interfaces/saveGame';
-import {IItem} from 'storyScript/Interfaces/item';
-import {ScoreEntry} from 'storyScript/Interfaces/scoreEntry';
-import {DefaultTexts} from 'storyScript/defaultTexts';
-import {IGameService} from 'storyScript/Interfaces/services//gameService';
-import {IDataService} from 'storyScript/Interfaces/services//dataService';
-import {ILocationService} from 'storyScript/Interfaces/services/locationService';
-import {ICharacterService} from 'storyScript/Interfaces/services/characterService';
-import {ICombinationService} from 'storyScript/Interfaces/services/combinationService';
-import {GameState} from 'storyScript/Interfaces/enumerations/gameState';
-import {PlayState} from 'storyScript/Interfaces/enumerations/playState';
-import {ICombinable} from 'storyScript/Interfaces/combinations/combinable';
-import {IFeature} from 'storyScript/Interfaces/feature';
-import {IParty} from 'storyScript/Interfaces/party';
-import {ICreateCharacter} from 'storyScript/Interfaces/createCharacter/createCharacter';
-import {
-    Characters,
-    GameStateSave,
-    HighScores,
-    Items,
-    Quests,
-    SaveGamePrefix
-} from 'src/constants.ts';
-import {InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
-import {IEquipment} from "storyScript/Interfaces/equipment.ts";
-import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
-import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
-import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
+﻿import {
+    DefaultTexts,
+    GameState,
+    ICharacterService,
+    ICombinable,
+    ICombinationService,
+    ICombineResult,
+    ICreateCharacter,
+    IDataService,
+    IDemoMode,
+    IEquipment,
+    IFeature,
+    IGame,
+    IGameService,
+    IInterfaceTexts,
+    IItem,
+    ILocationService,
+    IParty,
+    IRules,
+    ISaveGame,
+    ISoundService,
+    PlayState,
+    ScoreEntry,
+    InitEntityCollection
+} from "storyScript";
+import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} from 'src/constants';
 
 export class GameService implements IGameService {
     constructor

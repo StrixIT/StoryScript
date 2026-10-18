@@ -1,4 +1,4 @@
-import { ICombatTurn as StoryScriptCombatTurn } from 'storyScript/Interfaces/storyScript';
+import { ICombatTurn as StoryScriptCombatTurn } from 'storyScript';
 import { Character, IEnemy, IItem } from '../types';
 
 export interface ICombatTurn extends StoryScriptCombatTurn {

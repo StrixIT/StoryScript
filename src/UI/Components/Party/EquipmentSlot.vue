@@ -11,8 +11,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
-import {ICharacter} from "storyScript/Interfaces/storyScript.ts";
+import {useStateStore} from "ui/StateStore";
+import {ICharacter}from 'storyScript';
 
 const store = useStateStore();
 const {texts, itemService, characterService} = store.services;

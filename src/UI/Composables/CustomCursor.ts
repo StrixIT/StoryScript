@@ -1,9 +1,8 @@
 import {onMounted, Ref, watch} from "vue";
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {isTouchDevice} from 'src/constants.ts';
-import {ICustomCursor} from "storyScript/Interfaces/customCursor.ts";
-import {IActiveCombination} from "storyScript/Interfaces/combinations/activeCombination.ts";
+import {isTouchDevice} from 'src/constants';
+import {IActiveCombination, ICustomCursor} from "storyScript";
 
 export function useCustomCursor(uiRoot: Ref<HTMLElement>) {
     const cursorRegex = /resources\/[\w-]*\.[a-zA-Z]{3,4}/;

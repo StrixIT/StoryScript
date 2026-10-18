@@ -1,7 +1,4 @@
-import { ICombatTurn } from "./combatTurn";
-import {IEnemy} from "./enemy.ts";
-import {ICharacter} from "./character.ts";
-import {ICombatWinnings} from "storyScript/Interfaces/combatWinnings.ts";
+import {ICharacter, ICombatTurn, ICombatWinnings, IEnemy} from "storyScript";
 
 export interface ICombatSetup<T extends ICombatTurn> extends Array<T> {
     roundHeader: string;

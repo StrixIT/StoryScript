@@ -1,27 +1,28 @@
 import {beforeAll, describe, expect, test} from 'vitest';
-import {DataSynchronizer} from "storyScript/Services/DataSynchronizer.ts";
-import {StateProperties} from "storyScript/stateProperties.ts";
-import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
-import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
-import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
-import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
-import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
-import {initMyRolePlayingGameServiceFactory} from "../helpers.ts";
-import {IEnemy} from "storyScript/Interfaces/enemy.ts";
-import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit.ts";
-import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey.ts";
-import {IKey} from "storyScript/Interfaces/key.ts";
-import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots.ts";
-import {Start} from "../assets/MyRolePlayingGame/locations/start.ts";
-import {Garden} from "../assets/MyRolePlayingGame/locations/Garden.ts";
-import {Basement} from "../assets/MyRolePlayingGame/locations/Basement.ts";
-import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad.ts";
-import {Friend} from "../assets/MyRolePlayingGame/persons/Friend.ts";
-import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
-import {Journal} from "../assets/MyRolePlayingGame/quests/journal.ts";
-import {IParty} from "storyScript/Interfaces/party.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
+import {DataSerializer, DataSynchronizer} from "src/Engine/Services";
+import {StateProperties} from "src/Engine/stateProperties";
+import {
+    ICompiledLocation,
+    IDataSerializer,
+    IDataSynchronizer,
+    IEnemy,
+    IGroupableItem,
+    IItem,
+    IKey,
+    IParty,
+    ISaveGame
+} from "storyScript";
+import {initMyRolePlayingGameServiceFactory} from "../helpers";
+import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit";
+import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey";
+import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots";
+import {Start} from "../assets/MyRolePlayingGame/locations/start";
+import {Garden} from "../assets/MyRolePlayingGame/locations/Garden";
+import {Basement} from "../assets/MyRolePlayingGame/locations/Basement";
+import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad";
+import {Friend} from "../assets/MyRolePlayingGame/persons/Friend";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword";
+import {Journal} from "../assets/MyRolePlayingGame/quests/journal";
 
 const startLocationSkeleton = {
     "destinations": [{"target": "library"}, {"target": "garden"}, {"target": "dirtroad"}],

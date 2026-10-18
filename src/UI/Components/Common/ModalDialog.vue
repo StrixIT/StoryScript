@@ -26,9 +26,9 @@
   </dialog>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/index";
 import {storeToRefs} from "pinia";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {PlayState}from 'storyScript';
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

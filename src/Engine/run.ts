@@ -1,10 +1,8 @@
 import {ServiceFactory} from './ServiceFactory';
 import {addArrayExtensions, addFunctionExtensions} from './arrayAndFunctionExtensions';
-import {IInterfaceTexts} from './Interfaces/interfaceTexts';
-import {IRules} from './Interfaces/rules/rules';
+import {IDefinitions, IInterfaceTexts, IRules} from 'storyScript';
 import {buildEntities} from './EntityCreatorFunctions';
 import {entityTypeRegex} from 'src/constants';
-import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
 
 /**
  * This function bootstraps and runs your game. It creates a singleton of the ServiceFactory to
@@ -35,18 +33,22 @@ export function importAssets(modules?: Record<string, unknown>): IDefinitions {
 function loadAssetsWithImport(modules?: Record<string, unknown>): IDefinitions {
     const definitions = <IDefinitions>{};
     modules ??= import.meta.glob([
-        'game/actions/**/*.ts',
-        'game/features/**/*.ts',
-        'game/items/**/*.ts',
-        'game/enemies/**/*.ts',
-        'game/persons/**/*.ts',
-        'game/quests/**/*.ts',
-        'game/locations/**/*.ts',
-        'game/maps/**/*.ts'
+        'game/actions/**/*',
+        'game/features/**/*',
+        'game/items/**/*',
+        'game/enemies/**/*',
+        'game/persons/**/*',
+        'game/quests/**/*',
+        'game/locations/**/*',
+        'game/maps/**/*'
     ], {eager: true, caseSensitive: false});
 
     // Loop over all found files to register the assets with the proper type.
     for (const path in modules) {
+        if (path.endsWith('.html')) {
+            continue;
+        }
+        
         const asset = modules[path];
         const entityType = entityTypeRegex.exec(path)?.[0];
 

@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest';
-import {LocalStorageService} from 'storyScript/Services/LocalStorageService';
+import {LocalStorageService} from 'src/Engine/Services';
 
 describe("LocalStorage", function () {
 

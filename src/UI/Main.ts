@@ -1,9 +1,9 @@
 import {App, createApp} from 'vue';
 import {createPinia, Pinia} from 'pinia';
 import AppShell from 'ui/Components/AppShell.vue';
-import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {logTime} from "../StartupLogger.ts";
-import {useStateStore} from "ui/StateStore.ts";
+import {ServiceFactory} from "src/Engine/ServiceFactory";
+import {logTime} from "../StartupLogger";
+import {useStateStore} from "ui/StateStore";
 
 import 'ui/styles/bootstrap-storyscript.scss';
 import 'ui/styles/storyscript.css';

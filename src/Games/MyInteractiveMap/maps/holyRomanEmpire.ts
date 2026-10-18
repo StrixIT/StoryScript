@@ -1,14 +1,14 @@
-import {LocationMap} from "../types.ts";
-import {Austria} from "../locations/Austria.ts";
-import {Bohemia} from "../locations/Bohemia.ts";
-import {Franconia} from "../locations/Franconia.ts";
-import {Moravia} from "../locations/Moravia.ts";
-import {Nuremberg} from "../locations/Nuremberg.ts";
-import {Liege} from "../locations/Liege.ts";
-import {Luxembourg} from "../locations/Luxembourg.ts";
-import {Start} from "../locations/start.ts";
-import {Westphalia} from "../locations/Westphalia.ts";
-import { Silesia } from "../locations/Silesia.ts";
+import {LocationMap} from "../types";
+import {Austria} from "../locations/Austria";
+import {Bohemia} from "../locations/Bohemia";
+import {Franconia} from "../locations/Franconia";
+import {Moravia} from "../locations/Moravia";
+import {Nuremberg} from "../locations/Nuremberg";
+import {Liege} from "../locations/Liege";
+import {Luxembourg} from "../locations/Luxembourg";
+import {Start} from "../locations/start";
+import {Westphalia} from "../locations/Westphalia";
+import { Silesia } from "../locations/Silesia";
 
 export function HolyRomanEmpire() {
     return LocationMap({

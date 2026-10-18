@@ -1,6 +1,4 @@
-import {IActiveCombination} from "storyScript/Interfaces/combinations/activeCombination.ts";
-import {ICombinable} from "storyScript/Interfaces/combinations/combinable.ts";
-import {ICombineResult} from "storyScript/Interfaces/combinations/combineResult.ts";
+import {IActiveCombination, ICombinable, ICombineResult}from 'storyScript';
 
 export interface IGameCombinations {
     /**

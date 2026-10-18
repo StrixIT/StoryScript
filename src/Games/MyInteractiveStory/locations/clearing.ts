@@ -1,7 +1,7 @@
 import { Location } from '../types';
 import description from './Clearing.html?raw';
-import {GrabSword} from "./GrabSword.ts";
-import {FleeOnFoot} from "./FleeOnFoot.ts";
+import {GrabSword} from "./GrabSword";
+import {FleeOnFoot} from "./FleeOnFoot";
 
 export function Clearing() {
     return Location({

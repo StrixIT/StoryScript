@@ -1,5 +1,4 @@
-import { ICombinationAction } from './combinationAction';
-import { ICombinable } from './combinable';
+import { ICombinationAction, ICombinable } from 'storyScript';
 
 /**
  * The currently active combination when playing the game.

@@ -1,0 +1,5 @@
+/Documents/**
+/src/Games/**
+!/src/Games/_GameTemplate/*
+Folder.DotSettings
+.gitattributes

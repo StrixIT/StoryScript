@@ -20,8 +20,8 @@
 </template>
 <script lang="ts" setup>
 import {useTemplateRef, watch} from "vue";
-import {useSound} from "ui/Composables/Sound.ts";
-import {useStateStore} from "ui/StateStore.ts";
+import {useSound} from "ui/Composables/Sound";
+import {useStateStore} from "ui/StateStore";
 
 const store = useStateStore();
 const {texts} = store.services;

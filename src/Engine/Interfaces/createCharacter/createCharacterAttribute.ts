@@ -1,4 +1,4 @@
-import { ICreateCharacterAttributeEntry } from './createCharacterAttributeEntry';
+import { ICreateCharacterAttributeEntry } from 'storyScript';
 
 /**
  * An attribute entry for a create character question. 

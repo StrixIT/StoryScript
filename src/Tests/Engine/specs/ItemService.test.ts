@@ -1,17 +1,12 @@
 import {beforeAll, describe, expect, test} from "vitest";
-import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {EquipmentType} from "storyScript/Interfaces/enumerations/equipmentType.ts";
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {ItemService} from "storyScript/Services/ItemService.ts";
-import {DefaultTexts} from "storyScript/defaultTexts.ts";
-import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
-import {IGroupableItem} from "storyScript/Interfaces//groupableItem.ts";
-import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots.ts";
-import {Journal} from "../assets/MyRolePlayingGame/items/journal.ts";
-import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
-import {Rules} from "../assets/MyRolePlayingGame/types.ts";
+import {addArrayExtensions} from "src/Engine/arrayAndFunctionExtensions";
+import {EquipmentType, ICharacter, IGame, IGroupableItem, IInterfaceTexts, IItem} from "storyScript";
+import {ItemService} from "src/Engine/Services";
+import {DefaultTexts} from "src/Engine/defaultTexts";
+import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots";
+import {Journal} from "../assets/MyRolePlayingGame/items/journal";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword";
+import {Rules} from "../assets/MyRolePlayingGame/types";
 
 describe("ItemService", function () {
 

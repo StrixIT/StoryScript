@@ -1,6 +1,4 @@
-import { IGame } from '../game';
-import { ICombinable } from './combinable';
-import { ICombinationMatchResult } from './combinationMatchResult';
+import {ICombinable, ICombinationMatchResult, IGame} from 'storyScript';
 
 /**
  * A combination definition.

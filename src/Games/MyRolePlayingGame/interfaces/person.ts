@@ -1,4 +1,4 @@
-﻿import { IPerson as StoryScriptIPerson, Person as StoryScriptPerson } from 'storyScript/Interfaces/storyScript';
+﻿import { IPerson as StoryScriptIPerson, Person as StoryScriptPerson } from 'storyScript';
 import { IEnemy, IItem, IQuest } from '../types';
 
 export function Person(entity: IPerson): IPerson {

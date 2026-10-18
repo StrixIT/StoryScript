@@ -1,11 +1,7 @@
 import {describe, expect, test} from 'vitest';
-import {DataService} from 'storyScript/Services/DataService';
-import {IDataService} from 'storyScript/Interfaces/services/dataService';
-import {ILocalStorageService} from 'storyScript/Interfaces/services/localStorageService';
-import {DataSerializer} from 'storyScript/Services/DataSerializer';
-import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronizer';
+import {DataSerializer, DataService} from 'src/Engine/Services';
+import {IDataService, IDataSynchronizer, ILocalStorageService, IRules} from 'storyScript';
 import {getStorageServiceMock} from '../helpers';
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
 
 const TestGamePrefix = '_TestGame';
 

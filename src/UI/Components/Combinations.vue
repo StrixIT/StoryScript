@@ -22,8 +22,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
-import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
+import {useStateStore} from "ui/StateStore";
+import {ICombinationAction} from "storyScript";
 import {ref} from "vue";
 import {storeToRefs} from "pinia";
 

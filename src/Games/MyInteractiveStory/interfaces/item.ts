@@ -1,4 +1,4 @@
-﻿import { IItem as StoryScriptIItem, Item as StoryScriptItem } from 'storyScript/Interfaces/storyScript';
+﻿import { IItem as StoryScriptIItem, Item as StoryScriptItem } from 'storyScript';
 import { IFeature } from '../types';
 
 export function Item(entity: IItem): IItem {

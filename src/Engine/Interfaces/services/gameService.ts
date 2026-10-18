@@ -1,6 +1,4 @@
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
+import {IDemoMode, IGame, PlayState} from "storyScript";
 
 export interface IGameService {
     init(): void;

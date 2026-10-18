@@ -1,4 +1,4 @@
-import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
+import {IDemoMode}from 'storyScript';
 
 export interface ITitleScreen {
     /**

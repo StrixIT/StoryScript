@@ -17,9 +17,3 @@ interface Array<T> {
 
     getDeleted(): T[];
 }
-
-// This is needed to be able to import .html files. Do not remove this.
-declare module '*.html' {
-    const content: string
-    export default content
-}

@@ -1,6 +1,7 @@
-import {ISoundPlayer} from "storyScript/Interfaces/soundPlayer.ts";
+import {ISoundPlayer} from "storyScript";
 
 export interface ISoundService {
     getSounds(): ISoundPlayer;
+
     getCurrentMusic(): string
 }

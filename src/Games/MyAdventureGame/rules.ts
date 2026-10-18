@@ -1,8 +1,6 @@
-import {GameState, ICharacter, ICombinable, ICreateCharacter, IRules} from 'storyScript/Interfaces/storyScript';
+import {GameState, IActiveCombination, ICharacter, ICombinable, ICreateCharacter, IRules} from 'storyScript';
 import {Combinations} from './combinations';
 import {Character, ICombatSetup, IEnemy, IGame} from './types';
-import {IActiveCombination} from "storyScript/Interfaces/combinations/activeCombination.ts";
-import {getDemoMode} from "./demoMode.ts";
 
 export function Rules(): IRules {
     return {

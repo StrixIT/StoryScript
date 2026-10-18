@@ -1,10 +1,12 @@
-﻿import {ISetupRules} from './setupRules';
-import {IGeneralRules} from './generalRules';
-import {ICharacterRules} from './characterRules';
-import {IExplorationRules} from './explorationRules';
-import {ICombatRules} from './combatRules';
-import {IEncounterRules} from "storyScript/Interfaces/rules/encounterRules.ts";
-import {ICombinationRules} from "storyScript/Interfaces/rules/combinationRules.ts";
+﻿import {
+    ICharacterRules,
+    ICombatRules,
+    ICombinationRules,
+    IEncounterRules,
+    IExplorationRules,
+    IGeneralRules,
+    ISetupRules
+} from 'storyScript';
 
 export interface IRules {
     /**

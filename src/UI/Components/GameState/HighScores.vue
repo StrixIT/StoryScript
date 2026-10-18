@@ -10,7 +10,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 
 const store = useStateStore();
 const {texts} = store.services;

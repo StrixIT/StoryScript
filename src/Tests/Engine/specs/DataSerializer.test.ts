@@ -1,31 +1,30 @@
 import {beforeAll, describe, expect, test} from 'vitest';
-import {DataSerializer} from "storyScript/Services/DataSerializer.ts";
-import {HelperService} from "storyScript/Services/HelperService.ts";
-import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
-import {LocationService} from "storyScript/Services/LocationService.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
-import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {StateProperties} from "storyScript/stateProperties.ts";
-import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {IDestination} from "storyScript/Interfaces/destination.ts";
-import {ConversationService} from "storyScript/Services/ConversationService.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {initMyAdventureGameServiceFactory, initMyRolePlayingGameServiceFactory} from "../helpers.ts";
-import {Basement} from "../assets/MyRolePlayingGame/locations/Basement.ts";
-import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad.ts";
-import {Garden} from "../assets/MyRolePlayingGame/locations/Garden.ts";
-import {Library} from "../assets/MyRolePlayingGame/locations/Library.ts";
-import {Start} from "../assets/MyRolePlayingGame/locations/start.ts";
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey.ts";
-import {IParty} from "storyScript/Interfaces/party.ts";
-import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
-import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
-import {Friend} from "../assets/MyRolePlayingGame/persons/Friend.ts";
-import {Character} from "../assets/MyRolePlayingGame/character.ts";
-import {Passage} from "../assets/MyAdventureGame/locations/passage.ts";
+import {ConversationService, DataSerializer, HelperService, LocationService} from "src/Engine/Services";
+import {
+    ICharacter,
+    ICompiledLocation,
+    IDataSerializer,
+    IDefinitions,
+    IDestination,
+    IGame,
+    IGroupableItem,
+    IItem,
+    IParty,
+    IRules
+} from "storyScript";
+import {StateProperties} from "src/Engine/stateProperties";
+import {ServiceFactory} from "src/Engine/ServiceFactory";
+import {initMyAdventureGameServiceFactory, initMyRolePlayingGameServiceFactory} from "../helpers";
+import {Basement} from "../assets/MyRolePlayingGame/locations/Basement";
+import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad";
+import {Garden} from "../assets/MyRolePlayingGame/locations/Garden";
+import {Library} from "../assets/MyRolePlayingGame/locations/Library";
+import {Start} from "../assets/MyRolePlayingGame/locations/start";
+import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword";
+import {Friend} from "../assets/MyRolePlayingGame/persons/Friend";
+import {Character} from "../assets/MyRolePlayingGame/character";
+import {Passage} from "../assets/MyAdventureGame/locations/passage";
 
 const worldData = [{
     "destinations": [{"target": "garden"}],

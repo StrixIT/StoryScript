@@ -17,9 +17,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {GameState} from "storyScript/Interfaces/storyScript.ts";
+import {GameState}from 'storyScript';
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

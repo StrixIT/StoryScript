@@ -1,4 +1,4 @@
-import { IParty as StoryScriptIParty } from 'storyScript/Interfaces/storyScript';
+import { IParty as StoryScriptIParty } from 'storyScript';
 import { Character, IQuest } from '../types';
 
 

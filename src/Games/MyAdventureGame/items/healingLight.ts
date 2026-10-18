@@ -1,5 +1,5 @@
 import { IGame, Item } from '../types';
-import { EquipmentType } from 'storyScript/Interfaces/storyScript';
+import { EquipmentType } from 'storyScript';
 export function HealingLight() {
 	return Item({
 		name: 'Healing light',

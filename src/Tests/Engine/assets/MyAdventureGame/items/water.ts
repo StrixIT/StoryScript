@@ -1,5 +1,5 @@
 import { Item } from '../types';
-import { EquipmentType } from 'storyScript/Interfaces/storyScript';
+import { EquipmentType } from 'storyScript';
 import { Combinations } from '../combinations';
 import { Herbs } from './herbs';
 import { HealingPotion } from './healingPotion';

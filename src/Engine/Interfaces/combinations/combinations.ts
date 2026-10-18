@@ -1,6 +1,4 @@
-import { IGame } from '../game';
-import { ICombinable } from './combinable';
-import { ICombine } from './combine';
+import {ICombinable, ICombine, IGame} from 'storyScript';
 
 /**
  * A list of combinations that can be used on an object.

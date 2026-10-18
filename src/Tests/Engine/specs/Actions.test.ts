@@ -1,11 +1,6 @@
 import {beforeAll, describe, expect, test} from 'vitest';
-import {IGame} from 'storyScript/Interfaces/game';
-import {IBarrier} from 'storyScript/Interfaces/barrier';
-import {IDestination} from 'storyScript/Interfaces/destination';
-import {Open} from 'storyScript/Actions/open';
-import {OpenWithKey} from 'storyScript/Actions/openWithKey';
-import {IKey} from 'storyScript/Interfaces/key';
-import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions';
+import {IBarrier, IDestination, IGame, IKey, Open, OpenWithKey} from 'storyScript';
+import {addArrayExtensions} from 'src/Engine/arrayAndFunctionExtensions';
 
 describe("StoryScript Actions", function () {
 

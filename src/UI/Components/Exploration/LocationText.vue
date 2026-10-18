@@ -17,10 +17,10 @@
 </template>
 <script lang="ts" setup>
 import {ref, watch, computed, onMounted, useTemplateRef} from "vue";
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {useTextFeatures} from "ui/Composables/TextFeatures.ts";
-import {checkAutoplay} from "ui/helpers.ts";
+import {useTextFeatures} from "ui/Composables/TextFeatures";
+import {checkAutoplay} from "ui/helpers";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

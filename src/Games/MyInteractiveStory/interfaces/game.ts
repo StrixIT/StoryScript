@@ -1,4 +1,4 @@
-﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers } from 'storyScript/Interfaces/storyScript';
+﻿import { IGame as StoryScriptIGame, IHelpers as StoryScriptIHelpers } from 'storyScript';
 import { IPerson, IEnemy, IItem, ICompiledLocation, Character, ILocation, IParty } from '../types';
 
 // Your game-specific game interface.

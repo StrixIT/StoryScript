@@ -1,16 +1,18 @@
-﻿import {IRules} from 'storyScript/Interfaces/rules/rules';
-import {IGame} from 'storyScript/Interfaces/game';
-import {ICharacter} from 'storyScript/Interfaces/character';
-import {IItem} from 'storyScript/Interfaces/item';
-import {IQuest} from 'storyScript/Interfaces/quest';
-import {ICharacterService} from 'storyScript/Interfaces/services/characterService';
-import {ICreateCharacter} from 'storyScript/Interfaces/createCharacter/createCharacter';
-import {ICreateCharacterAttribute} from 'storyScript/Interfaces/createCharacter/createCharacterAttribute';
-import {ICreateCharacterAttributeEntry} from 'storyScript/Interfaces/createCharacter/createCharacterAttributeEntry';
-import {ICreateCharacterStep} from 'storyScript/Interfaces/createCharacter/createCharacterStep';
-import {GameState} from 'storyScript/Interfaces/enumerations/gameState';
-import {getEquipmentType} from 'storyScript/utilityFunctions';
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
+﻿import {
+    GameState,
+    ICharacter,
+    ICharacterService,
+    ICreateCharacter,
+    ICreateCharacterAttribute,
+    ICreateCharacterAttributeEntry,
+    ICreateCharacterStep,
+    IDataService,
+    IGame,
+    IItem,
+    IQuest,
+    IRules
+} from 'storyScript';
+import {getEquipmentType} from '../utilityFunctions';
 
 export class CharacterService implements ICharacterService {
     constructor(private readonly _dataService: IDataService, private readonly _game: IGame, private readonly _rules: IRules) {
@@ -129,29 +131,27 @@ export class CharacterService implements ICharacterService {
                     if (!item?.equipmentType) {
                         return;
                     }
-                    
+
                     const itemType = Array.isArray(item.equipmentType) ? item.equipmentType : [item.equipmentType];
                     let valid = true;
-                    
-                    if (!item.usesMultipleSlots)
-                    {
+
+                    if (!item.usesMultipleSlots) {
                         valid = itemType.find(t => getEquipmentType(t) === k) !== undefined;
-                    }
-                    else {
+                    } else {
                         for (const i in itemType) {
                             const slot = getEquipmentType(itemType[i]);
                             const slotItem = c.equipment[slot];
-                            
+
                             if (slotItem && (slotItem === item || slotItem.id === item.id)) {
                                 // When restoring data, a single item occupying multiple slots will be duplicated,
                                 // so each slot contains a separate item of the same kind. Remove the duplicates here.
-                                    c.equipment[slot] = item;
+                                c.equipment[slot] = item;
                             } else {
                                 valid = false;
                             }
                         }
                     }
-                    
+
                     if (!valid) {
                         c.equipment[k] = null;
                         c.items.push(item);

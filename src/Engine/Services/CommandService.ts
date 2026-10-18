@@ -1,20 +1,22 @@
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
-import {ILocationService} from "storyScript/Interfaces/services/locationService.ts";
-import {IConversationService} from "storyScript/Interfaces/services/conversationService.ts";
-import {ILocation} from "storyScript/Interfaces/location.ts";
-import {IPerson} from "storyScript/Interfaces/person.ts";
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
-import {ICombinationService} from "storyScript/Interfaces/services/combinationService.ts";
-import {IFeature} from "storyScript/Interfaces/feature.ts";
-import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
-import {getItemFromParty} from "storyScript/Services/sharedFunctions.ts";
-import {IAction} from "storyScript/Interfaces/action.ts";
-import {IBarrier} from "storyScript/Interfaces/barrier.ts";
-import {IDestination} from "storyScript/Interfaces/destination.ts";
-import {IBarrierAction} from "storyScript/Interfaces/barrierAction.ts";
-import {ITradeService} from "storyScript/Interfaces/services/tradeService.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
+import {
+    IAction,
+    IBarrier,
+    IBarrierAction,
+    ICombinationAction,
+    ICombinationService,
+    ICommandService,
+    IConversationService,
+    IDataService,
+    IDestination,
+    IFeature,
+    IGame,
+    IItem,
+    ILocation,
+    ILocationService,
+    IPerson,
+    ITradeService,
+    getItemFromParty
+} from 'storyScript';
 
 export class CommandService implements ICommandService {
 
@@ -32,7 +34,7 @@ export class CommandService implements ICommandService {
 
     go = (location: (() => ILocation) | string, saveProgress?: boolean): void => {
         const travel = saveProgress !== false;
-        
+
         this._locationService.changeLocation(location, travel, this._game);
 
         if (travel) {
@@ -104,14 +106,14 @@ export class CommandService implements ICommandService {
 
         this._game.combinations.tryCombine(selectedTarget);
     }
-    
+
     useAction = (action: string | [string, IAction]): void => {
         const selectedAction = typeof action === 'string' ? this._game.currentLocation.actions.get(action) : action;
 
         if (!selectedAction) {
             throw new Error(`Action ${action} is not present at location ${this._game.currentLocation.name}!`);
         }
-        
+
         this._locationService.executeAction(selectedAction);
         this._dataService.saveGame(this._game)
     }
@@ -128,7 +130,7 @@ export class CommandService implements ICommandService {
         if (!selectedBarrier) {
             throw new Error(`Barrier ${barrier} is not present on destination ${selectedDestination.name}!`);
         }
-        
+
         const selectedAction = typeof action === 'string' ? selectedBarrier[1].actions.get(action) : action;
 
         if (!selectedAction) {
@@ -150,14 +152,14 @@ export class CommandService implements ICommandService {
 
         this._tradeService.trade(partner);
     }
-    
+
     buy = (item: (() => IItem)): void => {
         const selectedItem = this._game.trade.buy.items.get(item);
 
         if (!selectedItem) {
             throw new Error(`Trader ${this._game.trade.name} does not have item ${item.name} for sale!`);
         }
-        
+
         this._tradeService.buy(selectedItem, this._game.trade);
     }
 
@@ -175,7 +177,7 @@ export class CommandService implements ICommandService {
         if (typeof feature === 'string') {
             feature = feature.toLowerCase().replace(/\s/g, '');
         }
-        
+
         let selectedFeature = this._game.currentLocation.features.get(feature);
         selectedFeature ??= this._game.currentLocation.persons.get(<any>feature);
         selectedFeature ??= this._game.currentLocation.enemies.get(<any>feature);

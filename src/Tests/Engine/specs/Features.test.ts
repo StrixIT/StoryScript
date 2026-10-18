@@ -1,6 +1,6 @@
 import {describe, expect, test} from "vitest";
-import {Location} from "storyScript/EntityCreatorFunctions";
-import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions";
+import {Location} from "src/Engine/EntityCreatorFunctions";
+import {addArrayExtensions} from "src/Engine/arrayAndFunctionExtensions";
 
 describe("Features", function () {
 

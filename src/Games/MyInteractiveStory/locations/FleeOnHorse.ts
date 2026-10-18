@@ -1,6 +1,6 @@
 import { IGame, Location } from '../types';
 import description from './FleeOnHorse.html?raw';
-import {Start} from "./Start.ts";
+import {Start} from "./Start";
 
 export function FleeOnHorse() {
 	return Location({

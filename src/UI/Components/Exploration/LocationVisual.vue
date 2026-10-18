@@ -22,11 +22,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from "ui/StateStore";
 import {computed, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
-import {useVisualFeatures} from "ui/Composables/VisualFeatures.ts";
-import {IFeature} from "storyScript/Interfaces/feature";
+import {useVisualFeatures} from "ui/Composables/VisualFeatures";
+import {IFeature} from "storyScript";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
