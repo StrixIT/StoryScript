@@ -5,7 +5,7 @@
         "lib": ["ES2022", "DOM", "DOM.Iterable"],
 
         "paths": {
-            "storyScript": ["./src/Engine/index.ts"],
+            "storyScript": ["./src/index.ts"],
             "ui/*": ["./src/UI/*"],
             "src/*": ["./src/*"]
         },

@@ -17,6 +17,14 @@
             "icon": "dist/icon.ico"
         }
     },
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/storyscript.mjs",
+            "types": "./dist/index.d.ts"
+        },
+        "./vite-config": "./dist/baseViteConfig.js"
+    },
     "bin": {
         "storyscript": "./scripts/cli.js"
     },
@@ -26,6 +34,8 @@
         "scripts",
         "src/Games/_GameTemplate",
         "src/Tests/Games/_GameTemplate",
+        "src/UI/Components",
+        "src/UI/main.ts",
         "dist",
         ".env",
         "tsconfig.json",
@@ -33,16 +43,9 @@
         "baseViteConfig.js",
         "vite-env.d.ts",
         "typeExtensions.d.ts",
-        "helpers.js"
+        "helpers.js",
+        "index.html"
     ],
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/storyscript.mjs",
-            "types": "./dist/index.d.ts"
-        },
-        "./vite-config": "./dist/baseViteConfig.js"
-    },
     "scripts": {
         "create-game": "node scripts/createGame.js",
         "sca": "node scripts/createAsset.js action",

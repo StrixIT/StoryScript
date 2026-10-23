@@ -12,7 +12,7 @@ const libraryConfig = getBaseViteConfig() as UserConfig
 
 [viteConfig, libraryConfig].forEach(config => {
     const alias = config.resolve!.alias as any;
-    alias['storyScript'] = path.resolve(import.meta.dirname, './src/Engine');
+    alias['storyScript'] = path.resolve(import.meta.dirname, './src');
     alias['ui'] = path.resolve(import.meta.dirname, `./src/UI`);
 
     config.css = {

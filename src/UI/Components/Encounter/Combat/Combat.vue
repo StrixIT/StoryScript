@@ -46,14 +46,9 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/index";
 import {storeToRefs} from "pinia";
-import {IEnemy}from 'storyScript';
-import {ICombatTurn}from 'storyScript';
+import {ICharacter, ICombatTurn, IEnemy, ModalDialog, PlayState, useStateStore} from 'storyScript';
 import {ref} from "vue";
-import {PlayState}from 'storyScript';
-import {ICharacter}from 'storyScript';
-import {ModalDialog} from "ui/index";
 
 const store = useStateStore();
 const {game, enemiesPresent} = storeToRefs(store);

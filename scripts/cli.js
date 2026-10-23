@@ -22,6 +22,8 @@ async function main() {
         await createGame(args[0]);
     } else if (command === 'start') {
         await start();
+    } else if (command === 'test') {
+        await test();
     } else if (command === 'publish') {
         await publish();
     } else if (command === 'preview') {
@@ -33,6 +35,7 @@ async function main() {
         console.log('  setup        Setup StoryScript. Run automatically on npm install.');
         console.log('  create-game  Create a new StoryScript game');
         console.log('  start        Start running your game in development mode.');
+        console.log('  test         Run the tests for your games.');
         console.log('  publish      Build your game for deployment');
         console.log('  preview      preview your game ready for deployment');
     }
@@ -56,7 +59,10 @@ async function setup() {
         ['clientFiles/vite.config.ts', 'vite.config.ts'],
         '.env',
         'typeExtensions.d.ts',
-        'vite-env.d.ts'
+        'vite-env.d.ts',
+        'src/UI/Components',
+        'src/UI/main.ts',
+        'index.html'
     ];
 
     try {
@@ -67,6 +73,17 @@ async function setup() {
             const src = path.join(packageDir, srcFile);
             const dest = path.join(projectRoot, destFile);
 
+            const stat = fs.statSync(src);
+            
+            if (stat.isDirectory()) {
+                if (fs.existsSync(dest)) {
+                    console.log(`⏭️  ${srcFile} already exists, skipping`);
+                }
+                
+                fs.cpSync(src, dest, {recursive: true});
+                continue;
+            }
+            
             if (!fs.existsSync(src)) {
                 console.warn(`⚠️  ${srcFile} not found in template`);
                 continue;
@@ -80,6 +97,8 @@ async function setup() {
             console.log(`✅ Copying ${srcFile}...`);
             fs.copySync(src, dest);
         }
+        
+        updatePackageJson(path.join(projectRoot, 'package.json'));
 
         console.log('✅ Setup complete!');
         console.log('\nNext steps:');
@@ -89,6 +108,13 @@ async function setup() {
         console.error('❌ Setup failed:', err.message);
         process.exit(1);
     }
+}
+
+function updatePackageJson(filePath) {
+    const rawData = fs.readFileSync(filePath, 'utf8');
+    const jsonObject = JSON.parse(rawData);
+    jsonObject['type'] = 'module';
+    fs.writeFileSync(filePath, JSON.stringify(jsonObject, null, 2), 'utf8');
 }
 
 async function createGame(gameName) {
@@ -111,8 +137,14 @@ async function start() {
     });
 }
 
+async function test() {
+    spawn('vite', ['vitest', '--ui'], {
+        stdio: 'inherit'
+    });
+}
+
 async function publish() {
-    // Proxy to vite
-    const { spawn } = await import('child_process');
-    spawn('npx', ['publish'], { stdio: 'inherit' });
+    spawn('vite', ['build'], /*should be: tsc && vite build*/{
+        stdio: 'inherit'
+    });
 }

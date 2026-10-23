@@ -8,9 +8,9 @@
          ref="music-player"
          :src="`resources/${getCurrentMusic()}`"
          autoplay
-         muted
          class="storyscript-player"
-         loop>
+         loop
+         muted>
   </audio>
   <audio v-for="sound of getSoundQueue()" v-if="canPlay" :src="`resources/${sound[1]}`"
          autoplay
@@ -20,8 +20,7 @@
 </template>
 <script lang="ts" setup>
 import {useTemplateRef, watch} from "vue";
-import {useSound} from "ui/Composables/Sound";
-import {useStateStore} from "ui/StateStore";
+import {useSound, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {texts} = store.services;

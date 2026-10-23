@@ -32,10 +32,9 @@
   </button>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {computed, ref} from "vue";
-import {IBarrier, IBarrierAction, IDestination} from 'storyScript';
+import {IBarrier, IBarrierAction, IDestination, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {game} = storeToRefs(store);

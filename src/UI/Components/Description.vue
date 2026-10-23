@@ -7,11 +7,9 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {PlayState} from 'storyScript';
-import {useStateStore} from "ui/StateStore";
+import {checkAutoplay, PlayState, useStateStore} from 'storyScript';
 import {storeToRefs} from "pinia";
 import {ref, watch} from "vue";
-import {checkAutoplay} from "ui/helpers";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
@@ -20,6 +18,6 @@ const descriptionToShow = ref<string>(null);
 
 watch(() => game.value.currentDescription, async (newValue) => {
   descriptionToShow.value = checkAutoplay(game.value, newValue.item.description);
-}, { immediate: true });
+}, {immediate: true});
 
 </script>

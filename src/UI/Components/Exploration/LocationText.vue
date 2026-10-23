@@ -7,8 +7,8 @@
          class="location-picture"/>
     <div ref="description"
          @click="event => click(event)"
-         @mouseover="event => mouseOver(event)"
          @mouseout="event => mouseOut(event)"
+         @mouseover="event => mouseOver(event)"
          v-html="descriptionToShow"></div>
     <ul id="location-log" class="list-unstyled">
       <li v-for="message in game.currentLocation.log" v-html="message"></li>
@@ -16,11 +16,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {ref, watch, computed, onMounted, useTemplateRef} from "vue";
-import {useStateStore} from "ui/StateStore";
+import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
+import {checkAutoplay, useStateStore, useTextFeatures} from 'storyScript';
 import {storeToRefs} from "pinia";
-import {useTextFeatures} from "ui/Composables/TextFeatures";
-import {checkAutoplay} from "ui/helpers";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
@@ -32,7 +30,7 @@ const descriptionToShow = ref<string>(null);
 
 watch(() => game.value.currentLocation.description, async (newValue) => {
   descriptionToShow.value = checkAutoplay(game.value, newValue);
-}, { immediate: true });
+}, {immediate: true});
 
 onMounted(() => {
   refreshFeatures();

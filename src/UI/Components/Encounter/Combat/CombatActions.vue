@@ -2,9 +2,9 @@
   <div class="row">
     <ul class="list-unstyled combat-actions">
       <li v-for="action of actions">
-        <button :class="store.getButtonClass(action)" 
-                :disabled="!enabled" 
-                class="btn" 
+        <button :class="store.getButtonClass(action)"
+                :disabled="!enabled"
+                class="btn"
                 type="button"
                 @click="commandService.useAction(action)">{{ action[1].text }}
         </button>
@@ -13,8 +13,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/index";
-import {IAction}from 'storyScript';
+import {IAction, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {commandService} = store.services;

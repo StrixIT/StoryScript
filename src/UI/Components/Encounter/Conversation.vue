@@ -33,9 +33,7 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore";
-import {IConversationReply, PlayState} from 'storyScript';
-import {checkAutoplay} from "ui/helpers";
+import {checkAutoplay, IConversationReply, PlayState, useStateStore} from 'storyScript';
 import {storeToRefs} from "pinia";
 import {ref, watch} from "vue";
 

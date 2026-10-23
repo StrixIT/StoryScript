@@ -5,7 +5,7 @@
 </template>
 <script lang="ts" setup>
 
-import {useStateStore} from "ui/StateStore";
+import {useStateStore} from 'storyScript';
 import {storeToRefs} from "pinia";
 import {useTemplateRef, watch} from "vue";
 

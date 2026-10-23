@@ -20,9 +20,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {hasDescription} from 'storyScript';
+import {hasDescription, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {game, enemiesPresent, activeEnemies} = storeToRefs(store);

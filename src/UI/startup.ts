@@ -11,47 +11,50 @@ import 'game/ui/styles/game.css'
 // @ts-ignore
 import 'game/run';
 
-let pinia: Pinia;
-let application: App<Element>
+export const startup = () => {
 
-logTime('Start Vue', () => {
-    pinia = createPinia();
-    application = createApp(AppShell);
-    application.use(pinia);
-});
+    let pinia: Pinia;
+    let application: App<Element>
 
-logTime('Import components', async () => {
-    const allComponents = getComponents();
+    logTime('Start Vue', () => {
+        pinia = createPinia();
+        application = createApp(AppShell);
+        application.use(pinia);
+    });
 
-    for (const [componentName, component] of allComponents) {
-        application.component(componentName, (component as any)?.default);
-    }
-});
+    logTime('Import components', async () => {
+        const allComponents = getComponents();
 
-const store = useStateStore();
-store.initErrorHandling(application);
-let serviceFactory: ServiceFactory;
+        for (const [componentName, component] of allComponents) {
+            application.component(componentName, (component as any)?.default);
+        }
+    });
 
-logTime('Create ServiceFactory', () => {
-    serviceFactory = ServiceFactory.GetInstance();
-    store.setStoreData(serviceFactory);
-});
+    const store = useStateStore();
+    store.initErrorHandling(application);
+    let serviceFactory: ServiceFactory;
 
-logTime('Init game', () => {
-    const rules = serviceFactory.GetRules();
-    const gameService = serviceFactory.GetGameService();
-            
-    if (rules.setup?.titleScreen?.getDemoMode) {
-        const demoConfig = rules.setup.titleScreen.getDemoMode();
-        gameService.initDemo(demoConfig);
-    } else {
-        gameService.init();
-    }
-});
+    logTime('Create ServiceFactory', () => {
+        serviceFactory = ServiceFactory.GetInstance();
+        store.setStoreData(serviceFactory);
+    });
 
-logTime('Mount app', () => {
-    application.mount('#app');
-});
+    logTime('Init game', () => {
+        const rules = serviceFactory.GetRules();
+        const gameService = serviceFactory.GetGameService();
+
+        if (rules.setup?.titleScreen?.getDemoMode) {
+            const demoConfig = rules.setup.titleScreen.getDemoMode();
+            gameService.initDemo(demoConfig);
+        } else {
+            gameService.init();
+        }
+    });
+
+    logTime('Mount app', () => {
+        application.mount('#app');
+    });
+};
 
 function getComponents(): Map<string, any> {
     const combinedTemplates = new Map<string, any>();

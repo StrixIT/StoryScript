@@ -38,9 +38,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {hasDescription, ICharacter, IGroupableItem, IItem} from 'storyScript';
+import {hasDescription, ICharacter, IGroupableItem, IItem, useStateStore} from 'storyScript';
 import {ref} from "vue";
 
 const store = useStateStore();

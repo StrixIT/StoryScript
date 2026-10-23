@@ -32,10 +32,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {ICharacter, IParty} from 'storyScript';
-import {isDevelopment} from "src/constants";
+import {ICharacter, IParty, isDevelopment, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {useCharacterSheet} = storeToRefs(store);
