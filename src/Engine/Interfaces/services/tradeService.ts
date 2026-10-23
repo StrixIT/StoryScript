@@ -1,4 +1,4 @@
-import {ICharacter, IItem, IPerson, ITrade} from "storyScript";
+import {ICharacter, IItem, IPerson, ITrade} from 'storyScript';
 
 export interface ITradeService {
     trade(trade: IPerson | ITrade): void;

@@ -29,7 +29,7 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {DefaultEquipment, ICharacter} from "storyScript";
+import {DefaultEquipment, ICharacter} from 'storyScript';
 
 const store = useStateStore();
 const {useEquipment} = storeToRefs(store);

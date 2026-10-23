@@ -8,4 +8,11 @@ __dirname = __dirname.includes('/node_modules/') ? `${__dirname.split('/node_mod
 
 export const rootFolder = __dirname;
 
-export const gameName = fs.readFileSync(`${rootFolder}/currentGameName.txt`, 'utf8');
+let _gameName;
+const gameNamePath = `${rootFolder}/currentGameName.txt`;
+
+if (fs.existsSync(gameNamePath)) {
+    _gameName = fs.readFileSync(gameNamePath, 'utf8');
+}
+
+export const gameName = _gameName ?? '';

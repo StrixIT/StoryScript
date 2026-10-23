@@ -15,7 +15,7 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
-import {PlayState} from "storyScript";
+import {PlayState} from 'storyScript';
 import {storeToRefs} from "pinia";
 
 const store = useStateStore();

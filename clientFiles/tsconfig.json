@@ -5,6 +5,7 @@
         "lib": ["ES2022", "DOM", "DOM.Iterable"],
 
         "paths": {
+            "storyScript": ["./node_modules/storyscript"],
             "src/*": ["./src/*"]
         },
         "typeRoots": ["./node_modules/@types"],

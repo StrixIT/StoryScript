@@ -28,7 +28,7 @@
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {useTemplateRef} from "vue";
-import {PlayState} from "storyScript";
+import {PlayState} from 'storyScript';
 import {useCustomCursor} from "ui/Composables/CustomCursor";
 import {usePlayStateWatch} from "ui/Composables/playStateWatch";
 

@@ -1,4 +1,4 @@
-import {IGame} from "storyScript";
+import {IGame} from 'storyScript';
 import {parseHtmlDocumentFromString} from "src/Engine/utilityFunctions";
 
 export function checkAutoplay(game: IGame, value: string) {

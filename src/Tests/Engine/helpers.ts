@@ -1,4 +1,4 @@
-import {IInterfaceTexts, ILocalStorageService, importAssets, IRules} from "storyScript";
+import {IInterfaceTexts, ILocalStorageService, importAssets, IRules} from 'storyScript';
 import {ServiceFactory} from "src/Engine/ServiceFactory";
 import {buildEntities} from "src/Engine/EntityCreatorFunctions";
 import {addArrayExtensions, addFunctionExtensions} from "src/Engine/arrayAndFunctionExtensions";

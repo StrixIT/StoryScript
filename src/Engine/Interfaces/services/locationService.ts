@@ -1,4 +1,4 @@
-import {IAction, IGame, ILocation} from "storyScript";
+import {IAction, IGame, ILocation} from 'storyScript';
 
 export interface ILocationService {
     init(): void;

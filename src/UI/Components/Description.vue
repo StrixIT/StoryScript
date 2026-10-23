@@ -7,7 +7,7 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {PlayState} from "storyScript";
+import {PlayState} from 'storyScript';
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {ref, watch} from "vue";

@@ -1,4 +1,4 @@
-import {IEnemy, IItem} from "storyScript";
+import {IEnemy, IItem} from 'storyScript';
 
 export interface ICombatWinnings {
     currency: number;

@@ -1,7 +1,7 @@
 import {Ref} from "vue";
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {PlayState} from "storyScript";
+import {PlayState} from 'storyScript';
 
 const saveStates = [PlayState.Combat, PlayState.Conversation, PlayState.Trade];
 

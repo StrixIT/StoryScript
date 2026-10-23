@@ -22,7 +22,7 @@
     PlayState,
     ScoreEntry,
     InitEntityCollection
-} from "storyScript";
+} from 'storyScript';
 import {Characters, GameStateSave, HighScores, Items, Quests, SaveGamePrefix} from 'src/constants';
 
 export class GameService implements IGameService {

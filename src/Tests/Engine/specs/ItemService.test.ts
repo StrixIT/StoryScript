@@ -1,6 +1,6 @@
 import {beforeAll, describe, expect, test} from "vitest";
 import {addArrayExtensions} from "src/Engine/arrayAndFunctionExtensions";
-import {EquipmentType, ICharacter, IGame, IGroupableItem, IInterfaceTexts, IItem} from "storyScript";
+import {EquipmentType, ICharacter, IGame, IGroupableItem, IInterfaceTexts, IItem} from 'storyScript';
 import {ItemService} from "src/Engine/Services";
 import {DefaultTexts} from "src/Engine/defaultTexts";
 import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots";

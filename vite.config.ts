@@ -1,7 +1,7 @@
 import path from 'path';
 import {defineConfig, UserConfig} from 'vite';
 import dts from "vite-plugin-dts";
-import getBaseViteConfig from "./baseViteConfig";
+import {getBaseViteConfig} from "./baseViteConfig";
 
 const isLibraryBuild = process.env.VITE_BUILD_LIB === 'true';
 

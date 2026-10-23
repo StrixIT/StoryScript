@@ -1,4 +1,4 @@
-import {IDemoMode, IGame, PlayState} from "storyScript";
+import {IDemoMode, IGame, PlayState} from 'storyScript';
 
 export interface IGameService {
     init(): void;

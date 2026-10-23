@@ -1,4 +1,4 @@
-import {IAutoplayStep, IDemoMode} from "storyScript";
+import {IAutoplayStep, IDemoMode} from 'storyScript';
 import {Combinations} from "./combinations";
 import {Fountain} from "./features/fountain";
 import {Herbs} from "./items/herbs";

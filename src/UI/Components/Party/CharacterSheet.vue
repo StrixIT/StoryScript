@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {ICharacter, IParty} from "storyScript";
+import {ICharacter, IParty} from 'storyScript';
 import {isDevelopment} from "src/constants";
 
 const store = useStateStore();

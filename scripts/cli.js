@@ -1,86 +1,26 @@
+#!/usr/bin/env node
+
 import path from 'path';
 import fs from 'fs-extra';
 import { fileURLToPath } from 'url';
+import { spawn } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const command = process.argv[2];
+const args = process.argv.slice(3);
 const projectRoot = process.cwd();
 
 // Package directory is node_modules/storyscript
 const packageDir = path.resolve(__dirname, '..');
 
-async function setup() {
-    console.log('🚀 Setting up storyscript...');
-    console.log(`📁 Target: ${projectRoot}`);
-
-    fs.moveSync(path.join(packageDir, 'helpers.js'), path.join(packageDir, 'dist/helpers.js'));
-    fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
-    
-    const filesToCopy = [
-        ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets'],
-        ['clientFiles/tsconfig.json', 'tsconfig.json'],
-        ['clientFiles/vite.config.ts', 'vite.config.ts'],
-        '.env'
-    ];
-
-    try {
-        for (const file of filesToCopy) {
-            const srcFile = Array.isArray(file) ? file[0] : file;
-            const destFile = Array.isArray(file) ? file[1] : file;
-            
-            const src = path.join(packageDir, srcFile);
-            const dest = path.join(projectRoot, destFile);
-
-            if (!fs.existsSync(src)) {
-                console.warn(`⚠️  ${srcFile} not found in template`);
-                continue;
-            }
-
-            if (fs.existsSync(dest)) {
-                console.log(`⏭️  ${srcFile} already exists, skipping`);
-                continue;
-            }
-
-            console.log(`✅ Copying ${srcFile}...`);
-            fs.copySync(src, dest);
-        }
-
-        console.log('✅ Setup complete!');
-        console.log('\nNext steps:');
-        console.log('  npm run storyscript create-game your-game-name');
-        console.log('  npm run storyscript start');
-    } catch (err) {
-        console.error('❌ Setup failed:', err.message);
-        process.exit(1);
-    }
-}
-
-async function start() {
-    // Proxy to vite
-    const { spawn } = await import('child_process');
-    spawn('npx', ['start'], { stdio: 'inherit' });
-}
-
-async function publish() {
-    // Proxy to vite
-    const { spawn } = await import('child_process');
-    spawn('npx', ['publish'], { stdio: 'inherit' });
-}
-
-async function createGame() {
-    // Proxy to vite
-    const { spawn } = await import('child_process');
-    spawn('npx', ['vite', 'build'], { stdio: 'inherit' });
-}
-
 async function main() {
     if (command === 'setup') {
         await setup();
     } else if (command === 'create-game') {
-        await createGame();
-    } else if (command === 'dev') {
+        await createGame(args[0]);
+    } else if (command === 'start') {
         await start();
     } else if (command === 'publish') {
         await publish();
@@ -102,3 +42,77 @@ main().catch(err => {
     console.error(err);
     process.exit(1);
 });
+
+async function setup() {
+    console.log('🚀 Setting up storyscript...');
+    console.log(`📁 Target: ${projectRoot}`);
+
+    fs.copySync(path.join(packageDir, 'helpers.js'), path.join(packageDir, 'dist/helpers.js'));
+    fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
+
+    const filesToCopy = [
+        ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets'],
+        ['clientFiles/tsconfig.json', 'tsconfig.json'],
+        ['clientFiles/vite.config.ts', 'vite.config.ts'],
+        '.env',
+        'typeExtensions.d.ts',
+        'vite-env.d.ts'
+    ];
+
+    try {
+        for (const file of filesToCopy) {
+            const srcFile = Array.isArray(file) ? file[0] : file;
+            const destFile = Array.isArray(file) ? file[1] : file;
+
+            const src = path.join(packageDir, srcFile);
+            const dest = path.join(projectRoot, destFile);
+
+            if (!fs.existsSync(src)) {
+                console.warn(`⚠️  ${srcFile} not found in template`);
+                continue;
+            }
+
+            if (fs.existsSync(dest)) {
+                console.log(`⏭️  ${srcFile} already exists, skipping`);
+                continue;
+            }
+
+            console.log(`✅ Copying ${srcFile}...`);
+            fs.copySync(src, dest);
+        }
+
+        console.log('✅ Setup complete!');
+        console.log('\nNext steps:');
+        console.log('  npx storyscript create-game your-game-name');
+        console.log('  npx storyscript start');
+    } catch (err) {
+        console.error('❌ Setup failed:', err.message);
+        process.exit(1);
+    }
+}
+
+async function createGame(gameName) {
+    if (!gameName) {
+        console.error('Error: Game name is required');
+        console.error('Usage: npx storyscript create-game <gameName>');
+        process.exit(1);
+    }
+
+    const scriptPath = path.join(__dirname, 'createGame.js');
+
+    spawn('node', [scriptPath, gameName], {
+        stdio: 'inherit'
+    });
+}
+
+async function start() {
+    spawn('vite', [], {
+        stdio: 'inherit'
+    });
+}
+
+async function publish() {
+    // Proxy to vite
+    const { spawn } = await import('child_process');
+    spawn('npx', ['publish'], { stdio: 'inherit' });
+}

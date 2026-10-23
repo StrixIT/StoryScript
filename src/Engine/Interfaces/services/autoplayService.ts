@@ -1,4 +1,4 @@
-import {IAutoplayStep, IDemoMode} from "storyScript";
+import {IAutoplayStep, IDemoMode} from 'storyScript';
 
 export interface IAutoplayService {
 

@@ -27,7 +27,7 @@
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {isEmpty} from "src/Engine/utilityFunctions";
-import {IQuest} from "storyScript";
+import {IQuest} from 'storyScript';
 
 const store = useStateStore();
 const {useQuests} = storeToRefs(store);

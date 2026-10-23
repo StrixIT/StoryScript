@@ -9,7 +9,7 @@ import {
     IItemService,
     IRules,
     removeItemFromItemsAndEquipment
-} from "storyScript";
+} from 'storyScript';
 import {getEquipmentType} from "src/Engine/utilityFunctions";
 
 export class ItemService implements IItemService {

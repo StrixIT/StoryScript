@@ -19,7 +19,7 @@
     ITrade,
     PlayState,
     ScoreEntry
-} from "storyScript";
+} from 'storyScript';
 
 /**
  * The StoryScript main game object.

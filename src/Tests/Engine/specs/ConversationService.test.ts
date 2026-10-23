@@ -1,6 +1,6 @@
 import {beforeAll, describe, expect, test} from 'vitest';
 import {ConversationService} from 'src/Engine/Services';
-import {IGame, IParty, IPerson, IRules} from "storyScript";
+import {IGame, IParty, IPerson, IRules} from 'storyScript';
 import {addArrayExtensions} from "src/Engine/arrayAndFunctionExtensions";
 
 describe("ConversationService", function () {

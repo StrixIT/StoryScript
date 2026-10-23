@@ -1,4 +1,4 @@
-import {IAction, IBarrier, IBarrierAction, IDestination, IFeature, IItem, ILocation, IPerson} from "storyScript";
+import {IAction, IBarrier, IBarrierAction, IDestination, IFeature, IItem, ILocation, IPerson} from 'storyScript';
 
 export interface ICommandService {
     /**

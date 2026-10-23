@@ -33,7 +33,7 @@ function runPostBuild() {
     }
 }
 
-const getBaseViteConfig = () => ({
+export const getBaseViteConfig = () => ({
     base: ``,
     publicDir: path.resolve(gamePath, 'webroot'),
     define: {
@@ -110,5 +110,3 @@ const getBaseViteConfig = () => ({
         }
     }
 });
-
-export default getBaseViteConfig;

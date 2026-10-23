@@ -1,5 +1,5 @@
 import {addHtmlSpaces} from "src/Engine/utilityFunctions";
-import {IFeature} from "storyScript";
+import {IFeature} from 'storyScript';
 import {useStateStore} from "ui/StateStore";
 import {Ref, watch} from "vue";
 import {storeToRefs} from "pinia";

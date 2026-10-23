@@ -15,7 +15,7 @@ function run(command, silent = true) {
 }
 
 console.log('🔨 Building...');
-run('npm run publish');
+run('npm run publish:package');
 
 console.log('📦 Packing...');
 run('npm pack');

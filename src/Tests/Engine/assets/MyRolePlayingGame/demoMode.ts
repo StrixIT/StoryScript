@@ -1,4 +1,4 @@
-import {IDemoMode} from "storyScript";
+import {IDemoMode} from 'storyScript';
 import {Friend} from "./persons/Friend";
 import {Garden} from "./locations/Garden";
 import {Start} from "./locations/start";

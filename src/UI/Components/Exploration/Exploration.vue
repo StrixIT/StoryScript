@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {ActionStatus, IAction} from "storyScript";
+import {ActionStatus, IAction} from 'storyScript';
 import {ref} from "vue";
 import Destination from "ui/Components/Exploration/Destination.vue";
 

@@ -48,7 +48,7 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
-import type {ICreateCharacter} from "storyScript";
+import type {ICreateCharacter} from 'storyScript';
 
 const store = useStateStore();
 const {texts, characterService} = store.services;

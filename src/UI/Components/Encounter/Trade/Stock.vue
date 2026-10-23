@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {ICharacter, IItem, IStock, ITrade} from "storyScript";
+import {ICharacter, IItem, IStock, ITrade} from 'storyScript';
 import {ref} from "vue";
 
 const store = useStateStore();

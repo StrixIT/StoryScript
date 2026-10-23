@@ -1,4 +1,4 @@
-import {ICharacter, IEnemy, IGroupableItem, IItem} from "storyScript";
+import {ICharacter, IEnemy, IGroupableItem, IItem} from 'storyScript';
 
 export interface IItemService {
     getItemName(item: IItem): string;

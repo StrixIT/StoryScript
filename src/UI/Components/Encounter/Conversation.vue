@@ -34,7 +34,7 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
-import {IConversationReply, PlayState} from "storyScript";
+import {IConversationReply, PlayState} from 'storyScript';
 import {checkAutoplay} from "ui/helpers";
 import {storeToRefs} from "pinia";
 import {ref, watch} from "vue";

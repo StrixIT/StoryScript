@@ -1,7 +1,7 @@
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {computed, onMounted, onUpdated, Ref, ref, watch} from "vue";
-import {IMap} from "storyScript";
+import {IMap} from 'storyScript';
 import {isTouchDevice} from 'src/constants';
 
 export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef: Ref<HTMLDialogElement>) {

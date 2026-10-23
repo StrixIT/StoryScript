@@ -1,4 +1,4 @@
-import {IGame} from "storyScript";
+import {IGame} from 'storyScript';
 
 export interface IAutoplayStep {
     /**

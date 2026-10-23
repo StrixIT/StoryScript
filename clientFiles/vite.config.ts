@@ -1,4 +1,4 @@
-import {baseViteConfig} from "storyscript/vite-config";
+import {getBaseViteConfig} from "storyscript/vite-config";
 import {defineConfig} from "vite";
 
-export default defineConfig(baseViteConfig);
+export default defineConfig(getBaseViteConfig());

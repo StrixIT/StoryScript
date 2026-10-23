@@ -11,7 +11,7 @@ import {
     IItem,
     IParty,
     IRules
-} from "storyScript";
+} from 'storyScript';
 import {StateProperties} from "src/Engine/stateProperties";
 import {ServiceFactory} from "src/Engine/ServiceFactory";
 import {initMyAdventureGameServiceFactory, initMyRolePlayingGameServiceFactory} from "../helpers";

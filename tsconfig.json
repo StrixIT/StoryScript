@@ -31,6 +31,6 @@
         "noEmit": true,
         "allowJs": true,
     },
-    "include": ["src/Engine/**/*", "src/UI/**/*", "src/typeExtensions.d.ts", "src/constants.ts", "src/index.ts", "vite-env.d.ts", "shims-vue.d.ts"],
+    "include": ["src/Engine/**/*", "src/UI/**/*", "typeExtensions.d.ts", "src/constants.ts", "src/index.ts", "vite-env.d.ts", "shims-vue.d.ts"],
     "exclude": ["node_modules", "dist"]
 }

@@ -23,7 +23,7 @@
 </template>
 <script lang="ts" setup>
 import {useStateStore} from "ui/StateStore";
-import {ICombinationAction} from "storyScript";
+import {ICombinationAction} from 'storyScript';
 import {ref} from "vue";
 import {storeToRefs} from "pinia";
 

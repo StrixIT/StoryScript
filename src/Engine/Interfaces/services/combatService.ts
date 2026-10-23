@@ -1,4 +1,4 @@
-import {ICharacter, ICombatSetup, ICombatTurn, IEnemy, IItem} from "storyScript";
+import {ICharacter, ICombatSetup, ICombatTurn, IEnemy, IItem} from 'storyScript';
 
 export interface ICombatService {
     /**

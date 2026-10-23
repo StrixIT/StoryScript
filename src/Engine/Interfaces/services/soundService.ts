@@ -1,4 +1,4 @@
-import {ISoundPlayer} from "storyScript";
+import {ISoundPlayer} from 'storyScript';
 
 export interface ISoundService {
     getSounds(): ISoundPlayer;

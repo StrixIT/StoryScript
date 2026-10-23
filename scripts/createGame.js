@@ -7,7 +7,7 @@ import {rootFolder} from "../helpers.js";
 const { copy, readFile, writeFile } = pkg;
 
 const __filename = fileURLToPath(import.meta.url);
-let __dirname = path.dirname(__filename);
+let __dirname = path.resolve(path.dirname(__filename), '../');
 const gameName = process.argv[2];
 
 if (!gameName) {

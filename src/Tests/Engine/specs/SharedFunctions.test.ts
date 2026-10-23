@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest';
-import {IGame, parseFunction, parseGamePropertiesInTemplate} from "storyScript";
+import {IGame, parseFunction, parseGamePropertiesInTemplate} from 'storyScript';
 
 describe("SharedFunctions", function () {
 
