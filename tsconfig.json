@@ -5,7 +5,7 @@
         "lib": ["ES2022", "DOM", "DOM.Iterable"],
 
         "paths": {
-            "storyScript/*": ["./src/Engine/*"],
+            "storyScript": ["./src/Engine/index.ts"],
             "ui/*": ["./src/UI/*"],
             "src/*": ["./src/*"]
         },
@@ -22,14 +22,15 @@
         "strict": true,
         "noImplicitAny": false,
         "strictNullChecks": false,
-        
+
         /* Bundler mode */
         "moduleResolution": "bundler",
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "allowImportingTsExtensions": true,
-        "allowJs": true
-    }
+        "allowJs": true,
+    },
+    "include": ["src/Engine/**/*", "src/UI/**/*", "src/typeExtensions.d.ts", "src/constants.ts", "src/index.ts", "vite-env.d.ts", "shims-vue.d.ts"],
+    "exclude": ["node_modules", "dist"]
 }

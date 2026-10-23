@@ -2,16 +2,14 @@ import fs from 'fs';
 import {ZipArchive} from "archiver";
 import path, {resolve} from "path";
 import jsonfile from 'jsonfile';
-import gameName from "../currentGameName.js";
-import {fileURLToPath} from "url";
 import sharp from 'sharp';
 import {execFile} from 'child_process'
 import which from "which";
+import {gameName, rootFolder} from "../helpers.js";
 
 const {readFileSync} = jsonfile;
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const gamePath = resolve(__dirname, `./src/Games/${gameName}`);
-const resourcePath = resolve(__dirname, `./dist/resources`);
+const gamePath = resolve(rootFolder, `./src/Games/${gameName}`);
+const resourcePath = resolve(rootFolder, `./dist/resources`);
 const tempResourcePath = path.join(resourcePath, '_tmp');
 const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
 

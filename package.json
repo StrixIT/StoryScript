@@ -17,6 +17,29 @@
             "icon": "dist/icon.ico"
         }
     },
+    "bin": {
+        "storyscript": "./scripts/cli.js"
+    },
+    "files": [
+        "CodeSnippets/StoryScriptSnippets.code-snippets",
+        "clientFiles",
+        "scripts",
+        "src/Games/_GameTemplate",
+        "dist",
+        ".env",
+        "tsconfig.json",
+        "vite.config.ts",
+        "baseViteConfig.js",
+        "helpers.js"
+    ],
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/storyscript.mjs",
+            "types": "./dist/index.d.ts"
+        },
+        "./vite-config": "./dist/baseViteConfig.js"
+    },
     "scripts": {
         "create-game": "node scripts/createGame.js",
         "sca": "node scripts/createAsset.js action",
@@ -30,11 +53,13 @@
         "scm": "node scripts/createAsset.js map",
         "start": "vite",
         "test": "node ./src/Tests/Engine/beforeTests.js && vitest --ui",
-        "publish": "vite build",
+        "publish": "tsc && vite build",
         "electron-start": "vite build && electron .",
-        "electron-publish": "vite build && electron-builder"
+        "electron-publish": "vite build && electron-builder",
+        "build:types": "tsc --emitDeclarationOnly",
+        "pack:test": "node scripts/pack-and-test.js"
     },
-    "devDependencies": {
+    "dependencies": {
         "@types/node": "^26.6.4",
         "@vitejs/plugin-vue": "^6.0.9",
         "@vitest/coverage-v8": "^5.0.3",
@@ -62,6 +87,9 @@
         "vue": "^3.5.43",
         "vue-tsc": "^3.3.12",
         "which": "^7.0.0"
+    },
+    "devDependencies": {
+        "vite-plugin-dts": "^5.1.2"
     },
     "allowScripts": {
         "@parcel/watcher@2.6.0": true,

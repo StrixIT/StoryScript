@@ -1,9 +1,10 @@
-import gameName from '../currentGameName.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import pkg from 'jsonfile';
 import {entityNameRegex} from "../src/constants.ts";
+import {gameName, rootFolder} from "../helpers.js";
+import path from "path";
 
-const gameDir = `src/Games/${gameName}`;
+const gameDir = `${rootFolder}src/Games/${gameName}`;
 const { readFileSync } = pkg;
 
 const assetType = process.argv[2];
@@ -29,7 +30,7 @@ let baseSnippetKey =  assetType.substring(0, 1).toUpperCase() + assetType.substr
 let snippetKey = baseSnippetKey.endsWith('ys') ? baseSnippetKey.substring(0, baseSnippetKey.length - 2) + 'ies' : baseSnippetKey; 
 const assetNameCapital = assetName.substring(0, 1).toUpperCase() + assetName.substring(1);
 
-const snippets = readFileSync('CodeSnippets/StoryScriptSnippets.code-snippets');
+const snippets = readFileSync(path.resolve('../', 'CodeSnippets/StoryScriptSnippets.code-snippets'));
 
 if (!snippets[snippetKey]) {
     if (!snippets[baseSnippetKey]) {

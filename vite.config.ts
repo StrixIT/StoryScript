@@ -1,100 +1,21 @@
-import fs from 'fs';
-import {defineConfig, normalizePath} from 'vite';
-import checker from 'vite-plugin-checker';
-import {viteStaticCopy} from 'vite-plugin-static-copy';
-import {visualizer} from "rollup-plugin-visualizer";
-import gameName from './currentGameName.js';
 import path from 'path';
-import vue from '@vitejs/plugin-vue';
-import jsonfile from "jsonfile";
-import { VitePWA } from 'vite-plugin-pwa'
+import {defineConfig, UserConfig} from 'vite';
+import dts from "vite-plugin-dts";
+import getBaseViteConfig from "./baseViteConfig";
 
-const {readFileSync} = jsonfile;
-const gamePath = path.resolve(import.meta.dirname, `./src/Games/${gameName}`);
-const uiPath = path.resolve(import.meta.dirname, `./src/UI`);
-const srcPath = path.resolve(import.meta.dirname, `./src`);
-const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
+const isLibraryBuild = process.env.VITE_BUILD_LIB === 'true';
 
-let gameInfo;
+console.log(isLibraryBuild);
 
-if (fs.existsSync(gameInfoPath)) {
-    gameInfo = readFileSync(gameInfoPath);
-}
+const viteConfig = getBaseViteConfig() as UserConfig
+const libraryConfig = getBaseViteConfig() as UserConfig
 
-function runPostBuild() {
-    return {
-        name: 'run-postbuild',
-        apply: 'build',
-        async writeBundle() {
-            const { postBuild } = await import('./scripts/postbuild.js');
-            await postBuild();
-        },
-    }
-}
+[viteConfig, libraryConfig].forEach(config => {
+    const alias = config.resolve!.alias as any;
+    alias['storyScript'] = path.resolve(import.meta.dirname, './src/Engine');
+    alias['ui'] = path.resolve(import.meta.dirname, `./src/UI`);
 
-const plugins = [
-    {
-        name: 'set-game-name-and-description',
-        transformIndexHtml(html: string) {
-            return gameInfo ? html
-                .replace(/%STORYSCRIPT_GAME_NAME%/g, gameInfo.name)
-                .replace(/%STORYSCRIPT_GAME_DESCRIPTION%/g, gameInfo.description) : html;
-        }
-    },
-    vue(),
-    checker({
-        typescript: true,
-        vueTsc: true
-    }),
-    viteStaticCopy({
-        watch: {
-            reloadPageOnChange: true
-        },
-        silent: true,
-        targets: [
-            {
-                src: normalizePath(path.resolve(gamePath, 'resources/**/*.*')),
-                dest: 'resources',
-                // This is relative to the project root. So ./src/Games/{GameName}/resources will be trimmed. We
-                // cannot use 'stripBase: true' because we want to support placing resources in subdirectories.
-                rename: {stripBase: 4}
-            }
-        ]
-    }),
-    runPostBuild(),
-    VitePWA({
-        registerType: 'autoUpdate',
-        devOptions: {
-            enabled: false
-        },workbox: {
-            globDirectory: 'dist',
-            globPatterns: [
-                'assets/**/*',
-                'resources/**/*',
-                'index.html',
-                'manifest.webmanifest',
-            ],
-        }
-    }),
-    visualizer()
-];
-
-export default defineConfig({
-    base: ``,
-    publicDir: path.resolve(gamePath, 'webroot'),
-    define: {
-        'process.env': {}
-    },
-    resolve: {
-        alias: {
-            storyScript: path.resolve(import.meta.dirname, './src/Engine'),
-            game: gamePath,
-            ui: uiPath,
-            src: srcPath,
-            $resources: path.resolve(gamePath, 'resources')
-        }
-    },
-    css: {
+    config.css = {
         preprocessorOptions: {
             scss: {
                 logger: {
@@ -103,23 +24,19 @@ export default defineConfig({
                 },
             },
         },
-    },
-    plugins: plugins,
-    server: {
-        port: 3000,
-        open: true
-    },
-    preview: {
-        port: 8080,
-    },
-    build: {
-        target: 'esnext',
-        outDir: "./dist",
-        sourcemap: false,
-        rolldownOptions: {
-            output: {
-                keepNames: true
-            }
-        }
-    }
-})
+    };
+});
+
+const rolldownOptions = libraryConfig.build!.rolldownOptions!;
+rolldownOptions.external = ['vue'];
+(rolldownOptions.output as any).globals = { vue: 'Vue' };
+
+libraryConfig.build!.lib = {
+    entry: path.resolve(import.meta.dirname, 'src/index.ts'),
+    name: 'StoryScript',
+    fileName: (format) => `storyscript.${format === 'es' ? 'mjs' : 'js'}`
+};
+
+libraryConfig.plugins!.push(dts());
+
+export default defineConfig(isLibraryBuild ? libraryConfig : viteConfig);

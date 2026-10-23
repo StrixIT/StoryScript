@@ -33,22 +33,18 @@ export function importAssets(modules?: Record<string, unknown>): IDefinitions {
 function loadAssetsWithImport(modules?: Record<string, unknown>): IDefinitions {
     const definitions = <IDefinitions>{};
     modules ??= import.meta.glob([
-        'game/actions/**/*',
-        'game/features/**/*',
-        'game/items/**/*',
-        'game/enemies/**/*',
-        'game/persons/**/*',
-        'game/quests/**/*',
-        'game/locations/**/*',
-        'game/maps/**/*'
+        'game/actions/**/*.ts',
+        'game/features/**/*.ts',
+        'game/items/**/*.ts',
+        'game/enemies/**/*.ts',
+        'game/persons/**/*.ts',
+        'game/quests/**/*.ts',
+        'game/locations/**/*.ts',
+        'game/maps/**/*.ts'
     ], {eager: true, caseSensitive: false});
 
     // Loop over all found files to register the assets with the proper type.
     for (const path in modules) {
-        if (path.endsWith('.html')) {
-            continue;
-        }
-        
         const asset = modules[path];
         const entityType = entityTypeRegex.exec(path)?.[0];
 

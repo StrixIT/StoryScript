@@ -1,8 +1,13 @@
 ﻿import pkg from 'fs-extra';
 import fs from "fs";
+import {fileURLToPath} from "url";
+import path from "path";
+import {rootFolder} from "../helpers.js";
 
 const { copy, readFile, writeFile } = pkg;
 
+const __filename = fileURLToPath(import.meta.url);
+let __dirname = path.dirname(__filename);
 const gameName = process.argv[2];
 
 if (!gameName) {
@@ -11,13 +16,10 @@ if (!gameName) {
 }
 
 // Set the game name to the new game.
-await correctFile('currentGameName.js', /gameName\s{0,}=\s{0,}[\w\'-]{0,};/g, `gameName = \'${gameName}\';`);
+await writeFile(`${rootFolder}/currentGameName.txt`, gameName);
 
-const gameRoot = './src/Games/_GameTemplate/';
-const gameDestination = './src/Games/' + gameName;
-
-// Copy the code snippets so VS Code can use them.
-await copy('./CodeSnippets/StoryScriptSnippets.code-snippets', './.vscode/StoryScriptSnippets.code-snippets');
+const gameRoot = `${__dirname}/src/Games/_GameTemplate/`;
+const gameDestination = `${rootFolder}/src/Games/${gameName}`;
 
 // Copy the game template.
 await copy(gameRoot, gameDestination);
@@ -25,8 +27,8 @@ await copy(gameRoot, gameDestination);
 // Correct the run file.
 await correctFile(`${gameDestination}/run.ts`, 'Run(\'GameTemplate\',', `Run(\'${gameName}\',`);
 
-const testRoot = './src/Tests/Games/_GameTemplate';
-const testDestination = './src/Tests/Games/' + gameName;
+const testRoot = `${__dirname}/src/Tests/Games/_GameTemplate`;
+const testDestination = `${rootFolder}/src/Tests/Games/${gameName}`;
 
 // Copy the test template.
 await copy(testRoot, testDestination);

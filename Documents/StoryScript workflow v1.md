@@ -109,7 +109,7 @@ This command uses StoryScript’s built-in startup instructions to display a gam
 In StoryScript, the preview target is controlled through a selector file:
 
 ```text
-currentGameName.js
+currentGameName.txt
 ```
 This file determines which game namespace is loaded by the main UI bootstrap. You have to make sure that this file
 contains your current game name to be able to test it. 

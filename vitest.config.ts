@@ -1,6 +1,6 @@
 import {defineConfig, mergeConfig} from 'vitest/config'
 import viteConfig from './vite.config'
-import gameName from './currentGameName.js';
+import {gameName} from "./helpers.js";
 
 export default mergeConfig(viteConfig, defineConfig({
     test: {
