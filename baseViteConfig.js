@@ -7,13 +7,17 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import jsonfile from "jsonfile";
 import {VitePWA} from 'vite-plugin-pwa'
-import {gameName} from "./helpers.js";
-import {rootFolder} from "./helpers.js";
-
+import {fileURLToPath} from "url";
 const {readFileSync} = jsonfile;
 
+const __filename = fileURLToPath(import.meta.url);
+let __dirname = path.dirname(__filename);
+const rootFolder = __dirname.includes('/node_modules/') ? `${__dirname.split('/node_modules/')[0]}` : __dirname;
+
+const nameModule = await import(`${rootFolder}/currentGameName.js`);
+const gamePath = `${rootFolder}/src/Games/${nameModule.currentGameName}`;
+
 const srcPath = `${rootFolder}/src`;
-const gamePath = path.resolve(rootFolder, `./src/Games/${gameName}`);
 const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
 
 let gameInfo;

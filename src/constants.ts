@@ -3,7 +3,6 @@ export const isDevelopment = process.env.NODE_ENV !== 'production';
 export const isTouchDevice = navigator.maxTouchPoints > 0;
 
 export const entityTypeRegex = /(actions|enemies|features|items|locations|maps|persons|quests)/;
-export const entityNameRegex = /^[a-zA-Z][A-Za-z0-9_]+$/;
 export const IdProperty: string = 'id';
 export const TypeProperty: string = 'type';
 export const Features: string = 'features';

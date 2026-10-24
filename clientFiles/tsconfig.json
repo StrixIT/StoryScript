@@ -29,5 +29,6 @@
         "isolatedModules": true,
         "noEmit": true,
         "allowJs": true,
-    }
+    },
+    "exclude": ["currentGameName.js"]
 }

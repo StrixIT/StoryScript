@@ -18,12 +18,13 @@
             "icon": "dist/icon.ico"
         }
     },
-    "types": "./dist/index.d.ts",
+    "types": "./dist/src/index.d.ts",
     "exports": {
         ".": {
             "import": "./dist/storyscript.mjs",
-            "types": "./dist/index.d.ts"
+            "types": "./dist/src/index.d.ts"
         },
+        "./styles": "./dist/storyscript.css",
         "./vite-config": "./dist/baseViteConfig.js"
     },
     "bin": {
@@ -32,7 +33,11 @@
     "files": [
         "CodeSnippets/StoryScriptSnippets.code-snippets",
         "clientFiles",
-        "scripts",
+        "scripts/cli.js",
+        "scripts/createGame.js",
+        "scripts/createAsset.js",
+        "scripts/postbuild.js",
+        "scripts/helpers.js",
         "src/Engine",
         "src/UI",
         "src/Games/_GameTemplate",
@@ -41,9 +46,9 @@
         "dist/storyscript.*",
         ".env",
         "baseViteConfig.js",
-        "vite-env.d.ts",
         "typeExtensions.d.ts",
-        "helpers.js",
+        "shims-vue.d.ts",
+        "vite-env.d.ts",
         "index.html"
     ],
     "scripts": {

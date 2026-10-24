@@ -49,20 +49,22 @@ main().catch(err => {
 async function setup() {
     console.log('🚀 Setting up storyscript...');
     console.log(`📁 Target: ${projectRoot}`);
-
-    fs.copySync(path.join(packageDir, 'helpers.js'), path.join(packageDir, 'dist/helpers.js'));
+    
     fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
+    fs.moveSync(path.join(packageDir, 'scripts/postbuild.js'), path.join(packageDir, 'dist/scripts/postbuild.js'));
 
     const filesToCopy = [
         ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets'],
         ['clientFiles/tsconfig.json', 'tsconfig.json'],
         ['clientFiles/vite.config.ts', 'vite.config.ts'],
-        '.env',
-        'typeExtensions.d.ts',
-        'vite-env.d.ts',
+        ['clientFiles/currentGameName.js', 'currentGameName.js'],
+        ['clientFiles/.env', '.env'],
         'src/UI/Components',
         'src/UI/main.ts',
-        'index.html'
+        'index.html',
+        'typeExtensions.d.ts',
+        'shims-vue.d.ts',
+        'vite-env.d.ts',
     ];
 
     try {

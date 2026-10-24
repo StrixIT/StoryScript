@@ -2,9 +2,9 @@
 import fs from "fs";
 import {fileURLToPath} from "url";
 import path from "path";
-import {rootFolder} from "../helpers.js";
+import {rootFolder} from "./helpers.js";
 
-const { copy, readFile, writeFile } = pkg;
+const {copy, readFile, writeFile} = pkg;
 
 const __filename = fileURLToPath(import.meta.url);
 let __dirname = path.resolve(path.dirname(__filename), '../');
@@ -16,7 +16,7 @@ if (!gameName) {
 }
 
 // Set the game name to the new game.
-await writeFile(`${rootFolder}/currentGameName.txt`, gameName);
+await writeFile(path.resolve(rootFolder, '../', 'currentGameName.js'), `export const currentGameName = '${gameName}';`);
 
 const gameRoot = `${__dirname}/src/Games/_GameTemplate/`;
 const gameDestination = `${rootFolder}/src/Games/${gameName}`;
