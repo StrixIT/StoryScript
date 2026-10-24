@@ -5,18 +5,20 @@ import path from "path";
 
 const {readFileSync} = pkg;
 
+const args = process.argv;
+
 const entityNameRegex = /^[a-zA-Z][A-Za-z0-9_]+$/;
 const nameModule = await import(path.resolve(rootFolder, 'currentGameName.js'));
 const gameDir = `${rootFolder}/src/Games/${nameModule.currentGameName}`;
 
-const assetType = process.argv[2];
+const assetType = args[2];
 
 if (!assetType) {
     console.log('You need to specify an asset type, e.g. location.');
     process.exit();
 }
 
-const assetName = process.argv[3];
+const assetName = args[3];
 
 if (!assetName) {
     console.log('You need to specify an asset name, e.g. \'Cave\'.');
@@ -32,7 +34,7 @@ let baseSnippetKey = assetType.substring(0, 1).toUpperCase() + assetType.substri
 let snippetKey = baseSnippetKey.endsWith('ys') ? baseSnippetKey.substring(0, baseSnippetKey.length - 2) + 'ies' : baseSnippetKey;
 const assetNameCapital = assetName.substring(0, 1).toUpperCase() + assetName.substring(1);
 
-const snippets = readFileSync(path.resolve('../', 'CodeSnippets/StoryScriptSnippets.code-snippets'));
+const snippets = readFileSync(path.resolve(rootFolder, '.vscode', 'StoryScriptSnippets.code-snippets'));
 
 if (!snippets[snippetKey]) {
     if (!snippets[baseSnippetKey]) {

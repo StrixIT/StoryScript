@@ -2,8 +2,9 @@
 
 import path from 'path';
 import fs from 'fs-extra';
-import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
+import {fileURLToPath} from 'url';
+import {spawn} from 'child_process';
+import {updatePackageJson} from "./helpers.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,14 +22,15 @@ async function main() {
     } else if (command === 'create-game') {
         await createGame(args[0]);
     } else if (command === 'start') {
-        await start();
+        await executeTask('vite');
     } else if (command === 'test') {
-        await test();
+        await executeTask('vite', ['vitest', '--ui']);
     } else if (command === 'publish') {
-        await publish();
+        await executeTask('vite', ['build'], /*should be: tsc && vite build*/);
     } else if (command === 'preview') {
-        const { spawn } = await import('child_process');
-        spawn('npx', ['vite', 'preview'], { stdio: 'inherit' });
+        await executeTask('vite', ['preview']);
+    } else if (/^(location)|(feature)|(map)|(item)|(key)|(enemy)|(person)|(quest)|(action)$/i.test(command)) {
+        await createAsset(command, args[0]);
     } else {
         console.log('Usage: storyscript <command>');
         console.log('\nCommands:');
@@ -38,6 +40,15 @@ async function main() {
         console.log('  test         Run the tests for your games.');
         console.log('  publish      Build your game for deployment');
         console.log('  preview      preview your game ready for deployment');
+        console.log('  location     Create a new StoryScript Location');
+        console.log('  feature      Create a new StoryScript stand-alone Feature');
+        console.log('  map          Create a new StoryScript Map');
+        console.log('  item         Create a new StoryScript Item');
+        console.log('  key          Create a new StoryScript Key');
+        console.log('  enemy        Create a new StoryScript Enemy');
+        console.log('  person       Create a new StoryScript Person');
+        console.log('  quest        Create a new StoryScript Quest');
+        console.log('  action       Create a new StoryScript stand-alone Action');
     }
 }
 
@@ -49,58 +60,55 @@ main().catch(err => {
 async function setup() {
     console.log('🚀 Setting up storyscript...');
     console.log(`📁 Target: ${projectRoot}`);
-    
+
     fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
     fs.moveSync(path.join(packageDir, 'scripts/postbuild.js'), path.join(packageDir, 'dist/scripts/postbuild.js'));
 
     const filesToCopy = [
-        ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets'],
-        ['clientFiles/tsconfig.json', 'tsconfig.json'],
-        ['clientFiles/vite.config.ts', 'vite.config.ts'],
-        ['clientFiles/currentGameName.js', 'currentGameName.js'],
-        ['clientFiles/.env', '.env'],
-        'src/UI/Components',
-        'src/UI/main.ts',
-        'index.html',
-        'typeExtensions.d.ts',
-        'shims-vue.d.ts',
-        'vite-env.d.ts',
+        ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets', true],
+        ['clientFiles/tsconfig.json', 'tsconfig.json', true],
+        ['clientFiles/vite.config.ts', 'vite.config.ts', true],
+        ['clientFiles/currentGameName.js', 'currentGameName.js', false],
+        ['clientFiles/.env', '.env', false],
+        ['src/UI/Components', true],
+        ['src/UI/main.ts', true],
+        ['index.html', true],
+        ['typeExtensions.d.ts', true],
+        ['shims-vue.d.ts', true],
+        ['vite-env.d.ts', true]
     ];
 
     try {
         for (const file of filesToCopy) {
-            const srcFile = Array.isArray(file) ? file[0] : file;
-            const destFile = Array.isArray(file) ? file[1] : file;
+            const srcFile = file[0];
+            const destFile = file.length < 3 ? file[0] : file[1];
+            const overWrite = file.length < 3 ? file[1] : file[2];
 
             const src = path.join(packageDir, srcFile);
             const dest = path.join(projectRoot, destFile);
 
             const stat = fs.statSync(src);
-            
+
             if (stat.isDirectory()) {
-                if (fs.existsSync(dest)) {
-                    console.log(`⏭️  ${srcFile} already exists, skipping`);
-                }
-                
                 fs.cpSync(src, dest, {recursive: true});
                 continue;
             }
-            
+
             if (!fs.existsSync(src)) {
                 console.warn(`⚠️  ${srcFile} not found in template`);
                 continue;
             }
 
             if (fs.existsSync(dest)) {
-                console.log(`⏭️  ${srcFile} already exists, skipping`);
-                continue;
+                if (fs.existsSync(dest) && !overWrite) {
+                    continue;
+                }
             }
 
-            console.log(`✅ Copying ${srcFile}...`);
             fs.copySync(src, dest);
         }
-        
-        updatePackageJson(path.join(projectRoot, 'package.json'));
+
+        updatePackageJson(path.join(projectRoot, 'package.json'), 'type', 'module');
 
         console.log('✅ Setup complete!');
         console.log('\nNext steps:');
@@ -112,11 +120,10 @@ async function setup() {
     }
 }
 
-function updatePackageJson(filePath) {
-    const rawData = fs.readFileSync(filePath, 'utf8');
-    const jsonObject = JSON.parse(rawData);
-    jsonObject['type'] = 'module';
-    fs.writeFileSync(filePath, JSON.stringify(jsonObject, null, 2), 'utf8');
+async function executeTask(args){
+    spawn('node', args, {
+        stdio: 'inherit'
+    });
 }
 
 async function createGame(gameName) {
@@ -133,20 +140,16 @@ async function createGame(gameName) {
     });
 }
 
-async function start() {
-    spawn('vite', [], {
-        stdio: 'inherit'
-    });
-}
+async function createAsset(commandName, assetName) {
+    if (!assetName) {
+        console.error('Error: Asset name is required');
+        console.error(`Usage: npx storyscript ${commandName} <assetName>`);
+        process.exit(1);
+    }
 
-async function test() {
-    spawn('vite', ['vitest', '--ui'], {
-        stdio: 'inherit'
-    });
-}
+    const scriptPath = path.join(__dirname, 'createAsset.js');
 
-async function publish() {
-    spawn('vite', ['build'], /*should be: tsc && vite build*/{
+    spawn('node', [scriptPath, commandName, assetName], {
         stdio: 'inherit'
     });
 }

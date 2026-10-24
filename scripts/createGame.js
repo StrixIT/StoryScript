@@ -2,7 +2,7 @@
 import fs from "fs";
 import {fileURLToPath} from "url";
 import path from "path";
-import {rootFolder} from "./helpers.js";
+import {rootFolder, updatePackageJson} from "./helpers.js";
 
 const {copy, readFile, writeFile} = pkg;
 
@@ -20,6 +20,8 @@ await writeFile(path.resolve(rootFolder, 'currentGameName.js'), `export const cu
 
 const gameRoot = `${__dirname}/src/Games/_GameTemplate/`;
 const gameDestination = `${rootFolder}/src/Games/${gameName}`;
+
+updatePackageJson(path.join(gameDestination, 'webroot', 'gameinfo.json'), 'name', gameName);
 
 // Copy the game template.
 await copy(gameRoot, gameDestination);
