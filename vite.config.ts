@@ -27,11 +27,14 @@ const libraryConfig = getBaseViteConfig() as UserConfig
     };
 });
 
-const rolldownOptions = libraryConfig.build!.rolldownOptions!;
-rolldownOptions.external = ['vue'];
-(rolldownOptions.output as any).globals = { vue: 'Vue' };
+const buildOptions = libraryConfig.build!;
+buildOptions.sourcemap = true;
+buildOptions.minify = false;
 
-libraryConfig.build!.lib = {
+buildOptions.rolldownOptions.external = ['vue'];
+(buildOptions.rolldownOptions.output as any).globals = { vue: 'Vue' };
+
+buildOptions.lib = {
     entry: path.resolve(import.meta.dirname, 'src/index.ts'),
     name: 'StoryScript',
     fileName: (format) => `storyscript.${format === 'es' ? 'mjs' : 'js'}`

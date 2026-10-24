@@ -4,7 +4,7 @@ const { app, BrowserWindow } = require('electron');
 let win;
 
 function createWindow () {
-  let distPath = path.resolve(__dirname, '../../dist');
+  let distPath = path.resolve(__dirname, './dist');
 
   // Create the browser window.
   win = new BrowserWindow({

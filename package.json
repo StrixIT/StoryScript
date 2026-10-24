@@ -6,10 +6,11 @@
     "private": true,
     "type": "module",
     "main": "./src/UI/electron.cjs",
+    "module": "./dist/storyscript.mjs",
     "build": {
         "appId": "storyscript.id",
         "files": [
-            "./src/UI/electron.cjs",
+            "./electron.cjs",
             "dist/**/*"
         ],
         "win": {
@@ -32,14 +33,13 @@
         "CodeSnippets/StoryScriptSnippets.code-snippets",
         "clientFiles",
         "scripts",
+        "src/Engine",
+        "src/UI",
         "src/Games/_GameTemplate",
         "src/Tests/Games/_GameTemplate",
-        "src/UI/Components",
-        "src/UI/main.ts",
-        "dist",
+        "dist/**/*.d.ts",
+        "dist/storyscript.*",
         ".env",
-        "tsconfig.json",
-        "vite.config.ts",
         "baseViteConfig.js",
         "vite-env.d.ts",
         "typeExtensions.d.ts",
