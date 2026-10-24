@@ -6,7 +6,7 @@ import path from "path";
 const {readFileSync} = pkg;
 
 const entityNameRegex = /^[a-zA-Z][A-Za-z0-9_]+$/;
-const nameModule = await import(path.resolve(rootFolder, '../', 'currentGameName.js'));
+const nameModule = await import(path.resolve(rootFolder, 'currentGameName.js'));
 const gameDir = `${rootFolder}/src/Games/${nameModule.currentGameName}`;
 
 const assetType = process.argv[2];

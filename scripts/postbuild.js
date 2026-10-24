@@ -9,7 +9,7 @@ import {rootFolder} from "./helpers.js";
 
 const {readFileSync} = jsonfile;
 
-const nameModule = await import(path.resolve(rootFolder, '../', 'currentGameName.js'));
+const nameModule = await import(path.resolve(rootFolder, '../','currentGameName.js'));
 const gamePath = `${rootFolder}/src/Games/${nameModule.currentGameName}`;
 
 const resourcePath = resolve(rootFolder, `./dist/resources`);

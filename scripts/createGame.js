@@ -16,7 +16,7 @@ if (!gameName) {
 }
 
 // Set the game name to the new game.
-await writeFile(path.resolve(rootFolder, '../', 'currentGameName.js'), `export const currentGameName = '${gameName}';`);
+await writeFile(path.resolve(rootFolder, 'currentGameName.js'), `export const currentGameName = '${gameName}';`);
 
 const gameRoot = `${__dirname}/src/Games/_GameTemplate/`;
 const gameDestination = `${rootFolder}/src/Games/${gameName}`;
