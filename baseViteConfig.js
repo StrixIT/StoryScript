@@ -80,7 +80,8 @@ export const getBaseViteConfig = (gamePath) => {
                 registerType: 'autoUpdate',
                 devOptions: {
                     enabled: false
-                }, workbox: {
+                },
+                workbox: {
                     globDirectory: 'dist',
                     globPatterns: [
                         'assets/**/*',

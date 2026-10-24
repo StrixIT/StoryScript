@@ -4,7 +4,7 @@ import {fileURLToPath} from "url";
 import path from "path";
 import {rootFolder, updatePackageJson} from "./helpers.js";
 
-const {copy, readFile, writeFile} = pkg;
+const {copy, writeFile} = pkg;
 
 const __filename = fileURLToPath(import.meta.url);
 let __dirname = path.resolve(path.dirname(__filename), '../');
@@ -21,13 +21,11 @@ await writeFile(path.resolve(rootFolder, 'currentGameName.js'), `export const cu
 const gameRoot = `${__dirname}/src/Games/_GameTemplate/`;
 const gameDestination = `${rootFolder}/src/Games/${gameName}`;
 
-updatePackageJson(path.join(gameDestination, 'webroot', 'gameinfo.json'), 'name', gameName);
-
 // Copy the game template.
 await copy(gameRoot, gameDestination);
 
-// Correct the run file.
-await correctFile(`${gameDestination}/run.ts`, 'Run(\'GameTemplate\',', `Run(\'${gameName}\',`);
+// Add the game name to the game info.
+updatePackageJson(path.join(gameDestination, 'webroot', 'gameinfo.json'), 'name', gameName);
 
 const testRoot = `${__dirname}/src/Tests/Games/_GameTemplate`;
 const testDestination = `${rootFolder}/src/Tests/Games/${gameName}`;
@@ -45,10 +43,4 @@ if (!fs.existsSync(componentsPath)) {
 
 if (!fs.existsSync(resourcesPath)) {
     fs.mkdirSync(resourcesPath);
-}
-
-async function correctFile(fileName, toReplace, replacement) {
-    let fileData = await readFile(fileName, 'utf8');
-    fileData = fileData.replace(toReplace, replacement);
-    await writeFile(fileName, fileData);
 }

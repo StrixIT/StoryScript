@@ -26,7 +26,7 @@ async function main() {
     } else if (command === 'test') {
         await executeTask('vite', ['vitest', '--ui']);
     } else if (command === 'publish') {
-        await executeTask('vite', ['build'], /*should be: tsc && vite build*/);
+        await executeTask('vite', ['build']);
     } else if (command === 'preview') {
         await executeTask('vite', ['preview']);
     } else if (/^(location)|(feature)|(map)|(item)|(key)|(enemy)|(person)|(quest)|(action)$/i.test(command)) {
@@ -63,6 +63,7 @@ async function setup() {
 
     fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
     fs.moveSync(path.join(packageDir, 'scripts/postbuild.js'), path.join(packageDir, 'dist/scripts/postbuild.js'));
+    fs.copySync(path.join(packageDir, 'scripts/helpers.js'), path.join(packageDir, 'dist/scripts/helpers.js'));
 
     const filesToCopy = [
         ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets', true],
@@ -120,8 +121,8 @@ async function setup() {
     }
 }
 
-async function executeTask(args){
-    spawn('node', args, {
+async function executeTask(command, args){
+    spawn(command, args, {
         stdio: 'inherit'
     });
 }

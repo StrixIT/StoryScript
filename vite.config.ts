@@ -2,7 +2,7 @@ import path from 'path';
 import {defineConfig, UserConfig} from 'vite';
 import dts from "vite-plugin-dts";
 import {currentGameName} from './currentGameName.js';
-import {getBaseViteConfig} from "./baseViteConfig";
+import {getBaseViteConfig} from "./baseViteConfig.js";
 import {fileURLToPath} from "url";
 
 const isLibraryBuild = process.env.VITE_BUILD_LIB === 'true';
@@ -42,6 +42,11 @@ buildOptions.lib = {
     name: 'StoryScript',
     fileName: (format) => `storyscript.${format === 'es' ? 'mjs' : 'js'}`
 };
+
+// Remove PWA plugins when building a package.
+libraryConfig.plugins = libraryConfig.plugins.filter((p: any) => {
+    return !Array.isArray(p) || !p[0].name?.startsWith('vite-plugin-pwa');
+});
 
 libraryConfig.plugins!.push(dts());
 
