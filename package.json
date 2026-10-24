@@ -5,7 +5,7 @@
     "author": "Rutger Schurgers",
     "private": true,
     "type": "module",
-    "main": "./src/UI/electron.cjs",
+    "main": "./electron.cjs",
     "module": "./dist/storyscript.mjs",
     "build": {
         "appId": "storyscript.id",
@@ -81,8 +81,6 @@
         "@vueuse/core": "^15.0.0",
         "archiver": "^8.0.0",
         "bootstrap": "^5.3.8",
-        "electron": "^44.7.0",
-        "electron-builder": "^26.15.3",
         "fs-extra": "^11.4.1",
         "jsdom": "^30.1.1",
         "jsonfile": "^6.2.1",
@@ -101,7 +99,9 @@
         "which": "^7.0.0"
     },
     "devDependencies": {
-        "vite-plugin-dts": "^5.1.2"
+        "vite-plugin-dts": "^5.1.2",
+        "electron": "^44.7.0",
+        "electron-builder": "^26.15.3"
     },
     "allowScripts": {
         "@parcel/watcher@2.6.0": true,
