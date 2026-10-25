@@ -1,6 +1,7 @@
 import {GameState, IActiveCombination, ICharacter, ICombinable, ICreateCharacter, IRules} from 'storyScript';
 import {Combinations} from './combinations';
 import {Character, ICombatSetup, IEnemy, IGame} from './types';
+import {getDemoMode} from './demoMode';
 
 export function Rules(): IRules {
     return {
