@@ -19,7 +19,7 @@ const libraryConfig = getBaseViteConfig(gamePath) as UserConfig
     
     const alias = config.resolve!.alias as any;
     alias['storyScript'] = path.resolve(import.meta.dirname, './src');
-    alias['storyScript/styles'] = path.resolve(import.meta.dirname, './src/UI/styles/empty.css');
+    alias['storyscript/styles'] = path.resolve(import.meta.dirname, './src/UI/styles/empty.css');
     alias['ui'] = path.resolve(import.meta.dirname, `./src/UI`);
 
     config.css = {
