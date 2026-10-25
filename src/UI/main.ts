@@ -5,15 +5,12 @@ import {
 } from "storyScript";
 import 'game/ui/styles/game.css'
 // @ts-ignore
+import('storyscript/styles');
+// @ts-ignore
 import {Rules} from 'game/rules';
 // @ts-ignore
 import {CustomTexts} from 'game/customTexts';
 import {currentGameName} from "../../currentGameName";
-
-if (!import.meta.env?.VITE_IS_MASTER) {
-    // @ts-ignore
-    await import('storyscript/styles');
-}
 
 addFunctionExtensions();
 addArrayExtensions();

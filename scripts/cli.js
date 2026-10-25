@@ -78,13 +78,13 @@ async function setup() {
         ['clientFiles/vite.config.ts', 'vite.config.ts', true],
         ['clientFiles/gitignore', '.gitignore', false],
         ['clientFiles/currentGameName.js', 'currentGameName.js', false],
-        ['clientFiles/.env', '.env', false],
         ['src/UI/Components', true],
         ['src/UI/main.ts', true],
         ['index.html', true],
         ['typeExtensions.d.ts', true],
         ['shims-vue.d.ts', true],
-        ['vite-env.d.ts', true]
+        ['vite-env.d.ts', true],
+        ['.env', false]
     ];
 
     try {

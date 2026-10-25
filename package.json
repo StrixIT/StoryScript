@@ -51,7 +51,8 @@
     "shims-vue.d.ts",
     "vite-env.d.ts",
     "index.html",
-    "electron.cjs"
+    "electron.cjs",
+    ".env"
   ],
   "scripts": {
     "create-game": "node scripts/createGame.js",
