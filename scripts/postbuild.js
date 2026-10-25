@@ -17,7 +17,15 @@ const tempResourcePath = path.join(resourcePath, '_tmp');
 const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
 
 export async function postBuild() {
-
+    const originalWarn = console.warn;
+    
+    // Override the console warn to silence vite pwa glob warnings on the resources folder. It is not always present
+    // in the dist, only when a game has resources.
+    console.warn = (...args) => {
+        if (args[0]?.includes('glob pattern')) return;
+        originalWarn(...args);
+    };
+    
     let gameInfo;
 
     if (fs.existsSync(gameInfoPath)) {
