@@ -113,12 +113,13 @@ async function runTests() {
 
 async function electron(preview) {
     copyFile(['electron.cjs', false]);
-
-    // TODO: add name and version to package.json when it does not exist. Need to set build options properly.
     
+    const gameName = await getGameName();
+    
+    setJsonFileProperty(path.join(projectRoot, 'package.json'), 'name', gameName);
+    setJsonFileProperty(path.join(projectRoot, 'package.json'), 'version', '1.0.0');
     setJsonFileProperty(path.join(projectRoot, 'package.json'), 'main', './electron.cjs');
-    
-    setJsonFileProperty(path.join(projectRoot, 'package.json'), 'build', JSON.stringify({
+    setJsonFileProperty(path.join(projectRoot, 'package.json'), 'build', {
         "appId": "storyscript.id",
         "files": [
             "./electron.cjs",
@@ -128,7 +129,7 @@ async function electron(preview) {
             "target": "portable",
             "icon": "dist/icon.ico"
         }
-    }));
+    });
     
     await executeTask('npm', ['install', 'electron@latest', 'electron-builder@latest', '--save-dev']);
     await executeTask('vite', ['build']);
@@ -161,6 +162,11 @@ async function createAsset(commandName, assetName) {
     const scriptPath = path.join(__dirname, 'createAsset.js');
 
     await executeTask('node', [scriptPath, commandName, assetName]);
+}
+
+async function getGameName() {
+    const nameModule = await import(path.resolve(projectRoot, 'currentGameName.js'));
+    return nameModule.currentGameName;
 }
 
 async function executeTask(command, args, waitForCompletion){
