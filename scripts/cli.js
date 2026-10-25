@@ -18,11 +18,11 @@ const packageDir = path.resolve(__dirname, '..');
 async function main() {
     if (command === 'setup') {
         await setup();
-    } else if (command === 'create-game') {
+    } else if (command === 'game') {
         await createGame(args[0]);
     } else if (command === 'start') {
         await executeTask('vite');
-    } else if (command === 'start-electron') {
+    } else if (command === 'start:electron') {
         await electron(true);
     } else if (command === 'test') {
         await runTests();
@@ -32,7 +32,7 @@ async function main() {
         await executeTask('vite', ['preview']);
     } else if (command === 'publish') {
         await executeTask('vite', ['build']);
-    } else if (command === 'publish-electron') {
+    } else if (command === 'publish:electron') {
         await electron(false);
     } else if (/^(location)|(feature)|(map)|(item)|(key)|(enemy)|(person)|(quest)|(action)$/i.test(command)) {
         await createAsset(command, args[0]);
@@ -40,22 +40,22 @@ async function main() {
         console.log('Usage: storyscript <command>');
         console.log('\nCommands:');
         console.log('  setup            Setup StoryScript. Run automatically on npm install.');
-        console.log('  create-game      Create a new StoryScript game.');
+        console.log('  game     [name]  Create a new StoryScript game.');
+        console.log('  location [name]  Create a new StoryScript Location.');
+        console.log('  feature  [name]  Create a new StoryScript stand-alone Feature.');
+        console.log('  map      [name]  Create a new StoryScript Map.');
+        console.log('  item     [name]  Create a new StoryScript Item.');
+        console.log('  key      [name]  Create a new StoryScript Key.');
+        console.log('  enemy    [name]  Create a new StoryScript Enemy.');
+        console.log('  person   [name]  Create a new StoryScript Person.');
+        console.log('  quest    [name]  Create a new StoryScript Quest.');
+        console.log('  action   [name]  Create a new StoryScript stand-alone Action.');
         console.log('  start            Start running your game in development mode.');
-        console.log('  start-electron   Start running your game in development mode in electron.');
         console.log('  test             Run the tests for your game. This will setup testing if you don\'t have any tests yet.');
         console.log('  publish          Build your game for deployment as a web app.');
-        console.log('  publish-electron Build your game for deployment as an electron executable.');
-        console.log('  preview          preview your game ready for deployment.');
-        console.log('  location         Create a new StoryScript Location.');
-        console.log('  feature          Create a new StoryScript stand-alone Feature.');
-        console.log('  map              Create a new StoryScript Map.');
-        console.log('  item             Create a new StoryScript Item.');
-        console.log('  key              Create a new StoryScript Key.');
-        console.log('  enemy            Create a new StoryScript Enemy.');
-        console.log('  person           Create a new StoryScript Person.');
-        console.log('  quest            Create a new StoryScript Quest.');
-        console.log('  action           Create a new StoryScript stand-alone Action.');
+        console.log('  preview          preview your published web app game.');
+        console.log('  start:electron   Start running your game in electron.');
+        console.log('  publish:electron Build your game for deployment as an electron executable. This will setup electron if you don\'t have it yet.');
     }
 }
 
@@ -96,7 +96,7 @@ async function setup() {
 
         console.log('✅ Setup complete!');
         console.log('\nNext steps:');
-        console.log('  npx storyscript create-game your-game-name');
+        console.log('  npx storyscript game your-game-name');
         console.log('  npx storyscript start');
     } catch (err) {
         console.error('❌ Setup failed:', err.message);
