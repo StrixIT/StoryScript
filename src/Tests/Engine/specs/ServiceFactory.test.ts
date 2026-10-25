@@ -1,6 +1,6 @@
 import {beforeAll, describe, expect, test} from "vitest";
 import {ServiceFactory} from "src/Engine/ServiceFactory";
-import {initMyRolePlayingGameServiceFactory} from "../helpers";
+import {initMyRolePlayingGameServiceFactory} from '../../helpers';
 
 describe('ServiceFactory', function () {
 

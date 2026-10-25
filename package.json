@@ -32,6 +32,7 @@
   },
   "files": [
     "CodeSnippets/StoryScriptSnippets.code-snippets",
+    "LiveTemplates",
     "clientFiles",
     "scripts/cli.js",
     "scripts/createGame.js",
@@ -64,12 +65,11 @@
     "scq": "node scripts/createAsset.js quest",
     "scm": "node scripts/createAsset.js map",
     "start": "vite",
-    "test": "node ./src/Tests/Engine/beforeTests.js && node scripts/setupTesting.js && vitest --ui",
+    "test": "node ./src/Tests/beforeTests.js && node scripts/setupTesting.js && vitest --ui",
     "publish": "tsc && vite build",
     "publish:package": "tsc && VITE_BUILD_LIB=true vite build",
     "electron-start": "vite build && electron .",
     "electron-publish": "vite build && electron-builder",
-    "build:types": "tsc --emitDeclarationOnly",
     "pack:test": "node scripts/pack-and-test.js"
   },
   "dependencies": {

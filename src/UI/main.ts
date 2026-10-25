@@ -1,10 +1,6 @@
 import {
     addArrayExtensions,
     addFunctionExtensions,
-    buildEntities,
-    entityTypeRegex,
-    IDefinitions,
-    ServiceFactory,
     startup
 } from "storyScript";
 import 'game/ui/styles/game.css'
@@ -21,22 +17,13 @@ if (!import.meta.env?.VITE_IS_MASTER) {
 
 addFunctionExtensions();
 addArrayExtensions();
-const definitions = importAssets();
-const registeredEntities = buildEntities(definitions);
-new ServiceFactory(currentGameName, definitions, registeredEntities, Rules(), CustomTexts());
+const assets = importAssets();
 const components = getComponents();
 
-startup(components);
+startup(components, assets, currentGameName, Rules(), CustomTexts());
 
-export function importAssets(modules?: Record<string, unknown>): IDefinitions {
-    const definitions = <IDefinitions>{};
-
-    if (!import.meta.env?.VITE_BUILDER) {
-        console.log('import.meta.glob is NOT available to import game assets!');
-        return definitions;
-    }
-
-    modules ??= import.meta.glob([
+export function importAssets(): Record<string, unknown> {
+    return import.meta.glob([
         'game/actions/**/*.ts',
         'game/features/**/*.ts',
         'game/items/**/*.ts',
@@ -46,38 +33,10 @@ export function importAssets(modules?: Record<string, unknown>): IDefinitions {
         'game/locations/**/*.ts',
         'game/maps/**/*.ts'
     ], {eager: true, caseSensitive: false});
-
-    // Loop over all found files to register the assets with the proper type.
-    for (const path in modules) {
-        const asset = modules[path];
-        const entityType = entityTypeRegex.exec(path)?.[0];
-
-        if (!entityType) {
-            throw new Error(`'${path}' is not a valid entity type path!`);
-        }
-
-        const property = Object.getOwnPropertyNames(asset)[0];
-        const entityFunc = asset[property];
-
-        // Add the entity function to the definitions object for creating entities at run-time.
-        definitions[entityType] = definitions[entityType] || [];
-
-        if (definitions[entityType].indexOf(entityFunc) === -1) {
-            definitions[entityType].push(entityFunc);
-        }
-    }
-
-    return definitions;
 }
 
 function getComponents(): Map<string, any> {
     const combinedTemplates = new Map<string, any>();
-
-    if (!import.meta.env?.VITE_BUILDER) {
-        console.log('import.meta.glob is NOT available to import ui components!');
-        return combinedTemplates;
-    }
-
     const defaultTemplates = import.meta.glob('./Components/**/*.vue', {eager: true, caseSensitive: false});
     const customTemplates = import.meta.glob('game/ui/**/*.vue', {eager: true, caseSensitive: false});
 

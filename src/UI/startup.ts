@@ -3,15 +3,21 @@ import {createPinia, Pinia} from 'pinia';
 import AppShell from 'ui/Components/AppShell.vue';
 import {ServiceFactory} from "src/Engine/ServiceFactory";
 import {logTime} from "../StartupLogger";
-import {useStateStore} from "ui/StateStore";
+import {buildEntities, IInterfaceTexts, IRules, useStateStore} from 'storyScript';
+import {getDefinitions} from "ui/helpers";
 
 import 'ui/styles/bootstrap-storyscript.scss';
 import 'ui/styles/storyscript.css';
 
-export const startup = (components: Map<string, any>) => {
-
+export const startup = (components: Map<string, any>, assets: Record<string, unknown>, gameName: string, rules: IRules, texts: IInterfaceTexts) => {
     let pinia: Pinia;
-    let application: App<Element>
+    let application: App<Element>;
+
+    if (!ServiceFactory.GetInstance()) {
+        const definitions = getDefinitions(assets);
+        const registeredEntities = buildEntities(definitions);
+        new ServiceFactory(gameName, definitions, registeredEntities, rules, texts);
+    }
 
     logTime('Start Vue', () => {
         pinia = createPinia();

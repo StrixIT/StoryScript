@@ -1,7 +1,7 @@
 import {describe, expect, test} from 'vitest';
 import {DataSerializer, DataService} from 'src/Engine/Services';
 import {IDataService, IDataSynchronizer, ILocalStorageService, IRules} from 'storyScript';
-import {getStorageServiceMock} from '../helpers';
+import {getStorageServiceMock} from '../../helpers';
 
 const TestGamePrefix = '_TestGame';
 

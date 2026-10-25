@@ -5,8 +5,8 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const testAssetsDirectory = join(__dirname, './assets/');
-const gameDirectory = join(__dirname, '../../Games');
+const testAssetsDirectory = join(__dirname, './Engine/assets/');
+const gameDirectory = join(__dirname, '../Games');
 const testGames = JSON.parse(fs.readFileSync(join (__dirname, './testGames.json')));
 
 const copyFiles = function (directory) {

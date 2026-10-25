@@ -4,7 +4,9 @@ import fs from "fs-extra";
 
 const __filename = fileURLToPath(import.meta.url);
 let __dirname = path.dirname(__filename);
-__dirname = __dirname.includes('/node_modules/') ? `${__dirname.split('/node_modules/')[0]}` : __dirname;
+__dirname = __dirname.includes('/node_modules/') ? 
+    __dirname.split('/node_modules/')[0] : __dirname.includes('/scripts') 
+        ? __dirname.split('/scripts')[0] :__dirname;
 
 export const rootFolder = __dirname;
 

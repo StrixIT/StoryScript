@@ -11,7 +11,7 @@ import {
     Location,
 } from 'storyScript';
 import {customEntity, DynamicEntity, InitEntityCollection} from "src/Engine/EntityCreatorFunctions";
-import {initMyRolePlayingGameServiceFactory} from "../helpers";
+import {initMyRolePlayingGameServiceFactory} from '../../helpers';
 import {Start} from "../assets/MyRolePlayingGame/locations/start";
 import {Sword} from "../assets/MyRolePlayingGame/items/sword";
 import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit";

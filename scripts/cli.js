@@ -76,6 +76,7 @@ async function setup() {
         ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets', true],
         ['clientFiles/tsconfig.json', 'tsconfig.json', true],
         ['clientFiles/vite.config.ts', 'vite.config.ts', true],
+        ['clientFiles/gitignore', '.gitignore', false],
         ['clientFiles/currentGameName.js', 'currentGameName.js', false],
         ['clientFiles/.env', '.env', false],
         ['src/UI/Components', true],

@@ -2,7 +2,7 @@ import {describe, expect, test} from 'vitest';
 import {addArrayExtensions, addFunctionExtensions} from 'src/Engine/arrayAndFunctionExtensions';
 import {IDestination, ILocation} from 'storyScript';
 import {getId} from 'src/Engine/utilityFunctions';
-import {compareId} from '../helpers';
+import {compareId} from '../../helpers';
 import {StateProperties} from "src/Engine/stateProperties";
 import {Journal} from "../assets/MyRolePlayingGame/items/journal";
 import {Sword} from "../assets/MyRolePlayingGame/items/sword";

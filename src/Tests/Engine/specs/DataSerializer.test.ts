@@ -14,7 +14,7 @@ import {
 } from 'storyScript';
 import {StateProperties} from "src/Engine/stateProperties";
 import {ServiceFactory} from "src/Engine/ServiceFactory";
-import {initMyAdventureGameServiceFactory, initMyRolePlayingGameServiceFactory} from "../helpers";
+import {initMyAdventureGameServiceFactory, initMyRolePlayingGameServiceFactory} from '../../helpers';
 import {Basement} from "../assets/MyRolePlayingGame/locations/Basement";
 import {DirtRoad} from "../assets/MyRolePlayingGame/locations/DirtRoad";
 import {Garden} from "../assets/MyRolePlayingGame/locations/Garden";

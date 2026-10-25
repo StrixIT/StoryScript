@@ -12,7 +12,7 @@ import {
     IParty,
     ISaveGame
 } from 'storyScript';
-import {initMyRolePlayingGameServiceFactory} from "../helpers";
+import {initMyRolePlayingGameServiceFactory} from '../../helpers';
 import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit";
 import {BasementKey} from "../assets/MyRolePlayingGame/items/basementKey";
 import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots";
