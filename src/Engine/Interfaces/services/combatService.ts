@@ -1,8 +1,4 @@
-import {ICombatSetup} from "storyScript/Interfaces/combatSetup.ts";
-import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
-import {IEnemy} from "storyScript/Interfaces/enemy.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
+import {ICharacter, ICombatSetup, ICombatTurn, IEnemy, IItem} from 'storyScript';
 
 export interface ICombatService {
     /**

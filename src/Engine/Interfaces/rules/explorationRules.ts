@@ -1,7 +1,4 @@
-import { ICharacter } from '../character';
-import { ICompiledLocation } from '../compiledLocation';
-import { IGame } from '../game';
-import { IItem } from '../item';
+import {ICharacter, ICompiledLocation, IGame, IItem} from 'storyScript';
 
 export interface IExplorationRules {
     /**

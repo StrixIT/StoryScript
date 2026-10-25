@@ -13,6 +13,7 @@ import {CustomTexts} from './customTexts';
 import {Rules} from './rules';
 import {Character} from './character';
 import {ICombatSetup} from './interfaces/combatSetup';
+import {ICombatTurn} from './interfaces/combatTurn';
 import {IMap, IMapLocation, LocationMap} from './interfaces/map';
 import {IInterfaceTexts} from './interfaces/interfaceTexts';
 import {IAction} from './interfaces/action';
@@ -35,6 +36,7 @@ export type {
     IEquipment,
     IGame,
     ICombatSetup,
+    ICombatTurn,
     IInterfaceTexts
 }
 

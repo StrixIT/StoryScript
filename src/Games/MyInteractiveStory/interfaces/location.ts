@@ -1,4 +1,4 @@
-﻿import { ILocation as StoryScriptILocation, Location as StoryScriptLocation, ICompiledLocation as StoryScriptICompiledLocation } from 'storyScript/Interfaces/storyScript';
+﻿import { ILocation as StoryScriptILocation, Location as StoryScriptLocation, ICompiledLocation as StoryScriptICompiledLocation } from 'storyScript';
 import { IEnemy, IItem, IPerson } from '../types';
 
 export function Location(entity: ILocation): ILocation  {

@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest';
-import {DefaultTexts} from 'storyScript/defaultTexts';
+import {DefaultTexts} from 'storyScript';
 
 describe("Default texts", function () {
 

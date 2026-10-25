@@ -14,8 +14,7 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
+import {PlayState, useStateStore} from 'storyScript';
 import {storeToRefs} from "pinia";
 
 const store = useStateStore();

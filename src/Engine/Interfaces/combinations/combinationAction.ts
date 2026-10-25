@@ -1,6 +1,4 @@
-﻿import { IGame } from '../game';
-import { ICombinable } from './combinable';
-import { ICombinationMatchResult } from './combinationMatchResult';
+﻿import {ICombinable, ICombinationMatchResult, IGame} from 'storyScript';
 
 /**
  * Combination actions that can be tried in the game, e.g. throwing an object at another object.
@@ -33,16 +31,15 @@ export interface ICombinationAction {
      * is active when the player selects a feature, this action will be used.
      */
     isDefault?: boolean;
+    /**
+     * Set this to use a picture for your combinations in addition to a text. For visual features, this will display the picture
+     * as mouse cursor when a cursor is available or on top of the features for touch devices.
+     */
+    picture?: string;
 
     /**
      * Set this to have a default match action available. This is useful if you want to have default behaviour for one particular
      * type of action (e.g. Look at).
      */
     defaultMatch?(game: IGame, target: ICombinable, tool: ICombinable): string | ICombinationMatchResult;
-
-    /**
-     * Set this to use a picture for your combinations in addition to a text. For visual features, this will display the picture
-     * as mouse cursor when a cursor is available or on top of the features for touch devices.
-     */
-    picture?: string;
 }

@@ -1,8 +1,8 @@
 import {Feature, IGame} from '../types';
 import {Combinations} from '../combinations';
 import {Flask} from '../items/flask';
-import {HealingPotion} from "../items/healingPotion.ts";
-import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
+import {HealingPotion} from "../items/healingPotion";
+import {GameState} from 'storyScript';
 
 export function WoundedWarrior() {
     return Feature({

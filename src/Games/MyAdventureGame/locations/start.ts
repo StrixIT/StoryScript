@@ -1,7 +1,7 @@
 import { Location } from '../types';
 import { Fountain } from '../features/fountain';
 import description from './Start.html?raw';
-import {HealingLight} from "../items/healingLight.ts";
+import {HealingLight} from "../items/healingLight";
 
 export function Start() {
     return Location({

@@ -33,12 +33,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
-import {ICombatTurn} from "storyScript/Interfaces/combatTurn.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
-import {IEnemy} from "storyScript/Interfaces/enemy.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {ICombatSetup} from "storyScript/Interfaces/combatSetup.ts";
+import {ICharacter, ICombatSetup, ICombatTurn, IEnemy, IItem, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {texts, combatService, itemService} = store.services;

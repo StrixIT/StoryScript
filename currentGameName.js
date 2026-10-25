@@ -1,3 +1,1 @@
-const gameName = 'MyAdventureGame';
-
-export default gameName;
+export const currentGameName = 'MyRolePlayingGame';

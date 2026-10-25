@@ -2,7 +2,7 @@
     IGroupableItem as StoryScriptIGroupableItem,
     IItem as StoryScriptIItem,
     Item as StoryScriptItem
-} from 'storyScript/Interfaces/storyScript';
+} from 'storyScript';
 import { IFeature } from '../types';
 
 export function Item(entity: IItem): IItem {

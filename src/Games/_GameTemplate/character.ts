@@ -1,4 +1,4 @@
-﻿import { ICharacter } from 'storyScript/Interfaces/storyScript';
+﻿import { ICharacter } from 'storyScript';
 import { IItem, IEquipment } from './types';
 
 export class Character implements ICharacter {

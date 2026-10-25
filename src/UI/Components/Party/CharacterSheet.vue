@@ -12,11 +12,11 @@
           <li>{{ texts.hitpoints }}
             <div class="hitpoint-editor">
               <span v-if="!isDevelopment">{{ character.currentHitpoints }}</span>
-              <input v-else 
+              <input v-else
+                     v-model="character.currentHitpoints"
+                     :max="character.hitpoints"
+                     :min="1"
                      name="hitpoint-editor"
-                     v-model="character.currentHitpoints" 
-                     :max="character.hitpoints" 
-                     :min="1" 
                      type="number"
                      @blur="limitInput($event, character)">
             </div>
@@ -32,11 +32,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {IParty} from "storyScript/Interfaces/party.ts";
-import {isDevelopment} from "src/constants.ts";
+import {ICharacter, IParty, isDevelopment, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {useCharacterSheet} = storeToRefs(store);

@@ -1,11 +1,18 @@
-import { IGame } from '../game';
-import { PlayState } from '../enumerations/playState';
-import {GameState, ICharacter, IGroupableItem, IInterfaceTexts, IItem, ITrade} from '../storyScript';
+import {
+    GameState,
+    ICharacter,
+    IGame,
+    IGroupableItem,
+    IInterfaceTexts,
+    IItem,
+    ITrade,
+    PlayState
+} from 'storyScript';
 
 export interface IGeneralRules {
     /**
      * This function is called when the party's score changes. Return true if you want to toggle the level-up
-     * status afterwards.
+     * status afterward.
      * @param game The active game
      * @param change The change in score.
      */

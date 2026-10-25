@@ -1,19 +1,21 @@
-import {IGame} from 'storyScript/Interfaces/game';
-import {IInterfaceTexts} from 'storyScript/Interfaces/interfaceTexts';
-import {IPerson} from 'storyScript/Interfaces/person';
-import {ITrade} from 'storyScript/Interfaces/trade';
-import {IItem} from 'storyScript/Interfaces/item';
-import {ITradeService} from 'storyScript/Interfaces/services/tradeService';
-import {PlayState} from 'storyScript/Interfaces/enumerations/playState';
-import {StateProperties} from "storyScript/stateProperties.ts";
-import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {randomList} from "storyScript/Services/sharedFunctions.ts";
-import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
-import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {IAction} from "storyScript/Interfaces/action.ts";
+import {
+    gameEvents,
+    IAction,
+    ICharacter,
+    IDefinitions,
+    IGame,
+    IGroupableItem,
+    IInterfaceTexts,
+    IItem,
+    IItemService,
+    IPerson,
+    IRules,
+    ITrade,
+    ITradeService,
+    PlayState,
+    randomList
+} from 'storyScript';
+import {StateProperties} from "src/Engine/stateProperties";
 
 const tradeEvent = 'trade';
 

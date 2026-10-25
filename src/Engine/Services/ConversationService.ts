@@ -1,15 +1,17 @@
-import {IGame} from 'storyScript/Interfaces/game';
-import {IPerson} from 'storyScript/Interfaces/person';
-import {IQuest} from 'storyScript/Interfaces/quest';
-import {IConversationService} from 'storyScript/Interfaces/services/conversationService';
-import {PlayState} from 'storyScript/Interfaces/enumerations/playState';
-import {IConversationNode} from 'storyScript/Interfaces/conversations/conversationNode';
-import {IConversationReply} from 'storyScript/Interfaces/conversations/conversationReply';
-import {IConversation} from 'storyScript/Interfaces/conversations/conversation';
+import {
+    IConversation,
+    IConversationNode,
+    IConversationReply,
+    IConversationService,
+    IGame,
+    IPerson,
+    IQuest,
+    IRules,
+    PlayState
+} from 'storyScript';
 import {parseGamePropertiesInTemplate} from './sharedFunctions';
-import {compareString, hasItem} from "storyScript/utilityFunctions.ts";
-import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
+import {compareString, hasItem} from "../utilityFunctions";
+import {getParsedDocument} from "../EntityCreatorFunctions";
 
 export class ConversationService implements IConversationService {
     constructor(private readonly _game: IGame, private readonly _rules: IRules) {

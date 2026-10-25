@@ -1,6 +1,6 @@
 ﻿import {IGame, IPerson, IQuest, Quest} from '../types';
 import * as Items from '../items/journal'
-import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
+import {GameState} from 'storyScript';
 
 export function Journal() {
     return Quest({

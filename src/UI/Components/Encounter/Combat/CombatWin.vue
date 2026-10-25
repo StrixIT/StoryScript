@@ -21,8 +21,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
-import {ICombatWinnings} from "storyScript/Interfaces/combatWinnings.ts";
+import {ICombatWinnings, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {texts} = store.services;

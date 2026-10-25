@@ -1,11 +1,4 @@
-import {ILocation} from "storyScript/Interfaces/location.ts";
-import {IPerson} from "storyScript/Interfaces/person.ts";
-import {IFeature} from "storyScript/Interfaces/feature.ts";
-import {IAction} from "storyScript/Interfaces/action.ts";
-import {IDestination} from "storyScript/Interfaces/destination.ts";
-import {IBarrier} from "storyScript/Interfaces/barrier.ts";
-import {IBarrierAction} from "storyScript/Interfaces/barrierAction.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
+import {IAction, IBarrier, IBarrierAction, IDestination, IFeature, IItem, ILocation, IPerson} from 'storyScript';
 
 export interface ICommandService {
     /**

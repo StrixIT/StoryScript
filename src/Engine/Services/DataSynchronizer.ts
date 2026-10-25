@@ -1,7 +1,7 @@
-import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer";
-import {StateProperties} from "storyScript/stateProperties.ts";
-import {getPlural, isDataRecord, propertyMatch} from "storyScript/utilityFunctions";
-import {InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
+import {IDataSynchronizer}from 'storyScript';
+import {StateProperties} from "src/Engine/stateProperties";
+import {getPlural, isDataRecord, propertyMatch} from "src/Engine/utilityFunctions";
+import {InitEntityCollection} from "src/Engine/EntityCreatorFunctions";
 
 export class DataSynchronizer implements IDataSynchronizer {
     constructor(private _pristineEntities: Record<string, Record<string, any>>) {
@@ -34,8 +34,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         if (parentProperty === 'world') {
             pristineEntity = this._pristineEntities['locations'];
             this.deleteRemovedEntities(entity, pristineEntity);
-        }
-        else if (parentProperty === 'maps') {
+        } else if (parentProperty === 'maps') {
             pristineEntity = this._pristineEntities['maps'];
             this.deleteRemovedEntities(entity, pristineEntity);
         }
@@ -179,7 +178,7 @@ export class DataSynchronizer implements IDataSynchronizer {
 
     private updateArrayElement = (element: any, entity: any, parentEntity, pristineParentEntity, parentProperty) => {
         const currentValue = entity.filter(p => propertyMatch(element, p))[0];
-        
+
         // In case of an entity with the 'added' flag, 'i' is a skeleton value. Set the pristine entity to 'undefined' 
         // so it will be looked up again later on.
         const pristineValue = element[StateProperties.Added] && this.isEntity(element) ? undefined : element;
@@ -204,7 +203,7 @@ export class DataSynchronizer implements IDataSynchronizer {
         if (!pristineEntity) {
             return;
         }
-        
+
         const entityKeys = Object.keys(entity);
         const pristineKeys = Object.keys(pristineEntity);
 

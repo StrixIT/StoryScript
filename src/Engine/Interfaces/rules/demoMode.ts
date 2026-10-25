@@ -1,5 +1,4 @@
-import {IParty} from "storyScript/Interfaces/party.ts";
-import {IAutoplayStep} from "storyScript/Interfaces/autoplayStep.ts";
+import {IAutoplayStep, IParty} from 'storyScript';
 
 export interface IDemoMode {
     /**

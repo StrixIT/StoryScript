@@ -7,14 +7,8 @@
 
 # Copied and generated files for StoryScript, resource files that should not be checked in
 /dist/*
-/pub/*
-/test/*
 /src/Tests/**/coverage/*
-/src/types/*
-/src/Games/**/resources/*
-!/src/Games/MyAdventureGame/resources/*
-!/src/Games/MyInteractiveMap/resources/*
-!/src/Games/MyRolePlayingGame/resources/*
+/src/Tests/Engine/assets/*
 
 debug.log
 package-lock.json

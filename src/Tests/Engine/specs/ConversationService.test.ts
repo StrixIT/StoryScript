@@ -1,10 +1,7 @@
 import {beforeAll, describe, expect, test} from 'vitest';
-import {ConversationService} from 'storyScript/Services/ConversationService';
-import {IPerson} from "storyScript/Interfaces/person.ts";
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {IParty} from "storyScript/Interfaces/party.ts";
-import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
+import {ConversationService} from 'src/Engine/Services';
+import {IGame, IParty, IPerson, IRules} from 'storyScript';
+import {addArrayExtensions} from "src/Engine/arrayAndFunctionExtensions";
 
 describe("ConversationService", function () {
 

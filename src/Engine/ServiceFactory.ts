@@ -1,37 +1,42 @@
-import {IGame} from './Interfaces/game';
-import {IInterfaceTexts} from './Interfaces/interfaceTexts';
-import {IRules} from './Interfaces/rules/rules';
-import {LocalStorageService} from './Services/LocalStorageService';
-import {HelperService} from './Services/HelperService';
-import {TradeService} from './Services/TradeService';
-import {DataService} from './Services/DataService';
-import {ConversationService} from './Services/ConversationService';
-import {LocationService} from './Services/LocationService';
-import {CombinationService} from './Services/CombinationService';
-import {CharacterService} from './Services/CharacterService';
-import {GameService} from './Services/GameService';
-import {ICharacterService} from './Interfaces/services/characterService';
-import {IGameService} from './Interfaces/services//gameService';
-import {ITradeService} from './Interfaces/services/tradeService';
-import {IConversationService} from './Interfaces/services/conversationService';
-import {ICombinationService} from './Interfaces/services/combinationService';
-import {DataSerializer} from './Services/DataSerializer';
-import {DataSynchronizer} from './Services/DataSynchronizer';
-import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {IDataSerializer} from "storyScript/Interfaces/services/dataSerializer.ts";
-import {IDataSynchronizer} from "storyScript/Interfaces/services/dataSynchronizer.ts";
-import {ICombatService} from "storyScript/Interfaces/services/combatService.ts";
-import {CombatService} from "storyScript/Services/CombatService.ts";
-import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
-import {SoundService} from "storyScript/Services/SoundService.ts";
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
-import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
-import {ItemService} from "storyScript/Services/ItemService.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
-import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
-import {AutoplayService} from "storyScript/Services/AutoplayService.ts";
-import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
-import {CommandService} from "storyScript/Services/CommandService.ts";
+import {
+    AutoplayService,
+    CharacterService,
+    CombatService,
+    CombinationService,
+    CommandService,
+    ConversationService,
+    DataSerializer,
+    DataService,
+    DataSynchronizer,
+    GameService,
+    HelperService,
+    ItemService,
+    LocalStorageService,
+    LocationService,
+    SoundService,
+    TradeService
+} from './Services/index';
+
+import {
+    gameEvents,
+    IAutoplayService,
+    ICharacterService,
+    ICombatService,
+    ICombinationService,
+    ICommandService,
+    IConversationService,
+    IDataSerializer,
+    IDataService,
+    IDataSynchronizer,
+    IDefinitions,
+    IGame,
+    IGameService,
+    IInterfaceTexts,
+    IItemService,
+    IRules,
+    ISoundService,
+    ITradeService
+} from 'storyScript';
 
 export class ServiceFactory {
     private static _instance: ServiceFactory;
@@ -82,7 +87,7 @@ export class ServiceFactory {
     static readonly GetInstance = () => ServiceFactory._instance;
 
     /**
-     * Initialize the game object and the services. Pass in a game object when it should be controlled 
+     * Initialize the game object and the services. Pass in a game object when it should be controlled
      * by the UI framework. Vue needs this.
      * @param game The game object.
      */
@@ -92,14 +97,14 @@ export class ServiceFactory {
         this._tradeService = new TradeService(this._itemService, this._game, this._rules, this._texts, this._definitions);
         this._conversationService = new ConversationService(this._game, this._rules);
         this._combatService = new CombatService(this._game, this._rules, this._texts);
-        
+
         this._soundService = new SoundService(this._game, this._rules);
         this._characterService = new CharacterService(this._dataService, this._game, this._rules);
         const locationService = new LocationService(this._definitions, this._rules, this._game, gameEvents);
         this._combinationService = new CombinationService(this._game, this._rules, this._texts);
         this._autoPlayService = new AutoplayService(this._game, this._rules);
         this._commandService = new CommandService(locationService, this._conversationService, this._tradeService, this._combinationService, this._dataService, this._game);
-        
+
         this._gameService = new GameService
         (
             this._dataService,
@@ -116,7 +121,7 @@ export class ServiceFactory {
         this._game.autoplay = this._autoPlayService;
         this._game.commands = this._commandService;
         this._game.helpers = new HelperService(this._game, this._definitions);
-        
+
         ServiceFactory._initialized = true;
     }
 

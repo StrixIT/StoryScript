@@ -9,15 +9,15 @@ import {
     IKey,
     ILocation,
     Location,
-} from 'storyScript/Interfaces/storyScript';
-import {customEntity, DynamicEntity, InitEntityCollection} from "storyScript/EntityCreatorFunctions.ts";
-import {initMyRolePlayingGameServiceFactory} from "../helpers.ts";
-import {Start} from "../assets/MyRolePlayingGame/locations/start.ts";
-import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
-import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit.ts";
-import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots.ts";
-import {Friend} from "../assets/MyRolePlayingGame/persons/Friend.ts";
-import {Item} from "../assets/MyRolePlayingGame/types.ts";
+} from 'storyScript';
+import {customEntity, DynamicEntity, InitEntityCollection} from "src/Engine/EntityCreatorFunctions";
+import {initMyRolePlayingGameServiceFactory} from '../../helpers';
+import {Start} from "../assets/MyRolePlayingGame/locations/start";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword";
+import {Bandit} from "../assets/MyRolePlayingGame/enemies/bandit";
+import {LeatherBoots} from "../assets/MyRolePlayingGame/items/leatherBoots";
+import {Friend} from "../assets/MyRolePlayingGame/persons/Friend";
+import {Item} from "../assets/MyRolePlayingGame/types";
 
 describe("EntityCreatorFunctions", function () {
 

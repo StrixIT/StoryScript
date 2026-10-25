@@ -38,12 +38,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {IAction} from "storyScript/Interfaces/action.ts";
+import {ActionStatus, IAction, useStateStore} from 'storyScript';
 import {ref} from "vue";
-import {ActionStatus} from "storyScript/Interfaces/enumerations/actionStatus.ts";
-import Destination from "ui/Components/Exploration/Destination.vue";
 
 const Status = ActionStatus;
 const store = useStateStore();

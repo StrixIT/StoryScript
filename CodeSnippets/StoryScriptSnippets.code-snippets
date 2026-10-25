@@ -106,7 +106,7 @@
 		"prefix": "ssItem",
 		"body": [
 			"import { IGame, Item } from '../types';",
-			"import { EquipmentType } from 'storyScript/Interfaces/storyScript';",
+			"import { EquipmentType } from 'storyScript';",
 			"import description from './${TM_FILENAME_BASE}.html?raw';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
@@ -125,7 +125,7 @@
 		"prefix": "ssKey",
 		"body": [
 			"import { IGame, Key } from '../types';",
-			"import { EquipmentType } from 'storyScript/Interfaces/storyScript';",
+			"import { EquipmentType } from 'storyScript';",
 			"import description from './${TM_FILENAME_BASE}.html?raw';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",
@@ -226,7 +226,7 @@
 	"Actions": {
 		"scope": "javascript,typescript",
 		"body": [
-			"import { IAction, ActionStatus, ActionType } from 'storyScript/Interfaces/storyScript';",
+			"import { IAction, ActionStatus, ActionType } from 'storyScript';",
 			"import { IGame } from '../types';",
 			"",
 			"export function ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}() {",

@@ -1,0 +1,29 @@
+import {defineConfig, mergeConfig} from 'vitest/config'
+// @ts-ignore
+import viteConfig from './vite.config.ts'
+import {currentGameName} from "./currentGameName.js";
+
+export default mergeConfig(viteConfig, defineConfig({
+    test: {
+        environment: 'jsdom',
+        coverage: {
+            enabled: true,
+            provider: 'v8',
+            reporter: ['json', 'html'],
+            reportsDirectory: './src/Tests/coverage',
+            reportOnFailure: true,
+            include: [
+                `src/Games/${currentGameName}/**`
+            ],
+            exclude: [
+                '**/*.html',
+                '**/*.d.ts',
+                "**/*.json",
+                '**/[iI]nterfaces/**',
+                "**/resources/**",
+                "**/ui/styles/**",
+                "**/webroot/**"
+            ]
+        }
+    }
+}));

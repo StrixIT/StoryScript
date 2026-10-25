@@ -1,4 +1,4 @@
-﻿import { IKey as StoryScriptIKey, Key as StoryScriptKey } from 'storyScript/Interfaces/storyScript';
+﻿import { IKey as StoryScriptIKey, Key as StoryScriptKey } from 'storyScript';
 import { IItem } from '../types';
 
 export function Key(entity: IKey): IKey {

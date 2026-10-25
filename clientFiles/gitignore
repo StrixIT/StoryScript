@@ -1,0 +1,12 @@
+# Visual Studio Code and Rider Settings
+/.vscode
+/.idea
+
+# dependencies
+/node_modules
+
+# Copied and generated files for StoryScript, resource files that should not be checked in
+/dist/*
+/src/Tests/**/coverage/*
+
+stats.html

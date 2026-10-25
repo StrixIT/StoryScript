@@ -1,13 +1,15 @@
-﻿import {isEmpty} from 'storyScript/utilityFunctions';
-import {IDataService} from 'storyScript/Interfaces/services/dataService';
-import {ILocalStorageService} from 'storyScript/Interfaces/services/localStorageService';
-import {IDataSerializer} from 'storyScript/Interfaces/services/dataSerializer';
-import {IDataSynchronizer} from 'storyScript/Interfaces/services/dataSynchronizer';
-import {GameStateSave, SaveGamePrefix} from "src/constants.ts";
-import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
-import {IGame} from "storyScript/Interfaces/game.ts";
+﻿import {isEmpty} from '../utilityFunctions';
+import {
+    IDataSerializer,
+    IDataService,
+    IDataSynchronizer,
+    IGame,
+    ILocalStorageService,
+    IRules,
+    ISaveGame,
+    PlayState
+}from 'storyScript';
+import {GameStateSave, SaveGamePrefix} from "src/constants";
 
 export class DataService implements IDataService {
 
@@ -56,7 +58,7 @@ export class DataService implements IDataService {
         if (!game.started) {
             return;
         }
-        
+
         name = name ? SaveGamePrefix + name : GameStateSave;
         this._rules.general?.beforeSave?.(game);
 
@@ -84,7 +86,7 @@ export class DataService implements IDataService {
         const state = this._localStorageService.get(this.getKey(GameStateSave));
         return state !== null;
     }
-    
+
     private getKey = (key?: string): string => {
         return key ? `${this._gameNameSpace}_${key}` : this._gameNameSpace;
     }

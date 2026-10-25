@@ -1,6 +1,8 @@
 import {beforeAll, describe, expect, test} from 'vitest';
-import {CombinationService} from 'storyScript/Services/CombinationService';
+import {CombinationService} from 'src/Engine/Services';
 import {
+    DefaultTexts,
+    IActiveCombination,
     ICharacter,
     ICombinable,
     ICombinationMatchResult,
@@ -8,12 +10,10 @@ import {
     IHelpers,
     IInterfaceTexts,
     IRules
-} from 'storyScript/Interfaces/storyScript';
-import {DefaultTexts} from 'storyScript/defaultTexts';
-import {IActiveCombination} from 'storyScript/Interfaces/combinations/activeCombination.ts';
+} from 'storyScript';
 import {Combinations} from '../assets/MyAdventureGame/combinations';
 import {Rules} from '../assets/MyAdventureGame/types';
-import {addArrayExtensions} from 'storyScript/arrayAndFunctionExtensions.ts';
+import {addArrayExtensions} from 'src/Engine/arrayAndFunctionExtensions';
 
 describe("CombinationService", function () {
 

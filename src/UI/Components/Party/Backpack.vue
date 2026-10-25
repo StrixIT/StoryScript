@@ -3,7 +3,8 @@
     <collapsible :headerClass="'box-title'" :text="texts.backpack">
       <ul id="backpack-panel" class="list-unstyled">
         <li v-for="item of character.items">
-          <div :class="game.combinations.getCombineClass(item)" @click="game.combinations.tryCombine(item)" class="feature-cursor">
+          <div :class="game.combinations.getCombineClass(item)" class="feature-cursor"
+               @click="game.combinations.tryCombine(item)">
             <span>{{ itemService.getItemName(item) }}</span>
             <div id="backpack-button-row" class="inline">
               <button v-if="itemService.isEquippable(item, character) && store.showEquipment(character)"
@@ -37,13 +38,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {IGroupableItem} from "storyScript/Interfaces/groupableItem.ts";
-import {IItem} from "storyScript/Interfaces/item.ts";
+import {hasDescription, ICharacter, IGroupableItem, IItem, useStateStore} from 'storyScript';
 import {ref} from "vue";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {hasDescription} from "storyScript/Services/sharedFunctions.ts";
 
 const store = useStateStore();
 const {game, useGround, useBackpack} = storeToRefs(store);

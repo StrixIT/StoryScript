@@ -1,6 +1,4 @@
-import {IPerson} from 'storyScript/Interfaces/person';
-import {IConversationNode} from '../conversations/conversationNode';
-import {IConversationReply} from '../conversations/conversationReply';
+import {IConversationNode, IConversationReply, IPerson} from 'storyScript';
 
 export interface IConversationService {
     talk(person: IPerson): void;

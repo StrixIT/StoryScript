@@ -47,10 +47,8 @@
 </template>
 
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {isDevelopment} from 'src/constants.ts';
+import {isDevelopment, PlayState, useStateStore} from 'storyScript';
 import {ref, useTemplateRef} from "vue";
 
 const maxLocationsShown = 20;

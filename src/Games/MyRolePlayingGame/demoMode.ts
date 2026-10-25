@@ -1,9 +1,9 @@
-import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
-import {Friend} from "./persons/Friend.ts";
-import {Garden} from "./locations/Garden.ts";
-import {Start} from "./locations/start.ts";
-import {Library} from "./locations/Library.ts";
-import {Sword} from "./items/sword.ts";
+import {IDemoMode} from 'storyScript';
+import {Friend} from "./persons/Friend";
+import {Garden} from "./locations/Garden";
+import {Start} from "./locations/start";
+import {Library} from "./locations/Library";
+import {Sword} from "./items/sword";
 
 export const getDemoMode = () => {
     return <IDemoMode>{

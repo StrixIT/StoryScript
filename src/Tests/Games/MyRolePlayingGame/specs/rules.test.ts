@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import {Character, IGame, IItem, Rules} from '../../../../Games/MyRolePlayingGame/types';
-import { ICharacter, IEnemy, ICompiledLocation, IHelpers, ICreateCharacter, ICombatSetup, ICombatTurn } from 'storyScript/Interfaces/storyScript';
+import { ICharacter, IEnemy, ICompiledLocation, IHelpers, ICreateCharacter, ICombatSetup, ICombatTurn } from 'storyScript';
 
 describe("Rules", function() {
 

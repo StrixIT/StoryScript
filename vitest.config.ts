@@ -1,6 +1,6 @@
 import {defineConfig, mergeConfig} from 'vitest/config'
-import viteConfig from './vite.config'
-import gameName from './currentGameName.js';
+import viteConfig from './vite.config.ts'
+import {currentGameName} from "./currentGameName.js";
 
 export default mergeConfig(viteConfig, defineConfig({
     test: {
@@ -13,13 +13,17 @@ export default mergeConfig(viteConfig, defineConfig({
             reportOnFailure: true,
             include: [
                 'src/Engine/**',
-                `src/Games/${gameName}/**`
+                `src/Games/${currentGameName}/**`,
+                '**/.d.ts',
             ],
             exclude: [
                 '**/*.html',
-                '**/typeExtensions.d.ts',
                 '**/defaultTexts.ts',
-                '**/[iI]nterfaces/**'
+                "**/*.json",
+                '**/[iI]nterfaces/**',
+                "**/resources/**",
+                "**/ui/styles/**",
+                "**/webroot/**"
             ]
         }
     }

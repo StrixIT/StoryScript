@@ -1,6 +1,4 @@
-import {IGame} from '../game';
-import {StateList} from '../stateList';
-import {ITitleScreen} from "storyScript/Interfaces/rules/titleScreen.ts";
+import {IGame, ITitleScreen, StateList} from 'storyScript';
 
 export interface ISetupRules {
     /**

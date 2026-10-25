@@ -1,18 +1,20 @@
-﻿import {ILocation} from 'storyScript/Interfaces/location';
-import {ICompiledLocation} from 'storyScript/Interfaces/compiledLocation';
-import {IRules} from 'storyScript/Interfaces/rules/rules';
-import {IGame} from 'storyScript/Interfaces/game';
-import {IDestination} from 'storyScript/Interfaces/destination';
-import {IKey} from 'storyScript/Interfaces/key';
-import {addHtmlSpaces, getId, parseHtmlDocumentFromString} from 'storyScript/utilityFunctions';
-import {ILocationService} from 'storyScript/Interfaces/services/locationService';
-import {ActionType} from 'storyScript/Interfaces/enumerations/actionType';
-import {parseGamePropertiesInTemplate} from './sharedFunctions';
-import {getBasicFeatureData, setDestination} from "storyScript/EntityCreatorFunctions.ts";
-import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {IGameEvents} from "storyScript/Interfaces/gameEvents.ts";
-import {IAction} from "storyScript/Interfaces/action.ts";
-import {gameEvents} from "storyScript/gameEvents.ts";
+﻿import {
+    ActionType,
+    gameEvents,
+    IAction,
+    ICompiledLocation,
+    IDefinitions,
+    IDestination,
+    IGame,
+    IGameEvents,
+    IKey,
+    ILocation,
+    ILocationService,
+    IRules,
+    parseGamePropertiesInTemplate
+} from 'storyScript';
+import {addHtmlSpaces, getId, parseHtmlDocumentFromString} from 'src/Engine/utilityFunctions';
+import {getBasicFeatureData, setDestination} from "src/Engine/EntityCreatorFunctions";
 
 export class LocationService implements ILocationService {
     constructor(

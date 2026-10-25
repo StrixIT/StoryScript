@@ -1,23 +1,25 @@
-﻿import {ICharacter} from './character';
-import {ICompiledLocation} from './compiledLocation';
-import {ScoreEntry} from './scoreEntry';
-import {IPerson} from './person';
-import {ITrade} from './trade';
-import {IFeature} from './feature';
-import {ILocation} from './location';
-import {IStatistics} from './statistics';
-import {IHelpers} from './helpers';
-import {ICreateCharacter} from './createCharacter/createCharacter';
-import {GameState} from './enumerations/gameState';
-import {PlayState} from './enumerations/playState';
-import {IParty} from './party';
-import {ICombatSetup} from './combatSetup';
-import {ICombatTurn} from './combatTurn';
-import {ISoundPlayer} from "./soundPlayer.ts";
-import {IMap} from './maps/map.ts';
-import {IGameCombinations} from "./combinations/gameCombinations.ts";
-import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
-import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
+﻿import {
+    GameState,
+    IAutoplayService,
+    ICharacter,
+    ICombatSetup,
+    ICombatTurn,
+    ICommandService,
+    ICompiledLocation,
+    ICreateCharacter,
+    IFeature,
+    IGameCombinations,
+    IHelpers,
+    ILocation,
+    IMap,
+    IParty,
+    IPerson,
+    ISoundPlayer,
+    IStatistics,
+    ITrade,
+    PlayState,
+    ScoreEntry
+} from 'storyScript';
 
 /**
  * The StoryScript main game object.

@@ -24,10 +24,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
-import {isEmpty} from "storyScript/utilityFunctions.ts";
-import {IQuest} from "storyScript/Interfaces/quest.ts";
+import {IQuest, isEmpty, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {useQuests} = storeToRefs(store);

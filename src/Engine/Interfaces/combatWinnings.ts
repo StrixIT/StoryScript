@@ -1,5 +1,4 @@
-import {IItem} from "storyScript/Interfaces/item.ts";
-import {IEnemy} from "storyScript/Interfaces/enemy.ts";
+import {IEnemy, IItem} from 'storyScript';
 
 export interface ICombatWinnings {
     currency: number;

@@ -1,18 +1,22 @@
-import {IDefinitions} from './Interfaces/definitions';
-import {ILocation} from './Interfaces/location';
-import {IMap} from './Interfaces/maps/map';
-import {IEnemy} from './Interfaces/enemy';
-import {IPerson} from './Interfaces/person';
-import {IItem} from './Interfaces/item';
-import {IKey} from './Interfaces/key';
-import {IFeature} from './Interfaces/feature';
-import {IQuest} from './Interfaces/quest';
+import {
+    gameEvents,
+    ICombinable,
+    ICombine,
+    ICompiledLocation,
+    IDefinitions,
+    IDestination,
+    IEnemy,
+    IFeature,
+    IGroupableItem,
+    IItem,
+    IKey,
+    ILocation,
+    IMap,
+    IPerson,
+    IQuest
+} from 'storyScript';
 import {getId, getPlural, getSingular, parseHtmlDocumentFromString} from './utilityFunctions';
-import {ICombinable} from './Interfaces/combinations/combinable';
-import {ICombine} from './Interfaces/combinations/combine';
-import {ICompiledLocation, IDestination, IGroupableItem} from './Interfaces/storyScript';
-import {DescriptionProperty, Enemies, Features, Items, Locations, Maps, Persons, Quests} from 'src/constants.ts';
-import {gameEvents} from "storyScript/gameEvents.ts";
+import {DescriptionProperty, Enemies, Features, Items, Locations, Maps, Persons, Quests} from 'src/constants';
 
 const _entityCollections: string[] = [
     'features',
@@ -122,14 +126,14 @@ export function buildEntities(definitions: IDefinitions): Record<string, Record<
             const compiledEntity = f();
             const entityKey = getEntityKey(compiledEntity);
             const actualId = getId(f);
-            
+
             if (compiledEntity.id && compiledEntity.id !== actualId) {
                 throw new Error(`Entity type '${compiledEntity.type}' with id '${actualId}' and 
                 name '${compiledEntity.name}' has a non-unique entityKey! This means you have two or more 
                 entities of type '${compiledEntity.type}' that are too similar. The easiest way to avoid
                 this issue is to use unique names for your entities.`);
             }
-            
+
             compiledEntity.id = actualId;
             _registeredIds.set(entityKey, compiledEntity.id);
             parseDescriptionData(compiledEntity);
@@ -306,9 +310,9 @@ function createLocation(entity: ILocation) {
 
 function createMap(entity: IMap, id?: string) {
     const map = CreateObject(entity, 'map', id);
-    
+
     map.locations.forEach(l => {
-       l.location = getId(l.location); 
+        l.location = getId(l.location);
     });
 
     return map;
@@ -404,7 +408,7 @@ function loadDescriptions(location: ICompiledLocation): void {
 
         location.descriptions[name] = element.innerHTML;
     }
-    
+
     location.description = null;
 }
 
@@ -557,13 +561,21 @@ function pushEntity(originalScope: any, originalFunction: any, entity: any, prop
     }
 
     originalFunction.apply(originalScope, [addedEntity]);
-    gameEvents.publish(`add-${entity.type}-${property}`, {type: `add-${addedEntity.type}`, [entity.type]: entity, [addedEntity.type]: addedEntity});
+    gameEvents.publish(`add-${entity.type}-${property}`, {
+        type: `add-${addedEntity.type}`,
+        [entity.type]: entity,
+        [addedEntity.type]: addedEntity
+    });
 }
 
 function removeEntity(originalScope: any, originalFunction: any, entity: any, property: string, deletedEntity: any) {
     let deleted = originalFunction.apply(originalScope, [deletedEntity]);
     deleted ??= deletedEntity;
-    gameEvents.publish(`delete-${entity.type}-${property}`, {type: `delete-${deleted.type}`, [entity.type]: entity, [deleted.type]: deleted});
+    gameEvents.publish(`delete-${entity.type}-${property}`, {
+        type: `delete-${deleted.type}`,
+        [entity.type]: entity,
+        [deleted.type]: deleted
+    });
 }
 
 function getIdFromName<T extends { name: string, id?: string }>(entity: T): string {

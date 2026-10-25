@@ -25,12 +25,9 @@
 </template>
 
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
 import {storeToRefs} from "pinia";
 import {useTemplateRef} from "vue";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {useCustomCursor} from "ui/Composables/CustomCursor.ts";
-import {usePlayStateWatch} from "ui/Composables/playStateWatch.ts";
+import {PlayState, useCustomCursor, usePlayStateWatch, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {game, error} = storeToRefs(store);

@@ -1,9 +1,9 @@
-import {addHtmlSpaces} from "storyScript/utilityFunctions.ts";
-import {IFeature} from "storyScript/Interfaces/feature.ts";
-import {useStateStore} from "ui/StateStore.ts";
+import {addHtmlSpaces} from "src/Engine/utilityFunctions";
+import {IFeature} from 'storyScript';
+import {useStateStore} from "ui/StateStore";
 import {Ref, watch} from "vue";
 import {storeToRefs} from "pinia";
-import {isTouchDevice} from 'src/constants.ts';
+import {isTouchDevice} from 'src/constants';
 
 export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const activeTriggerClass = 'trigger-active';

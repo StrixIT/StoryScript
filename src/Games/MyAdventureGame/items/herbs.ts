@@ -1,4 +1,4 @@
-import { EquipmentType, ICombinationMatchResult } from 'storyScript/Interfaces/storyScript';
+import { EquipmentType, ICombinationMatchResult } from 'storyScript';
 import { Item } from '../types';
 import { Combinations } from '../combinations';
 

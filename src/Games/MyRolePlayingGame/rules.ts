@@ -1,6 +1,6 @@
-﻿import {ICharacter, ICreateCharacter, IRules} from 'storyScript/Interfaces/storyScript';
+﻿import {ICharacter, ICreateCharacter, IRules} from 'storyScript';
 import {Character, ICombatSetup, IEnemy, IGame} from './types';
-import {getDemoMode} from "./demoMode.ts";
+import {getDemoMode} from "./demoMode";
 
 export function Rules(): IRules {
     return {

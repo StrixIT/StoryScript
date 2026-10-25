@@ -1,15 +1,18 @@
-import {ICharacter} from 'storyScript/Interfaces/character';
-import {IItem} from 'storyScript/Interfaces/item';
-import {IParty} from 'storyScript/Interfaces/party';
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {IDefinitions} from "storyScript/Interfaces/definitions.ts";
-import {StateList, StateListEntry} from "storyScript/Interfaces/stateList.ts";
-import {GameState} from "storyScript/Interfaces/enumerations/gameState.ts";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {ILocation} from "storyScript/Interfaces/location.ts";
-import {compareString} from "storyScript/utilityFunctions.ts";
-import {getParsedDocument} from "storyScript/EntityCreatorFunctions.ts";
-import {DescriptionProperty} from 'src/constants.ts';
+import {
+    GameState,
+    ICharacter,
+    IDefinitions,
+    IGame,
+    IItem,
+    ILocation,
+    IParty,
+    PlayState,
+    StateList,
+    StateListEntry
+} from 'storyScript';
+import {compareString} from "src/Engine/utilityFunctions";
+import {getParsedDocument} from "src/Engine/EntityCreatorFunctions";
+import {DescriptionProperty} from 'src/constants';
 
 const parsedDescriptions = new Map<string, boolean>();
 
@@ -253,7 +256,7 @@ function getItemFromItemsAndEquipment(character: ICharacter, item: string | (() 
         for (const n in character.equipment) {
             const currentItem = character.equipment[n] as IItem;
 
-            if ((typeof item === 'function' && currentItem.id == item.name ) || (currentItem.id == item)) {
+            if ((typeof item === 'function' && currentItem.id == item.name) || (currentItem.id == item)) {
                 return character.equipment[n];
             }
         }

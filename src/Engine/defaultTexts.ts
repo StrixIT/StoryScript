@@ -1,4 +1,4 @@
-﻿import {IInterfaceTexts} from './Interfaces/interfaceTexts';
+﻿import {IInterfaceTexts} from 'storyScript';
 
 export class DefaultTexts {
     texts: IInterfaceTexts = {

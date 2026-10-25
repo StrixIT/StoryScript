@@ -1,7 +1,4 @@
-﻿import {IGame} from 'storyScript/Interfaces/game';
-import {IBarrier} from 'storyScript/Interfaces/barrier';
-import {IDestination} from 'storyScript/Interfaces/destination';
-import {makeSerializeSafe} from "storyScript/Services/sharedFunctions.ts";
+﻿import {IBarrier, IDestination, IGame, makeSerializeSafe} from 'storyScript';
 
 /**
  * A basic function to remove a barrier and then execute a callback function.

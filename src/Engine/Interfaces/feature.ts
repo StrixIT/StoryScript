@@ -1,5 +1,5 @@
 ﻿import {ICombinable} from './combinations/combinable';
-import {Sprite} from "./sprite.ts";
+import {Sprite} from "./sprite";
 
 /**
  * A feature of a location, which can be anything the player can interact with using combinations.

@@ -22,9 +22,7 @@
 </template>
 <script lang="ts" setup>
 import {useTemplateRef} from "vue";
-import {useLocationMap} from "ui/Composables/LocationMap.ts";
-import {useStateStore} from "ui/StateStore.ts";
-import {isTouchDevice} from "src/constants.ts";
+import {isTouchDevice, useLocationMap, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {texts} = store.services;

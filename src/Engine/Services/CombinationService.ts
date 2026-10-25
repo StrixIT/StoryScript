@@ -1,17 +1,19 @@
-import {IFeature} from 'storyScript/Interfaces/feature';
-import {IItem} from 'storyScript/Interfaces/item';
-import {IEnemy} from 'storyScript/Interfaces/enemy';
-import {IPerson} from 'storyScript/Interfaces/person';
-import {IGame} from 'storyScript/Interfaces/game';
-import {IRules} from 'storyScript/Interfaces/rules/rules';
-import {IInterfaceTexts} from 'storyScript/Interfaces/interfaceTexts';
-import {removeItemFromParty} from './sharedFunctions';
-import {ICombinationService} from 'storyScript/Interfaces/services/combinationService';
-import {ICombinationAction} from 'storyScript/Interfaces/combinations/combinationAction';
-import {ICombinable} from 'storyScript/Interfaces/combinations/combinable';
-import {ICombineResult} from 'storyScript/Interfaces/combinations/combineResult';
-import {IActiveCombination} from 'storyScript/Interfaces/combinations/activeCombination';
-import {compareString, getId} from 'storyScript/utilityFunctions';
+import {
+    IActiveCombination,
+    ICombinable,
+    ICombinationAction,
+    ICombinationService,
+    ICombineResult,
+    IEnemy,
+    IFeature,
+    IGame,
+    IInterfaceTexts,
+    IItem,
+    IPerson,
+    IRules,
+    removeItemFromParty
+} from 'storyScript';
+import {compareString, getId} from 'src/Engine/utilityFunctions';
 
 export class CombinationService implements ICombinationService {
 
@@ -100,7 +102,7 @@ export class CombinationService implements ICombinationService {
 
         if (result.success) {
             this._rules.combinations?.success?.(this._game, combo, target);
-            
+
             if (result.removeTarget) {
                 this.removeFeature(target);
             }

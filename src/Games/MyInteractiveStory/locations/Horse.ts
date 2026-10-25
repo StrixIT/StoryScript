@@ -1,7 +1,7 @@
 import { Location } from '../types';
 import description from './Horse.html?raw';
-import {FleeOnHorse} from "./FleeOnHorse.ts";
-import {GrabSword} from "./GrabSword.ts";
+import {FleeOnHorse} from "./FleeOnHorse";
+import {GrabSword} from "./GrabSword";
 
 export function Horse() {
     return Location({

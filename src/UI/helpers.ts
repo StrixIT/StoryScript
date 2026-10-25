@@ -1,11 +1,37 @@
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {parseHtmlDocumentFromString} from "storyScript/utilityFunctions.ts";
+import {entityTypeRegex, IDefinitions, IGame} from 'storyScript';
+import {parseHtmlDocumentFromString} from "src/Engine/utilityFunctions";
+
+export function getDefinitions(assets: Record<string, unknown>){
+    const definitions = <IDefinitions>{};
+    
+    // Loop over all found files to register the assets with the proper type.
+    for (const path in assets) {
+        const asset = assets[path];
+        const entityType = entityTypeRegex.exec(path)?.[0];
+
+        if (!entityType) {
+            throw new Error(`'${path}' is not a valid entity type path!`);
+        }
+
+        const property = Object.getOwnPropertyNames(asset)[0];
+        const entityFunc = asset[property];
+
+        // Add the entity function to the definitions object for creating entities at run-time.
+        definitions[entityType] = definitions[entityType] || [];
+
+        if (definitions[entityType].indexOf(entityFunc) === -1) {
+            definitions[entityType].push(entityFunc);
+        }
+    }
+
+    return definitions;
+}
 
 export function checkAutoplay(game: IGame, value: string) {
     if (!value) {
         return;
     }
-    
+
     const htmlDocumentFromString = parseHtmlDocumentFromString(value).body;
     value = htmlDocumentFromString.innerHTML;
     value = checkAutoplayProperties(value, htmlDocumentFromString.getElementsByTagName('audio'), game.sounds.playedAudio);

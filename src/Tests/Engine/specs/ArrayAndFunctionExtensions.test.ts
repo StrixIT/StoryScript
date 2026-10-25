@@ -1,11 +1,11 @@
 import {describe, expect, test} from 'vitest';
-import {addArrayExtensions, addFunctionExtensions} from 'storyScript/arrayAndFunctionExtensions';
-import {IDestination, ILocation} from 'storyScript/Interfaces/storyScript';
-import {getId} from 'storyScript/utilityFunctions';
-import {compareId} from '../helpers';
-import {StateProperties} from "storyScript/stateProperties.ts";
-import {Journal} from "../assets/MyRolePlayingGame/items/journal.ts";
-import {Sword} from "../assets/MyRolePlayingGame/items/sword.ts";
+import {addArrayExtensions, addFunctionExtensions} from 'src/Engine/arrayAndFunctionExtensions';
+import {IDestination, ILocation} from 'storyScript';
+import {getId} from 'src/Engine/utilityFunctions';
+import {compareId} from '../../helpers';
+import {StateProperties} from "src/Engine/stateProperties";
+import {Journal} from "../assets/MyRolePlayingGame/items/journal";
+import {Sword} from "../assets/MyRolePlayingGame/items/sword";
 
 describe("arrayAndFunctionExtensions", function () {
 

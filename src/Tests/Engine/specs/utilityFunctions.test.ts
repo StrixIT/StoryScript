@@ -7,7 +7,7 @@ import {
     getPlural,
     getSingular,
     isEmpty
-} from 'storyScript/utilityFunctions';
+} from 'src/Engine/utilityFunctions';
 
 describe("UtilityFunctions", function () {
 

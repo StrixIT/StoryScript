@@ -33,10 +33,7 @@
   </modal-dialog>
 </template>
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
-import {PlayState} from "storyScript/Interfaces/enumerations/playState.ts";
-import {IConversationReply} from "storyScript/Interfaces/conversations/conversationReply.ts";
-import {checkAutoplay} from "ui/helpers.ts";
+import {checkAutoplay, IConversationReply, PlayState, useStateStore} from 'storyScript';
 import {storeToRefs} from "pinia";
 import {ref, watch} from "vue";
 
@@ -56,7 +53,7 @@ watch(() => game.value.person.conversation.activeNode, async (newValue) => {
 
     return r;
   });
-}, { immediate: true });
+}, {immediate: true});
 
 const answer = (reply: IConversationReply) => {
   if (reply.available) {

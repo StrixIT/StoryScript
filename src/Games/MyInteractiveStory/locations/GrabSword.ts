@@ -1,6 +1,6 @@
 import { IGame, Location } from '../types';
 import description from './GrabSword.html?raw';
-import {Start} from "./Start.ts";
+import {Start} from "./Start";
 
 export function GrabSword() {
 	return Location({

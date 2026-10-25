@@ -1,17 +1,16 @@
-import {IDemoMode} from "storyScript/Interfaces/rules/demoMode.ts";
-import {Combinations} from "./combinations.ts";
-import {Fountain} from "./features/fountain.ts";
-import {Herbs} from "./items/herbs.ts";
-import {Corridor} from "./features/corridor.ts";
-import {WoundedWarrior} from "./features/woundedWarrior.ts";
-import {IFeature} from "./interfaces/feature.ts";
-import {IGame} from "./interfaces/game.ts";
-import {Flask} from "./items/flask.ts";
-import {HealingPotion} from "./items/healingPotion.ts";
-import {IAutoplayStep} from "storyScript/Interfaces/autoplayStep.ts";
-import {Water} from "./items/water.ts";
+import {IAutoplayStep, IDemoMode} from 'storyScript';
+import {Combinations} from "./combinations";
+import {Fountain} from "./features/fountain";
+import {Herbs} from "./items/herbs";
+import {Corridor} from "./features/corridor";
+import {WoundedWarrior} from "./features/woundedWarrior";
+import {IFeature} from "./interfaces/feature";
+import {IGame} from "./interfaces/game";
+import {Flask} from "./items/flask";
+import {HealingPotion} from "./items/healingPotion";
+import {Water} from "./items/water";
 
-export const  getDemoMode = () => {
+export const getDemoMode = () => {
     return <IDemoMode>{
         startDelay: 5000,
         party: {
@@ -55,6 +54,6 @@ function getStep(combination: string, feature: (() => IFeature) | string, tool?:
             delay: 1000
         }];
     }
-    
+
     return steps;
 }

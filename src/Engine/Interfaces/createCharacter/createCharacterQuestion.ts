@@ -1,4 +1,4 @@
-import { ICreateCharacterQuestionEntry } from './createCharacterQuestionEntry';
+import {ICreateCharacterQuestionEntry} from 'storyScript';
 
 /**
  * A question for the player to answer when creating a character.

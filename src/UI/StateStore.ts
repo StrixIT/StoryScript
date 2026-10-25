@@ -1,30 +1,35 @@
 import {defineStore} from "pinia";
 import {App, computed, Ref, ref} from 'vue';
-import {IGame} from "storyScript/Interfaces/game.ts";
-import {IInterfaceTexts} from "storyScript/Interfaces/interfaceTexts.ts";
-import {IRules} from "storyScript/Interfaces/rules/rules.ts";
-import {ServiceFactory} from "storyScript/ServiceFactory.ts";
-import {ICharacter} from "storyScript/Interfaces/character.ts";
-import {ICompiledLocation} from "storyScript/Interfaces/compiledLocation.ts";
-import {IPerson} from "storyScript/Interfaces/person.ts";
-import {ITrade} from "storyScript/Interfaces/trade.ts";
-import {ISoundService} from "storyScript/Interfaces/services/ISoundService.ts";
-import {IItemService} from "storyScript/Interfaces/services/itemService.ts";
-import {ICombatService} from "storyScript/Interfaces/services/combatService.ts";
-import {ICharacterService} from "storyScript/Interfaces/services/characterService.ts";
-import {ICombinationService} from "storyScript/Interfaces/services/combinationService.ts";
-import {IGameService} from "storyScript/Interfaces/services/gameService.ts";
-import {IConversationService} from "storyScript/Interfaces/services/conversationService.ts";
-import {ITradeService} from "storyScript/Interfaces/services/tradeService.ts";
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
-import {IAction} from "storyScript/Interfaces/action.ts";
-import {ActionType} from "storyScript/Interfaces/enumerations/actionType.ts";
-import {Error} from "ui/error.ts";
-import {isDevelopment} from 'src/constants.ts';
-import {IAutoplayService} from "storyScript/Interfaces/services/autoplayService.ts";
-import {ICommandService} from "storyScript/Interfaces/services/commandService.ts";
-import {ICustomCursor} from "storyScript/Interfaces/customCursor.ts";
-import {ICombinationAction} from "storyScript/Interfaces/combinations/combinationAction.ts";
+
+import {ServiceFactory} from "src/Engine/ServiceFactory";
+import {Error} from "ui/error";
+import {isDevelopment} from 'src/constants';
+import {
+    ActionType,
+    IAction,
+    ICharacter,
+    ICombinationAction,
+    ICompiledLocation,
+    ICustomCursor,
+    IGame,
+    IInterfaceTexts,
+    IPerson,
+    IRules,
+    ITrade
+} from "src/Engine";
+import {
+    IAutoplayService,
+    ICharacterService,
+    ICombatService,
+    ICombinationService,
+    ICommandService,
+    IConversationService,
+    IDataService,
+    IGameService,
+    IItemService,
+    ISoundService,
+    ITradeService
+} from "src/Engine/Interfaces/services";
 
 export const useStateStore = defineStore('appState', () => {
     let serviceFactory: ServiceFactory;
@@ -50,7 +55,7 @@ export const useStateStore = defineStore('appState', () => {
     const defaultCombination = ref<ICombinationAction>(null);
     const customCursor = ref<ICustomCursor>(null);
     const combinationCursor = ref<ICustomCursor>(null);
-    
+
     const services = {
         soundService: <ISoundService>null,
         itemService: <IItemService>null,
@@ -109,7 +114,7 @@ export const useStateStore = defineStore('appState', () => {
         availableLocations.value = serviceFactory.AvailableLocations.sort((a, b) => a.name.localeCompare(b.name));
 
         initCombinations();
-        
+
         if (services.rules.setup?.customCursorImage) {
             initCustomCursor(services.rules.setup.customCursorImage, customCursor)
         }
@@ -176,7 +181,7 @@ export const useStateStore = defineStore('appState', () => {
 
     const initCombinations = () => {
         const combinations = services.rules.combinations;
-        
+
         if (!combinations) {
             return;
         }
@@ -188,7 +193,7 @@ export const useStateStore = defineStore('appState', () => {
             initCustomCursor(defaultCombinationSymbol, combinationCursor, 'default.png');
         }
     };
-    
+
     const initCustomCursor = (cursorImage: string, cursorRef: Ref<ICustomCursor>, placeholder?: string): void => {
         const image = document.createElement('img');
         image.src = `resources/${cursorImage}`;

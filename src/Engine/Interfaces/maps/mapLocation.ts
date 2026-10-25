@@ -1,4 +1,4 @@
-import { ILocation } from "../location";
+import { ILocation }from 'storyScript';
 
 export interface IMapLocation {
     /**

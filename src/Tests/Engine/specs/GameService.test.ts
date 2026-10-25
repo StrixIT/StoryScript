@@ -1,10 +1,7 @@
 import {beforeAll, describe, expect, test} from 'vitest';
-import {GameService} from 'storyScript/Services/GameService';
-import {ICharacter, ICompiledLocation, IGame, IRules} from 'storyScript/Interfaces/storyScript';
-import {IDataService} from "storyScript/Interfaces/services/dataService.ts";
-import {ISaveGame} from "storyScript/Interfaces/saveGame.ts";
-import {ILocationService} from "storyScript/Interfaces/services/locationService.ts";
-import {addArrayExtensions} from "storyScript/arrayAndFunctionExtensions.ts";
+import {GameService} from 'src/Engine/Services';
+import {ICharacter, ICompiledLocation, IDataService, IGame, ILocationService, IRules, ISaveGame} from 'storyScript';
+import {addArrayExtensions} from "src/Engine/arrayAndFunctionExtensions";
 
 describe("GameService", function () {
 

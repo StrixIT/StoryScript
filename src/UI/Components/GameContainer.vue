@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import {useStateStore} from "ui/StateStore.ts";
+import {useStateStore} from 'storyScript';
 import {storeToRefs} from "pinia";
 import {computed} from "vue";
 
