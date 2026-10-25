@@ -2,7 +2,7 @@
 import fs from "fs";
 import {fileURLToPath} from "url";
 import path from "path";
-import {rootFolder, updatePackageJson} from "./helpers.js";
+import {rootFolder, setJsonFileProperty} from "./helpers.js";
 
 const {copy, writeFile} = pkg;
 
@@ -25,13 +25,7 @@ const gameDestination = `${rootFolder}/src/Games/${gameName}`;
 await copy(gameRoot, gameDestination);
 
 // Add the game name to the game info.
-updatePackageJson(path.join(gameDestination, 'webroot', 'gameinfo.json'), 'name', gameName);
-
-const testRoot = `${__dirname}/src/Tests/Games/_GameTemplate`;
-const testDestination = `${rootFolder}/src/Tests/Games/${gameName}`;
-
-// Copy the test template.
-await copy(testRoot, testDestination);
+setJsonFileProperty(path.join(gameDestination, 'webroot', 'gameinfo.json'), 'name', gameName);
 
 // Add the components and the resources folders to make sure they are present.
 const componentsPath = `${gameDestination}/ui/components`;

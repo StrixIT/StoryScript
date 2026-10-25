@@ -19,7 +19,8 @@ export default mergeConfig(viteConfig, defineConfig({
                 '**/*.html',
                 '**/typeExtensions.d.ts',
                 '**/defaultTexts.ts',
-                '**/[iI]nterfaces/**'
+                '**/[iI]nterfaces/**',
+                "**/*.json"
             ]
         }
     }

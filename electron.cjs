@@ -10,7 +10,7 @@ function createWindow () {
   win = new BrowserWindow({
     width: 1024, 
     height: 768,
-    icon: `file://${distPath}/resources/logo.png`
+    icon: `file://${distPath}/logo192.png`
   })
 
   win.loadURL(`file://${distPath}/index.html`)

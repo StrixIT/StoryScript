@@ -1,5 +1,6 @@
 import path from 'path';
 import {defineConfig, UserConfig} from 'vite';
+import {visualizer} from "rollup-plugin-visualizer";
 import dts from "vite-plugin-dts";
 import {currentGameName} from './currentGameName.js';
 import {getBaseViteConfig} from "./baseViteConfig.js";
@@ -14,6 +15,8 @@ const viteConfig = getBaseViteConfig(gamePath) as UserConfig
 const libraryConfig = getBaseViteConfig(gamePath) as UserConfig
 
 [viteConfig, libraryConfig].forEach(config => {
+    config.plugins.push(visualizer());
+    
     const alias = config.resolve!.alias as any;
     alias['storyScript'] = path.resolve(import.meta.dirname, './src');
     alias['ui'] = path.resolve(import.meta.dirname, `./src/UI`);

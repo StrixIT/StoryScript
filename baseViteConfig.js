@@ -2,7 +2,6 @@ import fs from 'fs';
 import {normalizePath} from 'vite';
 import checker from 'vite-plugin-checker';
 import {viteStaticCopy} from 'vite-plugin-static-copy';
-import {visualizer} from "rollup-plugin-visualizer";
 import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import jsonfile from "jsonfile";
@@ -90,8 +89,7 @@ export const getBaseViteConfig = (gamePath) => {
                         'manifest.webmanifest',
                     ],
                 }
-            }),
-            visualizer()
+            })
         ],
         server: {
             port: 3000,

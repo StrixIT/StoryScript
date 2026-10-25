@@ -8,9 +8,12 @@ __dirname = __dirname.includes('/node_modules/') ? `${__dirname.split('/node_mod
 
 export const rootFolder = __dirname;
 
-export function updatePackageJson(filePath, property, newValue) {
+export function setJsonFileProperty(filePath, property, newValue) {
     const rawData = fs.readFileSync(filePath, 'utf8');
     const jsonObject = JSON.parse(rawData);
-    jsonObject[property] = newValue;
-    fs.writeFileSync(filePath, JSON.stringify(jsonObject, null, 2), 'utf8');
+    
+    if (!jsonObject[property]) {
+        jsonObject[property] = newValue;
+        fs.writeFileSync(filePath, JSON.stringify(jsonObject, null, 2), 'utf8');
+    }
 }

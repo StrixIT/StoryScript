@@ -1,110 +1,111 @@
 {
-    "name": "storyscript",
-    "description": "StoryScript Adventure",
-    "version": "1.0.0",
-    "author": "Rutger Schurgers",
-    "private": true,
-    "type": "module",
-    "main": "./electron.cjs",
-    "module": "./dist/storyscript.mjs",
-    "build": {
-        "appId": "storyscript.id",
-        "files": [
-            "./electron.cjs",
-            "dist/**/*"
-        ],
-        "win": {
-            "target": "portable",
-            "icon": "dist/icon.ico"
-        }
-    },
-    "types": "./dist/src/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/storyscript.mjs",
-            "types": "./dist/src/index.d.ts"
-        },
-        "./styles": "./dist/storyscript.css",
-        "./vite-config": "./dist/baseViteConfig.js"
-    },
-    "bin": {
-        "storyscript": "./scripts/cli.js"
-    },
+  "name": "storyscript",
+  "description": "StoryScript Adventure",
+  "version": "1.0.0",
+  "author": "Rutger Schurgers",
+  "private": true,
+  "type": "module",
+  "main": "./electron.cjs",
+  "module": "./dist/storyscript.mjs",
+  "build": {
+    "appId": "storyscript.id",
     "files": [
-        "CodeSnippets/StoryScriptSnippets.code-snippets",
-        "clientFiles",
-        "scripts/cli.js",
-        "scripts/createGame.js",
-        "scripts/createAsset.js",
-        "scripts/postbuild.js",
-        "scripts/helpers.js",
-        "src/Engine",
-        "src/UI",
-        "src/Games/_GameTemplate",
-        "src/Tests/Games/_GameTemplate",
-        "dist/**/*.d.ts",
-        "dist/storyscript.*",
-        ".env",
-        "baseViteConfig.js",
-        "typeExtensions.d.ts",
-        "shims-vue.d.ts",
-        "vite-env.d.ts",
-        "index.html"
+      "./electron.cjs",
+      "dist/**/*"
     ],
-    "scripts": {
-        "create-game": "node scripts/createGame.js",
-        "sca": "node scripts/createAsset.js action",
-        "scl": "node scripts/createAsset.js location",
-        "scf": "node scripts/createAsset.js feature",
-        "sce": "node scripts/createAsset.js enemy",
-        "scp": "node scripts/createAsset.js person",
-        "sci": "node scripts/createAsset.js item",
-        "sck": "node scripts/createAsset.js key",
-        "scq": "node scripts/createAsset.js quest",
-        "scm": "node scripts/createAsset.js map",
-        "start": "vite",
-        "test": "node ./src/Tests/Engine/beforeTests.js && vitest --ui",
-        "publish": "tsc && vite build",
-        "publish:package": "tsc && VITE_BUILD_LIB=true vite build",
-        "electron-start": "vite build && electron .",
-        "electron-publish": "vite build && electron-builder",
-        "build:types": "tsc --emitDeclarationOnly",
-        "pack:test": "node scripts/pack-and-test.js"
-    },
-    "dependencies": {
-        "@types/node": "^26.6.4",
-        "@vitejs/plugin-vue": "^6.0.9",
-        "@vitest/coverage-v8": "^5.0.3",
-        "@vitest/ui": "^5.0.3",
-        "@vue/language-server": "^3.3.12",
-        "@vueuse/components": "^15.0.0",
-        "@vueuse/core": "^15.0.0",
-        "archiver": "^8.0.0",
-        "bootstrap": "^5.3.8",
-        "fs-extra": "^11.4.1",
-        "jsdom": "^30.1.1",
-        "jsonfile": "^6.2.1",
-        "pinia": "^4.0.3",
-        "rollup-plugin-visualizer": "^7.1.1",
-        "sass-embedded": "^1.105.1",
-        "sharp": "^0.35.5",
-        "typescript": "^6.0.3",
-        "vite": "^8.3.4",
-        "vite-plugin-checker": "^0.14.5",
-        "vite-plugin-pwa": "^2.0.0",
-        "vite-plugin-static-copy": "^4.1.1",
-        "vitest": "^5.0.3",
-        "vue": "^3.5.43",
-        "vue-tsc": "^3.3.12",
-        "which": "^7.0.0"
-    },
-    "devDependencies": {
-        "vite-plugin-dts": "^5.1.2",
-        "electron": "^44.7.0",
-        "electron-builder": "^26.15.3"
-    },
-    "allowScripts": {
-        "@parcel/watcher@2.6.0": true,
-        "electron-winstaller@5.4.0": true
+    "win": {
+      "target": "portable",
+      "icon": "dist/icon.ico"
     }
+  },
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/storyscript.mjs",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./styles": "./dist/storyscript.css",
+    "./vite-config": "./dist/baseViteConfig.js"
+  },
+  "bin": {
+    "storyscript": "./scripts/cli.js"
+  },
+  "files": [
+    "CodeSnippets/StoryScriptSnippets.code-snippets",
+    "clientFiles",
+    "scripts/cli.js",
+    "scripts/createGame.js",
+    "scripts/createAsset.js",
+    "scripts/setupTesting.js",
+    "scripts/postbuild.js",
+    "scripts/helpers.js",
+    "src/Engine",
+    "src/UI",
+    "src/Games/_GameTemplate",
+    "src/Tests/Games/_GameTemplate",
+    "dist/**/*.d.ts",
+    "dist/storyscript.*",
+    "baseViteConfig.js",
+    "typeExtensions.d.ts",
+    "shims-vue.d.ts",
+    "vite-env.d.ts",
+    "index.html",
+    "electron.cjs"
+  ],
+  "scripts": {
+    "create-game": "node scripts/createGame.js",
+    "sca": "node scripts/createAsset.js action",
+    "scl": "node scripts/createAsset.js location",
+    "scf": "node scripts/createAsset.js feature",
+    "sce": "node scripts/createAsset.js enemy",
+    "scp": "node scripts/createAsset.js person",
+    "sci": "node scripts/createAsset.js item",
+    "sck": "node scripts/createAsset.js key",
+    "scq": "node scripts/createAsset.js quest",
+    "scm": "node scripts/createAsset.js map",
+    "start": "vite",
+    "test": "node ./src/Tests/Engine/beforeTests.js && node scripts/setupTesting.js && vitest --ui",
+    "publish": "tsc && vite build",
+    "publish:package": "tsc && VITE_BUILD_LIB=true vite build",
+    "electron-start": "vite build && electron .",
+    "electron-publish": "vite build && electron-builder",
+    "build:types": "tsc --emitDeclarationOnly",
+    "pack:test": "node scripts/pack-and-test.js"
+  },
+  "dependencies": {
+    "@types/node": "^26.6.4",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vue/language-server": "^3.3.12",
+    "@vueuse/components": "^15.0.0",
+    "@vueuse/core": "^15.0.0",
+    "archiver": "^8.0.0",
+    "fs-extra": "^11.4.1",
+    "jsonfile": "^6.2.1",
+    "pinia": "^4.0.3",
+    "sass-embedded": "^1.105.1",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vite-plugin-checker": "^0.14.5",
+    "vite-plugin-pwa": "^2.0.0",
+    "vite-plugin-static-copy": "^4.1.1",
+    "vue": "^3.5.43",
+    "vue-tsc": "^3.3.12",
+    "which": "^7.0.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.3",
+    "@vitest/ui": "^5.0.3",
+    "bootstrap": "^5.3.8",
+    "jsdom": "^30.1.1",
+    "vitest": "^5.0.3",
+    "vite-plugin-dts": "^5.1.2",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "rollup-plugin-visualizer": "^7.1.1"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.6.0": true,
+    "electron-winstaller@5.4.0": true
+  }
 }

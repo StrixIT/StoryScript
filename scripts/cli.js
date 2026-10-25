@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import {fileURLToPath} from 'url';
 import {spawn} from 'child_process';
-import {updatePackageJson} from "./helpers.js";
+import {setJsonFileProperty} from "./helpers.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +13,6 @@ const command = process.argv[2];
 const args = process.argv.slice(3);
 const projectRoot = process.cwd();
 
-// Package directory is node_modules/storyscript
 const packageDir = path.resolve(__dirname, '..');
 
 async function main() {
@@ -23,32 +22,40 @@ async function main() {
         await createGame(args[0]);
     } else if (command === 'start') {
         await executeTask('vite');
+    } else if (command === 'start-electron') {
+        await electron(true);
     } else if (command === 'test') {
-        await executeTask('vite', ['vitest', '--ui']);
+        await runTests();
     } else if (command === 'publish') {
         await executeTask('vite', ['build']);
     } else if (command === 'preview') {
         await executeTask('vite', ['preview']);
+    } else if (command === 'publish') {
+        await executeTask('vite', ['build']);
+    } else if (command === 'publish-electron') {
+        await electron(false);
     } else if (/^(location)|(feature)|(map)|(item)|(key)|(enemy)|(person)|(quest)|(action)$/i.test(command)) {
         await createAsset(command, args[0]);
     } else {
         console.log('Usage: storyscript <command>');
         console.log('\nCommands:');
-        console.log('  setup        Setup StoryScript. Run automatically on npm install.');
-        console.log('  create-game  Create a new StoryScript game');
-        console.log('  start        Start running your game in development mode.');
-        console.log('  test         Run the tests for your games.');
-        console.log('  publish      Build your game for deployment');
-        console.log('  preview      preview your game ready for deployment');
-        console.log('  location     Create a new StoryScript Location');
-        console.log('  feature      Create a new StoryScript stand-alone Feature');
-        console.log('  map          Create a new StoryScript Map');
-        console.log('  item         Create a new StoryScript Item');
-        console.log('  key          Create a new StoryScript Key');
-        console.log('  enemy        Create a new StoryScript Enemy');
-        console.log('  person       Create a new StoryScript Person');
-        console.log('  quest        Create a new StoryScript Quest');
-        console.log('  action       Create a new StoryScript stand-alone Action');
+        console.log('  setup            Setup StoryScript. Run automatically on npm install.');
+        console.log('  create-game      Create a new StoryScript game.');
+        console.log('  start            Start running your game in development mode.');
+        console.log('  start-electron   Start running your game in development mode in electron.');
+        console.log('  test             Run the tests for your game. This will setup testing if you don\'t have any tests yet.');
+        console.log('  publish          Build your game for deployment as a web app.');
+        console.log('  publish-electron Build your game for deployment as an electron executable.');
+        console.log('  preview          preview your game ready for deployment.');
+        console.log('  location         Create a new StoryScript Location.');
+        console.log('  feature          Create a new StoryScript stand-alone Feature.');
+        console.log('  map              Create a new StoryScript Map.');
+        console.log('  item             Create a new StoryScript Item.');
+        console.log('  key              Create a new StoryScript Key.');
+        console.log('  enemy            Create a new StoryScript Enemy.');
+        console.log('  person           Create a new StoryScript Person.');
+        console.log('  quest            Create a new StoryScript Quest.');
+        console.log('  action           Create a new StoryScript stand-alone Action.');
     }
 }
 
@@ -58,7 +65,7 @@ main().catch(err => {
 });
 
 async function setup() {
-    console.log('🚀 Setting up storyscript...');
+    console.log('🚀 Setting up StoryScript...');
     console.log(`📁 Target: ${projectRoot}`);
 
     fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
@@ -81,35 +88,10 @@ async function setup() {
 
     try {
         for (const file of filesToCopy) {
-            const srcFile = file[0];
-            const destFile = file.length < 3 ? file[0] : file[1];
-            const overWrite = file.length < 3 ? file[1] : file[2];
-
-            const src = path.join(packageDir, srcFile);
-            const dest = path.join(projectRoot, destFile);
-
-            const stat = fs.statSync(src);
-
-            if (stat.isDirectory()) {
-                fs.cpSync(src, dest, {recursive: true});
-                continue;
-            }
-
-            if (!fs.existsSync(src)) {
-                console.warn(`⚠️  ${srcFile} not found in template`);
-                continue;
-            }
-
-            if (fs.existsSync(dest)) {
-                if (fs.existsSync(dest) && !overWrite) {
-                    continue;
-                }
-            }
-
-            fs.copySync(src, dest);
+            copyFile(file);
         }
 
-        updatePackageJson(path.join(projectRoot, 'package.json'), 'type', 'module');
+        setJsonFileProperty(path.join(projectRoot, 'package.json'), 'type', 'module');
 
         console.log('✅ Setup complete!');
         console.log('\nNext steps:');
@@ -121,10 +103,41 @@ async function setup() {
     }
 }
 
-async function executeTask(command, args){
-    spawn(command, args, {
-        stdio: 'inherit'
-    });
+async function runTests() {
+    const scriptPath = path.join(__dirname, 'setupTesting.js');
+    copyFile(['clientFiles/vitest.config.ts', 'vitest.config.ts', false]);
+    await executeTask('node', [scriptPath]);
+    await executeTask('npm', ['install', 'jsdom@latest', '@vitest/ui@latest', '@vitest/coverage-v8@latest', '--save-dev']);
+    await executeTask('vitest', ['--ui'], false);
+}
+
+async function electron(preview) {
+    copyFile(['electron.cjs', false]);
+
+    // TODO: add name and version to package.json when it does not exist. Need to set build options properly.
+    
+    setJsonFileProperty(path.join(projectRoot, 'package.json'), 'main', './electron.cjs');
+    
+    setJsonFileProperty(path.join(projectRoot, 'package.json'), 'build', JSON.stringify({
+        "appId": "storyscript.id",
+        "files": [
+            "./electron.cjs",
+            "dist/**/*"
+        ],
+        "win": {
+            "target": "portable",
+            "icon": "dist/icon.ico"
+        }
+    }));
+    
+    await executeTask('npm', ['install', 'electron@latest', 'electron-builder@latest', '--save-dev']);
+    await executeTask('vite', ['build']);
+    
+    if (preview) {
+        await executeTask('electron', ['.'], false);
+    } else {
+        await executeTask('electron-builder', [], false);
+    }
 }
 
 async function createGame(gameName) {
@@ -135,10 +148,7 @@ async function createGame(gameName) {
     }
 
     const scriptPath = path.join(__dirname, 'createGame.js');
-
-    spawn('node', [scriptPath, gameName], {
-        stdio: 'inherit'
-    });
+    await executeTask('node', [scriptPath, gameName]);
 }
 
 async function createAsset(commandName, assetName) {
@@ -150,7 +160,60 @@ async function createAsset(commandName, assetName) {
 
     const scriptPath = path.join(__dirname, 'createAsset.js');
 
-    spawn('node', [scriptPath, commandName, assetName], {
+    await executeTask('node', [scriptPath, commandName, assetName]);
+}
+
+async function executeTask(command, args, waitForCompletion){
+    if (waitForCompletion === undefined || waitForCompletion) {
+        return new Promise((resolve, reject) => {
+            const child = spawn(command, args, {
+                stdio: 'inherit'
+            });
+
+            child.on('close', (code) => {
+                if (code === 0) {
+                    resolve();
+                } else {
+                    reject(new Error(`Command ${command} failed with code ${code}`));
+                }
+            });
+
+            child.on('error', (err) => {
+                reject(err);
+            });
+        });
+    }
+
+    spawn(command, args, {
         stdio: 'inherit'
     });
+}
+
+function copyFile(file) {
+    const srcFile = file[0];
+    const destFile = file.length < 3 ? file[0] : file[1];
+    const overWrite = file.length < 3 ? file[1] : file[2];
+
+    const src = path.join(packageDir, srcFile);
+    const dest = path.join(projectRoot, destFile);
+
+    const stat = fs.statSync(src);
+
+    if (stat.isDirectory()) {
+        fs.cpSync(src, dest, {recursive: true});
+        return;
+    }
+
+    if (!fs.existsSync(src)) {
+        console.warn(`⚠️  ${srcFile} not found in template`);
+        return;
+    }
+
+    if (fs.existsSync(dest)) {
+        if (fs.existsSync(dest) && !overWrite) {
+            return;
+        }
+    }
+
+    fs.copySync(src, dest);
 }
