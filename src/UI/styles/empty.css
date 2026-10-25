@@ -1,0 +1,3 @@
+/* This file is here so we can use the storyscript/styles alias here. When we create a package, the alias in
+ the package.json will resolve to an actual file, but we don't have it when we work on the sources. So we set
+  up an alias for Vite in the vite.config.ts file to this file. DON't REMOVE THIS FILE. */
