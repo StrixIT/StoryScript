@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import {fileURLToPath} from 'url';
 import {spawn} from 'child_process';
 import {setJsonFileProperty} from "./helpers.js";
+import {createInterface} from 'readline';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +15,48 @@ const args = process.argv.slice(3);
 const projectRoot = process.cwd();
 
 const packageDir = path.resolve(__dirname, '..');
+const flagFile = path.join(packageDir, '.setup-complete');
+
+const filesToCopy = [
+    ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets', true],
+    ['clientFiles/tsconfig.json', 'tsconfig.json', true],
+    ['clientFiles/vite.config.ts', 'vite.config.ts', true],
+    ['clientFiles/gitignore', '.gitignore', false],
+    ['clientFiles/currentGameName.js', 'currentGameName.js', false],
+    ['src/UI/Components', true],
+    ['src/UI/main.ts', true],
+    ['index.html', true],
+    ['typeExtensions.d.ts', true],
+    ['shims-vue.d.ts', true],
+    ['vite-env.d.ts', true],
+    ['.env', false]
+];
+
+const getGameNameInput = () => {
+    const rl = createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    return new Promise((resolve) => {
+        const prompt = () => {
+        rl.question('Enter a valid game name. Start with a letter and use letters, numbers and underscores up to 50 characters: ', (answer) => {
+            const gameNameRegex = /^[a-zA-Z][a-zA-Z0-9_]{0,49}$/;
+
+            if (!gameNameRegex.test(answer)) {
+                console.error('❌ That is not a valid game name. Please try again.');
+                prompt();
+            } else {
+                rl.close();
+                resolve(answer);
+            }
+        });
+
+        };
+        
+        prompt();
+    });
+};
 
 async function main() {
     if (command === 'setup') {
@@ -39,7 +82,7 @@ async function main() {
     } else {
         console.log('Usage: storyscript <command>');
         console.log('\nCommands:');
-        console.log('  setup            Setup StoryScript. Run automatically on npm install.');
+        console.log('  setup            Setup StoryScript. Runs automatically on npm install.');
         console.log('  game     [name]  Create a new StoryScript game.');
         console.log('  location [name]  Create a new StoryScript Location.');
         console.log('  feature  [name]  Create a new StoryScript stand-alone Feature.');
@@ -65,39 +108,35 @@ main().catch(err => {
 });
 
 async function setup() {
-    console.log('🚀 Setting up StoryScript...');
+    const isFirstInstall = !fs.existsSync(flagFile);
+
+    console.log(`🚀 ${isFirstInstall ? 'Setting up StoryScript...' : 'Updating StoryScript...'}`);
     console.log(`📁 Target: ${projectRoot}`);
 
-    fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
-    fs.moveSync(path.join(packageDir, 'scripts/postbuild.js'), path.join(packageDir, 'dist/scripts/postbuild.js'));
+    fs.copySync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
+    fs.copySync(path.join(packageDir, 'scripts/postbuild.js'), path.join(packageDir, 'dist/scripts/postbuild.js'));
     fs.copySync(path.join(packageDir, 'scripts/helpers.js'), path.join(packageDir, 'dist/scripts/helpers.js'));
-
-    const filesToCopy = [
-        ['CodeSnippets/StoryScriptSnippets.code-snippets', '.vscode/StoryScriptSnippets.code-snippets', true],
-        ['clientFiles/tsconfig.json', 'tsconfig.json', true],
-        ['clientFiles/vite.config.ts', 'vite.config.ts', true],
-        ['clientFiles/gitignore', '.gitignore', false],
-        ['clientFiles/currentGameName.js', 'currentGameName.js', false],
-        ['src/UI/Components', true],
-        ['src/UI/main.ts', true],
-        ['index.html', true],
-        ['typeExtensions.d.ts', true],
-        ['shims-vue.d.ts', true],
-        ['vite-env.d.ts', true],
-        ['.env', false]
-    ];
 
     try {
         for (const file of filesToCopy) {
             copyFile(file);
         }
 
-        setJsonFileProperty(path.join(projectRoot, 'package.json'), 'type', 'module');
+        if (isFirstInstall) {
+            const gameName = await getGameNameInput();
+            await createGame(gameName);
+            setJsonFileProperty(path.join(projectRoot, 'package.json'), 'type', 'module');
+            fs.writeFileSync(flagFile, '');
+        }
 
         console.log('✅ Setup complete!');
-        console.log('\nNext steps:');
-        console.log('  npx storyscript game your-game-name');
-        console.log('  npx storyscript start');
+        
+        if (isFirstInstall) {
+            console.log('\nRun this command to start your game:');
+            console.log('  npx storyscript start');
+            console.log('\n');
+        }
+        
     } catch (err) {
         console.error('❌ Setup failed:', err.message);
         process.exit(1);
@@ -114,9 +153,9 @@ async function runTests() {
 
 async function electron(preview) {
     copyFile(['electron.cjs', false]);
-    
+
     const gameName = await getGameName();
-    
+
     setJsonFileProperty(path.join(projectRoot, 'package.json'), 'name', gameName);
     setJsonFileProperty(path.join(projectRoot, 'package.json'), 'version', '1.0.0');
     setJsonFileProperty(path.join(projectRoot, 'package.json'), 'main', './electron.cjs');
@@ -131,10 +170,10 @@ async function electron(preview) {
             "icon": "dist/icon.ico"
         }
     });
-    
+
     await executeTask('npm', ['install', 'electron@latest', 'electron-builder@latest', '--save-dev']);
     await executeTask('vite', ['build']);
-    
+
     if (preview) {
         await executeTask('electron', ['.'], false);
     } else {
@@ -151,6 +190,7 @@ async function createGame(gameName) {
 
     const scriptPath = path.join(__dirname, 'createGame.js');
     await executeTask('node', [scriptPath, gameName]);
+    console.log(`✅ Game "${gameName}" created successfully!`);
 }
 
 async function createAsset(commandName, assetName) {
@@ -170,7 +210,7 @@ async function getGameName() {
     return nameModule.currentGameName;
 }
 
-async function executeTask(command, args, waitForCompletion){
+async function executeTask(command, args, waitForCompletion) {
     if (waitForCompletion === undefined || waitForCompletion) {
         return new Promise((resolve, reject) => {
             const child = spawn(command, args, {

@@ -71,7 +71,8 @@
     "publish:package": "tsc && VITE_BUILD_LIB=true vite build",
     "electron-start": "vite build && electron .",
     "electron-publish": "vite build && electron-builder",
-    "pack:test": "node scripts/pack-and-test.js"
+    "pack:test": "node scripts/pack-and-test.js",
+    "postinstall": "node scripts/cli.js --setup"
   },
   "dependencies": {
     "@types/node": "^26.6.4",
