@@ -82,7 +82,7 @@ async function main() {
     } else {
         console.log('Usage: storyscript <command>');
         console.log('\nCommands:');
-        console.log('  setup            Setup StoryScript. Runs automatically on npm install.');
+        console.log('  setup            Setup StoryScript. Includes creating a new game.');
         console.log('  game     [name]  Create a new StoryScript game.');
         console.log('  location [name]  Create a new StoryScript Location.');
         console.log('  feature  [name]  Create a new StoryScript stand-alone Feature.');
@@ -97,8 +97,10 @@ async function main() {
         console.log('  test             Run the tests for your game. This will setup testing if you don\'t have any tests yet.');
         console.log('  publish          Build your game for deployment as a web app.');
         console.log('  preview          preview your published web app game.');
-        console.log('  start:electron   Start running your game in electron.');
+        console.log('  start:electron   Start running your game in electron. This will setup electron if you don\'t have it yet.');
         console.log('  publish:electron Build your game for deployment as an electron executable. This will setup electron if you don\'t have it yet.');
+        console.log('\nDon\'t forget that when you use Visual Studio Code Or Rider you have the StoryScript Code Snippets / Live Templates at your disposal. ' +
+            'Check out https://www.storyscript.nl/reference for an overview of all available code snippets.');
     }
 }
 

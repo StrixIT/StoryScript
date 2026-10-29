@@ -1,9 +1,14 @@
 {
-  "name": "storyscript",
-  "description": "StoryScript Adventure",
-  "version": "1.0.0",
+  "name": "@strixit/storyscript",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "StoryScript is an engine to create games for the web. Games that run anywhere, online or offline, on any device, and work well with both mouse and touch control. You play your games while you build them! Your changes are shown immediately, allowing you to shape your world as you move through it.",
+  "version": "1.0.1",
   "author": "Rutger Schurgers",
-  "private": true,
+  "homepage": "https://www.storyscript.nl",
+  "license": "MIT",
+  "private": false,
   "type": "module",
   "main": "./electron.cjs",
   "module": "./dist/storyscript.mjs",
@@ -45,6 +50,8 @@
     "src/Games/_GameTemplate",
     "src/Tests/Games/_GameTemplate",
     "dist/**/*.d.ts",
+    "!dist/**/Games",
+    "!dist/**/Tests",
     "dist/storyscript.*",
     "baseViteConfig.js",
     "typeExtensions.d.ts",
@@ -67,12 +74,12 @@
     "scm": "node scripts/createAsset.js map",
     "start": "vite",
     "test": "node ./src/Tests/beforeTests.js && node scripts/setupTesting.js && vitest --ui",
-    "publish": "tsc && vite build",
-    "publish:package": "tsc && VITE_BUILD_LIB=true vite build",
+    "build": "tsc && vite build",
+    "build:package": "tsc && VITE_BUILD_LIB=true vite build",
     "electron-start": "vite build && electron .",
-    "electron-publish": "vite build && electron-builder",
+    "electron-build": "vite build && electron-builder",
     "pack:test": "node scripts/pack-and-test.js",
-    "postinstall": "node scripts/cli.js --setup"
+    "pack": "npm run build:package && npm pack"
   },
   "dependencies": {
     "@types/node": "^26.6.4",
