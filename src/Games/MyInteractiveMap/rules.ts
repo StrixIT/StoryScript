@@ -42,18 +42,14 @@ export function Rules(): IRules {
         exploration: {},
 
         combat: {
-            fight: (game: IGame, combatSetup: ICombatSetup, retaliate?: boolean) => {
-                retaliate = retaliate ?? retaliate;
-
+            fight: (game: IGame, combatSetup: ICombatSetup) => {
                 // Implement character attack here.
-
-                if (retaliate) {
-                    game.currentLocation.enemies.filter((enemy: IEnemy) => {
-                        return enemy.currentHitpoints > 0;
-                    }).forEach(enemy => {
-                        // Implement monster attack here
-                    });
-                }
+                
+                game.currentLocation.enemies.filter((enemy: IEnemy) => {
+                    return enemy.currentHitpoints > 0;
+                }).forEach(enemy => {
+                    // Implement monster attack here
+                });
             }
         }
     };

@@ -37,7 +37,7 @@ describe("Rules", function() {
         setup.characters = [character];
         setup.enemies = [enemy];
         setup.round = 1;
-        service.combat.fight(game, setup);
+        service.combat.fight(game, setup, null);
 
         // Character default strength 1 + 6.
         const expected = 3;

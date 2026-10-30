@@ -84,18 +84,14 @@ export function Rules(): IRules {
         },
 
         combat: {
-            fight: (game: IGame, combatSetup: ICombatSetup, retaliate?: boolean) => {
-                retaliate = retaliate === undefined ? true : retaliate;
-
+            fight: (game: IGame, combatSetup: ICombatSetup) => {
                 // Implement character attack here.
 
-                if (retaliate) {
-                    game.currentLocation.enemies.filter((enemy: IEnemy) => {
-                        return enemy.currentHitpoints > 0;
-                    }).forEach(function (enemy) {
-                        // Implement monster attack here
-                    });
-                }
+                game.currentLocation.enemies.filter((enemy: IEnemy) => {
+                    return enemy.currentHitpoints > 0;
+                }).forEach(function (enemy) {
+                    // Implement monster attack here
+                });
             }
         }
     };

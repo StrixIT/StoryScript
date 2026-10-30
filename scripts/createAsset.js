@@ -21,12 +21,12 @@ if (!assetType) {
 const assetName = args[3];
 
 if (!assetName) {
-    console.log('You need to specify an asset name, e.g. \'Cave\'.');
+    console.log(`You need to specify a name for your ${assetType}.`);
     process.exit();
 }
 
 if (!entityNameRegex.exec(assetName)) {
-    console.log(`${assetName} is not a valid asset name! The name must start with a letter and contain only letters, numbers and '_'.`);
+    console.log(`${assetName} is not a valid ${assetType} name! The name must start with a letter and contain only letters, numbers and '_'.`);
     process.exit();
 }
 

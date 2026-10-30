@@ -1,6 +1,7 @@
 ﻿import { IFeature } from './feature';
 import { IItem } from './item';
 import { IGame } from './game';
+import {Sprite} from "src/Engine";
 
 /**
  * Defines the base properties for an enemy in the game.
@@ -51,4 +52,14 @@ export interface IEnemy extends IFeature {
      * @param enemy The defeated enemy
      */
     onDefeat?(game: IGame, enemy: IEnemy): void;
+
+    /**
+     * The sound file to play when the enemy attacks, if any.
+     */
+    attackSound?: string;
+
+    /**
+     * The animation to play when the enemy attacks, if any.
+     */
+    attackAnimation?: Sprite
 }

@@ -27,12 +27,12 @@ export class CombatService implements ICombatService {
         this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game, enemy));
     }
 
-    fight = (combat: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
+    fight = (combat: ICombatSetup<ICombatTurn>): Promise<void> | void => {
         if (!this._rules.combat?.fight) {
             return;
         }
 
-        const promise = this._rules.combat.fight(this._game, combat, retaliate);
+        const promise = this._rules.combat.fight(this._game, combat, this.applyCombatEffects);
 
         return Promise.resolve(promise).then(() => {
             combat.forEach((s, i) => {
@@ -176,7 +176,7 @@ export class CombatService implements ICombatService {
             }
 
             i.selectable = false;
-            let targets;
+            let targets: (ICharacter | IEnemy)[];
 
             switch (i.targetType) {
                 case TargetType.Enemy: {
@@ -229,6 +229,46 @@ export class CombatService implements ICombatService {
         }
 
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
+    }
+
+    private readonly applyCombatEffects = (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]): Promise<void[]> => {
+        const allPromises = additionalEffects ?? [];
+
+        if (combatDelay) {
+            const timePromise = new Promise<void>((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, combatDelay);
+            });
+
+            allPromises.push(timePromise);
+        }
+
+        const attackSound = combatItem?.attackSound || participant?.attackSound;
+
+        if (attackSound) {
+            const soundPromise = new Promise<void>((resolve) => {
+                game.sounds.playSound(participant.attackSound, () => {
+                    resolve();
+                });
+            });
+
+            allPromises.push(soundPromise);
+        }
+
+        const attackAnimation = combatItem?.attackAnimation || participant?.attackAnimation;
+
+        if (attackAnimation) {
+            const animationPromise = new Promise<void>((resolve) => {
+                attackAnimation.play().then(() => {
+                    resolve();
+                });
+            });
+
+            allPromises.push(animationPromise);
+        }
+
+        return Promise.all(allPromises);
     }
 
     private readonly enemyDefeated = (combat: ICombatSetup<ICombatTurn>, character: ICharacter, enemy: IEnemy): void => {

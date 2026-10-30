@@ -164,61 +164,6 @@ export function hasItem(party: IParty, item: IItem | string): boolean {
     return hasItem;
 }
 
-export function createPromiseForCallback<T>(callBack: Function): { promise: Promise<T>, promiseCallback: () => void } {
-    let resolveFunc = null;
-
-    const promiseCallback = () => {
-        const callBackResult = callBack();
-        Promise.resolve(callBackResult).then(() => {
-            resolveFunc?.();
-        });
-    }
-
-    const promiseFunc = function (resolve: any) {
-        resolveFunc = resolve;
-    }
-
-    const promise = new Promise<T>(promiseFunc);
-
-    return {promise, promiseCallback};
-}
-
-export function wait(timeInMs: number, callBack: Function): Promise<void> {
-    const {promise, promiseCallback} = createPromiseForCallback<void>(callBack);
-
-    setTimeout(() => {
-        promiseCallback();
-    }, timeInMs);
-
-    return promise;
-}
-
-export function interval(intervalTimeInMs: number, repeat: number, intervalCallback: Function, finalCallback?: Function): Promise<void> {
-    const {promise, promiseCallback} = createPromiseForCallback<void>(finalCallback ?? (() => {
-    }));
-
-    let count = 0;
-
-    const interval = setInterval(() => {
-        count++;
-        intervalCallback();
-
-        if (count >= repeat) {
-            clearInterval(interval);
-
-            if (finalCallback) {
-                setTimeout(() => {
-                    promiseCallback();
-                }, intervalTimeInMs);
-            } else {
-                promiseCallback();
-            }
-        }
-    }, intervalTimeInMs);
-
-    return promise;
-}
-
 export function getEquipmentType(slot: EquipmentType | string): string {
     const type = EquipmentType[slot] ?? slot;
     return type.substring(0, 1).toLowerCase() + type.substring(1);

@@ -1,5 +1,6 @@
 ﻿import { IItem } from './item';
 import { IEquipment } from './equipment';
+import {Sprite} from "src/Engine";
 
 /**
  * The player character in the StoryScript game.
@@ -55,4 +56,14 @@ export interface ICharacter {
      * True when this is the active party character, false otherwise. This is a runtime property managed by StoryScript.
      */
     isActiveCharacter?: boolean;
+
+    /**
+     * The sound file to play when the character attacks, if any.
+     */
+    attackSound?: string;
+
+    /**
+     * The animation to play when the character attacks, if any.
+     */
+    attackAnimation?: Sprite
 }

@@ -9,9 +9,8 @@ export interface ICombatService {
     /**
      * The function executed when the player attacks an enemy.
      * @param combatRound The setup for this combat round
-     * @param retaliate True if the enemy can retaliate (default), false otherwise
      */
-    fight(combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
+    fight(combatRound: ICombatSetup<ICombatTurn>): Promise<void> | void;
 
     /**
      * Gets a value indicating whether the item is selectable. True when selectable, false otherwise.
