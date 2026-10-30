@@ -42,7 +42,13 @@ export function Rules(): IRules {
         exploration: {},
 
         combat: {
-            fight: async (game: IGame, combatRound: ICombatSetup, applyCombatEffects: (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> => {
+            fight: async (game: IGame, 
+                          combatRound: ICombatSetup, 
+                          applyCombatEffects: (game: IGame, 
+                                               combatDelay?: number, 
+                                               participant?: ICharacter | IEnemy, 
+                                               target?: ICharacter | IEnemy, combatItem?: IItem, 
+                                               additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> => {
 
                 // Implement character attack here.
                 

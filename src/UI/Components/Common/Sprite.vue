@@ -7,7 +7,7 @@ import {Sprite}from 'storyScript';
 import {useTemplateRef, watch} from "vue";
 
 const props = defineProps<{
-  factor: number;
+  factor?: number;
   spriteSettings: Sprite;
 }>();
 
@@ -44,8 +44,13 @@ const updateSprite = () => {
 }
 
 const updateSpriteAnimation = () => {
-  sprite.value.width = Math.round(props.spriteSettings.width * props.factor);
-  sprite.value.height = Math.round(props.spriteSettings.height * props.factor);
+  if (!sprite.value) {
+    return;
+  }
+  
+  const factor = props.factor ?? 1;
+  sprite.value.width = Math.round(props.spriteSettings.width * factor);
+  sprite.value.height = Math.round(props.spriteSettings.height * factor);
   sprite.value.style.objectFit = 'cover';
   animation = sprite.value.animate(animationFrames, animationSettings);
 }

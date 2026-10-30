@@ -24,7 +24,7 @@ export interface ICombatRules {
      */
     fight?(game: IGame, 
            combatRound: ICombatSetup<ICombatTurn>,
-           applyCombatEffects: (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> | void;
+           applyCombatEffects: (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, target?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> | void;
 
     /**
      * Use this function to run custom code to determine whether an item should be selectable for combat

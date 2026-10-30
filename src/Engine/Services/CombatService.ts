@@ -231,7 +231,7 @@ export class CombatService implements ICombatService {
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
     }
 
-    private readonly applyCombatEffects = (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]): Promise<void[]> => {
+    private readonly applyCombatEffects = (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, target?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]): Promise<void[]> => {
         const allPromises = additionalEffects ?? [];
 
         if (combatDelay) {
@@ -258,11 +258,14 @@ export class CombatService implements ICombatService {
 
         const attackAnimation = combatItem?.attackAnimation || participant?.attackAnimation;
 
-        if (attackAnimation) {
+        if (attackAnimation && target) {
+            (target as any).displayAttackAnimation = attackAnimation;
+            
             const animationPromise = new Promise<void>((resolve) => {
-                attackAnimation.play().then(() => {
+                setTimeout(() => {
+                    (target as any).displayAttackAnimation = null;
                     resolve();
-                });
+                }, attackAnimation.speed * 1000);
             });
 
             allPromises.push(animationPromise);
