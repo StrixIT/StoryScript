@@ -5,8 +5,7 @@ import {PlayState} from 'storyScript';
 
 const saveStates = [PlayState.Combat, PlayState.Conversation, PlayState.Trade];
 
-export function usePlayStateWatch(uiRoot: Ref<HTMLElement>) {
-    const rootElement = uiRoot;
+export function usePlayStateWatch(uiRoot: Ref<HTMLDivElement>) {
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {gameService, dataService} = store.services;
@@ -21,11 +20,11 @@ export function usePlayStateWatch(uiRoot: Ref<HTMLElement>) {
     });
 
     const stopAutoplay = () => {
-        if (!rootElement.value) {
+        if (!uiRoot.value) {
             return;
         }
-        
-        const mediaElements = rootElement.value.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
+
+        const mediaElements = uiRoot.value.querySelectorAll('audio:not(.storyscript-player), video:not(.storyscript-player)');
         mediaElements.forEach((m: Element) => (m as HTMLMediaElement).pause());
     }
 }

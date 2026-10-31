@@ -1,11 +1,11 @@
-import {addHtmlSpaces} from "src/Engine/utilityFunctions";
-import {IFeature} from 'storyScript';
+import {checkAutoplay, addHtmlSpaces, IFeature} from 'storyScript';
 import {useStateStore} from "ui/StateStore";
-import {Ref, watch} from "vue";
+import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from 'src/constants';
 
-export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
+export function useTextFeatures() {
+    const descriptionRef = useTemplateRef<HTMLDivElement>('description')
     const activeTriggerClass = 'trigger-active';
 
     const store = useStateStore();
@@ -13,6 +13,17 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     const {combinationService} = store.services;
 
     const description = descriptionRef;
+    const descriptionToShow = ref<string>(null);
+
+    const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
+
+    watch(() => game.value.currentLocation.description, async (newValue) => {
+        descriptionToShow.value = checkAutoplay(game.value, newValue);
+    }, {immediate: true});
+
+    onMounted(() => {
+        refreshFeatures();
+    });
 
     watch(() => game.value.combinations.activeCombination?.selectedTool, () => {
         refreshFeatures();
@@ -139,6 +150,8 @@ export function useTextFeatures(descriptionRef: Ref<HTMLDivElement>) {
     }
 
     return {
+        show,
+        descriptionToShow,
         description,
         refreshFeatures,
         click,

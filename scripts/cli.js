@@ -78,7 +78,7 @@ async function main() {
     } else if (command === 'publish:electron') {
         await electron(false);
     } else if (/^(location)|(feature)|(map)|(item)|(key)|(enemy)|(person)|(quest)|(action)$/i.test(command)) {
-        await createAsset(command, args[0]);
+        await createAsset(command, args[0], args[1]);
     } else {
         console.log('Usage: storyscript <command>');
         console.log('\nCommands:');
@@ -195,16 +195,16 @@ async function createGame(gameName) {
     console.log(`✅ Game "${gameName}" created successfully!`);
 }
 
-async function createAsset(commandName, assetName) {
+async function createAsset(commandName, assetName, includeDescription) {
     if (!assetName) {
-        console.error('Error: Asset name is required');
+        console.error(`Error: a name is required for your ${commandName}!`);
         console.error(`Usage: npx storyscript ${commandName} <assetName>`);
         process.exit(1);
     }
 
     const scriptPath = path.join(__dirname, 'createAsset.js');
 
-    await executeTask('node', [scriptPath, commandName, assetName]);
+    await executeTask('node', [scriptPath, commandName, assetName, includeDescription]);
 }
 
 async function getGameName() {

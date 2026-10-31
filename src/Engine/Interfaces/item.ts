@@ -5,6 +5,7 @@ import {EquipmentType} from './enumerations/equipmentType';
 import {IEquipment} from './equipment';
 import {ICharacter} from './character';
 import {TargetType} from './enumerations/targetType';
+import {Sprite} from './sprite';
 
 /**
  * An item that can be found in the game and used by the character.
@@ -45,6 +46,26 @@ export interface IItem extends IFeature {
      */
     useInCombat?: boolean | ((item: IItem, equipment: IEquipment) => boolean);
 
+    /**
+     * The sound files that are used for the item, if any.
+     */
+    sounds?: {
+        /**
+         * The sound file to play when the item is used in combat, if any.
+         */
+        attack?: string;
+    },
+
+    /**
+     * The animations that are used for the item, if any.
+     */
+    animations?: {
+        /**
+         * The animation to play when the item is used in combat, if any.
+         */
+        attack?: Sprite
+    }
+    
     /**
      * When this flag is set to false, the item is not selectable. This is used to allow items to be unselectable during combat,
      * for example when you want items to be available only during certain rounds.

@@ -22,17 +22,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {computed, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
-import {IFeature, useStateStore, useVisualFeatures} from 'storyScript';
+import {useStateStore, useVisualFeatures} from 'storyScript';
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
-const location = computed(() => game.value.currentLocation);
-
-const {initFeatures, factor} = useVisualFeatures(useTemplateRef('location-features'));
-
-const getFeatureClass = (feature: IFeature) => feature.interactive === false ? '' : 'feature-cursor';
+const {location, initFeatures, getFeatureClass, factor} = useVisualFeatures();
 
 </script>

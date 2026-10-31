@@ -1,5 +1,7 @@
 import {
+    CombatEventType,
     GameState,
+    IActor,
     ICharacter,
     ICombatService,
     ICombatSetup,
@@ -10,7 +12,7 @@ import {
     IItem,
     IRules,
     PlayState,
-    TargetType,
+    TargetType
 } from 'storyScript';
 import {StateProperties} from "src/Engine/stateProperties";
 import {addUniqueId} from "src/Engine/arrayAndFunctionExtensions";
@@ -27,12 +29,12 @@ export class CombatService implements ICombatService {
         this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game, enemy));
     }
 
-    fight = (combat: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
+    fight = (combat: ICombatSetup<ICombatTurn>): Promise<void> | void => {
         if (!this._rules.combat?.fight) {
             return;
         }
 
-        const promise = this._rules.combat.fight(this._game, combat, retaliate);
+        const promise = this._rules.combat.fight(this._game, combat, this.applyCombatEffects);
 
         return Promise.resolve(promise).then(() => {
             combat.forEach((s, i) => {
@@ -176,7 +178,7 @@ export class CombatService implements ICombatService {
             }
 
             i.selectable = false;
-            let targets;
+            let targets: (ICharacter | IEnemy)[];
 
             switch (i.targetType) {
                 case TargetType.Enemy: {
@@ -229,6 +231,61 @@ export class CombatService implements ICombatService {
         }
 
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
+    }
+
+    private readonly applyCombatEffects = (
+        game: IGame,
+        type: CombatEventType,
+        delay?: number,
+        participant?: IActor,
+        target?: IActor,
+        combatItem?: IItem,
+        additionalEffects?: Promise<void>[]): Promise<void[]> => {
+
+        const eventType = type.toLowerCase();
+        const allPromises = additionalEffects ?? [];
+
+        if (delay) {
+            const timePromise = new Promise<void>((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, delay);
+            });
+
+            allPromises.push(timePromise);
+        }
+
+        const eventSound = combatItem?.sounds?.[eventType] || participant?.sounds?.[eventType];
+
+        if (eventSound) {
+            const soundPromise = new Promise<void>((resolve) => {
+                game.sounds.playSound(eventSound, () => {
+                    resolve();
+                });
+            });
+
+            allPromises.push(soundPromise);
+        }
+
+        const eventAnimation = combatItem?.animations?.[eventType] || participant.animations?.[eventType];
+
+        if (eventAnimation && target) {
+            (target as any).displayAnimation = eventAnimation;
+            let resolveFunc: (value: void | PromiseLike<void>) => void;
+
+            const animationPromise = new Promise<void>((resolve) => {
+                resolveFunc = resolve;
+            });
+
+            eventAnimation.finishedCallBack = () => {
+                (target as any).displayAnimation = null;
+                resolveFunc();
+            }
+
+            allPromises.push(animationPromise);
+        }
+
+        return Promise.all(allPromises);
     }
 
     private readonly enemyDefeated = (combat: ICombatSetup<ICombatTurn>, character: ICharacter, enemy: IEnemy): void => {
