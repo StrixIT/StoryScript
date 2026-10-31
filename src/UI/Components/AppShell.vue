@@ -31,10 +31,9 @@ import {PlayState, useCustomCursor, usePlayStateWatch, useStateStore} from 'stor
 
 const store = useStateStore();
 const {game, error} = storeToRefs(store);
-const uiRoot = useTemplateRef('ui-root');
 
-useCustomCursor(uiRoot);
-usePlayStateWatch(uiRoot);
+useCustomCursor();
+usePlayStateWatch();
 
 const reload = () => {
   window.location.reload();

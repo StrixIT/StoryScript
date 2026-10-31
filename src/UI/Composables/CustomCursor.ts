@@ -1,10 +1,11 @@
-import {onMounted, Ref, watch} from "vue";
+import {onMounted, useTemplateRef, watch} from "vue";
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from 'src/constants';
 import {IActiveCombination, ICustomCursor} from 'storyScript';
 
-export function useCustomCursor(uiRoot: Ref<HTMLElement>) {
+export function useCustomCursor() {
+    const uiRoot = useTemplateRef<HTMLDivElement>('ui-root');
     const cursorRegex = /resources\/[\w-]*\.[a-zA-Z]{3,4}/;
     const rootElement = uiRoot;
 

@@ -19,24 +19,16 @@
   </audio>
 </template>
 <script lang="ts" setup>
-import {useTemplateRef, watch} from "vue";
 import {useSound, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {texts} = store.services;
-const musicPlayer = useTemplateRef('music-player');
 
 const {
   canPlay,
   getSoundQueue,
   getCurrentMusic,
   soundCompleted
-} = useSound(musicPlayer);
-
-watch(canPlay, (newValue) => {
-  if (musicPlayer.value) {
-    musicPlayer.value.muted = !newValue;
-  }
-});
+} = useSound();
 
 </script>

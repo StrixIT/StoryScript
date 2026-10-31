@@ -16,24 +16,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
-import {checkAutoplay, useStateStore, useTextFeatures} from 'storyScript';
+import {useStateStore, useTextFeatures} from 'storyScript';
 import {storeToRefs} from "pinia";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
-const {click, mouseOver, mouseOut, refreshFeatures} = useTextFeatures(useTemplateRef('description'));
-
-const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
-const descriptionToShow = ref<string>(null);
-
-watch(() => game.value.currentLocation.description, async (newValue) => {
-  descriptionToShow.value = checkAutoplay(game.value, newValue);
-}, {immediate: true});
-
-onMounted(() => {
-  refreshFeatures();
-});
+const {show, descriptionToShow, click, mouseOver, mouseOut} = useTextFeatures();
 
 </script>

@@ -1,8 +1,9 @@
 import {useStateStore} from "ui/StateStore";
-import {Ref, ref, watch} from "vue";
+import {ref, useTemplateRef, watch} from "vue";
 import {storeToRefs} from "pinia";
 
-export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
+export function useSound() {
+    const musicPlayerRef = useTemplateRef<HTMLAudioElement>('music-player')
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {rules, soundService} = store.services;
@@ -22,18 +23,24 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
         if (!audioContext) {
             audioContext = new window.AudioContext();
             canPlay.value = true;
-            
+
             if (musicPlayer.value) {
                 await musicPlayer.value.play();
             }
         }
-    }, { once: true });
-    
+    }, {once: true});
+
+    watch(canPlay, (newValue) => {
+        if (musicPlayer.value) {
+            musicPlayer.value.muted = !newValue;
+        }
+    });
+
     watch(musicPlayerRef, (newValue) => {
         if (newValue && canPlay.value === null) {
             canPlay.value = Boolean(audioContext);
         }
-    }, { immediate: true });
+    }, {immediate: true});
 
     const getSoundQueue = (): [number, string][] => {
         Array.from(game.value.sounds.soundQueue).forEach(e => {

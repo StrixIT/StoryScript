@@ -1,7 +1,8 @@
-import {computed, onUpdated, Ref, ref, watch} from "vue";
+import {computed, onUpdated, ref, useTemplateRef, watch} from "vue";
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from 'src/constants';
+import {IFeature} from "storyScript";
 
 const prepareLoadedImages = (locationImagesRef: HTMLImageElement[]) => {
     const loadedImages: { element: HTMLImageElement, loadPromise: Promise<void> }[] = [];
@@ -28,7 +29,8 @@ const prepareLoadedImages = (locationImagesRef: HTMLImageElement[]) => {
     return loadedImages;
 }
 
-export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
+export function useVisualFeatures() {
+    const imageRef = useTemplateRef<HTMLDivElement>('location-features');
     const store = useStateStore();
     const {
         game,
@@ -36,6 +38,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         combinationCursor
     } = storeToRefs(store);
 
+    const location = computed(() => game.value.currentLocation);
     const locationFeatures = imageRef;
     const locationImageOriginalWidth = new Map<string, number>();
     const featureImageOriginalDimensions = new Map<string, [number, number]>();
@@ -56,7 +59,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     window.onresize = () => {
         const oldFactor = factor.value;
         calculateFactor();
-        
+
         if (factor.value !== oldFactor) {
             prepareFeatures();
         }
@@ -67,6 +70,8 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     });
 
     watch(() => game.value.combinations.activeCombination, () => setCombinationSymbols());
+
+    const getFeatureClass = (feature: IFeature) => feature.interactive === false ? '' : 'feature-cursor';
 
     const initFeatures = () => {
         const mainImage = locationFeatures.value?.querySelector('img');
@@ -141,7 +146,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
 
     const positionFeatureImage = (featureId: string, x: number, y: number) => {
         const feature = game.value.currentLocation.features.get(featureId);
-        
+
         if (!feature?.picture && !feature?.animation) {
             return;
         }
@@ -212,9 +217,9 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     }
 
     return {
-        locationFeatures,
+        location,
         factor,
         initFeatures,
-        prepareFeatures
+        getFeatureClass
     }
 }
