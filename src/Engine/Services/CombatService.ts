@@ -248,7 +248,7 @@ export class CombatService implements ICombatService {
 
         if (attackSound) {
             const soundPromise = new Promise<void>((resolve) => {
-                game.sounds.playSound(participant.attackSound, () => {
+                game.sounds.playSound(attackSound, () => {
                     resolve();
                 });
             });
@@ -260,13 +260,16 @@ export class CombatService implements ICombatService {
 
         if (attackAnimation && target) {
             (target as any).displayAttackAnimation = attackAnimation;
+            let resolveFunc: (value: void | PromiseLike<void>) => void;
             
             const animationPromise = new Promise<void>((resolve) => {
-                setTimeout(() => {
-                    (target as any).displayAttackAnimation = null;
-                    resolve();
-                }, attackAnimation.speed * 1000);
+                resolveFunc = resolve;
             });
+
+            attackAnimation.finishedCallBack = () => {
+                (target as any).displayAttackAnimation = null;
+                resolveFunc();
+            }
 
             allPromises.push(animationPromise);
         }
