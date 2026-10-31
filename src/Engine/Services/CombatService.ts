@@ -1,5 +1,7 @@
 import {
+    CombatEventType,
     GameState,
+    IActor,
     ICharacter,
     ICombatService,
     ICombatSetup,
@@ -10,7 +12,7 @@ import {
     IItem,
     IRules,
     PlayState,
-    TargetType,
+    TargetType
 } from 'storyScript';
 import {StateProperties} from "src/Engine/stateProperties";
 import {addUniqueId} from "src/Engine/arrayAndFunctionExtensions";
@@ -231,24 +233,33 @@ export class CombatService implements ICombatService {
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
     }
 
-    private readonly applyCombatEffects = (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, target?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]): Promise<void[]> => {
+    private readonly applyCombatEffects = (
+        game: IGame,
+        type: CombatEventType,
+        delay?: number,
+        participant?: IActor,
+        target?: IActor,
+        combatItem?: IItem,
+        additionalEffects?: Promise<void>[]): Promise<void[]> => {
+
+        const eventType = type.toLowerCase();
         const allPromises = additionalEffects ?? [];
 
-        if (combatDelay) {
+        if (delay) {
             const timePromise = new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
-                }, combatDelay);
+                }, delay);
             });
 
             allPromises.push(timePromise);
         }
 
-        const attackSound = combatItem?.attackSound || participant?.attackSound;
+        const eventSound = combatItem?.sounds?.[eventType] || participant?.sounds?.[eventType];
 
-        if (attackSound) {
+        if (eventSound) {
             const soundPromise = new Promise<void>((resolve) => {
-                game.sounds.playSound(attackSound, () => {
+                game.sounds.playSound(eventSound, () => {
                     resolve();
                 });
             });
@@ -256,18 +267,18 @@ export class CombatService implements ICombatService {
             allPromises.push(soundPromise);
         }
 
-        const attackAnimation = combatItem?.attackAnimation || participant?.attackAnimation;
+        const eventAnimation = combatItem?.animations?.[eventType] || participant.animations?.[eventType];
 
-        if (attackAnimation && target) {
-            (target as any).displayAttackAnimation = attackAnimation;
+        if (eventAnimation && target) {
+            (target as any).displayAnimation = eventAnimation;
             let resolveFunc: (value: void | PromiseLike<void>) => void;
-            
+
             const animationPromise = new Promise<void>((resolve) => {
                 resolveFunc = resolve;
             });
 
-            attackAnimation.finishedCallBack = () => {
-                (target as any).displayAttackAnimation = null;
+            eventAnimation.finishedCallBack = () => {
+                (target as any).displayAnimation = null;
                 resolveFunc();
             }
 

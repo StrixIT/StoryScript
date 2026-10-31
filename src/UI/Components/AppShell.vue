@@ -32,8 +32,10 @@ import {PlayState, useCustomCursor, usePlayStateWatch, useStateStore} from 'stor
 const store = useStateStore();
 const {game, error} = storeToRefs(store);
 
-useCustomCursor();
-usePlayStateWatch();
+const uiRoot = useTemplateRef<HTMLDivElement>('ui-root');
+
+useCustomCursor(uiRoot);
+usePlayStateWatch(uiRoot);
 
 const reload = () => {
   window.location.reload();

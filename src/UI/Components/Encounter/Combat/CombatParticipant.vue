@@ -6,12 +6,12 @@
     </p>
     <img v-if="participant.picture" ref="participant-image" :alt="participant.name" :src="participant.picture"
          class="combat-participant">
-    <sprite v-if="attackAnimationVisible" :spriteSettings="participant.displayAttackAnimation"
-            :style="attackAnimationStyle" alt="Under attack!"></sprite>
+    <sprite v-if="animationVisible" :spriteSettings="participant.displayAnimation"
+            :style="animationStyle" alt="Under attack!"></sprite>
   </div>
 </template>
 <script lang="ts" setup>
-import {useAttackAnimation, useStateStore} from 'storyScript';
+import {useDisplayAnimation, useStateStore} from 'storyScript';
 
 const store = useStateStore();
 const {texts} = store.services;
@@ -20,6 +20,6 @@ const {participant} = defineProps<{
   participant: any
 }>();
 
-const {healthClass, hitPointText, attackAnimationVisible, attackAnimationStyle} = useAttackAnimation(participant);
+const {healthClass, hitPointText, animationVisible, animationStyle} = useDisplayAnimation(participant);
 
 </script>

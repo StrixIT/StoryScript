@@ -1,4 +1,4 @@
-import { useAttackAnimation } from './AttackAnimation';
+import { useDisplayAnimation } from './DisplayAnimation';
 import { useCustomCursor } from './CustomCursor';
 import { useLocationMap } from './LocationMap';
 import { usePlayStateWatch } from './playStateWatch';
@@ -8,7 +8,7 @@ import { useTextFeatures } from './TextFeatures';
 import { useVisualFeatures } from './VisualFeatures';
 
 export {
-    useAttackAnimation,
+    useDisplayAnimation,
     useCustomCursor,
     useLocationMap,
     usePlayStateWatch,

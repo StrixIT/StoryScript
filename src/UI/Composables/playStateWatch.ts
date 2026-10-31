@@ -1,12 +1,11 @@
-import {useTemplateRef} from "vue";
+import {Ref} from "vue";
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {PlayState} from 'storyScript';
 
 const saveStates = [PlayState.Combat, PlayState.Conversation, PlayState.Trade];
 
-export function usePlayStateWatch() {
-    const uiRoot = useTemplateRef<HTMLDivElement>('ui-root');
+export function usePlayStateWatch(uiRoot: Ref<HTMLDivElement>) {
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {gameService, dataService} = store.services;

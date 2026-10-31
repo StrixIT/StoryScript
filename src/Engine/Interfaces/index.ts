@@ -2,6 +2,7 @@ import type {IInterfaceTexts} from './interfaceTexts'
 import type {IRules} from './rules/rules'
 import type {IGame} from './game'
 import type {IParty} from './party'
+import type {IActor} from './actor'
 import type {ICharacter} from './character'
 import type {ICombatTurn} from './combatTurn'
 import type {ICombatSetup} from './combatSetup'
@@ -66,6 +67,7 @@ import {GameState} from './enumerations/gameState';
 import {ActionType} from './enumerations/actionType';
 import {ActionStatus} from './enumerations/actionStatus';
 import {TargetType} from './enumerations/targetType';
+import {CombatEventType} from './enumerations/combatEventType'; 
 import {ScoreEntry} from './scoreEntry';
 
 import {IMap} from './maps/map';
@@ -78,6 +80,7 @@ export type {
     IRules,
     IGame,
     IParty,
+    IActor,
     ICharacter,
     ICombatTurn,
     ICombatSetup,
@@ -150,7 +153,8 @@ export {
     TargetType,
     ScoreEntry,
     StateList,
-    StateListEntry
+    StateListEntry,
+    CombatEventType
 }
 
 export * from '../Actions/index';

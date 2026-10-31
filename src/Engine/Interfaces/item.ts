@@ -47,14 +47,24 @@ export interface IItem extends IFeature {
     useInCombat?: boolean | ((item: IItem, equipment: IEquipment) => boolean);
 
     /**
-     * The sound file to play when the item is used in combat, if any.
+     * The sound files that are used for the item, if any.
      */
-    attackSound?: string;
+    sounds?: {
+        /**
+         * The sound file to play when the item is used in combat, if any.
+         */
+        attack?: string;
+    },
 
     /**
-     * The animation to play when the item is used in combat, if any.
+     * The animations that are used for the item, if any.
      */
-    attackAnimation?: Sprite
+    animations?: {
+        /**
+         * The animation to play when the item is used in combat, if any.
+         */
+        attack?: Sprite
+    }
     
     /**
      * When this flag is set to false, the item is not selectable. This is used to allow items to be unselectable during combat,

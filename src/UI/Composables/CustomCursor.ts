@@ -1,14 +1,11 @@
-import {onMounted, useTemplateRef, watch} from "vue";
+import {onMounted, Ref, watch} from "vue";
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from 'src/constants';
 import {IActiveCombination, ICustomCursor} from 'storyScript';
 
-export function useCustomCursor() {
-    const uiRoot = useTemplateRef<HTMLDivElement>('ui-root');
+export function useCustomCursor(uiRoot: Ref<HTMLDivElement>) {
     const cursorRegex = /resources\/[\w-]*\.[a-zA-Z]{3,4}/;
-    const rootElement = uiRoot;
-
     const store = useStateStore();
     const {game, customCursor, combinationCursor} = storeToRefs(store);
 
@@ -27,7 +24,7 @@ export function useCustomCursor() {
     });
 
     onMounted(() => {
-        game.value.UIRootElement = rootElement.value.closest('body');
+        game.value.UIRootElement = uiRoot.value.closest('body');
 
         game.value.UIRootElement.addEventListener('mouseover', e => {
             setCursorStyle(e.target as HTMLElement);

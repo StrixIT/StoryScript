@@ -1,7 +1,7 @@
 import {computed, ref, useTemplateRef, watch} from "vue";
 import {Sprite as SpriteClass, useStateStore} from 'storyScript';
 
-export function useAttackAnimation(participant: any) {
+export function useDisplayAnimation(participant: any) {
     const participantContainerRef = useTemplateRef<HTMLDivElement>('participant-container');
     const participantImageRef = useTemplateRef<HTMLImageElement>('participant-image');
 
@@ -10,18 +10,18 @@ export function useAttackAnimation(participant: any) {
 
     const healthClass = computed(() => participant.type ? 'enemy-health' : 'character-health');
     const hitPointText = computed(() => participant.type ? texts.enemyHitpoints : texts.characterHitpoints);
-    const attackAnimationVisible = ref(false);
+    const animationVisible = ref(false);
 
-    watch(() => participant.displayAttackAnimation, newValue => {
+    watch(() => participant.displayAnimation, newValue => {
         // Use a timeout here to prevent the animation from showing up on the right hand side and moving to its new
         // position when the attack animation is set.
         setTimeout(() => {
-            attackAnimationVisible.value = !!newValue;
+            animationVisible.value = !!newValue;
         })
     }, {immediate: true});
 
-    const attackAnimationStyle = computed(() => {
-        const animation = participant.displayAttackAnimation as SpriteClass;
+    const animationStyle = computed(() => {
+        const animation = participant.displayAnimation as SpriteClass;
 
         if (!participantContainerRef.value || !animation) {
             return {};
@@ -49,7 +49,7 @@ export function useAttackAnimation(participant: any) {
     return {
         healthClass,
         hitPointText,
-        attackAnimationVisible,
-        attackAnimationStyle
+        animationVisible,
+        animationStyle
     }
 }

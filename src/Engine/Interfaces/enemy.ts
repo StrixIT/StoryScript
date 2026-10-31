@@ -1,27 +1,17 @@
-﻿import { IFeature } from './feature';
-import { IItem } from './item';
-import { IGame } from './game';
-import {Sprite} from "src/Engine";
+﻿import {IFeature} from './feature';
+import {IItem} from './item';
+import {IGame} from './game';
+import {IActor} from "./actor";
 
 /**
  * Defines the base properties for an enemy in the game.
  */
-export interface IEnemy extends IFeature {
+export interface IEnemy extends IFeature, IActor {
     /**
      * The details about this enemy as displayed to the player. If you use an HTML-page to describe the enemy, the contents of that HTML-page
      * will be used to set this property at run-time.
      */
     description?: string;
-
-    /**
-     * The health of the enemy.
-     */
-    hitpoints: number;
-
-    /**
-     * The current health of the enemy, tracked by StoryScript at runtime.
-     */
-    currentHitpoints?: number;
 
     /**
      * The amount of credits the enemy has, in whatever form.
@@ -52,14 +42,4 @@ export interface IEnemy extends IFeature {
      * @param enemy The defeated enemy
      */
     onDefeat?(game: IGame, enemy: IEnemy): void;
-
-    /**
-     * The sound file to play when the enemy attacks, if any.
-     */
-    attackSound?: string;
-
-    /**
-     * The animation to play when the enemy attacks, if any.
-     */
-    attackAnimation?: Sprite
 }

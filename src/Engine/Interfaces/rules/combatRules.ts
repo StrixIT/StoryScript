@@ -1,4 +1,4 @@
-import {ICharacter, ICombatSetup, ICombatTurn, ICompiledLocation, IEnemy, IGame, IItem} from 'storyScript';
+import {IActor, ICharacter, ICombatSetup, ICombatTurn, ICompiledLocation, IEnemy, IGame, IItem, CombatEventType} from 'storyScript';
 
 export interface ICombatRules {
     /**
@@ -22,9 +22,16 @@ export interface ICombatRules {
      * @param combatRound The setup for this combat round
      * @param applyCombatEffects The function you can call to apply combat effects after you resolve a combat turn.
      */
-    fight?(game: IGame, 
+    fight?(game: IGame,
            combatRound: ICombatSetup<ICombatTurn>,
-           applyCombatEffects: (game: IGame, combatDelay?: number, participant?: ICharacter | IEnemy, target?: ICharacter | IEnemy, combatItem?: IItem, additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> | void;
+           applyCombatEffects: (
+               game: IGame,
+               type: CombatEventType,
+               combatDelay?: number, 
+               participant?: IActor, 
+               target?: IActor, 
+               combatItem?: IItem, 
+               additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> | void;
 
     /**
      * Use this function to run custom code to determine whether an item should be selectable for combat
