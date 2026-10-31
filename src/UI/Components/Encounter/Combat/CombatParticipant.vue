@@ -5,13 +5,13 @@
       {{ texts.format(hitPointText, [participant.currentHitpoints, participant.hitpoints]) }}
     </p>
     <img v-if="participant.picture" :alt="participant.name" :src="participant.picture" class="combat-participant" ref="participant-image">
-    <sprite v-if="participant.displayAttackAnimation" :spriteSettings="participant.displayAttackAnimation"
+    <sprite v-if="attackAnimationVisible" :spriteSettings="participant.displayAttackAnimation"
             alt="Under attack!" :style="attackAnimationStyle"></sprite>
   </div>
 </template>
 <script lang="ts" setup>
 import {Sprite as SpriteClass, useStateStore} from 'storyScript';
-import {computed, useTemplateRef} from "vue";
+import {computed, ref, useTemplateRef, watch} from "vue";
 
 const store = useStateStore();
 const {texts} = store.services;
@@ -25,6 +25,15 @@ const {participant} = defineProps<{
 
 const participantContainerRef = useTemplateRef('participant-container');
 const participantImageRef = useTemplateRef('participant-image');
+const attackAnimationVisible = ref(false);
+
+watch(() => participant.displayAttackAnimation, newValue => {
+  // Use a timeout here to prevent the animation from showing up on the right hand side and moving to its new
+  // position when the attack animation is set.
+  setTimeout(() => {
+    attackAnimationVisible.value = !!newValue;
+  })
+}, { immediate: true });
 
 const attackAnimationStyle = computed(() => {
   const animation = participant.displayAttackAnimation as SpriteClass;
