@@ -4,7 +4,7 @@
     "access": "public"
   },
   "description": "StoryScript is an engine to create games for the web. Games that run anywhere, online or offline, on any device, and work well with both mouse and touch control. You play your games while you build them! Your changes are shown immediately, allowing you to shape your world as you move through it.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Rutger Schurgers",
   "homepage": "https://www.storyscript.nl",
   "license": "MIT",
