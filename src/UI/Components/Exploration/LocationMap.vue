@@ -27,8 +27,8 @@ import {useTemplateRef} from "vue";
 const store = useStateStore();
 const {texts} = store.services;
 
-const mapImageRef = useTemplateRef<HTMLImageElement>('map-element');
-const mapDialogRef = useTemplateRef<HTMLDialogElement>('map-dialog');
+const mapImageRef = useTemplateRef('map-element');
+const mapDialogRef = useTemplateRef('map-dialog');
 
 const {
   map,

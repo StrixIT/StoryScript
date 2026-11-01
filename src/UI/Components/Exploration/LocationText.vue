@@ -24,7 +24,7 @@ const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
 
-const descriptionRef = useTemplateRef<HTMLDivElement>('description');
+const descriptionRef = useTemplateRef('description');
 
 const {show, descriptionToShow, click, mouseOver, mouseOut} = useTextFeatures(descriptionRef);
 

@@ -1,6 +1,6 @@
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {computed, onMounted, onUpdated, Ref, ref, useTemplateRef, watch} from "vue";
+import {computed, onMounted, onUpdated, Ref, ref, watch} from "vue";
 import {IMap} from 'storyScript';
 import {isTouchDevice} from 'src/constants';
 
@@ -31,7 +31,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
         map.value.showMarkersOnKeyPress.trim()
             ? map.value.showMarkersOnKeyPress : 'space'
         : null;
-    
+
     watch(() => location.value, () => {
         navigateMap(map.value, currentMap.value, false);
 

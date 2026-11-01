@@ -30,7 +30,7 @@ const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
 
-const imageRef = useTemplateRef<HTMLDivElement>('location-features');
+const imageRef = useTemplateRef('location-features');
 
 const {location, initFeatures, getFeatureClass, factor} = useVisualFeatures(imageRef);
 

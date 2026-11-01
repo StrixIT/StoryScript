@@ -7,7 +7,7 @@ export interface IActor {
     hitpoints: number;
 
     /**
-     * The current health of the actor.
+     * The current health of the actor, tracked by StoryScript at runtime.
      */
     currentHitpoints?: number;
 

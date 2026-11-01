@@ -26,7 +26,7 @@ import {useTemplateRef} from "vue";
 const store = useStateStore();
 const {texts} = store.services;
 
-const musicPlayerRef = useTemplateRef<HTMLAudioElement>('music-player');
+const musicPlayerRef = useTemplateRef('music-player');
 
 const {
   canPlay,

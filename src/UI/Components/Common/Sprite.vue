@@ -12,7 +12,7 @@ const props = defineProps<{
   spriteSettings: Sprite;
 }>();
 
-const sprite = useTemplateRef<HTMLImageElement>('sprite');
+const sprite = useTemplateRef('sprite');
 
 const {initSprite, animationFinished} = useSpriteAnimation(sprite, props.spriteSettings, props.factor);
 

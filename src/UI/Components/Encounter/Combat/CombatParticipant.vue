@@ -21,8 +21,8 @@ const {participant} = defineProps<{
   participant: ICombatParticipant;
 }>();
 
-const participantContainerRef = useTemplateRef<HTMLDivElement>('participant-container');
-const participantImageRef = useTemplateRef<HTMLImageElement>('participant-image');
+const participantContainerRef = useTemplateRef('participant-container');
+const participantImageRef = useTemplateRef('participant-image');
 
 const {
   healthClass,
