@@ -5,7 +5,7 @@ export class Character implements ICharacter {
     name: string = '';
     level?: number = 1;
     hitpoints: number = 10;
-    currentHitpoints: number;
+    currentHitpoints?: number;
 
     // Add character properties here.
     strength?: number = 1;

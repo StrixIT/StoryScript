@@ -2,12 +2,10 @@ import {useStateStore} from "ui/StateStore";
 import {Ref, ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 
-export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
+export function useSound(musicPlayer: Ref<HTMLAudioElement>) {
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {rules, soundService} = store.services;
-
-    const musicPlayer = musicPlayerRef;
 
     const canPlay = ref<boolean>(null);
     const fadeInterval = ref<NodeJS.Timeout>(null);
@@ -22,18 +20,24 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
         if (!audioContext) {
             audioContext = new window.AudioContext();
             canPlay.value = true;
-            
+
             if (musicPlayer.value) {
                 await musicPlayer.value.play();
             }
         }
-    }, { once: true });
-    
-    watch(musicPlayerRef, (newValue) => {
+    }, {once: true});
+
+    watch(canPlay, (newValue) => {
+        if (musicPlayer.value) {
+            musicPlayer.value.muted = !newValue;
+        }
+    });
+
+    watch(musicPlayer, (newValue) => {
         if (newValue && canPlay.value === null) {
             canPlay.value = Boolean(audioContext);
         }
-    }, { immediate: true });
+    }, {immediate: true});
 
     const getSoundQueue = (): [number, string][] => {
         Array.from(game.value.sounds.soundQueue).forEach(e => {
@@ -74,6 +78,21 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
             game.value.sounds.soundQueue.delete(soundKey);
         }
 
+        removeFromQueue(soundKey);
+    }
+
+    const soundError = (soundKey: number) => {
+        const sound = game.value.sounds.soundQueue.get(soundKey);
+
+        if (sound) {
+            sound.completeCallBack?.();
+            throw new Error(`Sound file ${sound.value} does not exist in the resources folder!`);
+        }
+
+        removeFromQueue(soundKey);
+    }
+
+    const removeFromQueue = (soundKey: number) => {
         const queueEntry = soundQueue.find(([k, _]) => soundKey === k);
 
         if (!queueEntry) {
@@ -106,6 +125,7 @@ export function useSound(musicPlayerRef: Ref<HTMLAudioElement>) {
         canPlay,
         getSoundQueue,
         getCurrentMusic,
-        soundCompleted
+        soundCompleted,
+        soundError
     }
 }

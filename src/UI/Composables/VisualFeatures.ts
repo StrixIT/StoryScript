@@ -2,6 +2,7 @@ import {computed, onUpdated, Ref, ref, watch} from "vue";
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from 'src/constants';
+import {IFeature} from "storyScript";
 
 const prepareLoadedImages = (locationImagesRef: HTMLImageElement[]) => {
     const loadedImages: { element: HTMLImageElement, loadPromise: Promise<void> }[] = [];
@@ -28,7 +29,7 @@ const prepareLoadedImages = (locationImagesRef: HTMLImageElement[]) => {
     return loadedImages;
 }
 
-export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
+export function useVisualFeatures(locationFeatures: Ref<HTMLDivElement>) {
     const store = useStateStore();
     const {
         game,
@@ -36,7 +37,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         combinationCursor
     } = storeToRefs(store);
 
-    const locationFeatures = imageRef;
+    const location = computed(() => game.value.currentLocation);
     const locationImageOriginalWidth = new Map<string, number>();
     const featureImageOriginalDimensions = new Map<string, [number, number]>();
     const areaOriginalCoordinates = new Map<string, string>();
@@ -56,7 +57,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     window.onresize = () => {
         const oldFactor = factor.value;
         calculateFactor();
-        
+
         if (factor.value !== oldFactor) {
             prepareFeatures();
         }
@@ -67,6 +68,8 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
     });
 
     watch(() => game.value.combinations.activeCombination, () => setCombinationSymbols());
+
+    const getFeatureClass = (feature: IFeature) => feature.interactive === false ? '' : 'feature-cursor';
 
     const initFeatures = () => {
         const mainImage = locationFeatures.value?.querySelector('img');
@@ -141,7 +144,7 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
 
     const positionFeatureImage = (featureId: string, x: number, y: number) => {
         const feature = game.value.currentLocation.features.get(featureId);
-        
+
         if (!feature?.picture && !feature?.animation) {
             return;
         }
@@ -167,12 +170,12 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
         }
 
         const areas = Array.from(locationFeatures.value?.querySelectorAll('area'));
-        const existingSymbols = Array.from(imageRef.value?.querySelectorAll('.combination-symbol'));
+        const existingSymbols = Array.from(locationFeatures.value?.querySelectorAll('.combination-symbol'));
 
         existingSymbols?.forEach(s => {
             const symbolImage = s as HTMLImageElement;
             symbolImage.onclick = null;
-            imageRef.value.removeChild(symbolImage);
+            locationFeatures.value.removeChild(symbolImage);
         });
 
         if (!combinationPicture.value) {
@@ -207,14 +210,14 @@ export function useVisualFeatures(imageRef: Ref<HTMLDivElement>) {
             image.style.left = `${imagePosX}px`;
             image.classList.add('combination-symbol');
             image.onclick = () => game.value.combinations.tryCombine(feature);
-            imageRef.value.appendChild(image);
+            locationFeatures.value.appendChild(image);
         });
     }
 
     return {
-        locationFeatures,
+        location,
         factor,
         initFeatures,
-        prepareFeatures
+        getFeatureClass
     }
 }

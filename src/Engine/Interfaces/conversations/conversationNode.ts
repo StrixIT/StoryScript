@@ -1,4 +1,4 @@
-import {IConversationReply}from 'storyScript';
+import {IConversationReply} from 'storyScript';
 
 /**
  * A node of a conversation.

@@ -24,4 +24,16 @@ export interface Sprite {
      * omitted, a default of 1 second is used.
      */
     speed?: number;
+
+    /**
+     * The number of times the animation should be played. When omitted, the animation will continue playing until
+     * stopped via code.
+     */
+    iterations?: number;
+
+    /**
+     * When specified, this function will be called when the animation has finished playing the number of specified
+     * iterations or is stopped via code.
+     */
+    finishedCallBack?: () => void;
 }

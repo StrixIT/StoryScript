@@ -42,18 +42,17 @@ export function Rules(): IRules {
         exploration: {},
 
         combat: {
-            fight: (game: IGame, combatSetup: ICombatSetup, retaliate?: boolean) => {
-                retaliate = retaliate ?? retaliate;
+            fight: async (game: IGame, combatRound: ICombatSetup): Promise<void> => {
 
-                // Implement character attack here.
+                // Implement character attack here. Apply media effects when you use them. E.g.
+                // await game.commands.playMediaEffect('attack', character-or-item-ref-here, enemy-ref-here);
 
-                if (retaliate) {
-                    game.currentLocation.enemies.filter((enemy: IEnemy) => {
-                        return enemy.currentHitpoints > 0;
-                    }).forEach(enemy => {
-                        // Implement monster attack here
-                    });
-                }
+                game.currentLocation.enemies.filter((enemy: IEnemy) => {
+                    return enemy.currentHitpoints > 0;
+                }).forEach(enemy => {
+                    // Implement monster attack here. Apply media effects when you use them. E.g.
+                    // await game.commands.playMediaEffect('attack', enemy-ref-here, character-ref-here);
+                });
             }
         },
     };

@@ -215,6 +215,10 @@ button {
     margin-bottom: 10px;
 }
 
+.combat-participant-container {
+    position: relative;
+}
+
 .currency-won {
     margin-bottom: 10px;
 }

@@ -1,26 +1,17 @@
-﻿import { IFeature } from './feature';
-import { IItem } from './item';
-import { IGame } from './game';
+﻿import {IFeature} from './feature';
+import {IItem} from './item';
+import {IGame} from './game';
+import {IActor} from "./actor";
 
 /**
  * Defines the base properties for an enemy in the game.
  */
-export interface IEnemy extends IFeature {
+export interface IEnemy extends IFeature, IActor {
     /**
      * The details about this enemy as displayed to the player. If you use an HTML-page to describe the enemy, the contents of that HTML-page
      * will be used to set this property at run-time.
      */
     description?: string;
-
-    /**
-     * The health of the enemy.
-     */
-    hitpoints: number;
-
-    /**
-     * The current health of the enemy, tracked by StoryScript at runtime.
-     */
-    currentHitpoints?: number;
 
     /**
      * The amount of credits the enemy has, in whatever form.

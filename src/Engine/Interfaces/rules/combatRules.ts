@@ -20,9 +20,8 @@ export interface ICombatRules {
      * when you want the engine to wait for your function to complete asynchronously.
      * @param game The active game
      * @param combatRound The setup for this combat round
-     * @param retaliate True if the enemies present can fight back, false or undefined otherwise
      */
-    fight?(game: IGame, combatRound: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void;
+    fight?(game: IGame, combatRound: ICombatSetup<ICombatTurn>): Promise<void> | void;
 
     /**
      * Use this function to run custom code to determine whether an item should be selectable for combat

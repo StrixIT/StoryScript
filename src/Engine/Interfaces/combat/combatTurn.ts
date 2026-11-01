@@ -1,6 +1,4 @@
-import { ICharacter } from './character';
-import { IEnemy } from './enemy';
-import { IItem } from './item';
+import {ICharacter, IEnemy, IItem} from 'storyScript';
 
 export interface ICombatTurn {
     /**

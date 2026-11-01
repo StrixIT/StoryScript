@@ -5,6 +5,8 @@ import {EquipmentType} from './enumerations/equipmentType';
 import {IEquipment} from './equipment';
 import {ICharacter} from './character';
 import {TargetType} from './enumerations/targetType';
+import {Sprite} from './sprite';
+import {IMediaEvent} from "src/Engine";
 
 /**
  * An item that can be found in the game and used by the character.
@@ -44,7 +46,7 @@ export interface IItem extends IFeature {
      * available during combat.
      */
     useInCombat?: boolean | ((item: IItem, equipment: IEquipment) => boolean);
-
+    
     /**
      * When this flag is set to false, the item is not selectable. This is used to allow items to be unselectable during combat,
      * for example when you want items to be available only during certain rounds.
@@ -66,6 +68,11 @@ export interface IItem extends IFeature {
      * have items that should not be dropped, such as an adventure map.
      */
     canDrop?: boolean | ((game: IGame, item: IItem) => boolean);
+
+    /**
+     * The media events for the item.
+     */
+    mediaEvents?: Record<string, IMediaEvent>;
 
     /**
      * When specified, this function will be executed when the item is equipped by the player.

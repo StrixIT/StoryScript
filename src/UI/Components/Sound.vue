@@ -15,28 +15,25 @@
   <audio v-for="sound of getSoundQueue()" v-if="canPlay" :src="`resources/${sound[1]}`"
          autoplay
          class="storyscript-player"
-         @ended="soundCompleted(sound[0])">
+         @ended="soundCompleted(sound[0])"
+         @error="soundError(sound[0])">
   </audio>
 </template>
 <script lang="ts" setup>
-import {useTemplateRef, watch} from "vue";
 import {useSound, useStateStore} from 'storyScript';
+import {useTemplateRef} from "vue";
 
 const store = useStateStore();
 const {texts} = store.services;
-const musicPlayer = useTemplateRef('music-player');
+
+const musicPlayerRef = useTemplateRef('music-player');
 
 const {
   canPlay,
   getSoundQueue,
   getCurrentMusic,
-  soundCompleted
-} = useSound(musicPlayer);
-
-watch(canPlay, (newValue) => {
-  if (musicPlayer.value) {
-    musicPlayer.value.muted = !newValue;
-  }
-});
+  soundCompleted,
+  soundError
+} = useSound(musicPlayerRef);
 
 </script>

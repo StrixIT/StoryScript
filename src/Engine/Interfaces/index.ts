@@ -2,9 +2,11 @@ import type {IInterfaceTexts} from './interfaceTexts'
 import type {IRules} from './rules/rules'
 import type {IGame} from './game'
 import type {IParty} from './party'
+import type {IActor} from './actor'
 import type {ICharacter} from './character'
-import type {ICombatTurn} from './combatTurn'
-import type {ICombatSetup} from './combatSetup'
+import type {ICombatTurn} from './combat/combatTurn'
+import type {ICombatSetup} from './combat/combatSetup'
+import type {ICombatParticipant} from './combat/combatParticipant'
 import type {IEquipment} from './equipment'
 import type {IAction} from './action'
 import type {IFeature} from './feature'
@@ -41,7 +43,7 @@ import type {IConversationNode} from './conversations/conversationNode';
 import type {IConversationReply} from './conversations/conversationReply';
 import type {IConversationLogEntry} from './conversations/conversationLogEntry';
 import type {ICustomCursor} from './customCursor';
-import type {ICombatWinnings} from './combatWinnings';
+import type {ICombatWinnings} from './combat/combatWinnings';
 import type {IAutoplayStep} from "./autoplayStep";
 import type {ISetupRules} from './rules/setupRules';
 import type {IGeneralRules} from './rules/generalRules';
@@ -60,6 +62,7 @@ import type {IGameEvents} from './gameEvents';
 import type {ISaveGame} from "./saveGame";
 import type {IStock} from "./stock";
 import type {IGameCombinations} from "./combinations/gameCombinations";
+import type {IMediaEvent} from "./mediaEvent";
 import {EquipmentType} from './enumerations/equipmentType';
 import {PlayState} from './enumerations/playState';
 import {GameState} from './enumerations/gameState';
@@ -78,6 +81,7 @@ export type {
     IRules,
     IGame,
     IParty,
+    IActor,
     ICharacter,
     ICombatTurn,
     ICombatSetup,
@@ -137,7 +141,9 @@ export type {
     IGameEvents,
     ISaveGame,
     ISoundPlayer,
-    IStock
+    IStock,
+    IMediaEvent,
+    ICombatParticipant
 }
 
 export {

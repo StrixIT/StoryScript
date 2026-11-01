@@ -21,22 +21,21 @@
   </dialog>
 </template>
 <script lang="ts" setup>
-import {useTemplateRef} from "vue";
 import {isTouchDevice, useLocationMap, useStateStore} from 'storyScript';
+import {useTemplateRef} from "vue";
 
 const store = useStateStore();
 const {texts} = store.services;
+
+const mapImageRef = useTemplateRef('map-element');
+const mapDialogRef = useTemplateRef('map-dialog');
+
 const {
   map,
+  markerKey,
   showMap,
   toggleFullScreen,
   toggleTouchMarkersVisible
-} = useLocationMap(useTemplateRef('map-element'), useTemplateRef('map-dialog'));
-
-const markerKey = map.value.showMarkersOnKeyPress ?
-    // When an empty value is specified use the space key. Use the key specified otherwise.
-    map.value.showMarkersOnKeyPress.trim()
-        ? map.value.showMarkersOnKeyPress : 'space'
-    : null;
+} = useLocationMap(mapImageRef, mapDialogRef);
 
 </script>

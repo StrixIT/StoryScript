@@ -1,5 +1,4 @@
-import {entityTypeRegex, IDefinitions, IGame} from 'storyScript';
-import {parseHtmlDocumentFromString} from "src/Engine/utilityFunctions";
+import {entityTypeRegex, IDefinitions, IGame, parseHtmlDocumentFromString} from 'storyScript';
 
 export function getDefinitions(assets: Record<string, unknown>){
     const definitions = <IDefinitions>{};

@@ -1,5 +1,6 @@
 import {
     GameState,
+    IActor,
     ICharacter,
     ICombatService,
     ICombatSetup,
@@ -10,7 +11,7 @@ import {
     IItem,
     IRules,
     PlayState,
-    TargetType,
+    TargetType
 } from 'storyScript';
 import {StateProperties} from "src/Engine/stateProperties";
 import {addUniqueId} from "src/Engine/arrayAndFunctionExtensions";
@@ -27,12 +28,12 @@ export class CombatService implements ICombatService {
         this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game, enemy));
     }
 
-    fight = (combat: ICombatSetup<ICombatTurn>, retaliate?: boolean): Promise<void> | void => {
+    fight = (combat: ICombatSetup<ICombatTurn>): Promise<void> | void => {
         if (!this._rules.combat?.fight) {
             return;
         }
 
-        const promise = this._rules.combat.fight(this._game, combat, retaliate);
+        const promise = this._rules.combat.fight(this._game, combat);
 
         return Promise.resolve(promise).then(() => {
             combat.forEach((s, i) => {
@@ -176,7 +177,7 @@ export class CombatService implements ICombatService {
             }
 
             i.selectable = false;
-            let targets;
+            let targets: (ICharacter | IEnemy)[];
 
             switch (i.targetType) {
                 case TargetType.Enemy: {

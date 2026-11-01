@@ -26,6 +26,12 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
     const currentMap = mapImageRef;
     const currentFullScreenMap = ref<HTMLImageElement>(null);
 
+    const markerKey = map.value.showMarkersOnKeyPress ?
+        // When an empty value is specified use the space key. Use the key specified otherwise.
+        map.value.showMarkersOnKeyPress.trim()
+            ? map.value.showMarkersOnKeyPress : 'space'
+        : null;
+
     watch(() => location.value, () => {
         navigateMap(map.value, currentMap.value, false);
 
@@ -46,7 +52,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
         if (!isTouchDevice) {
             return;
         }
-        
+
         touchMarkersVisible.value = !touchMarkersVisible.value;
 
         if (map.value.showMarkersOnKeyPress) {
@@ -103,7 +109,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
                 const closeToggle = mapDialog.value.getElementsByClassName('map-full-screen-toggle')[0] as HTMLSpanElement;
                 closeToggle.innerText = texts.closeFullScreenMap;
                 closeToggle.onclick = () => toggleFullScreen();
-                
+
                 const showMarkersToggle = (mapDialog.value.querySelector('.show-marker-instructions') as HTMLElement);
                 showMarkersToggle.onclick = () => toggleTouchMarkersVisible();
             }
@@ -307,7 +313,7 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
 
     return {
         map,
-        prepareMap,
+        markerKey,
         showMap,
         toggleFullScreen,
         toggleTouchMarkersVisible
