@@ -1,4 +1,4 @@
-import {Sprite} from "./sprite";
+import {IMediaEvent} from "./mediaEvent";
 
 export interface IActor {
     /**
@@ -10,34 +10,9 @@ export interface IActor {
      * The current health of the actor.
      */
     currentHitpoints?: number;
-    
-    /**
-     * The sound files that are used for the actor, if any.
-     */
-    sounds?: {
-        /**
-         * The sound file to play when the actor attacks in combat, if any.
-         */
-        attack?: string;
 
-        /**
-         * The sound file to play when the actor is defeated in combat, if any.
-         */
-        defeated?: string;
-    },
-    
     /**
-     * The animations that are used for the actor, if any.
+     * The media events for the actor.
      */
-    animations?: {
-        /**
-         * The animation to play when the actor attacks in combat, if any.
-         */
-        attack?: Sprite;
-
-        /**
-         * The animation to play when the actor is defeated in combat, if any.
-         */
-        defeated?: Sprite;
-    }
+    mediaEvents?: Record<string, IMediaEvent>
 } 

@@ -1,5 +1,4 @@
 import {
-    CombatEventType,
     GameState,
     IActor,
     ICharacter,
@@ -235,31 +234,42 @@ export class CombatService implements ICombatService {
 
     private readonly applyCombatEffects = (
         game: IGame,
-        type: CombatEventType,
-        delay?: number,
-        participant?: IActor,
-        target?: IActor,
-        combatItem?: IItem,
+        type: string,
+        actorEffectSource?: IActor,
+        actorEffectTarget?: IActor,
+        itemEffectSource?: IItem,
         additionalEffects?: Promise<void>[]): Promise<void[]> => {
-
-        const eventType = type.toLowerCase();
+        
+        const loweredType = type.toLowerCase();
         const allPromises = additionalEffects ?? [];
+        const event = itemEffectSource?.mediaEvents?.[type] 
+            ?? itemEffectSource?.mediaEvents?.[loweredType]
+            ?? actorEffectSource?.mediaEvents?.[type]
+            ?? actorEffectSource?.mediaEvents?.[loweredType];
+        
+        if (!event) {
+            return;
+        }
 
-        if (delay) {
+        actorEffectTarget ??= actorEffectSource;
+
+        if (event.image) {
+            (actorEffectTarget as any).picture = event.image;
+        }
+
+        if (event.delay) {
             const timePromise = new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
-                }, delay);
+                }, event.delay);
             });
 
             allPromises.push(timePromise);
         }
 
-        const eventSound = combatItem?.sounds?.[eventType] || participant?.sounds?.[eventType];
-
-        if (eventSound) {
+        if (event.sound) {
             const soundPromise = new Promise<void>((resolve) => {
-                game.sounds.playSound(eventSound, () => {
+                game.sounds.playSound(event.sound, () => {
                     resolve();
                 });
             });
@@ -267,18 +277,17 @@ export class CombatService implements ICombatService {
             allPromises.push(soundPromise);
         }
 
-        const eventAnimation = combatItem?.animations?.[eventType] || participant.animations?.[eventType];
-
-        if (eventAnimation && target) {
-            (target as any).displayAnimation = eventAnimation;
+        if (event.animation) {
+            const target = actorEffectTarget as any;
+            target.displayAnimation = event.animation;
             let resolveFunc: (value: void | PromiseLike<void>) => void;
 
             const animationPromise = new Promise<void>((resolve) => {
                 resolveFunc = resolve;
             });
 
-            eventAnimation.finishedCallBack = () => {
-                (target as any).displayAnimation = null;
+            event.animation.finishedCallBack = () => {
+                target.displayAnimation = null;
                 resolveFunc();
             }
 

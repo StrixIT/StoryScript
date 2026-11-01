@@ -15,6 +15,7 @@
   <audio v-for="sound of getSoundQueue()" v-if="canPlay" :src="`resources/${sound[1]}`"
          autoplay
          class="storyscript-player"
+         @error="soundError(sound[0])"
          @ended="soundCompleted(sound[0])">
   </audio>
 </template>
@@ -28,7 +29,8 @@ const {
   canPlay,
   getSoundQueue,
   getCurrentMusic,
-  soundCompleted
+  soundCompleted,
+  soundError
 } = useSound();
 
 </script>

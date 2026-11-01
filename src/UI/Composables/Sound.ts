@@ -81,6 +81,21 @@ export function useSound() {
             game.value.sounds.soundQueue.delete(soundKey);
         }
 
+        removeFromQueue(soundKey);
+    }
+
+    const soundError = (soundKey: number) => {
+        const sound = game.value.sounds.soundQueue.get(soundKey);
+
+        if (sound) {
+            sound.completeCallBack?.();
+            throw new Error(`Sound file ${sound.value} does not exist in the resources folder!`);
+        }
+
+        removeFromQueue(soundKey);
+    }
+
+    const removeFromQueue = (soundKey: number) => {
         const queueEntry = soundQueue.find(([k, _]) => soundKey === k);
 
         if (!queueEntry) {
@@ -113,6 +128,7 @@ export function useSound() {
         canPlay,
         getSoundQueue,
         getCurrentMusic,
-        soundCompleted
+        soundCompleted,
+        soundError
     }
 }

@@ -61,13 +61,13 @@ import type {IGameEvents} from './gameEvents';
 import type {ISaveGame} from "./saveGame";
 import type {IStock} from "./stock";
 import type {IGameCombinations} from "./combinations/gameCombinations";
+import type {IMediaEvent} from "./mediaEvent";
 import {EquipmentType} from './enumerations/equipmentType';
 import {PlayState} from './enumerations/playState';
 import {GameState} from './enumerations/gameState';
 import {ActionType} from './enumerations/actionType';
 import {ActionStatus} from './enumerations/actionStatus';
 import {TargetType} from './enumerations/targetType';
-import {CombatEventType} from './enumerations/combatEventType'; 
 import {ScoreEntry} from './scoreEntry';
 
 import {IMap} from './maps/map';
@@ -140,7 +140,8 @@ export type {
     IGameEvents,
     ISaveGame,
     ISoundPlayer,
-    IStock
+    IStock,
+    IMediaEvent
 }
 
 export {
@@ -153,8 +154,7 @@ export {
     TargetType,
     ScoreEntry,
     StateList,
-    StateListEntry,
-    CombatEventType
+    StateListEntry
 }
 
 export * from '../Actions/index';

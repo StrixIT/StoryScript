@@ -1,4 +1,4 @@
-import {IActor, ICharacter, ICombatSetup, ICombatTurn, ICompiledLocation, IEnemy, IGame, IItem, CombatEventType} from 'storyScript';
+import {IActor, ICharacter, ICombatSetup, ICombatTurn, ICompiledLocation, IEnemy, IGame, IItem} from 'storyScript';
 
 export interface ICombatRules {
     /**
@@ -26,11 +26,10 @@ export interface ICombatRules {
            combatRound: ICombatSetup<ICombatTurn>,
            applyCombatEffects: (
                game: IGame,
-               type: CombatEventType,
-               combatDelay?: number, 
-               participant?: IActor, 
-               target?: IActor, 
-               combatItem?: IItem, 
+               type: string,
+               actorEffectSource?: IActor,
+               actorEffectTarget?: IActor,
+               itemEffectSource?: IItem,
                additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> | void;
 
     /**

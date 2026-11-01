@@ -1,4 +1,4 @@
-﻿import {CombatEventType, IActor, ICharacter, ICreateCharacter, IItem, IRules} from 'storyScript';
+﻿import {IActor, ICharacter, ICreateCharacter, IItem, IRules} from 'storyScript';
 import {Character, ICombatSetup, IEnemy, IGame} from './types';
 
 export function Rules(): IRules {
@@ -42,19 +42,19 @@ export function Rules(): IRules {
         exploration: {},
 
         combat: {
-            fight: async (game: IGame, 
-                          combatRound: ICombatSetup, 
-                          applyCombatEffects: (game: IGame, 
-                                               type: CombatEventType,
-                                               delay?: number, 
-                                               participant?: IActor, 
-                                               target?: IActor,
-                                               combatItem?: IItem,
-                                               additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> => {
+            fight: async (game: IGame,
+                          combatRound: ICombatSetup,
+                          applyCombatEffects: (
+                              game: IGame,
+                              type: string,
+                              actorEffectSource?: IActor,
+                              actorEffectTarget?: IActor,
+                              itemEffectSource?: IItem,
+                              additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> => {
 
                 // Implement character attack here. Apply combat effects when you use them. E.g.
                 // await applyCombatEffects(game, CombatEventType.Attack);
-                
+
                 game.currentLocation.enemies.filter((enemy: IEnemy) => {
                     return enemy.currentHitpoints > 0;
                 }).forEach(enemy => {
