@@ -4,8 +4,9 @@ import type {IGame} from './game'
 import type {IParty} from './party'
 import type {IActor} from './actor'
 import type {ICharacter} from './character'
-import type {ICombatTurn} from './combatTurn'
-import type {ICombatSetup} from './combatSetup'
+import type {ICombatTurn} from './combat/combatTurn'
+import type {ICombatSetup} from './combat/combatSetup'
+import type {ICombatParticipant} from './combat/combatParticipant'
 import type {IEquipment} from './equipment'
 import type {IAction} from './action'
 import type {IFeature} from './feature'
@@ -42,7 +43,7 @@ import type {IConversationNode} from './conversations/conversationNode';
 import type {IConversationReply} from './conversations/conversationReply';
 import type {IConversationLogEntry} from './conversations/conversationLogEntry';
 import type {ICustomCursor} from './customCursor';
-import type {ICombatWinnings} from './combatWinnings';
+import type {ICombatWinnings} from './combat/combatWinnings';
 import type {IAutoplayStep} from "./autoplayStep";
 import type {ISetupRules} from './rules/setupRules';
 import type {IGeneralRules} from './rules/generalRules';
@@ -141,7 +142,8 @@ export type {
     ISaveGame,
     ISoundPlayer,
     IStock,
-    IMediaEvent
+    IMediaEvent,
+    ICombatParticipant
 }
 
 export {

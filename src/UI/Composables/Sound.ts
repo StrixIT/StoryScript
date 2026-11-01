@@ -1,14 +1,11 @@
 import {useStateStore} from "ui/StateStore";
-import {ref, useTemplateRef, watch} from "vue";
+import {Ref, ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 
-export function useSound() {
-    const musicPlayerRef = useTemplateRef<HTMLAudioElement>('music-player')
+export function useSound(musicPlayer: Ref<HTMLAudioElement>) {
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {rules, soundService} = store.services;
-
-    const musicPlayer = musicPlayerRef;
 
     const canPlay = ref<boolean>(null);
     const fadeInterval = ref<NodeJS.Timeout>(null);
@@ -36,7 +33,7 @@ export function useSound() {
         }
     });
 
-    watch(musicPlayerRef, (newValue) => {
+    watch(musicPlayer, (newValue) => {
         if (newValue && canPlay.value === null) {
             canPlay.value = Boolean(audioContext);
         }

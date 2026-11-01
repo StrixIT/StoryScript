@@ -1,12 +1,10 @@
 import {useStateStore} from "ui/StateStore";
 import {storeToRefs} from "pinia";
-import {computed, onMounted, onUpdated, ref, useTemplateRef, watch} from "vue";
+import {computed, onMounted, onUpdated, Ref, ref, useTemplateRef, watch} from "vue";
 import {IMap} from 'storyScript';
 import {isTouchDevice} from 'src/constants';
 
-export function useLocationMap() {
-    const mapImageRef = useTemplateRef<HTMLImageElement>('map-element');
-    const mapDialogRef = useTemplateRef<HTMLDialogElement>('map-dialog')
+export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef: Ref<HTMLDialogElement>) {
     const visible: string = 'visible';
     const hidden: string = 'hidden';
     const reachable: string = 'reachable';

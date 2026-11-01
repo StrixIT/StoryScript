@@ -1,10 +1,7 @@
-import {computed, ref, useTemplateRef, watch} from "vue";
-import {Sprite as SpriteClass, useStateStore} from 'storyScript';
+import {computed, Ref, ref, watch} from "vue";
+import {ICombatParticipant, Sprite as SpriteClass, useStateStore} from 'storyScript';
 
-export function useDisplayAnimation(participant: any) {
-    const participantContainerRef = useTemplateRef<HTMLDivElement>('participant-container');
-    const participantImageRef = useTemplateRef<HTMLImageElement>('participant-image');
-
+export function useDisplayAnimation(participant: ICombatParticipant, participantContainerRef: Ref<HTMLDivElement>, participantImageRef: Ref<HTMLImageElement>) {
     const store = useStateStore();
     const {texts} = store.services;
 

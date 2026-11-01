@@ -24,10 +24,14 @@
 <script lang="ts" setup>
 import {storeToRefs} from "pinia";
 import {useStateStore, useVisualFeatures} from 'storyScript';
+import {useTemplateRef} from "vue";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
-const {location, initFeatures, getFeatureClass, factor} = useVisualFeatures();
+
+const imageRef = useTemplateRef<HTMLDivElement>('location-features');
+
+const {location, initFeatures, getFeatureClass, factor} = useVisualFeatures(imageRef);
 
 </script>

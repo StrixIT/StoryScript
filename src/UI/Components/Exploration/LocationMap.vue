@@ -22,15 +22,20 @@
 </template>
 <script lang="ts" setup>
 import {isTouchDevice, useLocationMap, useStateStore} from 'storyScript';
+import {useTemplateRef} from "vue";
 
 const store = useStateStore();
 const {texts} = store.services;
+
+const mapImageRef = useTemplateRef<HTMLImageElement>('map-element');
+const mapDialogRef = useTemplateRef<HTMLDialogElement>('map-dialog');
+
 const {
   map,
   markerKey,
   showMap,
   toggleFullScreen,
   toggleTouchMarkersVisible
-} = useLocationMap();
+} = useLocationMap(mapImageRef, mapDialogRef);
 
 </script>

@@ -1,8 +1,7 @@
-import {onUnmounted, ref, useTemplateRef, watch} from "vue";
+import {onUnmounted, Ref, ref, watch} from "vue";
 import {Sprite} from 'storyScript';
 
-export function useSpriteAnimation(settings: Sprite, factor?: number) {
-    const sprite = useTemplateRef<HTMLImageElement>('sprite');
+export function useSpriteAnimation(sprite: Ref<HTMLImageElement>, settings: Sprite, factor?: number) {
     const animationFinished = ref(false);
     factor ??= 1;
 

@@ -1,18 +1,16 @@
-import {checkAutoplay, addHtmlSpaces, IFeature} from 'storyScript';
+import {addHtmlSpaces, checkAutoplay, IFeature} from 'storyScript';
 import {useStateStore} from "ui/StateStore";
-import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
+import {computed, onMounted, Ref, ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 import {isTouchDevice} from 'src/constants';
 
-export function useTextFeatures() {
-    const descriptionRef = useTemplateRef<HTMLDivElement>('description')
+export function useTextFeatures(description: Ref<HTMLDivElement>) {
     const activeTriggerClass = 'trigger-active';
 
     const store = useStateStore();
     const {game} = storeToRefs(store);
     const {combinationService} = store.services;
 
-    const description = descriptionRef;
     const descriptionToShow = ref<string>(null);
 
     const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);

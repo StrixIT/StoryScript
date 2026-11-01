@@ -18,10 +18,14 @@
 <script lang="ts" setup>
 import {useStateStore, useTextFeatures} from 'storyScript';
 import {storeToRefs} from "pinia";
+import {useTemplateRef} from "vue";
 
 const store = useStateStore();
 const {game} = storeToRefs(store);
 const {texts} = store.services;
-const {show, descriptionToShow, click, mouseOver, mouseOut} = useTextFeatures();
+
+const descriptionRef = useTemplateRef<HTMLDivElement>('description');
+
+const {show, descriptionToShow, click, mouseOver, mouseOut} = useTextFeatures(descriptionRef);
 
 </script>

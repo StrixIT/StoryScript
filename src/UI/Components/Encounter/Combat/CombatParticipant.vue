@@ -2,7 +2,7 @@
   <div ref="participant-container" class="combat-participant-container">
     <h4>{{ participant.name }}</h4>
     <p :class="healthClass">
-      {{ texts.format(hitPointText, [participant.currentHitpoints, participant.hitpoints]) }}
+      {{ texts.format(hitPointText, [participant.currentHitpoints?.toString(), participant.hitpoints.toString()]) }}
     </p>
     <img v-if="participant.picture" ref="participant-image" :alt="participant.name" :src="participant.picture"
          class="combat-participant">
@@ -11,15 +11,24 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {useDisplayAnimation, useStateStore} from 'storyScript';
+import {ICombatParticipant, useDisplayAnimation, useStateStore} from 'storyScript';
+import {useTemplateRef} from "vue";
 
 const store = useStateStore();
 const {texts} = store.services;
 
 const {participant} = defineProps<{
-  participant: any
+  participant: ICombatParticipant;
 }>();
 
-const {healthClass, hitPointText, animationVisible, animationStyle} = useDisplayAnimation(participant);
+const participantContainerRef = useTemplateRef<HTMLDivElement>('participant-container');
+const participantImageRef = useTemplateRef<HTMLImageElement>('participant-image');
+
+const {
+  healthClass,
+  hitPointText,
+  animationVisible,
+  animationStyle
+} = useDisplayAnimation(participant, participantContainerRef, participantImageRef);
 
 </script>

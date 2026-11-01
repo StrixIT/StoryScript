@@ -5,12 +5,15 @@
 </template>
 <script lang="ts" setup>
 import {Sprite, useSpriteAnimation} from 'storyScript';
+import {useTemplateRef} from "vue";
 
 const props = defineProps<{
   factor?: number;
   spriteSettings: Sprite;
 }>();
 
-const {initSprite, animationFinished} = useSpriteAnimation(props.spriteSettings, props.factor);
+const sprite = useTemplateRef<HTMLImageElement>('sprite');
+
+const {initSprite, animationFinished} = useSpriteAnimation(sprite, props.spriteSettings, props.factor);
 
 </script>
