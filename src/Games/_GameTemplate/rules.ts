@@ -42,24 +42,16 @@ export function Rules(): IRules {
         exploration: {},
 
         combat: {
-            fight: async (game: IGame,
-                          combatRound: ICombatSetup,
-                          applyCombatEffects: (
-                              game: IGame,
-                              type: string,
-                              actorEffectSource?: IActor,
-                              actorEffectTarget?: IActor,
-                              itemEffectSource?: IItem,
-                              additionalEffects?: Promise<void>[]) => Promise<void[]>): Promise<void> => {
+            fight: async (game: IGame, combatRound: ICombatSetup): Promise<void> => {
 
-                // Implement character attack here. Apply combat effects when you use them. E.g.
-                // await applyCombatEffects(game, CombatEventType.Attack);
+                // Implement character attack here. Apply media effects when you use them. E.g.
+                //await game.commands.playMediaEffect('attack', character-or-item-ref-here, enemy-ref-here);
 
                 game.currentLocation.enemies.filter((enemy: IEnemy) => {
                     return enemy.currentHitpoints > 0;
                 }).forEach(enemy => {
-                    // Implement monster attack here. Apply combat effects when you use them. E.g.
-                    // await applyCombatEffects(game, CombatEventType.Attack);
+                    // Implement monster attack here. Apply media effects when you use them. E.g.
+                    //await game.commands.playMediaEffect('attack', enemy-ref-here, character-ref-here);
                 });
             }
         },

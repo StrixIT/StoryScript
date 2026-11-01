@@ -33,7 +33,7 @@ export class CombatService implements ICombatService {
             return;
         }
 
-        const promise = this._rules.combat.fight(this._game, combat, this.applyCombatEffects);
+        const promise = this._rules.combat.fight(this._game, combat);
 
         return Promise.resolve(promise).then(() => {
             combat.forEach((s, i) => {
@@ -230,71 +230,6 @@ export class CombatService implements ICombatService {
         }
 
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
-    }
-
-    private readonly applyCombatEffects = (
-        game: IGame,
-        type: string,
-        actorEffectSource?: IActor,
-        actorEffectTarget?: IActor,
-        itemEffectSource?: IItem,
-        additionalEffects?: Promise<void>[]): Promise<void[]> => {
-        
-        const loweredType = type.toLowerCase();
-        const allPromises = additionalEffects ?? [];
-        const event = itemEffectSource?.mediaEvents?.[type] 
-            ?? itemEffectSource?.mediaEvents?.[loweredType]
-            ?? actorEffectSource?.mediaEvents?.[type]
-            ?? actorEffectSource?.mediaEvents?.[loweredType];
-        
-        if (!event) {
-            return;
-        }
-
-        actorEffectTarget ??= actorEffectSource;
-
-        if (event.image) {
-            (actorEffectTarget as any).picture = event.image;
-        }
-
-        if (event.delay) {
-            const timePromise = new Promise<void>((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, event.delay);
-            });
-
-            allPromises.push(timePromise);
-        }
-
-        if (event.sound) {
-            const soundPromise = new Promise<void>((resolve) => {
-                game.sounds.playSound(event.sound, () => {
-                    resolve();
-                });
-            });
-
-            allPromises.push(soundPromise);
-        }
-
-        if (event.animation) {
-            const target = actorEffectTarget as any;
-            target.displayAnimation = event.animation;
-            let resolveFunc: (value: void | PromiseLike<void>) => void;
-
-            const animationPromise = new Promise<void>((resolve) => {
-                resolveFunc = resolve;
-            });
-
-            event.animation.finishedCallBack = () => {
-                target.displayAnimation = null;
-                resolveFunc();
-            }
-
-            allPromises.push(animationPromise);
-        }
-
-        return Promise.all(allPromises);
     }
 
     private readonly enemyDefeated = (combat: ICombatSetup<ICombatTurn>, character: ICharacter, enemy: IEnemy): void => {

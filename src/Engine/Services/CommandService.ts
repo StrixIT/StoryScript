@@ -1,5 +1,7 @@
 import {
+    getItemFromParty,
     IAction,
+    IActor,
     IBarrier,
     IBarrierAction,
     ICombinationAction,
@@ -14,8 +16,7 @@ import {
     ILocation,
     ILocationService,
     IPerson,
-    ITradeService,
-    getItemFromParty
+    ITradeService
 } from 'storyScript';
 
 export class CommandService implements ICommandService {
@@ -171,6 +172,66 @@ export class CommandService implements ICommandService {
         }
 
         this._tradeService.sell(selectedItem, this._game.trade);
+    }
+
+    playMediaEffect = (
+        type: string,
+        effectSource: IActor | IItem,
+        effectTarget?: IActor,
+        additionalEffects?: Promise<void>[]): Promise<void[]> => {
+
+        const loweredType = type.toLowerCase();
+        const allPromises = additionalEffects ?? [];
+        const event = effectSource?.mediaEvents?.[type] ?? effectSource?.mediaEvents?.[loweredType];
+
+        if (!event) {
+            return;
+        }
+
+        effectTarget ??= (effectSource as IActor).hitpoints ? effectSource as IActor : null;
+
+        if (event.image) {
+            (effectTarget as any).picture = event.image;
+        }
+
+        if (event.delay) {
+            const timePromise = new Promise<void>((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, event.delay);
+            });
+
+            allPromises.push(timePromise);
+        }
+
+        if (event.sound) {
+            const soundPromise = new Promise<void>((resolve) => {
+                this._game.sounds.playSound(event.sound, () => {
+                    resolve();
+                });
+            });
+
+            allPromises.push(soundPromise);
+        }
+
+        if (event.animation) {
+            const target = effectTarget as any;
+            target.displayAnimation = event.animation;
+            let resolveFunc: (value: void | PromiseLike<void>) => void;
+
+            const animationPromise = new Promise<void>((resolve) => {
+                resolveFunc = resolve;
+            });
+
+            event.animation.finishedCallBack = () => {
+                target.displayAnimation = null;
+                resolveFunc();
+            }
+
+            allPromises.push(animationPromise);
+        }
+
+        return Promise.all(allPromises);
     }
 
     private getFeature(feature: (() => IFeature) | string) {

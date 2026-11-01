@@ -1,4 +1,14 @@
-import {IAction, IBarrier, IBarrierAction, IDestination, IFeature, IItem, ILocation, IPerson} from 'storyScript';
+import {
+    IAction,
+    IActor,
+    IBarrier,
+    IBarrierAction,
+    IDestination,
+    IFeature,
+    IItem,
+    ILocation,
+    IPerson
+} from 'storyScript';
 
 export interface ICommandService {
     /**
@@ -72,4 +82,17 @@ export interface ICommandService {
      * @param item The item to sell
      */
     sell: (item: (() => IItem)) => void;
+
+    /**
+     * Play a media effect
+     * @param name The name of the effect to play.
+     * @param effectSource The source of the effect.
+     * @param effectTarget The target for the effect, if any.
+     * @param additionalEffects Additional custom effects to include in this run.
+     */
+    playMediaEffect: (
+        name: string,
+        effectSource: IActor | IItem,
+        effectTarget?: IActor,
+        additionalEffects?: Promise<void>[]) => Promise<void[]> | void;
 }
