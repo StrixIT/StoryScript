@@ -43,6 +43,11 @@ export interface ICharacter extends IActor {
     level?: number;
 
     /**
+     * The current health of the character, tracked by StoryScript at runtime.
+     */
+    currentHitpoints: number;
+    
+    /**
      * True when this is the active party character, false otherwise. This is a runtime property managed by StoryScript.
      */
     isActiveCharacter?: boolean;
