@@ -15,14 +15,14 @@ function run(command, silent = true) {
 }
 
 console.log('🔨 Building...');
-run('npm run publish:package');
+run('npm run build:package');
 
 console.log('📦 Packing...');
 run('npm pack');
 
 // Find the most recent tarball
 const files = fs.readdirSync('.')
-    .filter(f => f.match(/^storyscript-\d+\.\d+\.\d+\.tgz$/))
+    .filter(f => f.match(/^strixit-storyscript-\d+\.\d+\.\d+\.tgz$/))
     .sort((a, b) => fs.statSync(b).mtime - fs.statSync(a).mtime);
 
 if (files.length === 0) {

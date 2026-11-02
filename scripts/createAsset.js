@@ -2,14 +2,16 @@ import {existsSync, mkdirSync, writeFileSync} from 'fs';
 import pkg from 'jsonfile';
 import {rootFolder} from "./helpers.js";
 import path from "path";
+import {pathToFileURL} from 'url';
 
 const {readFileSync} = pkg;
 
 const args = process.argv;
-
 const entityNameRegex = /^[a-zA-Z][A-Za-z0-9_]+$/;
-const nameModule = await import(path.resolve(rootFolder, 'currentGameName.js'));
-const gameDir = `${rootFolder}/src/Games/${nameModule.currentGameName}`;
+const fileUrl = pathToFileURL(path.resolve(rootFolder, 'currentGameName.js')).href;
+
+const nameModule = await import(fileUrl);
+const gameDir = path.resolve(rootFolder, 'src', 'Games', nameModule.currentGameName);
 
 const assetType = args[2];
 
@@ -68,8 +70,8 @@ const snippet = snippets[snippetKey];
 
 // Keys go into the items folder.
 const dirName = snippetKey === 'Keys' ? 'Items' : snippetKey;
-const assetDir = `${gameDir}/${dirName.toLowerCase()}`;
-const assetBaseFileName = `${assetDir}/${assetName}`;
+const assetDir = path.join(gameDir, dirName.toLowerCase());
+const assetBaseFileName = path.join(assetDir, assetName);
 
 if (!existsSync(assetDir)) {
     mkdirSync(assetDir);

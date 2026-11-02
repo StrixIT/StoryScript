@@ -10,11 +10,11 @@ import {rootFolder} from "./helpers.js";
 const {readFileSync} = jsonfile;
 
 const nameModule = await import(path.resolve(rootFolder, 'currentGameName.js'));
-const gamePath = `${rootFolder}/src/Games/${nameModule.currentGameName}`;
+const gamePath = path.resolve(rootFolder, 'src', 'Games', nameModule.currentGameName);
 
 const resourcePath = resolve(rootFolder, `./dist/resources`);
 const tempResourcePath = path.join(resourcePath, '_tmp');
-const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
+const gameInfoPath = path.resolve(gamePath, 'webroot', 'gameinfo.json');
 
 export async function postBuild() {
     const originalWarn = console.warn;
@@ -34,14 +34,17 @@ export async function postBuild() {
 
     // 1. Include the game sources if specified to do so.
     if (gameInfo?.sourcesIncluded) {
-        fs.cpSync(gamePath, 'dist/sources', {recursive: true});
+        const srcPath = path.join('dist', 'sources');
+        const resourcesPath = path.join('dist', 'sources', 'resources');
 
-        if (fs.existsSync('dist/sources/resources')) {
-            fs.rmSync('dist/sources/resources', {recursive: true});
+        fs.cpSync(gamePath, srcPath, {recursive: true});
+
+        if (fs.existsSync(resourcesPath)) {
+            fs.rmSync(resourcesPath, {recursive: true});
         }
 
-        await zipDirectory('dist/sources', 'dist/sources.zip');
-        fs.rmSync('dist/sources', {recursive: true});
+        await zipDirectory(srcPath, path.join('dist', 'sources.zip'));
+        fs.rmSync(srcPath, {recursive: true});
     }
 
     // 2. Optimize jpg and png images using sharp.

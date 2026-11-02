@@ -18,8 +18,8 @@ if (!gameName) {
 // Set the game name to the new game.
 await writeFile(path.resolve(rootFolder, 'currentGameName.js'), `export const currentGameName = '${gameName}';`);
 
-const gameRoot = `${__dirname}/src/Games/_GameTemplate/`;
-const gameDestination = `${rootFolder}/src/Games/${gameName}`;
+const gameRoot = path.resolve(__dirname, 'src', 'Games', '_GameTemplate');
+const gameDestination = path.resolve(rootFolder, 'src', 'Games', gameName);
 
 // Copy the game template.
 await copy(gameRoot, gameDestination);
@@ -28,8 +28,8 @@ await copy(gameRoot, gameDestination);
 setJsonFileProperty(path.join(gameDestination, 'webroot', 'gameinfo.json'), 'name', gameName);
 
 // Add the components and the resources folders to make sure they are present.
-const componentsPath = `${gameDestination}/ui/components`;
-const resourcesPath = `${gameDestination}/resources`;
+const componentsPath = path.join(gameDestination, 'ui', 'components');
+const resourcesPath = path.join(gameDestination, 'resources');
 
 if (!fs.existsSync(componentsPath)) {
     fs.mkdirSync(componentsPath);

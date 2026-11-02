@@ -213,11 +213,14 @@ async function getGameName() {
 }
 
 async function executeTask(command, args, waitForCompletion) {
+    const options = {
+        stdio: 'inherit',
+        shell: true
+    };
+
     if (waitForCompletion === undefined || waitForCompletion) {
         return new Promise((resolve, reject) => {
-            const child = spawn(command, args, {
-                stdio: 'inherit'
-            });
+            const child = spawn(command, args, options);
 
             child.on('close', (code) => {
                 if (code === 0) {
@@ -233,9 +236,7 @@ async function executeTask(command, args, waitForCompletion) {
         });
     }
 
-    spawn(command, args, {
-        stdio: 'inherit'
-    });
+    spawn(command, args, options);
 }
 
 function copyFile(file) {
