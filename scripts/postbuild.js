@@ -6,13 +6,15 @@ import sharp from 'sharp';
 import {execFile} from 'child_process'
 import which from "which";
 import {rootFolder} from "./helpers.js";
+import {pathToFileURL} from "url";
 
 const {readFileSync} = jsonfile;
 
-const nameModule = await import(path.resolve(rootFolder, 'currentGameName.js'));
+const fileUrl = pathToFileURL(path.resolve(rootFolder, 'currentGameName.js')).href;
+const nameModule = await import(fileUrl);
 const gamePath = path.resolve(rootFolder, 'src', 'Games', nameModule.currentGameName);
 
-const resourcePath = resolve(rootFolder, `./dist/resources`);
+const resourcePath = path.resolve(rootFolder, 'dist', 'resources');
 const tempResourcePath = path.join(resourcePath, '_tmp');
 const gameInfoPath = path.resolve(gamePath, 'webroot', 'gameinfo.json');
 

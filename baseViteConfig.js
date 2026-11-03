@@ -6,18 +6,16 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import jsonfile from "jsonfile";
 import {VitePWA} from 'vite-plugin-pwa'
-import {fileURLToPath} from "url";
+import {fileURLToPath, pathToFileURL} from "url";
 
 const {readFileSync} = jsonfile;
 
 const __filename = fileURLToPath(import.meta.url);
 let __dirname = path.dirname(__filename);
-const rootFolder = __dirname.includes('/node_modules/') ? `${__dirname.split('/node_modules/')[0]}` : __dirname;
-
-const srcPath = `${rootFolder}/src`;
+const rootFolder = __dirname.includes('node_modules') ? __dirname.split('node_modules')[0] : __dirname;
 
 export const getBaseViteConfig = (gamePath) => {
-    const gameInfoPath = `${gamePath}/webroot/gameinfo.json`;
+    const gameInfoPath = path.resolve(gamePath, 'webroot', 'gameinfo.json');
 
     let gameInfo;
 
@@ -33,7 +31,7 @@ export const getBaseViteConfig = (gamePath) => {
         },
         resolve: {
             alias: {
-                src: srcPath,
+                src: path.resolve(rootFolder, 'src'),
                 game: gamePath,
                 $resources: path.resolve(gamePath, 'resources')
             }
@@ -71,7 +69,9 @@ export const getBaseViteConfig = (gamePath) => {
                 name: 'run-postbuild',
                 apply: 'build',
                 async writeBundle() {
-                    const {postBuild} = await import('./scripts/postbuild.js');
+                    const postBuildPath = path.resolve(__dirname, 'scripts', 'postbuild.js');
+                    const fileUrl = pathToFileURL(postBuildPath).href;
+                    const {postBuild} = await import(fileUrl);
                     await postBuild();
                 }
             },

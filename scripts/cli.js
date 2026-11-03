@@ -2,7 +2,7 @@
 
 import path from 'path';
 import fs from 'fs-extra';
-import {fileURLToPath} from 'url';
+import {fileURLToPath, pathToFileURL} from 'url';
 import {spawn} from 'child_process';
 import {setJsonFileProperty} from "./helpers.js";
 import {createInterface} from 'readline';
@@ -40,20 +40,20 @@ const getGameNameInput = () => {
 
     return new Promise((resolve) => {
         const prompt = () => {
-        rl.question('Enter a valid game name. Start with a letter and use letters, numbers and underscores up to 50 characters: ', (answer) => {
-            const gameNameRegex = /^[a-zA-Z][a-zA-Z0-9_]{0,49}$/;
+            rl.question('Enter a valid game name. Start with a letter and use letters, numbers and underscores up to 50 characters: ', (answer) => {
+                const gameNameRegex = /^[a-zA-Z][a-zA-Z0-9_]{0,49}$/;
 
-            if (!gameNameRegex.test(answer)) {
-                console.error('❌ That is not a valid game name. Please try again.');
-                prompt();
-            } else {
-                rl.close();
-                resolve(answer);
-            }
-        });
+                if (!gameNameRegex.test(answer)) {
+                    console.error('❌ That is not a valid game name. Please try again.');
+                    prompt();
+                } else {
+                    rl.close();
+                    resolve(answer);
+                }
+            });
 
         };
-        
+
         prompt();
     });
 };
@@ -115,8 +115,8 @@ async function setup() {
     console.log(`🚀 ${isFirstInstall ? 'Setting up StoryScript...' : 'Updating StoryScript...'}`);
     console.log(`📁 Target: ${projectRoot}`);
 
-    fs.copySync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
-    fs.copySync(path.join(packageDir, 'scripts/postbuild.js'), path.join(packageDir, 'dist/scripts/postbuild.js'));
+    fs.moveSync(path.join(packageDir, 'baseViteConfig.js'), path.join(packageDir, 'dist/baseViteConfig.js'));
+    fs.moveSync(path.join(packageDir, 'scripts/postbuild.js'), path.join(packageDir, 'dist/scripts/postbuild.js'));
     fs.copySync(path.join(packageDir, 'scripts/helpers.js'), path.join(packageDir, 'dist/scripts/helpers.js'));
 
     try {
@@ -132,13 +132,13 @@ async function setup() {
         }
 
         console.log('✅ Setup complete!');
-        
+
         if (isFirstInstall) {
             console.log('\nRun this command to start your game:');
             console.log('  npx storyscript start');
             console.log('\n');
         }
-        
+
     } catch (err) {
         console.error('❌ Setup failed:', err.message);
         process.exit(1);
@@ -208,7 +208,8 @@ async function createAsset(commandName, assetName, includeDescription) {
 }
 
 async function getGameName() {
-    const nameModule = await import(path.resolve(projectRoot, 'currentGameName.js'));
+    const fileUrl = pathToFileURL(path.resolve(projectRoot, 'currentGameName.js')).href;
+    const nameModule = await import(fileUrl);
     return nameModule.currentGameName;
 }
 
@@ -217,10 +218,12 @@ async function executeTask(command, args, waitForCompletion) {
         stdio: 'inherit',
         shell: true
     };
+    
+    const commandToRun = args ? `${command} ${args.join(' ')}` : command;
 
     if (waitForCompletion === undefined || waitForCompletion) {
         return new Promise((resolve, reject) => {
-            const child = spawn(command, args, options);
+            const child = spawn(commandToRun, [], options);
 
             child.on('close', (code) => {
                 if (code === 0) {
@@ -236,7 +239,7 @@ async function executeTask(command, args, waitForCompletion) {
         });
     }
 
-    spawn(command, args, options);
+    spawn(commandToRun, [], options);
 }
 
 function copyFile(file) {
