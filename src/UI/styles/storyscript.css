@@ -482,6 +482,7 @@ feature {
     padding: 0;
     max-height: 95%;
     overflow: hidden;
+    overscroll-behavior: contain;
 }
 
 .map-container {
