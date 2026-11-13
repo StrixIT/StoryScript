@@ -88,6 +88,7 @@ export const getBaseViteConfig = (gamePath) => {
                         'index.html',
                         'manifest.webmanifest',
                     ],
+                    navigateFallbackDenylist: [/\.zip$/]
                 }
             })
         ],
