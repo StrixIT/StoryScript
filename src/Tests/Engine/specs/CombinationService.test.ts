@@ -110,7 +110,7 @@ describe("CombinationService", function () {
 
     describe("Try combinations", function () {
 
-        test("should fail a combination when there is no target or active combination", function () {
+        test("should fail a combination when there is no target or active combination", async function () {
             const game = <IGame>{
                 combinations: {
                     activeCombination: {},
@@ -125,23 +125,23 @@ describe("CombinationService", function () {
             }
 
             const service = getService(game, null, texts);
-            let result = service.tryCombination(<ICombinable>{});
+            let result = await service.tryCombination(<ICombinable>{});
             expect(result.success).toBeFalsy();
 
             const target = {name: 'Ball'};
 
-            result = service.tryCombination(target);
+            result = await service.tryCombination(target);
             expect(result.success).toBeFalsy();
 
             const activeCombination = game.combinations.activeCombination;
             activeCombination.selectedCombinationAction = {text: 'Take'};
 
-            result = service.tryCombination(target);
+            result = await service.tryCombination(target);
             expect(result.success).toBeFalsy();
             expect(result.text).toBe('Take Ball: You Take the Ball. Nothing happens.');
         });
 
-        test("should remove only the target feature, not all features of the type", function () {
+        test("should remove only the target feature, not all features of the type", async function () {
             const combinationType = Combinations.TOUCH;
 
             const target = {
@@ -197,7 +197,7 @@ describe("CombinationService", function () {
 
             const service = getService(game, rules);
 
-            const result = service.tryCombination(target);
+            const result = await service.tryCombination(target);
             expect(result.success).toBeTruthy();
             expect(result.removeTarget).toBeTruthy();
             expect(game.currentLocation.items.length).toBe(0);

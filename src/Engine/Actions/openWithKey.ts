@@ -5,8 +5,8 @@
  * should keep the key after using it, it is removed from his item list.
  * @param callback The callback function to invoke after the barrier is removed.
  */
-export function OpenWithKey(callback?: (game: IGame, barrier: [string, IBarrier], destination: IDestination) => Promise<void> | void) {
-    return makeSerializeSafe(async (game: IGame, barrier: [string, IBarrier], destination: IDestination): Promise<void> => {
+export function OpenWithKey(callback?: (game: IGame, barrier: [string, IBarrier], destination: IDestination) => void) {
+    return makeSerializeSafe((game: IGame, barrier: [string, IBarrier], destination: IDestination): void => {
         const key = typeof barrier[1].key === 'function' ? barrier[1].key() : <IKey>game.helpers.getItem(barrier[1].key);
 
         if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {
@@ -18,6 +18,6 @@ export function OpenWithKey(callback?: (game: IGame, barrier: [string, IBarrier]
         }
 
         destination.barriers.delete(barrier);
-        await callback?.(game, barrier, destination);
+        callback?.(game, barrier, destination);
     }, callback);
 }

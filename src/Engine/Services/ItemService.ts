@@ -148,7 +148,7 @@ export class ItemService implements IItemService {
     equipItem = async (character: ICharacter, item: IItem): Promise<boolean> => {
         const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
-        const slotsAvailable = this.makeSlotAvailable(character, item, equipmentTypes);
+        const slotsAvailable = await this.makeSlotAvailable(character, item, equipmentTypes);
 
         if (slotsAvailable.length === 0) {
             return false;
@@ -209,7 +209,7 @@ export class ItemService implements IItemService {
         }
     }
 
-    private makeSlotAvailable(character: ICharacter, item: IItem, equipmentTypes: EquipmentType[]): string[] {
+    private async makeSlotAvailable(character: ICharacter, item: IItem, equipmentTypes: EquipmentType[]): Promise<string[]> {
         if (!item.usesMultipleSlots) {
             return this.findAvailableSlot(character, equipmentTypes);
         }
@@ -221,7 +221,7 @@ export class ItemService implements IItemService {
             const slotItem = character.equipment[type];
 
             if (slotItem) {
-                const unequipped = this.unequip(character, slotItem);
+                const unequipped = await this.unequip(character, slotItem);
 
                 if (!unequipped) {
                     return [];
@@ -234,7 +234,7 @@ export class ItemService implements IItemService {
         return availableSlots;
     }
 
-    private findAvailableSlot(character: ICharacter, equipmentTypes: EquipmentType[]) {
+    private async findAvailableSlot(character: ICharacter, equipmentTypes: EquipmentType[]): Promise<string[]> {
         // If the item uses only one of the slots specified, see if a slot is available first.
         const occupiedSlots: string[] = [];
         const emptySlots: string[] = [];
@@ -251,7 +251,7 @@ export class ItemService implements IItemService {
 
         if (emptySlots.length === 0) {
             const slotToUnequip = occupiedSlots[occupiedSlots.length - 1];
-            const unequipped = this.unequip(character, character.equipment[slotToUnequip]);
+            const unequipped = await this.unequip(character, character.equipment[slotToUnequip]);
             return !unequipped ? [] : [slotToUnequip];
         }
 
