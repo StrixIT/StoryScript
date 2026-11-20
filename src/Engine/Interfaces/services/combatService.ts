@@ -4,7 +4,7 @@ export interface ICombatService {
     /**
      * The function executed when combat is started.
      */
-    initCombat(): void;
+    initCombat(): Promise<void>;
 
     /**
      * The function executed when the player attacks an enemy.

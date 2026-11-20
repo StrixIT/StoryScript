@@ -1,6 +1,5 @@
 import {
     GameState,
-    IActor,
     ICharacter,
     ICombatService,
     ICombatSetup,
@@ -20,12 +19,15 @@ export class CombatService implements ICombatService {
     constructor(private readonly _game: IGame, private readonly _rules: IRules, private readonly _texts: IInterfaceTexts) {
     }
 
-    initCombat = (): void => {
+    initCombat = async (): Promise<void> => {
         this._game.combatLog.length = 0;
         this._rules.combat?.initCombat?.(this._game, this._game.currentLocation);
         this.initCombatRound(true);
         this._game.playState = PlayState.Combat;
-        this._game.combat.enemies.forEach(enemy => enemy.onAttack?.(this._game, enemy));
+        
+        for (const enemy of this._game.combat.enemies) {
+            await enemy.onAttack?.(this._game, enemy);
+        }
     }
 
     fight = (combat: ICombatSetup<ICombatTurn>): Promise<void> | void => {
@@ -35,16 +37,18 @@ export class CombatService implements ICombatService {
 
         const promise = this._rules.combat.fight(this._game, combat);
 
-        return Promise.resolve(promise).then(() => {
-            combat.forEach((s, i) => {
-                const defeated = (s.item?.targetType === TargetType.Enemy || (<any>s.target)?.type === TargetType.Enemy.toLowerCase())
-                    && s.target?.currentHitpoints <= 0
-                    && (s.targetDefeated === undefined || s.targetDefeated);
+        return Promise.resolve(promise).then(async () => {
+            for (let i = 0; i < combat.length; i++) {
+                const turn = combat[i];
+                
+                const defeated = (turn.item?.targetType === TargetType.Enemy || (<any>turn.target)?.type === TargetType.Enemy.toLowerCase())
+                    && turn.target?.currentHitpoints <= 0
+                    && (turn.targetDefeated === undefined || turn.targetDefeated);
 
                 if (defeated) {
-                    this.enemyDefeated(combat, this._game.party.characters[i], s.target);
+                    await this.enemyDefeated(combat, this._game.party.characters[i], turn.target);
                 }
-            });
+            }
 
             if (this._game.party.characters.filter(c => c.currentHitpoints > 0).length == 0) {
                 this._game.playState = null;
@@ -232,7 +236,7 @@ export class CombatService implements ICombatService {
         return this._texts.format(this._texts.enemyCombatName, [target.name, target.index.toString()]);
     }
 
-    private readonly enemyDefeated = (combat: ICombatSetup<ICombatTurn>, character: ICharacter, enemy: IEnemy): void => {
+    private readonly enemyDefeated = async (combat: ICombatSetup<ICombatTurn>, character: ICharacter, enemy: IEnemy): Promise<void> => {
         combat.winnings ??= {
             currency: 0,
             itemsWon: [],
@@ -262,6 +266,6 @@ export class CombatService implements ICombatService {
         combat.winnings.enemiesDefeated.push(enemy);
         this._game.currentLocation.enemies.delete(enemy[StateProperties.Id]);
         this._rules.combat?.enemyDefeated?.(this._game, character, enemy);
-        enemy.onDefeat?.(this._game, enemy);
+        await enemy.onDefeat?.(this._game, enemy);
     }
 }

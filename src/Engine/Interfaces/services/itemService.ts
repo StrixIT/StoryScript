@@ -15,11 +15,11 @@ export interface IItemService {
 
     isEquippable(item: IItem, character?: ICharacter): boolean;
 
-    equipItem(character: ICharacter, item: IItem): boolean;
+    equipItem(character: ICharacter, item: IItem): Promise<boolean>;
 
-    unequipItem(character: ICharacter, item: IItem): boolean;
+    unequipItem(character: ICharacter, item: IItem): Promise<boolean>;
 
     canDrop(item: IItem): boolean
 
-    dropItem(character: ICharacter, item: IItem): void;
+    dropItem(character: ICharacter, item: IItem): Promise<void>;
 }

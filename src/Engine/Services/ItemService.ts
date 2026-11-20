@@ -43,7 +43,7 @@ export class ItemService implements IItemService {
             return false;
         }
 
-        if (this._rules.character.beforePickup && !this._rules.character.beforePickup(this._game, character, item)) {
+        if (this._rules.character.beforePickup && !await this._rules.character.beforePickup(this._game, character, item)) {
             return false;
         }
 
@@ -145,7 +145,7 @@ export class ItemService implements IItemService {
         return true;
     };
 
-    equipItem = (character: ICharacter, item: IItem): boolean => {
+    equipItem = async (character: ICharacter, item: IItem): Promise<boolean> => {
         const equipmentTypes = Array.isArray(item.equipmentType) ? <EquipmentType[]>item.equipmentType : [<EquipmentType>item.equipmentType];
 
         const slotsAvailable = this.makeSlotAvailable(character, item, equipmentTypes);
@@ -161,7 +161,7 @@ export class ItemService implements IItemService {
         }
 
         if (item.equip) {
-            if (!item.equip(character, item, this._game)) {
+            if (!await item.equip(character, item, this._game)) {
                 return false;
             }
         }
@@ -174,8 +174,8 @@ export class ItemService implements IItemService {
         return true;
     }
 
-    unequipItem = (character: ICharacter, item: IItem): boolean => {
-        return this.unequip(character, item);
+    unequipItem = async (character: ICharacter, item: IItem): Promise<boolean> => {
+        return await this.unequip(character, item);
     }
 
     canDrop = (item: IItem): boolean => {
@@ -192,7 +192,7 @@ export class ItemService implements IItemService {
         return canDrop
     };
 
-    dropItem = (character: ICharacter, item: IItem): void => {
+    dropItem = async (character: ICharacter, item: IItem): Promise<void> => {
         if (!item) {
             return;
         }
@@ -200,7 +200,7 @@ export class ItemService implements IItemService {
         let drop = true;
 
         if (this._rules.character.beforeDrop) {
-            drop = this._rules.character.beforeDrop(this._game, character, item);
+            drop = await this._rules.character.beforeDrop(this._game, character, item);
         }
 
         if (drop) {
@@ -258,7 +258,7 @@ export class ItemService implements IItemService {
         return [emptySlots[0]];
     }
 
-    private unequip = (character: ICharacter, equippedItem: IItem): boolean => {
+    private unequip = async (character: ICharacter, equippedItem: IItem): Promise<boolean> => {
         if (!equippedItem) {
             return true;
         }
@@ -270,7 +270,7 @@ export class ItemService implements IItemService {
         }
 
         if (equippedItem.unequip) {
-            if (!equippedItem.unequip(character, equippedItem, this._game)) {
+            if (!await equippedItem.unequip(character, equippedItem, this._game)) {
                 return false;
             }
         }

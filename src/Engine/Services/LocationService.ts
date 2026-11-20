@@ -56,7 +56,7 @@ export class LocationService implements ILocationService {
         // Clear the play state on travel.
         game.playState = null;
         await this._rules.exploration?.leaveLocation?.(game, game.currentLocation, getId(location), travel);
-        this.playEvents(game, 'leaveEvents');
+        await this.playEvents(game, 'leaveEvents');
 
         // If there is no location, we are starting a new game. We're done here.
         if (!this.switchLocation(game, location)) {
@@ -69,7 +69,7 @@ export class LocationService implements ILocationService {
         await this._rules.exploration?.enterLocation?.(game, game.currentLocation, game.previousLocation?.id, travel);
         this.loadLocationDescriptions(game);
         this.initTrade(game);
-        this.playEvents(game, 'enterEvents');
+        await this.playEvents(game, 'enterEvents');
         this.markCurrentLocationAsVisited(game);
     }
 
@@ -245,7 +245,7 @@ export class LocationService implements ILocationService {
         originalFunction.call(originalScope, destination);
     }
 
-    private readonly playEvents = (game: IGame, eventProperty: string): void => {
+    private readonly playEvents = async (game: IGame, eventProperty: string): Promise<void> => {
         if (!game.currentLocation?.[eventProperty]) {
             return;
         }
@@ -253,15 +253,15 @@ export class LocationService implements ILocationService {
         // Keep a reference to the location being processed. When the location is changed in the
         // event, we want to still update the events in the originating location.
         const location = game.currentLocation;
-        const events = [...location[eventProperty]];
-
-        events.forEach(e => {
-            const result = e[1]?.(game);
+        const events: [string, Function][] = [...location[eventProperty]];
+        
+        for (const event of events) {
+            const result = await event[1]?.(game);
 
             if (!result) {
-                location[eventProperty].delete(e);
+                location[eventProperty].delete(event);
             }
-        });
+        }
     }
 
     private readonly processTextFeatures = (location: ICompiledLocation): void => {

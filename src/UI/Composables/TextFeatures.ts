@@ -75,12 +75,13 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
         if (triggerElement && isTouchDevice) {
             const activate = !triggerElement.classList.contains(activeTriggerClass);
+            
+            for (const trigger of Array.from(description.value.querySelectorAll('[data-trigger]')))
+            {
+                await toggleTrigger(trigger as HTMLElement, false);
+            }
 
-            Array.from(description.value.querySelectorAll('[data-trigger]')).forEach((el) => {
-                toggleTrigger(el as any, false);
-            });
-
-            toggleTrigger(triggerElement, activate);
+            await toggleTrigger(triggerElement, activate);
         }
 
         const feature = getFeature(ev);
@@ -100,23 +101,23 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
         }
     }
 
-    const mouseOver = (ev: MouseEvent) => {
+    const mouseOver = async (ev: MouseEvent): Promise<void> => {
         if (isTouchDevice) {
             return;
         }
 
-        toggleTrigger(getTriggerElement(ev?.target as HTMLElement), true);
+        await toggleTrigger(getTriggerElement(ev?.target as HTMLElement), true);
     };
 
-    const mouseOut = (ev: MouseEvent) => {
+    const mouseOut = async (ev: MouseEvent): Promise<void> => {
         if (isTouchDevice) {
             return;
         }
 
-        toggleTrigger(getTriggerElement(ev?.target as HTMLElement), false);
+        await toggleTrigger(getTriggerElement(ev?.target as HTMLElement), false);
     };
 
-    const toggleTrigger = (element: HTMLElement, active: boolean) => {
+    const toggleTrigger = async (element: HTMLElement, active: boolean): Promise<void> => {
         if (!element) {
             return;
         }
@@ -126,10 +127,10 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
         if (active) {
             element.classList.add(activeTriggerClass);
-            event?.(game.value, active, data);
+            await event?.(game.value, active, data);
         } else {
             element.classList.remove(activeTriggerClass);
-            event?.(game.value, active, data);
+            await event?.(game.value, active, data);
         }
     }
 

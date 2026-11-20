@@ -34,11 +34,11 @@ export class ConversationService implements IConversationService {
         });
 
         if (reply.questStart) {
-            this.questProgress('questStart', person, reply);
+            await this.questProgress('questStart', person, reply);
         }
 
         if (reply.questComplete) {
-            this.questProgress('questComplete', person, reply);
+            await this.questProgress('questComplete', person, reply);
         }
 
         await this.processReply(person, reply);
@@ -367,7 +367,7 @@ export class ConversationService implements IConversationService {
         });
     }
 
-    private readonly questProgress = (type: string, person: IPerson, reply: IConversationReply): void => {
+    private readonly questProgress = async (type: string, person: IPerson, reply: IConversationReply): Promise<void> => {
         let quest: IQuest;
         const start = type === 'questStart';
 
@@ -381,7 +381,7 @@ export class ConversationService implements IConversationService {
                 quest.progress = quest.progress || {};
 
                 if (quest.start) {
-                    quest.start(this._game, quest, person);
+                    await quest.start(this._game, quest, person);
                 }
 
                 quest.started = true;
@@ -392,7 +392,7 @@ export class ConversationService implements IConversationService {
 
             if (!quest.completed) {
                 if (quest.complete) {
-                    quest.complete(this._game, quest, person);
+                    await quest.complete(this._game, quest, person);
                 }
 
                 quest.completed = true;

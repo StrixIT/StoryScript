@@ -80,7 +80,7 @@ export interface IItem extends IFeature {
      * @param item The item to be equipped
      * @param game The game object
      */
-    equip?(character: ICharacter, item: IItem, game: IGame): boolean;
+    equip?(character: ICharacter, item: IItem, game: IGame): Promise<boolean> | boolean;
 
     /**
      * When specified, this function will be executed when the item is unequipped by the player.
@@ -88,7 +88,7 @@ export interface IItem extends IFeature {
      * @param item The item to be unequipped
      * @param game The game object
      */
-    unequip?(character: ICharacter, item: IItem, game: IGame): boolean;
+    unequip?(character: ICharacter, item: IItem, game: IGame): Promise<boolean> | boolean;
 
     /**
      * When specified, this item can be used and a use action becomes available on the item. The function will be executed when the player

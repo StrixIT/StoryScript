@@ -33,7 +33,7 @@ export const getDemoMode = () => {
             {action: async game => await game.commands.go(Start), delay: 1000},
             {action: async game => await game.commands.go(Library), delay: 1000},
             {action: game => game.commands.trade('YourPersonalCloset'), delay: 1000},
-            {action: game => game.commands.buy(Sword), delay: 1000},
+            {action: async game => await game.commands.buy(Sword), delay: 1000},
             {action: game => game.playState = null, delay: 1000},
             {action: async game => await game.commands.go(Start), delay: 1000},
         ]

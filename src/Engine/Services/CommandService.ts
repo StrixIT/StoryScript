@@ -154,24 +154,24 @@ export class CommandService implements ICommandService {
         this._tradeService.trade(partner);
     }
 
-    buy = (item: (() => IItem)): void => {
+    buy = async (item: (() => IItem)): Promise<void> => {
         const selectedItem = this._game.trade.buy.items.get(item);
 
         if (!selectedItem) {
             throw new Error(`Trader ${this._game.trade.name} does not have item ${item.name} for sale!`);
         }
 
-        this._tradeService.buy(selectedItem, this._game.trade);
+        await this._tradeService.buy(selectedItem, this._game.trade);
     }
 
-    sell = (item: (() => IItem)): void => {
+    sell = async (item: (() => IItem)): Promise<void> => {
         const selectedItem = this._game.trade.sell.items.get(item);
 
         if (!selectedItem) {
             throw new Error(`Item ${item.name} is not available or cannot be sold to ${this._game.trade.name}!`);
         }
 
-        this._tradeService.sell(selectedItem, this._game.trade);
+        await this._tradeService.sell(selectedItem, this._game.trade);
     }
     
     delay = (duration: number): Promise<void> => {

@@ -75,13 +75,13 @@ export interface ICommandService {
      * Buy the specified item from the current trader
      * @param item The item to buy
      */
-    buy: (item: (() => IItem)) => void;
+    buy: (item: (() => IItem)) => Promise<void> | void;
 
     /**
      * Sell the specified item to the current trader
      * @param item The item to sell
      */
-    sell: (item: (() => IItem)) => void;
+    sell: (item: (() => IItem)) => Promise<void> | void;
 
     /**
      * Play a media effect
