@@ -6,5 +6,5 @@ export interface ICombinationService {
     combinationActions: ICombinationAction[];
     getCombineClass(tool: ICombinable): string;
     setActiveCombination(combination: ICombinationAction): void;
-    tryCombination(target: ICombinable): ICombineResult;
+    tryCombination(target: ICombinable): Promise<ICombineResult>;
 }

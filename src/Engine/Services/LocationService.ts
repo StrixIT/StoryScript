@@ -52,10 +52,10 @@ export class LocationService implements ILocationService {
         }, false);
     }
 
-    changeLocation = (location: string | (() => ILocation), travel: boolean, game: IGame): void => {
+    changeLocation = async (location: string | (() => ILocation), travel: boolean, game: IGame): Promise<void> => {
         // Clear the play state on travel.
         game.playState = null;
-        this._rules.exploration?.leaveLocation?.(game, game.currentLocation, getId(location), travel);
+        await this._rules.exploration?.leaveLocation?.(game, game.currentLocation, getId(location), travel);
         this.playEvents(game, 'leaveEvents');
 
         // If there is no location, we are starting a new game. We're done here.
@@ -66,21 +66,21 @@ export class LocationService implements ILocationService {
         this.processDestinations(game);
         this._game.party.currentLocationId = game.currentLocation.id;
         this._game.party.previousLocationId = game.previousLocation?.id;
-        this._rules.exploration?.enterLocation?.(game, game.currentLocation, game.previousLocation?.id, travel);
+        await this._rules.exploration?.enterLocation?.(game, game.currentLocation, game.previousLocation?.id, travel);
         this.loadLocationDescriptions(game);
         this.initTrade(game);
         this.playEvents(game, 'enterEvents');
         this.markCurrentLocationAsVisited(game);
     }
 
-    executeAction = (action: [string, IAction]): void => {
+    executeAction = async (action: [string, IAction]): Promise<void> => {
         const execute = action[1]?.execute;
 
         if (execute) {
             let result = true;
 
             if (typeof execute === 'function') {
-                const actionResult = execute(this._game);
+                const actionResult = await execute(this._game);
                 result = actionResult === true;
             } else {
                 gameEvents.publish(execute, action);

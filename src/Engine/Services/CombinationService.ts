@@ -64,7 +64,7 @@ export class CombinationService implements ICombinationService {
         this._game.combinations.combinationResult.text = combination.requiresTool ? combination.text : combination.text + ' ' + (combination.preposition || '');
     }
 
-    tryCombination = (target: ICombinable): ICombineResult => {
+    tryCombination = async (target: ICombinable): Promise<ICombineResult> => {
         let combo = this._game.combinations.activeCombination;
         let result = <ICombineResult>{
             success: false,
@@ -101,7 +101,7 @@ export class CombinationService implements ICombinationService {
         result = this.performCombination(target, combo);
 
         if (result.success) {
-            this._rules.combinations?.success?.(this._game, combo, target);
+            await this._rules.combinations?.success?.(this._game, combo, target);
 
             if (result.removeTarget) {
                 this.removeFeature(target);

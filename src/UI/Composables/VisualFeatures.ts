@@ -209,7 +209,7 @@ export function useVisualFeatures(locationFeatures: Ref<HTMLDivElement>) {
             image.style.top = `${imagePosY}px`;
             image.style.left = `${imagePosX}px`;
             image.classList.add('combination-symbol');
-            image.onclick = () => game.value.combinations.tryCombine(feature);
+            image.onclick = async () => await game.value.combinations.tryCombine(feature);
             locationFeatures.value.appendChild(image);
         });
     }

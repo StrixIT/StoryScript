@@ -21,8 +21,8 @@ export function DirtRoad() {
                 'RunInside',
                 {
                     text: 'Run back inside',
-                    execute: (game: IGame) => {
-                        game.commands.go('Start');
+                    execute: async (game: IGame) => {
+                        await game.commands.go('Start');
                         game.logToActionLog(`You storm back into your house and slam the 
                                 door behind you. You where lucky... this time!`);
                         return true;

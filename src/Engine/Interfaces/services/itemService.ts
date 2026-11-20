@@ -3,7 +3,7 @@ import {ICharacter, IEnemy, IGroupableItem, IItem} from 'storyScript';
 export interface IItemService {
     getItemName(item: IItem): string;
 
-    pickupItem(character: ICharacter, item: IItem): boolean;
+    pickupItem(character: ICharacter, item: IItem): Promise<boolean>;
 
     canGroupItem(character: ICharacter, group: IGroupableItem<IItem>, item: IGroupableItem<IItem>): boolean;
 

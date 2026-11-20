@@ -33,10 +33,10 @@ export class CommandService implements ICommandService {
         this._combinationActions = this._combinationService.combinationActions;
     }
 
-    go = (location: (() => ILocation) | string, saveProgress?: boolean): void => {
+    go = async (location: (() => ILocation) | string, saveProgress?: boolean): Promise<void> => {
         const travel = saveProgress !== false;
 
-        this._locationService.changeLocation(location, travel, this._game);
+        await this._locationService.changeLocation(location, travel, this._game);
 
         if (travel) {
             this._dataService.saveGame(this._game);
@@ -76,17 +76,17 @@ export class CommandService implements ICommandService {
         this._combinationService.setActiveCombination(selectedCombination);
     }
 
-    setTool = (feature: (() => IFeature) | string): void => {
+    setTool = async (feature: (() => IFeature) | string): Promise<void> => {
         const selectedTool = this.getFeature(feature);
 
         if (!selectedTool) {
             throw new Error(`No feature ${typeof feature === 'function' ? feature.name : feature} was found to set as tool!`);
         }
 
-        this._combinationService.tryCombination(selectedTool);
+        await this._combinationService.tryCombination(selectedTool);
     }
 
-    combine = (combination: string, target: (() => IFeature) | string, tool?: (() => IFeature) | string): void => {
+    combine = async (combination: string, target: (() => IFeature) | string, tool?: (() => IFeature) | string): Promise<void> => {
         const selectedCombination = this.getCombination(combination);
         const selectedTarget = this.getFeature(target);
 
@@ -105,21 +105,21 @@ export class CommandService implements ICommandService {
             selectedTool: selectedTool
         }
 
-        this._game.combinations.tryCombine(selectedTarget);
+        await this._game.combinations.tryCombine(selectedTarget);
     }
 
-    useAction = (action: string | [string, IAction]): void => {
+    useAction = async (action: string | [string, IAction]): Promise<void> => {
         const selectedAction = typeof action === 'string' ? this._game.currentLocation.actions.get(action) : action;
 
         if (!selectedAction) {
             throw new Error(`Action ${action} is not present at location ${this._game.currentLocation.name}!`);
         }
 
-        this._locationService.executeAction(selectedAction);
+        await this._locationService.executeAction(selectedAction);
         this._dataService.saveGame(this._game)
     }
 
-    useBarrierAction = (destination: string | IDestination, barrier: string | [string, IBarrier], action: string | [string, IBarrierAction]): void => {
+    useBarrierAction = async (destination: string | IDestination, barrier: string | [string, IBarrier], action: string | [string, IBarrierAction]): Promise<void> => {
         const selectedDestination = typeof destination === 'string' ? this._game.currentLocation.destinations.get(destination) : destination;
 
         if (!selectedDestination) {
@@ -138,7 +138,7 @@ export class CommandService implements ICommandService {
             throw new Error(`Action ${action} is not present at barrier ${selectedBarrier[0]}!`);
         }
 
-        selectedAction[1].execute(this._game, selectedBarrier, selectedDestination);
+        await selectedAction[1].execute(this._game, selectedBarrier, selectedDestination);
         selectedBarrier[1].actions.delete(selectedBarrier[1].actions.find(([k, _]) => k === action[0]));
         this._dataService.saveGame(this._game)
     }
@@ -173,6 +173,14 @@ export class CommandService implements ICommandService {
 
         this._tradeService.sell(selectedItem, this._game.trade);
     }
+    
+    delay = (duration: number): Promise<void> => {
+        return new Promise<void>((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, duration);
+        });
+    }
 
     playMediaEffect = (
         type: string,
@@ -195,13 +203,7 @@ export class CommandService implements ICommandService {
         }
 
         if (event.delay) {
-            const timePromise = new Promise<void>((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, event.delay);
-            });
-
-            allPromises.push(timePromise);
+            allPromises.push(this.delay(event.delay));
         }
 
         if (event.sound) {

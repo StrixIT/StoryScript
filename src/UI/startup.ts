@@ -40,15 +40,15 @@ export const startup = (components: Map<string, any>, assets: Record<string, unk
         store.setStoreData(serviceFactory);
     });
 
-    logTime('Init game', () => {
+    logTime('Init game', async () => {
         const rules = serviceFactory.GetRules();
         const gameService = serviceFactory.GetGameService();
 
         if (rules.setup?.titleScreen?.getDemoMode) {
             const demoConfig = rules.setup.titleScreen.getDemoMode();
-            gameService.initDemo(demoConfig);
+            await gameService.initDemo(demoConfig);
         } else {
-            gameService.init();
+            await gameService.init();
         }
     });
 

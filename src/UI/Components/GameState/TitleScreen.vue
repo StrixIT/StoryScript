@@ -21,10 +21,10 @@ const titleScreen = useTemplateRef('title-screen');
 const transitionDelay = rules.setup?.titleScreen?.transitionDelay ?? 1;
 const showTitleScreen = computed(() => rules.setup?.titleScreen?.showTitleScreen && !game.value.started);
 
-const startGame = () => {
+const startGame = async () => {
   autoplayService.stop();
   game.value.playState = null;
-  gameService.init();
+  await gameService.init();
 }
 
 onMounted(() => { 

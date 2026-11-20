@@ -35,11 +35,11 @@ export class ItemService implements IItemService {
         return this._texts.format(groupableItem.groupName, [(groupableItem.members.length + 1).toString()]);
     }
 
-    pickupItem = (character: ICharacter, item: IItem): boolean => {
+    pickupItem = async (character: ICharacter, item: IItem): Promise<boolean> => {
         const isCombining = this._game.combinations?.activeCombination;
 
         if (isCombining) {
-            this._game.combinations.tryCombine(item)
+            await this._game.combinations.tryCombine(item)
             return false;
         }
 

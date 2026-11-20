@@ -50,8 +50,8 @@ export class AutoplayService implements IAutoplayService {
 
         const currentStep = steps[stepNumber];
 
-        this._demoTimer = setTimeout(() => {
-            currentStep.action(this._game);
+        this._demoTimer = setTimeout(async () => {
+            await currentStep.action(this._game);
             stepNumber++;
             this.runAutoplayStep(steps, stepNumber, restartCallback);
         }, currentStep.delay);

@@ -70,7 +70,7 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
         });
     };
 
-    const click = (ev: PointerEvent) => {
+    const click = async (ev: PointerEvent) => {
         const triggerElement = getTriggerElement(ev.target as HTMLElement);
 
         if (triggerElement && isTouchDevice) {
@@ -86,7 +86,7 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
         const feature = getFeature(ev);
 
         if (feature) {
-            const result = game.value.combinations.tryCombine(feature);
+            const result = await game.value.combinations.tryCombine(feature);
             const className = combinationService.getCombineClass(feature);
 
             if (className) {
