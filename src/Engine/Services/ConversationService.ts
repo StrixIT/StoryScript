@@ -266,9 +266,9 @@ export class ConversationService implements IConversationService {
             activeNode = conversation.nodes.filter((node) => {
                 return node.node == reply.linkToNode;
             })[0];
-
-            conversation.activeNode = activeNode;
+            
             await this.executeAction(activeNode.trigger, person);
+            conversation.activeNode = activeNode;
             this.setReplyStatus(conversation, activeNode);
         } else {
             conversation.activeNode = null;
