@@ -6,7 +6,7 @@
  * @param callback The callback function to invoke after the barrier is removed.
  */
 export function OpenWithKey(callback?: (game: IGame, barrier: [string, IBarrier], destination: IDestination) => void) {
-    return makeSerializeSafe((game: IGame, barrier: [string, IBarrier], destination: IDestination) => {
+    return makeSerializeSafe((game: IGame, barrier: [string, IBarrier], destination: IDestination): void => {
         const key = typeof barrier[1].key === 'function' ? barrier[1].key() : <IKey>game.helpers.getItem(barrier[1].key);
 
         if (key.keepAfterUse === undefined || key.keepAfterUse !== true) {

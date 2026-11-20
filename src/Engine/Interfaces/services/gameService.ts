@@ -1,17 +1,17 @@
 import {IDemoMode, IGame, PlayState} from 'storyScript';
 
 export interface IGameService {
-    init(): void;
+    init(): Promise<void>;
 
-    initDemo(demoConfig: IDemoMode): void;
+    initDemo(demoConfig: IDemoMode): Promise<void>;
 
-    startNewGame(characterData: any): void;
+    startNewGame(characterData: any): Promise<void>;
 
-    reset(): void;
+    reset(): Promise<void>;
 
-    restart(skipIntro?: boolean): void;
+    restart(skipIntro?: boolean): Promise<void>;
 
     loadGame(name: string): void;
 
-    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void;
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => Promise<void> | void): void;
 }

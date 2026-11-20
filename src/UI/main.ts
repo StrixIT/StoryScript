@@ -17,7 +17,7 @@ addArrayExtensions();
 const assets = importAssets();
 const components = getComponents();
 
-startup(components, assets, currentGameName, Rules(), CustomTexts());
+await startup(components, assets, currentGameName, Rules(), CustomTexts());
 
 export function importAssets(): Record<string, unknown> {
     return import.meta.glob([

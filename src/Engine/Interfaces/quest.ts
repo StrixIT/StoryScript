@@ -26,7 +26,7 @@ export interface IQuest {
      * @param quest The quest to start
      * @param person The person this quest is for
      */
-    start?(game: IGame, quest: IQuest, person: IPerson): void;
+    start?(game: IGame, quest: IQuest, person: IPerson): Promise<void> | void;
 
     /**
      * A function that is called by the engine to determine whether a quest is completed.
@@ -41,7 +41,7 @@ export interface IQuest {
      * @param quest The quest to complete
      * @param person The person this quest is for
      */
-    complete?(game: IGame, quest: IQuest, person: IPerson): void;
+    complete?(game: IGame, quest: IQuest, person: IPerson): Promise<void> | void;
 
     /**
      * True if the player started the quest, false otherwise.

@@ -43,7 +43,7 @@ const confirm = ref<IItem>(null);
 
 const cancel = (): void => confirm.value = null;
 
-const buyOrSell = (item: IItem): boolean => {
+const buyOrSell = async (item: IItem): Promise<boolean> => {
   const actualPrice = tradeService.actualPrice(item, buyer, seller);
 
   if (actualPrice > 0 && !confirm.value) {
@@ -52,7 +52,7 @@ const buyOrSell = (item: IItem): boolean => {
   }
 
   confirm.value = null;
-  return buyer === game.value.activeCharacter ? tradeService.buy(item, seller) : tradeService.sell(item, buyer);
+  return buyer === game.value.activeCharacter ? await tradeService.buy(item, seller) : await tradeService.sell(item, buyer);
 }
 
 </script>

@@ -54,14 +54,14 @@ const checkStatus = (action: [string, IAction], status: ActionStatus) =>
         ? action[1].status(game.value) == status
         : action[1].status === undefined ? false : action[1].status == status;
 
-const execute = (action: [string, IAction]): void => {
+const execute = async (action: [string, IAction]): Promise<void> => {
   if (action[1].confirmationText && !confirmAction.value) {
     confirmAction.value = action;
     return;
   }
 
   confirmAction.value = undefined;
-  commandService.useAction(action);
+  await commandService.useAction(action);
 }
 
 </script>

@@ -55,7 +55,6 @@ import type {ICombinationRules} from "./rules/combinationRules";
 import type {ITitleScreen} from "./rules/titleScreen";
 import type {ISoundPlayer} from "./soundPlayer";
 import type {IDemoMode} from "./rules/demoMode";
-import type {IDynamicStyle} from './dynamicStyle';
 import type {IStatistics} from './statistics';
 import type {IDefinitions} from './definitions';
 import type {IGameEvents} from './gameEvents';
@@ -121,7 +120,6 @@ export type {
     IConversationReply,
     IConversationLogEntry,
     IDefinitions,
-    IDynamicStyle,
     IStatistics,
     IMap,
     IMapLocation,

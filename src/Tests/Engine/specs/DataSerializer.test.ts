@@ -228,27 +228,6 @@ const partyWithCharacter = {
     "currentLocationId": "start"
 };
 
-const locationWithItemAsFeature = {
-    "passage": {
-        "features": [{
-            "combinations": {"combine": [{"combinationType": "Touch"}]},
-            "type": "item",
-            "id": "herbs"
-        }, {
-            "combinations": {
-                "combine": [{"combinationType": "Look"}, {
-                    "combinationType": "Use",
-                    "tool": "HealingPotion"
-                }]
-            }, "type": "feature", "id": "woundedwarrior"
-        }, {"combinations": {"combine": [{"combinationType": "Walk"}]}, "type": "feature", "id": "passageback"}],
-        "features_arrProps": {"collectionPicture": "fallenhero.jpg"},
-        "type": "location",
-        "id": "passage",
-        "hasVisited": true
-    }
-};
-
 describe("MyRolePlayingGameDataSerializer", () => {
 
     let serviceFactory: ServiceFactory;

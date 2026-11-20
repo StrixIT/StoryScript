@@ -26,7 +26,7 @@ export interface IAction {
      * true if the action should be allowed to execute more than once. When an event is raised
      * the action is considered to be allowed to execute more than once.
      */
-    execute: string | ((game: IGame) => boolean | void);
+    execute: string | ((game: IGame) => boolean | Promise<boolean> | void | Promise<void>);
 
     /**
      * If the player should confirm executing the action, specify a text to ask for confirmation here.

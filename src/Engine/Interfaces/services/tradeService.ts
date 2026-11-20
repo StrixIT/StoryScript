@@ -9,7 +9,7 @@ export interface ITradeService {
 
     displayPrice(item: IItem, actualPrice: number): string;
 
-    buy(item: IItem, trade: ITrade): boolean;
+    buy(item: IItem, trade: ITrade): Promise<boolean>;
 
-    sell(item: IItem, trade: ITrade): boolean;
+    sell(item: IItem, trade: ITrade): Promise<boolean>;
 }

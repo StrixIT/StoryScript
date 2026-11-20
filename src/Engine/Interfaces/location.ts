@@ -26,14 +26,14 @@ export interface ILocation {
      * If nothing or false is returned, the function will be removed once it completed. Return true
      * to keep the function and call it every time the player enters the location.
      */
-    enterEvents?: [string, (game: IGame) => void | boolean][];
+    enterEvents?: [string, (game: IGame) => Promise<void> | void | Promise<boolean> | boolean][];
 
     /**
      * When specified, the functions in this array will be called when the player leaves the location.
      * If nothing or false is returned, the function will be removed once it completed. Return true
      * to keep the function and call it every time the player leaves the location.
      */
-    leaveEvents?: [string, (game: IGame) => void | boolean][];
+    leaveEvents?: [string, (game: IGame) => Promise<void> | void | Promise<boolean> | boolean][];
 
     /**
      * Actions that the player can perform at this location.
@@ -49,7 +49,7 @@ export interface ILocation {
      * When specified, the functions in this array will be called from text features or user code when
      * the trigger that should activate them is activated.
      */
-    triggeredActions?: [string, (game: IGame, activate: boolean, data: Record<string, string>) => void][];
+    triggeredActions?: [string, (game: IGame, activate: boolean, data: Record<string, string>) => Promise<void> | void][];
 
     /**
      * When specified, this function is called to determine the selector for the description of this location. Useful for dynamically

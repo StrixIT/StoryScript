@@ -13,9 +13,9 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
     const descriptionToShow = ref<string>(null);
 
-    const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
+    const show = computed(() => game.value.currentLocation && (game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture));
 
-    watch(() => game.value.currentLocation.description, async (newValue) => {
+    watch(() => game.value.currentLocation?.description, async (newValue) => {
         descriptionToShow.value = checkAutoplay(game.value, newValue);
     }, {immediate: true});
 
@@ -29,7 +29,7 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
     const refreshFeatures = () => {
         // Show the text of added features.
-        const featureArray = Array.from(description.value?.getElementsByTagName('feature'));
+        const featureArray = Array.from(description.value?.getElementsByTagName('feature') ?? []);
 
         if (featureArray.length === 0) {
             return;
@@ -70,23 +70,24 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
         });
     };
 
-    const click = (ev: PointerEvent) => {
+    const click = async (ev: PointerEvent) => {
         const triggerElement = getTriggerElement(ev.target as HTMLElement);
 
         if (triggerElement && isTouchDevice) {
             const activate = !triggerElement.classList.contains(activeTriggerClass);
+            
+            for (const trigger of Array.from(description.value.querySelectorAll('[data-trigger]')))
+            {
+                await toggleTrigger(trigger as HTMLElement, false);
+            }
 
-            Array.from(description.value.querySelectorAll('[data-trigger]')).forEach((el) => {
-                toggleTrigger(el as any, false);
-            });
-
-            toggleTrigger(triggerElement, activate);
+            await toggleTrigger(triggerElement, activate);
         }
 
         const feature = getFeature(ev);
 
         if (feature) {
-            const result = game.value.combinations.tryCombine(feature);
+            const result = await game.value.combinations.tryCombine(feature);
             const className = combinationService.getCombineClass(feature);
 
             if (className) {
@@ -100,23 +101,23 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
         }
     }
 
-    const mouseOver = (ev: MouseEvent) => {
+    const mouseOver = async (ev: MouseEvent): Promise<void> => {
         if (isTouchDevice) {
             return;
         }
 
-        toggleTrigger(getTriggerElement(ev?.target as HTMLElement), true);
+        await toggleTrigger(getTriggerElement(ev?.target as HTMLElement), true);
     };
 
-    const mouseOut = (ev: MouseEvent) => {
+    const mouseOut = async (ev: MouseEvent): Promise<void> => {
         if (isTouchDevice) {
             return;
         }
 
-        toggleTrigger(getTriggerElement(ev?.target as HTMLElement), false);
+        await toggleTrigger(getTriggerElement(ev?.target as HTMLElement), false);
     };
 
-    const toggleTrigger = (element: HTMLElement, active: boolean) => {
+    const toggleTrigger = async (element: HTMLElement, active: boolean): Promise<void> => {
         if (!element) {
             return;
         }
@@ -126,10 +127,10 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
         if (active) {
             element.classList.add(activeTriggerClass);
-            event?.(game.value, active, data);
+            await event?.(game.value, active, data);
         } else {
             element.classList.remove(activeTriggerClass);
-            event?.(game.value, active, data);
+            await event?.(game.value, active, data);
         }
     }
 

@@ -75,7 +75,7 @@ export interface ICharacterRules {
      * @param character The player character
      * @param item The item about to be picked up
      */
-    beforePickup?(game: IGame, character: ICharacter, item: IItem): boolean;
+    beforePickup?(game: IGame, character: ICharacter, item: IItem): Promise<boolean> | boolean;
 
     /**
      * Specify this function if you want to apply custom rules before a player drops an item. Return false if the player
@@ -84,7 +84,7 @@ export interface ICharacterRules {
      * @param character The player character
      * @param item The item about to be dropped
      */
-    beforeDrop?(game: IGame, character: ICharacter, item: IItem): boolean;
+    beforeDrop?(game: IGame, character: ICharacter, item: IItem): Promise<boolean> | boolean;
 
     /**
      * Specify this function if you want to do something special when a character's health changes.

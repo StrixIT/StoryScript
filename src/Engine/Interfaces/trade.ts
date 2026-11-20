@@ -41,14 +41,14 @@ export interface ITrade {
      * @param game The game object
      * @param item The item bought
      */
-    onBuy?(game: IGame, item: IItem): void;
+    onBuy?(game: IGame, item: IItem): Promise<void> | void;
 
     /**
      * This function is executed when the player has sold an item to the trader.
      * @param game The game object
      * @param item The item sold
      */
-    onSell?(game: IGame, item: IItem): void;
+    onSell?(game: IGame, item: IItem): Promise<void> | void;
 
     /**
      * The collection of items the trader will buy or that can be put in the store.

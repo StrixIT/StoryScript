@@ -22,20 +22,20 @@ export const getDemoMode = () => {
             ]
         },
         steps: [
-            {action: game => game.commands.talk(Friend), delay: 2000},
-            {action: game => game.commands.answer('hello', 'fine'), delay: 1000},
-            {action: game => game.commands.answer('fine'), delay: 1000},
+            {action: async game => await game.commands.talk(Friend), delay: 2000},
+            {action: async game => await game.commands.answer('hello', 'fine'), delay: 1000},
+            {action: async game => await game.commands.answer('fine'), delay: 1000},
             {action: game => game.playState = null, delay: 1000},
-            {action: game => game.commands.go(Garden), delay: 1000},
-            {action: game => game.commands.useAction('LookInPond'), delay: 1000},
-            {action: game => game.commands.useAction('SearchShed'), delay: 1000},
-            {action: game => game.commands.useBarrierAction('Basement', 'TrapDoor', 'Inspect'), delay: 1000},
-            {action: game => game.commands.go(Start), delay: 1000},
-            {action: game => game.commands.go(Library), delay: 1000},
+            {action: async game => await game.commands.go(Garden), delay: 1000},
+            {action: async game => await game.commands.useAction('LookInPond'), delay: 1000},
+            {action: async game => await game.commands.useAction('SearchShed'), delay: 1000},
+            {action: async game => await game.commands.useBarrierAction('Basement', 'TrapDoor', 'Inspect'), delay: 1000},
+            {action: async game => await game.commands.go(Start), delay: 1000},
+            {action: async game => await game.commands.go(Library), delay: 1000},
             {action: game => game.commands.trade('YourPersonalCloset'), delay: 1000},
-            {action: game => game.commands.buy(Sword), delay: 1000},
+            {action: async game => await game.commands.buy(Sword), delay: 1000},
             {action: game => game.playState = null, delay: 1000},
-            {action: game => game.commands.go(Start), delay: 1000},
+            {action: async game => await game.commands.go(Start), delay: 1000},
         ]
     };
 }

@@ -55,9 +55,9 @@ watch(() => game.value.person.conversation.activeNode, async (newValue) => {
   });
 }, {immediate: true});
 
-const answer = (reply: IConversationReply) => {
+const answer = async (reply: IConversationReply): Promise<void> => {
   if (reply.available) {
-    conversationService.answer(game.value.person.conversation.activeNode, reply)
+    await conversationService.answer(game.value.person.conversation.activeNode, reply);
   }
 }
 

@@ -34,12 +34,12 @@ export interface IEnemy extends IFeature, IActor {
      * @param game The game object
      * @param enemy The attacked enemy
      */
-    onAttack?(game: IGame, enemy: IEnemy): void;
+    onAttack?(game: IGame, enemy: IEnemy): Promise<void> | void;
 
     /**
      * When specified, this function will be called when the enemy's health is reduced to 0 or less.
      * @param game The game object
      * @param enemy The defeated enemy
      */
-    onDefeat?(game: IGame, enemy: IEnemy): void;
+    onDefeat?(game: IGame, enemy: IEnemy): Promise<void> | void;
 }

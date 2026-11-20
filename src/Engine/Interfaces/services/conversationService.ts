@@ -1,7 +1,7 @@
 import {IConversationNode, IConversationReply, IPerson} from 'storyScript';
 
 export interface IConversationService {
-    talk(person: IPerson): void;
+    talk(person: IPerson): Promise<void>;
 
-    answer(node: IConversationNode, reply: IConversationReply): void;
+    answer(node: IConversationNode, reply: IConversationReply): Promise<void>;
 }

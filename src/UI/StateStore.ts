@@ -147,14 +147,14 @@ export const useStateStore = defineStore('appState', () => {
         game.value.currentDescription = {title: title, type: type, item: item};
     }
 
-    const startCombat = (location: ICompiledLocation, person?: IPerson): void => {
+    const startCombat = async (location: ICompiledLocation, person?: IPerson): Promise<void> => {
         if (person) {
             // The person becomes an enemy when attacked!
             location.persons.delete(person);
             location.enemies.add(person);
         }
 
-        services.combatService.initCombat();
+        await services.combatService.initCombat();
     }
 
     const getButtonClass = (action: [string, IAction]): string => {

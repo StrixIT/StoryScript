@@ -1,5 +1,13 @@
-export const logTime = (eventName: string, action: Function): void => {
-    console.time(eventName);
-    action();
-    console.timeEnd(eventName)
+import {isDevelopment} from "src/constants";
+
+export const logTime = async (eventName: string, action: Function): Promise<void> => {
+    if (isDevelopment) {
+        console.time(eventName);
+    }
+    
+    await action();
+    
+    if (isDevelopment) {
+        console.timeEnd(eventName);
+    }
 }

@@ -39,7 +39,7 @@ export class GameService implements IGameService {
     ) {
     }
 
-    initDemo = (demoConfig: IDemoMode) => {
+    initDemo = async (demoConfig: IDemoMode): Promise<void> => {
         const party = structuredClone(demoConfig.party);
 
         this._game.statistics = {};
@@ -51,12 +51,12 @@ export class GameService implements IGameService {
         this._rules.setup?.initGame?.(this._game);
         this.initGame([]);
         this.initTexts();
-        this.resume('Start');
+        await this.resume('Start');
 
-        this._game.autoplay.startDemoMode(demoConfig, () => this.initDemo(demoConfig));
+        this._game.autoplay.startDemoMode(demoConfig, async () => await this.initDemo(demoConfig));
     }
 
-    init = (restart?: boolean, skipIntro?: boolean): void => {
+    init = async (restart?: boolean, skipIntro?: boolean): Promise<void> => {
         this._game.started = true;
 
         const gameState = this._dataService.load<ISaveGame>(GameStateSave);
@@ -89,7 +89,7 @@ export class GameService implements IGameService {
 
         if (this._game.party) {
             const locationName = this._game.party?.currentLocationId ?? 'Start';
-            this.resume(locationName);
+            await this.resume(locationName);
 
             if (this._rules.setup.continueGame) {
                 this._rules.setup.continueGame(this._game);
@@ -109,14 +109,14 @@ export class GameService implements IGameService {
         };
 
         if (!hasCreateCharacterSteps) {
-            this.startNewGame(<ICreateCharacter>{});
+            await this.startNewGame(<ICreateCharacter>{});
         } else {
             this._characterService.setupCharacter();
             this._game.state = GameState.CreateCharacter;
         }
     }
 
-    reset = (): void => {
+    reset = async (): Promise<void> => {
         const emptySave = <ISaveGame>{
             party: this._game.party,
             statistics: this._game.statistics
@@ -134,11 +134,11 @@ export class GameService implements IGameService {
         }
 
         if (this._game.party?.currentLocationId) {
-            this._game.commands.go(this._game.party.currentLocationId, false);
+            await this._game.commands.go(this._game.party.currentLocationId, false);
         }
     }
 
-    startNewGame = (characterData: ICreateCharacter): void => {
+    startNewGame = async (characterData: ICreateCharacter): Promise<void> => {
         this.createCharacter(characterData);
 
         if (this._rules.setup.numberOfCharacters > 1 && this._rules.setup.numberOfCharacters > this._game.party.characters.length) {
@@ -150,7 +150,7 @@ export class GameService implements IGameService {
         this._rules.setup.gameStart?.(this._game);
 
         if (!this._game.currentLocation) {
-            this._game.commands.go('Start', false);
+            await this._game.commands.go('Start', false);
         }
 
         this.setInterceptors();
@@ -158,9 +158,9 @@ export class GameService implements IGameService {
         this._dataService.saveGame(this._game);
     }
 
-    restart = (skipIntro?: boolean): void => {
+    restart = async (skipIntro?: boolean): Promise<void> => {
         this._dataService.remove(GameStateSave);
-        this.init(true, skipIntro);
+        await this.init(true, skipIntro);
     }
 
     loadGame = (name: string): void => {
@@ -204,7 +204,7 @@ export class GameService implements IGameService {
         this.watchState<PlayState>('playState', callBack);
     }
 
-    private readonly resume = (locationName: string): void => {
+    private readonly resume = async (locationName: string): Promise<void> => {
         if (!this._game.party.characters.some(c => c.currentHitpoints === undefined || c.currentHitpoints > 0)) {
             this._game.state = GameState.GameOver;
             return;
@@ -219,11 +219,11 @@ export class GameService implements IGameService {
             this._game.previousLocation = this._game.locations.get(previousLocationName);
         }
 
-        this._game.commands.go(lastLocation.id, false);
+        await this._game.commands.go(lastLocation.id, false);
         this._game.state = GameState.Play;
     }
 
-    private watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
+    private watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => Promise<void> | void) {
         const watcherNames = `_${stateName}Watchers`;
         const watchers = this[watcherNames] ?? [];
         this[watcherNames] = watchers;
@@ -237,10 +237,13 @@ export class GameService implements IGameService {
                 get: () => {
                     return state;
                 },
-                set: value => {
+                set: async value => {
                     const oldState = state;
                     state = value;
-                    watchers.forEach(w => w(this._game, state, oldState));
+                    
+                    for (const w of watchers) {
+                        await w(this._game, state, oldState);
+                    }
                 }
             });
         }
@@ -307,7 +310,7 @@ export class GameService implements IGameService {
             get: () => {
                 let result = null;
 
-                if (this._game.maps) {
+                if (this._game.currentLocation && this._game.maps) {
                     for (const key in this._game.maps) {
                         const map = this._game.maps[key];
                         const location = map.locations.find(l => l.location === this._game.currentLocation.id);
@@ -487,9 +490,9 @@ export class GameService implements IGameService {
                 }
             },
             activeCombination: null,
-            tryCombine: (target: ICombinable): ICombineResult => {
+            tryCombine: async (target: ICombinable): Promise<ICombineResult> => {
                 const activeCombo = this._game.combinations.activeCombination;
-                const result = this._combinationService.tryCombination(target);
+                const result = await this._combinationService.tryCombination(target);
 
                 if (result.text) {
                     let featuresToRemove: string[] = [];

@@ -24,7 +24,7 @@ export interface IGeneralRules {
      * @param newGameState The new game state
      * @param oldGameState The current game state
      * */
-    gameStateChange?(game: IGame, newGameState: GameState, oldGameState: GameState): void;
+    gameStateChange?(game: IGame, newGameState: GameState, oldGameState: GameState): Promise<void> | void;
 
     /**
      * This function is called when the play state changes.
@@ -32,7 +32,7 @@ export interface IGeneralRules {
      * @param newPlayState The new play state
      * @param oldPlayState The current play state
      * */
-    playStateChange?(game: IGame, newPlayState: PlayState, oldPlayState: PlayState): void;
+    playStateChange?(game: IGame, newPlayState: PlayState, oldPlayState: PlayState): Promise<void> | void;
 
     /**
      * Use this function if you want to run additonal logic when determining the player's final score on game end.

@@ -39,10 +39,10 @@ function getStep(combination: string, feature: (() => IFeature) | string, tool?:
             action: (game: IGame) => game.commands.selectCombination(combination),
             delay: 2000
         }, {
-            action: (game: IGame) => game.commands.setTool(tool),
+            action: async (game: IGame) => await game.commands.setTool(tool),
             delay: 1000
         }, {
-            action: (game: IGame) => game.commands.combine(combination, feature, tool),
+            action: async (game: IGame) => await game.commands.combine(combination, feature, tool),
             delay: 1000
         }];
     } else {
@@ -50,7 +50,7 @@ function getStep(combination: string, feature: (() => IFeature) | string, tool?:
             action: (game: IGame) => game.commands.selectCombination(combination),
             delay: 2000
         }, {
-            action: (game: IGame) => game.commands.combine(combination, feature),
+            action: async (game: IGame) => await game.commands.combine(combination, feature),
             delay: 1000
         }];
     }

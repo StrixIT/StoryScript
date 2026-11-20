@@ -5,7 +5,7 @@
  * @param callback
  */
 export function Open(callback?: (game: IGame, barrier: [string, IBarrier], destination: IDestination) => void) {
-    return makeSerializeSafe((game: IGame, barrier: [string, IBarrier], destination: IDestination): void => {
+    return makeSerializeSafe((game: IGame, barrier: [string, IBarrier], destination: IDestination) => {
         destination.barriers.delete(barrier);
         callback?.(game, barrier, destination);
     }, callback);

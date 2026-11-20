@@ -9,7 +9,7 @@ import {getDefinitions} from "ui/helpers";
 import 'ui/styles/bootstrap-storyscript.scss';
 import 'ui/styles/storyscript.css';
 
-export const startup = (components: Map<string, any>, assets: Record<string, unknown>, gameName: string, rules: IRules, texts: IInterfaceTexts) => {
+export const startup = async (components: Map<string, any>, assets: Record<string, unknown>, gameName: string, rules: IRules, texts: IInterfaceTexts) => {
     let pinia: Pinia;
     let application: App<Element>;
 
@@ -19,13 +19,13 @@ export const startup = (components: Map<string, any>, assets: Record<string, unk
         new ServiceFactory(gameName, definitions, registeredEntities, rules, texts);
     }
 
-    logTime('Start Vue', () => {
+    await logTime('Start Vue', () => {
         pinia = createPinia();
         application = createApp(AppShell);
         application.use(pinia);
     });
 
-    logTime('Import components', async () => {
+    await logTime('Import components', async () => {
         for (const [componentName, component] of components) {
             application.component(componentName, (component as any)?.default);
         }
@@ -35,24 +35,24 @@ export const startup = (components: Map<string, any>, assets: Record<string, unk
     store.initErrorHandling(application);
     let serviceFactory: ServiceFactory;
 
-    logTime('Create ServiceFactory', () => {
+    await logTime('Create ServiceFactory', () => {
         serviceFactory = ServiceFactory.GetInstance();
         store.setStoreData(serviceFactory);
     });
 
-    logTime('Init game', () => {
+    await logTime('Init game', async () => {
         const rules = serviceFactory.GetRules();
         const gameService = serviceFactory.GetGameService();
 
         if (rules.setup?.titleScreen?.getDemoMode) {
             const demoConfig = rules.setup.titleScreen.getDemoMode();
-            gameService.initDemo(demoConfig);
+            await gameService.initDemo(demoConfig);
         } else {
-            gameService.init();
+            await gameService.init();
         }
     });
 
-    logTime('Mount app', () => {
+    await logTime('Mount app', () => {
         application.mount('#app');
     });
 };

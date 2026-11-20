@@ -17,13 +17,13 @@ export class ConversationService implements IConversationService {
     constructor(private readonly _game: IGame, private readonly _rules: IRules) {
     }
 
-    talk = (person: IPerson): void => {
+    talk = async (person: IPerson): Promise<void> => {
         this.loadConversation(person);
-        this.initConversation(person);
+        await this.initConversation(person);
         this._game.playState = PlayState.Conversation;
     }
 
-    answer = (node: IConversationNode, reply: IConversationReply): void => {
+    answer = async (node: IConversationNode, reply: IConversationReply): Promise<void> => {
         const person = this._game.person;
 
         person.conversation.conversationLog ??= [];
@@ -34,14 +34,14 @@ export class ConversationService implements IConversationService {
         });
 
         if (reply.questStart) {
-            this.questProgress('questStart', person, reply);
+            await this.questProgress('questStart', person, reply);
         }
 
         if (reply.questComplete) {
-            this.questProgress('questComplete', person, reply);
+            await this.questProgress('questComplete', person, reply);
         }
 
-        this.processReply(person, reply);
+        await this.processReply(person, reply);
     }
 
     private readonly loadConversation = (person: IPerson): void => {
@@ -60,7 +60,7 @@ export class ConversationService implements IConversationService {
         }
     }
 
-    private readonly initConversation = (person: IPerson): void => {
+    private readonly initConversation = async (person: IPerson): Promise<void> => {
         this._game.person = person;
         const activeNode = this.getActiveNode(person);
 
@@ -72,7 +72,7 @@ export class ConversationService implements IConversationService {
 
         this.initReplies(person);
         this.setReplyStatus(person.conversation, activeNode);
-        this.executeAction(activeNode.trigger, person);
+        await this.executeAction(activeNode.trigger, person);
     }
 
     private readonly getDefaultReply = (conversationElement: Element, person: IPerson): string => {
@@ -244,8 +244,8 @@ export class ConversationService implements IConversationService {
         this._rules.encounters?.initReplies?.(this._game, activeNode);
     }
 
-    private readonly processReply = (person: IPerson, reply: IConversationReply) => {
-        this.executeAction(reply.trigger, person);
+    private readonly processReply = async (person: IPerson, reply: IConversationReply): Promise<void> => {
+        await this.executeAction(reply.trigger, person);
         const conversation = person.conversation;
 
         if (reply.setStart) {
@@ -266,18 +266,18 @@ export class ConversationService implements IConversationService {
             activeNode = conversation.nodes.filter((node) => {
                 return node.node == reply.linkToNode;
             })[0];
-
+            
+            await this.executeAction(activeNode.trigger, person);
             conversation.activeNode = activeNode;
-            this.executeAction(activeNode.trigger, person);
             this.setReplyStatus(conversation, activeNode);
         } else {
             conversation.activeNode = null;
         }
     }
 
-    private readonly executeAction = (key: string, person: IPerson) => {
+    private readonly executeAction = async (key: string, person: IPerson): Promise<void> => {
         const action = key ? person.conversation.actions.find(([k, _]) => k === key)?.[1] : null;
-        action?.(this._game, person);
+        await action?.(this._game, person);
     }
 
     private readonly checkReplyAvailability = (activeNode: IConversationNode, reply: IConversationReply): boolean => {
@@ -367,7 +367,7 @@ export class ConversationService implements IConversationService {
         });
     }
 
-    private readonly questProgress = (type: string, person: IPerson, reply: IConversationReply): void => {
+    private readonly questProgress = async (type: string, person: IPerson, reply: IConversationReply): Promise<void> => {
         let quest: IQuest;
         const start = type === 'questStart';
 
@@ -381,7 +381,7 @@ export class ConversationService implements IConversationService {
                 quest.progress = quest.progress || {};
 
                 if (quest.start) {
-                    quest.start(this._game, quest, person);
+                    await quest.start(this._game, quest, person);
                 }
 
                 quest.started = true;
@@ -392,7 +392,7 @@ export class ConversationService implements IConversationService {
 
             if (!quest.completed) {
                 if (quest.complete) {
-                    quest.complete(this._game, quest, person);
+                    await quest.complete(this._game, quest, person);
                 }
 
                 quest.completed = true;

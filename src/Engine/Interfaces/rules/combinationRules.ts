@@ -13,5 +13,5 @@ export interface ICombinationRules {
      * @param combination The combination used
      * @param target The target of the combination
      */
-    success?: (game: IGame, combination: IActiveCombination, target: ICombinable) => void;
+    success?: (game: IGame, combination: IActiveCombination, target: ICombinable) => Promise<void> | void;
 }

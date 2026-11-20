@@ -83,8 +83,8 @@ const cancel = (): void => {
   game.value.playState = null;
 }
 
-const restartConfirmed = (): void => {
-  gameService.restart();
+const restartConfirmed = async (): Promise<void> => {
+  await gameService.restart();
   cancel();
 }
 

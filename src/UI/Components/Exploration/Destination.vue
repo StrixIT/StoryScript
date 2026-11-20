@@ -54,12 +54,14 @@ const dropDownLoseFocus = () => {
   }
 }
 
-const executeBarrierAction = (barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): void => {
-  if (game.value.combinations.tryCombine(barrier[1]).success || game.value.combinations.activeCombination) {
+const executeBarrierAction = async (barrier: [string, IBarrier], action: [string, IBarrierAction], destination: IDestination): Promise<void> => {
+  const combineResult = await game.value.combinations.tryCombine(barrier[1]);
+  
+  if (combineResult.success || game.value.combinations.activeCombination) {
     return;
   }
 
-  commandService.useBarrierAction(destination, barrier, action);
+  await commandService.useBarrierAction(destination, barrier, action);
   dropDownExpanded.value = false;
 }
 

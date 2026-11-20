@@ -44,5 +44,5 @@ export interface IGameCombinations {
      * Try the combination the player has created.
      * @param target The target of the combination
      */
-    tryCombine(target: ICombinable): ICombineResult;
+    tryCombine(target: ICombinable): Promise<ICombineResult>;
 }

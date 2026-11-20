@@ -86,7 +86,7 @@ export class TradeService implements ITradeService {
 
     displayPrice = (item: IItem, actualPrice: number): string => actualPrice > 0 ? this._texts.format(this._texts.stockItemDisplayText, [this._itemService.getItemName(item), actualPrice.toString(), this._texts.currency]) : this._itemService.getItemName(item);
 
-    buy = (item: IItem, trade: ITrade): boolean => {
+    buy = async (item: IItem, trade: ITrade): Promise<boolean> => {
         if (!this.canPay(item, this._game.activeCharacter, trade)) {
             return false;
         }
@@ -99,13 +99,13 @@ export class TradeService implements ITradeService {
         this._game.activeCharacter.items.add(item);
 
         if (trade.onBuy) {
-            trade.onBuy(this._game, item);
+            await trade.onBuy(this._game, item);
         }
 
         return true;
     }
 
-    sell = (item: IItem, trade: ITrade): boolean => {
+    sell = async (item: IItem, trade: ITrade): Promise<boolean> => {
         if (!this.canPay(item, trade, this._game.activeCharacter)) {
             return false;
         }
@@ -119,7 +119,7 @@ export class TradeService implements ITradeService {
         trade.buy.items.add(item);
 
         if (trade.onSell) {
-            trade.onSell(this._game, item);
+            await trade.onSell(this._game, item);
         }
 
         return true;

@@ -9,7 +9,7 @@ export interface IExplorationRules {
      * @param travel True if the player arrived by traveling, falsy otherwise. A player can get
      * to a location without traveling when a game is loaded, for example.
      */
-    enterLocation?(game: IGame, location: ICompiledLocation, previousLocationId?: string, travel?: boolean): void;
+    enterLocation?(game: IGame, location: ICompiledLocation, previousLocationId?: string, travel?: boolean): Promise<void> | void;
 
     /**
      * When specified, this function will be called whenever the player enters leaves a location.
@@ -18,7 +18,7 @@ export interface IExplorationRules {
      * @param newLocationId The id of the location the player travels to
      * @param travel True if the player leaves by traveling, falsy otherwise.
      */
-    leaveLocation?(game: IGame, location: ICompiledLocation, newLocationId?: string, travel?: boolean): void;
+    leaveLocation?(game: IGame, location: ICompiledLocation, newLocationId?: string, travel?: boolean): Promise<void> | void;
 
     /**
      * When specified, this function will be called to determine whether a destination should

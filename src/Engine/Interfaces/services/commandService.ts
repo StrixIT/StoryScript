@@ -16,20 +16,20 @@ export interface ICommandService {
      * @param location The location to travel to.
      * @param saveProgress Omit if you want to save the game progress, set to false if you don't want to save.
      */
-    go: (location: (() => ILocation) | string, saveProgress?: boolean) => void;
+    go: (location: (() => ILocation) | string, saveProgress?: boolean) => Promise<void>;
 
     /**
      * Talk to the specified person at the current location.
      * @param person The person to talk to
      */
-    talk: (person: () => IPerson) => void;
+    talk: (person: () => IPerson) => Promise<void>;
 
     /**
      * Answer to the specified node. If no reply is specified, the default reply will be used.
      * @param node
      * @param reply
      */
-    answer: (node: string, reply?: string) => void;
+    answer: (node: string, reply?: string) => Promise<void>;
 
     /**
      * Set the specified combination as the active one.
@@ -41,7 +41,7 @@ export interface ICommandService {
      * Set the specified feature as the currently active tool.
      * @param feature The feature to make the currently active tool.
      */
-    setTool: (feature: (() => IFeature) | string) => void;
+    setTool: (feature: (() => IFeature) | string) => Promise<void>;
 
     /**
      * Try the combination specified on the target, optionally using the tool.
@@ -49,13 +49,13 @@ export interface ICommandService {
      * @param target The target to try the combination on.
      * @param tool The tool to use in the combination.
      */
-    combine: (combination: string, target: (() => IFeature) | string, tool?: (() => IFeature) | string) => void;
+    combine: (combination: string, target: (() => IFeature) | string, tool?: (() => IFeature) | string) => Promise<void>;
 
     /**
      * Use the action specified at the current location.
      * @param action The action to use
      */
-    useAction: (action: string | [string, IAction]) => void;
+    useAction: (action: string | [string, IAction]) => Promise<void>;
 
     /**
      * Use the barrier action specified on the barrier and destination at the current location.
@@ -63,7 +63,7 @@ export interface ICommandService {
      * @param barrier The barrier to use the action on
      * @param action The barrier action to use
      */
-    useBarrierAction: (destination: string | IDestination, barrier: string | [string, IBarrier], action: string | [string, IBarrierAction]) => void;
+    useBarrierAction: (destination: string | IDestination, barrier: string | [string, IBarrier], action: string | [string, IBarrierAction]) => Promise<void>;
 
     /**
      * Trade with the specified person or object at the current location.
@@ -75,13 +75,13 @@ export interface ICommandService {
      * Buy the specified item from the current trader
      * @param item The item to buy
      */
-    buy: (item: (() => IItem)) => void;
+    buy: (item: (() => IItem)) => Promise<void> | void;
 
     /**
      * Sell the specified item to the current trader
      * @param item The item to sell
      */
-    sell: (item: (() => IItem)) => void;
+    sell: (item: (() => IItem)) => Promise<void> | void;
 
     /**
      * Play a media effect
@@ -95,4 +95,11 @@ export interface ICommandService {
         effectSource: IActor | IItem,
         effectTarget?: IActor,
         additionalEffects?: Promise<void>[]) => Promise<void[]> | void;
+
+    /**
+     * Delay the execution of the next step in the game. This is useful to e.g. allow players to read messages in
+     * the combat log before the next step in combat is resolved. This way, you can control the pace of the game.
+     * @param duration The duration of the delay in milliseconds.
+     */
+    delay: (duration: number) => Promise<void>;
 }
