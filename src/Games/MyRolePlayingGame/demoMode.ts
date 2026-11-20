@@ -22,9 +22,9 @@ export const getDemoMode = () => {
             ]
         },
         steps: [
-            {action: game => game.commands.talk(Friend), delay: 2000},
-            {action: game => game.commands.answer('hello', 'fine'), delay: 1000},
-            {action: game => game.commands.answer('fine'), delay: 1000},
+            {action: async game => await game.commands.talk(Friend), delay: 2000},
+            {action: async game => await game.commands.answer('hello', 'fine'), delay: 1000},
+            {action: async game => await game.commands.answer('fine'), delay: 1000},
             {action: game => game.playState = null, delay: 1000},
             {action: async game => await game.commands.go(Garden), delay: 1000},
             {action: async game => await game.commands.useAction('LookInPond'), delay: 1000},

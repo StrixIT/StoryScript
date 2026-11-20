@@ -22,14 +22,14 @@ export interface ICommandService {
      * Talk to the specified person at the current location.
      * @param person The person to talk to
      */
-    talk: (person: () => IPerson) => void;
+    talk: (person: () => IPerson) => Promise<void>;
 
     /**
      * Answer to the specified node. If no reply is specified, the default reply will be used.
      * @param node
      * @param reply
      */
-    answer: (node: string, reply?: string) => void;
+    answer: (node: string, reply?: string) => Promise<void>;
 
     /**
      * Set the specified combination as the active one.

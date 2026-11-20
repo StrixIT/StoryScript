@@ -43,17 +43,17 @@ export class CommandService implements ICommandService {
         }
     }
 
-    talk = (person: () => IPerson): void => {
+    talk = async (person: () => IPerson): Promise<void> => {
         const partner = this._game.currentLocation.persons.get(person);
 
         if (!partner) {
             throw new Error(`No person ${person.name} present at location ${this._game.currentLocation.name}!`);
         }
 
-        this._conversationService.talk(partner);
+        await this._conversationService.talk(partner);
     }
 
-    answer = (node: string, reply?: string): void => {
+    answer = async (node: string, reply?: string): Promise<void> => {
         node ??= 'default';
         const selectedNode = this._game.person.conversation.nodes.find(n => n.node?.toLowerCase() === node);
 
@@ -68,7 +68,7 @@ export class CommandService implements ICommandService {
             throw new Error(`No reply ${reply} exists on conversation node ${node} of person ${this._game.person.name}!`);
         }
 
-        this._conversationService.answer(selectedNode, selectedReply);
+        await this._conversationService.answer(selectedNode, selectedReply);
     }
 
     selectCombination = (combination: string): void => {
