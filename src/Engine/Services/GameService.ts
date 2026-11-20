@@ -310,7 +310,7 @@ export class GameService implements IGameService {
             get: () => {
                 let result = null;
 
-                if (this._game.maps) {
+                if (this._game.currentLocation && this._game.maps) {
                     for (const key in this._game.maps) {
                         const map = this._game.maps[key];
                         const location = map.locations.find(l => l.location === this._game.currentLocation.id);

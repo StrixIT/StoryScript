@@ -13,9 +13,9 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
     const descriptionToShow = ref<string>(null);
 
-    const show = computed(() => game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture);
+    const show = computed(() => game.value.currentLocation && (game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture));
 
-    watch(() => game.value.currentLocation.description, async (newValue) => {
+    watch(() => game.value.currentLocation?.description, async (newValue) => {
         descriptionToShow.value = checkAutoplay(game.value, newValue);
     }, {immediate: true});
 
@@ -29,7 +29,7 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
     const refreshFeatures = () => {
         // Show the text of added features.
-        const featureArray = Array.from(description.value?.getElementsByTagName('feature'));
+        const featureArray = Array.from(description.value?.getElementsByTagName('feature') ?? []);
 
         if (featureArray.length === 0) {
             return;

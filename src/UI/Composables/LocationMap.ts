@@ -26,19 +26,35 @@ export function useLocationMap(mapImageRef: Ref<HTMLImageElement>, mapDialogRef:
     const currentMap = mapImageRef;
     const currentFullScreenMap = ref<HTMLImageElement>(null);
 
-    const markerKey = map.value.showMarkersOnKeyPress ?
+    const markerKey = computed(() => map.value.showMarkersOnKeyPress ?
         // When an empty value is specified use the space key. Use the key specified otherwise.
         map.value.showMarkersOnKeyPress.trim()
             ? map.value.showMarkersOnKeyPress : 'space'
-        : null;
+        : null);
 
     watch(() => location.value, () => {
+        navigateOnWatch();
+    });
+
+    watch(() => map.value, () => {
+        navigateOnWatch();
+    });
+
+    watch(() => currentMap.value, () => {
+        navigateOnWatch();
+    });
+    
+    const navigateOnWatch = () => {
+        if (!map.value || !location.value || !currentMap.value) {
+            return;
+        }
+        
         navigateMap(map.value, currentMap.value, false);
 
         if (fullScreen.value) {
             navigateMap(map.value, currentFullScreenMap.value, false);
         }
-    });
+    }
 
     onMounted(() => {
         prepareMap(map.value, false);
