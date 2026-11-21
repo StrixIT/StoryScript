@@ -84,8 +84,8 @@ const cancel = (): void => {
 }
 
 const restartConfirmed = async (): Promise<void> => {
-  await gameService.restart();
   cancel();
+  await gameService.restart();
 }
 
 const save = (): void => {

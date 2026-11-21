@@ -148,13 +148,13 @@ export class GameService implements IGameService {
 
         this._game.party.characters[0].isActiveCharacter = true;
         this._rules.setup.gameStart?.(this._game);
+        this.setInterceptors();
+        this._game.state = GameState.Play;
 
         if (!this._game.currentLocation) {
             await this._game.commands.go('Start', false);
         }
 
-        this.setInterceptors();
-        this._game.state = GameState.Play;
         this._dataService.saveGame(this._game);
     }
 
@@ -219,11 +219,11 @@ export class GameService implements IGameService {
             this._game.previousLocation = this._game.locations.get(previousLocationName);
         }
 
-        await this._game.commands.go(lastLocation.id, false);
         this._game.state = GameState.Play;
+        await this._game.commands.go(lastLocation.id, false);
     }
 
-    private watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => Promise<void> | void) {
+    private watchState<T>(stateName: string, callBack: (game: IGame, newState: T, oldState: T) => void) {
         const watcherNames = `_${stateName}Watchers`;
         const watchers = this[watcherNames] ?? [];
         this[watcherNames] = watchers;
@@ -237,13 +237,10 @@ export class GameService implements IGameService {
                 get: () => {
                     return state;
                 },
-                set: async value => {
+                set: value => {
                     const oldState = state;
                     state = value;
-                    
-                    for (const w of watchers) {
-                        await w(this._game, state, oldState);
-                    }
+                    watchers.forEach(w => w(this._game, state, oldState));
                 }
             });
         }

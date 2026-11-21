@@ -15,7 +15,7 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
     const show = computed(() => game.value.currentLocation && (game.value.currentLocation.description || !game.value.currentLocation.features?.collectionPicture));
 
-    watch(() => game.value.currentLocation?.description, async (newValue) => {
+    watch(() => game.value.currentLocation?.description, (newValue) => {
         descriptionToShow.value = checkAutoplay(game.value, newValue);
     }, {immediate: true});
 
@@ -75,7 +75,7 @@ export function useTextFeatures(description: Ref<HTMLDivElement>) {
 
         if (triggerElement && isTouchDevice) {
             const activate = !triggerElement.classList.contains(activeTriggerClass);
-            
+
             for (const trigger of Array.from(description.value.querySelectorAll('[data-trigger]')))
             {
                 await toggleTrigger(trigger as HTMLElement, false);

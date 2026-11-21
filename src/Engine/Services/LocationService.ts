@@ -66,8 +66,8 @@ export class LocationService implements ILocationService {
         this.processDestinations(game);
         this._game.party.currentLocationId = game.currentLocation.id;
         this._game.party.previousLocationId = game.previousLocation?.id;
-        await this._rules.exploration?.enterLocation?.(game, game.currentLocation, game.previousLocation?.id, travel);
         this.loadLocationDescriptions(game);
+        await this._rules.exploration?.enterLocation?.(game, game.currentLocation, game.previousLocation?.id, travel);
         this.initTrade(game);
         await this.playEvents(game, 'enterEvents');
         this.markCurrentLocationAsVisited(game);
@@ -254,7 +254,7 @@ export class LocationService implements ILocationService {
         // event, we want to still update the events in the originating location.
         const location = game.currentLocation;
         const events: [string, Function][] = [...location[eventProperty]];
-        
+
         for (const event of events) {
             const result = await event[1]?.(game);
 
