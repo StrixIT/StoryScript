@@ -2,7 +2,7 @@
   <div v-if="game.state === GameState.Intro" id="intro" class="box-container">
     <h2>Game introduction</h2>
     <p>Please copy the IntroComponent.html file to your game and add your introduction here.</p>
-    <button class="btn btn-primary" type="button" @click="gameService.restart()">{{ texts.skipIntro }}</button>
+    <button class="btn btn-primary" type="button" @click="gameService.restart(true)">{{ texts.skipIntro }}</button>
   </div>
 </template>
 <script lang="ts" setup>
