@@ -1,11 +1,10 @@
-﻿import { ILocation } from './location';
-import { IAction } from './action';
-import { IPerson } from './person';
-import { IItem } from './item';
-import { IQuest } from './quest';
-import { IFeature } from './feature';
-import { IEnemy } from './enemy';
-import { IMap } from './maps/map';
+﻿import {ILocation} from './location';
+import {IPerson} from './person';
+import {IItem} from './item';
+import {IQuest} from './quest';
+import {IFeature} from './feature';
+import {IEnemy} from './enemy';
+import {IMap} from './maps/map';
 
 /**
  * All definitions created for a StoryScript the game.
@@ -20,7 +19,7 @@ export interface IDefinitions {
      * The available maps of the world.
      */
     maps: (() => IMap)[];
-    
+
     /**
      * The features present in the game world.
      */

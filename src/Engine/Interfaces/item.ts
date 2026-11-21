@@ -5,7 +5,6 @@ import {EquipmentType} from './enumerations/equipmentType';
 import {IEquipment} from './equipment';
 import {ICharacter} from './character';
 import {TargetType} from './enumerations/targetType';
-import {Sprite} from './sprite';
 import {IMediaEvent} from "src/Engine";
 
 /**

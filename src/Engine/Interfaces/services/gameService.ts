@@ -13,5 +13,5 @@ export interface IGameService {
 
     loadGame(name: string): void;
 
-    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => Promise<void> | void): void;
+    watchPlayState(callBack: (game: IGame, newPlayState: PlayState, oldPlayState: PlayState) => void): void;
 }
